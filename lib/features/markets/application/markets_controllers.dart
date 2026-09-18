@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/features/markets/data/backend_market_provider.dart';
 import 'package:smartbudget/features/markets/data/coingecko_crypto_repository.dart';
 import 'package:smartbudget/features/markets/data/dolarapi_ar_repository.dart';
 import 'package:smartbudget/features/markets/data/gold_api_metals_repository.dart';
@@ -73,16 +75,23 @@ final marketProvidersProvider =
     Provider<Map<MarketCategory, MarketDataProvider>>((ref) {
   final MarketHttp http = ref.watch(marketHttpProvider);
   final RateCache cache = ref.watch(rateCacheProvider);
+
+  // Categories with no free client-side source. When the OWNER has configured a
+  // market proxy (server-side keys + provider choice), fetch live from it; else
+  // render "unavailable" — never a fabricated number.
+  MarketDataProvider deferred(MarketCategory category) => AppEnv.hasMarketApi
+      ? BackendMarketProvider(category, AppEnv.marketApiUrl,
+          http: http, cache: cache)
+      : UnavailableMarketProvider(category);
+
   return <MarketCategory, MarketDataProvider>{
+    // Precious metals: live free source (gold-api.com).
     MarketCategory.preciousMetals:
         GoldApiMetalsRepository(http: http, cache: cache),
-    MarketCategory.industrialMetals:
-        const UnavailableMarketProvider(MarketCategory.industrialMetals),
-    MarketCategory.steelIron:
-        const UnavailableMarketProvider(MarketCategory.steelIron),
-    MarketCategory.energy: const UnavailableMarketProvider(MarketCategory.energy),
-    MarketCategory.agriculture:
-        const UnavailableMarketProvider(MarketCategory.agriculture),
+    MarketCategory.industrialMetals: deferred(MarketCategory.industrialMetals),
+    MarketCategory.steelIron: deferred(MarketCategory.steelIron),
+    MarketCategory.energy: deferred(MarketCategory.energy),
+    MarketCategory.agriculture: deferred(MarketCategory.agriculture),
   };
 });
 

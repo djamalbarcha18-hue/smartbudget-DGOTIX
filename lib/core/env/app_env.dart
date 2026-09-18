@@ -23,4 +23,17 @@ abstract final class AppEnv {
 
   /// Human-readable backend label (for diagnostics / settings screen).
   static String get backendLabel => hasSupabase ? 'Supabase' : 'Local (dev)';
+
+  /// Public base URL of the owner's Market Intelligence proxy (a Supabase Edge
+  /// Function or similar). This is NON-SECRET (a plain URL). The proxy holds the
+  /// provider API keys server-side and picks the data provider — the OWNER
+  /// configures the provider there, never the end user, and no key ever ships
+  /// in the frontend. Injected at build time, e.g.:
+  ///   --dart-define=MARKET_API_URL=https://xxx.functions.supabase.co/market-proxy
+  static const String marketApiUrl =
+      String.fromEnvironment('MARKET_API_URL', defaultValue: '');
+
+  /// True when a market proxy URL is configured; drives whether the commodity
+  /// categories fetch live data or render "unavailable".
+  static bool get hasMarketApi => marketApiUrl.isNotEmpty;
 }
