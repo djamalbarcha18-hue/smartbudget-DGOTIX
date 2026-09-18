@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 
-/// Grouped income/expense bars per month with a net (savings) line overlay,
-/// for a 12-month [MonthPoint] series. Colors are supplied by the caller so it
-/// stays theme-aware.
+/// Three grouped bars per month — income, expense and savings (net) — for a
+/// 12-month [MonthPoint] series, matching the spreadsheet layout. A zero
+/// baseline accommodates negative (loss) months. Colors are supplied by the
+/// caller so it stays theme-aware.
 class MonthlyBarsChart extends StatelessWidget {
   const MonthlyBarsChart({
     super.key,
@@ -14,7 +15,7 @@ class MonthlyBarsChart extends StatelessWidget {
     required this.net,
     required this.axis,
     required this.grid,
-    this.height = 200,
+    this.height = 220,
   });
 
   final List<MonthPoint> points;
@@ -27,22 +28,12 @@ class MonthlyBarsChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int maxMinor = 0;
-    for (final MonthPoint p in points) {
-      maxMinor = <int>[
-        maxMinor,
-        p.income.minorUnits,
-        p.expense.minorUnits,
-        p.net.minorUnits,
-      ].reduce((int a, int b) => a > b ? a : b);
-    }
     return SizedBox(
       height: height,
       child: CustomPaint(
         size: Size.infinite,
         painter: _BarsPainter(
           points: points,
-          maxMinor: maxMinor,
           income: income,
           expense: expense,
           net: net,
@@ -57,7 +48,6 @@ class MonthlyBarsChart extends StatelessWidget {
 class _BarsPainter extends CustomPainter {
   _BarsPainter({
     required this.points,
-    required this.maxMinor,
     required this.income,
     required this.expense,
     required this.net,
@@ -66,7 +56,6 @@ class _BarsPainter extends CustomPainter {
   });
 
   final List<MonthPoint> points;
-  final int maxMinor;
   final Color income;
   final Color expense;
   final Color net;
@@ -75,18 +64,36 @@ class _BarsPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (points.isEmpty || maxMinor <= 0) return;
+    if (points.isEmpty) return;
+
+    int maxPos = 0;
+    int negAbs = 0;
+    for (final MonthPoint p in points) {
+      for (final int v in <int>[
+        p.income.minorUnits,
+        p.expense.minorUnits,
+        p.net.minorUnits,
+      ]) {
+        if (v > maxPos) maxPos = v;
+        if (v < 0 && -v > negAbs) negAbs = -v;
+      }
+    }
+    final int range = maxPos + negAbs;
+    if (range <= 0) return;
+
     const double labelBand = 18;
     final double chartH = size.height - labelBand;
-    final double baseY = chartH;
+    final double zeroY = (maxPos / range) * chartH;
     final double groupW = size.width / points.length;
-    final double barW = (groupW * 0.26).clamp(3.0, 16.0);
-    const double gap = 2;
 
-    // Baseline.
+    final double barW = (groupW * 0.22).clamp(2.5, 13.0);
+    const double innerGap = 2;
+    final double totalBarsW = 3 * barW + 2 * innerGap;
+
+    // Zero baseline.
     canvas.drawLine(
-      Offset(0, baseY),
-      Offset(size.width, baseY),
+      Offset(0, zeroY),
+      Offset(size.width, zeroY),
       Paint()
         ..color = grid
         ..strokeWidth = 1,
@@ -94,78 +101,56 @@ class _BarsPainter extends CustomPainter {
 
     final Paint incPaint = Paint()..color = income;
     final Paint expPaint = Paint()..color = expense;
-    const Radius r = Radius.circular(2);
+    final Paint netPaint = Paint()..color = net;
 
-    double h(int minor) => (minor / maxMinor) * (chartH - 4);
+    void bar(double left, int minor, Paint paint) {
+      if (minor == 0) return;
+      const Radius r = Radius.circular(2);
+      final double len = (minor.abs() / range) * chartH;
+      if (minor > 0) {
+        canvas.drawRRect(
+          RRect.fromRectAndCorners(
+            Rect.fromLTWH(left, zeroY - len, barW, len),
+            topLeft: r,
+            topRight: r,
+          ),
+          paint,
+        );
+      } else {
+        canvas.drawRRect(
+          RRect.fromRectAndCorners(
+            Rect.fromLTWH(left, zeroY, barW, len),
+            bottomLeft: r,
+            bottomRight: r,
+          ),
+          paint,
+        );
+      }
+    }
 
-    // Bars.
     for (int i = 0; i < points.length; i++) {
       final MonthPoint p = points[i];
-      final double centre = groupW * i + groupW / 2;
-      final double incH = h(p.income.minorUnits);
-      final double expH = h(p.expense.minorUnits);
-      final double incLeft = centre - barW - gap / 2;
-      final double expLeft = centre + gap / 2;
-
-      if (incH > 0) {
-        canvas.drawRRect(
-          RRect.fromRectAndCorners(
-            Rect.fromLTWH(incLeft, baseY - incH, barW, incH),
-            topLeft: r,
-            topRight: r,
-          ),
-          incPaint,
-        );
-      }
-      if (expH > 0) {
-        canvas.drawRRect(
-          RRect.fromRectAndCorners(
-            Rect.fromLTWH(expLeft, baseY - expH, barW, expH),
-            topLeft: r,
-            topRight: r,
-          ),
-          expPaint,
-        );
-      }
+      final double groupStart = groupW * i + (groupW - totalBarsW) / 2;
+      bar(groupStart, p.income.minorUnits, incPaint);
+      bar(groupStart + barW + innerGap, p.expense.minorUnits, expPaint);
+      bar(groupStart + 2 * (barW + innerGap), p.net.minorUnits, netPaint);
 
       final TextPainter tp = TextPainter(
         text: TextSpan(
             text: '${i + 1}', style: TextStyle(color: axis, fontSize: 9)),
         textDirection: TextDirection.ltr,
       )..layout();
-      tp.paint(canvas, Offset(centre - tp.width / 2, baseY + 5));
-    }
-
-    // Net (savings) line — negative months clamp to the baseline.
-    final Path line = Path();
-    final List<Offset> dots = <Offset>[];
-    for (int i = 0; i < points.length; i++) {
-      final double centre = groupW * i + groupW / 2;
-      final int netMinor = points[i].net.minorUnits;
-      final double y = baseY - h(netMinor < 0 ? 0 : netMinor);
-      final Offset o = Offset(centre, y);
-      dots.add(o);
-      if (i == 0) {
-        line.moveTo(o.dx, o.dy);
-      } else {
-        line.lineTo(o.dx, o.dy);
-      }
-    }
-    canvas.drawPath(
-      line,
-      Paint()
-        ..color = net
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2
-        ..strokeJoin = StrokeJoin.round
-        ..strokeCap = StrokeCap.round,
-    );
-    for (final Offset o in dots) {
-      canvas.drawCircle(o, 2.4, Paint()..color = net);
+      tp.paint(
+        canvas,
+        Offset(groupW * i + groupW / 2 - tp.width / 2, chartH + 5),
+      );
     }
   }
 
   @override
   bool shouldRepaint(_BarsPainter old) =>
-      old.points != points || old.maxMinor != maxMinor;
+      old.points != points ||
+      old.income != income ||
+      old.expense != expense ||
+      old.net != net;
 }
