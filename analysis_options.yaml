@@ -1,0 +1,12 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "lib/l10n/gen/**"
+    - ".dart_tool/**"
+
+# We run on the vetted flutter_lints baseline (which already covers avoid_print,
+# unused imports, etc.). Stricter opt-in style rules (prefer_const_constructors,
+# prefer_final_locals, …) will be enabled deliberately once Flutter runs locally
+# so each addition can be verified before it gates CI.

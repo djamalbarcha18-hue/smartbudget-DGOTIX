@@ -1,0 +1,23 @@
+{
+  "name": "SmartBudget — by DGOTIX",
+  "short_name": "SmartBudget",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0B1120",
+  "theme_color": "#1680F7",
+  "description": "SmartBudget — by DGOTIX. Premium financial SaaS.",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icons/Icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/Icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

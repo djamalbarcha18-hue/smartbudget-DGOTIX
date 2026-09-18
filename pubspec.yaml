@@ -1,0 +1,50 @@
+name: smartbudget
+description: "SmartBudget — by DGOTIX. Premium financial SaaS (Flutter Web-first)."
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  # Dart 3.6 / Flutter 3.27 floor: uses the Color.withValues() API and the
+  # current Material 3 / WidgetState* names.
+  sdk: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State management (chosen for testability + granular rebuilds — see docs/ARCHITECTURE.md)
+  flutter_riverpod: ^2.5.1
+
+  # Routing (web URLs, deep links, guards)
+  go_router: ^14.2.0
+
+  # Internationalization. Kept on the 0.20.x line to match the version that the
+  # bundled flutter_localizations depends on (the SDK pins intl within 0.20.x);
+  # ^0.20.0 accepts whatever patch that is, avoiding resolution conflicts.
+  intl: ^0.20.0
+
+  # Brand SVG logos (theme-aware, vector)
+  flutter_svg: ^2.0.10
+
+  # Typography (Tajawal for Arabic, Inter for Latin)
+  google_fonts: ^6.2.1
+
+  # Per-viewer preferences (theme + locale) — NOT financial data
+  shared_preferences: ^2.2.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Generate localized messages from lib/l10n/*.arb (see l10n.yaml)
+  generate: true
+
+  assets:
+    - assets/brand/

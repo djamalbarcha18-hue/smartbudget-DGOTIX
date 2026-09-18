@@ -1,0 +1,16 @@
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+.pub-cache/
+.pub/
+*.iml
+.idea/
+.vscode/
+# Generated localizations (regenerated on build)
+lib/l10n/gen/
+# Env / secrets (never commit real project keys)
+.env
+dart_define.json

@@ -1,0 +1,5 @@
+{
+  "_comment": "Copy to dart_define.json (gitignored) and fill with YOUR Supabase project values. Run: flutter run -d chrome --dart-define-from-file=dart_define.json. Leave empty to use the local dev fake backend.",
+  "SUPABASE_URL": "",
+  "SUPABASE_ANON_KEY": ""
+}

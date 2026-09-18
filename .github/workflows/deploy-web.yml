@@ -1,0 +1,58 @@
+name: Deploy Web Preview
+
+# Builds the Flutter web app and publishes it to GitHub Pages so every push to
+# the default branch produces a live, shareable URL — no local Flutter/Git/
+# emulator needed.
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch: {}
+
+# Permissions required by the GitHub Pages deployment.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one Pages deployment at a time; newer pushes cancel in-flight ones.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build web bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # base-href must match the project-pages sub-path exactly (leading + trailing slash).
+      - name: Build web (release)
+        run: flutter build web --release --base-href /smartbudget-DGOTIX/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

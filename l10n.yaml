@@ -1,0 +1,10 @@
+# Flutter gen-l10n configuration.
+# Runs automatically on `flutter pub get` / build (with `generate: true` in pubspec).
+# We emit into a real package path (not the deprecated synthetic package) so the
+# generated class is imported as package:smartbudget/l10n/gen/app_localizations.dart.
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-dir: lib/l10n/gen
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false
