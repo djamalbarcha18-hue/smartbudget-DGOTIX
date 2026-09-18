@@ -1,31 +1,59 @@
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
-/// Default categories and payment methods — mirrored exactly from SmartBudget
-/// V1 (Config.gs). These are product data, not financial rules; kept identical
-/// so migrated data lines up. Users will be able to customize them later.
+/// Default categories and payment methods (product data, not financial rules).
+///
+/// Expanded for a global audience while staying halal-oriented: no gambling,
+/// betting, lottery or interest/riba income. Existing categories are preserved
+/// (stored transactions keep their category); new ones are additive, and
+/// 'أخرى' (Other) always stays last. Users can customize these later.
 abstract final class Catalog {
   static const List<String> incomeCategories = <String>[
     'راتب أساسي',
     'مكافآت وحوافز',
+    'مكافأة نهاية الخدمة',
+    'معاش تقاعدي',
     'عمل حر',
-    'دخل استثماري',
-    'إيجارات',
+    'عمولات',
     'أرباح تجارية',
+    'دخل استثماري',
+    'أرباح أسهم وتوزيعات',
+    'أرباح العملات الرقمية',
+    'إيجارات',
+    'بيع أصول أو ممتلكات',
+    'محتوى رقمي وإبداعي',
+    'منحة أو إعانة',
+    'ميراث',
+    'استرداد أو تعويض',
     'هدايا',
+    'زكاة أو صدقة مستلمة',
     'أخرى',
   ];
 
   static const List<String> expenseCategories = <String>[
     'الطعام',
+    'المطاعم',
     'النقل',
     'السكن',
     'الفواتير',
+    'الاتصالات والإنترنت',
     'الصحة',
     'التعليم',
+    'الأطفال والعائلة',
     'التسوق',
+    'الملابس',
     'الترفيه',
+    'الرياضة واللياقة',
     'الاشتراكات',
     'السفر',
+    'الأقساط والقروض',
+    'التأمين',
+    'الضرائب والرسوم',
+    'الصيانة والإصلاح',
+    'الأثاث والمنزل',
+    'الحج والعمرة',
+    'صدقة وتبرّعات',
+    'زكاة',
+    'الادخار والاستثمار',
     'الطوارئ',
     'أخرى',
   ];
@@ -33,6 +61,8 @@ abstract final class Catalog {
   static const List<String> paymentMethods = <String>[
     'نقداً',
     'بطاقة بنكية',
+    'بطاقة ائتمان',
+    'محفظة إلكترونية',
     'تحويل الكتروني',
     'أخرى',
   ];
