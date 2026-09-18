@@ -105,6 +105,20 @@ class FakeTransactionRepository implements TransactionRepository {
   }
 
   @override
+  Future<int> deleteMany(Iterable<String> ids) async {
+    await _load();
+    final Set<String> set = ids.toSet();
+    final int before = _items.length;
+    _items.removeWhere((Transaction t) => set.contains(t.id));
+    final int removed = before - _items.length;
+    if (removed > 0) {
+      await _persist();
+      _emit();
+    }
+    return removed;
+  }
+
+  @override
   void dispose() {
     _controller.close();
   }

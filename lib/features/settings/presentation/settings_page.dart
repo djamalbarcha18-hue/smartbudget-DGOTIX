@@ -366,6 +366,23 @@ class _DeveloperSectionState extends ConsumerState<_DeveloperSection> {
     }
   }
 
+  Future<void> _clearSample() async {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    setState(() => _busy = true);
+    try {
+      final SampleImportResult res =
+          await ref.read(sampleDataLoaderProvider).clear(year: 2026);
+      messenger.showSnackBar(SnackBar(
+        content: Text(res.isEmpty
+            ? l.sampleDataNone
+            : l.sampleDataCleared(res.transactionsAdded, res.budgetsAdded)),
+      ));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
@@ -374,14 +391,23 @@ class _DeveloperSectionState extends ConsumerState<_DeveloperSection> {
       children: <Widget>[
         Text(l.sampleDataHint, style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(height: DsSpacing.md),
-        Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: DsButton(
-            label: l.loadSampleData,
-            icon: Icons.auto_awesome_outlined,
-            variant: DsButtonVariant.secondary,
-            onPressed: _busy ? null : _loadSample,
-          ),
+        Wrap(
+          spacing: DsSpacing.sm,
+          runSpacing: DsSpacing.sm,
+          children: <Widget>[
+            DsButton(
+              label: l.loadSampleData,
+              icon: Icons.auto_awesome_outlined,
+              variant: DsButtonVariant.secondary,
+              onPressed: _busy ? null : _loadSample,
+            ),
+            DsButton(
+              label: l.clearSampleData,
+              icon: Icons.delete_sweep_outlined,
+              variant: DsButtonVariant.ghost,
+              onPressed: _busy ? null : _clearSample,
+            ),
+          ],
         ),
       ],
     );

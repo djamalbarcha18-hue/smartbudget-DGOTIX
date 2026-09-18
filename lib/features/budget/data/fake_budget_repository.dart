@@ -117,6 +117,20 @@ class FakeBudgetRepository implements BudgetRepository {
   }
 
   @override
+  Future<int> deleteMany(Iterable<String> ids) async {
+    await _load();
+    final Set<String> set = ids.toSet();
+    final int before = _items.length;
+    _items.removeWhere((BudgetTarget b) => set.contains(b.id));
+    final int removed = before - _items.length;
+    if (removed > 0) {
+      await _persist();
+      _emit();
+    }
+    return removed;
+  }
+
+  @override
   void dispose() {
     _controller.close();
   }

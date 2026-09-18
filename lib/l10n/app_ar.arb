@@ -396,5 +396,9 @@
 
   "settingsDeveloper": "المطوّر",
   "sampleDataHint": "املأ سنة 2026 بمداخيل ومصروفات وميزانيات تجريبية واقعية لتجربة القالب. آمن للتشغيل أكثر من مرة — لا يُكرّر البيانات.",
-  "loadSampleData": "تحميل بيانات 2026 التجريبية"
+  "loadSampleData": "تحميل بيانات 2026 التجريبية",
+  "clearSampleData": "مسح بيانات 2026 التجريبية",
+  "sampleDataCleared": "تم حذف {tx} معاملة تجريبية و{bud} ميزانية.",
+  "@sampleDataCleared": { "placeholders": { "tx": { "type": "int" }, "bud": { "type": "int" } } },
+  "sampleDataNone": "لا توجد بيانات 2026 تجريبية للحذف."
 }

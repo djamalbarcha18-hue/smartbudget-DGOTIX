@@ -396,5 +396,9 @@
 
   "settingsDeveloper": "Developer",
   "sampleDataHint": "Fill 2026 with realistic sample income, expenses and budgets to try the template. Safe to run more than once — it never duplicates.",
-  "loadSampleData": "Load 2026 sample data"
+  "loadSampleData": "Load 2026 sample data",
+  "clearSampleData": "Clear 2026 sample data",
+  "sampleDataCleared": "Removed {tx} sample transactions and {bud} budgets.",
+  "@sampleDataCleared": { "placeholders": { "tx": { "type": "int" }, "bud": { "type": "int" } } },
+  "sampleDataNone": "No 2026 sample data to remove."
 }

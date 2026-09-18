@@ -37,4 +37,20 @@ class SampleDataLoader {
     _ref.read(selectedYearProvider.notifier).state = year;
     return SampleImportResult(transactionsAdded: tx, budgetsAdded: bud);
   }
+
+  /// Removes exactly the sample rows for [year] (by their stable ids), leaving
+  /// any of the user's own data untouched.
+  Future<SampleImportResult> clear({int year = 2026}) async {
+    final String currency = _ref.read(baseCurrencyProvider);
+    final SampleDataSet data = SampleData.build(currency: currency, year: year);
+
+    final int tx = await _ref
+        .read(financeRepositoryProvider)
+        .deleteMany(data.transactions.map((t) => t.id));
+    final int bud = await _ref
+        .read(budgetRepositoryProvider)
+        .deleteMany(data.budgets.map((b) => b.id));
+
+    return SampleImportResult(transactionsAdded: tx, budgetsAdded: bud);
+  }
 }

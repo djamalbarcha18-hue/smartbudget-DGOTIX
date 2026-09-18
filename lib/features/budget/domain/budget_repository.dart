@@ -21,5 +21,8 @@ abstract interface class BudgetRepository {
   /// (year, month, category). Returns the number actually added.
   Future<int> importMany(List<BudgetTarget> targets);
 
+  /// Removes every target whose id is in [ids]. Returns the count removed.
+  Future<int> deleteMany(Iterable<String> ids);
+
   void dispose();
 }

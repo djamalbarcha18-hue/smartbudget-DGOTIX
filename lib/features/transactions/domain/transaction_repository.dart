@@ -20,5 +20,8 @@ abstract interface class TransactionRepository {
   /// restore). Returns the number of transactions actually added.
   Future<int> importMany(List<Transaction> txns);
 
+  /// Removes every transaction whose id is in [ids]. Returns the count removed.
+  Future<int> deleteMany(Iterable<String> ids);
+
   void dispose();
 }
