@@ -165,65 +165,17 @@ class _Header extends StatelessWidget {
         children: <Widget>[
           titleBlock,
           const SizedBox(height: DsSpacing.md),
-          Wrap(
-            spacing: DsSpacing.sm,
-            runSpacing: DsSpacing.sm,
-            children: <Widget>[const _YearChip(), ...actions],
-          ),
+          Wrap(spacing: DsSpacing.sm, runSpacing: DsSpacing.sm, children: actions),
         ],
       );
     }
     return Row(
       children: <Widget>[
         Expanded(child: titleBlock),
-        const _YearChip(),
-        const SizedBox(width: DsSpacing.sm),
         actions[0],
         const SizedBox(width: DsSpacing.sm),
         actions[1],
       ],
-    );
-  }
-}
-
-/// Compact year selector for the dashboard header, bound to the shared
-/// [selectedYearProvider] (same year used by Reports & Monthly Budget).
-class _YearChip extends ConsumerWidget {
-  const _YearChip();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final DsColors c = context.dsColors;
-    final int year = ref.watch(selectedYearProvider);
-    final int now = DateTime.now().year;
-    final List<int> years = List<int>.generate(10, (int i) => now + i);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.md),
-      decoration: BoxDecoration(
-        color: c.surfaceMuted,
-        borderRadius: DsRadius.brMd,
-        border: Border.all(color: c.border),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Icon(Icons.calendar_today_outlined, size: 15, color: c.textMuted),
-          const SizedBox(width: DsSpacing.xs),
-          DropdownButton<int>(
-            value: years.contains(year) ? year : now,
-            underline: const SizedBox.shrink(),
-            dropdownColor: c.bgElevated,
-            isDense: true,
-            items: <DropdownMenuItem<int>>[
-              for (final int y in years)
-                DropdownMenuItem<int>(value: y, child: Text('$y')),
-            ],
-            onChanged: (int? v) => v == null
-                ? null
-                : ref.read(selectedYearProvider.notifier).state = v,
-          ),
-        ],
-      ),
     );
   }
 }

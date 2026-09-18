@@ -27,8 +27,6 @@ class MonthlyBudgetPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
-    final int year = ref.watch(selectedYearProvider);
-    final int month = ref.watch(selectedMonthProvider);
     final FinanceSummary summary = ref.watch(monthlySummaryProvider);
     final List<Transaction> monthTxns = ref.watch(monthTransactionsProvider);
     final bool hasData = summary.count > 0;
@@ -38,26 +36,8 @@ class MonthlyBudgetPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Text(l.pageMonthlyBudget,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                    overflow: TextOverflow.ellipsis),
-              ),
-              _MonthSelector(
-                month: month,
-                onChanged: (int m) =>
-                    ref.read(selectedMonthProvider.notifier).state = m,
-              ),
-              const SizedBox(width: DsSpacing.sm),
-              _YearSelector(
-                year: year,
-                onChanged: (int y) =>
-                    ref.read(selectedYearProvider.notifier).state = y,
-              ),
-            ],
-          ),
+          Text(l.pageMonthlyBudget,
+              style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: DsSpacing.xl),
           Wrap(
             spacing: DsSpacing.gridGap,
@@ -279,82 +259,5 @@ class _BudgetRow extends ConsumerWidget {
           );
     }
     ctrl.dispose();
-  }
-}
-
-class _MonthSelector extends StatelessWidget {
-  const _MonthSelector({required this.month, required this.onChanged});
-  final int month;
-  final ValueChanged<int> onChanged;
-
-  static const List<String> _ar = <String>[
-    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
-  ];
-  static const List<String> _en = <String>[
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
-    final List<String> names = ar ? _ar : _en;
-    return _SelectorBox(
-      child: DropdownButton<int>(
-        value: month,
-        underline: const SizedBox.shrink(),
-        dropdownColor: context.dsColors.bgElevated,
-        items: <DropdownMenuItem<int>>[
-          for (int m = 1; m <= 12; m++)
-            DropdownMenuItem<int>(value: m, child: Text(names[m - 1])),
-        ],
-        onChanged: (int? v) => v == null ? null : onChanged(v),
-      ),
-    );
-  }
-}
-
-class _YearSelector extends StatelessWidget {
-  const _YearSelector({required this.year, required this.onChanged});
-  final int year;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final int now = DateTime.now().year;
-    // Current year and the next nine (e.g. 2026–2035).
-    final List<int> years = List<int>.generate(10, (int i) => now + i);
-    return _SelectorBox(
-      child: DropdownButton<int>(
-        value: years.contains(year) ? year : now,
-        underline: const SizedBox.shrink(),
-        dropdownColor: context.dsColors.bgElevated,
-        items: <DropdownMenuItem<int>>[
-          for (final int y in years)
-            DropdownMenuItem<int>(value: y, child: Text('$y')),
-        ],
-        onChanged: (int? v) => v == null ? null : onChanged(v),
-      ),
-    );
-  }
-}
-
-class _SelectorBox extends StatelessWidget {
-  const _SelectorBox({required this.child});
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final DsColors c = context.dsColors;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.md),
-      decoration: BoxDecoration(
-        color: c.surfaceMuted,
-        borderRadius: DsRadius.brMd,
-        border: Border.all(color: c.border),
-      ),
-      child: child,
-    );
   }
 }

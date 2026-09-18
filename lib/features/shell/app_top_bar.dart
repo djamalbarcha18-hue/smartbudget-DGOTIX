@@ -10,6 +10,7 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/shell/brand_controls.dart';
+import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Top application bar: menu (mobile) + search + actions (language, theme,
@@ -49,6 +50,10 @@ class AppTopBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: DsSpacing.sm),
+          const _MonthChip(),
+          const SizedBox(width: DsSpacing.xs),
+          const _YearChip(),
+          const SizedBox(width: DsSpacing.xs),
           const _CurrencyChip(),
           const SizedBox(width: DsSpacing.xs),
           if (!isMobile) const LanguageToggleButton(),
@@ -103,6 +108,101 @@ class _SearchField extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Compact pill used as the trigger for the top-bar selector menus.
+class _ChipBox extends StatelessWidget {
+  const _ChipBox({required this.icon, required this.label});
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    return Container(
+      padding:
+          const EdgeInsets.symmetric(horizontal: DsSpacing.sm, vertical: 6),
+      decoration: BoxDecoration(
+        color: c.surfaceMuted,
+        borderRadius: DsRadius.brMd,
+        border: Border.all(color: c.border),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Icon(icon, size: 15, color: c.textMuted),
+          const SizedBox(width: DsSpacing.xs),
+          Text(label, style: Theme.of(context).textTheme.labelLarge),
+          Icon(Icons.arrow_drop_down_rounded, size: 18, color: c.textMuted),
+        ],
+      ),
+    );
+  }
+}
+
+const List<String> _monthsAr = <String>[
+  'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+  'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
+];
+const List<String> _monthsEn = <String>[
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+/// Global month selector — shared with Monthly Budget via [selectedMonthProvider].
+class _MonthChip extends ConsumerWidget {
+  const _MonthChip();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final DsColors c = context.dsColors;
+    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final List<String> names = ar ? _monthsAr : _monthsEn;
+    final int month = ref.watch(selectedMonthProvider);
+    final int value = (month >= 1 && month <= 12) ? month : DateTime.now().month;
+
+    return PopupMenuButton<int>(
+      tooltip: names[value - 1],
+      offset: const Offset(0, 48),
+      color: c.bgElevated,
+      onSelected: (int v) =>
+          ref.read(selectedMonthProvider.notifier).state = v,
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+        for (int m = 1; m <= 12; m++)
+          PopupMenuItem<int>(value: m, child: Text(names[m - 1])),
+      ],
+      child: _ChipBox(
+          icon: Icons.event_note_outlined, label: names[value - 1]),
+    );
+  }
+}
+
+/// Global year selector — shared with Dashboard / Reports / Monthly Budget via
+/// [selectedYearProvider]. Lists the current year and the next nine.
+class _YearChip extends ConsumerWidget {
+  const _YearChip();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final DsColors c = context.dsColors;
+    final int year = ref.watch(selectedYearProvider);
+    final int now = DateTime.now().year;
+    final List<int> years = List<int>.generate(10, (int i) => now + i);
+    final int value = years.contains(year) ? year : now;
+
+    return PopupMenuButton<int>(
+      tooltip: '$value',
+      offset: const Offset(0, 48),
+      color: c.bgElevated,
+      onSelected: (int v) =>
+          ref.read(selectedYearProvider.notifier).state = v,
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+        for (final int y in years)
+          PopupMenuItem<int>(value: y, child: Text('$y')),
+      ],
+      child: _ChipBox(icon: Icons.calendar_today_outlined, label: '$value'),
     );
   }
 }
