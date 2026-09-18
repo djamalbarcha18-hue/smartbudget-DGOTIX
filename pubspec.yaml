@@ -67,3 +67,6 @@ flutter:
   assets:
     - assets/brand/
     - assets/flags/
+    # Bundled Arabic font for offline PDF export (Tajawal, OFL — matches the
+    # app's Arabic typography). See docs/THIRD_PARTY_LICENSES.md.
+    - assets/fonts/

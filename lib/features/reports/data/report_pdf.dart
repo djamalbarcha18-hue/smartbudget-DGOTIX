@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 
 /// A single label/value line in the report.
 class ReportRow {
@@ -41,8 +40,8 @@ class ReportPdfData {
   final bool isRtl;
 }
 
-/// Builds a branded (DGOTIX) A4 PDF for a report. Uses the Cairo font so Arabic
-/// renders and shapes correctly.
+/// Builds a branded (DGOTIX) A4 PDF for a report. The caller supplies an
+/// Arabic-capable font (bundled Tajawal) so Arabic renders and shapes correctly.
 abstract final class ReportPdfBuilder {
   // Const PdfColor(r,g,b) with normalized channels (0xFF1680F7 etc.).
   static const PdfColor _brand = PdfColor(0.08627, 0.50196, 0.96863);
@@ -50,9 +49,13 @@ abstract final class ReportPdfBuilder {
   static const PdfColor _muted = PdfColor(0.39216, 0.45490, 0.54510);
   static const PdfColor _line = PdfColor(0.88627, 0.90980, 0.94118);
 
-  static Future<Uint8List> build(ReportPdfData data) async {
-    final pw.Font base = await PdfGoogleFonts.cairoRegular();
-    final pw.Font bold = await PdfGoogleFonts.cairoBold();
+  /// [base]/[bold] are Arabic-capable fonts supplied by the caller (bundled
+  /// TTFs), so export works fully offline.
+  static Future<Uint8List> build(
+    ReportPdfData data, {
+    required pw.Font base,
+    required pw.Font bold,
+  }) async {
     final pw.Document doc = pw.Document(
       theme: pw.ThemeData.withFont(base: base, bold: bold),
     );

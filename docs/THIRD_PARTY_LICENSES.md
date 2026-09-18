@@ -30,3 +30,15 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
+
+## Font (`assets/fonts/Tajawal-*.ttf`)
+
+**Tajawal** by Boutros™, bundled to render Arabic text in exported PDFs offline
+(matches the app's Arabic UI typography).
+
+- Source: https://fonts.google.com/specimen/Tajawal
+- License: SIL Open Font License 1.1 (OFL) — https://openfontlicense.org
+
+The OFL permits bundling and embedding the font in documents and applications.
+Copyright (c) 2017 Boutros International. All rights reserved.
+

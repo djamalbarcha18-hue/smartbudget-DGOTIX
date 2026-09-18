@@ -1,9 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
@@ -78,7 +80,12 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
         isRtl: ar,
       );
 
-      final Uint8List bytes = await ReportPdfBuilder.build(data);
+      final pw.Font base = pw.Font.ttf(
+          await rootBundle.load('assets/fonts/Tajawal-Regular.ttf'));
+      final pw.Font bold =
+          pw.Font.ttf(await rootBundle.load('assets/fonts/Tajawal-Bold.ttf'));
+      final Uint8List bytes =
+          await ReportPdfBuilder.build(data, base: base, bold: bold);
       await Printing.layoutPdf(
         name: 'DGOTIX-Analytics-$year.pdf',
         onLayout: (PdfPageFormat format) async => bytes,
