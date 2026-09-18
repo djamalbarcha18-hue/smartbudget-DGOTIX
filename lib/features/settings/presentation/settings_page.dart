@@ -12,6 +12,8 @@ import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
+import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Settings — appearance (theme), language, base currency, and About.
@@ -100,6 +102,30 @@ class SettingsPage extends ConsumerWidget {
                       value: base,
                       onChanged: (String v) =>
                           ref.read(baseCurrencyProvider.notifier).set(v),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: DsSpacing.lg),
+
+              // Custom categories.
+              _SettingsSection(
+                icon: Icons.category_outlined,
+                title: l.settingsCategories,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Text(l.categoriesManageHint,
+                        style: Theme.of(context).textTheme.bodySmall),
+                    const SizedBox(height: DsSpacing.lg),
+                    _CategoryManager(
+                      title: l.customIncomeCategories,
+                      type: TransactionType.income,
+                    ),
+                    const SizedBox(height: DsSpacing.lg),
+                    _CategoryManager(
+                      title: l.customExpenseCategories,
+                      type: TransactionType.expense,
                     ),
                   ],
                 ),
@@ -273,6 +299,122 @@ class _AboutRow extends StatelessWidget {
           Text(value, style: Theme.of(context).textTheme.titleSmall),
         ],
       ),
+    );
+  }
+}
+
+/// Add/remove user-defined categories for one [TransactionType].
+class _CategoryManager extends ConsumerStatefulWidget {
+  const _CategoryManager({required this.title, required this.type});
+  final String title;
+  final TransactionType type;
+
+  @override
+  ConsumerState<_CategoryManager> createState() => _CategoryManagerState();
+}
+
+class _CategoryManagerState extends ConsumerState<_CategoryManager> {
+  final TextEditingController _ctrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  void _add() {
+    final String name = _ctrl.text.trim();
+    if (name.isEmpty) return;
+    ref.read(customCategoriesProvider.notifier).add(widget.type, name);
+    _ctrl.clear();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final AppLocalizations l = AppLocalizations.of(context);
+    final List<String> items =
+        ref.watch(customCategoriesProvider).forType(widget.type);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(widget.title, style: Theme.of(context).textTheme.titleSmall),
+        const SizedBox(height: DsSpacing.sm),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: TextField(
+                controller: _ctrl,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => _add(),
+                decoration: InputDecoration(
+                  isDense: true,
+                  hintText: l.addCategoryHint,
+                  filled: true,
+                  fillColor: c.surfaceMuted,
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: DsSpacing.md, vertical: DsSpacing.sm),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: DsRadius.brMd,
+                    borderSide: BorderSide(color: c.border),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: DsRadius.brMd,
+                    borderSide: BorderSide(color: c.brand),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: DsSpacing.sm),
+            Material(
+              color: c.brand,
+              borderRadius: DsRadius.brMd,
+              child: InkWell(
+                onTap: _add,
+                borderRadius: DsRadius.brMd,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: DsSpacing.lg, vertical: DsSpacing.md),
+                  child: Text(l.addCategory,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          ?.copyWith(color: c.onBrand)),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: DsSpacing.sm),
+        if (items.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: DsSpacing.xs),
+            child: Text(l.noCustomCategories,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: c.textFaint)),
+          )
+        else
+          Wrap(
+            spacing: DsSpacing.sm,
+            runSpacing: DsSpacing.sm,
+            children: <Widget>[
+              for (final String name in items)
+                Chip(
+                  label: Text(name),
+                  backgroundColor: c.surfaceMuted,
+                  side: BorderSide(color: c.border),
+                  deleteIcon: const Icon(Icons.close_rounded, size: 16),
+                  deleteButtonTooltipMessage: l.removeCategory,
+                  onDeleted: () => ref
+                      .read(customCategoriesProvider.notifier)
+                      .remove(widget.type, name),
+                ),
+            ],
+          ),
+      ],
     );
   }
 }

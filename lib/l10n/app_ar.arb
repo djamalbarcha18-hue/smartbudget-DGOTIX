@@ -343,5 +343,14 @@
   "regionLabel": "المنطقة",
   "businessImpact": "الأثر على الأعمال",
   "change24h": "24 س",
-  "change7d": "7 أيام"
+  "change7d": "7 أيام",
+
+  "settingsCategories": "الفئات",
+  "categoriesManageHint": "أضِف فئات دخل ومصروفات خاصة بك. لا يمكن حذف الفئات الأساسية.",
+  "customIncomeCategories": "فئات دخل مخصّصة",
+  "customExpenseCategories": "فئات مصروفات مخصّصة",
+  "addCategoryHint": "اسم الفئة الجديدة",
+  "addCategory": "إضافة",
+  "noCustomCategories": "لا توجد فئات مخصّصة بعد.",
+  "removeCategory": "حذف"
 }

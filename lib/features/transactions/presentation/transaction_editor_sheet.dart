@@ -10,6 +10,7 @@ import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -192,7 +193,7 @@ class _TransactionEditorSheetState
                     label: l.fieldCategory,
                     hint: l.selectCategory,
                     value: _category,
-                    items: Catalog.categoriesFor(widget.type),
+                    items: ref.watch(categoriesForProvider(widget.type)),
                     onChanged: (String? v) => setState(() => _category = v),
                     validator: (String? v) =>
                         v == null ? l.selectCategory : null,

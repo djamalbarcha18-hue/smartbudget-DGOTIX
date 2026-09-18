@@ -11,6 +11,7 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
+import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
@@ -135,7 +136,8 @@ class _BudgetSection extends ConsumerWidget {
           Text(l.plannedVsActualHint,
               style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: DsSpacing.lg),
-          for (final String cat in Catalog.expenseCategories)
+          for (final String cat
+              in ref.watch(categoriesForProvider(TransactionType.expense)))
             _BudgetRow(
               category: cat,
               plannedMinor: planned[cat]?.minorUnits ?? 0,

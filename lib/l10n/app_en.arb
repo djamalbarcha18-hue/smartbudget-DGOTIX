@@ -343,5 +343,14 @@
   "regionLabel": "Region",
   "businessImpact": "Business impact",
   "change24h": "24h",
-  "change7d": "7d"
+  "change7d": "7d",
+
+  "settingsCategories": "Categories",
+  "categoriesManageHint": "Add your own income and expense categories. Built-in categories can't be removed.",
+  "customIncomeCategories": "Custom income categories",
+  "customExpenseCategories": "Custom expense categories",
+  "addCategoryHint": "New category name",
+  "addCategory": "Add",
+  "noCustomCategories": "No custom categories yet.",
+  "removeCategory": "Remove"
 }
