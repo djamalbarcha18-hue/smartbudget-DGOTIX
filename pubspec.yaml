@@ -48,6 +48,11 @@ dependencies:
   # The captured bytes are sent to the receipt-scan Edge Function (Gemini).
   image_picker: ^1.1.2
 
+  # Branded PDF export for reports (pure-Dart document builder + cross-platform
+  # print/save, incl. web). printing also supplies Arabic-capable Google fonts.
+  pdf: ^3.11.1
+  printing: ^5.13.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

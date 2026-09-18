@@ -443,5 +443,10 @@
 
   "brandInsights": "DGOTIX Insights",
   "brandAnalytics": "DGOTIX Analytics",
-  "brandAi": "DGOTIX AI"
+  "brandAi": "DGOTIX AI",
+
+  "reportExportPdf": "Export PDF",
+  "reportGeneratedOn": "Generated {date}",
+  "@reportGeneratedOn": { "placeholders": { "date": { "type": "String" } } },
+  "reportPdfFailed": "Couldn't generate the PDF. Check your connection and try again."
 }

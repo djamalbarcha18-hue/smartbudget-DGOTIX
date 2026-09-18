@@ -11,6 +11,7 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/reports/application/reports_controller.dart';
 import 'package:smartbudget/features/reports/domain/report_period.dart';
+import 'package:smartbudget/features/reports/presentation/export_pdf_button.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
@@ -95,11 +96,7 @@ class ReportsPage extends ConsumerWidget {
                       : ref.read(selectedYearProvider.notifier).state = y,
                 ),
               ),
-              TextButton.icon(
-                onPressed: null, // architecture-ready; wired in a later phase
-                icon: const Icon(Icons.picture_as_pdf_outlined, size: 16),
-                label: Text(l.exportPdfSoon),
-              ),
+              const ExportPdfButton(),
             ],
           ),
           const SizedBox(height: DsSpacing.xl),

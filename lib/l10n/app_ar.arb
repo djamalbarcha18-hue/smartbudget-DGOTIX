@@ -443,5 +443,10 @@
 
   "brandInsights": "رؤى DGOTIX",
   "brandAnalytics": "تحليلات DGOTIX",
-  "brandAi": "DGOTIX AI"
+  "brandAi": "DGOTIX AI",
+
+  "reportExportPdf": "تصدير PDF",
+  "reportGeneratedOn": "أُنشئ في {date}",
+  "@reportGeneratedOn": { "placeholders": { "date": { "type": "String" } } },
+  "reportPdfFailed": "تعذّر إنشاء ملف PDF. تحقّق من اتصالك وحاول مجدداً."
 }
