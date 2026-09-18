@@ -9,8 +9,10 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/markets/application/markets_controllers.dart';
+import 'package:smartbudget/features/markets/domain/market_category.dart';
 import 'package:smartbudget/features/markets/domain/market_config.dart';
 import 'package:smartbudget/features/markets/domain/market_models.dart';
+import 'package:smartbudget/features/markets/presentation/commodity_sections.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// "Exchange Rates & Markets" — official + parallel FIAT markets and a crypto
@@ -52,15 +54,12 @@ class MarketsPage extends ConsumerWidget {
                   style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: DsSpacing.lg),
 
-              const _RateTypeCard(),
+              const MarketCategoryTabs(),
               const SizedBox(height: DsSpacing.lg),
 
-              for (final CountryMarket country in MarketConfig.countries) ...<Widget>[
-                _CountrySection(country: country),
-                const SizedBox(height: DsSpacing.lg),
-              ],
+              _CategoryContent(
+                  category: ref.watch(selectedMarketCategoryProvider)),
 
-              const _CryptoSection(),
               const SizedBox(height: DsSpacing.md),
               _Disclaimer(message: l.marketsDisclaimer),
             ],
@@ -68,6 +67,39 @@ class MarketsPage extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+/// Renders the content for the selected Markets tab.
+class _CategoryContent extends StatelessWidget {
+  const _CategoryContent({required this.category});
+  final MarketCategory category;
+
+  @override
+  Widget build(BuildContext context) {
+    switch (category) {
+      case MarketCategory.exchangeRates:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            const _RateTypeCard(),
+            const SizedBox(height: DsSpacing.lg),
+            for (final CountryMarket country in MarketConfig.countries) ...<Widget>[
+              _CountrySection(country: country),
+              const SizedBox(height: DsSpacing.lg),
+            ],
+          ],
+        );
+      case MarketCategory.crypto:
+        return const _CryptoSection();
+      case MarketCategory.preciousMetals:
+        return const PreciousMetalsSection();
+      case MarketCategory.industrialMetals:
+      case MarketCategory.steelIron:
+      case MarketCategory.energy:
+      case MarketCategory.agriculture:
+        return CommodityCategorySection(category: category);
+    }
   }
 }
 

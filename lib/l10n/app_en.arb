@@ -320,5 +320,26 @@
   "sectionCrypto": "Crypto Market",
   "marketSource": "Source",
   "marketUpdated": "Updated",
-  "marketsDisclaimer": "Live prices come from public sources (open.er-api.com, CoinGecko, and per-country parallel APIs where available). Parallel/P2P data appears only when a reliable source exists — otherwise it reads “unavailable”, never an invented number."
+  "marketsDisclaimer": "Live prices come from public sources (open.er-api.com, CoinGecko, and per-country parallel APIs where available). Parallel/P2P data appears only when a reliable source exists — otherwise it reads “unavailable”, never an invented number.",
+
+  "tabExchangeRates": "Exchange Rates",
+  "tabCrypto": "Crypto",
+  "tabPreciousMetals": "Precious Metals",
+  "tabIndustrialMetals": "Industrial Metals",
+  "tabSteelIron": "Steel & Iron",
+  "tabEnergy": "Energy",
+  "tabAgriculture": "Agriculture",
+  "qualityRealtime": "Real-time",
+  "qualityNearRealtime": "Near real-time",
+  "qualityDelayed": "Delayed",
+  "qualityIndicative": "Indicative",
+  "qualityUnavailable": "Unavailable",
+  "perOunce": "Per ounce",
+  "perGram": "Per gram",
+  "perKilogram": "Per kilogram",
+  "karatTable": "Karats (per gram)",
+  "purityTable": "Purity (per gram)",
+  "benchmarkLabel": "Benchmark",
+  "regionLabel": "Region",
+  "businessImpact": "Business impact"
 }

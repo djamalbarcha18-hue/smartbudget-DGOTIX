@@ -320,5 +320,26 @@
   "sectionCrypto": "سوق العملات الرقمية",
   "marketSource": "المصدر",
   "marketUpdated": "آخر تحديث",
-  "marketsDisclaimer": "الأسعار الحيّة تأتي من مصادر عامة (open.er-api.com و CoinGecko وواجهات الأسواق الموازية حسب الدولة عند توفرها). تظهر بيانات السوق الموازية/P2P فقط عند وجود مصدر موثوق — وإلا تُعرض «غير متاحة»، دون أي رقم مخترَع."
+  "marketsDisclaimer": "الأسعار الحيّة تأتي من مصادر عامة (open.er-api.com و CoinGecko وواجهات الأسواق الموازية حسب الدولة عند توفرها). تظهر بيانات السوق الموازية/P2P فقط عند وجود مصدر موثوق — وإلا تُعرض «غير متاحة»، دون أي رقم مخترَع.",
+
+  "tabExchangeRates": "أسعار الصرف",
+  "tabCrypto": "العملات الرقمية",
+  "tabPreciousMetals": "المعادن الثمينة",
+  "tabIndustrialMetals": "المعادن الصناعية",
+  "tabSteelIron": "الحديد والصلب",
+  "tabEnergy": "الطاقة",
+  "tabAgriculture": "السلع الزراعية",
+  "qualityRealtime": "فوري",
+  "qualityNearRealtime": "شبه فوري",
+  "qualityDelayed": "متأخّر",
+  "qualityIndicative": "إرشادي",
+  "qualityUnavailable": "غير متاح",
+  "perOunce": "للأونصة",
+  "perGram": "للغرام",
+  "perKilogram": "للكيلوغرام",
+  "karatTable": "العيارات (للغرام)",
+  "purityTable": "النقاوة (للغرام)",
+  "benchmarkLabel": "المرجع",
+  "regionLabel": "المنطقة",
+  "businessImpact": "الأثر على الأعمال"
 }
