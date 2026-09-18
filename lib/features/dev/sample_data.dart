@@ -58,32 +58,46 @@ abstract final class SampleData {
           createdAt: created,
         );
 
+    // Per-month multipliers so income, expenses and net differ clearly each
+    // month (June & December income spikes; seasonal expense swings).
+    const List<double> incomeFactor = <double>[
+      1.00, 0.92, 1.08, 1.00, 1.18, 1.55, 0.95, 1.05, 1.12, 1.00, 1.10, 1.60,
+    ];
+    const List<double> expenseFactor = <double>[
+      1.30, 0.88, 1.00, 1.10, 0.98, 1.22, 1.42, 1.35, 1.02, 0.95, 1.08, 1.50,
+    ];
+
+    double round2(double v) => (v * 100).roundToDouble() / 100;
+
     for (int m = 1; m <= 12; m++) {
+      final double fi = incomeFactor[m - 1];
+      final double fe = expenseFactor[m - 1];
+
       // Income.
-      txns.add(t('salary', m, 1, TransactionType.income, 'راتب أساسي', 3200,
-          'راتب شهري'));
+      txns.add(t('salary', m, 1, TransactionType.income, 'راتب أساسي',
+          round2(3000 * fi), 'راتب شهري'));
       txns.add(t('freelance', m, 18, TransactionType.income, 'عمل حر',
-          350 + m * 25, 'مشروع مستقل'));
+          round2(600 * fi), 'مشروع مستقل'));
 
       // Expenses.
-      txns.add(t('food', m, 3, TransactionType.expense, 'الطعام', 520 + m * 10,
-          'بقالة', payment: 'بطاقة بنكية'));
+      txns.add(t('food', m, 3, TransactionType.expense, 'الطعام',
+          round2(520 * fe), 'بقالة', payment: 'بطاقة بنكية'));
       txns.add(t('rest', m, 7, TransactionType.expense, 'المطاعم',
-          180 + (m % 4) * 30, 'مطعم', payment: 'بطاقة ائتمان'));
-      txns.add(t('transport', m, 9, TransactionType.expense, 'النقل', 140,
-          'مواصلات', payment: 'نقداً'));
+          round2(180 * fe), 'مطعم', payment: 'بطاقة ائتمان'));
+      txns.add(t('transport', m, 9, TransactionType.expense, 'النقل',
+          round2(140 * fe), 'مواصلات', payment: 'نقداً'));
       txns.add(t('bills', m, 11, TransactionType.expense, 'الفواتير',
-          260 + (m % 3) * 20, 'كهرباء وماء', payment: 'تحويل بنكي فوري'));
-      txns.add(t('fuel', m, 14, TransactionType.expense, 'الوقود', 150, 'وقود',
-          payment: 'بطاقة بنكية'));
+          round2(260 * fe), 'كهرباء وماء', payment: 'تحويل بنكي فوري'));
+      txns.add(t('fuel', m, 14, TransactionType.expense, 'الوقود',
+          round2(150 * fe), 'وقود', payment: 'بطاقة بنكية'));
       txns.add(t('shopping', m, 20, TransactionType.expense, 'التسوق',
-          120 + m * 15, 'تسوّق', payment: 'بطاقة بنكية'));
+          round2(200 * fe), 'تسوّق', payment: 'بطاقة بنكية'));
       if (m.isEven) {
-        txns.add(t('health', m, 22, TransactionType.expense, 'الصحة', 95,
-            'صيدلية', payment: 'نقداً'));
+        txns.add(t('health', m, 22, TransactionType.expense, 'الصحة',
+            round2(120 * fe), 'صيدلية', payment: 'نقداً'));
       }
       txns.add(t('fun', m, 25, TransactionType.expense, 'الترفيه',
-          110 + (m % 5) * 20, 'ترفيه', payment: 'محفظة إلكترونية'));
+          round2(130 * fe), 'ترفيه', payment: 'محفظة إلكترونية'));
 
       // Planned budgets (feed planned-vs-actual).
       budgets.add(b('food', m, 'الطعام', 600));

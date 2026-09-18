@@ -86,6 +86,14 @@ final incomeCategoryTotalsProvider = Provider<List<CategoryTotal>>((ref) {
       txns, TransactionType.income, currency);
 });
 
+/// 12-month income/expense/net series for the selected year (base currency).
+final monthlyTrendProvider = Provider<List<MonthPoint>>((ref) {
+  final List<Transaction> txns = ref.watch(yearTransactionsProvider);
+  final int year = ref.watch(selectedYearProvider);
+  final String currency = ref.watch(baseCurrencyProvider);
+  return FinanceCalculator.monthlyTotals(txns, year, currency);
+});
+
 /// Actions facade the UI calls to mutate transactions.
 final transactionActionsProvider = Provider<TransactionActions>((ref) {
   return TransactionActions(ref.watch(financeRepositoryProvider));

@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
+import 'package:smartbudget/design_system/components/donut_chart.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
+import 'package:smartbudget/design_system/components/monthly_bars_chart.dart';
+import 'package:smartbudget/design_system/tokens/ds_chart_palette.dart';
 import 'package:smartbudget/design_system/components/ds_section_header.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
@@ -90,12 +94,21 @@ class DashboardPage extends ConsumerWidget {
           ),
           const SizedBox(height: DsSpacing.xxl),
 
-          // ---- Expense distribution + recent transactions ----
+          // ---- Monthly comparison: income vs expense bars + savings line ----
+          DsSectionHeader(
+              title: l.sectionMonthlyComparison,
+              icon: Icons.bar_chart_rounded),
+          const SizedBox(height: DsSpacing.md),
+          const _MonthlyComparisonCard(),
+          const SizedBox(height: DsSpacing.xxl),
+
+          // ---- Income & expense distribution (donuts) + recent ----
           _ResponsiveGrid(
-            minTileWidth: 340,
-            childAspectRatio: 1.1,
+            minTileWidth: 320,
+            childAspectRatio: 0.92,
             children: <Widget>[
-              const _ExpenseDistributionCard(),
+              const _IncomeDonutCard(),
+              const _ExpenseDonutCard(),
               const _RecentTransactionsCard(),
             ],
           ),
@@ -180,26 +193,172 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _ExpenseDistributionCard extends ConsumerWidget {
-  const _ExpenseDistributionCard();
+/// Monthly income vs expense bars with a savings (net) line overlay.
+class _MonthlyComparisonCard extends ConsumerWidget {
+  const _MonthlyComparisonCard();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
-    final List<CategoryTotal> totals =
-        ref.watch(expenseCategoryTotalsProvider);
-    final int max = totals.isEmpty ? 0 : totals.first.amount.minorUnits;
+    final List<MonthPoint> points = ref.watch(monthlyTrendProvider);
+    final bool hasData = points.any((MonthPoint p) =>
+        p.income.minorUnits > 0 || p.expense.minorUnits > 0);
 
     return GlassCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          DsSectionHeader(
-            title: l.sectionExpenseDistribution,
-            icon: Icons.donut_small_outlined,
+          Wrap(
+            spacing: DsSpacing.lg,
+            runSpacing: DsSpacing.xs,
+            children: <Widget>[
+              _LegendDot(color: c.income, label: l.legendIncome),
+              _LegendDot(color: c.expense, label: l.legendExpenses),
+              _LegendDot(color: c.net, label: l.legendNet),
+            ],
           ),
-          const SizedBox(height: DsSpacing.lg),
+          const SizedBox(height: DsSpacing.md),
+          if (!hasData)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: DsSpacing.xl),
+              child: Text(l.emptyTransactionsMessage,
+                  style: Theme.of(context).textTheme.bodySmall),
+            )
+          else
+            MonthlyBarsChart(
+              points: points,
+              income: c.income,
+              expense: c.expense,
+              net: c.net,
+              axis: c.textFaint,
+              grid: c.border,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LegendDot extends StatelessWidget {
+  const _LegendDot({required this.color, required this.label});
+  final Color color;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Container(
+          width: 10,
+          height: 10,
+          decoration:
+              BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
+        ),
+        const SizedBox(width: 6),
+        Text(label, style: Theme.of(context).textTheme.labelSmall),
+      ],
+    );
+  }
+}
+
+class _IncomeDonutCard extends ConsumerWidget {
+  const _IncomeDonutCard();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _DistributionBody(
+      title: AppLocalizations.of(context).sectionIncomeDistribution,
+      totals: ref.watch(incomeCategoryTotalsProvider),
+    );
+  }
+}
+
+class _ExpenseDonutCard extends ConsumerWidget {
+  const _ExpenseDonutCard();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _DistributionBody(
+      title: AppLocalizations.of(context).sectionExpenseDistribution,
+      totals: ref.watch(expenseCategoryTotalsProvider),
+    );
+  }
+}
+
+/// A donut of category shares (top 6 + aggregated "Other") with a legend.
+class _DistributionBody extends StatelessWidget {
+  const _DistributionBody({required this.title, required this.totals});
+  final String title;
+  final List<CategoryTotal> totals;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final int totalMinor =
+        totals.fold<int>(0, (int s, CategoryTotal t) => s + t.amount.minorUnits);
+
+    final List<DonutSegment> segments = <DonutSegment>[];
+    final List<Widget> legend = <Widget>[];
+    if (totals.isNotEmpty) {
+      const int topN = 6;
+      final List<CategoryTotal> top =
+          totals.length > topN ? totals.sublist(0, topN) : totals;
+      for (int i = 0; i < top.length; i++) {
+        segments.add(DonutSegment(
+          label: Catalog.label(top[i].category, ar: ar),
+          value: top[i].amount.minorUnits.toDouble(),
+          color: DsChartPalette.at(i),
+        ));
+      }
+      if (totals.length > topN) {
+        final int otherMinor = totals
+            .sublist(topN)
+            .fold<int>(0, (int s, CategoryTotal t) => s + t.amount.minorUnits);
+        segments.add(DonutSegment(
+          label: l.chartOther,
+          value: otherMinor.toDouble(),
+          color: DsChartPalette.other,
+        ));
+      }
+      for (final DonutSegment seg in segments) {
+        final int pct =
+            totalMinor == 0 ? 0 : (seg.value / totalMinor * 100).round();
+        legend.add(Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                    color: seg.color,
+                    borderRadius: BorderRadius.circular(3)),
+              ),
+              const SizedBox(width: DsSpacing.sm),
+              Expanded(
+                child: Text(seg.label,
+                    style: Theme.of(context).textTheme.bodySmall,
+                    overflow: TextOverflow.ellipsis),
+              ),
+              Text('$pct%',
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(color: c.textMuted)),
+            ],
+          ),
+        ));
+      }
+    }
+
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          DsSectionHeader(title: title, icon: Icons.donut_small_outlined),
+          const SizedBox(height: DsSpacing.md),
           if (totals.isEmpty)
             Expanded(
               child: Center(
@@ -210,72 +369,22 @@ class _ExpenseDistributionCard extends ConsumerWidget {
             )
           else
             Expanded(
-              child: ListView(
+              child: Column(
                 children: <Widget>[
-                  for (final CategoryTotal t in totals.take(6))
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: DsSpacing.md),
-                      child: _CategoryBar(
-                        label: Catalog.label(t.category,
-                            ar: Localizations.localeOf(context).languageCode ==
-                                'ar'),
-                        amountText: MoneyFormatter.format(t.amount),
-                        fraction: max == 0 ? 0 : t.amount.minorUnits / max,
-                        color: c.expense,
-                      ),
+                  Center(
+                    child: DonutChart(
+                      segments: segments,
+                      centerTop: MoneyFormatter.compact(
+                          Money(totalMinor, totals.first.amount.currencyCode)),
                     ),
+                  ),
+                  const SizedBox(height: DsSpacing.md),
+                  Expanded(child: ListView(children: legend)),
                 ],
               ),
             ),
         ],
       ),
-    );
-  }
-}
-
-class _CategoryBar extends StatelessWidget {
-  const _CategoryBar({
-    required this.label,
-    required this.amountText,
-    required this.fraction,
-    required this.color,
-  });
-
-  final String label;
-  final String amountText;
-  final double fraction;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final DsColors c = context.dsColors;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: Text(label,
-                  style: Theme.of(context).textTheme.bodySmall,
-                  overflow: TextOverflow.ellipsis),
-            ),
-            Text(amountText,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: c.textPrimary,
-                    )),
-          ],
-        ),
-        const SizedBox(height: 5),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(999),
-          child: LinearProgressIndicator(
-            value: fraction.clamp(0.02, 1.0),
-            minHeight: 7,
-            backgroundColor: c.surfaceMuted,
-            valueColor: AlwaysStoppedAnimation<Color>(color),
-          ),
-        ),
-      ],
     );
   }
 }

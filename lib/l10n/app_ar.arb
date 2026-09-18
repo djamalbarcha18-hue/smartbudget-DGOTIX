@@ -448,5 +448,10 @@
   "reportExportPdf": "تصدير PDF",
   "reportGeneratedOn": "أُنشئ في {date}",
   "@reportGeneratedOn": { "placeholders": { "date": { "type": "String" } } },
-  "reportPdfFailed": "تعذّر إنشاء ملف PDF. تحقّق من اتصالك وحاول مجدداً."
+  "reportPdfFailed": "تعذّر إنشاء ملف PDF. تحقّق من اتصالك وحاول مجدداً.",
+
+  "sectionMonthlyComparison": "المقارنة الشهرية",
+  "sectionIncomeDistribution": "توزيع الدخل",
+  "legendNet": "الصافي",
+  "chartOther": "أخرى"
 }
