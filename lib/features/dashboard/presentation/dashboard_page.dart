@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
@@ -9,13 +10,21 @@ import 'package:smartbudget/design_system/components/kpi_card.dart';
 import 'package:smartbudget/design_system/components/savings_jar_icon.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
+import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/debts/application/debts_controller.dart';
+import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
+import 'package:smartbudget/features/financial_health/application/health_controller.dart';
+import 'package:smartbudget/features/financial_health/domain/health_calculator.dart';
+import 'package:smartbudget/features/goals/application/goals_controller.dart';
+import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/features/transactions/presentation/transactions_list.dart';
+import 'package:smartbudget/features/zakat/application/zakat_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Live dashboard: KPIs and breakdowns computed from the user's transactions
@@ -95,10 +104,10 @@ class DashboardPage extends ConsumerWidget {
             minTileWidth: 340,
             childAspectRatio: 1.5,
             children: <Widget>[
-              _PlaceholderCard(title: l.sectionFinancialHealth, icon: Icons.monitor_heart_outlined),
-              _PlaceholderCard(title: l.sectionGoals, icon: Icons.flag_outlined),
-              _PlaceholderCard(title: l.sectionDebts, icon: Icons.account_balance_outlined),
-              _PlaceholderCard(title: l.sectionZakat, icon: Icons.mosque_outlined),
+              const _HealthMiniCard(),
+              const _GoalsMiniCard(),
+              const _DebtsMiniCard(),
+              const _ZakatMiniCard(),
             ],
           ),
         ],
@@ -296,36 +305,148 @@ class _RecentTransactionsCard extends ConsumerWidget {
   }
 }
 
-class _PlaceholderCard extends StatelessWidget {
-  const _PlaceholderCard({required this.title, required this.icon});
+/// A tappable dashboard summary card: header + a big value + caption, linking
+/// to the full section. Reuses figures the feature engines already computed.
+class _MiniCard extends StatelessWidget {
+  const _MiniCard({
+    required this.title,
+    required this.icon,
+    required this.route,
+    required this.value,
+    required this.caption,
+    this.valueColor,
+    this.progress,
+  });
+
   final String title;
   final IconData icon;
+  final String route;
+  final String value;
+  final String caption;
+  final Color? valueColor;
+  final double? progress; // 0..1 optional progress bar
 
   @override
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
-    final AppLocalizations l = AppLocalizations.of(context);
     return GlassCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          DsSectionHeader(title: title, icon: icon),
-          const SizedBox(height: DsSpacing.lg),
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Icon(Icons.insights_outlined, size: 30, color: c.textFaint),
-                  const SizedBox(height: DsSpacing.sm),
-                  Text(l.comingSoon,
-                      style: Theme.of(context).textTheme.bodySmall),
-                ],
+      child: InkWell(
+        borderRadius: DsRadius.brMd,
+        onTap: () => context.go(route),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            DsSectionHeader(title: title, icon: icon),
+            const SizedBox(height: DsSpacing.md),
+            Text(value,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: valueColor ?? c.textPrimary)),
+            const SizedBox(height: DsSpacing.xxs),
+            Text(caption, style: Theme.of(context).textTheme.bodySmall),
+            if (progress != null) ...<Widget>[
+              const SizedBox(height: DsSpacing.sm),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(999),
+                child: LinearProgressIndicator(
+                  value: progress!.clamp(0, 1),
+                  minHeight: 6,
+                  backgroundColor: c.surfaceMuted,
+                  valueColor: AlwaysStoppedAnimation<Color>(c.brand),
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _HealthMiniCard extends ConsumerWidget {
+  const _HealthMiniCard();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final bool hasData = ref.watch(healthHasDataProvider);
+    final HealthResult r = ref.watch(healthResultProvider);
+    final String status = switch (r.status) {
+      HealthStatus.excellent => l.healthStatusExcellent,
+      HealthStatus.veryGood => l.healthStatusVeryGood,
+      HealthStatus.good => l.healthStatusGood,
+      HealthStatus.fair => l.healthStatusFair,
+      HealthStatus.needsWork => l.healthStatusNeedsWork,
+    };
+    return _MiniCard(
+      title: l.sectionFinancialHealth,
+      icon: Icons.monitor_heart_outlined,
+      route: '/health',
+      value: hasData ? '${r.score.round()}/100' : '—',
+      caption: hasData ? status : l.healthEmpty,
+      progress: hasData ? r.score / 100 : null,
+    );
+  }
+}
+
+class _GoalsMiniCard extends ConsumerWidget {
+  const _GoalsMiniCard();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final List<Goal> goals =
+        ref.watch(goalsProvider).valueOrNull ?? const <Goal>[];
+    int saved = 0;
+    int target = 0;
+    for (final Goal g in goals) {
+      saved += g.saved.minorUnits;
+      target += g.target.minorUnits;
+    }
+    final double pct = target > 0 ? saved / target : 0;
+    return _MiniCard(
+      title: l.sectionGoals,
+      icon: Icons.flag_outlined,
+      route: '/goals',
+      value: goals.isEmpty ? '—' : '${(pct * 100).round()}%',
+      caption: goals.isEmpty
+          ? l.emptyGoalsTitle
+          : '${goals.length} · ${l.goalSaved}',
+      progress: goals.isEmpty ? null : pct,
+    );
+  }
+}
+
+class _DebtsMiniCard extends ConsumerWidget {
+  const _DebtsMiniCard();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final DebtSummary s = ref.watch(debtSummaryProvider);
+    final bool positive = s.net.minorUnits >= 0;
+    return _MiniCard(
+      title: l.sectionDebts,
+      icon: Icons.account_balance_outlined,
+      route: '/debts',
+      value: MoneyFormatter.format(s.net),
+      valueColor: positive ? c.income : c.expense,
+      caption: '${l.debtNet} · ${s.openCount}',
+    );
+  }
+}
+
+class _ZakatMiniCard extends ConsumerWidget {
+  const _ZakatMiniCard();
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final zakat = ref.watch(zakatResultProvider);
+    return _MiniCard(
+      title: l.sectionZakat,
+      icon: Icons.mosque_outlined,
+      route: '/zakat',
+      value: zakat.obligatory ? MoneyFormatter.format(zakat.due) : '—',
+      valueColor: zakat.obligatory ? c.saving : null,
+      caption: zakat.obligatory ? l.zakatObligatory : l.zakatNotDue,
     );
   }
 }
