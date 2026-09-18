@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
+import 'package:smartbudget/design_system/components/savings_jar_icon.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -105,8 +106,8 @@ class ReportsPage extends ConsumerWidget {
             children: <Widget>[
               _kpi(l.kpiTotalIncome, hasData ? MoneyFormatter.format(report.summary.income) : null, c.income, Icons.south_west_outlined),
               _kpi(l.kpiTotalExpenses, hasData ? MoneyFormatter.format(report.summary.expense) : null, c.expense, Icons.north_east_outlined),
-              _kpi(l.kpiNetProfit, hasData ? MoneyFormatter.format(report.summary.net) : null, c.net, Icons.savings_outlined),
-              _kpi(l.kpiSavingsRate, hasData ? MoneyFormatter.percent(report.summary.savingsRate) : null, c.saving, Icons.percent_outlined),
+              _kpi(l.kpiNetProfit, hasData ? MoneyFormatter.format(report.summary.net) : null, c.net, null, iconChild: const SavingsJarGlyph()),
+              _kpi(l.kpiSavingsRate, hasData ? MoneyFormatter.percent(report.summary.savingsRate) : null, c.saving, null, iconChild: const SavingsJarGlyph()),
             ],
           ),
           const SizedBox(height: DsSpacing.xxl),
@@ -127,10 +128,16 @@ class ReportsPage extends ConsumerWidget {
     );
   }
 
-  Widget _kpi(String label, String? value, Color accent, IconData icon) =>
+  Widget _kpi(String label, String? value, Color accent, IconData? icon,
+          {Widget? iconChild}) =>
       SizedBox(
         width: 220,
-        child: KpiCard(label: label, value: value, accent: accent, icon: icon),
+        child: KpiCard(
+            label: label,
+            value: value,
+            accent: accent,
+            icon: icon,
+            iconChild: iconChild),
       );
 
   String _periodLabel(ReportPeriod p, AppLocalizations l) => switch (p) {

@@ -6,6 +6,7 @@ import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_section_header.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
+import 'package:smartbudget/design_system/components/savings_jar_icon.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -63,7 +64,7 @@ class DashboardPage extends ConsumerWidget {
               KpiCard(
                 label: l.kpiNetProfit,
                 value: hasData ? MoneyFormatter.format(summary.net) : null,
-                icon: Icons.savings_outlined,
+                iconChild: const SavingsJarGlyph(),
                 accent: c.net,
               ),
               KpiCard(
@@ -71,7 +72,7 @@ class DashboardPage extends ConsumerWidget {
                 value: hasData
                     ? MoneyFormatter.percent(summary.savingsRate)
                     : null,
-                icon: Icons.percent_outlined,
+                iconChild: const SavingsJarGlyph(),
                 accent: c.saving,
               ),
             ],

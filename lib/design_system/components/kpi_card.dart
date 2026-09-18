@@ -25,6 +25,7 @@ class KpiCard extends StatelessWidget {
     required this.label,
     required this.value,
     this.icon,
+    this.iconChild,
     this.delta,
     this.accent,
     this.caption,
@@ -34,6 +35,10 @@ class KpiCard extends StatelessWidget {
   final String label;
   final String? value;
   final IconData? icon;
+
+  /// A custom glyph (e.g. SavingsJarGlyph) rendered inside the icon chip in
+  /// place of a Material [icon]. Its colour/size come from the chip's IconTheme.
+  final Widget? iconChild;
   final KpiDelta? delta;
   final Color? accent;
   final String? caption;
@@ -55,8 +60,8 @@ class KpiCard extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              if (icon != null) ...<Widget>[
-                _IconChip(icon: icon!, color: accentColor),
+              if (icon != null || iconChild != null) ...<Widget>[
+                _IconChip(icon: icon, iconChild: iconChild, color: accentColor),
                 const SizedBox(width: DsSpacing.sm),
               ],
               Expanded(
@@ -91,8 +96,9 @@ class KpiCard extends StatelessWidget {
 }
 
 class _IconChip extends StatelessWidget {
-  const _IconChip({required this.icon, required this.color});
-  final IconData icon;
+  const _IconChip({this.icon, this.iconChild, required this.color});
+  final IconData? icon;
+  final Widget? iconChild;
   final Color color;
 
   @override
@@ -100,12 +106,18 @@ class _IconChip extends StatelessWidget {
     return Container(
       width: 34,
       height: 34,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.14),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: color.withValues(alpha: 0.28)),
       ),
-      child: Icon(icon, size: 18, color: color),
+      child: iconChild != null
+          ? IconTheme.merge(
+              data: IconThemeData(color: color, size: 18),
+              child: iconChild!,
+            )
+          : Icon(icon, size: 18, color: color),
     );
   }
 }
