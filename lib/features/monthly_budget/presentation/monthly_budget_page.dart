@@ -323,7 +323,8 @@ class _YearSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final int now = DateTime.now().year;
-    final List<int> years = List<int>.generate(7, (int i) => now - 5 + i);
+    // Current year and the next nine (e.g. 2026–2035).
+    final List<int> years = List<int>.generate(10, (int i) => now + i);
     return _SelectorBox(
       child: DropdownButton<int>(
         value: years.contains(year) ? year : now,

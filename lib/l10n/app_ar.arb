@@ -392,5 +392,9 @@
   "receiptKeyNotSet": "لا يوجد مفتاح محفوظ بعد.",
   "receiptKeySaved": "تم حفظ مفتاح Gemini.",
   "receiptKeyRemoved": "تمت إزالة مفتاح Gemini.",
-  "receiptKeyRemove": "إزالة المفتاح"
+  "receiptKeyRemove": "إزالة المفتاح",
+
+  "settingsDeveloper": "المطوّر",
+  "sampleDataHint": "املأ سنة 2026 بمداخيل ومصروفات وميزانيات تجريبية واقعية لتجربة القالب. آمن للتشغيل أكثر من مرة — لا يُكرّر البيانات.",
+  "loadSampleData": "تحميل بيانات 2026 التجريبية"
 }

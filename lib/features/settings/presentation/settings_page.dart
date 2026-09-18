@@ -17,6 +17,7 @@ import 'package:smartbudget/features/backup/application/backup_controller.dart';
 import 'package:smartbudget/features/backup/data/file_io.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
+import 'package:smartbudget/features/dev/sample_data_controller.dart';
 import 'package:smartbudget/features/receipts/application/receipt_scan_controller.dart';
 import 'package:smartbudget/features/receipts/domain/receipt_ocr_engine.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
@@ -145,6 +146,14 @@ class SettingsPage extends ConsumerWidget {
                 icon: Icons.backup_outlined,
                 title: l.settingsData,
                 child: const _BackupSection(),
+              ),
+              const SizedBox(height: DsSpacing.lg),
+
+              // Developer — sample data for testing the template.
+              _SettingsSection(
+                icon: Icons.science_outlined,
+                title: l.settingsDeveloper,
+                child: const _DeveloperSection(),
               ),
               const SizedBox(height: DsSpacing.lg),
 
@@ -325,6 +334,56 @@ class _AboutRow extends StatelessWidget {
           Text(value, style: Theme.of(context).textTheme.titleSmall),
         ],
       ),
+    );
+  }
+}
+
+/// Developer tools: load deterministic 2026 sample data to test the template.
+class _DeveloperSection extends ConsumerStatefulWidget {
+  const _DeveloperSection();
+
+  @override
+  ConsumerState<_DeveloperSection> createState() => _DeveloperSectionState();
+}
+
+class _DeveloperSectionState extends ConsumerState<_DeveloperSection> {
+  bool _busy = false;
+
+  Future<void> _loadSample() async {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    setState(() => _busy = true);
+    try {
+      final SampleImportResult res =
+          await ref.read(sampleDataLoaderProvider).load(year: 2026);
+      messenger.showSnackBar(SnackBar(
+        content: Text(res.isEmpty
+            ? l.importEmpty
+            : l.importDone(res.transactionsAdded, res.budgetsAdded)),
+      ));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Text(l.sampleDataHint, style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: DsSpacing.md),
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: DsButton(
+            label: l.loadSampleData,
+            icon: Icons.auto_awesome_outlined,
+            variant: DsButtonVariant.secondary,
+            onPressed: _busy ? null : _loadSample,
+          ),
+        ),
+      ],
     );
   }
 }
