@@ -17,6 +17,7 @@ import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/analytics/domain/kpi_math.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
@@ -47,6 +48,23 @@ class DashboardPage extends ConsumerWidget {
     final FinanceSummary summary = ref.watch(financeSummaryProvider);
     final bool hasData = summary.count > 0;
 
+    // Period-over-period comparison (selected year vs the previous year).
+    final FinanceSummary prev = ref.watch(previousYearSummaryProvider);
+    final bool hasPrev = prev.count > 0;
+    final KpiChange incomeChange = KpiChange.of(
+        current: summary.income.minorUnits,
+        previous: prev.income.minorUnits,
+        hasPrevious: hasPrev);
+    final KpiChange expenseChange = KpiChange.of(
+        current: summary.expense.minorUnits,
+        previous: prev.expense.minorUnits,
+        hasPrevious: hasPrev);
+    final KpiChange netChange = KpiChange.of(
+        current: summary.net.minorUnits,
+        previous: prev.net.minorUnits,
+        hasPrevious: hasPrev);
+    final String? vsPrev = hasPrev ? l.vsPreviousYear : null;
+
     final String greeting =
         name == null ? l.welcomeGreeting : '${l.welcomeGreeting}، $name';
 
@@ -69,18 +87,30 @@ class DashboardPage extends ConsumerWidget {
                 value: hasData ? MoneyFormatter.format(summary.income) : null,
                 icon: Icons.south_west_outlined,
                 accent: c.income,
+                delta: hasData
+                    ? _pctDelta(context, incomeChange, positiveWhenUp: true)
+                    : null,
+                caption: hasData ? vsPrev : null,
               ),
               KpiCard(
                 label: l.kpiTotalExpenses,
                 value: hasData ? MoneyFormatter.format(summary.expense) : null,
                 icon: Icons.north_east_outlined,
                 accent: c.expense,
+                delta: hasData
+                    ? _pctDelta(context, expenseChange, positiveWhenUp: false)
+                    : null,
+                caption: hasData ? vsPrev : null,
               ),
               KpiCard(
                 label: l.kpiNetProfit,
                 value: hasData ? MoneyFormatter.format(summary.net) : null,
                 iconChild: const SavingsJarGlyph(),
                 accent: c.net,
+                delta: hasData
+                    ? _pctDelta(context, netChange, positiveWhenUp: true)
+                    : null,
+                caption: hasData ? vsPrev : null,
               ),
               KpiCard(
                 label: l.kpiSavingsRate,
@@ -89,6 +119,11 @@ class DashboardPage extends ConsumerWidget {
                     : null,
                 iconChild: const SavingsJarGlyph(),
                 accent: c.saving,
+                delta: hasData
+                    ? _pointsDelta(
+                        context, summary.savingsRate, prev.savingsRate, hasPrev)
+                    : null,
+                caption: hasData ? vsPrev : null,
               ),
             ],
           ),
@@ -130,6 +165,51 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 }
+
+/// Formats a [KpiChange] as a semantic delta pill for a KPI card. Color comes
+/// from the metric's meaning (positiveWhenUp), not the arrow.
+KpiDelta _pctDelta(BuildContext context, KpiChange ch,
+    {required bool positiveWhenUp}) {
+  if (!ch.comparable) {
+    return KpiDelta.noComparison(AppLocalizations.of(context).noComparison);
+  }
+  return KpiDelta(
+    label: _signedPct(ch.percentage! * 100),
+    trend: _trendOf(ch.direction),
+    tone: _toneOf(ch.sentiment(positiveWhenUp: positiveWhenUp)),
+  );
+}
+
+/// Savings-rate style delta: the change is in percentage POINTS (up is good).
+KpiDelta _pointsDelta(
+    BuildContext context, double current, double previous, bool hasPrev) {
+  if (!hasPrev) {
+    return KpiDelta.noComparison(AppLocalizations.of(context).noComparison);
+  }
+  final double pts = (current - previous) * 100;
+  return KpiDelta(
+    label: _signedPct(pts),
+    trend: pts > 0 ? KpiTrend.up : (pts < 0 ? KpiTrend.down : KpiTrend.flat),
+    tone: pts > 0 ? KpiTone.good : (pts < 0 ? KpiTone.bad : KpiTone.neutral),
+  );
+}
+
+String _signedPct(double v) {
+  final String sign = v > 0 ? '+' : (v < 0 ? '−' : '');
+  return '$sign${v.abs().toStringAsFixed(1)}%';
+}
+
+KpiTrend _trendOf(KpiDirection d) => switch (d) {
+      KpiDirection.up => KpiTrend.up,
+      KpiDirection.down => KpiTrend.down,
+      KpiDirection.flat => KpiTrend.flat,
+    };
+
+KpiTone _toneOf(KpiSentiment s) => switch (s) {
+      KpiSentiment.good => KpiTone.good,
+      KpiSentiment.bad => KpiTone.bad,
+      KpiSentiment.neutral => KpiTone.neutral,
+    };
 
 class _Header extends StatelessWidget {
   const _Header({required this.greeting});

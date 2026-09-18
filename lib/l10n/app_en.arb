@@ -453,5 +453,7 @@
   "sectionMonthlyComparison": "Monthly comparison",
   "sectionIncomeDistribution": "Income distribution",
   "legendNet": "Net",
-  "chartOther": "Other"
+  "chartOther": "Other",
+  "vsPreviousYear": "vs. last year",
+  "noComparison": "No comparison"
 }

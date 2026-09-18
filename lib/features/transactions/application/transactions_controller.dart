@@ -86,6 +86,16 @@ final incomeCategoryTotalsProvider = Provider<List<CategoryTotal>>((ref) {
       txns, TransactionType.income, currency);
 });
 
+/// Summary for the PREVIOUS year (selected year − 1), for KPI comparisons.
+final previousYearSummaryProvider = Provider<FinanceSummary>((ref) {
+  final List<Transaction> all =
+      ref.watch(transactionsProvider).valueOrNull ?? const <Transaction>[];
+  final int prevYear = ref.watch(selectedYearProvider) - 1;
+  final String currency = ref.watch(baseCurrencyProvider);
+  return FinanceCalculator.summarize(
+      FinanceCalculator.forYear(all, prevYear), currency);
+});
+
 /// 12-month income/expense/net series for the selected year (base currency).
 final monthlyTrendProvider = Provider<List<MonthPoint>>((ref) {
   final List<Transaction> txns = ref.watch(yearTransactionsProvider);

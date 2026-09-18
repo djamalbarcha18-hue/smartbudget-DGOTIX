@@ -5,14 +5,33 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/design_system/tokens/ds_typography.dart';
 
-/// Direction of a period-over-period change on a KPI.
+/// Direction of a period-over-period change on a KPI (drives the arrow only).
 enum KpiTrend { up, down, flat }
 
-/// A month-over-month delta shown on a KPI card.
+/// Semantic reading of the change for THIS KPI (drives the color). Income up is
+/// good; expenses up is bad — never inferred from the arrow direction.
+enum KpiTone { good, bad, neutral }
+
+/// A period-over-period delta shown on a KPI card.
 class KpiDelta {
-  const KpiDelta({required this.label, required this.trend});
+  const KpiDelta({
+    required this.label,
+    required this.trend,
+    this.tone = KpiTone.neutral,
+    this.comparable = true,
+  });
+
+  /// A delta with no valid baseline — shows [label] (e.g. "No comparison") with
+  /// no arrow and a neutral color, never a misleading percentage.
+  const KpiDelta.noComparison(this.label)
+      : trend = KpiTrend.flat,
+        tone = KpiTone.neutral,
+        comparable = false;
+
   final String label; // e.g. "+12.5%"
   final KpiTrend trend;
+  final KpiTone tone;
+  final bool comparable;
 }
 
 /// Premium KPI tile: label + big value + optional trend + optional sparkline.
@@ -129,16 +148,19 @@ class _TrendPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
-    final Color color = switch (delta.trend) {
-      KpiTrend.up => c.income,
-      KpiTrend.down => c.expense,
-      KpiTrend.flat => c.textMuted,
+    // Color is driven by the semantic tone, NOT the arrow direction.
+    final Color color = switch (delta.tone) {
+      KpiTone.good => c.income,
+      KpiTone.bad => c.expense,
+      KpiTone.neutral => c.textMuted,
     };
-    final IconData icon = switch (delta.trend) {
-      KpiTrend.up => Icons.trending_up_rounded,
-      KpiTrend.down => Icons.trending_down_rounded,
-      KpiTrend.flat => Icons.trending_flat_rounded,
-    };
+    final IconData? icon = !delta.comparable
+        ? null
+        : switch (delta.trend) {
+            KpiTrend.up => Icons.trending_up_rounded,
+            KpiTrend.down => Icons.trending_down_rounded,
+            KpiTrend.flat => Icons.trending_flat_rounded,
+          };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
@@ -148,8 +170,10 @@ class _TrendPill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Icon(icon, size: 13, color: color),
-          const SizedBox(width: 3),
+          if (icon != null) ...<Widget>[
+            Icon(icon, size: 13, color: color),
+            const SizedBox(width: 3),
+          ],
           Text(
             delta.label,
             style: Theme.of(context)

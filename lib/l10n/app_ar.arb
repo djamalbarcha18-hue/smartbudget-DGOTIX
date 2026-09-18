@@ -453,5 +453,7 @@
   "sectionMonthlyComparison": "المقارنة الشهرية",
   "sectionIncomeDistribution": "توزيع الدخل",
   "legendNet": "الصافي",
-  "chartOther": "أخرى"
+  "chartOther": "أخرى",
+  "vsPreviousYear": "مقارنةً بالعام السابق",
+  "noComparison": "لا تتوفّر مقارنة"
 }
