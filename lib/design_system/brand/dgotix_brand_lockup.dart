@@ -15,7 +15,7 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 class DgotixBrandLockup extends StatelessWidget {
   const DgotixBrandLockup({
     super.key,
-    this.logoHeight = 30,
+    this.logoHeight = 40,
     this.showTagline = false,
   });
 

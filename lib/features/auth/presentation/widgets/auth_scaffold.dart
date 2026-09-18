@@ -47,7 +47,7 @@ class AuthScaffold extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      const DgotixBrandLockup(logoHeight: 34),
+                      const DgotixBrandLockup(logoHeight: 56),
                       const SizedBox(height: DsSpacing.xs),
                       Text(l.authTagline, style: t.labelMedium),
                       const SizedBox(height: DsSpacing.x3l),

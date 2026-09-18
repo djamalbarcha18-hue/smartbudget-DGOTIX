@@ -18,7 +18,7 @@ class SplashPage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            const DgotixBrandLockup(logoHeight: 40, showTagline: true),
+            const DgotixBrandLockup(logoHeight: 60, showTagline: true),
             const SizedBox(height: DsSpacing.xxl),
             SizedBox(
               width: 24,
