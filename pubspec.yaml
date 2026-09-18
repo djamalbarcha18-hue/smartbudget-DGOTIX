@@ -44,6 +44,10 @@ dependencies:
   # otherwise, so the free web demo keeps working with zero credentials.
   supabase_flutter: ^2.5.6
 
+  # Camera / gallery capture for the Receipt Scanner (works on web + mobile).
+  # The captured bytes are sent to the receipt-scan Edge Function (Gemini).
+  image_picker: ^1.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

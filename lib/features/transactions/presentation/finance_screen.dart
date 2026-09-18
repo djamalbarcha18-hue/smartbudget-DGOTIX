@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/receipts/application/receipt_scan_controller.dart';
+import 'package:smartbudget/features/receipts/presentation/receipt_scan_button.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/features/transactions/presentation/transactions_list.dart';
@@ -45,6 +48,13 @@ class FinanceScreen extends StatelessWidget {
             context,
             type: TransactionType.expense,
           ),
+        ),
+      if (type == null || type == TransactionType.expense)
+        Consumer(
+          builder: (BuildContext context, WidgetRef ref, _) =>
+              ref.watch(receiptScanEnabledProvider)
+                  ? const ReceiptScanButton()
+                  : const SizedBox.shrink(),
         ),
     ];
 

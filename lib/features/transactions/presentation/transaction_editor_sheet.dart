@@ -16,25 +16,53 @@ import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
+/// Initial values for a NEW transaction, e.g. extracted from a scanned receipt.
+class TransactionDraft {
+  const TransactionDraft({
+    this.amount,
+    this.category,
+    this.date,
+    this.description,
+  });
+
+  final double? amount;
+  final String? category;
+  final DateTime? date;
+  final String? description;
+}
+
 /// Quick-add / edit sheet for a single transaction (income or expense).
 class TransactionEditorSheet extends ConsumerStatefulWidget {
-  const TransactionEditorSheet({super.key, required this.type, this.existing});
+  const TransactionEditorSheet({
+    super.key,
+    required this.type,
+    this.existing,
+    this.prefill,
+  });
 
   final TransactionType type;
   final Transaction? existing;
+
+  /// Initial values for a NEW transaction (e.g. from a scanned receipt).
+  /// Ignored when [existing] is set. All fields stay editable.
+  final TransactionDraft? prefill;
 
   /// Opens the editor as a modal bottom sheet.
   static Future<void> show(
     BuildContext context, {
     required TransactionType type,
     Transaction? existing,
+    TransactionDraft? prefill,
   }) {
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (BuildContext ctx) =>
-          TransactionEditorSheet(type: type, existing: existing),
+      builder: (BuildContext ctx) => TransactionEditorSheet(
+        type: type,
+        existing: existing,
+        prefill: prefill,
+      ),
     );
   }
 
@@ -60,13 +88,17 @@ class _TransactionEditorSheetState
   void initState() {
     super.initState();
     final Transaction? e = widget.existing;
+    final TransactionDraft? p = e == null ? widget.prefill : null;
     _amount = TextEditingController(
-      text: e == null ? '' : e.amount.asDouble.toString(),
+      text: e != null
+          ? e.amount.asDouble.toString()
+          : (p?.amount != null ? p!.amount.toString() : ''),
     );
-    _description = TextEditingController(text: e?.description ?? '');
+    _description =
+        TextEditingController(text: e?.description ?? p?.description ?? '');
     _notes = TextEditingController(text: e?.notes ?? '');
-    _date = e?.date ?? DateTime.now();
-    _category = e?.category;
+    _date = e?.date ?? p?.date ?? DateTime.now();
+    _category = e?.category ?? p?.category;
     _paymentMethod = e?.paymentMethod;
   }
 

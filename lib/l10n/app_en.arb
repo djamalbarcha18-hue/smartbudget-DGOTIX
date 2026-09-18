@@ -367,5 +367,30 @@
 
   "reportMonthlyTrend": "Monthly trend",
   "legendIncome": "Income",
-  "legendExpenses": "Expenses"
+  "legendExpenses": "Expenses",
+
+  "scanReceipt": "Scan receipt",
+  "receiptScanning": "Scanning…",
+  "sourceCamera": "Take a photo",
+  "sourceGallery": "Choose from gallery",
+  "receiptScanFilled": "Review the extracted details, then save.",
+  "receiptErrBackend": "Receipt scanning needs the cloud backend to be enabled.",
+  "receiptErrSignIn": "Sign in to use receipt scanning.",
+  "receiptErrNoKey": "Add your Gemini API key in Settings → Receipt scanning first.",
+  "receiptErrInvalidKey": "That Gemini API key was rejected. Check it and try again.",
+  "receiptErrUnreadable": "Couldn't read that receipt — try a clearer photo.",
+  "receiptErrNoTotal": "Couldn't find a total on that receipt.",
+  "receiptErrNetwork": "No connection — couldn't reach the scanner.",
+  "receiptErrRateLimited": "Rate limit reached on your Gemini key. Try again shortly.",
+  "receiptErrOffline": "Offline scanning isn't available on the web yet.",
+  "receiptErrGeneric": "Couldn't scan the receipt. Please try again.",
+
+  "settingsReceiptScanning": "Receipt scanning",
+  "receiptKeyHint": "Paste your own Google Gemini API key to scan receipts. It's encrypted and stored only for your account. Get a free key at aistudio.google.com/apikey.",
+  "receiptKeyField": "Gemini API key",
+  "receiptKeySet": "A key is saved for your account.",
+  "receiptKeyNotSet": "No key saved yet.",
+  "receiptKeySaved": "Gemini key saved.",
+  "receiptKeyRemoved": "Gemini key removed.",
+  "receiptKeyRemove": "Remove key"
 }

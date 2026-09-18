@@ -367,5 +367,30 @@
 
   "reportMonthlyTrend": "الاتجاه الشهري",
   "legendIncome": "الدخل",
-  "legendExpenses": "المصروفات"
+  "legendExpenses": "المصروفات",
+
+  "scanReceipt": "مسح فاتورة",
+  "receiptScanning": "جارٍ المسح…",
+  "sourceCamera": "التقاط صورة",
+  "sourceGallery": "اختيار من المعرض",
+  "receiptScanFilled": "راجِع البيانات المستخرجة ثم احفظ.",
+  "receiptErrBackend": "مسح الفواتير يتطلّب تفعيل الخادم السحابي.",
+  "receiptErrSignIn": "سجّل الدخول لاستخدام مسح الفواتير.",
+  "receiptErrNoKey": "أضِف مفتاح Gemini الخاص بك من الإعدادات ← مسح الفواتير أولاً.",
+  "receiptErrInvalidKey": "تم رفض مفتاح Gemini. تحقّق منه وحاول مجدداً.",
+  "receiptErrUnreadable": "تعذّرت قراءة الفاتورة — جرّب صورة أوضح.",
+  "receiptErrNoTotal": "تعذّر إيجاد المبلغ الإجمالي في الفاتورة.",
+  "receiptErrNetwork": "لا يوجد اتصال — تعذّر الوصول إلى الماسح.",
+  "receiptErrRateLimited": "تم بلوغ حدّ الاستخدام لمفتاح Gemini. حاول بعد قليل.",
+  "receiptErrOffline": "المسح دون إنترنت غير متاح على الويب بعد.",
+  "receiptErrGeneric": "تعذّر مسح الفاتورة. حاول مرة أخرى.",
+
+  "settingsReceiptScanning": "مسح الفواتير",
+  "receiptKeyHint": "الصق مفتاح Google Gemini API الخاص بك لمسح الفواتير. يُخزَّن مشفّراً لحسابك فقط. احصل على مفتاح مجاني من aistudio.google.com/apikey.",
+  "receiptKeyField": "مفتاح Gemini API",
+  "receiptKeySet": "يوجد مفتاح محفوظ لحسابك.",
+  "receiptKeyNotSet": "لا يوجد مفتاح محفوظ بعد.",
+  "receiptKeySaved": "تم حفظ مفتاح Gemini.",
+  "receiptKeyRemoved": "تمت إزالة مفتاح Gemini.",
+  "receiptKeyRemove": "إزالة المفتاح"
 }

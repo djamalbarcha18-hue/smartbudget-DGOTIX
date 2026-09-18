@@ -74,5 +74,6 @@ into Edge Functions automatically — do not set them by hand.
 { "error": "no_key" | "invalid_key" | "rate_limited" | "provider_error" | … }
 ```
 
-`GET|POST|DELETE /functions/v1/save-gemini-key` (JWT required) — `GET` returns
-`{ hasKey }`, `POST { apiKey }` stores it, `DELETE` removes it.
+`POST /functions/v1/save-gemini-key` (JWT required), action-based:
+`{ "action": "status" }` → `{ hasKey }`, `{ "action": "save", "apiKey": "…" }`
+stores it, `{ "action": "delete" }` removes it.

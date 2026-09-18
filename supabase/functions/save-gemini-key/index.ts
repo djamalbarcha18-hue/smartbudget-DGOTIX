@@ -5,9 +5,10 @@
 // never returned to any client afterwards — the client can only learn WHETHER a
 // key is set.
 //
-//   GET     -> { hasKey: boolean }
-//   POST    { apiKey }  -> { ok: true, hasKey: true }
-//   DELETE  -> { ok: true, hasKey: false }
+// POST-only, action-based (keeps the Flutter client on the default invoke path):
+//   { "action": "status" }            -> { hasKey: boolean }
+//   { "action": "save", "apiKey":"…" } -> { ok: true, hasKey: true }
+//   { "action": "delete" }            -> { ok: true, hasKey: false }
 //
 // Deploy:  supabase functions deploy save-gemini-key
 // Secrets: supabase secrets set KEY_ENCRYPTION_SECRET="$(openssl rand -base64 32)"
@@ -18,20 +19,24 @@ import { deleteGeminiKey, hasGeminiKey, saveGeminiKey } from "../_shared/keys.ts
 Deno.serve(async (req: Request) => {
   const cors = corsHeaders();
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
+  if (req.method !== "POST") {
+    return jsonResponse({ error: "method_not_allowed" }, 405, cors);
+  }
 
   try {
     const userId = await requireUserId(req);
+    const body = await req.json().catch(() => ({}));
+    const action = String(body?.action ?? "status");
 
-    switch (req.method) {
-      case "GET":
+    switch (action) {
+      case "status":
         return jsonResponse({ hasKey: await hasGeminiKey(userId) }, 200, cors);
 
-      case "DELETE":
+      case "delete":
         await deleteGeminiKey(userId);
         return jsonResponse({ ok: true, hasKey: false }, 200, cors);
 
-      case "POST": {
-        const body = await req.json().catch(() => ({}));
+      case "save": {
         const apiKey = String(body?.apiKey ?? "").trim();
         // Gemini keys are ~39 chars; reject obvious junk early.
         if (apiKey.length < 20) {
@@ -42,7 +47,7 @@ Deno.serve(async (req: Request) => {
       }
 
       default:
-        return jsonResponse({ error: "method_not_allowed" }, 405, cors);
+        return jsonResponse({ error: "bad_action" }, 400, cors);
     }
   } catch (e) {
     const status = e instanceof HttpError ? e.status : 500;
