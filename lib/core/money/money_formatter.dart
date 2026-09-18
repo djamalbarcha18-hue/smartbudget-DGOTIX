@@ -15,14 +15,17 @@ abstract final class MoneyFormatter {
       decimalDigits: c.decimals,
     );
     final String number = f.format(money.asDouble);
-    return withSymbol ? '$number ${c.symbol}' : number;
+    // Symbol BEFORE the number (e.g. "$ 1,234.00"). The leading LRM keeps the
+    // whole money string left-to-right so the symbol stays in front even inside
+    // an Arabic (RTL) layout, while digits remain Latin.
+    return withSymbol ? '‎${c.symbol} $number' : number;
   }
 
-  /// Compact form for tight KPI tiles (e.g. 1.2K, 3.4M) with symbol.
+  /// Compact form for tight KPI tiles (e.g. 1.2K, 3.4M) with the symbol in front.
   static String compact(Money money) {
     final Currency c = money.currency;
     final NumberFormat f = NumberFormat.compact(locale: 'en');
-    return '${f.format(money.asDouble)} ${c.symbol}';
+    return '‎${c.symbol} ${f.format(money.asDouble)}';
   }
 
   /// Formats a ratio (0..1) as a Latin-digit percentage, e.g. 0.158 -> "15.8%".

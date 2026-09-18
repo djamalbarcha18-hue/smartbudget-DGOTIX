@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/money/currency.dart';
+import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -46,6 +49,8 @@ class AppTopBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: DsSpacing.sm),
+          const _CurrencyChip(),
+          const SizedBox(width: DsSpacing.xs),
           if (!isMobile) const LanguageToggleButton(),
           const ThemeToggleButton(),
           IconButton(
@@ -97,6 +102,60 @@ class _SearchField extends StatelessWidget {
             child: Text('Ctrl K', style: Theme.of(context).textTheme.labelSmall),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Quick selector for the template (base) currency — flag + code + menu.
+/// Changing it updates every money value across the app (symbol shown in front).
+class _CurrencyChip extends ConsumerWidget {
+  const _CurrencyChip();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final DsColors c = context.dsColors;
+    final AppLocalizations l = AppLocalizations.of(context);
+    final String code = ref.watch(baseCurrencyProvider);
+    final Currency cur = Currencies.byCode(code);
+
+    return PopupMenuButton<String>(
+      tooltip: l.baseCurrency,
+      offset: const Offset(0, 48),
+      color: c.bgElevated,
+      onSelected: (String v) =>
+          ref.read(baseCurrencyProvider.notifier).set(v),
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        for (final Currency x in Currencies.all)
+          PopupMenuItem<String>(
+            value: x.code,
+            child: Row(
+              children: <Widget>[
+                CurrencyFlag(x, width: 20),
+                const SizedBox(width: DsSpacing.sm),
+                Text('${x.code} · ${x.symbol}',
+                    style: Theme.of(context).textTheme.bodyMedium),
+              ],
+            ),
+          ),
+      ],
+      child: Container(
+        padding:
+            const EdgeInsets.symmetric(horizontal: DsSpacing.sm, vertical: 6),
+        decoration: BoxDecoration(
+          color: c.surfaceMuted,
+          borderRadius: DsRadius.brMd,
+          border: Border.all(color: c.border),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            CurrencyFlag(cur, width: 18),
+            const SizedBox(width: DsSpacing.xs),
+            Text(cur.code, style: Theme.of(context).textTheme.labelLarge),
+            Icon(Icons.arrow_drop_down_rounded, size: 18, color: c.textMuted),
+          ],
+        ),
       ),
     );
   }
