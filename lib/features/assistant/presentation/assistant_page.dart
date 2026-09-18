@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -126,8 +127,10 @@ class _InsightCard extends StatelessWidget {
       InsightKey.netSurplus => l.insightNetSurplus(money(i.amountMinor)),
       InsightKey.savingsRate =>
         l.insightSavingsRate(MoneyFormatter.percent(i.rate ?? 0)),
-      InsightKey.topExpenseCategory =>
-        l.insightTopExpense(i.category ?? '', money(i.amountMinor)),
+      InsightKey.topExpenseCategory => l.insightTopExpense(
+          Catalog.label(i.category ?? '',
+              ar: Localizations.localeOf(context).languageCode == 'ar'),
+          money(i.amountMinor)),
       InsightKey.healthExcellent => l.insightHealthExcellent,
       InsightKey.healthVeryGood => l.insightHealthVeryGood,
       InsightKey.healthGood => l.insightHealthGood,

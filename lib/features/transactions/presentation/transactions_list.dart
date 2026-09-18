@@ -8,6 +8,7 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
+import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -176,6 +177,8 @@ class TransactionTile extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final Color accent = txn.isIncome ? c.income : c.expense;
     final String sign = txn.isIncome ? '+' : '−';
+    final String category = Catalog.label(txn.category,
+        ar: Localizations.localeOf(context).languageCode == 'ar');
 
     return Material(
       color: c.surface,
@@ -212,14 +215,14 @@ class TransactionTile extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      txn.description.isEmpty ? txn.category : txn.description,
+                      txn.description.isEmpty ? category : txn.description,
                       style: Theme.of(context).textTheme.titleSmall,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '${txn.category} · ${DateFormat('yyyy-MM-dd').format(txn.date)}',
+                      '$category · ${DateFormat('yyyy-MM-dd').format(txn.date)}',
                       style: Theme.of(context).textTheme.labelSmall,
                     ),
                   ],

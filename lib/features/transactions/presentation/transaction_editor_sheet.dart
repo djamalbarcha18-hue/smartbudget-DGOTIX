@@ -294,6 +294,7 @@ class _CategoryDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
+    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -321,8 +322,8 @@ class _CategoryDropdown extends StatelessWidget {
                 const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
           ),
           items: items
-              .map((String e) =>
-                  DropdownMenuItem<String>(value: e, child: Text(e)))
+              .map((String e) => DropdownMenuItem<String>(
+                  value: e, child: Text(Catalog.label(e, ar: ar))))
               .toList(),
           onChanged: onChanged,
         ),

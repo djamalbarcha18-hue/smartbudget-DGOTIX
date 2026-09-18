@@ -20,6 +20,7 @@ import 'package:smartbudget/features/financial_health/domain/health_calculator.d
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
+import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
@@ -200,7 +201,9 @@ class _ExpenseDistributionCard extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.only(bottom: DsSpacing.md),
                       child: _CategoryBar(
-                        label: t.category,
+                        label: Catalog.label(t.category,
+                            ar: Localizations.localeOf(context).languageCode ==
+                                'ar'),
                         amountText: MoneyFormatter.format(t.amount),
                         fraction: max == 0 ? 0 : t.amount.minorUnits / max,
                         color: c.expense,

@@ -168,6 +168,8 @@ class _BudgetRow extends ConsumerWidget {
     final bool over = plannedMinor > 0 && actualMinor > plannedMinor;
     final double fraction =
         plannedMinor == 0 ? 0 : actualMinor / plannedMinor;
+    final String catLabel = Catalog.label(category,
+        ar: Localizations.localeOf(context).languageCode == 'ar');
 
     return Padding(
       padding: const EdgeInsets.only(bottom: DsSpacing.md),
@@ -177,7 +179,7 @@ class _BudgetRow extends ConsumerWidget {
           Row(
             children: <Widget>[
               Expanded(
-                child: Text(category,
+                child: Text(catLabel,
                     style: Theme.of(context).textTheme.bodyMedium,
                     overflow: TextOverflow.ellipsis),
               ),
@@ -245,7 +247,7 @@ class _BudgetRow extends ConsumerWidget {
     final bool? ok = await showDialog<bool>(
       context: context,
       builder: (BuildContext ctx) => AlertDialog(
-        title: Text('${l.setBudget} · $category'),
+        title: Text('${l.setBudget} · ${Catalog.label(category, ar: Localizations.localeOf(context).languageCode == 'ar')}'),
         content: TextField(
           controller: ctrl,
           autofocus: true,

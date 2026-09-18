@@ -11,6 +11,7 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/reports/application/reports_controller.dart';
 import 'package:smartbudget/features/reports/domain/report_period.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
+import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -207,7 +208,11 @@ class _CategoryCard extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         Expanded(
-                          child: Text(t.category,
+                          child: Text(
+                              Catalog.label(t.category,
+                                  ar: Localizations.localeOf(context)
+                                          .languageCode ==
+                                      'ar'),
                               style: Theme.of(context).textTheme.bodySmall,
                               overflow: TextOverflow.ellipsis),
                         ),
