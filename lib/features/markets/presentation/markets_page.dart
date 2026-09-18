@@ -13,6 +13,7 @@ import 'package:smartbudget/features/markets/domain/market_category.dart';
 import 'package:smartbudget/features/markets/domain/market_config.dart';
 import 'package:smartbudget/features/markets/domain/market_models.dart';
 import 'package:smartbudget/features/markets/presentation/commodity_sections.dart';
+import 'package:smartbudget/features/markets/presentation/sparkline.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// "Exchange Rates & Markets" — official + parallel FIAT markets and a crypto
@@ -325,6 +326,9 @@ class _CryptoSection extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final String base = ref.watch(baseCurrencyProvider);
+    final double? usdToBase = ref
+        .watch(fxSnapshotProvider)
+        .whenOrNull(data: (FxSnapshot s) => s.cross('USD', base));
     final AsyncValue<List<CryptoQuote>> crypto = ref.watch(cryptoQuotesProvider);
 
     return GlassCard(
@@ -350,7 +354,7 @@ class _CryptoSection extends ConsumerWidget {
             data: (List<CryptoQuote> quotes) => Column(
               children: <Widget>[
                 for (final CryptoQuote q in quotes)
-                  _CryptoRow(quote: q, base: base),
+                  _CryptoRow(quote: q, base: base, usdToBase: usdToBase),
                 const SizedBox(height: DsSpacing.sm),
                 if (quotes.isNotEmpty)
                   _SourceLine(
@@ -367,14 +371,20 @@ class _CryptoSection extends ConsumerWidget {
 }
 
 class _CryptoRow extends StatelessWidget {
-  const _CryptoRow({required this.quote, required this.base});
+  const _CryptoRow(
+      {required this.quote, required this.base, required this.usdToBase});
   final CryptoQuote quote;
   final String base;
+  final double? usdToBase;
 
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
+    final double? localVal = (quote.usd != null && usdToBase != null)
+        ? quote.usd! * usdToBase!
+        : null;
+    final List<double>? spark = quote.sparkline;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: DsSpacing.sm),
       child: Column(
@@ -392,8 +402,12 @@ class _CryptoRow extends StatelessWidget {
                         ?.copyWith(color: c.brand)),
               ),
               const SizedBox(width: DsSpacing.sm),
-              Text('${quote.symbol} · ${quote.name}',
-                  style: Theme.of(context).textTheme.titleSmall),
+              Expanded(
+                child: Text('${quote.symbol} · ${quote.name}',
+                    style: Theme.of(context).textTheme.titleSmall),
+              ),
+              if (spark != null && spark.length > 1)
+                Sparkline(spark, width: 96, height: 30),
             ],
           ),
           const SizedBox(height: DsSpacing.xs),
@@ -402,7 +416,9 @@ class _CryptoRow extends StatelessWidget {
             runSpacing: DsSpacing.xs,
             children: <Widget>[
               _Stat(label: 'USD', value: _fmtOrNull(quote.usd, l), color: c.textPrimary),
-              _Stat(label: base, value: _fmtOrNull(quote.local, l), color: c.textPrimary),
+              _Stat(label: base, value: _fmtOrNull(localVal, l), color: c.textPrimary),
+              _ChangeStat(label: l.change24h, pct: quote.change24h),
+              _ChangeStat(label: l.change7d, pct: quote.change7d),
               _Stat(label: l.rateTypeP2P, value: _fmtOrNull(quote.p2p, l), color: c.saving),
             ],
           ),
@@ -440,6 +456,25 @@ class _Stat extends StatelessWidget {
                 ?.copyWith(color: color)),
       ],
     );
+  }
+}
+
+/// A percentage-change stat: green when up, red when down, "—" when unknown.
+class _ChangeStat extends StatelessWidget {
+  const _ChangeStat({required this.label, required this.pct});
+  final String label;
+  final double? pct;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final Color color = pct == null
+        ? c.textFaint
+        : (pct! >= 0 ? c.income : c.expense);
+    final String text = pct == null
+        ? '—'
+        : '${pct! >= 0 ? '+' : ''}${pct!.toStringAsFixed(2)}%';
+    return _Stat(label: label, value: text, color: color);
   }
 }
 

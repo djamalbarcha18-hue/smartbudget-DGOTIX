@@ -341,5 +341,7 @@
   "purityTable": "Purity (per gram)",
   "benchmarkLabel": "Benchmark",
   "regionLabel": "Region",
-  "businessImpact": "Business impact"
+  "businessImpact": "Business impact",
+  "change24h": "24h",
+  "change7d": "7d"
 }

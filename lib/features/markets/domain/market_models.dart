@@ -58,6 +58,9 @@ class CryptoQuote {
     this.p2p,
     this.buy,
     this.sell,
+    this.change24h,
+    this.change7d,
+    this.sparkline,
   });
 
   final String symbol; // BTC
@@ -68,6 +71,14 @@ class CryptoQuote {
   final double? p2p;
   final double? buy;
   final double? sell;
+
+  /// Percentage change over the last 24h / 7d (from the market source).
+  final double? change24h;
+  final double? change7d;
+
+  /// 7-day price series for a sparkline (source currency = USD).
+  final List<double>? sparkline;
+
   final String source;
   final DateTime updatedAt;
 

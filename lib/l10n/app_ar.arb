@@ -341,5 +341,7 @@
   "purityTable": "النقاوة (للغرام)",
   "benchmarkLabel": "المرجع",
   "regionLabel": "المنطقة",
-  "businessImpact": "الأثر على الأعمال"
+  "businessImpact": "الأثر على الأعمال",
+  "change24h": "24 س",
+  "change7d": "7 أيام"
 }

@@ -38,34 +38,37 @@ void main() {
       CryptoAsset(symbol: 'SOL', name: 'Solana', coingeckoId: 'solana'),
     ];
 
-    test('maps usd + local price', () {
+    test('maps price, 24h/7d change and sparkline from /coins/markets', () {
       final List<CryptoQuote> q = CoinGeckoCryptoRepository.parse(
-        <String, dynamic>{
-          'bitcoin': <String, dynamic>{
-            'usd': 65000,
-            'dzd': 8742500,
-            'last_updated_at': 1700000000,
+        <dynamic>[
+          <String, dynamic>{
+            'id': 'bitcoin',
+            'current_price': 65000,
+            'price_change_percentage_24h': 1.5,
+            'price_change_percentage_7d_in_currency': -3.2,
+            'sparkline_in_7d': <String, dynamic>{
+              'price': <dynamic>[64000, 64500, 65000],
+            },
+            'last_updated': '2026-01-01T00:00:00Z',
           },
-        },
+        ],
         assets,
         'DZD',
       );
       expect(q.first.symbol, 'BTC');
       expect(q.first.usd, 65000);
-      expect(q.first.local, 8742500);
+      expect(q.first.change24h, 1.5);
+      expect(q.first.change7d, -3.2);
+      expect(q.first.sparkline, <double>[64000, 64500, 65000]);
       // Missing asset -> usd null (shown as unavailable, not zero).
       expect(q[1].usd, isNull);
     });
 
-    test('local equals usd when base is USD', () {
-      final List<CryptoQuote> q = CoinGeckoCryptoRepository.parse(
-        <String, dynamic>{
-          'bitcoin': <String, dynamic>{'usd': 65000},
-        },
-        assets,
-        'USD',
-      );
-      expect(q.first.local, 65000);
+    test('empty payload yields quotes with null prices', () {
+      final List<CryptoQuote> q =
+          CoinGeckoCryptoRepository.parse(const <dynamic>[], assets, 'USD');
+      expect(q.length, assets.length);
+      expect(q.first.usd, isNull);
     });
   });
 
