@@ -113,6 +113,9 @@ class ReportsPage extends ConsumerWidget {
           ),
           const SizedBox(height: DsSpacing.xxl),
 
+          _MonthlyTrendCard(points: ref.watch(reportMonthlyTrendProvider)),
+          const SizedBox(height: DsSpacing.lg),
+
           _CategoryCard(
             title: l.reportIncomeByCategory,
             totals: report.incomeCategories,
@@ -242,6 +245,177 @@ class _CategoryCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Grouped income-vs-expense bars across the 12 months of the selected year.
+class _MonthlyTrendCard extends StatelessWidget {
+  const _MonthlyTrendCard({required this.points});
+
+  final List<MonthPoint> points;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final int maxMinor = points.fold<int>(0, (int m, MonthPoint p) {
+      final int hi = p.income.minorUnits > p.expense.minorUnits
+          ? p.income.minorUnits
+          : p.expense.minorUnits;
+      return hi > m ? hi : m;
+    });
+
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(l.reportMonthlyTrend,
+                    style: Theme.of(context).textTheme.titleMedium),
+              ),
+              _LegendDot(color: c.income, label: l.legendIncome),
+              const SizedBox(width: DsSpacing.md),
+              _LegendDot(color: c.expense, label: l.legendExpenses),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.lg),
+          if (maxMinor == 0)
+            Text(l.emptyTransactionsMessage,
+                style: Theme.of(context).textTheme.bodySmall)
+          else
+            SizedBox(
+              height: 180,
+              child: CustomPaint(
+                size: Size.infinite,
+                painter: _TrendPainter(
+                  points: points,
+                  maxMinor: maxMinor,
+                  income: c.income,
+                  expense: c.expense,
+                  axis: c.textFaint,
+                  grid: c.border,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LegendDot extends StatelessWidget {
+  const _LegendDot({required this.color, required this.label});
+  final Color color;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Container(
+          width: 10,
+          height: 10,
+          decoration:
+              BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
+        ),
+        const SizedBox(width: 6),
+        Text(label, style: Theme.of(context).textTheme.labelSmall),
+      ],
+    );
+  }
+}
+
+class _TrendPainter extends CustomPainter {
+  _TrendPainter({
+    required this.points,
+    required this.maxMinor,
+    required this.income,
+    required this.expense,
+    required this.axis,
+    required this.grid,
+  });
+
+  final List<MonthPoint> points;
+  final int maxMinor;
+  final Color income;
+  final Color expense;
+  final Color axis;
+  final Color grid;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const double labelBand = 18; // room for month numbers under the baseline
+    final double chartH = size.height - labelBand;
+    final double baseY = chartH;
+    final double groupW = size.width / points.length;
+    final double barW = (groupW * 0.30).clamp(3.0, 14.0);
+    const double gap = 2;
+
+    // Baseline.
+    final Paint base = Paint()
+      ..color = grid
+      ..strokeWidth = 1;
+    canvas.drawLine(Offset(0, baseY), Offset(size.width, baseY), base);
+
+    final Paint incPaint = Paint()..color = income;
+    final Paint expPaint = Paint()..color = expense;
+
+    for (int i = 0; i < points.length; i++) {
+      final MonthPoint p = points[i];
+      final double centre = groupW * i + groupW / 2;
+      final double incH =
+          maxMinor == 0 ? 0 : (p.income.minorUnits / maxMinor) * (chartH - 4);
+      final double expH =
+          maxMinor == 0 ? 0 : (p.expense.minorUnits / maxMinor) * (chartH - 4);
+
+      final double incLeft = centre - barW - gap / 2;
+      final double expLeft = centre + gap / 2;
+      const Radius r = Radius.circular(2);
+
+      if (incH > 0) {
+        canvas.drawRRect(
+          RRect.fromRectAndCorners(
+            Rect.fromLTWH(incLeft, baseY - incH, barW, incH),
+            topLeft: r,
+            topRight: r,
+          ),
+          incPaint,
+        );
+      }
+      if (expH > 0) {
+        canvas.drawRRect(
+          RRect.fromRectAndCorners(
+            Rect.fromLTWH(expLeft, baseY - expH, barW, expH),
+            topLeft: r,
+            topRight: r,
+          ),
+          expPaint,
+        );
+      }
+
+      // Month number label.
+      final TextPainter tp = TextPainter(
+        text: TextSpan(
+          text: '${i + 1}',
+          style: TextStyle(color: axis, fontSize: 10),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      tp.paint(
+        canvas,
+        Offset(centre - tp.width / 2, baseY + 4),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_TrendPainter old) =>
+      old.points != points ||
+      old.maxMinor != maxMinor ||
+      old.income != income ||
+      old.expense != expense;
 }
 
 class _Box extends StatelessWidget {

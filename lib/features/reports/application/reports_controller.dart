@@ -38,6 +38,15 @@ final reportTransactionsProvider = Provider<List<Transaction>>((ref) {
       .toList();
 });
 
+/// 12-month income/expense/net series for the selected year (period-independent
+/// so the trend chart always shows the full year for context).
+final reportMonthlyTrendProvider = Provider<List<MonthPoint>>((ref) {
+  final List<Transaction> yearTxns = ref.watch(yearTransactionsProvider);
+  final int year = ref.watch(selectedYearProvider);
+  final String currency = ref.watch(baseCurrencyProvider);
+  return FinanceCalculator.monthlyTotals(yearTxns, year, currency);
+});
+
 final reportResultProvider = Provider<ReportResult>((ref) {
   final List<Transaction> txns = ref.watch(reportTransactionsProvider);
   final String currency = ref.watch(baseCurrencyProvider);

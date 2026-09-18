@@ -363,5 +363,9 @@
   "@importDone": { "placeholders": { "tx": { "type": "int" }, "bud": { "type": "int" } } },
   "importEmpty": "لا جديد للاستيراد — بياناتك محدّثة بالفعل.",
   "importFailed": "تعذّرت قراءة ملف النسخة الاحتياطية.",
-  "exportEmpty": "لا توجد بيانات للتصدير بعد."
+  "exportEmpty": "لا توجد بيانات للتصدير بعد.",
+
+  "reportMonthlyTrend": "الاتجاه الشهري",
+  "legendIncome": "الدخل",
+  "legendExpenses": "المصروفات"
 }
