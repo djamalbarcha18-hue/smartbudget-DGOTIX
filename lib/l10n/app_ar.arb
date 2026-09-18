@@ -299,5 +299,26 @@
   "insightDebtsOwedByMe": "عليك دَين بمقدار {amount}.",
   "@insightDebtsOwedByMe": { "placeholders": { "amount": { "type": "String" } } },
   "insightZakatDue": "الزكاة واجبة: {amount}.",
-  "@insightZakatDue": { "placeholders": { "amount": { "type": "String" } } }
+  "@insightZakatDue": { "placeholders": { "amount": { "type": "String" } } },
+
+  "navMarkets": "أسعار الصرف والأسواق",
+  "pageMarkets": "أسعار الصرف والأسواق",
+  "marketsSubtitle": "أسواق العملات الرسمية والموازية إضافةً للعملات الرقمية — مباشرة من مصادر عامة، على جهازك.",
+  "marketsRefresh": "تحديث",
+  "rateType": "نوع السعر",
+  "rateTypeHint": "كيف تُقيَّم أموالك عند التحويل بين العملات.",
+  "rateTypeOfficial": "رسمي",
+  "rateTypeParallel": "موازٍ",
+  "rateTypeP2P": "P2P",
+  "rateTypeCustom": "مخصّص",
+  "customRateLabel": "سعر مخصّص ({base} لكل 1 دولار)",
+  "@customRateLabel": { "placeholders": { "base": { "type": "String" } } },
+  "marketOfficial": "رسمي",
+  "marketParallelBuy": "شراء (موازٍ)",
+  "marketParallelSell": "بيع (موازٍ)",
+  "marketUnavailable": "البيانات غير متاحة حالياً",
+  "sectionCrypto": "سوق العملات الرقمية",
+  "marketSource": "المصدر",
+  "marketUpdated": "آخر تحديث",
+  "marketsDisclaimer": "الأسعار الحيّة تأتي من مصادر عامة (open.er-api.com و CoinGecko وواجهات الأسواق الموازية حسب الدولة عند توفرها). تظهر بيانات السوق الموازية/P2P فقط عند وجود مصدر موثوق — وإلا تُعرض «غير متاحة»، دون أي رقم مخترَع."
 }

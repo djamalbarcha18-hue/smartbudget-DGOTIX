@@ -299,5 +299,26 @@
   "insightDebtsOwedByMe": "You owe {amount}.",
   "@insightDebtsOwedByMe": { "placeholders": { "amount": { "type": "String" } } },
   "insightZakatDue": "Zakat is due: {amount}.",
-  "@insightZakatDue": { "placeholders": { "amount": { "type": "String" } } }
+  "@insightZakatDue": { "placeholders": { "amount": { "type": "String" } } },
+
+  "navMarkets": "Exchange Rates & Markets",
+  "pageMarkets": "Exchange Rates & Markets",
+  "marketsSubtitle": "Official and parallel FIAT markets plus crypto — live from public sources, on your device.",
+  "marketsRefresh": "Refresh",
+  "rateType": "Rate type",
+  "rateTypeHint": "How your money is valued when converting between currencies.",
+  "rateTypeOfficial": "Official",
+  "rateTypeParallel": "Parallel",
+  "rateTypeP2P": "P2P",
+  "rateTypeCustom": "Custom",
+  "customRateLabel": "Custom rate ({base} per 1 USD)",
+  "@customRateLabel": { "placeholders": { "base": { "type": "String" } } },
+  "marketOfficial": "Official",
+  "marketParallelBuy": "Parallel Buy",
+  "marketParallelSell": "Parallel Sell",
+  "marketUnavailable": "Data unavailable",
+  "sectionCrypto": "Crypto Market",
+  "marketSource": "Source",
+  "marketUpdated": "Updated",
+  "marketsDisclaimer": "Live prices come from public sources (open.er-api.com, CoinGecko, and per-country parallel APIs where available). Parallel/P2P data appears only when a reliable source exists — otherwise it reads “unavailable”, never an invented number."
 }

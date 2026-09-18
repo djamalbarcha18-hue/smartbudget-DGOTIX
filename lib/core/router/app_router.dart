@@ -14,6 +14,7 @@ import 'package:smartbudget/features/expenses/presentation/expenses_page.dart';
 import 'package:smartbudget/features/financial_health/presentation/financial_health_page.dart';
 import 'package:smartbudget/features/goals/presentation/goals_page.dart';
 import 'package:smartbudget/features/income/presentation/income_page.dart';
+import 'package:smartbudget/features/markets/presentation/markets_page.dart';
 import 'package:smartbudget/features/monthly_budget/presentation/monthly_budget_page.dart';
 import 'package:smartbudget/features/reports/presentation/reports_page.dart';
 import 'package:smartbudget/features/settings/presentation/settings_page.dart';
@@ -120,6 +121,11 @@ GoRouter buildRouter(Ref ref) {
                 const NoTransitionPage<void>(child: ReportsPage()),
           ),
           GoRoute(
+            path: '/markets',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const NoTransitionPage<void>(child: MarketsPage()),
+          ),
+          GoRoute(
             path: '/assistant',
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const NoTransitionPage<void>(child: AssistantPage()),
@@ -152,6 +158,7 @@ const Set<AppSection> _implementedSections = <AppSection>{
   AppSection.debts,
   AppSection.financialHealth,
   AppSection.exchangeRates,
+  AppSection.markets,
   AppSection.zakat,
   AppSection.reports,
   AppSection.aiAssistant,

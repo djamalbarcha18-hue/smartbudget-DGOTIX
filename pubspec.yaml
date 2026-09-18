@@ -35,6 +35,10 @@ dependencies:
   # Per-viewer preferences (theme + locale) — NOT financial data
   shared_preferences: ^2.2.3
 
+  # HTTP client for the live markets data layer (keyless public APIs only;
+  # NO secrets in the frontend). Works on Flutter web via the Fetch API.
+  http: ^1.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
