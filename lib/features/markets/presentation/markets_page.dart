@@ -176,7 +176,6 @@ class _CountrySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AppLocalizations l = AppLocalizations.of(context);
     final bool ar = Localizations.localeOf(context).languageCode == 'ar';
     final AsyncValue<FxSnapshot> fx = ref.watch(fxSnapshotProvider);
     final AsyncValue<List<FxQuote>> parallel =
