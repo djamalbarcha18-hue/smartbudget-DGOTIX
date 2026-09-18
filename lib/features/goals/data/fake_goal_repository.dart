@@ -79,6 +79,39 @@ class FakeGoalRepository implements GoalRepository {
   }
 
   @override
+  Future<int> importMany(List<Goal> goals) async {
+    await _load();
+    final Set<String> existing = _items.map((Goal g) => g.id).toSet();
+    int added = 0;
+    for (final Goal g in goals) {
+      if (g.id.isEmpty || existing.contains(g.id)) continue;
+      _items.add(g);
+      existing.add(g.id);
+      added++;
+    }
+    if (added > 0) {
+      _sort();
+      await _persist();
+      _emit();
+    }
+    return added;
+  }
+
+  @override
+  Future<int> deleteMany(Iterable<String> ids) async {
+    await _load();
+    final Set<String> set = ids.toSet();
+    final int before = _items.length;
+    _items.removeWhere((Goal g) => set.contains(g.id));
+    final int removed = before - _items.length;
+    if (removed > 0) {
+      await _persist();
+      _emit();
+    }
+    return removed;
+  }
+
+  @override
   void dispose() {
     _controller.close();
   }

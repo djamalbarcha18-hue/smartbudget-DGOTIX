@@ -1,12 +1,18 @@
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
+import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
-/// A bundle of demo transactions + budget targets for one year.
+/// A bundle of demo transactions + budget targets + goals for one year.
 class SampleDataSet {
-  const SampleDataSet({required this.transactions, required this.budgets});
+  const SampleDataSet({
+    required this.transactions,
+    required this.budgets,
+    required this.goals,
+  });
   final List<Transaction> transactions;
   final List<BudgetTarget> budgets;
+  final List<Goal> goals;
 }
 
 /// Deterministic demo data for testing the template (default year 2026).
@@ -88,7 +94,36 @@ abstract final class SampleData {
       budgets.add(b('shopping', m, 'التسوق', 250));
     }
 
-    return SampleDataSet(transactions: txns, budgets: budgets);
+    // A few savings goals so the dashboard's goals card fills in too.
+    final List<Goal> goals = <Goal>[
+      Goal(
+        id: 'smpl-goal-emergency',
+        name: 'صندوق الطوارئ',
+        target: Money.fromDouble(10000, currency),
+        saved: Money.fromDouble(6500, currency),
+        deadline: DateTime(year, 12, 31),
+        createdAt: created,
+      ),
+      Goal(
+        id: 'smpl-goal-car',
+        name: 'شراء سيارة',
+        target: Money.fromDouble(25000, currency),
+        saved: Money.fromDouble(9000, currency),
+        deadline: DateTime(year + 1, 6, 30),
+        createdAt: created,
+      ),
+      Goal(
+        id: 'smpl-goal-trip',
+        name: 'إجازة العائلة',
+        target: Money.fromDouble(4000, currency),
+        saved: Money.fromDouble(2500, currency),
+        deadline: DateTime(year, 8, 15),
+        createdAt: created,
+      ),
+    ];
+
+    return SampleDataSet(
+        transactions: txns, budgets: budgets, goals: goals);
   }
 
   static String _two(int v) => v.toString().padLeft(2, '0');
