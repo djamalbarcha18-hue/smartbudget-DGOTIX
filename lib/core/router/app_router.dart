@@ -6,6 +6,7 @@ import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/auth/presentation/forgot_password_page.dart';
 import 'package:smartbudget/features/auth/presentation/login_page.dart';
 import 'package:smartbudget/features/auth/presentation/signup_page.dart';
+import 'package:smartbudget/features/assistant/presentation/assistant_page.dart';
 import 'package:smartbudget/features/dashboard/presentation/dashboard_page.dart';
 import 'package:smartbudget/features/debts/presentation/debts_page.dart';
 import 'package:smartbudget/features/exchange_rates/presentation/exchange_rates_page.dart';
@@ -119,6 +120,11 @@ GoRouter buildRouter(Ref ref) {
                 const NoTransitionPage<void>(child: ReportsPage()),
           ),
           GoRoute(
+            path: '/assistant',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const NoTransitionPage<void>(child: AssistantPage()),
+          ),
+          GoRoute(
             path: '/settings',
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const NoTransitionPage<void>(child: SettingsPage()),
@@ -148,6 +154,7 @@ const Set<AppSection> _implementedSections = <AppSection>{
   AppSection.exchangeRates,
   AppSection.zakat,
   AppSection.reports,
+  AppSection.aiAssistant,
   AppSection.settings,
   AppSection.helpSupport,
 };
