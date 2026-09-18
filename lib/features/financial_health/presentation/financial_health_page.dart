@@ -5,11 +5,9 @@ import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
-import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/financial_health/application/health_controller.dart';
 import 'package:smartbudget/features/financial_health/domain/health_calculator.dart';
-import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 class FinancialHealthPage extends ConsumerWidget {
@@ -19,27 +17,14 @@ class FinancialHealthPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final bool hasData = ref.watch(healthHasDataProvider);
-    final int year = ref.watch(selectedYearProvider);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(DsSpacing.pageGutter),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Text(l.pageFinancialHealth,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                    overflow: TextOverflow.ellipsis),
-              ),
-              _YearSelector(
-                year: year,
-                onChanged: (int y) =>
-                    ref.read(selectedYearProvider.notifier).state = y,
-              ),
-            ],
-          ),
+          Text(l.pageFinancialHealth,
+              style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: DsSpacing.xl),
           if (!hasData)
             Padding(
@@ -180,37 +165,6 @@ class _IndicatorRow extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _YearSelector extends StatelessWidget {
-  const _YearSelector({required this.year, required this.onChanged});
-  final int year;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final DsColors c = context.dsColors;
-    final int now = DateTime.now().year;
-    final List<int> years = List<int>.generate(7, (int i) => now - 5 + i);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.md),
-      decoration: BoxDecoration(
-        color: c.surfaceMuted,
-        borderRadius: DsRadius.brMd,
-        border: Border.all(color: c.border),
-      ),
-      child: DropdownButton<int>(
-        value: years.contains(year) ? year : now,
-        underline: const SizedBox.shrink(),
-        dropdownColor: c.bgElevated,
-        items: <DropdownMenuItem<int>>[
-          for (final int y in years)
-            DropdownMenuItem<int>(value: y, child: Text('$y')),
-        ],
-        onChanged: (int? v) => v == null ? null : onChanged(v),
       ),
     );
   }
