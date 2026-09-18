@@ -16,6 +16,7 @@ import 'package:smartbudget/features/goals/presentation/goals_page.dart';
 import 'package:smartbudget/features/income/presentation/income_page.dart';
 import 'package:smartbudget/features/markets/presentation/markets_page.dart';
 import 'package:smartbudget/features/monthly_budget/presentation/monthly_budget_page.dart';
+import 'package:smartbudget/features/portfolio/presentation/portfolio_page.dart';
 import 'package:smartbudget/features/reports/presentation/reports_page.dart';
 import 'package:smartbudget/features/settings/presentation/settings_page.dart';
 import 'package:smartbudget/features/shell/app_shell.dart';
@@ -96,6 +97,11 @@ GoRouter buildRouter(Ref ref) {
                 const NoTransitionPage<void>(child: GoalsPage()),
           ),
           GoRoute(
+            path: '/portfolio',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const NoTransitionPage<void>(child: PortfolioPage()),
+          ),
+          GoRoute(
             path: '/debts',
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const NoTransitionPage<void>(child: DebtsPage()),
@@ -155,6 +161,7 @@ const Set<AppSection> _implementedSections = <AppSection>{
   AppSection.expenses,
   AppSection.monthlyBudget,
   AppSection.goals,
+  AppSection.portfolio,
   AppSection.debts,
   AppSection.financialHealth,
   AppSection.exchangeRates,
