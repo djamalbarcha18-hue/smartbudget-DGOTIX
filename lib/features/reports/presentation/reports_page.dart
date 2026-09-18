@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
+import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
 import 'package:smartbudget/design_system/components/savings_jar_icon.dart';
@@ -33,7 +34,8 @@ class ReportsPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(l.navReports, style: Theme.of(context).textTheme.headlineSmall),
+          BrandedTitle(l.brandAnalytics,
+              style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: DsSpacing.lg),
 
           // Controls.

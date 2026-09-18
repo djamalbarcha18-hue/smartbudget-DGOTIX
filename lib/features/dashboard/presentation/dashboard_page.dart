@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
+import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_section_header.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -142,11 +143,27 @@ class _Header extends StatelessWidget {
       ),
     ];
 
+    final Widget titleBlock = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        BrandedTitle(
+          l.brandInsights,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: context.dsColors.textMuted,
+                letterSpacing: 0.8,
+              ),
+        ),
+        const SizedBox(height: 2),
+        Text(greeting, style: Theme.of(context).textTheme.headlineSmall),
+      ],
+    );
+
     if (isMobile) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(greeting, style: Theme.of(context).textTheme.headlineSmall),
+          titleBlock,
           const SizedBox(height: DsSpacing.md),
           Wrap(spacing: DsSpacing.sm, runSpacing: DsSpacing.sm, children: actions),
         ],
@@ -154,9 +171,7 @@ class _Header extends StatelessWidget {
     }
     return Row(
       children: <Widget>[
-        Expanded(
-          child: Text(greeting, style: Theme.of(context).textTheme.headlineSmall),
-        ),
+        Expanded(child: titleBlock),
         actions[0],
         const SizedBox(width: DsSpacing.sm),
         actions[1],

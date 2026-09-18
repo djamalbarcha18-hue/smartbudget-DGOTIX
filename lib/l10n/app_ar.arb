@@ -439,5 +439,9 @@
   "statusFunded": "على المسار",
   "statusPartial": "ممول جزئياً",
   "statusUnfunded": "غير ممول",
-  "statusOverdue": "متأخّر"
+  "statusOverdue": "متأخّر",
+
+  "brandInsights": "رؤى DGOTIX",
+  "brandAnalytics": "تحليلات DGOTIX",
+  "brandAi": "DGOTIX AI"
 }

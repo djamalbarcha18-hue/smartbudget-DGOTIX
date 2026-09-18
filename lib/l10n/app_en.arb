@@ -439,5 +439,9 @@
   "statusFunded": "On track",
   "statusPartial": "Partly funded",
   "statusUnfunded": "Unfunded",
-  "statusOverdue": "Overdue"
+  "statusOverdue": "Overdue",
+
+  "brandInsights": "DGOTIX Insights",
+  "brandAnalytics": "DGOTIX Analytics",
+  "brandAi": "DGOTIX AI"
 }

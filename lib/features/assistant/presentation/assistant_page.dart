@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
+import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -39,7 +40,7 @@ class AssistantPage extends ConsumerWidget {
                   Icon(Icons.auto_awesome_outlined,
                       color: context.dsColors.brand),
                   const SizedBox(width: DsSpacing.sm),
-                  Text(l.pageAssistant,
+                  BrandedTitle(l.brandAi,
                       style: Theme.of(context).textTheme.headlineSmall),
                 ],
               ),
