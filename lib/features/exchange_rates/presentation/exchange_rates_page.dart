@@ -5,6 +5,7 @@ import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -236,7 +237,14 @@ class _CurrencyDropdown extends StatelessWidget {
           for (final Currency cur in Currencies.all)
             DropdownMenuItem<String>(
               value: cur.code,
-              child: Text('${cur.code} · ${cur.symbol}'),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  CurrencyFlag(cur, width: 22),
+                  const SizedBox(width: DsSpacing.sm),
+                  Text('${cur.code} · ${cur.symbol}'),
+                ],
+              ),
             ),
         ],
         onChanged: (String? v) => v == null ? null : onChanged(v),
@@ -259,6 +267,8 @@ class _RateRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: DsSpacing.sm),
       child: Row(
         children: <Widget>[
+          CurrencyFlag(currency, width: 24),
+          const SizedBox(width: DsSpacing.md),
           SizedBox(
             width: 52,
             child: Text(currency.code,
