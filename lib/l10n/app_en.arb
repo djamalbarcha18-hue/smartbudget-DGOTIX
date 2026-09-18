@@ -352,5 +352,16 @@
   "addCategoryHint": "New category name",
   "addCategory": "Add",
   "noCustomCategories": "No custom categories yet.",
-  "removeCategory": "Remove"
+  "removeCategory": "Remove",
+
+  "settingsData": "Data & backup",
+  "dataBackupHint": "Export a full backup or your transactions, or restore from a backup file. Everything stays on this device — no account needed.",
+  "exportJson": "Export backup",
+  "exportCsv": "Export transactions (CSV)",
+  "importJson": "Import backup",
+  "importDone": "Imported {tx} transactions and {bud} budgets.",
+  "@importDone": { "placeholders": { "tx": { "type": "int" }, "bud": { "type": "int" } } },
+  "importEmpty": "Nothing new to import — your data is already up to date.",
+  "importFailed": "Couldn't read that backup file.",
+  "exportEmpty": "No data to export yet."
 }

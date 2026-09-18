@@ -16,5 +16,10 @@ abstract interface class BudgetRepository {
   });
 
   Future<void> delete(String id);
+
+  /// Merge-imports [targets], skipping any that collide with an existing
+  /// (year, month, category). Returns the number actually added.
+  Future<int> importMany(List<BudgetTarget> targets);
+
   void dispose();
 }

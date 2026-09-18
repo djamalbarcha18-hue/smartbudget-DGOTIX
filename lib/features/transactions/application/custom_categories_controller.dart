@@ -79,6 +79,32 @@ class CustomCategoriesController extends Notifier<CustomCategories> {
     return _save();
   }
 
+  /// Merge-imports custom categories (used by backup restore). Skips names that
+  /// duplicate an existing custom entry or a built-in [Catalog] category.
+  Future<void> importMany({
+    List<String> income = const <String>[],
+    List<String> expense = const <String>[],
+  }) {
+    final List<String> incomeNext =
+        _merged(state.income, income, TransactionType.income);
+    final List<String> expenseNext =
+        _merged(state.expense, expense, TransactionType.expense);
+    state = CustomCategories(income: incomeNext, expense: expenseNext);
+    return _save();
+  }
+
+  static List<String> _merged(
+      List<String> current, List<String> incoming, TransactionType type) {
+    final List<String> out = <String>[...current];
+    final List<String> builtIn = Catalog.categoriesFor(type);
+    for (final String raw in incoming) {
+      final String n = raw.trim();
+      if (n.isEmpty || out.contains(n) || builtIn.contains(n)) continue;
+      out.add(n);
+    }
+    return out;
+  }
+
   void _set(TransactionType type, List<String> next) {
     state = type == TransactionType.income
         ? CustomCategories(income: next, expense: state.expense)

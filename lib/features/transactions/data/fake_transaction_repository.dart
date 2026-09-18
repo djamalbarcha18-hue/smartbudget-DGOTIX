@@ -85,6 +85,26 @@ class FakeTransactionRepository implements TransactionRepository {
   }
 
   @override
+  Future<int> importMany(List<Transaction> txns) async {
+    await _load();
+    final Set<String> existing =
+        _items.map((Transaction t) => t.id).toSet();
+    int added = 0;
+    for (final Transaction t in txns) {
+      if (t.id.isEmpty || existing.contains(t.id)) continue;
+      _items.add(t);
+      existing.add(t.id);
+      added++;
+    }
+    if (added > 0) {
+      _sort();
+      await _persist();
+      _emit();
+    }
+    return added;
+  }
+
+  @override
   void dispose() {
     _controller.close();
   }

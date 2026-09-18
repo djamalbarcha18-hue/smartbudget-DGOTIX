@@ -99,6 +99,24 @@ class FakeBudgetRepository implements BudgetRepository {
   }
 
   @override
+  Future<int> importMany(List<BudgetTarget> targets) async {
+    await _load();
+    bool collides(BudgetTarget t) => _items.any((BudgetTarget e) =>
+        e.year == t.year && e.month == t.month && e.category == t.category);
+    int added = 0;
+    for (final BudgetTarget t in targets) {
+      if (collides(t)) continue;
+      _items.add(t);
+      added++;
+    }
+    if (added > 0) {
+      await _persist();
+      _emit();
+    }
+    return added;
+  }
+
+  @override
   void dispose() {
     _controller.close();
   }

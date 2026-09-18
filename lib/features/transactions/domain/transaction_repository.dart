@@ -16,5 +16,9 @@ abstract interface class TransactionRepository {
   Future<void> update(Transaction txn);
   Future<void> delete(String id);
 
+  /// Merge-imports [txns], skipping any whose id already exists (non-destructive
+  /// restore). Returns the number of transactions actually added.
+  Future<int> importMany(List<Transaction> txns);
+
   void dispose();
 }

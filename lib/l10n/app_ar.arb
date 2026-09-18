@@ -352,5 +352,16 @@
   "addCategoryHint": "اسم الفئة الجديدة",
   "addCategory": "إضافة",
   "noCustomCategories": "لا توجد فئات مخصّصة بعد.",
-  "removeCategory": "حذف"
+  "removeCategory": "حذف",
+
+  "settingsData": "البيانات والنسخ الاحتياطي",
+  "dataBackupHint": "صدّر نسخة احتياطية كاملة أو معاملاتك، أو استعِد من ملف نسخة احتياطية. تبقى جميع البيانات على هذا الجهاز — دون الحاجة إلى حساب.",
+  "exportJson": "تصدير نسخة احتياطية",
+  "exportCsv": "تصدير المعاملات (CSV)",
+  "importJson": "استيراد نسخة احتياطية",
+  "importDone": "تم استيراد {tx} معاملة و{bud} ميزانية.",
+  "@importDone": { "placeholders": { "tx": { "type": "int" }, "bud": { "type": "int" } } },
+  "importEmpty": "لا جديد للاستيراد — بياناتك محدّثة بالفعل.",
+  "importFailed": "تعذّرت قراءة ملف النسخة الاحتياطية.",
+  "exportEmpty": "لا توجد بيانات للتصدير بعد."
 }

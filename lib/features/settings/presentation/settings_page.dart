@@ -12,7 +12,11 @@ import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/backup/application/backup_controller.dart';
+import 'package:smartbudget/features/backup/data/file_io.dart';
+import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
+import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -129,6 +133,14 @@ class SettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: DsSpacing.lg),
+
+              // Data — backup & restore.
+              _SettingsSection(
+                icon: Icons.backup_outlined,
+                title: l.settingsData,
+                child: const _BackupSection(),
               ),
               const SizedBox(height: DsSpacing.lg),
 
@@ -298,6 +310,159 @@ class _AboutRow extends StatelessWidget {
           ),
           Text(value, style: Theme.of(context).textTheme.titleSmall),
         ],
+      ),
+    );
+  }
+}
+
+/// Export a full backup (JSON) or transactions (CSV), and restore from a
+/// backup file — all on-device, no server required.
+class _BackupSection extends ConsumerStatefulWidget {
+  const _BackupSection();
+
+  @override
+  ConsumerState<_BackupSection> createState() => _BackupSectionState();
+}
+
+class _BackupSectionState extends ConsumerState<_BackupSection> {
+  bool _busy = false;
+
+  String _stamp() {
+    final DateTime n = DateTime.now();
+    String two(int v) => v.toString().padLeft(2, '0');
+    return '${n.year}${two(n.month)}${two(n.day)}-${two(n.hour)}${two(n.minute)}';
+  }
+
+  Future<void> _exportJson() async {
+    final BackupService svc = ref.read(backupServiceProvider);
+    await downloadText(
+      filename: 'smartbudget-backup-${_stamp()}.json',
+      text: svc.exportJson(),
+      mime: 'application/json;charset=utf-8',
+    );
+  }
+
+  Future<void> _exportCsv() async {
+    final BackupService svc = ref.read(backupServiceProvider);
+    // BOM so Excel reads UTF-8 (Arabic) correctly.
+    await downloadText(
+      filename: 'smartbudget-transactions-${_stamp()}.csv',
+      text: '﻿${svc.exportTransactionsCsv()}',
+      mime: 'text/csv;charset=utf-8',
+    );
+  }
+
+  Future<void> _import() async {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    setState(() => _busy = true);
+    try {
+      final String? raw = await pickTextFile();
+      if (raw == null) return; // user cancelled
+      final ImportResult res =
+          await ref.read(backupServiceProvider).importJson(raw);
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(res.isEmpty
+              ? l.importEmpty
+              : l.importDone(res.transactionsAdded, res.budgetsAdded)),
+        ),
+      );
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text(l.importFailed)));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    // Watch so the underlying stores stay loaded while this screen is open.
+    final int txCount =
+        ref.watch(transactionsProvider).valueOrNull?.length ?? 0;
+    final int budCount = ref.watch(budgetsProvider).valueOrNull?.length ?? 0;
+    final bool hasData = txCount > 0 || budCount > 0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Text(l.dataBackupHint, style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: DsSpacing.lg),
+        Wrap(
+          spacing: DsSpacing.sm,
+          runSpacing: DsSpacing.sm,
+          children: <Widget>[
+            _ActionButton(
+              icon: Icons.download_outlined,
+              label: l.exportJson,
+              onTap: _busy || !hasData ? null : _exportJson,
+            ),
+            _ActionButton(
+              icon: Icons.table_chart_outlined,
+              label: l.exportCsv,
+              onTap: _busy || txCount == 0 ? null : _exportCsv,
+            ),
+            _ActionButton(
+              icon: Icons.upload_file_outlined,
+              label: l.importJson,
+              onTap: _busy ? null : _import,
+            ),
+          ],
+        ),
+        if (!hasData) ...<Widget>[
+          const SizedBox(height: DsSpacing.sm),
+          Text(l.exportEmpty,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: c.textFaint)),
+        ],
+      ],
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final bool enabled = onTap != null;
+    return Material(
+      color: enabled ? c.surfaceMuted : c.surfaceMuted.withValues(alpha: 0.5),
+      borderRadius: DsRadius.brMd,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: DsRadius.brMd,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: DsSpacing.lg, vertical: DsSpacing.md),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(icon,
+                  size: 18, color: enabled ? c.brand : c.textFaint),
+              const SizedBox(width: DsSpacing.sm),
+              Text(
+                label,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: enabled ? c.textPrimary : c.textFaint,
+                    ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
