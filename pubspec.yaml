@@ -39,6 +39,11 @@ dependencies:
   # NO secrets in the frontend). Works on Flutter web via the Fetch API.
   http: ^1.2.2
 
+  # Production backend (auth + Postgres). Dormant unless SUPABASE_URL/ANON_KEY
+  # are provided at build time; the app falls back to the local dev backend
+  # otherwise, so the free web demo keeps working with zero credentials.
+  supabase_flutter: ^2.5.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

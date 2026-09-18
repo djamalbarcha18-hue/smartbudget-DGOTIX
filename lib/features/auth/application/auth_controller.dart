@@ -3,16 +3,18 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/features/auth/data/fake_auth_repository.dart';
+import 'package:smartbudget/features/auth/data/supabase_auth_repository.dart';
 import 'package:smartbudget/features/auth/domain/auth_repository.dart';
 import 'package:smartbudget/features/auth/domain/auth_user.dart';
 
-/// Binds the active [AuthRepository].
-///
-/// P2 ships the local dev backend (fake). When Supabase credentials are present
-/// (P2b), this is the ONLY line that changes — swap in `SupabaseAuthRepository`.
+/// Binds the active [AuthRepository]: real Supabase when configured, else the
+/// local dev backend (fake). This is the single switch between demo and
+/// production — no UI or business code depends on the concrete backend.
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  final AuthRepository repo = FakeAuthRepository();
+  final AuthRepository repo =
+      AppEnv.hasSupabase ? SupabaseAuthRepository() : FakeAuthRepository();
   ref.onDispose(repo.dispose);
   return repo;
 });
