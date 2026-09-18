@@ -40,6 +40,7 @@ class DgotixBrandLockup extends StatelessWidget {
       height: logoHeight,
       semanticsLabel: AppConfig.parentBrand,
       fit: BoxFit.contain,
+      alignment: Alignment.center,
     );
 
     final Widget product = Text.rich(
