@@ -17,10 +17,14 @@ class DgotixBrandLockup extends StatelessWidget {
     super.key,
     this.logoHeight = 40,
     this.showTagline = false,
+    this.gap = DsSpacing.xs,
   });
 
   /// Rendered height of the DGOTIX SVG.
   final double logoHeight;
+
+  /// Vertical space between the DGOTIX logo and the "SmartBudget" wordmark.
+  final double gap;
 
   /// Whether to show the product tagline under the product name.
   final bool showTagline;
@@ -55,7 +59,7 @@ class DgotixBrandLockup extends StatelessWidget {
 
     final List<Widget> children = <Widget>[
       logo,
-      const SizedBox(height: DsSpacing.xs),
+      SizedBox(height: gap),
       product,
       if (showTagline) ...<Widget>[
         const SizedBox(height: DsSpacing.xxs),
