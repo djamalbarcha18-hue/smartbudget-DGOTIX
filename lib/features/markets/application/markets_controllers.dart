@@ -11,6 +11,7 @@ import 'package:smartbudget/features/markets/data/gold_api_metals_repository.dar
 import 'package:smartbudget/features/markets/data/market_http.dart';
 import 'package:smartbudget/features/markets/data/open_erapi_fx_repository.dart';
 import 'package:smartbudget/features/markets/data/rate_cache.dart';
+import 'package:smartbudget/features/markets/data/square_dz_repository.dart';
 import 'package:smartbudget/features/markets/data/unavailable_market_provider.dart';
 import 'package:smartbudget/features/markets/domain/commodity_config.dart';
 import 'package:smartbudget/features/markets/domain/commodity_models.dart';
@@ -41,6 +42,8 @@ final parallelRepositoriesProvider =
   final RateCache cache = ref.watch(rateCacheProvider);
   return <String, ParallelMarketRepository>{
     'dolarapi_ar': DolarApiArRepository(http: http, cache: cache),
+    // Algeria — Square Port-Saïd via a keyless, CORS-enabled community API.
+    'square_dz': SquareDzRepository(http: http, cache: cache),
     // Owner-configured proxy (dormant until PARALLEL_API_URL is set); serves
     // any country whose parallelSourceId is 'backend'.
     'backend': BackendParallelRepository(http: http, cache: cache),

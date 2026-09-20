@@ -56,9 +56,10 @@ abstract final class MarketConfig {
       nameAr: 'الجزائر',
       base: 'DZD',
       pairs: <String>['USD', 'EUR', 'GBP', 'SAR', 'AED'],
-      // No reliable free public API; live data via the owner's parallel proxy
-      // when configured, otherwise "unavailable" (manual entry still works).
-      parallelSourceId: 'backend',
+      // Live Square Port-Saïd rates via a keyless, CORS-enabled community API
+      // (unofficial). Falls back to "unavailable" if the source is down; manual
+      // entry always remains available.
+      parallelSourceId: 'square_dz',
     ),
     CountryMarket(
       country: 'ar',
