@@ -315,6 +315,12 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
     if (mounted) await _AlertDetailDialog.show(context, alert, _goToAlert);
   }
 
+  /// One-press navigation straight from a panel row: close the panel, then go.
+  Future<void> _goDirect(AppAlert alert) async {
+    await _close();
+    if (mounted) _goToAlert(alert);
+  }
+
   void _goToAlert(AppAlert alert) {
     // Set a highlight target the destination page picks up, then navigate.
     ref.read(alertFocusProvider.notifier).state =
@@ -351,7 +357,7 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
             child: ScaleTransition(
               scale: Tween<double>(begin: 0.94, end: 1).animate(curved),
               alignment: rtl ? Alignment.topLeft : Alignment.topRight,
-              child: _NotificationsPanel(onOpen: _openDetail),
+              child: _NotificationsPanel(onOpen: _openDetail, onGo: _goDirect),
             ),
           ),
         ),
@@ -396,8 +402,9 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
 
 /// The animated notifications panel content (kept live via a Consumer).
 class _NotificationsPanel extends ConsumerWidget {
-  const _NotificationsPanel({required this.onOpen});
+  const _NotificationsPanel({required this.onOpen, required this.onGo});
   final void Function(AppAlert alert) onOpen;
+  final void Function(AppAlert alert) onGo;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -470,6 +477,7 @@ class _NotificationsPanel extends ConsumerWidget {
                   itemBuilder: (BuildContext ctx, int i) => _PanelAlertRow(
                     alert: shown[i],
                     onTap: () => onOpen(shown[i]),
+                    onGo: () => onGo(shown[i]),
                   ),
                 ),
               ),
@@ -481,9 +489,18 @@ class _NotificationsPanel extends ConsumerWidget {
 }
 
 class _PanelAlertRow extends StatelessWidget {
-  const _PanelAlertRow({required this.alert, required this.onTap});
+  const _PanelAlertRow({
+    required this.alert,
+    required this.onTap,
+    required this.onGo,
+  });
   final AppAlert alert;
+
+  /// Tapping the row body opens the large detail view.
   final VoidCallback onTap;
+
+  /// Pressing the trailing action navigates straight to the alert's page.
+  final VoidCallback onGo;
 
   @override
   Widget build(BuildContext context) {
@@ -519,7 +536,20 @@ class _PanelAlertRow extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.chevron_right_rounded, size: 16, color: c.textFaint),
+            const SizedBox(width: DsSpacing.xs),
+            // One-press navigation to the alert's own page.
+            Tooltip(
+              message: v.actionLabel,
+              child: InkWell(
+                onTap: onGo,
+                borderRadius: BorderRadius.circular(999),
+                child: Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: Icon(Icons.arrow_forward_rounded,
+                      size: 16, color: c.brand),
+                ),
+              ),
+            ),
           ],
         ),
       ),
