@@ -53,8 +53,12 @@ class BackupService {
 
   /// Restores from a JSON backup string. Non-destructive: existing rows are
   /// kept, only new ones are merged in. Throws [FormatException] on bad input.
-  Future<ImportResult> importJson(String raw) async {
-    final BackupData data = BackupCodec.decodeJson(raw);
+  Future<ImportResult> importJson(String raw) =>
+      importData(BackupCodec.decodeJson(raw));
+
+  /// Restores from an already-parsed [BackupData] (shared by file import and
+  /// cloud restore). Non-destructive: only new rows are merged in.
+  Future<ImportResult> importData(BackupData data) async {
     final int txAdded =
         await _ref.read(financeRepositoryProvider).importMany(data.transactions);
     final int budAdded =

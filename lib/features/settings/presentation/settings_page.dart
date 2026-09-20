@@ -14,7 +14,10 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/backup/application/backup_controller.dart';
+import 'package:smartbudget/features/backup/application/cloud_backup_controller.dart';
+import 'package:smartbudget/features/backup/data/cloud_backup_service.dart';
 import 'package:smartbudget/features/backup/data/file_io.dart';
+import 'package:smartbudget/features/backup/domain/backup_model.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/dev/sample_data_controller.dart';
@@ -148,6 +151,16 @@ class SettingsPage extends ConsumerWidget {
                 child: const _BackupSection(),
               ),
               const SizedBox(height: DsSpacing.lg),
+
+              // Cloud backup (sync) — only with a real backend.
+              if (AppEnv.hasSupabase) ...<Widget>[
+                _SettingsSection(
+                  icon: Icons.cloud_sync_outlined,
+                  title: l.cloudBackupTitle,
+                  child: const _CloudBackupSection(),
+                ),
+                const SizedBox(height: DsSpacing.lg),
+              ],
 
               // Developer — sample data for testing the template.
               _SettingsSection(
@@ -652,6 +665,142 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
                   .bodySmall
                   ?.copyWith(color: c.textFaint)),
         ],
+      ],
+    );
+  }
+}
+
+/// Sync a full backup to the signed-in user's account and restore it on any
+/// device. Storage is guarded by Supabase RLS (each user sees only their row).
+class _CloudBackupSection extends ConsumerStatefulWidget {
+  const _CloudBackupSection();
+
+  @override
+  ConsumerState<_CloudBackupSection> createState() =>
+      _CloudBackupSectionState();
+}
+
+class _CloudBackupSectionState extends ConsumerState<_CloudBackupSection> {
+  bool _busy = false;
+
+  Future<void> _backUp() async {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    setState(() => _busy = true);
+    try {
+      final Map<String, dynamic> data =
+          ref.read(backupServiceProvider).snapshot().toJson();
+      await ref
+          .read(cloudBackupServiceProvider)
+          .push(data, BackupData.schemaVersion);
+      ref.invalidate(cloudBackupMetaProvider);
+      messenger.showSnackBar(SnackBar(content: Text(l.cloudBackedUp)));
+    } on CloudBackupException catch (e) {
+      messenger.showSnackBar(SnackBar(
+        content: Text(e.kind == CloudBackupErrorKind.notSignedIn
+            ? l.cloudBackupSignIn
+            : l.cloudFailed),
+      ));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _restore() async {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    setState(() => _busy = true);
+    try {
+      final Map<String, dynamic>? data =
+          await ref.read(cloudBackupServiceProvider).pull();
+      if (data == null) {
+        messenger.showSnackBar(SnackBar(content: Text(l.cloudNoBackup)));
+        return;
+      }
+      final ImportResult res = await ref
+          .read(backupServiceProvider)
+          .importData(BackupData.fromJson(data));
+      messenger.showSnackBar(SnackBar(
+        content: Text(res.isEmpty
+            ? l.importEmpty
+            : l.importDone(res.transactionsAdded, res.budgetsAdded)),
+      ));
+    } on CloudBackupException {
+      messenger.showSnackBar(SnackBar(content: Text(l.cloudFailed)));
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text(l.importFailed)));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  String _fmt(DateTime d) {
+    final DateTime x = d.toLocal();
+    String two(int n) => n.toString().padLeft(2, '0');
+    return '${x.year}-${two(x.month)}-${two(x.day)} ${two(x.hour)}:${two(x.minute)}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final bool signedIn = ref.watch(authControllerProvider).isAuthenticated;
+
+    if (!signedIn) {
+      return Text(l.cloudBackupSignIn,
+          style: Theme.of(context).textTheme.bodySmall);
+    }
+
+    final AsyncValue<CloudBackupMeta?> meta =
+        ref.watch(cloudBackupMetaProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Text(l.cloudBackupHint, style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: DsSpacing.md),
+        Row(
+          children: <Widget>[
+            Icon(
+              meta.valueOrNull != null
+                  ? Icons.cloud_done_outlined
+                  : Icons.cloud_off_outlined,
+              size: 16,
+              color: meta.valueOrNull != null ? c.income : c.textMuted,
+            ),
+            const SizedBox(width: DsSpacing.sm),
+            Expanded(
+              child: Text(
+                switch (meta) {
+                  AsyncData<CloudBackupMeta?>(value: final CloudBackupMeta? m) =>
+                    m == null
+                        ? l.cloudNeverSynced
+                        : l.cloudLastSynced(_fmt(m.updatedAt)),
+                  AsyncError<CloudBackupMeta?>() => l.cloudFailed,
+                  _ => l.cloudSyncing,
+                },
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: DsSpacing.lg),
+        Wrap(
+          spacing: DsSpacing.sm,
+          runSpacing: DsSpacing.sm,
+          children: <Widget>[
+            _ActionButton(
+              icon: Icons.cloud_upload_outlined,
+              label: l.cloudBackUp,
+              onTap: _busy ? null : _backUp,
+            ),
+            _ActionButton(
+              icon: Icons.cloud_download_outlined,
+              label: l.cloudRestore,
+              onTap: _busy ? null : _restore,
+            ),
+          ],
+        ),
       ],
     );
   }
