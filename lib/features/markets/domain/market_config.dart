@@ -56,8 +56,9 @@ abstract final class MarketConfig {
       nameAr: 'الجزائر',
       base: 'DZD',
       pairs: <String>['USD', 'EUR', 'GBP', 'SAR', 'AED'],
-      // No reliable free parallel-market API yet → shown as unavailable.
-      parallelSourceId: null,
+      // No reliable free public API; live data via the owner's parallel proxy
+      // when configured, otherwise "unavailable" (manual entry still works).
+      parallelSourceId: 'backend',
     ),
     CountryMarket(
       country: 'ar',
@@ -74,7 +75,7 @@ abstract final class MarketConfig {
       nameAr: 'لبنان',
       base: 'LBP',
       pairs: <String>['USD'],
-      parallelSourceId: null,
+      parallelSourceId: 'backend',
     ),
     CountryMarket(
       country: 'ng',
@@ -82,7 +83,7 @@ abstract final class MarketConfig {
       nameAr: 'نيجيريا',
       base: 'NGN',
       pairs: <String>['USD', 'EUR', 'GBP'],
-      parallelSourceId: null,
+      parallelSourceId: 'backend',
     ),
   ];
 }

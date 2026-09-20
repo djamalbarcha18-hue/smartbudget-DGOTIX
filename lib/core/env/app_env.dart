@@ -36,4 +36,16 @@ abstract final class AppEnv {
   /// True when a market proxy URL is configured; drives whether the commodity
   /// categories fetch live data or render "unavailable".
   static bool get hasMarketApi => marketApiUrl.isNotEmpty;
+
+  /// Public base URL of the owner's Parallel-market proxy (a Supabase Edge
+  /// Function or similar). Like [marketApiUrl] this is NON-SECRET: the owner
+  /// chooses each country's parallel-rate source server-side, and no key ships
+  /// in the frontend. Injected at build time, e.g.:
+  ///   --dart-define=PARALLEL_API_URL=https://xxx.functions.supabase.co/parallel-proxy
+  static const String parallelApiUrl =
+      String.fromEnvironment('PARALLEL_API_URL', defaultValue: '');
+
+  /// True when a parallel-market proxy URL is configured; drives whether the
+  /// country parallel rows fetch live data or render "unavailable".
+  static bool get hasParallelApi => parallelApiUrl.isNotEmpty;
 }

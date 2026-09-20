@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/features/markets/data/backend_market_provider.dart';
+import 'package:smartbudget/features/markets/data/backend_parallel_repository.dart';
 import 'package:smartbudget/features/markets/data/coingecko_crypto_repository.dart';
 import 'package:smartbudget/features/markets/data/dolarapi_ar_repository.dart';
 import 'package:smartbudget/features/markets/data/gold_api_metals_repository.dart';
@@ -40,6 +41,9 @@ final parallelRepositoriesProvider =
   final RateCache cache = ref.watch(rateCacheProvider);
   return <String, ParallelMarketRepository>{
     'dolarapi_ar': DolarApiArRepository(http: http, cache: cache),
+    // Owner-configured proxy (dormant until PARALLEL_API_URL is set); serves
+    // any country whose parallelSourceId is 'backend'.
+    'backend': BackendParallelRepository(http: http, cache: cache),
   };
 });
 
