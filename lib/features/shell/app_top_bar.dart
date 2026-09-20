@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/currency_flag.dart';
+import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -307,12 +310,15 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
     if (mounted) setState(() {});
   }
 
-  Future<void> _select(String route) async {
+  Future<void> _openDetail(AppAlert alert) async {
     await _close();
-    if (mounted) context.go(route);
+    if (mounted) await _AlertDetailDialog.show(context, alert);
   }
 
   Widget _overlay() {
+    // Anchor to the side the bell sits on, so the panel opens INTO the screen
+    // (in RTL the bell is near the left edge, in LTR near the right).
+    final bool rtl = Directionality.of(context) == TextDirection.rtl;
     final CurvedAnimation curved =
         CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic);
     return Stack(
@@ -327,15 +333,15 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
         CompositedTransformFollower(
           link: _link,
           showWhenUnlinked: false,
-          targetAnchor: Alignment.bottomRight,
-          followerAnchor: Alignment.topRight,
+          targetAnchor: rtl ? Alignment.bottomLeft : Alignment.bottomRight,
+          followerAnchor: rtl ? Alignment.topLeft : Alignment.topRight,
           offset: const Offset(0, 8),
           child: FadeTransition(
             opacity: curved,
             child: ScaleTransition(
               scale: Tween<double>(begin: 0.94, end: 1).animate(curved),
-              alignment: Alignment.topRight,
-              child: _NotificationsPanel(onSelect: _select),
+              alignment: rtl ? Alignment.topLeft : Alignment.topRight,
+              child: _NotificationsPanel(onOpen: _openDetail),
             ),
           ),
         ),
@@ -380,8 +386,8 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
 
 /// The animated notifications panel content (kept live via a Consumer).
 class _NotificationsPanel extends ConsumerWidget {
-  const _NotificationsPanel({required this.onSelect});
-  final void Function(String route) onSelect;
+  const _NotificationsPanel({required this.onOpen});
+  final void Function(AppAlert alert) onOpen;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -396,7 +402,7 @@ class _NotificationsPanel extends ConsumerWidget {
     return Material(
       color: Colors.transparent,
       child: Container(
-        width: 340,
+        width: math.min(340.0, MediaQuery.sizeOf(context).width - 24),
         constraints: const BoxConstraints(maxHeight: 440),
         decoration: BoxDecoration(
           color: c.bgElevated,
@@ -453,7 +459,7 @@ class _NotificationsPanel extends ConsumerWidget {
                   separatorBuilder: (_, __) => const SizedBox(height: 2),
                   itemBuilder: (BuildContext ctx, int i) => _PanelAlertRow(
                     alert: shown[i],
-                    onTap: () => onSelect(shown[i].route),
+                    onTap: () => onOpen(shown[i]),
                   ),
                 ),
               ),
@@ -505,6 +511,83 @@ class _PanelAlertRow extends StatelessWidget {
             ),
             Icon(Icons.chevron_right_rounded, size: 16, color: c.textFaint),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A large, centered detail view for a single alert, shown when a notification
+/// is tapped.
+class _AlertDetailDialog extends StatelessWidget {
+  const _AlertDetailDialog({required this.alert});
+  final AppAlert alert;
+
+  static Future<void> show(BuildContext context, AppAlert alert) =>
+      showDialog<void>(
+        context: context,
+        builder: (_) => _AlertDetailDialog(alert: alert),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final AlertView v = describeAlert(context, alert);
+
+    return Dialog(
+      backgroundColor: c.bgElevated,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: c.border),
+      ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 460),
+        child: Padding(
+          padding: const EdgeInsets.all(DsSpacing.xl),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Container(
+                    width: 46,
+                    height: 46,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: v.color.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: v.color.withValues(alpha: 0.30)),
+                    ),
+                    child: Icon(v.icon, color: v.color, size: 24),
+                  ),
+                  const SizedBox(width: DsSpacing.md),
+                  Expanded(child: Text(v.title, style: t.titleLarge)),
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: Icon(Icons.close_rounded, color: c.textMuted),
+                  ),
+                ],
+              ),
+              const SizedBox(height: DsSpacing.lg),
+              Text(
+                v.description,
+                style: t.bodyLarge?.copyWith(color: c.textPrimary, height: 1.55),
+              ),
+              const SizedBox(height: DsSpacing.xl),
+              DsButton(
+                label: v.actionLabel,
+                icon: Icons.arrow_forward_rounded,
+                expand: true,
+                onPressed: () {
+                  final GoRouter router = GoRouter.of(context);
+                  Navigator.of(context).pop();
+                  router.go(v.route);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
