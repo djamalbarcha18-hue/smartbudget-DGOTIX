@@ -10,6 +10,7 @@ import 'package:smartbudget/design_system/components/savings_jar_icon.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/analytics/application/alerts_controller.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
@@ -105,6 +106,9 @@ class _BudgetSection extends ConsumerWidget {
     final Map<String, int> actual = <String, int>{
       for (final CategoryTotal t in actualList) t.category: t.amount.minorUnits,
     };
+    final AlertFocus? focus = ref.watch(alertFocusProvider);
+    final String? focusCategory =
+        (focus != null && focus.route == '/budget') ? focus.key : null;
 
     return GlassCard(
       child: Column(
@@ -123,6 +127,7 @@ class _BudgetSection extends ConsumerWidget {
               plannedMinor: planned[cat]?.minorUnits ?? 0,
               actualMinor: actual[cat] ?? 0,
               currency: currency,
+              highlighted: focusCategory == cat,
             ),
         ],
       ),
@@ -136,12 +141,14 @@ class _BudgetRow extends ConsumerWidget {
     required this.plannedMinor,
     required this.actualMinor,
     required this.currency,
+    this.highlighted = false,
   });
 
   final String category;
   final int plannedMinor;
   final int actualMinor;
   final String currency;
+  final bool highlighted;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -155,7 +162,19 @@ class _BudgetRow extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: DsSpacing.md),
-      child: Column(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        padding: highlighted
+            ? const EdgeInsets.all(DsSpacing.sm)
+            : EdgeInsets.zero,
+        decoration: BoxDecoration(
+          color: highlighted ? c.brand.withValues(alpha: 0.08) : null,
+          borderRadius: DsRadius.brMd,
+          border: highlighted
+              ? Border.all(color: c.brand.withValues(alpha: 0.6))
+              : null,
+        ),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(
@@ -210,6 +229,7 @@ class _BudgetRow extends ConsumerWidget {
             ),
           ),
         ],
+        ),
       ),
     );
   }

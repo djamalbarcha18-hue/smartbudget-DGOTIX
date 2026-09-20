@@ -9,6 +9,18 @@ import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 
+/// A short-lived "highlight this element" target, set when the user opens an
+/// alert's page so the destination can briefly emphasize the related item.
+class AlertFocus {
+  const AlertFocus({required this.route, required this.key});
+  final String route;
+  final String key;
+}
+
+/// Holds the current highlight target (null when nothing is focused). Cleared a
+/// few seconds after navigation.
+final alertFocusProvider = StateProvider<AlertFocus?>((ref) => null);
+
 /// Live, data-backed alerts derived from budgets (selected month), the year's
 /// cash-flow summary and goals. Recomputes automatically as data changes.
 final alertsProvider = Provider<List<AppAlert>>((ref) {

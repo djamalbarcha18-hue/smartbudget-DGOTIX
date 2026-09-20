@@ -312,7 +312,17 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
 
   Future<void> _openDetail(AppAlert alert) async {
     await _close();
-    if (mounted) await _AlertDetailDialog.show(context, alert);
+    if (mounted) await _AlertDetailDialog.show(context, alert, _goToAlert);
+  }
+
+  void _goToAlert(AppAlert alert) {
+    // Set a highlight target the destination page picks up, then navigate.
+    ref.read(alertFocusProvider.notifier).state =
+        AlertFocus(route: alert.route, key: alert.focusKey);
+    context.go(alert.route);
+    Future<void>.delayed(const Duration(seconds: 4), () {
+      if (mounted) ref.read(alertFocusProvider.notifier).state = null;
+    });
   }
 
   Widget _overlay() {
@@ -520,13 +530,18 @@ class _PanelAlertRow extends StatelessWidget {
 /// A large, centered detail view for a single alert, shown when a notification
 /// is tapped.
 class _AlertDetailDialog extends StatelessWidget {
-  const _AlertDetailDialog({required this.alert});
+  const _AlertDetailDialog({required this.alert, required this.onGo});
   final AppAlert alert;
+  final void Function(AppAlert alert) onGo;
 
-  static Future<void> show(BuildContext context, AppAlert alert) =>
+  static Future<void> show(
+    BuildContext context,
+    AppAlert alert,
+    void Function(AppAlert alert) onGo,
+  ) =>
       showDialog<void>(
         context: context,
-        builder: (_) => _AlertDetailDialog(alert: alert),
+        builder: (_) => _AlertDetailDialog(alert: alert, onGo: onGo),
       );
 
   @override
@@ -581,9 +596,8 @@ class _AlertDetailDialog extends StatelessWidget {
                 icon: Icons.arrow_forward_rounded,
                 expand: true,
                 onPressed: () {
-                  final GoRouter router = GoRouter.of(context);
                   Navigator.of(context).pop();
-                  router.go(v.route);
+                  onGo(alert);
                 },
               ),
             ],

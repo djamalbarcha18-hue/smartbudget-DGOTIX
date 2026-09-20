@@ -10,7 +10,9 @@ import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
+import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/analytics/application/alerts_controller.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/goals/domain/goal_calculator.dart';
@@ -24,6 +26,9 @@ class GoalsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final AsyncValue<List<Goal>> async = ref.watch(goalsProvider);
+    final AlertFocus? focus = ref.watch(alertFocusProvider);
+    final String? focusGoalId =
+        (focus != null && focus.route == '/goals') ? focus.key : null;
 
     final Widget addBtn = DsButton(
       label: l.addGoal,
@@ -65,8 +70,10 @@ class GoalsPage extends ConsumerWidget {
                       itemCount: goals.length,
                       separatorBuilder: (_, __) =>
                           const SizedBox(height: DsSpacing.md),
-                      itemBuilder: (BuildContext context, int i) =>
-                          _GoalCard(goal: goals[i]),
+                      itemBuilder: (BuildContext context, int i) => _GoalCard(
+                        goal: goals[i],
+                        highlighted: goals[i].id == focusGoalId,
+                      ),
                     ),
             ),
           ),
@@ -77,8 +84,9 @@ class GoalsPage extends ConsumerWidget {
 }
 
 class _GoalCard extends ConsumerWidget {
-  const _GoalCard({required this.goal});
+  const _GoalCard({required this.goal, this.highlighted = false});
   final Goal goal;
+  final bool highlighted;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -96,8 +104,23 @@ class _GoalCard extends ConsumerWidget {
       GoalStatus.notStarted => c.textFaint,
     };
 
-    return GlassCard(
-      child: Column(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      decoration: BoxDecoration(
+        borderRadius: DsRadius.brLg,
+        border: Border.all(
+          color: highlighted ? c.brand : Colors.transparent,
+          width: 2,
+        ),
+        boxShadow: highlighted
+            ? <BoxShadow>[
+                BoxShadow(
+                    color: c.brand.withValues(alpha: 0.22), blurRadius: 16),
+              ]
+            : null,
+      ),
+      child: GlassCard(
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(
@@ -178,6 +201,7 @@ class _GoalCard extends ConsumerWidget {
             onPressed: () => _contribute(context, ref, goal, l),
           ),
         ],
+      ),
       ),
     );
   }

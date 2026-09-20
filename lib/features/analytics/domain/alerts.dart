@@ -25,6 +25,7 @@ class AppAlert {
     required this.subject,
     required this.amount,
     required this.route,
+    this.focusKey = '',
   });
 
   final AlertKind kind;
@@ -38,6 +39,10 @@ class AppAlert {
 
   /// Where the alert's action navigates.
   final String route;
+
+  /// Stable key of the element to highlight on the destination page — the
+  /// category for budget alerts, the goal id for goal alerts ('' otherwise).
+  final String focusKey;
 }
 
 /// Pure alert engine — turns real aggregates into alerts. No Flutter, no l10n,
@@ -67,6 +72,7 @@ abstract final class AlertEngine {
           subject: cat,
           amount: Money(actual - planned, currency),
           route: '/budget',
+          focusKey: cat,
         ));
       } else if (actual >= planned * _budgetNearRatio) {
         out.add(AppAlert(
@@ -75,6 +81,7 @@ abstract final class AlertEngine {
           subject: cat,
           amount: Money(planned - actual, currency),
           route: '/budget',
+          focusKey: cat,
         ));
       }
     });
@@ -111,6 +118,7 @@ abstract final class AlertEngine {
           subject: g.name,
           amount: GoalCalculator.monthlyInstallment(g, now: now),
           route: '/goals',
+          focusKey: g.id,
         ));
       } else if (months != null && months <= 6) {
         out.add(AppAlert(
@@ -119,6 +127,7 @@ abstract final class AlertEngine {
           subject: g.name,
           amount: GoalCalculator.monthlyInstallment(g, now: now),
           route: '/goals',
+          focusKey: g.id,
         ));
       }
     }
