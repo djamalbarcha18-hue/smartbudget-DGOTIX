@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
-import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
