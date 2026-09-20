@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -8,6 +9,9 @@ import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/analytics/application/alerts_controller.dart';
+import 'package:smartbudget/features/analytics/domain/alerts.dart';
+import 'package:smartbudget/features/analytics/presentation/alert_presentation.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/shell/brand_controls.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
@@ -58,10 +62,7 @@ class AppTopBar extends StatelessWidget {
           const SizedBox(width: DsSpacing.xs),
           if (!isMobile) const LanguageToggleButton(),
           const ThemeToggleButton(),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.notifications_none_rounded, color: c.textMuted),
-          ),
+          const _NotificationsBell(),
           const SizedBox(width: DsSpacing.xs),
           const _ProfileChip(),
         ],
@@ -256,6 +257,127 @@ class _CurrencyChip extends ConsumerWidget {
             Icon(Icons.arrow_drop_down_rounded, size: 18, color: c.textMuted),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Notifications bell: shows the live alert count and lists the alerts (each
+/// navigates to its page). Data-backed via [alertsProvider].
+class _NotificationsBell extends ConsumerWidget {
+  const _NotificationsBell();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final DsColors c = context.dsColors;
+    final AppLocalizations l = AppLocalizations.of(context);
+    final bool hasData = ref.watch(financeSummaryProvider).count > 0;
+    final List<AppAlert> alerts =
+        hasData ? ref.watch(alertsProvider) : const <AppAlert>[];
+    final int count = alerts.length;
+
+    return PopupMenuButton<int>(
+      tooltip: l.alertsSection,
+      offset: const Offset(0, 52),
+      color: c.bgElevated,
+      onSelected: (int i) => context.go(alerts[i].route),
+      itemBuilder: (BuildContext ctx) {
+        if (alerts.isEmpty) {
+          return <PopupMenuEntry<int>>[
+            PopupMenuItem<int>(
+              enabled: false,
+              child: SizedBox(
+                width: 240,
+                child: Text(l.alertsAllClear,
+                    style: Theme.of(ctx).textTheme.bodySmall),
+              ),
+            ),
+          ];
+        }
+        return <PopupMenuEntry<int>>[
+          for (int i = 0; i < alerts.length && i < 8; i++)
+            PopupMenuItem<int>(value: i, child: _AlertMenuRow(alert: alerts[i])),
+        ];
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: <Widget>[
+            Icon(Icons.notifications_none_rounded, color: c.textMuted),
+            if (count > 0)
+              PositionedDirectional(
+                end: -4,
+                top: -4,
+                child: _CountBadge(count: count, color: c.expense),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AlertMenuRow extends StatelessWidget {
+  const _AlertMenuRow({required this.alert});
+  final AppAlert alert;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final AlertView v = describeAlert(context, alert);
+    return SizedBox(
+      width: 300,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: 8,
+            height: 8,
+            margin: const EdgeInsets.only(top: 6),
+            decoration: BoxDecoration(color: v.color, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: DsSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(v.title,
+                    style: t.labelLarge?.copyWith(color: c.textPrimary)),
+                const SizedBox(height: 2),
+                Text(v.description,
+                    style: t.bodySmall?.copyWith(color: c.textMuted),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CountBadge extends StatelessWidget {
+  const _CountBadge({required this.count, required this.color});
+  final int count;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+      padding: EdgeInsets.symmetric(horizontal: count > 9 ? 4 : 0),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        count > 9 ? '9+' : '$count',
+        style: const TextStyle(
+            color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700),
       ),
     );
   }

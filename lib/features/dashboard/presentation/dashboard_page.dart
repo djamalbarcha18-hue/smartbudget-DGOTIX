@@ -21,6 +21,7 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/analytics/application/alerts_controller.dart';
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/analytics/domain/kpi_math.dart';
+import 'package:smartbudget/features/analytics/presentation/alert_presentation.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
@@ -230,7 +231,6 @@ class _AlertsSection extends ConsumerWidget {
     if (!hasData) return const SizedBox.shrink();
 
     final List<AppAlert> alerts = ref.watch(alertsProvider);
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
     final List<AppAlert> shown = alerts.take(5).toList();
 
     return Column(
@@ -252,7 +252,7 @@ class _AlertsSection extends ConsumerWidget {
                   children: <Widget>[
                     for (int i = 0; i < shown.length; i++) ...<Widget>[
                       if (i > 0) const SizedBox(height: DsSpacing.sm),
-                      _alertTile(context, ref, shown[i], c, l, ar),
+                      _alertTile(context, shown[i]),
                     ],
                   ],
                 ),
@@ -262,45 +262,15 @@ class _AlertsSection extends ConsumerWidget {
     );
   }
 
-  Widget _alertTile(BuildContext context, WidgetRef ref, AppAlert a, DsColors c,
-      AppLocalizations l, bool ar) {
-    final (Color color, IconData icon) = switch (a.severity) {
-      AlertSeverity.high => (c.expense, Icons.error_outline_rounded),
-      AlertSeverity.medium => (c.warning, Icons.warning_amber_rounded),
-      AlertSeverity.info => (c.brand, Icons.info_outline_rounded),
-      AlertSeverity.success => (c.income, Icons.check_circle_outline_rounded),
-    };
-    final String subject = a.subject.isEmpty ? '' : Catalog.label(a.subject, ar: ar);
-    final String amount = MoneyFormatter.format(a.amount);
-    final String title = switch (a.kind) {
-      AlertKind.budgetOver => l.alertTitleBudgetOver,
-      AlertKind.budgetNear => l.alertTitleBudgetNear,
-      AlertKind.netNegative => l.alertTitleNetNegative,
-      AlertKind.savingsLow => l.alertTitleSavingsLow,
-      AlertKind.goalOverdue => l.alertTitleGoalOverdue,
-      AlertKind.goalUrgent => l.alertTitleGoalUrgent,
-    };
-    final String desc = switch (a.kind) {
-      AlertKind.budgetOver => l.alertBudgetOver(subject, amount),
-      AlertKind.budgetNear => l.alertBudgetNear(subject, amount),
-      AlertKind.netNegative => l.alertNetNegative(amount),
-      AlertKind.savingsLow => l.alertSavingsLow,
-      AlertKind.goalOverdue => l.alertGoalOverdue(subject, amount),
-      AlertKind.goalUrgent => l.alertGoalUrgent(subject, amount),
-    };
-    final String action = switch (a.route) {
-      '/budget' => l.actionViewBudget,
-      '/goals' => l.actionViewGoals,
-      '/health' => l.actionViewHealth,
-      _ => l.actionViewReport,
-    };
+  Widget _alertTile(BuildContext context, AppAlert a) {
+    final AlertView v = describeAlert(context, a);
     return AlertTile(
-      color: color,
-      icon: icon,
-      title: title,
-      description: desc,
-      actionLabel: action,
-      onAction: () => context.go(a.route),
+      color: v.color,
+      icon: v.icon,
+      title: v.title,
+      description: v.description,
+      actionLabel: v.actionLabel,
+      onAction: () => context.go(v.route),
     );
   }
 }
