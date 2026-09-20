@@ -129,6 +129,10 @@ class DashboardPage extends ConsumerWidget {
           ),
           const SizedBox(height: DsSpacing.xxl),
 
+          // ---- Financial health score (tap to open the full page) ----
+          const _HealthHeroCard(),
+          const SizedBox(height: DsSpacing.xxl),
+
           // ---- Monthly comparison: income vs expense bars + savings line ----
           DsSectionHeader(
               title: l.sectionMonthlyComparison,
@@ -154,7 +158,6 @@ class DashboardPage extends ConsumerWidget {
             minTileWidth: 340,
             childAspectRatio: 1.5,
             children: <Widget>[
-              const _HealthMiniCard(),
               const _GoalsMiniCard(),
               const _DebtsMiniCard(),
               const _ZakatMiniCard(),
@@ -569,27 +572,109 @@ class _MiniCard extends StatelessWidget {
   }
 }
 
-class _HealthMiniCard extends ConsumerWidget {
-  const _HealthMiniCard();
+/// Prominent, tappable Financial Health score at the top of the dashboard.
+/// A circular gauge + status, colored by health, that opens the full page.
+class _HealthHeroCard extends ConsumerWidget {
+  const _HealthHeroCard();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
     final bool hasData = ref.watch(healthHasDataProvider);
     final HealthResult r = ref.watch(healthResultProvider);
-    final String status = switch (r.status) {
-      HealthStatus.excellent => l.healthStatusExcellent,
-      HealthStatus.veryGood => l.healthStatusVeryGood,
-      HealthStatus.good => l.healthStatusGood,
-      HealthStatus.fair => l.healthStatusFair,
-      HealthStatus.needsWork => l.healthStatusNeedsWork,
+    final bool rtl = Directionality.of(context) == TextDirection.rtl;
+
+    final (String, Color) meta = switch (r.status) {
+      HealthStatus.excellent => (l.healthStatusExcellent, c.income),
+      HealthStatus.veryGood => (l.healthStatusVeryGood, c.income),
+      HealthStatus.good => (l.healthStatusGood, c.brand),
+      HealthStatus.fair => (l.healthStatusFair, c.saving),
+      HealthStatus.needsWork => (l.healthStatusNeedsWork, c.expense),
     };
-    return _MiniCard(
-      title: l.sectionFinancialHealth,
-      icon: Icons.monitor_heart_outlined,
-      route: '/health',
-      value: hasData ? '${r.score.round()}/100' : '—',
-      caption: hasData ? status : l.healthEmpty,
-      progress: hasData ? r.score / 100 : null,
+    final Color tone = hasData ? meta.$2 : c.textMuted;
+
+    return GlassCard(
+      child: InkWell(
+        borderRadius: DsRadius.brMd,
+        onTap: () => context.go('/health'),
+        child: Row(
+          children: <Widget>[
+            SizedBox(
+              width: 66,
+              height: 66,
+              child: Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    width: 66,
+                    height: 66,
+                    child: CircularProgressIndicator(
+                      value: hasData ? (r.score.clamp(0, 100) / 100) : 0,
+                      strokeWidth: 6,
+                      backgroundColor: c.surfaceMuted,
+                      valueColor: AlwaysStoppedAnimation<Color>(tone),
+                    ),
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(hasData ? '${r.score.round()}' : '—',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(color: tone, fontWeight: FontWeight.w800)),
+                      Text('/100',
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall
+                              ?.copyWith(color: c.textFaint)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: DsSpacing.lg),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Icon(Icons.monitor_heart_outlined, size: 18, color: tone),
+                      const SizedBox(width: DsSpacing.sm),
+                      Expanded(
+                        child: Text(l.sectionFinancialHealth,
+                            style: Theme.of(context).textTheme.titleMedium),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: DsSpacing.xxs),
+                  Text(
+                    hasData ? meta.$1 : l.healthEmpty,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: hasData ? tone : c.textMuted),
+                  ),
+                  const SizedBox(height: DsSpacing.xxs),
+                  Text(l.viewDetails,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelSmall
+                          ?.copyWith(color: c.textFaint)),
+                ],
+              ),
+            ),
+            const SizedBox(width: DsSpacing.sm),
+            Icon(
+              rtl ? Icons.arrow_back_rounded : Icons.arrow_forward_rounded,
+              size: 18,
+              color: c.textMuted,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
