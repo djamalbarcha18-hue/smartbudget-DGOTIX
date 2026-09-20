@@ -8,6 +8,7 @@ import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/markets/application/manual_parallel_controller.dart';
 import 'package:smartbudget/features/markets/application/markets_controllers.dart';
 import 'package:smartbudget/features/markets/domain/market_category.dart';
 import 'package:smartbudget/features/markets/domain/market_config.dart';
@@ -213,6 +214,8 @@ class _CountrySection extends ConsumerWidget {
     final AsyncValue<FxSnapshot> fx = ref.watch(fxSnapshotProvider);
     final AsyncValue<List<FxQuote>> parallel =
         ref.watch(parallelQuotesProvider(country.country));
+    final Map<String, ManualParallel> manual =
+        ref.watch(manualParallelProvider);
 
     return GlassCard(
       child: Column(
@@ -236,6 +239,9 @@ class _CountrySection extends ConsumerWidget {
               officialLoading: fx.isLoading,
               parallel: parallel.whenOrNull(
                   data: (List<FxQuote> qs) => _firstOrNull(qs, pair)),
+              manual: manual[manualParallelKey(country.country, pair)],
+              onEditManual: () =>
+                  _editManual(context, ref, country.country, pair),
             ),
           const SizedBox(height: DsSpacing.sm),
           _SourceLine(
@@ -254,6 +260,82 @@ class _CountrySection extends ConsumerWidget {
     }
     return null;
   }
+
+  Future<void> _editManual(
+    BuildContext context,
+    WidgetRef ref,
+    String countryCode,
+    String currency,
+  ) async {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final ManualParallel? existing =
+        ref.read(manualParallelProvider)[manualParallelKey(countryCode, currency)];
+    final TextEditingController buy =
+        TextEditingController(text: existing?.buy?.toString() ?? '');
+    final TextEditingController sell =
+        TextEditingController(text: existing?.sell?.toString() ?? '');
+
+    double? parse(String s) =>
+        double.tryParse(s.trim().replaceAll(',', '.'));
+
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext ctx) => AlertDialog(
+        title: Text('${l.marketSetParallel} · $currency / ${country.base}'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(l.parallelManualHint,
+                style: Theme.of(ctx).textTheme.bodySmall),
+            const SizedBox(height: DsSpacing.md),
+            TextField(
+              controller: buy,
+              autofocus: true,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(labelText: l.marketParallelBuy),
+            ),
+            const SizedBox(height: DsSpacing.sm),
+            TextField(
+              controller: sell,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(labelText: l.marketParallelSell),
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          if (existing != null)
+            TextButton(
+              onPressed: () {
+                ref
+                    .read(manualParallelProvider.notifier)
+                    .clear(countryCode, currency);
+                Navigator.of(ctx).pop();
+              },
+              child: Text(l.delete),
+            ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l.cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              ref.read(manualParallelProvider.notifier).setRate(
+                    country: countryCode,
+                    currency: currency,
+                    buy: parse(buy.text),
+                    sell: parse(sell.text),
+                  );
+              Navigator.of(ctx).pop();
+            },
+            child: Text(l.save),
+          ),
+        ],
+      ),
+    );
+    buy.dispose();
+    sell.dispose();
+  }
 }
 
 class _PairRow extends StatelessWidget {
@@ -263,6 +345,8 @@ class _PairRow extends StatelessWidget {
     required this.official,
     required this.officialLoading,
     required this.parallel,
+    this.manual,
+    this.onEditManual,
   });
 
   final String currency;
@@ -270,11 +354,22 @@ class _PairRow extends StatelessWidget {
   final double? official;
   final bool officialLoading;
   final FxQuote? parallel;
+  final ManualParallel? manual;
+  final VoidCallback? onEditManual;
 
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
+
+    // Live parallel takes priority; the user's manual entry is the fallback.
+    final double? buy = parallel?.buy ?? manual?.buy;
+    final double? sell = parallel?.sell ?? manual?.sell;
+    final bool usingManual = parallel?.buy == null &&
+        parallel?.sell == null &&
+        manual != null &&
+        !manual!.isEmpty;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: DsSpacing.sm),
       child: Column(
@@ -286,6 +381,20 @@ class _PairRow extends StatelessWidget {
               const SizedBox(width: DsSpacing.sm),
               Text('$currency / $base',
                   style: Theme.of(context).textTheme.titleSmall),
+              if (usingManual) ...<Widget>[
+                const SizedBox(width: DsSpacing.sm),
+                _ManualTag(label: l.parallelManualTag),
+              ],
+              const Spacer(),
+              if (onEditManual != null)
+                InkWell(
+                  onTap: onEditManual,
+                  borderRadius: BorderRadius.circular(999),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(Icons.edit_outlined, size: 15, color: c.brand),
+                  ),
+                ),
             ],
           ),
           const SizedBox(height: DsSpacing.xs),
@@ -301,16 +410,39 @@ class _PairRow extends StatelessWidget {
                   color: c.textPrimary),
               _Stat(
                   label: l.marketParallelBuy,
-                  value: _fmtOrNull(parallel?.buy, l),
+                  value: _fmtOrNull(buy, l),
                   color: c.income),
               _Stat(
                   label: l.marketParallelSell,
-                  value: _fmtOrNull(parallel?.sell, l),
+                  value: _fmtOrNull(sell, l),
                   color: c.expense),
             ],
           ),
         ],
       ),
+    );
+  }
+}
+
+/// A small "manual" chip shown when a parallel value comes from the user.
+class _ManualTag extends StatelessWidget {
+  const _ManualTag({required this.label});
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+      decoration: BoxDecoration(
+        color: c.brand.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(label,
+          style: Theme.of(context)
+              .textTheme
+              .labelSmall
+              ?.copyWith(color: c.brand, fontWeight: FontWeight.w600)),
     );
   }
 }
