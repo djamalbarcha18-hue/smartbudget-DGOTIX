@@ -18,6 +18,8 @@ class ZakatInput {
     required this.surplusMinor, // accumulated cash surplus (year net)
     required this.receivablesMinor, // debts owed to me
     required this.liabilitiesMinor, // debts I owe (short term)
+    this.portfolioMinor = 0, // funded amount across projects
+    this.manualMinor = 0, // user-added wealth (cash / metals / investments)
   });
 
   final String currency;
@@ -28,6 +30,8 @@ class ZakatInput {
   final int surplusMinor;
   final int receivablesMinor;
   final int liabilitiesMinor;
+  final int portfolioMinor;
+  final int manualMinor;
 }
 
 /// The zakat result (nisab, zakatable base, obligation, and amount due).
@@ -42,6 +46,11 @@ class ZakatResult {
     required this.netZakatable,
     required this.obligatory,
     required this.due,
+    required this.savings,
+    required this.surplus,
+    required this.portfolio,
+    required this.receivables,
+    required this.manual,
   });
 
   final Money goldNisab;
@@ -52,6 +61,13 @@ class ZakatResult {
   final Money netZakatable;
   final bool obligatory;
   final Money due;
+
+  // Asset breakdown (what the gathered assets are made of), for display.
+  final Money savings;
+  final Money surplus;
+  final Money portfolio;
+  final Money receivables;
+  final Money manual;
 }
 
 /// Pure zakat engine — faithful to SmartBudget V1 (Zakat.gs / ZAKAT config):
@@ -70,8 +86,11 @@ abstract final class ZakatCalculator {
     final Money adopted =
         i.standard == ZakatStandard.silver ? silverNisab : goldNisab;
 
-    final int assetsMinor =
-        i.savingsMinor + i.surplusMinor + i.receivablesMinor;
+    final int assetsMinor = i.savingsMinor +
+        i.surplusMinor +
+        i.portfolioMinor +
+        i.receivablesMinor +
+        i.manualMinor;
     final int rawNet = assetsMinor - i.liabilitiesMinor;
     final int netMinor = rawNet < 0 ? 0 : rawNet;
 
@@ -88,6 +107,11 @@ abstract final class ZakatCalculator {
       netZakatable: Money(netMinor, i.currency),
       obligatory: obligatory,
       due: Money(dueMinor, i.currency),
+      savings: Money(i.savingsMinor, i.currency),
+      surplus: Money(i.surplusMinor, i.currency),
+      portfolio: Money(i.portfolioMinor, i.currency),
+      receivables: Money(i.receivablesMinor, i.currency),
+      manual: Money(i.manualMinor, i.currency),
     );
   }
 }

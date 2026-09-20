@@ -4,11 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
+import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
+import 'package:smartbudget/features/portfolio/domain/project.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/zakat/domain/hawl.dart';
@@ -23,6 +26,9 @@ class ZakatInputs {
     required this.silverPricePerGram,
     required this.standard,
     this.hawlStart,
+    this.cash = 0,
+    this.metals = 0,
+    this.investments = 0,
   });
 
   final double goldPricePerGram;
@@ -30,16 +36,27 @@ class ZakatInputs {
   final ZakatStandard standard;
   final DateTime? hawlStart;
 
+  /// Manual zakatable wealth the app doesn't track (in base currency).
+  final double cash;
+  final double metals; // value of gold/silver holdings
+  final double investments; // other liquid investments
+
   ZakatInputs copyWith({
     double? goldPricePerGram,
     double? silverPricePerGram,
     ZakatStandard? standard,
+    double? cash,
+    double? metals,
+    double? investments,
   }) {
     return ZakatInputs(
       goldPricePerGram: goldPricePerGram ?? this.goldPricePerGram,
       silverPricePerGram: silverPricePerGram ?? this.silverPricePerGram,
       standard: standard ?? this.standard,
       hawlStart: hawlStart,
+      cash: cash ?? this.cash,
+      metals: metals ?? this.metals,
+      investments: investments ?? this.investments,
     );
   }
 }
@@ -74,6 +91,9 @@ class ZakatInputsController extends Notifier<ZakatInputs> {
               ? ZakatStandard.silver
               : ZakatStandard.gold,
           hawlStart: DateTime.tryParse('${m['hawlStart']}'),
+          cash: (m['cash'] as num?)?.toDouble() ?? 0,
+          metals: (m['metals'] as num?)?.toDouble() ?? 0,
+          investments: (m['investments'] as num?)?.toDouble() ?? 0,
         );
       }
     } catch (_) {
@@ -93,6 +113,9 @@ class ZakatInputsController extends Notifier<ZakatInputs> {
       silverPricePerGram: state.silverPricePerGram,
       standard: state.standard,
       hawlStart: date,
+      cash: state.cash,
+      metals: state.metals,
+      investments: state.investments,
     );
     await _persist();
   }
@@ -107,6 +130,9 @@ class ZakatInputsController extends Notifier<ZakatInputs> {
           'silver': state.silverPricePerGram,
           'standard': state.standard.name,
           'hawlStart': state.hawlStart?.toIso8601String(),
+          'cash': state.cash,
+          'metals': state.metals,
+          'investments': state.investments,
         }),
       );
     } catch (_) {
@@ -128,8 +154,21 @@ final zakatResultProvider = Provider<ZakatResult>((ref) {
     if (g.saved.currencyCode == currency) savedMinor += g.saved.minorUnits;
   }
 
+  // Portfolio: funded (saved) amount across projects in the base currency.
+  final List<Project> projects =
+      ref.watch(projectsProvider).valueOrNull ?? const <Project>[];
+  var portfolioMinor = 0;
+  for (final Project p in projects) {
+    if (p.saved.currencyCode == currency) portfolioMinor += p.saved.minorUnits;
+  }
+
   final DebtSummary debts = ref.watch(debtSummaryProvider);
   final FinanceSummary finance = ref.watch(financeSummaryProvider);
+
+  // Manual wealth the app doesn't track (base currency).
+  final int manualMinor =
+      Money.fromDouble(inputs.cash + inputs.metals + inputs.investments, currency)
+          .minorUnits;
 
   return ZakatCalculator.compute(
     ZakatInput(
@@ -141,6 +180,8 @@ final zakatResultProvider = Provider<ZakatResult>((ref) {
       surplusMinor: finance.net.minorUnits,
       receivablesMinor: debts.owedToMe.minorUnits,
       liabilitiesMinor: debts.owedByMe.minorUnits,
+      portfolioMinor: portfolioMinor,
+      manualMinor: manualMinor,
     ),
   );
 });

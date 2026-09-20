@@ -22,33 +22,46 @@ class ZakatPage extends ConsumerStatefulWidget {
 class _ZakatPageState extends ConsumerState<ZakatPage> {
   late final TextEditingController _gold;
   late final TextEditingController _silver;
+  late final TextEditingController _cash;
+  late final TextEditingController _metals;
+  late final TextEditingController _investments;
+
+  static String _fmt(double v) => v == 0 ? '' : v.toString();
 
   @override
   void initState() {
     super.initState();
     final ZakatInputs i = ref.read(zakatInputsProvider);
-    _gold = TextEditingController(
-        text: i.goldPricePerGram == 0 ? '' : i.goldPricePerGram.toString());
-    _silver = TextEditingController(
-        text: i.silverPricePerGram == 0 ? '' : i.silverPricePerGram.toString());
+    _gold = TextEditingController(text: _fmt(i.goldPricePerGram));
+    _silver = TextEditingController(text: _fmt(i.silverPricePerGram));
+    _cash = TextEditingController(text: _fmt(i.cash));
+    _metals = TextEditingController(text: _fmt(i.metals));
+    _investments = TextEditingController(text: _fmt(i.investments));
   }
 
   @override
   void dispose() {
     _gold.dispose();
     _silver.dispose();
+    _cash.dispose();
+    _metals.dispose();
+    _investments.dispose();
     super.dispose();
   }
+
+  double _num(TextEditingController c) =>
+      double.tryParse(c.text.trim().replaceAll(',', '.')) ?? 0;
 
   void _apply({ZakatStandard? standard}) {
     final ZakatInputs cur = ref.read(zakatInputsProvider);
     ref.read(zakatInputsProvider.notifier).update(
           cur.copyWith(
-            goldPricePerGram:
-                double.tryParse(_gold.text.trim().replaceAll(',', '.')) ?? 0,
-            silverPricePerGram:
-                double.tryParse(_silver.text.trim().replaceAll(',', '.')) ?? 0,
+            goldPricePerGram: _num(_gold),
+            silverPricePerGram: _num(_silver),
             standard: standard ?? cur.standard,
+            cash: _num(_cash),
+            metals: _num(_metals),
+            investments: _num(_investments),
           ),
         );
   }
@@ -109,6 +122,56 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
           const _HawlCard(),
           const SizedBox(height: DsSpacing.lg),
 
+          // Manual zakatable wealth (not tracked elsewhere in the app).
+          GlassCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(l.zakatAddWealth,
+                    style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: DsSpacing.xs),
+                Text(l.zakatAddWealthHint,
+                    style: Theme.of(context).textTheme.bodySmall),
+                const SizedBox(height: DsSpacing.lg),
+                DsTextField(
+                  label: l.zakatCash,
+                  controller: _cash,
+                  prefixIcon: Icons.payments_outlined,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  onSubmitted: (_) => _apply(),
+                ),
+                const SizedBox(height: DsSpacing.md),
+                DsTextField(
+                  label: l.zakatMetalsHoldings,
+                  controller: _metals,
+                  prefixIcon: Icons.diamond_outlined,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  onSubmitted: (_) => _apply(),
+                ),
+                const SizedBox(height: DsSpacing.md),
+                DsTextField(
+                  label: l.zakatInvestments,
+                  controller: _investments,
+                  prefixIcon: Icons.trending_up_rounded,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  onSubmitted: (_) => _apply(),
+                ),
+                const SizedBox(height: DsSpacing.sm),
+                Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: TextButton(
+                    onPressed: _apply,
+                    child: Text(l.save),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: DsSpacing.lg),
+
           if (needsPrices)
             Padding(
               padding: const EdgeInsets.all(DsSpacing.md),
@@ -123,6 +186,23 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
                 children: <Widget>[
                   _row(context, l.zakatNisab,
                       MoneyFormatter.format(r.adoptedNisab)),
+                  const Divider(height: DsSpacing.xl),
+                  // Gathered assets — component breakdown (non-zero only).
+                  if (r.savings.minorUnits != 0)
+                    _row(context, l.zakatSavings,
+                        MoneyFormatter.format(r.savings), sub: true),
+                  if (r.surplus.minorUnits != 0)
+                    _row(context, l.zakatSurplus,
+                        MoneyFormatter.format(r.surplus), sub: true),
+                  if (r.portfolio.minorUnits != 0)
+                    _row(context, l.zakatPortfolio,
+                        MoneyFormatter.format(r.portfolio), sub: true),
+                  if (r.receivables.minorUnits != 0)
+                    _row(context, l.zakatReceivables,
+                        MoneyFormatter.format(r.receivables), sub: true),
+                  if (r.manual.minorUnits != 0)
+                    _row(context, l.zakatManualWealth,
+                        MoneyFormatter.format(r.manual), sub: true),
                   _row(context, l.zakatAssets, MoneyFormatter.format(r.assets)),
                   _row(context, l.zakatLiabilities,
                       MoneyFormatter.format(r.liabilities)),
@@ -144,26 +224,38 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
   }
 
   Widget _row(BuildContext context, String label, String value,
-      {bool strong = false}) {
+      {bool strong = false, bool sub = false}) {
     final DsColors c = context.dsColors;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: EdgeInsets.only(
+        top: sub ? 3 : 6,
+        bottom: sub ? 3 : 6,
+        left: sub ? DsSpacing.md : 0,
+      ),
       child: Row(
         children: <Widget>[
           Expanded(
             child: Text(label,
                 style: strong
                     ? Theme.of(context).textTheme.titleSmall
-                    : Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: c.textMuted)),
+                    : (sub
+                        ? Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: c.textFaint)
+                        : Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: c.textMuted))),
           ),
           Text(value,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: c.textPrimary,
-                    fontWeight: strong ? FontWeight.w800 : FontWeight.w600,
-                  )),
+              style: (sub
+                      ? Theme.of(context).textTheme.bodySmall
+                      : Theme.of(context).textTheme.titleSmall)
+                  ?.copyWith(
+                color: sub ? c.textMuted : c.textPrimary,
+                fontWeight: strong ? FontWeight.w800 : FontWeight.w600,
+              )),
         ],
       ),
     );
