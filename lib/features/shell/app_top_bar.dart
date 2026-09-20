@@ -16,6 +16,7 @@ import 'package:smartbudget/features/analytics/application/alerts_controller.dar
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/analytics/presentation/alert_presentation.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/search/app_search.dart';
 import 'package:smartbudget/features/shell/brand_controls.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -81,36 +82,44 @@ class _SearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
-    return Container(
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.md),
-      decoration: BoxDecoration(
-        color: c.surfaceMuted,
+    return Material(
+      color: c.surfaceMuted,
+      borderRadius: DsRadius.brMd,
+      child: InkWell(
+        onTap: () => AppSearchDialog.show(context),
         borderRadius: DsRadius.brMd,
-        border: Border.all(color: c.border),
-      ),
-      child: Row(
-        children: <Widget>[
-          Icon(Icons.search_rounded, size: 18, color: c.textFaint),
-          const SizedBox(width: DsSpacing.sm),
-          Expanded(
-            child: Text(
-              l.searchHint,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+        child: Container(
+          height: 40,
+          padding: const EdgeInsets.symmetric(horizontal: DsSpacing.md),
+          decoration: BoxDecoration(
+            borderRadius: DsRadius.brMd,
+            border: Border.all(color: c.border),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              color: c.bgElevated,
-              borderRadius: DsRadius.brSm,
-              border: Border.all(color: c.border),
-            ),
-            child: Text('Ctrl K', style: Theme.of(context).textTheme.labelSmall),
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.search_rounded, size: 18, color: c.textFaint),
+              const SizedBox(width: DsSpacing.sm),
+              Expanded(
+                child: Text(
+                  l.searchHint,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: c.bgElevated,
+                  borderRadius: DsRadius.brSm,
+                  border: Border.all(color: c.border),
+                ),
+                child: Text('Ctrl K',
+                    style: Theme.of(context).textTheme.labelSmall),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

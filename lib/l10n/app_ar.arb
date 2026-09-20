@@ -46,6 +46,10 @@
   "kpiFinancialHealth": "الصحة المالية",
 
   "searchHint": "ابحث عن معاملة أو فترة أو هدف…",
+  "searchGroupPages": "الصفحات",
+  "searchGroupTransactions": "المعاملات",
+  "searchGroupGoals": "الأهداف",
+  "searchNoResults": "لا توجد نتائج.",
 
   "upgradeTitle": "SmartBudget Pro",
   "upgradeSubtitle": "استفد من المميزات الكاملة",

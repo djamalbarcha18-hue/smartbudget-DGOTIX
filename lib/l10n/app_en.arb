@@ -46,6 +46,10 @@
   "kpiFinancialHealth": "Financial Health",
 
   "searchHint": "Search a transaction, period or goal…",
+  "searchGroupPages": "Pages",
+  "searchGroupTransactions": "Transactions",
+  "searchGroupGoals": "Goals",
+  "searchNoResults": "No results found.",
 
   "upgradeTitle": "SmartBudget Pro",
   "upgradeSubtitle": "Unlock the full experience",
