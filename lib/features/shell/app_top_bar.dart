@@ -262,54 +262,200 @@ class _CurrencyChip extends ConsumerWidget {
   }
 }
 
-/// Notifications bell: shows the live alert count and lists the alerts (each
-/// navigates to its page). Data-backed via [alertsProvider].
-class _NotificationsBell extends ConsumerWidget {
+/// Notifications bell: a live alert count that opens a smoothly-animated panel
+/// (fade + scale from the bell corner). Data-backed via [alertsProvider].
+class _NotificationsBell extends ConsumerStatefulWidget {
   const _NotificationsBell();
+
+  @override
+  ConsumerState<_NotificationsBell> createState() => _NotificationsBellState();
+}
+
+class _NotificationsBellState extends ConsumerState<_NotificationsBell>
+    with SingleTickerProviderStateMixin {
+  final LayerLink _link = LayerLink();
+  late final AnimationController _anim = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 190));
+  OverlayEntry? _entry;
+
+  @override
+  void dispose() {
+    _entry?.remove();
+    _entry = null;
+    _anim.dispose();
+    super.dispose();
+  }
+
+  void _toggle() => _entry == null ? _open() : _close();
+
+  void _open() {
+    _entry = OverlayEntry(builder: (_) => _overlay());
+    Overlay.of(context).insert(_entry!);
+    _anim.forward();
+    setState(() {});
+  }
+
+  Future<void> _close() async {
+    if (_entry == null) return;
+    try {
+      await _anim.reverse();
+    } catch (_) {
+      // Controller may be disposed mid-animation; ignore.
+    }
+    _entry?.remove();
+    _entry = null;
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _select(String route) async {
+    await _close();
+    if (mounted) context.go(route);
+  }
+
+  Widget _overlay() {
+    final CurvedAnimation curved =
+        CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic);
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: _close,
+            child: const SizedBox.shrink(),
+          ),
+        ),
+        CompositedTransformFollower(
+          link: _link,
+          showWhenUnlinked: false,
+          targetAnchor: Alignment.bottomRight,
+          followerAnchor: Alignment.topRight,
+          offset: const Offset(0, 8),
+          child: FadeTransition(
+            opacity: curved,
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.94, end: 1).animate(curved),
+              alignment: Alignment.topRight,
+              child: _NotificationsPanel(onSelect: _select),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final AppLocalizations l = AppLocalizations.of(context);
+    final bool hasData = ref.watch(financeSummaryProvider).count > 0;
+    final int count = hasData ? ref.watch(alertsProvider).length : 0;
+
+    return CompositedTransformTarget(
+      link: _link,
+      child: Tooltip(
+        message: l.alertsSection,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _toggle,
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: <Widget>[
+                Icon(Icons.notifications_none_rounded, color: c.textMuted),
+                if (count > 0)
+                  PositionedDirectional(
+                    end: -4,
+                    top: -4,
+                    child: _CountBadge(count: count, color: c.expense),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The animated notifications panel content (kept live via a Consumer).
+class _NotificationsPanel extends ConsumerWidget {
+  const _NotificationsPanel({required this.onSelect});
+  final void Function(String route) onSelect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
+    final TextTheme t = Theme.of(context).textTheme;
     final bool hasData = ref.watch(financeSummaryProvider).count > 0;
     final List<AppAlert> alerts =
         hasData ? ref.watch(alertsProvider) : const <AppAlert>[];
-    final int count = alerts.length;
+    final List<AppAlert> shown = alerts.take(8).toList();
 
-    return PopupMenuButton<int>(
-      tooltip: l.alertsSection,
-      offset: const Offset(0, 52),
-      color: c.bgElevated,
-      onSelected: (int i) => context.go(alerts[i].route),
-      itemBuilder: (BuildContext ctx) {
-        if (alerts.isEmpty) {
-          return <PopupMenuEntry<int>>[
-            PopupMenuItem<int>(
-              enabled: false,
-              child: SizedBox(
-                width: 240,
-                child: Text(l.alertsAllClear,
-                    style: Theme.of(ctx).textTheme.bodySmall),
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        width: 340,
+        constraints: const BoxConstraints(maxHeight: 440),
+        decoration: BoxDecoration(
+          color: c.bgElevated,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: c.border),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.18),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                  DsSpacing.lg, DsSpacing.md, DsSpacing.md, DsSpacing.md),
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.notifications_active_outlined,
+                      size: 18, color: c.brand),
+                  const SizedBox(width: DsSpacing.sm),
+                  Expanded(child: Text(l.alertsSection, style: t.titleSmall)),
+                  if (shown.isNotEmpty)
+                    _CountBadge(count: alerts.length, color: c.expense),
+                ],
               ),
             ),
-          ];
-        }
-        return <PopupMenuEntry<int>>[
-          for (int i = 0; i < alerts.length && i < 8; i++)
-            PopupMenuItem<int>(value: i, child: _AlertMenuRow(alert: alerts[i])),
-        ];
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: <Widget>[
-            Icon(Icons.notifications_none_rounded, color: c.textMuted),
-            if (count > 0)
-              PositionedDirectional(
-                end: -4,
-                top: -4,
-                child: _CountBadge(count: count, color: c.expense),
+            Divider(height: 1, color: c.border),
+            if (shown.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(DsSpacing.xl),
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.check_circle_outline_rounded,
+                        size: 18, color: c.income),
+                    const SizedBox(width: DsSpacing.sm),
+                    Expanded(
+                      child: Text(l.alertsAllClear,
+                          style: t.bodySmall?.copyWith(color: c.textMuted)),
+                    ),
+                  ],
+                ),
+              )
+            else
+              Flexible(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(DsSpacing.sm),
+                  itemCount: shown.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 2),
+                  itemBuilder: (BuildContext ctx, int i) => _PanelAlertRow(
+                    alert: shown[i],
+                    onTap: () => onSelect(shown[i].route),
+                  ),
+                ),
               ),
           ],
         ),
@@ -318,42 +464,48 @@ class _NotificationsBell extends ConsumerWidget {
   }
 }
 
-class _AlertMenuRow extends StatelessWidget {
-  const _AlertMenuRow({required this.alert});
+class _PanelAlertRow extends StatelessWidget {
+  const _PanelAlertRow({required this.alert, required this.onTap});
   final AppAlert alert;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final AlertView v = describeAlert(context, alert);
-    return SizedBox(
-      width: 300,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            width: 8,
-            height: 8,
-            margin: const EdgeInsets.only(top: 6),
-            decoration: BoxDecoration(color: v.color, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: DsSpacing.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(v.title,
-                    style: t.labelLarge?.copyWith(color: c.textPrimary)),
-                const SizedBox(height: 2),
-                Text(v.description,
-                    style: t.bodySmall?.copyWith(color: c.textMuted),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis),
-              ],
+    return InkWell(
+      onTap: onTap,
+      borderRadius: DsRadius.brMd,
+      child: Padding(
+        padding: const EdgeInsets.all(DsSpacing.sm),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: 8,
+              height: 8,
+              margin: const EdgeInsets.only(top: 5),
+              decoration: BoxDecoration(color: v.color, shape: BoxShape.circle),
             ),
-          ),
-        ],
+            const SizedBox(width: DsSpacing.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(v.title,
+                      style: t.labelLarge?.copyWith(color: c.textPrimary)),
+                  const SizedBox(height: 2),
+                  Text(v.description,
+                      style: t.bodySmall?.copyWith(color: c.textMuted),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+            Icon(Icons.chevron_right_rounded, size: 16, color: c.textFaint),
+          ],
+        ),
       ),
     );
   }

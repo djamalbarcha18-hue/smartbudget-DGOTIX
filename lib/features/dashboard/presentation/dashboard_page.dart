@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
-import 'package:smartbudget/design_system/components/alert_tile.dart';
 import 'package:smartbudget/design_system/components/donut_chart.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/monthly_bars_chart.dart';
@@ -18,10 +17,7 @@ import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
-import 'package:smartbudget/features/analytics/application/alerts_controller.dart';
-import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/analytics/domain/kpi_math.dart';
-import 'package:smartbudget/features/analytics/presentation/alert_presentation.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
@@ -133,9 +129,6 @@ class DashboardPage extends ConsumerWidget {
           ),
           const SizedBox(height: DsSpacing.xxl),
 
-          // ---- Alerts & actions (data-backed; hidden with no data) ----
-          const _AlertsSection(),
-
           // ---- Monthly comparison: income vs expense bars + savings line ----
           DsSectionHeader(
               title: l.sectionMonthlyComparison,
@@ -217,63 +210,6 @@ KpiTone _toneOf(KpiSentiment s) => switch (s) {
       KpiSentiment.bad => KpiTone.bad,
       KpiSentiment.neutral => KpiTone.neutral,
     };
-
-/// Data-backed alerts & actions. Hidden entirely when there is no data; shows a
-/// positive "all clear" state when there is data but nothing needs attention.
-class _AlertsSection extends ConsumerWidget {
-  const _AlertsSection();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final AppLocalizations l = AppLocalizations.of(context);
-    final DsColors c = context.dsColors;
-    final bool hasData = ref.watch(financeSummaryProvider).count > 0;
-    if (!hasData) return const SizedBox.shrink();
-
-    final List<AppAlert> alerts = ref.watch(alertsProvider);
-    final List<AppAlert> shown = alerts.take(5).toList();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        DsSectionHeader(
-            title: l.alertsSection,
-            icon: Icons.notifications_active_outlined),
-        const SizedBox(height: DsSpacing.md),
-        GlassCard(
-          child: shown.isEmpty
-              ? AlertTile(
-                  color: c.income,
-                  icon: Icons.check_circle_outline_rounded,
-                  title: l.alertsAllClearTitle,
-                  description: l.alertsAllClear,
-                )
-              : Column(
-                  children: <Widget>[
-                    for (int i = 0; i < shown.length; i++) ...<Widget>[
-                      if (i > 0) const SizedBox(height: DsSpacing.sm),
-                      _alertTile(context, shown[i]),
-                    ],
-                  ],
-                ),
-        ),
-        const SizedBox(height: DsSpacing.xxl),
-      ],
-    );
-  }
-
-  Widget _alertTile(BuildContext context, AppAlert a) {
-    final AlertView v = describeAlert(context, a);
-    return AlertTile(
-      color: v.color,
-      icon: v.icon,
-      title: v.title,
-      description: v.description,
-      actionLabel: v.actionLabel,
-      onAction: () => context.go(v.route),
-    );
-  }
-}
 
 class _Header extends StatelessWidget {
   const _Header({required this.greeting});
