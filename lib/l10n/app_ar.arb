@@ -272,6 +272,10 @@
   "aboutBackend": "مصدر البيانات",
   "settingsLegal": "قانوني",
 
+  "pageLegalPrivacy": "سياسة الخصوصية",
+  "pageLegalTerms": "شروط الاستخدام",
+  "legalLastUpdated": "آخر تحديث: {date}",
+  "@legalLastUpdated": { "placeholders": { "date": { "type": "String" } } },
   "pageSupport": "المساعدة والدعم",
   "supportContact": "تواصل معنا",
   "supportContactHint": "نردّ عادةً خلال يوم عمل واحد.",

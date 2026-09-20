@@ -14,6 +14,8 @@ import 'package:smartbudget/features/expenses/presentation/expenses_page.dart';
 import 'package:smartbudget/features/financial_health/presentation/financial_health_page.dart';
 import 'package:smartbudget/features/goals/presentation/goals_page.dart';
 import 'package:smartbudget/features/income/presentation/income_page.dart';
+import 'package:smartbudget/features/legal/domain/legal_content.dart';
+import 'package:smartbudget/features/legal/presentation/legal_page.dart';
 import 'package:smartbudget/features/markets/presentation/markets_page.dart';
 import 'package:smartbudget/features/monthly_budget/presentation/monthly_budget_page.dart';
 import 'package:smartbudget/features/portfolio/presentation/portfolio_page.dart';
@@ -145,6 +147,18 @@ GoRouter buildRouter(Ref ref) {
             path: '/support',
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const NoTransitionPage<void>(child: SupportPage()),
+          ),
+          GoRoute(
+            path: '/legal/privacy',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const NoTransitionPage<void>(
+                    child: LegalPage(doc: LegalDoc.privacy)),
+          ),
+          GoRoute(
+            path: '/legal/terms',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const NoTransitionPage<void>(
+                    child: LegalPage(doc: LegalDoc.terms)),
           ),
           ..._placeholderRoutes(),
         ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -51,10 +52,10 @@ class AppFooter extends StatelessWidget {
           Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             children: <Widget>[
-              link(l.footerPrivacy, () {}),
-              link(l.footerTerms, () {}),
-              link(l.footerHelp, () {}),
-              link(l.footerContact, () {}),
+              link(l.footerPrivacy, () => context.go('/legal/privacy')),
+              link(l.footerTerms, () => context.go('/legal/terms')),
+              link(l.footerHelp, () => context.go('/support')),
+              link(l.footerContact, () => context.go('/support')),
             ],
           ),
         ],

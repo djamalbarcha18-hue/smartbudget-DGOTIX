@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -119,14 +120,13 @@ class SupportPage extends StatelessWidget {
                     ),
                     const SizedBox(height: DsSpacing.sm),
                     _ResourceRow(
-                        icon: Icons.help_center_outlined,
-                        label: l.footerHelp),
-                    _ResourceRow(
                         icon: Icons.privacy_tip_outlined,
-                        label: l.footerPrivacy),
+                        label: l.footerPrivacy,
+                        route: '/legal/privacy'),
                     _ResourceRow(
                         icon: Icons.description_outlined,
-                        label: l.footerTerms),
+                        label: l.footerTerms,
+                        route: '/legal/terms'),
                   ],
                 ),
               ),
@@ -203,19 +203,21 @@ class _FaqItem extends StatelessWidget {
 }
 
 class _ResourceRow extends StatelessWidget {
-  const _ResourceRow({required this.icon, required this.label});
+  const _ResourceRow({
+    required this.icon,
+    required this.label,
+    required this.route,
+  });
   final IconData icon;
   final String label;
+  final String route;
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     return InkWell(
       borderRadius: DsRadius.brMd,
-      onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l.comingSoon)),
-      ),
+      onTap: () => context.go(route),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: DsSpacing.md),
         child: Row(

@@ -272,6 +272,10 @@
   "aboutBackend": "Data source",
   "settingsLegal": "Legal",
 
+  "pageLegalPrivacy": "Privacy Policy",
+  "pageLegalTerms": "Terms of Service",
+  "legalLastUpdated": "Last updated: {date}",
+  "@legalLastUpdated": { "placeholders": { "date": { "type": "String" } } },
   "pageSupport": "Help & Support",
   "supportContact": "Contact us",
   "supportContactHint": "We usually reply within one business day.",
