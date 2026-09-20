@@ -8,6 +8,7 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/zakat/application/zakat_controller.dart';
+import 'package:smartbudget/features/zakat/domain/hawl.dart';
 import 'package:smartbudget/features/zakat/domain/zakat_calculator.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -55,9 +56,9 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
-    final DsColors c = context.dsColors;
     final ZakatInputs inputs = ref.watch(zakatInputsProvider);
     final ZakatResult r = ref.watch(zakatResultProvider);
+    final HawlStatus? hawl = ref.watch(zakatHawlProvider);
     final bool needsPrices =
         inputs.goldPricePerGram <= 0 && inputs.silverPricePerGram <= 0;
 
@@ -104,6 +105,10 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
           ),
           const SizedBox(height: DsSpacing.lg),
 
+          // Hawl (lunar-year) tracker.
+          const _HawlCard(),
+          const SizedBox(height: DsSpacing.lg),
+
           if (needsPrices)
             Padding(
               padding: const EdgeInsets.all(DsSpacing.md),
@@ -126,38 +131,7 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
                       MoneyFormatter.format(r.netZakatable),
                       strong: true),
                   const SizedBox(height: DsSpacing.md),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(DsSpacing.md),
-                    decoration: BoxDecoration(
-                      color: (r.obligatory ? c.income : c.textMuted)
-                          .withValues(alpha: 0.12),
-                      borderRadius: DsRadius.brMd,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          r.obligatory ? l.zakatObligatory : l.zakatNotDue,
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                color: r.obligatory ? c.income : c.textMuted,
-                              ),
-                        ),
-                        if (r.obligatory) ...<Widget>[
-                          const SizedBox(height: 4),
-                          Text(l.zakatDue,
-                              style: Theme.of(context).textTheme.labelSmall),
-                          Text(
-                            MoneyFormatter.format(r.due),
-                            style:
-                                Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                      color: c.income,
-                                    ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
+                  _StatusBanner(result: r, hawl: hawl),
                 ],
               ),
             ),
@@ -190,6 +164,173 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
                     color: c.textPrimary,
                     fontWeight: strong ? FontWeight.w800 : FontWeight.w600,
                   )),
+        ],
+      ),
+    );
+  }
+}
+
+/// Hawl tracker: set the date wealth reached nisab; shows the lunar-year
+/// countdown and completion, in Hijri.
+class _HawlCard extends ConsumerWidget {
+  const _HawlCard();
+
+  Future<void> _pick(BuildContext context, WidgetRef ref, DateTime? current) async {
+    final DateTime now = DateTime.now();
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: current ?? now,
+      firstDate: DateTime(2015),
+      lastDate: now,
+    );
+    if (picked != null) {
+      await ref.read(zakatInputsProvider.notifier).setHawlStart(picked);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final DateTime? start = ref.watch(zakatInputsProvider).hawlStart;
+    final HawlStatus? hawl = ref.watch(zakatHawlProvider);
+
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Icon(Icons.hourglass_bottom_rounded, size: 18, color: c.brand),
+              const SizedBox(width: DsSpacing.sm),
+              Text(l.zakatHawl, style: Theme.of(context).textTheme.titleMedium),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.xs),
+          Text(l.zakatHawlHint, style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: DsSpacing.md),
+          if (start == null || hawl == null)
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: OutlinedButton.icon(
+                onPressed: () => _pick(context, ref, null),
+                icon: const Icon(Icons.event_outlined, size: 18),
+                label: Text(l.zakatHawlSetDate),
+              ),
+            )
+          else ...<Widget>[
+            _kv(context, l.zakatHawlStart, hawl.startHijri.format(ar: ar)),
+            _kv(context, l.zakatHawlDue,
+                '${hawl.dueHijri.format(ar: ar)} · ${_greg(hawl.due)}'),
+            const SizedBox(height: DsSpacing.sm),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(DsSpacing.sm),
+              decoration: BoxDecoration(
+                color: (hawl.complete ? c.income : c.saving)
+                    .withValues(alpha: 0.12),
+                borderRadius: DsRadius.brMd,
+              ),
+              child: Text(
+                hawl.complete
+                    ? l.zakatHawlComplete
+                    : l.zakatHawlRemaining(hawl.daysRemaining),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: hawl.complete ? c.income : c.saving,
+                    ),
+              ),
+            ),
+            const SizedBox(height: DsSpacing.sm),
+            Row(
+              children: <Widget>[
+                TextButton(
+                  onPressed: () => _pick(context, ref, start),
+                  child: Text(l.zakatHawlSetDate),
+                ),
+                TextButton(
+                  onPressed: () =>
+                      ref.read(zakatInputsProvider.notifier).setHawlStart(null),
+                  child: Text(l.delete),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _kv(BuildContext context, String k, String v) {
+    final DsColors c = context.dsColors;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Text(k,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: c.textMuted)),
+          ),
+          Text(v, style: Theme.of(context).textTheme.titleSmall),
+        ],
+      ),
+    );
+  }
+
+  static String _greg(DateTime d) {
+    String two(int n) => n.toString().padLeft(2, '0');
+    return '${d.year}-${two(d.month)}-${two(d.day)}';
+  }
+}
+
+/// The zakat status banner, gated on BOTH nisab and hawl completion.
+class _StatusBanner extends StatelessWidget {
+  const _StatusBanner({required this.result, required this.hawl});
+  final ZakatResult result;
+  final HawlStatus? hawl;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final bool nisabMet = result.obligatory;
+    final bool dueNow = nisabMet && hawl != null && hawl!.complete;
+
+    final (String, Color, bool) state = !nisabMet
+        ? (l.zakatNotDue, c.textMuted, false)
+        : dueNow
+            ? (l.zakatObligatory, c.income, true)
+            : hawl == null
+                ? (l.zakatHawlNotSet, c.saving, false)
+                : (l.zakatHawlPending, c.saving, false);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(DsSpacing.md),
+      decoration: BoxDecoration(
+        color: state.$2.withValues(alpha: 0.12),
+        borderRadius: DsRadius.brMd,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(state.$1,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  ?.copyWith(color: state.$2)),
+          if (state.$3) ...<Widget>[
+            const SizedBox(height: 4),
+            Text(l.zakatDue, style: Theme.of(context).textTheme.labelSmall),
+            Text(MoneyFormatter.format(result.due),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: c.income)),
+          ],
         ],
       ),
     );

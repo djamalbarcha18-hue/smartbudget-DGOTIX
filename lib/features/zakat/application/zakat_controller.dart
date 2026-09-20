@@ -11,20 +11,24 @@ import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
+import 'package:smartbudget/features/zakat/domain/hawl.dart';
 import 'package:smartbudget/features/zakat/domain/zakat_calculator.dart';
 
-/// User-entered zakat inputs (gold/silver gram prices + chosen standard).
+/// User-entered zakat inputs (gold/silver gram prices, chosen standard, and the
+/// Gregorian date the wealth first reached nisab — the hawl start).
 @immutable
 class ZakatInputs {
   const ZakatInputs({
     required this.goldPricePerGram,
     required this.silverPricePerGram,
     required this.standard,
+    this.hawlStart,
   });
 
   final double goldPricePerGram;
   final double silverPricePerGram;
   final ZakatStandard standard;
+  final DateTime? hawlStart;
 
   ZakatInputs copyWith({
     double? goldPricePerGram,
@@ -35,6 +39,7 @@ class ZakatInputs {
       goldPricePerGram: goldPricePerGram ?? this.goldPricePerGram,
       silverPricePerGram: silverPricePerGram ?? this.silverPricePerGram,
       standard: standard ?? this.standard,
+      hawlStart: hawlStart,
     );
   }
 }
@@ -68,6 +73,7 @@ class ZakatInputsController extends Notifier<ZakatInputs> {
           standard: (m['standard'] == 'silver')
               ? ZakatStandard.silver
               : ZakatStandard.gold,
+          hawlStart: DateTime.tryParse('${m['hawlStart']}'),
         );
       }
     } catch (_) {
@@ -77,14 +83,30 @@ class ZakatInputsController extends Notifier<ZakatInputs> {
 
   Future<void> update(ZakatInputs next) async {
     state = next;
+    await _persist();
+  }
+
+  /// Sets or clears (null) the hawl start date.
+  Future<void> setHawlStart(DateTime? date) async {
+    state = ZakatInputs(
+      goldPricePerGram: state.goldPricePerGram,
+      silverPricePerGram: state.silverPricePerGram,
+      standard: state.standard,
+      hawlStart: date,
+    );
+    await _persist();
+  }
+
+  Future<void> _persist() async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString(
         _key,
         jsonEncode(<String, dynamic>{
-          'gold': next.goldPricePerGram,
-          'silver': next.silverPricePerGram,
-          'standard': next.standard.name,
+          'gold': state.goldPricePerGram,
+          'silver': state.silverPricePerGram,
+          'standard': state.standard.name,
+          'hawlStart': state.hawlStart?.toIso8601String(),
         }),
       );
     } catch (_) {
@@ -121,4 +143,11 @@ final zakatResultProvider = Provider<ZakatResult>((ref) {
       liabilitiesMinor: debts.owedByMe.minorUnits,
     ),
   );
+});
+
+/// The hawl (lunar-year) status, or null when no start date is set yet.
+final zakatHawlProvider = Provider<HawlStatus?>((ref) {
+  final DateTime? start = ref.watch(zakatInputsProvider).hawlStart;
+  if (start == null) return null;
+  return HawlStatus.compute(start, DateTime.now());
 });
