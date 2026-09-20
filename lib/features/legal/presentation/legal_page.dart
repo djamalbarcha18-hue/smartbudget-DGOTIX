@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:smartbudget/design_system/components/ds_back_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -30,7 +31,16 @@ class LegalPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Text(title, style: Theme.of(context).textTheme.headlineSmall),
+              Row(
+                children: <Widget>[
+                  const DsBackButton(fallbackRoute: '/support'),
+                  const SizedBox(width: DsSpacing.xs),
+                  Expanded(
+                    child: Text(title,
+                        style: Theme.of(context).textTheme.headlineSmall),
+                  ),
+                ],
+              ),
               const SizedBox(height: DsSpacing.xs),
               Text(
                 l.legalLastUpdated(LegalContent.lastUpdated),
