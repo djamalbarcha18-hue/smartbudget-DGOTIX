@@ -37,6 +37,7 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
     final Map<String, double> rates = ref.watch(ratesProvider);
+    final FxStatus fx = ref.watch(fxStatusProvider);
     final String base = ref.watch(baseCurrencyProvider);
 
     final double amount =
@@ -155,19 +156,44 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(l.rateVsUsd,
-                    style: Theme.of(context).textTheme.titleMedium),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(l.rateVsUsd,
+                          style: Theme.of(context).textTheme.titleMedium),
+                    ),
+                    if (fx.loading)
+                      const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    else
+                      IconButton(
+                        tooltip: l.fxRefreshRates,
+                        onPressed: () =>
+                            ref.read(ratesProvider.notifier).refresh(force: true),
+                        icon: Icon(Icons.refresh_rounded,
+                            size: 20, color: context.dsColors.brand),
+                      ),
+                  ],
+                ),
                 const SizedBox(height: DsSpacing.xs),
-                Text(l.ratesIndicative,
-                    style: Theme.of(context).textTheme.bodySmall),
+                _FxStatusLine(status: fx),
                 const SizedBox(height: DsSpacing.md),
                 for (final Currency cur in Currencies.all)
                   _RateRow(
                     currency: cur,
                     rate: rates[cur.code] ?? 0,
+                    tag: _tagFor(cur.code, fx),
                     onEdit: cur.code == 'USD'
                         ? null
                         : () => _editRate(context, cur, rates[cur.code] ?? 0),
+                    onReset: fx.manualCodes.contains(cur.code)
+                        ? () => ref
+                            .read(ratesProvider.notifier)
+                            .clearOverride(cur.code)
+                        : null,
                   ),
               ],
             ),
@@ -253,15 +279,34 @@ class _CurrencyDropdown extends StatelessWidget {
   }
 }
 
+/// How a listed rate is sourced, shown honestly next to each row.
+enum _RateTag { none, live, manual, indicative }
+
+_RateTag _tagFor(String code, FxStatus fx) {
+  if (code == 'USD') return _RateTag.none;
+  if (fx.manualCodes.contains(code)) return _RateTag.manual;
+  if (fx.liveCodes.contains(code)) return _RateTag.live;
+  return _RateTag.indicative;
+}
+
 class _RateRow extends StatelessWidget {
-  const _RateRow({required this.currency, required this.rate, this.onEdit});
+  const _RateRow({
+    required this.currency,
+    required this.rate,
+    this.tag = _RateTag.none,
+    this.onEdit,
+    this.onReset,
+  });
   final Currency currency;
   final double rate;
+  final _RateTag tag;
   final VoidCallback? onEdit;
+  final VoidCallback? onReset;
 
   @override
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
+    final AppLocalizations l = AppLocalizations.of(context);
     final bool ar = Localizations.localeOf(context).languageCode == 'ar';
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: DsSpacing.sm),
@@ -275,14 +320,31 @@ class _RateRow extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleSmall),
           ),
           Expanded(
-            child: Text(ar ? currency.nameAr : currency.nameEn,
-                style: Theme.of(context).textTheme.bodySmall,
-                overflow: TextOverflow.ellipsis),
+            child: Row(
+              children: <Widget>[
+                Flexible(
+                  child: Text(ar ? currency.nameAr : currency.nameEn,
+                      style: Theme.of(context).textTheme.bodySmall,
+                      overflow: TextOverflow.ellipsis),
+                ),
+                if (tag != _RateTag.none) ...<Widget>[
+                  const SizedBox(width: DsSpacing.sm),
+                  _RateTagChip(tag: tag),
+                ],
+              ],
+            ),
           ),
           Text(rate.toString(),
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     color: c.textPrimary,
                   )),
+          if (onReset != null)
+            IconButton(
+              tooltip: l.fxResetToLive,
+              onPressed: onReset,
+              icon: Icon(Icons.settings_backup_restore_rounded,
+                  size: 16, color: c.textMuted),
+            ),
           if (onEdit != null)
             IconButton(
               onPressed: onEdit,
@@ -293,5 +355,80 @@ class _RateRow extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _RateTagChip extends StatelessWidget {
+  const _RateTagChip({required this.tag});
+  final _RateTag tag;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final AppLocalizations l = AppLocalizations.of(context);
+    final (String, Color) data = switch (tag) {
+      _RateTag.live => (l.fxTagLive, c.income),
+      _RateTag.manual => (l.fxTagManual, c.brand),
+      _RateTag.indicative => (l.fxTagIndicative, c.textFaint),
+      _RateTag.none => ('', c.textFaint),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+      decoration: BoxDecoration(
+        color: data.$2.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        data.$1,
+        style: Theme.of(context)
+            .textTheme
+            .labelSmall
+            ?.copyWith(color: data.$2, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+}
+
+/// Live-status line under the rates header: live + as-of + source, or an honest
+/// "unavailable" note. Never shows a fabricated freshness claim.
+class _FxStatusLine extends StatelessWidget {
+  const _FxStatusLine({required this.status});
+  final FxStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final AppLocalizations l = AppLocalizations.of(context);
+    final TextStyle? style =
+        Theme.of(context).textTheme.bodySmall?.copyWith(color: c.textMuted);
+
+    if (status.loading && !status.live) {
+      return Text(l.fxUpdating, style: style);
+    }
+    if (status.live) {
+      final List<String> parts = <String>[l.fxLiveRates];
+      if (status.asOf != null) parts.add(l.fxAsOf(_fmtDate(status.asOf!)));
+      if (status.source != null && status.source!.isNotEmpty) {
+        parts.add(l.fxSource(status.source!));
+      }
+      return Row(
+        children: <Widget>[
+          Icon(Icons.circle, size: 8, color: c.income),
+          const SizedBox(width: DsSpacing.xs),
+          Expanded(child: Text(parts.join(' · '), style: style)),
+        ],
+      );
+    }
+    // Not live yet: either still starting up, or the feed failed.
+    return Text(
+      status.error ? l.fxUnavailableNote : l.ratesIndicative,
+      style: style?.copyWith(color: status.error ? c.expense : c.textMuted),
+    );
+  }
+
+  String _fmtDate(DateTime d) {
+    final DateTime local = d.toLocal();
+    String two(int n) => n.toString().padLeft(2, '0');
+    return '${local.year}-${two(local.month)}-${two(local.day)}';
   }
 }
