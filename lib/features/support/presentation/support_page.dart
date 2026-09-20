@@ -8,7 +8,7 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// Help & Support — contact channel, legal resources, and an FAQ placeholder.
+/// Help & Support — contact channel, legal resources, and an FAQ.
 ///
 /// No financial logic. The support email/links come from [AppConfig] (single
 /// source of truth). A full help center (guides, ticketing) plugs in later
@@ -132,7 +132,7 @@ class SupportPage extends StatelessWidget {
               ),
               const SizedBox(height: DsSpacing.lg),
 
-              // FAQ placeholder (honest "coming soon" — no fake content).
+              // FAQ — factual answers about how the app itself works.
               GlassCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,15 +145,58 @@ class SupportPage extends StatelessWidget {
                             style: Theme.of(context).textTheme.titleMedium),
                       ],
                     ),
-                    const SizedBox(height: DsSpacing.sm),
-                    Text(l.supportFaqSoon,
+                    const SizedBox(height: DsSpacing.xs),
+                    Text(l.supportFaqHint,
                         style: Theme.of(context).textTheme.bodySmall),
+                    const SizedBox(height: DsSpacing.sm),
+                    for (final (String, String) qa in <(String, String)>[
+                      (l.faqPrivacyQ, l.faqPrivacyA),
+                      (l.faqCurrencyQ, l.faqCurrencyA),
+                      (l.faqBudgetQ, l.faqBudgetA),
+                      (l.faqZakatQ, l.faqZakatA),
+                      (l.faqBackupQ, l.faqBackupA),
+                      (l.faqReceiptQ, l.faqReceiptA),
+                    ])
+                      _FaqItem(question: qa.$1, answer: qa.$2),
                   ],
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// A single expandable FAQ entry (question row that reveals the answer).
+class _FaqItem extends StatelessWidget {
+  const _FaqItem({required this.question, required this.answer});
+  final String question;
+  final String answer;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    return Theme(
+      // Remove the default divider lines ExpansionTile draws when expanded.
+      data: Theme.of(context)
+          .copyWith(dividerColor: Colors.transparent, splashColor: Colors.transparent),
+      child: ExpansionTile(
+        tilePadding: EdgeInsets.zero,
+        childrenPadding: const EdgeInsets.only(bottom: DsSpacing.md),
+        expandedCrossAxisAlignment: CrossAxisAlignment.start,
+        iconColor: c.brand,
+        collapsedIconColor: c.textFaint,
+        title: Text(question,
+            style: Theme.of(context).textTheme.bodyMedium),
+        children: <Widget>[
+          Text(answer,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: c.textMuted, height: 1.5)),
+        ],
       ),
     );
   }
