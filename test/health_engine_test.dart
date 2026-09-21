@@ -15,6 +15,7 @@ HealthFacts _facts({
   double goalsProgress = 0,
   int goalsCount = 0,
   int? emergency,
+  bool debtCurrent = true,
 }) {
   return HealthFacts(
     incomeMinor: income,
@@ -29,6 +30,7 @@ HealthFacts _facts({
     goalsProgress: goalsProgress,
     goalsCount: goalsCount,
     emergencySavingsMinor: emergency,
+    debtDataCurrent: debtCurrent,
   );
 }
 
@@ -211,5 +213,26 @@ void main() {
     final HealthReport dzd = run(1000000); // e.g. DZD-scale
     expect(dzd.score, closeTo(usd.score, 0.5));
     expect(dzd.resilience, closeTo(usd.resilience, 0.5));
+  });
+
+  test('13) past-year debt → same score, lower debt confidence', () {
+    HealthReport run(bool current) => HealthEngine.evaluate(_facts(
+          income: 1200000,
+          expense: 800000,
+          essential: 500000,
+          debtService: 300000, // DSR 0.25
+          owedByMe: 2400000, // DTI 2.0
+          emergency: 250000,
+          debtCurrent: current,
+        ));
+    final HealthReport now = run(true);
+    final HealthReport past = run(false);
+    final HealthPillar debtNow = _p(now, HealthPillarKey.debt);
+    final HealthPillar debtPast = _p(past, HealthPillarKey.debt);
+    // Score is untouched — confidence is what changes for a past scope.
+    expect(debtPast.score, closeTo(debtNow.score, 1e-9));
+    expect(debtPast.confidence, lessThan(debtNow.confidence));
+    // The lower pillar confidence pulls overall Data Confidence down too.
+    expect(past.confidence, lessThan(now.confidence));
   });
 }

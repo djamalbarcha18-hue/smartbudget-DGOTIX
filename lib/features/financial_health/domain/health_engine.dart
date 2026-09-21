@@ -118,6 +118,7 @@ class HealthFacts {
     required this.goalsProgress,
     required this.goalsCount,
     required this.emergencySavingsMinor,
+    this.debtDataCurrent = true,
   });
 
   final int incomeMinor;
@@ -132,6 +133,12 @@ class HealthFacts {
   final double goalsProgress; // 0..1 saved/target
   final int goalsCount;
   final int? emergencySavingsMinor; // null = unknown (NOT zero)
+
+  /// True when the analysed year is the current calendar year. Debt balances
+  /// are a present-day snapshot, so comparing them to a PAST year's income is
+  /// a cross-scope mismatch — we keep the score but lower the debt pillar's
+  /// confidence in that case.
+  final bool debtDataCurrent;
 }
 
 /// The central, pure Financial-Health engine. Pipeline:
@@ -178,7 +185,8 @@ abstract final class HealthEngine {
         _savings(income, savingsRate, posMonthRatio, active, f.goalsCount, f.goalsProgress);
     final HealthPillar resilience =
         _resilience(coverage, posMonthRatio, active);
-    final HealthPillar debt = _debt(income, dti, dsr, f.owedByMeMinor);
+    final HealthPillar debt = _debt(income, dti, dsr, f.owedByMeMinor,
+        current: f.debtDataCurrent);
     final HealthPillar incomeStab = _incomeStability(cv, active);
     final HealthPillar planning = _planning(f.goalsCount, f.goalsProgress);
 
@@ -380,7 +388,8 @@ abstract final class HealthEngine {
   }
 
   static HealthPillar _debt(
-      double income, double dti, double dsr, int owedByMe) {
+      double income, double dti, double dsr, int owedByMe,
+      {bool current = true}) {
     if (income <= 0) {
       return const HealthPillar(
           key: HealthPillarKey.debt,
@@ -390,7 +399,9 @@ abstract final class HealthEngine {
           confidence: 0);
     }
     if (owedByMe == 0 && dsr <= 0) {
-      // No debt at all = fully manageable (not a gap).
+      // No debt at all = fully manageable (not a gap). Confidence is full
+      // even for a past year: "no outstanding debt" is not a cross-scope
+      // comparison, so the snapshot caveat below does not apply.
       return const HealthPillar(
           key: HealthPillarKey.debt,
           score: 100,
@@ -406,12 +417,17 @@ abstract final class HealthEngine {
       <double>[0, 100], <double>[0.1, 90], <double>[0.2, 72],
       <double>[0.36, 46], <double>[0.5, 20], <double>[0.6, 0],
     ]);
+    // Debt balances are a present-day snapshot. When the analysed period is a
+    // PAST year, dividing today's debt by that year's income is a cross-scope
+    // comparison, so we keep the computed score but lower the pillar's Data
+    // Confidence (never distort the score) — per "confidence separate from
+    // score". Current-year analysis keeps full-strength confidence.
     return HealthPillar(
       key: HealthPillarKey.debt,
       score: (0.5 * sDti + 0.5 * sDsr).clamp(0, 100).toDouble(),
       weight: 0.20,
       available: true,
-      confidence: 0.9,
+      confidence: current ? 0.9 : 0.5,
     );
   }
 

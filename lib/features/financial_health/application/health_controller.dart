@@ -134,6 +134,10 @@ final healthReportProvider = Provider<HealthReport>((ref) {
       goalsProgress: goalsProgress,
       goalsCount: goalsCount,
       emergencySavingsMinor: emergencyMinor,
+      // Debt balances are a present-day snapshot; only the current calendar
+      // year lets us compare them to income on the same time scope. For a
+      // past year we keep the debt score but lower its Data Confidence.
+      debtDataCurrent: year == DateTime.now().year,
     ),
   );
 });
