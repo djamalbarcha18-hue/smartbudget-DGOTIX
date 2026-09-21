@@ -558,6 +558,9 @@
   "legendNet": "Net",
   "chartOther": "Other",
   "vsPreviousYear": "vs. last year",
+  "vsPreviousMonth": "vs. last month",
+  "scopeMonth": "Month",
+  "scopeYear": "Year",
   "noComparison": "No comparison",
 
   "alertsSection": "Alerts & actions",

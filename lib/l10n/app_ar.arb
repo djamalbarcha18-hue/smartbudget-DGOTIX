@@ -558,6 +558,9 @@
   "legendNet": "الصافي",
   "chartOther": "أخرى",
   "vsPreviousYear": "مقارنةً بالعام السابق",
+  "vsPreviousMonth": "مقارنةً بالشهر السابق",
+  "scopeMonth": "شهر",
+  "scopeYear": "سنة",
   "noComparison": "لا تتوفّر مقارنة",
 
   "alertsSection": "التنبيهات والإجراءات",

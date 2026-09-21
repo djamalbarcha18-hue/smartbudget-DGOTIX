@@ -19,6 +19,7 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/analytics/domain/kpi_math.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/dashboard/application/dashboard_controller.dart';
 import 'package:smartbudget/features/dashboard/presentation/dgotix_insights_section.dart';
 import 'package:smartbudget/features/dashboard/presentation/global_markets_section.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
@@ -47,11 +48,12 @@ class DashboardPage extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final String? name = ref.watch(authControllerProvider).user?.name;
-    final FinanceSummary summary = ref.watch(financeSummaryProvider);
+    final DashboardScope scope = ref.watch(dashboardScopeProvider);
+    final FinanceSummary summary = ref.watch(scopedSummaryProvider);
     final bool hasData = summary.count > 0;
 
-    // Period-over-period comparison (selected year vs the previous year).
-    final FinanceSummary prev = ref.watch(previousYearSummaryProvider);
+    // Period-over-period comparison (previous month, or previous year).
+    final FinanceSummary prev = ref.watch(scopedPreviousSummaryProvider);
     final bool hasPrev = prev.count > 0;
     final KpiChange incomeChange = KpiChange.of(
         current: summary.income.minorUnits,
@@ -65,7 +67,9 @@ class DashboardPage extends ConsumerWidget {
         current: summary.net.minorUnits,
         previous: prev.net.minorUnits,
         hasPrevious: hasPrev);
-    final String? vsPrev = hasPrev ? l.vsPreviousYear : null;
+    final String? vsPrev = hasPrev
+        ? (scope == DashboardScope.month ? l.vsPreviousMonth : l.vsPreviousYear)
+        : null;
 
     final String greeting =
         name == null ? l.welcomeGreeting : '${l.welcomeGreeting}، $name';
@@ -79,7 +83,15 @@ class DashboardPage extends ConsumerWidget {
           const SizedBox(height: DsSpacing.xl),
 
           // ---- Overview KPIs (real values, or "—" when empty) ----
-          DsSectionHeader(title: l.sectionOverview, icon: Icons.pie_chart_outline),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: DsSectionHeader(
+                    title: l.sectionOverview, icon: Icons.pie_chart_outline),
+              ),
+              _ScopeToggle(scope: scope),
+            ],
+          ),
           const SizedBox(height: DsSpacing.md),
           _ResponsiveGrid(
             minTileWidth: 240,
@@ -173,6 +185,58 @@ class DashboardPage extends ConsumerWidget {
               const _ZakatMiniCard(),
             ],
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Compact month/year period switcher for the dashboard overview.
+class _ScopeToggle extends ConsumerWidget {
+  const _ScopeToggle({required this.scope});
+  final DashboardScope scope;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+
+    Widget seg(String label, DashboardScope value) {
+      final bool sel = scope == value;
+      return GestureDetector(
+        onTap: () =>
+            ref.read(dashboardScopeProvider.notifier).state = value,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(
+              horizontal: DsSpacing.md, vertical: 6),
+          decoration: BoxDecoration(
+            color: sel ? c.brand : Colors.transparent,
+            borderRadius: DsRadius.brPill,
+          ),
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: sel ? c.onBrand : c.textMuted,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: c.surfaceMuted,
+        borderRadius: DsRadius.brPill,
+        border: Border.all(color: c.border),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          seg(l.scopeMonth, DashboardScope.month),
+          seg(l.scopeYear, DashboardScope.year),
         ],
       ),
     );
@@ -362,7 +426,7 @@ class _IncomeDonutCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return _DistributionBody(
       title: AppLocalizations.of(context).sectionIncomeDistribution,
-      totals: ref.watch(incomeCategoryTotalsProvider),
+      totals: ref.watch(scopedIncomeCategoryTotalsProvider),
     );
   }
 }
@@ -373,7 +437,7 @@ class _ExpenseDonutCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return _DistributionBody(
       title: AppLocalizations.of(context).sectionExpenseDistribution,
-      totals: ref.watch(expenseCategoryTotalsProvider),
+      totals: ref.watch(scopedExpenseCategoryTotalsProvider),
     );
   }
 }
