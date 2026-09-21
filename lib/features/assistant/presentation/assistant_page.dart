@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:smartbudget/core/money/money.dart';
-import 'package:smartbudget/features/transactions/domain/categories.dart';
-import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -11,6 +8,7 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/assistant/application/assistant_controller.dart';
 import 'package:smartbudget/features/assistant/domain/insight_engine.dart';
+import 'package:smartbudget/features/assistant/presentation/insight_view.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// AI Assistant — rule-based "smart insights" computed entirely on-device from
@@ -75,8 +73,7 @@ class _InsightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DsColors c = context.dsColors;
-    final Color tone = _toneColor(insight.tone, c);
+    final InsightView v = describeInsight(context, insight);
     return GlassCard(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,17 +82,17 @@ class _InsightCard extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: tone.withValues(alpha: 0.14),
+              color: v.color.withValues(alpha: 0.14),
               borderRadius: DsRadius.brSm,
             ),
-            child: Icon(_toneIcon(insight.tone), size: 20, color: tone),
+            child: Icon(v.icon, size: 20, color: v.color),
           ),
           const SizedBox(width: DsSpacing.md),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(top: DsSpacing.xxs),
               child: Text(
-                _message(context, insight),
+                v.message,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
@@ -103,47 +100,6 @@ class _InsightCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  static Color _toneColor(InsightTone t, DsColors c) => switch (t) {
-        InsightTone.positive => c.income,
-        InsightTone.warning => c.warning,
-        InsightTone.info => c.brand,
-      };
-
-  static IconData _toneIcon(InsightTone t) => switch (t) {
-        InsightTone.positive => Icons.check_circle_outline_rounded,
-        InsightTone.warning => Icons.warning_amber_rounded,
-        InsightTone.info => Icons.lightbulb_outline_rounded,
-      };
-
-  /// Maps an [Insight] to its localized sentence. Money and percentages are
-  /// formatted here (presentation), never in the domain engine.
-  String _message(BuildContext context, Insight i) {
-    final AppLocalizations l = AppLocalizations.of(context);
-    String money(int? minor) =>
-        MoneyFormatter.format(Money(minor ?? 0, i.currency ?? 'USD'));
-    return switch (i.key) {
-      InsightKey.netDeficit => l.insightNetDeficit(money(i.amountMinor)),
-      InsightKey.netSurplus => l.insightNetSurplus(money(i.amountMinor)),
-      InsightKey.savingsRate =>
-        l.insightSavingsRate(MoneyFormatter.percent(i.rate ?? 0)),
-      InsightKey.topExpenseCategory => l.insightTopExpense(
-          Catalog.label(i.category ?? '',
-              ar: Localizations.localeOf(context).languageCode == 'ar'),
-          money(i.amountMinor)),
-      InsightKey.healthExcellent => l.insightHealthExcellent,
-      InsightKey.healthVeryGood => l.insightHealthVeryGood,
-      InsightKey.healthGood => l.insightHealthGood,
-      InsightKey.healthFair => l.insightHealthFair,
-      InsightKey.healthNeedsWork => l.insightHealthNeedsWork,
-      InsightKey.goalsAchieved => l.insightGoalsAchieved(i.count ?? 0),
-      InsightKey.goalsUrgent => l.insightGoalsUrgent(i.count ?? 0),
-      InsightKey.debtsOverdue => l.insightDebtsOverdue(i.count ?? 0),
-      InsightKey.debtsOwedToMe => l.insightDebtsOwedToMe(money(i.amountMinor)),
-      InsightKey.debtsOwedByMe => l.insightDebtsOwedByMe(money(i.amountMinor)),
-      InsightKey.zakatDue => l.insightZakatDue(money(i.amountMinor)),
-    };
   }
 }
 
