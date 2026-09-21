@@ -154,7 +154,7 @@ class DashboardPage extends ConsumerWidget {
           // ---- Income & expense distribution (donuts) + recent ----
           _ResponsiveGrid(
             minTileWidth: 320,
-            childAspectRatio: 0.92,
+            childAspectRatio: 0.82,
             children: <Widget>[
               const _IncomeDonutCard(),
               const _ExpenseDonutCard(),
@@ -467,6 +467,8 @@ class _DistributionBody extends StatelessWidget {
                   Center(
                     child: DonutChart(
                       segments: segments,
+                      size: 168,
+                      thickness: 30,
                       centerTop: MoneyFormatter.compact(
                           Money(totalMinor, totals.first.amount.currencyCode)),
                     ),
