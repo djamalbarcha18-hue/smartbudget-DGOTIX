@@ -11,7 +11,7 @@ import 'package:smartbudget/features/assistant/domain/insight_engine.dart';
 import 'package:smartbudget/features/assistant/presentation/insight_view.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// "رؤى DGOTIX" — the top smart insights surfaced on the dashboard. Reuses the
+/// "DGOTIX AI" — the top smart insights surfaced on the dashboard. Reuses the
 /// on-device rule-based engine and the shared insight presentation; tapping
 /// "view details" opens the full DGOTIX AI page. No fabricated analysis.
 class DgotixInsightsSection extends ConsumerWidget {
@@ -32,7 +32,7 @@ class DgotixInsightsSection extends ConsumerWidget {
             Icon(Icons.auto_awesome_outlined, size: 20, color: c.brand),
             const SizedBox(width: DsSpacing.sm),
             Expanded(
-              child: BrandedTitle(l.brandInsights,
+              child: BrandedTitle(l.brandAi,
                   style: Theme.of(context).textTheme.titleLarge),
             ),
             TextButton(
