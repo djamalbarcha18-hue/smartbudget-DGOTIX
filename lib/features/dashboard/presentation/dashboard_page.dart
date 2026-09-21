@@ -398,11 +398,13 @@ class _DistributionBody extends StatelessWidget {
       const int topN = 6;
       final List<CategoryTotal> top =
           totals.length > topN ? totals.sublist(0, topN) : totals;
+      final String currency = totals.first.amount.currencyCode;
       for (int i = 0; i < top.length; i++) {
         segments.add(DonutSegment(
           label: Catalog.label(top[i].category, ar: ar),
           value: top[i].amount.minorUnits.toDouble(),
           color: DsChartPalette.at(i),
+          valueLabel: MoneyFormatter.compact(top[i].amount),
         ));
       }
       if (totals.length > topN) {
@@ -413,6 +415,7 @@ class _DistributionBody extends StatelessWidget {
           label: l.chartOther,
           value: otherMinor.toDouble(),
           color: DsChartPalette.other,
+          valueLabel: MoneyFormatter.compact(Money(otherMinor, currency)),
         ));
       }
       for (final DonutSegment seg in segments) {
