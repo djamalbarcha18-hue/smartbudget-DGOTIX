@@ -21,6 +21,7 @@ import 'package:smartbudget/features/backup/domain/backup_model.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/dev/sample_data_controller.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/receipts/application/receipt_scan_controller.dart';
 import 'package:smartbudget/features/receipts/domain/receipt_ocr_engine.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
@@ -966,14 +967,15 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
   }
 }
 
-class _CurrencyDropdown extends StatelessWidget {
+class _CurrencyDropdown extends ConsumerWidget {
   const _CurrencyDropdown({required this.value, required this.onChanged});
   final String value;
   final ValueChanged<String> onChanged;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final DsColors c = context.dsColors;
+    final List<Currency> currencies = ref.watch(currenciesByStrengthProvider);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: DsSpacing.md),
       decoration: BoxDecoration(
@@ -986,7 +988,7 @@ class _CurrencyDropdown extends StatelessWidget {
         underline: const SizedBox.shrink(),
         dropdownColor: c.bgElevated,
         items: <DropdownMenuItem<String>>[
-          for (final Currency cur in Currencies.all)
+          for (final Currency cur in currencies)
             DropdownMenuItem<String>(
               value: cur.code,
               child: Row(

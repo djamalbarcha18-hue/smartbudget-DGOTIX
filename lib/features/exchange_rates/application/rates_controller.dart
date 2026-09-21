@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/features/markets/application/markets_controllers.dart';
 import 'package:smartbudget/features/markets/domain/market_models.dart';
 
@@ -63,6 +64,27 @@ final fxStatusProvider = StateProvider<FxStatus>((ref) => const FxStatus());
 /// the feed doesn't cover stays indicative rather than fabricated.
 final ratesProvider =
     NotifierProvider<RatesController, Map<String, double>>(RatesController.new);
+
+/// All supported currencies ordered strongest → weakest by their value against
+/// the US dollar (fewer units per USD = stronger). Uses the live/seed rate map,
+/// so the order refines as live rates load. Currencies with no known rate go
+/// last (stable order otherwise).
+final currenciesByStrengthProvider = Provider<List<Currency>>((ref) {
+  final Map<String, double> rates = ref.watch(ratesProvider);
+  final List<Currency> list = List<Currency>.of(Currencies.all);
+  list.sort((Currency a, Currency b) {
+    final double? ra = rates[a.code];
+    final double? rb = rates[b.code];
+    if (ra == null && rb == null) return a.code.compareTo(b.code);
+    if (ra == null) return 1;
+    if (rb == null) return -1;
+    if (ra <= 0 && rb <= 0) return a.code.compareTo(b.code);
+    if (ra <= 0) return 1;
+    if (rb <= 0) return -1;
+    return ra.compareTo(rb); // ascending units-per-USD → strongest first
+  });
+  return list;
+});
 
 class RatesController extends Notifier<Map<String, double>> {
   /// Persisted user overrides (code -> rate). A dedicated key so we never

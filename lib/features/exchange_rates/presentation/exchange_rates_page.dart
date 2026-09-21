@@ -39,6 +39,7 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
     final Map<String, double> rates = ref.watch(ratesProvider);
     final FxStatus fx = ref.watch(fxStatusProvider);
     final String base = ref.watch(baseCurrencyProvider);
+    final List<Currency> currencies = ref.watch(currenciesByStrengthProvider);
 
     final double amount =
         double.tryParse(_amount.text.trim().replaceAll(',', '.')) ?? 0;
@@ -75,6 +76,7 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
                 ),
                 _CurrencyDropdown(
                   value: base,
+                  currencies: currencies,
                   onChanged: (String v) =>
                       ref.read(baseCurrencyProvider.notifier).set(v),
                 ),
@@ -105,6 +107,7 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
                     Expanded(
                       child: _CurrencyDropdown(
                         value: _from,
+                        currencies: currencies,
                         onChanged: (String v) => setState(() => _from = v),
                       ),
                     ),
@@ -120,6 +123,7 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
                     Expanded(
                       child: _CurrencyDropdown(
                         value: _to,
+                        currencies: currencies,
                         onChanged: (String v) => setState(() => _to = v),
                       ),
                     ),
@@ -181,7 +185,7 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
                 const SizedBox(height: DsSpacing.xs),
                 _FxStatusLine(status: fx),
                 const SizedBox(height: DsSpacing.md),
-                for (final Currency cur in Currencies.all)
+                for (final Currency cur in currencies)
                   _RateRow(
                     currency: cur,
                     rate: rates[cur.code] ?? 0,
@@ -241,9 +245,14 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
 }
 
 class _CurrencyDropdown extends StatelessWidget {
-  const _CurrencyDropdown({required this.value, required this.onChanged});
+  const _CurrencyDropdown({
+    required this.value,
+    required this.onChanged,
+    required this.currencies,
+  });
   final String value;
   final ValueChanged<String> onChanged;
+  final List<Currency> currencies;
 
   @override
   Widget build(BuildContext context) {
@@ -260,7 +269,7 @@ class _CurrencyDropdown extends StatelessWidget {
         underline: const SizedBox.shrink(),
         dropdownColor: c.bgElevated,
         items: <DropdownMenuItem<String>>[
-          for (final Currency cur in Currencies.all)
+          for (final Currency cur in currencies)
             DropdownMenuItem<String>(
               value: cur.code,
               child: Row(

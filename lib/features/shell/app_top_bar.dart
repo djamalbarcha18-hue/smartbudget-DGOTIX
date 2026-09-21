@@ -16,6 +16,7 @@ import 'package:smartbudget/features/analytics/application/alerts_controller.dar
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/analytics/presentation/alert_presentation.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/search/app_search.dart';
 import 'package:smartbudget/features/shell/brand_controls.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
@@ -231,6 +232,7 @@ class _CurrencyChip extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final String code = ref.watch(baseCurrencyProvider);
     final Currency cur = Currencies.byCode(code);
+    final List<Currency> currencies = ref.watch(currenciesByStrengthProvider);
 
     return PopupMenuButton<String>(
       tooltip: l.baseCurrency,
@@ -239,7 +241,7 @@ class _CurrencyChip extends ConsumerWidget {
       onSelected: (String v) =>
           ref.read(baseCurrencyProvider.notifier).set(v),
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        for (final Currency x in Currencies.all)
+        for (final Currency x in currencies)
           PopupMenuItem<String>(
             value: x.code,
             child: Row(
