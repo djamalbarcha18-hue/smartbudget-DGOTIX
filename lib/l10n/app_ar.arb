@@ -519,6 +519,8 @@
   "reportPdfFailed": "تعذّر إنشاء ملف PDF. تحقّق من اتصالك وحاول مجدداً.",
 
   "sectionMonthlyComparison": "المقارنة الشهرية",
+  "sectionGlobalMarkets": "الأسواق العالمية",
+  "perUsd": "لكل دولار",
   "sectionIncomeDistribution": "توزيع الدخل",
   "legendNet": "الصافي",
   "chartOther": "أخرى",

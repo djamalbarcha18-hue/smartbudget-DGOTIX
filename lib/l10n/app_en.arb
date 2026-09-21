@@ -519,6 +519,8 @@
   "reportPdfFailed": "Couldn't generate the PDF. Check your connection and try again.",
 
   "sectionMonthlyComparison": "Monthly comparison",
+  "sectionGlobalMarkets": "Global markets",
+  "perUsd": "per USD",
   "sectionIncomeDistribution": "Income distribution",
   "legendNet": "Net",
   "chartOther": "Other",

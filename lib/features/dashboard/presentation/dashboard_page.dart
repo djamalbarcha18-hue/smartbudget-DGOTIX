@@ -19,6 +19,7 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/analytics/domain/kpi_math.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/dashboard/presentation/global_markets_section.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
 import 'package:smartbudget/features/financial_health/application/health_controller.dart';
@@ -131,6 +132,10 @@ class DashboardPage extends ConsumerWidget {
 
           // ---- Financial health score (tap to open the full page) ----
           const _HealthHeroCard(),
+          const SizedBox(height: DsSpacing.xxl),
+
+          // ---- Global markets (live, from keyless public sources) ----
+          const GlobalMarketsSection(),
           const SizedBox(height: DsSpacing.xxl),
 
           // ---- Monthly comparison: income vs expense bars + savings line ----
