@@ -520,7 +520,7 @@
   "askAiThinking": "Thinking…",
   "askAiClear": "Clear conversation",
   "askAiDisclaimer": "AI-generated. Double-check important decisions.",
-  "askAiErrQuota": "You've reached your monthly DGOTIX AI limit. Try again next month, or connect your own key.",
+  "askAiErrQuota": "You've reached your monthly DGOTIX AI limit. Upgrade your plan for a higher limit, or try again next month.",
   "askAiUnavailable": "DGOTIX AI is temporarily unavailable. Your data and SmartBudget features are still available.",
   "askAiErrInvalidKey": "Your API key was rejected. Check it in the key settings above.",
   "askAiErrNetwork": "Couldn't reach the AI service. Check your connection and try again.",
