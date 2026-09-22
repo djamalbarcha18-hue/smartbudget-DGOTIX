@@ -25,7 +25,7 @@ class AskDgotixCard extends ConsumerStatefulWidget {
 class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
   final TextEditingController _ctrl = TextEditingController();
   bool _busy = false;
-  AiChatError? _error;
+  AiChatException? _error;
 
   @override
   void dispose() {
@@ -56,22 +56,29 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
       chat.add(ChatMessage(fromUser: false, text: result.text));
       usage.record(cfg.effectiveModel, result.usage);
     } on AiChatException catch (e) {
-      if (mounted) setState(() => _error = e.kind);
+      if (mounted) setState(() => _error = e);
     } catch (_) {
-      if (mounted) setState(() => _error = AiChatError.unknown);
+      if (mounted) {
+        setState(() => _error = const AiChatException(AiChatError.unknown));
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
-  String _errorText(AppLocalizations l, AiChatError e) => switch (e) {
-        AiChatError.invalidKey => l.askAiErrInvalidKey,
-        AiChatError.unsupported => l.askAiErrUnsupported,
-        AiChatError.rateLimited => l.askAiErrRate,
-        AiChatError.network => l.askAiErrNetwork,
-        AiChatError.empty => l.askAiErrGeneric,
-        AiChatError.unknown => l.askAiErrGeneric,
-      };
+  String _errorText(AppLocalizations l, AiChatException e) {
+    final String base = switch (e.kind) {
+      AiChatError.invalidKey => l.askAiErrInvalidKey,
+      AiChatError.unsupported => l.askAiErrUnsupported,
+      AiChatError.rateLimited => l.askAiErrRate,
+      AiChatError.network => l.askAiErrNetwork,
+      AiChatError.empty => l.askAiErrGeneric,
+      AiChatError.unknown => l.askAiErrGeneric,
+    };
+    // Append the provider's own message when present, so the cause is visible.
+    final String? d = e.detail;
+    return (d == null || d.isEmpty) ? base : '$base\n$d';
+  }
 
   @override
   Widget build(BuildContext context) {

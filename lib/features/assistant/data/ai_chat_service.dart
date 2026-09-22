@@ -70,7 +70,7 @@ class AiChatService {
       uri,
       const <String, String>{'Content-Type': 'application/json'},
       <String, dynamic>{
-        'system_instruction': <String, dynamic>{
+        'systemInstruction': <String, dynamic>{
           'parts': <Map<String, String>>[
             <String, String>{'text': system}
           ]
@@ -87,20 +87,30 @@ class AiChatService {
           'maxOutputTokens': 800,
         },
       },
-      keyInQuery: true,
     );
     final Map<String, dynamic> data =
         jsonDecode(body) as Map<String, dynamic>;
     final List<dynamic>? cands = data['candidates'] as List<dynamic>?;
     if (cands == null || cands.isEmpty) {
-      throw const AiChatException(AiChatError.empty);
+      // No candidates usually means the prompt was blocked; surface the reason.
+      final Map<String, dynamic>? fb =
+          data['promptFeedback'] as Map<String, dynamic>?;
+      final Object? reason = fb?['blockReason'];
+      throw AiChatException(AiChatError.empty,
+          detail: reason == null ? null : 'Blocked: $reason');
     }
+    final Map<String, dynamic> cand0 = cands.first as Map<String, dynamic>;
     final Map<String, dynamic>? content =
-        (cands.first as Map<String, dynamic>)['content'] as Map<String, dynamic>?;
+        cand0['content'] as Map<String, dynamic>?;
     final List<dynamic>? parts = content?['parts'] as List<dynamic>?;
     final String? text = (parts != null && parts.isNotEmpty)
         ? (parts.first as Map<String, dynamic>)['text']?.toString()
         : null;
+    if (text == null || text.trim().isEmpty) {
+      final Object? finish = cand0['finishReason'];
+      throw AiChatException(AiChatError.empty,
+          detail: finish == null ? null : 'Empty ($finish)');
+    }
     final Map<String, dynamic>? um =
         data['usageMetadata'] as Map<String, dynamic>?;
     return AiChatResult(
@@ -192,9 +202,8 @@ class AiChatService {
   Future<String> _send(
     Uri uri,
     Map<String, String> headers,
-    Object body, {
-    bool keyInQuery = false,
-  }) async {
+    Object body,
+  ) async {
     http.Response res;
     try {
       res = await http.post(uri, headers: headers, body: jsonEncode(body));
@@ -203,15 +212,42 @@ class AiChatService {
     }
     final int code = res.statusCode;
     if (code == 200) return res.body;
-    if (code == 401 || code == 403) {
-      throw const AiChatException(AiChatError.invalidKey);
+
+    // Surface the provider's own error text so failures are diagnosable and
+    // classified correctly (a wrong model, a disabled API, an invalid key…).
+    final String msg = _extractError(res.body);
+    final String? detail = msg.isEmpty ? 'HTTP $code' : msg;
+    if (code == 429) {
+      throw AiChatException(AiChatError.rateLimited, detail: detail);
     }
-    // Gemini carries the key in the query string; a bad key comes back as 400.
-    if (code == 400 && keyInQuery) {
-      throw const AiChatException(AiChatError.invalidKey);
+    final String low = msg.toLowerCase();
+    final bool keyish = code == 401 ||
+        code == 403 ||
+        low.contains('api key') ||
+        low.contains('api_key_invalid') ||
+        low.contains('permission');
+    if (keyish) {
+      throw AiChatException(AiChatError.invalidKey, detail: detail);
     }
-    if (code == 429) throw const AiChatException(AiChatError.rateLimited);
-    throw AiChatException(AiChatError.unknown, detail: 'HTTP $code');
+    throw AiChatException(AiChatError.unknown, detail: detail);
+  }
+
+  /// Pulls a human-readable message out of a provider error body
+  /// ({"error":{"message":"…"}} for OpenAI/Gemini/Anthropic).
+  String _extractError(String body) {
+    try {
+      final Object? d = jsonDecode(body);
+      if (d is Map) {
+        final Object? err = d['error'];
+        if (err is Map && err['message'] != null) {
+          return err['message'].toString();
+        }
+        if (err is String) return err;
+      }
+    } catch (_) {
+      // Non-JSON body; ignore.
+    }
+    return '';
   }
 
   String _requireText(String? text) {
