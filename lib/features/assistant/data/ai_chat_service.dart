@@ -24,11 +24,15 @@ class AiUsage {
   int get total => (inputTokens ?? 0) + (outputTokens ?? 0);
 }
 
-/// The answer plus the token usage the provider reported for the call.
+/// The answer plus the token usage the provider reported for the call, and the
+/// model that actually produced it (may differ from the requested one when a
+/// fallback was needed).
 class AiChatResult {
-  const AiChatResult({required this.text, required this.usage});
+  const AiChatResult(
+      {required this.text, required this.usage, required this.usedModel});
   final String text;
   final AiUsage usage;
+  final String usedModel;
 }
 
 /// Calls the user's chosen AI provider directly from the browser using their own
@@ -63,7 +67,40 @@ class AiChatService {
 
   // ---- Providers ----
 
-  Future<AiChatResult> _gemini(String key, String model, String system, String q) async {
+  /// Tries the requested Gemini model, then falls back to other Gemini models
+  /// when the key can't use it (model not found / not supported), so a stale
+  /// default never blocks a valid key. Other errors (bad key, rate limit,
+  /// network) stop immediately.
+  Future<AiChatResult> _gemini(
+      String key, String model, String system, String q) async {
+    final List<String> candidates = <String>[
+      model,
+      'gemini-2.0-flash',
+      'gemini-2.5-flash',
+      'gemini-1.5-flash',
+    ];
+    final Set<String> tried = <String>{};
+    AiChatException? last;
+    for (final String m in candidates) {
+      if (m.isEmpty || !tried.add(m)) continue;
+      try {
+        return await _geminiOnce(key, m, system, q);
+      } on AiChatException catch (e) {
+        last = e;
+        final String d = (e.detail ?? '').toLowerCase();
+        final bool modelMissing = e.kind == AiChatError.unknown &&
+            (d.contains('not found') ||
+                d.contains('not supported') ||
+                d.contains('http 404'));
+        if (modelMissing) continue; // try the next model
+        rethrow; // key / quota / network / other → stop
+      }
+    }
+    throw last ?? const AiChatException(AiChatError.unknown);
+  }
+
+  Future<AiChatResult> _geminiOnce(
+      String key, String model, String system, String q) async {
     final Uri uri = Uri.parse(
         'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$key');
     final String body = await _send(
@@ -115,6 +152,7 @@ class AiChatService {
         data['usageMetadata'] as Map<String, dynamic>?;
     return AiChatResult(
       text: _requireText(text),
+      usedModel: model,
       usage: AiUsage(
         inputTokens: _int(um?['promptTokenCount']),
         outputTokens: _int(um?['candidatesTokenCount']),
@@ -151,6 +189,7 @@ class AiChatService {
         data['usage'] as Map<String, dynamic>?;
     return AiChatResult(
       text: _requireText(msg?['content']?.toString()),
+      usedModel: model,
       usage: AiUsage(
         inputTokens: _int(usage?['prompt_tokens']),
         outputTokens: _int(usage?['completion_tokens']),
@@ -188,6 +227,7 @@ class AiChatService {
         data['usage'] as Map<String, dynamic>?;
     return AiChatResult(
       text: _requireText(text),
+      usedModel: model,
       usage: AiUsage(
         inputTokens: _int(usage?['input_tokens']),
         outputTokens: _int(usage?['output_tokens']),

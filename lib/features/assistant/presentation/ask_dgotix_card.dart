@@ -41,6 +41,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     final String context = ref.read(aiContextProvider);
     final ChatMessagesController chat = ref.read(chatMessagesProvider.notifier);
     final AiUsageController usage = ref.read(aiUsageProvider.notifier);
+    final AiKeyController keyCtl = ref.read(aiKeyProvider.notifier);
 
     _ctrl.clear();
     chat.add(ChatMessage(fromUser: true, text: q));
@@ -54,7 +55,11 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
           .read(aiChatServiceProvider)
           .ask(config: cfg, question: q, context: context);
       chat.add(ChatMessage(fromUser: false, text: result.text));
-      usage.record(cfg.effectiveModel, result.usage);
+      usage.record(result.usedModel, result.usage);
+      // If a fallback model answered, remember it so next time goes direct.
+      if (result.usedModel != cfg.effectiveModel) {
+        keyCtl.setModel(result.usedModel);
+      }
     } on AiChatException catch (e) {
       if (mounted) setState(() => _error = e);
     } catch (_) {
