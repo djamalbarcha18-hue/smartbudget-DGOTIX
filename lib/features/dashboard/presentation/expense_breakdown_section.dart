@@ -93,8 +93,7 @@ class _ExpenseBreakdownSectionState
           ),
           const SizedBox(height: DsSpacing.md),
           if (segments.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: DsSpacing.xl),
+            Expanded(
               child: Center(
                 child: Text(l.emptyTransactionsMessage,
                     style: Theme.of(context).textTheme.bodySmall,
@@ -102,47 +101,52 @@ class _ExpenseBreakdownSectionState
               ),
             )
           else ...<Widget>[
-            LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints cons) {
-                final Widget donut = Center(
-                  child: DonutChart(
-                    segments: segments,
-                    size: 176,
-                    thickness: 30,
-                    centerTop: MoneyFormatter.compact(
-                        Money(grandTotal, totals.first.amount.currencyCode)),
-                    centerBottom: l.sectionExpenseBreakdown,
-                    selectedIndex: selected,
-                    onSelectionChanged: (int? i) =>
-                        setState(() => _selected = i),
-                  ),
-                );
-                final Widget bars = CategoryBarChart(
-                  segments: segments,
-                  total: grandTotal.toDouble(),
-                  selectedIndex: selected,
-                  onSelectionChanged: (int? i) => setState(() => _selected = i),
-                );
+            Expanded(
+              child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints cons) {
+                  final Widget donut = Center(
+                    child: DonutChart(
+                      segments: segments,
+                      size: 140,
+                      thickness: 26,
+                      centerTop: MoneyFormatter.compact(
+                          Money(grandTotal, totals.first.amount.currencyCode)),
+                      centerBottom: l.sectionExpenseBreakdown,
+                      selectedIndex: selected,
+                      onSelectionChanged: (int? i) =>
+                          setState(() => _selected = i),
+                    ),
+                  );
+                  final Widget bars = SingleChildScrollView(
+                    child: CategoryBarChart(
+                      segments: segments,
+                      total: grandTotal.toDouble(),
+                      selectedIndex: selected,
+                      onSelectionChanged: (int? i) =>
+                          setState(() => _selected = i),
+                    ),
+                  );
 
-                // Wide → donut beside bars; narrow → stacked.
-                if (cons.maxWidth >= 560) {
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  // Enough width → bars beside the donut; else stack them.
+                  if (cons.maxWidth >= 380) {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(width: 156, child: donut),
+                        const SizedBox(width: DsSpacing.lg),
+                        Expanded(child: bars),
+                      ],
+                    );
+                  }
+                  return Column(
                     children: <Widget>[
-                      SizedBox(width: 200, child: donut),
-                      const SizedBox(width: DsSpacing.xl),
+                      donut,
+                      const SizedBox(height: DsSpacing.md),
                       Expanded(child: bars),
                     ],
                   );
-                }
-                return Column(
-                  children: <Widget>[
-                    donut,
-                    const SizedBox(height: DsSpacing.lg),
-                    bars,
-                  ],
-                );
-              },
+                },
+              ),
             ),
             const SizedBox(height: DsSpacing.md),
             _DetailStrip(

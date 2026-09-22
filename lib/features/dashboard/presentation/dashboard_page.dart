@@ -173,19 +173,9 @@ class DashboardPage extends ConsumerWidget {
           const _MonthlyComparisonCard(),
           const SizedBox(height: DsSpacing.xxl),
 
-          // ---- Expense breakdown: synchronized donut + category bars ----
-          const ExpenseBreakdownSection(),
-          const SizedBox(height: DsSpacing.xxl),
-
-          // ---- Income distribution + recent activity ----
-          _ResponsiveGrid(
-            minTileWidth: 320,
-            childAspectRatio: 0.82,
-            children: <Widget>[
-              const _IncomeDonutCard(),
-              const _RecentTransactionsCard(),
-            ],
-          ),
+          // ---- Distribution & activity: expense breakdown (donut + bars),
+          //      income donut beside it, recent transactions at the far end ----
+          const _AnalyticsBand(),
           const SizedBox(height: DsSpacing.xxl),
 
           // ---- Goals / debts / zakat quick access ----
@@ -517,6 +507,77 @@ class _LegendDot extends StatelessWidget {
         const SizedBox(width: 6),
         Text(label, style: Theme.of(context).textTheme.labelSmall),
       ],
+    );
+  }
+}
+
+/// Distribution & activity band: expense breakdown (donut + bars), the income
+/// donut beside it, and Recent Transactions at the far end — arranged to use
+/// the available width intelligently and reflow on smaller screens. All three
+/// panels are given a bounded height so their internal scroll areas behave.
+class _AnalyticsBand extends StatelessWidget {
+  const _AnalyticsBand();
+
+  @override
+  Widget build(BuildContext context) {
+    const double gap = DsSpacing.gridGap;
+    const Widget breakdown = ExpenseBreakdownSection();
+    const Widget income = _IncomeDonutCard();
+    const Widget recent = _RecentTransactionsCard();
+
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints cons) {
+        final double w = cons.maxWidth;
+
+        // Desktop: all three side by side (breakdown widest, recent at the end).
+        if (w >= 1024) {
+          return SizedBox(
+            height: 400,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Expanded(flex: 5, child: breakdown),
+                const SizedBox(width: gap),
+                Expanded(flex: 3, child: income),
+                const SizedBox(width: gap),
+                Expanded(flex: 4, child: recent),
+              ],
+            ),
+          );
+        }
+
+        // Tablet: breakdown + income on one row, recent full-width below.
+        if (w >= 640) {
+          return Column(
+            children: <Widget>[
+              SizedBox(
+                height: 380,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Expanded(flex: 3, child: breakdown),
+                    const SizedBox(width: gap),
+                    Expanded(flex: 2, child: income),
+                  ],
+                ),
+              ),
+              const SizedBox(height: gap),
+              SizedBox(height: 300, child: recent),
+            ],
+          );
+        }
+
+        // Mobile: stacked, each panel with a comfortable fixed height.
+        return Column(
+          children: <Widget>[
+            SizedBox(height: 440, child: breakdown),
+            const SizedBox(height: gap),
+            SizedBox(height: 320, child: income),
+            const SizedBox(height: gap),
+            SizedBox(height: 340, child: recent),
+          ],
+        );
+      },
     );
   }
 }
