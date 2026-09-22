@@ -54,7 +54,7 @@ class AiKeyCard extends ConsumerWidget {
                 const SizedBox(height: 2),
                 Text(
                   connected
-                      ? l.aiKeyConnectedSub(cfg!.provider.label, cfg!.masked)
+                      ? l.aiKeyConnectedSub(cfg!.provider.label, cfg.masked)
                       : l.aiKeyConnectSub,
                   style: Theme.of(context)
                       .textTheme
