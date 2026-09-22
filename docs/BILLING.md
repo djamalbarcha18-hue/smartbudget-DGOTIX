@@ -47,6 +47,7 @@ fits selling worldwide from MENA.
    ```bash
    supabase functions deploy create-checkout
    supabase functions deploy paddle-webhook --no-verify-jwt   # Paddle can't send a user JWT
+   supabase functions deploy manage-subscription              # in-app manage/cancel link
    ```
 
 4. **Secrets**:
@@ -137,5 +138,10 @@ cancelled/expired/suspended one returns to `free`, every event deduped by id.
   own discounts. Passing a validated coupon as a Paddle `discount_id` at checkout
   (and recording redemption on `transaction.completed`, already stubbed) is the
   next step.
-- **Manage/cancel from inside the app** (Paddle customer portal link).
-- **Proration/upgrade mid-cycle** beyond what Paddle handles by default.
+- **Proration/upgrade mid-cycle** beyond what the provider handles by default.
+
+## Done since
+
+- **Manage/cancel from inside the app**: the Plans screen shows the active plan
+  and renewal date with a "Manage subscription" button (`manage-subscription`
+  returns the Paddle hosted management URL, or the PayPal autopay page).

@@ -12,9 +12,11 @@ import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
 import 'package:smartbudget/features/billing/data/checkout_service.dart';
 import 'package:smartbudget/features/billing/data/coupon_service.dart';
+import 'package:smartbudget/features/billing/data/subscription_service.dart';
 import 'package:smartbudget/features/billing/domain/coupon.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
+import 'package:smartbudget/features/billing/domain/user_subscription.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -59,6 +61,7 @@ class PlansPage extends ConsumerWidget {
               Text(l.plansSubtitle,
                   style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: DsSpacing.xl),
+              const _CurrentPlanCard(),
               if (wide)
                 IntrinsicHeight(
                   child: Row(
@@ -84,6 +87,105 @@ class PlansPage extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Shows the user's active paid subscription (plan + renewal/cancel date) with
+/// a Manage/cancel action that opens the provider's portal. Hidden when there's
+/// no active paid subscription.
+class _CurrentPlanCard extends ConsumerWidget {
+  const _CurrentPlanCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final UserSubscription? sub = ref.watch(subscriptionProvider).valueOrNull;
+    if (sub == null || !sub.isPaidActive) return const SizedBox.shrink();
+
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final String? date = _fmtDate(sub.currentPeriodEnd);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: DsSpacing.md),
+      child: GlassCard(
+        accent: c.brand,
+        child: Row(
+          children: <Widget>[
+            Icon(Icons.verified_outlined, size: 20, color: c.brand),
+            const SizedBox(width: DsSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(l.subYoureOn(planName(l, sub.plan)),
+                      style: t.titleSmall
+                          ?.copyWith(fontWeight: FontWeight.w700)),
+                  if (date != null) ...<Widget>[
+                    const SizedBox(height: 2),
+                    Text(
+                      sub.cancelAtPeriodEnd
+                          ? l.subCancels(date)
+                          : l.subRenews(date),
+                      style: t.labelSmall?.copyWith(color: c.textMuted),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: DsSpacing.sm),
+            const _ManageButton(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ManageButton extends ConsumerStatefulWidget {
+  const _ManageButton();
+
+  @override
+  ConsumerState<_ManageButton> createState() => _ManageButtonState();
+}
+
+class _ManageButtonState extends ConsumerState<_ManageButton> {
+  bool _busy = false;
+
+  Future<void> _open() async {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    setState(() => _busy = true);
+    final String? url =
+        await ref.read(subscriptionServiceProvider).manageUrl();
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (url != null) {
+      await launchUrl(Uri.parse(url),
+          mode: LaunchMode.externalApplication, webOnlyWindowName: '_blank');
+    } else {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l.subManageUnavailable)),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    return DsButton(
+      label: l.subManage,
+      variant: DsButtonVariant.secondary,
+      onPressed: _busy ? null : _open,
+    );
+  }
+}
+
+String? _fmtDate(DateTime? d) {
+  if (d == null) return null;
+  final DateTime x = d.toLocal();
+  final String m = x.month.toString().padLeft(2, '0');
+  final String day = x.day.toString().padLeft(2, '0');
+  return '${x.year}-$m-$day';
 }
 
 /// "Have a coupon?" — validates a marketing code against the server and shows

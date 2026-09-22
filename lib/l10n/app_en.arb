@@ -717,5 +717,13 @@
   "checkoutSignIn": "Sign in to upgrade your plan.",
   "payChooseMethod": "Choose a payment method",
   "payMethodCard": "Credit or debit card",
-  "payMethodPaypal": "PayPal"
+  "payMethodPaypal": "PayPal",
+  "subYoureOn": "You're on {plan}",
+  "@subYoureOn": { "placeholders": { "plan": { "type": "String" } } },
+  "subRenews": "Renews {date}",
+  "@subRenews": { "placeholders": { "date": { "type": "String" } } },
+  "subCancels": "Cancels {date}",
+  "@subCancels": { "placeholders": { "date": { "type": "String" } } },
+  "subManage": "Manage subscription",
+  "subManageUnavailable": "Subscription management isn't available right now."
 }
