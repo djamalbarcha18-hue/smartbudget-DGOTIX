@@ -503,6 +503,7 @@
   "aiKeyConnectedSub": "مفتاح {provider} الخاص بك مربوط ({masked}).",
   "aiKeyProviderLabel": "مزوّد الذكاء الاصطناعي",
   "aiKeyGetKey": "احصل على مفتاح من {provider}",
+  "aiKeyModelLabel": "النموذج",
   "aiKeyField": "مفتاح API",
   "aiKeyWarningTitle": "مفتاحك يبقى ملكك وحدك",
   "aiKeyWarning": "هذا مفتاح API الشخصي الخاص بك. يُحفظ على هذا الجهاز فقط، ولا يُرسَل أبدًا إلى SmartBudget أو DGoTiX، ولا نستخدمه لأي غرض سوى طلباتك أنت. أنت وحدك مالكه — يمكنك إزالته في أي وقت.",
@@ -522,6 +523,10 @@
   "askAiErrUnsupported": "الإجابات الحيّة غير متاحة لهذا المزوّد بعد. اختر OpenAI أو Gemini أو Anthropic.",
   "askAiErrRate": "المزوّد يحدّ من معدل استخدام مفتاحك. حاول بعد قليل.",
   "askAiErrGeneric": "حدث خطأ ما. يُرجى المحاولة مرة أخرى.",
+  "askAiSuggest1": "كيف أُحسّن معدل ادّخاري؟",
+  "askAiSuggest2": "أين يذهب معظم أموالي؟",
+  "askAiSuggest3": "أعطني خطة بسيطة لخفض المصروفات.",
+  "askAiSuggest4": "كيف حال صحتي المالية؟",
 
   "settingsDeveloper": "المطوّر",
   "sampleDataHint": "املأ سنة 2026 بمداخيل ومصروفات وميزانيات تجريبية واقعية لتجربة القالب. آمن للتشغيل أكثر من مرة — لا يُكرّر البيانات.",

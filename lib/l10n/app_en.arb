@@ -505,6 +505,7 @@
   "aiKeyProviderLabel": "AI provider",
   "aiKeyGetKey": "Get a key from {provider}",
   "@aiKeyGetKey": { "placeholders": { "provider": { "type": "String" } } },
+  "aiKeyModelLabel": "Model",
   "aiKeyField": "API key",
   "aiKeyWarningTitle": "Your key stays yours",
   "aiKeyWarning": "This is your personal API key. It is stored only on this device, is never sent to SmartBudget or DGoTiX, and we never use it for anything but your own AI requests. You alone own it — remove it anytime.",
@@ -524,6 +525,10 @@
   "askAiErrUnsupported": "Live answers aren't available for this provider yet. Pick OpenAI, Gemini or Anthropic.",
   "askAiErrRate": "The provider is rate-limiting your key. Try again shortly.",
   "askAiErrGeneric": "Something went wrong. Please try again.",
+  "askAiSuggest1": "How can I improve my savings rate?",
+  "askAiSuggest2": "Where is most of my money going?",
+  "askAiSuggest3": "Give me a simple plan to spend less.",
+  "askAiSuggest4": "How is my financial health?",
 
   "settingsDeveloper": "Developer",
   "sampleDataHint": "Fill 2026 with realistic sample income, expenses and budgets to try the template. Safe to run more than once — it never duplicates.",

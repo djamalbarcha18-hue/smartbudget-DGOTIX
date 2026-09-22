@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -36,3 +39,78 @@ final aiContextProvider = Provider<String>((ref) {
   }
   return b.toString().trim();
 });
+
+/// One turn in the Ask-DGOTIX-AI conversation.
+class ChatMessage {
+  const ChatMessage({required this.fromUser, required this.text});
+  final bool fromUser;
+  final String text;
+
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{'u': fromUser, 't': text};
+
+  static ChatMessage fromJson(Map<String, dynamic> j) =>
+      ChatMessage(fromUser: j['u'] == true, text: (j['t'] ?? '').toString());
+}
+
+/// The saved conversation, persisted on-device so it survives reloads. Capped to
+/// the most recent [_maxStored] turns to stay small.
+final chatMessagesProvider =
+    NotifierProvider<ChatMessagesController, List<ChatMessage>>(
+        ChatMessagesController.new);
+
+class ChatMessagesController extends Notifier<List<ChatMessage>> {
+  static const String _key = 'sb_ai_chat';
+  static const int _maxStored = 40;
+
+  @override
+  List<ChatMessage> build() {
+    _load();
+    return const <ChatMessage>[];
+  }
+
+  Future<void> _load() async {
+    try {
+      final SharedPreferences p = await SharedPreferences.getInstance();
+      final String? raw = p.getString(_key);
+      if (raw == null || raw.isEmpty) return;
+      final List<dynamic> list = jsonDecode(raw) as List<dynamic>;
+      state = list
+          .map((dynamic e) =>
+              ChatMessage.fromJson((e as Map).cast<String, dynamic>()))
+          .toList(growable: false);
+    } catch (_) {
+      // Keep empty on any corruption.
+    }
+  }
+
+  void add(ChatMessage m) {
+    final List<ChatMessage> next = <ChatMessage>[...state, m];
+    state = next.length > _maxStored
+        ? next.sublist(next.length - _maxStored)
+        : next;
+    _persist();
+  }
+
+  void clear() {
+    state = const <ChatMessage>[];
+    _persist();
+  }
+
+  Future<void> _persist() async {
+    try {
+      final SharedPreferences p = await SharedPreferences.getInstance();
+      if (state.isEmpty) {
+        await p.remove(_key);
+      } else {
+        await p.setString(
+            _key,
+            jsonEncode(state
+                .map((ChatMessage m) => m.toJson())
+                .toList(growable: false)));
+      }
+    } catch (_) {
+      // Non-fatal.
+    }
+  }
+}

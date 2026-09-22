@@ -27,10 +27,11 @@ class AiChatService {
     required String context,
   }) {
     final String system = _systemPrompt(context);
+    final String model = config.effectiveModel;
     return switch (config.provider) {
-      AiProvider.gemini => _gemini(config.key, system, question),
-      AiProvider.openai => _openai(config.key, system, question),
-      AiProvider.anthropic => _anthropic(config.key, system, question),
+      AiProvider.gemini => _gemini(config.key, model, system, question),
+      AiProvider.openai => _openai(config.key, model, system, question),
+      AiProvider.anthropic => _anthropic(config.key, model, system, question),
       AiProvider.other =>
         Future<String>.error(const AiChatException(AiChatError.unsupported)),
     };
@@ -46,9 +47,9 @@ class AiChatService {
 
   // ---- Providers ----
 
-  Future<String> _gemini(String key, String system, String q) async {
+  Future<String> _gemini(String key, String model, String system, String q) async {
     final Uri uri = Uri.parse(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$key');
+        'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$key');
     final String body = await _send(
       uri,
       const <String, String>{'Content-Type': 'application/json'},
@@ -87,7 +88,7 @@ class AiChatService {
     return _requireText(text);
   }
 
-  Future<String> _openai(String key, String system, String q) async {
+  Future<String> _openai(String key, String model, String system, String q) async {
     final Uri uri = Uri.parse('https://api.openai.com/v1/chat/completions');
     final String body = await _send(
       uri,
@@ -96,7 +97,7 @@ class AiChatService {
         'Authorization': 'Bearer $key',
       },
       <String, dynamic>{
-        'model': 'gpt-4o-mini',
+        'model': model,
         'messages': <Map<String, String>>[
           <String, String>{'role': 'system', 'content': system},
           <String, String>{'role': 'user', 'content': q},
@@ -115,7 +116,7 @@ class AiChatService {
     return _requireText(msg?['content']?.toString());
   }
 
-  Future<String> _anthropic(String key, String system, String q) async {
+  Future<String> _anthropic(String key, String model, String system, String q) async {
     final Uri uri = Uri.parse('https://api.anthropic.com/v1/messages');
     final String body = await _send(
       uri,
@@ -127,7 +128,7 @@ class AiChatService {
         'anthropic-dangerous-direct-browser-access': 'true',
       },
       <String, dynamic>{
-        'model': 'claude-3-5-haiku-latest',
+        'model': model,
         'max_tokens': 800,
         'system': system,
         'messages': <Map<String, String>>[

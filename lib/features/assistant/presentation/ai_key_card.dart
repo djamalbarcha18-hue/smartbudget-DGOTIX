@@ -100,6 +100,7 @@ class _AiKeySheet extends ConsumerStatefulWidget {
 class _AiKeySheetState extends ConsumerState<_AiKeySheet> {
   final TextEditingController _ctrl = TextEditingController();
   AiProvider _provider = AiProvider.openai;
+  String? _model; // null = provider default
   bool _obscure = true;
   bool _busy = false;
 
@@ -107,13 +108,27 @@ class _AiKeySheetState extends ConsumerState<_AiKeySheet> {
   void initState() {
     super.initState();
     final AiKeyConfig? cfg = ref.read(aiKeyProvider);
-    if (cfg != null) _provider = cfg.provider;
+    if (cfg != null) {
+      _provider = cfg.provider;
+      _model = cfg.model;
+    }
   }
 
   @override
   void dispose() {
     _ctrl.dispose();
     super.dispose();
+  }
+
+  /// Selects a model. If a key for this same provider is already connected, the
+  /// change is applied and persisted immediately; otherwise it is kept until the
+  /// key is saved.
+  void _selectModel(String model) {
+    setState(() => _model = model);
+    final AiKeyConfig? cfg = ref.read(aiKeyProvider);
+    if (cfg != null && cfg.provider == _provider) {
+      ref.read(aiKeyProvider.notifier).setModel(model);
+    }
   }
 
   /// Opens the provider's key console in a new tab (web) / external browser.
@@ -132,7 +147,7 @@ class _AiKeySheetState extends ConsumerState<_AiKeySheet> {
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     final NavigatorState nav = Navigator.of(context);
     setState(() => _busy = true);
-    await ref.read(aiKeyProvider.notifier).save(_provider, key);
+    await ref.read(aiKeyProvider.notifier).save(_provider, key, model: _model);
     messenger.showSnackBar(SnackBar(content: Text(l.aiKeySaved)));
     nav.pop();
   }
@@ -208,7 +223,12 @@ class _AiKeySheetState extends ConsumerState<_AiKeySheet> {
                     _ProviderChip(
                       label: p.label,
                       selected: _provider == p,
-                      onTap: () => setState(() => _provider = p),
+                      // Switching provider resets the model to that provider's
+                      // default (its ids differ).
+                      onTap: () => setState(() {
+                        _provider = p;
+                        _model = null;
+                      }),
                     ),
                 ],
               ),
@@ -231,6 +251,26 @@ class _AiKeySheetState extends ConsumerState<_AiKeySheet> {
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                   ),
+                ),
+              ],
+
+              // ---- Model picker (per provider; live-applies when connected) ----
+              if (_provider.models.isNotEmpty) ...<Widget>[
+                const SizedBox(height: DsSpacing.lg),
+                Text(l.aiKeyModelLabel,
+                    style: t.labelMedium?.copyWith(color: c.textMuted)),
+                const SizedBox(height: DsSpacing.xs),
+                Wrap(
+                  spacing: DsSpacing.sm,
+                  runSpacing: DsSpacing.sm,
+                  children: <Widget>[
+                    for (final String m in _provider.models)
+                      _ProviderChip(
+                        label: m,
+                        selected: (_model ?? _provider.defaultModel) == m,
+                        onTap: () => _selectModel(m),
+                      ),
+                  ],
                 ),
               ],
               const SizedBox(height: DsSpacing.md),

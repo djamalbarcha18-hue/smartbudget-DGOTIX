@@ -10,15 +10,10 @@ import 'package:smartbudget/features/assistant/application/ask_ai_controller.dar
 import 'package:smartbudget/features/assistant/data/ai_chat_service.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-class _Msg {
-  const _Msg({required this.fromUser, required this.text});
-  final bool fromUser;
-  final String text;
-}
-
 /// "Ask DGOTIX AI" — a lightweight chat that sends the user's question (plus a
 /// compact real-data context) to their chosen provider using their own key, and
-/// shows the live answer. Shown only when a personal key is connected.
+/// shows the live answer. The conversation is saved on-device; suggestion chips
+/// help start. Shown only when a personal key is connected.
 class AskDgotixCard extends ConsumerStatefulWidget {
   const AskDgotixCard({super.key});
 
@@ -28,7 +23,6 @@ class AskDgotixCard extends ConsumerStatefulWidget {
 
 class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
   final TextEditingController _ctrl = TextEditingController();
-  final List<_Msg> _msgs = <_Msg>[];
   bool _busy = false;
   AiChatError? _error;
 
@@ -38,32 +32,30 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     super.dispose();
   }
 
-  Future<void> _send() async {
-    final String q = _ctrl.text.trim();
+  Future<void> _sendText(String raw) async {
+    final String q = raw.trim();
     if (q.isEmpty || _busy) return;
     final AiKeyConfig? cfg = ref.read(aiKeyProvider);
     if (cfg == null || !cfg.isSet) return;
     final String context = ref.read(aiContextProvider);
+    final ChatMessagesController chat = ref.read(chatMessagesProvider.notifier);
 
+    _ctrl.clear();
+    chat.add(ChatMessage(fromUser: true, text: q));
     setState(() {
-      _msgs.add(_Msg(fromUser: true, text: q));
       _busy = true;
       _error = null;
-      _ctrl.clear();
     });
 
     try {
       final String answer = await ref
           .read(aiChatServiceProvider)
           .ask(config: cfg, question: q, context: context);
-      if (!mounted) return;
-      setState(() => _msgs.add(_Msg(fromUser: false, text: answer)));
+      chat.add(ChatMessage(fromUser: false, text: answer));
     } on AiChatException catch (e) {
-      if (!mounted) return;
-      setState(() => _error = e.kind);
+      if (mounted) setState(() => _error = e.kind);
     } catch (_) {
-      if (!mounted) return;
-      setState(() => _error = AiChatError.unknown);
+      if (mounted) setState(() => _error = AiChatError.unknown);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -83,6 +75,13 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
+    final List<ChatMessage> msgs = ref.watch(chatMessagesProvider);
+    final List<String> suggestions = <String>[
+      l.askAiSuggest1,
+      l.askAiSuggest2,
+      l.askAiSuggest3,
+      l.askAiSuggest4,
+    ];
 
     return GlassCard(
       accent: c.brand,
@@ -97,26 +96,35 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
                 child: Text(l.askAiTitle,
                     style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
               ),
-              if (_msgs.isNotEmpty)
+              if (msgs.isNotEmpty)
                 IconButton(
                   tooltip: l.askAiClear,
                   visualDensity: VisualDensity.compact,
                   icon: Icon(Icons.delete_sweep_outlined,
                       size: 18, color: c.textMuted),
-                  onPressed: _busy ? null : () => setState(_msgs.clear),
+                  onPressed: _busy
+                      ? null
+                      : () => ref.read(chatMessagesProvider.notifier).clear(),
                 ),
             ],
           ),
           const SizedBox(height: DsSpacing.sm),
 
-          if (_msgs.isEmpty && !_busy && _error == null)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: DsSpacing.sm),
-              child: Text(l.askAiIntro,
-                  style: t.bodySmall?.copyWith(color: c.textMuted)),
-            )
-          else
-            for (final _Msg m in _msgs) ...<Widget>[
+          if (msgs.isEmpty && !_busy && _error == null) ...<Widget>[
+            Text(l.askAiIntro,
+                style: t.bodySmall?.copyWith(color: c.textMuted)),
+            const SizedBox(height: DsSpacing.md),
+            Wrap(
+              spacing: DsSpacing.sm,
+              runSpacing: DsSpacing.sm,
+              children: <Widget>[
+                for (final String s in suggestions)
+                  _SuggestionChip(
+                      label: s, onTap: _busy ? null : () => _sendText(s)),
+              ],
+            ),
+          ] else
+            for (final ChatMessage m in msgs) ...<Widget>[
               _Bubble(msg: m),
               const SizedBox(height: DsSpacing.sm),
             ],
@@ -161,7 +169,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
                   controller: _ctrl,
                   enabled: !_busy,
                   textInputAction: TextInputAction.send,
-                  onSubmitted: (_) => _send(),
+                  onSubmitted: _sendText,
                   minLines: 1,
                   maxLines: 4,
                   decoration: InputDecoration(
@@ -183,7 +191,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
                 ),
               ),
               const SizedBox(width: DsSpacing.sm),
-              _SendButton(busy: _busy, onSend: _send),
+              _SendButton(busy: _busy, onSend: () => _sendText(_ctrl.text)),
             ],
           ),
           const SizedBox(height: DsSpacing.sm),
@@ -199,6 +207,44 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SuggestionChip extends StatelessWidget {
+  const _SuggestionChip({required this.label, required this.onTap});
+  final String label;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    return InkWell(
+      borderRadius: DsRadius.brPill,
+      onTap: onTap,
+      child: Container(
+        padding:
+            const EdgeInsets.symmetric(horizontal: DsSpacing.md, vertical: 8),
+        decoration: BoxDecoration(
+          color: c.surfaceMuted,
+          borderRadius: DsRadius.brPill,
+          border: Border.all(color: c.border),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Icon(Icons.add_rounded, size: 14, color: c.brand),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(label,
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelMedium
+                      ?.copyWith(color: c.textPrimary)),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -230,7 +276,7 @@ class _SendButton extends StatelessWidget {
 
 class _Bubble extends StatelessWidget {
   const _Bubble({required this.msg});
-  final _Msg msg;
+  final ChatMessage msg;
 
   @override
   Widget build(BuildContext context) {
@@ -238,7 +284,8 @@ class _Bubble extends StatelessWidget {
     final TextTheme t = Theme.of(context).textTheme;
     final bool user = msg.fromUser;
     return Align(
-      alignment: user ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
+      alignment:
+          user ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
       child: ConstrainedBox(
         constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.82),

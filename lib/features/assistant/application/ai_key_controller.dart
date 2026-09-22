@@ -45,14 +45,45 @@ extension AiProviderX on AiProvider {
         AiProvider.gemini => 'Google',
         AiProvider.other => '',
       };
+
+  /// Selectable models for this provider (first is the default). Product model
+  /// ids are proper nouns, so they are the same in every language.
+  List<String> get models => switch (this) {
+        AiProvider.openai => const <String>[
+            'gpt-4o-mini',
+            'gpt-4o',
+            'gpt-4.1-mini',
+          ],
+        AiProvider.anthropic => const <String>[
+            'claude-3-5-haiku-latest',
+            'claude-3-5-sonnet-latest',
+          ],
+        AiProvider.gemini => const <String>[
+            'gemini-2.0-flash',
+            'gemini-2.0-flash-lite',
+            'gemini-1.5-flash',
+            'gemini-1.5-pro',
+          ],
+        AiProvider.other => const <String>[],
+      };
+
+  /// The provider's default model (empty for [AiProvider.other]).
+  String get defaultModel => models.isNotEmpty ? models.first : '';
 }
 
 /// The user's personal AI key configuration. The key is a personal secret owned
 /// solely by the user; see [AiKeyController] for how it is stored.
 class AiKeyConfig {
-  const AiKeyConfig({required this.provider, required this.key});
+  const AiKeyConfig({required this.provider, required this.key, this.model});
   final AiProvider provider;
   final String key;
+
+  /// The chosen model id, or null to use the provider's default.
+  final String? model;
+
+  /// The model actually used for requests (chosen model, or provider default).
+  String get effectiveModel =>
+      (model != null && model!.isNotEmpty) ? model! : provider.defaultModel;
 
   bool get isSet => key.trim().isNotEmpty;
 
@@ -83,6 +114,7 @@ final aiKeyProvider =
 class AiKeyController extends Notifier<AiKeyConfig?> {
   static const String _providerKey = 'sb_ai_provider';
   static const String _secretKey = 'sb_ai_key';
+  static const String _modelKey = 'sb_ai_model';
 
   @override
   AiKeyConfig? build() {
@@ -98,23 +130,42 @@ class AiKeyController extends Notifier<AiKeyConfig?> {
       state = AiKeyConfig(
         provider: AiProviderX.fromStorage(p.getString(_providerKey)),
         key: secret,
+        model: p.getString(_modelKey),
       );
     } catch (_) {
       // Keep null (not connected).
     }
   }
 
-  /// Saves and activates a personal key on THIS device only.
-  Future<void> save(AiProvider provider, String key) async {
+  /// Saves and activates a personal key (and optional model) on THIS device.
+  Future<void> save(AiProvider provider, String key, {String? model}) async {
     final String trimmed = key.trim();
     if (trimmed.isEmpty) return;
-    state = AiKeyConfig(provider: provider, key: trimmed);
+    state = AiKeyConfig(provider: provider, key: trimmed, model: model);
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();
       await p.setString(_secretKey, trimmed);
       await p.setString(_providerKey, provider.storageId);
+      if (model != null && model.isNotEmpty) {
+        await p.setString(_modelKey, model);
+      } else {
+        await p.remove(_modelKey);
+      }
     } catch (_) {
       // Non-fatal; state still reflects the session.
+    }
+  }
+
+  /// Changes only the model for an already-connected key (persisted).
+  Future<void> setModel(String model) async {
+    final AiKeyConfig? cur = state;
+    if (cur == null) return;
+    state = AiKeyConfig(provider: cur.provider, key: cur.key, model: model);
+    try {
+      final SharedPreferences p = await SharedPreferences.getInstance();
+      await p.setString(_modelKey, model);
+    } catch (_) {
+      // Non-fatal.
     }
   }
 
@@ -125,6 +176,7 @@ class AiKeyController extends Notifier<AiKeyConfig?> {
       final SharedPreferences p = await SharedPreferences.getInstance();
       await p.remove(_secretKey);
       await p.remove(_providerKey);
+      await p.remove(_modelKey);
     } catch (_) {
       // Non-fatal.
     }
