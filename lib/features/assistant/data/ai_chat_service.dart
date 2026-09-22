@@ -15,13 +15,29 @@ class AiChatException implements Exception {
   String toString() => 'AiChatException($kind${detail == null ? '' : ': $detail'})';
 }
 
+/// Token usage reported by the provider for one request (null when unknown).
+class AiUsage {
+  const AiUsage({this.inputTokens, this.outputTokens});
+  final int? inputTokens;
+  final int? outputTokens;
+
+  int get total => (inputTokens ?? 0) + (outputTokens ?? 0);
+}
+
+/// The answer plus the token usage the provider reported for the call.
+class AiChatResult {
+  const AiChatResult({required this.text, required this.usage});
+  final String text;
+  final AiUsage usage;
+}
+
 /// Calls the user's chosen AI provider directly from the browser using their own
 /// personal key (BYOK). The key never leaves the device except in this request
 /// to the provider the user selected — it is never sent to our servers.
 class AiChatService {
   const AiChatService();
 
-  Future<String> ask({
+  Future<AiChatResult> ask({
     required AiKeyConfig config,
     required String question,
     required String context,
@@ -32,8 +48,8 @@ class AiChatService {
       AiProvider.gemini => _gemini(config.key, model, system, question),
       AiProvider.openai => _openai(config.key, model, system, question),
       AiProvider.anthropic => _anthropic(config.key, model, system, question),
-      AiProvider.other =>
-        Future<String>.error(const AiChatException(AiChatError.unsupported)),
+      AiProvider.other => Future<AiChatResult>.error(
+          const AiChatException(AiChatError.unsupported)),
     };
   }
 
@@ -47,7 +63,7 @@ class AiChatService {
 
   // ---- Providers ----
 
-  Future<String> _gemini(String key, String model, String system, String q) async {
+  Future<AiChatResult> _gemini(String key, String model, String system, String q) async {
     final Uri uri = Uri.parse(
         'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$key');
     final String body = await _send(
@@ -85,10 +101,18 @@ class AiChatService {
     final String? text = (parts != null && parts.isNotEmpty)
         ? (parts.first as Map<String, dynamic>)['text']?.toString()
         : null;
-    return _requireText(text);
+    final Map<String, dynamic>? um =
+        data['usageMetadata'] as Map<String, dynamic>?;
+    return AiChatResult(
+      text: _requireText(text),
+      usage: AiUsage(
+        inputTokens: _int(um?['promptTokenCount']),
+        outputTokens: _int(um?['candidatesTokenCount']),
+      ),
+    );
   }
 
-  Future<String> _openai(String key, String model, String system, String q) async {
+  Future<AiChatResult> _openai(String key, String model, String system, String q) async {
     final Uri uri = Uri.parse('https://api.openai.com/v1/chat/completions');
     final String body = await _send(
       uri,
@@ -113,10 +137,18 @@ class AiChatService {
         ? (choices.first as Map<String, dynamic>)['message']
             as Map<String, dynamic>?
         : null;
-    return _requireText(msg?['content']?.toString());
+    final Map<String, dynamic>? usage =
+        data['usage'] as Map<String, dynamic>?;
+    return AiChatResult(
+      text: _requireText(msg?['content']?.toString()),
+      usage: AiUsage(
+        inputTokens: _int(usage?['prompt_tokens']),
+        outputTokens: _int(usage?['completion_tokens']),
+      ),
+    );
   }
 
-  Future<String> _anthropic(String key, String model, String system, String q) async {
+  Future<AiChatResult> _anthropic(String key, String model, String system, String q) async {
     final Uri uri = Uri.parse('https://api.anthropic.com/v1/messages');
     final String body = await _send(
       uri,
@@ -142,8 +174,18 @@ class AiChatService {
     final String? text = (content != null && content.isNotEmpty)
         ? (content.first as Map<String, dynamic>)['text']?.toString()
         : null;
-    return _requireText(text);
+    final Map<String, dynamic>? usage =
+        data['usage'] as Map<String, dynamic>?;
+    return AiChatResult(
+      text: _requireText(text),
+      usage: AiUsage(
+        inputTokens: _int(usage?['input_tokens']),
+        outputTokens: _int(usage?['output_tokens']),
+      ),
+    );
   }
+
+  int? _int(Object? v) => v is num ? v.toInt() : null;
 
   // ---- Shared HTTP + error mapping ----
 

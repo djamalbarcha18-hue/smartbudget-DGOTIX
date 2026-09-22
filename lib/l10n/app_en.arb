@@ -530,6 +530,14 @@
   "askAiSuggest3": "Give me a simple plan to spend less.",
   "askAiSuggest4": "How is my financial health?",
 
+  "usageTitle": "AI usage this month",
+  "usageRequests": "Requests",
+  "usageTokens": "Tokens",
+  "usageCost": "Est. cost",
+  "usageReset": "Reset",
+  "usageEmpty": "No requests yet this month.",
+  "usageNote": "Counted on this device from provider responses — an estimate for guidance, not your provider's bill.",
+
   "settingsDeveloper": "Developer",
   "sampleDataHint": "Fill 2026 with realistic sample income, expenses and budgets to try the template. Safe to run more than once — it never duplicates.",
   "loadSampleData": "Load 2026 sample data",

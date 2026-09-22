@@ -10,6 +10,7 @@ import 'package:smartbudget/features/assistant/application/ai_key_controller.dar
 import 'package:smartbudget/features/assistant/application/assistant_controller.dart';
 import 'package:smartbudget/features/assistant/domain/insight_engine.dart';
 import 'package:smartbudget/features/assistant/presentation/ai_key_card.dart';
+import 'package:smartbudget/features/assistant/presentation/ai_usage_card.dart';
 import 'package:smartbudget/features/assistant/presentation/ask_dgotix_card.dart';
 import 'package:smartbudget/features/assistant/presentation/insight_view.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -54,6 +55,8 @@ class AssistantPage extends ConsumerWidget {
               if (ref.watch(aiKeyConnectedProvider)) ...<Widget>[
                 const SizedBox(height: DsSpacing.md),
                 const AskDgotixCard(),
+                const SizedBox(height: DsSpacing.md),
+                const AiUsageCard(),
               ],
               const SizedBox(height: DsSpacing.xl),
               if (insights.isEmpty)

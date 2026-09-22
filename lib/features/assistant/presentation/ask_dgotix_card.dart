@@ -6,6 +6,7 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/assistant/application/ai_key_controller.dart';
+import 'package:smartbudget/features/assistant/application/ai_usage_controller.dart';
 import 'package:smartbudget/features/assistant/application/ask_ai_controller.dart';
 import 'package:smartbudget/features/assistant/data/ai_chat_service.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -39,6 +40,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     if (cfg == null || !cfg.isSet) return;
     final String context = ref.read(aiContextProvider);
     final ChatMessagesController chat = ref.read(chatMessagesProvider.notifier);
+    final AiUsageController usage = ref.read(aiUsageProvider.notifier);
 
     _ctrl.clear();
     chat.add(ChatMessage(fromUser: true, text: q));
@@ -48,10 +50,11 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     });
 
     try {
-      final String answer = await ref
+      final AiChatResult result = await ref
           .read(aiChatServiceProvider)
           .ask(config: cfg, question: q, context: context);
-      chat.add(ChatMessage(fromUser: false, text: answer));
+      chat.add(ChatMessage(fromUser: false, text: result.text));
+      usage.record(cfg.effectiveModel, result.usage);
     } on AiChatException catch (e) {
       if (mounted) setState(() => _error = e.kind);
     } catch (_) {
