@@ -78,10 +78,6 @@ class DashboardPage extends ConsumerWidget {
     final String greeting =
         name == null ? l.welcomeGreeting : '${l.welcomeGreeting}، $name';
 
-    // Smart alerts from the shared, data-backed engine (budgets, goals,
-    // cash-flow). Shown only when something actually needs attention.
-    final List<AppAlert> alerts = ref.watch(alertsProvider);
-
     return SingleChildScrollView(
       padding: const EdgeInsets.all(DsSpacing.pageGutter),
       child: Column(
@@ -151,21 +147,12 @@ class DashboardPage extends ConsumerWidget {
           ),
           const SizedBox(height: DsSpacing.xxl),
 
-          // ---- Financial health score (tap to open the full page) ----
-          const _HealthHeroCard(),
+          // ---- Financial health score + smart alerts, side by side (alerts
+          //      fill the health card's free space; alerts hide when empty) ----
+          const _HealthAndAlerts(),
           const SizedBox(height: DsSpacing.xxl),
 
-          // ---- Smart alerts (only when something needs attention) ----
-          if (alerts.isNotEmpty) ...<Widget>[
-            _AlertsSection(alerts: alerts),
-            const SizedBox(height: DsSpacing.xxl),
-          ],
-
-          // ---- DGOTIX AI insights (top on-device analyses) ----
-          const DgotixInsightsSection(),
-          const SizedBox(height: DsSpacing.xxl),
-
-          // ---- Main analytics: income vs expense bars + savings line ----
+          // ---- Monthly comparison: income vs expense bars + savings line ----
           DsSectionHeader(
               title: l.sectionMonthlyComparison,
               icon: Icons.bar_chart_rounded),
@@ -176,6 +163,10 @@ class DashboardPage extends ConsumerWidget {
           // ---- Distribution & activity: expense breakdown (donut + bars),
           //      income donut beside it, recent transactions at the far end ----
           const _AnalyticsBand(),
+          const SizedBox(height: DsSpacing.xxl),
+
+          // ---- DGOTIX AI insights (top on-device analyses) ----
+          const DgotixInsightsSection(),
           const SizedBox(height: DsSpacing.xxl),
 
           // ---- Goals / debts / zakat quick access ----
@@ -798,6 +789,42 @@ class _MiniCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Financial health score next to the smart alerts, so the alerts fill the
+/// free space beside the compact health card. When there are no alerts the
+/// health card takes the full width; on narrow screens the two stack.
+class _HealthAndAlerts extends ConsumerWidget {
+  const _HealthAndAlerts();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<AppAlert> alerts = ref.watch(alertsProvider);
+    if (alerts.isEmpty) {
+      return const _HealthHeroCard();
+    }
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints cons) {
+        if (cons.maxWidth >= 720) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Expanded(flex: 5, child: _HealthHeroCard()),
+              const SizedBox(width: DsSpacing.gridGap),
+              Expanded(flex: 6, child: _AlertsSection(alerts: alerts)),
+            ],
+          );
+        }
+        return Column(
+          children: <Widget>[
+            const _HealthHeroCard(),
+            const SizedBox(height: DsSpacing.gridGap),
+            _AlertsSection(alerts: alerts),
+          ],
+        );
+      },
     );
   }
 }
