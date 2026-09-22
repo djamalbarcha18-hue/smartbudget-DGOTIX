@@ -80,6 +80,57 @@ Use `PADDLE_API_URL=https://sandbox-api.paddle.com`, a sandbox API key, and
 Paddle's test cards. Buy each plan, confirm `ai_entitlements.plan` flips and the
 app reflects it after a refresh, then cancel and confirm it returns to `free`.
 
+## Adding PayPal (second provider)
+
+The billing spine is provider-agnostic — `billing_prices.provider` and
+`subscriptions.provider` keep each provider's ids side by side, and
+`create-checkout` branches on a `provider` field. To enable PayPal alongside (or
+instead of) Paddle:
+
+1. **Create subscription billing plans** in PayPal (one per plan+period),
+   matching `docs/PRICING.md`. Copy each **plan id** (`P-...`).
+
+2. **Record the plan ids** with `provider = 'paypal'`:
+
+   ```sql
+   insert into billing_prices (price_id, provider, plan, period) values
+     ('P-BASIC-MONTHLY', 'paypal', 'basic', 'monthly'),
+     ('P-BASIC-YEARLY',  'paypal', 'basic', 'yearly'),
+     ('P-PRO-MONTHLY',   'paypal', 'pro',   'monthly'),
+     ('P-PRO-YEARLY',    'paypal', 'pro',   'yearly')
+   on conflict (price_id) do update set plan = excluded.plan, period = excluded.period;
+   ```
+
+3. **Deploy the functions** (create-checkout is shared; add the PayPal webhook):
+
+   ```bash
+   supabase functions deploy create-checkout
+   supabase functions deploy paypal-webhook --no-verify-jwt
+   supabase functions deploy billing-config
+   ```
+
+4. **Secrets**:
+
+   ```bash
+   supabase secrets set PAYPAL_CLIENT_ID=... PAYPAL_SECRET=...
+   supabase secrets set PAYPAL_API_URL=https://api-m.sandbox.paypal.com   # live: https://api-m.paypal.com
+   supabase secrets set PAYPAL_WEBHOOK_ID=...   # from the webhook you create in PayPal
+   ```
+
+5. **Webhook**: in the PayPal developer dashboard, add a webhook pointing at the
+   `paypal-webhook` function URL, subscribed to `BILLING.SUBSCRIPTION.ACTIVATED`,
+   `BILLING.SUBSCRIPTION.UPDATED`, `BILLING.SUBSCRIPTION.CANCELLED`,
+   `BILLING.SUBSCRIPTION.EXPIRED`, and `BILLING.SUBSCRIPTION.SUSPENDED`. Put its
+   id in `PAYPAL_WEBHOOK_ID`.
+
+`billing-config` reports which providers have their secrets set, so the Plans
+screen only offers the payment methods that actually work. Grant/revoke is
+identical to Paddle: an active subscription sets the paid plan, a
+cancelled/expired/suspended one returns to `free`, every event deduped by id.
+
+> **Algeria note:** PayPal must be able to *receive* payments on your account.
+> Confirm this with PayPal before relying on it in production.
+
 ## Not yet wired
 
 - **Coupon → Paddle discount**: our `coupons` preview is separate from Paddle's

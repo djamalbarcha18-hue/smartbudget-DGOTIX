@@ -60,10 +60,16 @@ drop policy if exists subscriptions_own on subscriptions;
 create policy subscriptions_own on subscriptions
   for select using (auth.uid() = user_id);
 
--- ---- Example seed (commented; the owner fills real provider price ids) ----
--- insert into billing_prices (price_id, plan, period) values
---   ('pri_basic_monthly', 'basic', 'monthly'),
---   ('pri_basic_yearly',  'basic', 'yearly'),
---   ('pri_pro_monthly',   'pro',   'monthly'),
---   ('pri_pro_yearly',    'pro',   'yearly')
+-- ---- Example seed (commented; the owner fills real provider ids) ---------
+-- Paddle uses price ids (pri_...); PayPal uses billing PLAN ids (P-...). The
+-- provider column keeps both sets side by side, so the app can offer either.
+-- insert into billing_prices (price_id, provider, plan, period) values
+--   ('pri_basic_monthly', 'paddle', 'basic', 'monthly'),
+--   ('pri_basic_yearly',  'paddle', 'basic', 'yearly'),
+--   ('pri_pro_monthly',   'paddle', 'pro',   'monthly'),
+--   ('pri_pro_yearly',    'paddle', 'pro',   'yearly'),
+--   ('P-BASIC-MONTHLY',   'paypal', 'basic', 'monthly'),
+--   ('P-BASIC-YEARLY',    'paypal', 'basic', 'yearly'),
+--   ('P-PRO-MONTHLY',     'paypal', 'pro',   'monthly'),
+--   ('P-PRO-YEARLY',      'paypal', 'pro',   'yearly')
 -- on conflict (price_id) do nothing;

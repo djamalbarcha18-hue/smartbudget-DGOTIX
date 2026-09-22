@@ -15,9 +15,11 @@ export interface PriceMapping {
 export async function priceToPlan(
   db: SupabaseClient,
   priceId: string,
+  provider = "paddle",
 ): Promise<PriceMapping | null> {
   const { data } = await db.from("billing_prices")
-    .select("plan, period, active").eq("price_id", priceId).maybeSingle();
+    .select("plan, period, active")
+    .eq("price_id", priceId).eq("provider", provider).maybeSingle();
   if (!data || data.active !== true) return null;
   return {
     plan: normalizePlan(data.plan),
@@ -30,10 +32,11 @@ export async function planToPrice(
   db: SupabaseClient,
   plan: Plan,
   period: "monthly" | "yearly",
+  provider = "paddle",
 ): Promise<string | null> {
   const { data } = await db.from("billing_prices")
     .select("price_id").eq("plan", plan).eq("period", period)
-    .eq("active", true).maybeSingle();
+    .eq("provider", provider).eq("active", true).maybeSingle();
   return (data?.price_id as string | undefined) ?? null;
 }
 
