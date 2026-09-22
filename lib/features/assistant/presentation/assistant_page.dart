@@ -6,7 +6,7 @@ import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
-import 'package:smartbudget/features/assistant/application/ai_key_controller.dart';
+import 'package:smartbudget/features/assistant/application/ai_backend.dart';
 import 'package:smartbudget/features/assistant/application/assistant_controller.dart';
 import 'package:smartbudget/features/assistant/domain/insight_engine.dart';
 import 'package:smartbudget/features/assistant/presentation/ai_key_card.dart';
@@ -52,7 +52,7 @@ class AssistantPage extends ConsumerWidget {
                   style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: DsSpacing.xl),
               const AiKeyCard(),
-              if (ref.watch(aiKeyConnectedProvider)) ...<Widget>[
+              if (ref.watch(assistantReadyProvider)) ...<Widget>[
                 const SizedBox(height: DsSpacing.md),
                 const AskDgotixCard(),
                 const SizedBox(height: DsSpacing.md),

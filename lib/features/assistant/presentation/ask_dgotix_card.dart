@@ -5,6 +5,10 @@ import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/ai/data/ai_gateway_service.dart';
+import 'package:smartbudget/features/ai/domain/ai_errors.dart';
+import 'package:smartbudget/features/ai/domain/ai_registry.dart';
+import 'package:smartbudget/features/assistant/application/ai_backend.dart';
 import 'package:smartbudget/features/assistant/application/ai_key_controller.dart';
 import 'package:smartbudget/features/assistant/application/ai_usage_controller.dart';
 import 'package:smartbudget/features/assistant/application/ask_ai_controller.dart';
@@ -25,7 +29,7 @@ class AskDgotixCard extends ConsumerStatefulWidget {
 class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
   final TextEditingController _ctrl = TextEditingController();
   bool _busy = false;
-  AiChatException? _error;
+  String? _error; // already-localized message
 
   @override
   void dispose() {
@@ -36,12 +40,12 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
   Future<void> _sendText(String raw) async {
     final String q = raw.trim();
     if (q.isEmpty || _busy) return;
-    final AiKeyConfig? cfg = ref.read(aiKeyProvider);
-    if (cfg == null || !cfg.isSet) return;
-    final String context = ref.read(aiContextProvider);
+    final AiBackend? backend = ref.read(aiBackendProvider);
+    if (backend == null) return;
+    final AppLocalizations l = AppLocalizations.of(context);
+    final String ctx = ref.read(aiContextProvider);
     final ChatMessagesController chat = ref.read(chatMessagesProvider.notifier);
     final AiUsageController usage = ref.read(aiUsageProvider.notifier);
-    final AiKeyController keyCtl = ref.read(aiKeyProvider.notifier);
 
     _ctrl.clear();
     chat.add(ChatMessage(fromUser: true, text: q));
@@ -51,27 +55,37 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     });
 
     try {
-      final AiChatResult result = await ref
-          .read(aiChatServiceProvider)
-          .ask(config: cfg, question: q, context: context);
-      chat.add(ChatMessage(fromUser: false, text: result.text));
-      usage.record(result.usedModel, result.usage);
-      // If a fallback model answered, remember it so next time goes direct.
-      if (result.usedModel != cfg.effectiveModel) {
-        keyCtl.setModel(result.usedModel);
+      if (backend == AiBackend.gateway) {
+        // Server path: keys, routing and failover happen in the Edge Function.
+        final GatewayAnswer a = await ref
+            .read(aiGatewayServiceProvider)
+            .ask(task: AiTaskType.chat, prompt: q, context: ctx);
+        chat.add(ChatMessage(fromUser: false, text: a.text));
+        usage.record(a.model.isEmpty ? 'dgotix-ai' : a.model,
+            AiUsage(inputTokens: a.inputTokens, outputTokens: a.outputTokens));
+      } else {
+        // BYOK path: the user's own key, model failover inside that provider.
+        final AiKeyConfig cfg = ref.read(aiKeyProvider)!;
+        final AiKeyController keyCtl = ref.read(aiKeyProvider.notifier);
+        final AiChatResult r = await ref
+            .read(aiChatServiceProvider)
+            .ask(config: cfg, question: q, context: ctx);
+        chat.add(ChatMessage(fromUser: false, text: r.text));
+        usage.record(r.usedModel, r.usage);
+        if (r.usedModel != cfg.effectiveModel) keyCtl.setModel(r.usedModel);
       }
     } on AiChatException catch (e) {
-      if (mounted) setState(() => _error = e);
+      if (mounted) setState(() => _error = _byokError(l, e));
+    } on AiFailure catch (e) {
+      if (mounted) setState(() => _error = _gatewayError(l, e));
     } catch (_) {
-      if (mounted) {
-        setState(() => _error = const AiChatException(AiChatError.unknown));
-      }
+      if (mounted) setState(() => _error = l.askAiErrGeneric);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
-  String _errorText(AppLocalizations l, AiChatException e) {
+  String _byokError(AppLocalizations l, AiChatException e) {
     final String base = switch (e.kind) {
       AiChatError.invalidKey => l.askAiErrInvalidKey,
       AiChatError.unsupported => l.askAiErrUnsupported,
@@ -80,10 +94,15 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
       AiChatError.empty => l.askAiErrGeneric,
       AiChatError.unknown => l.askAiErrGeneric,
     };
-    // Append the provider's own message when present, so the cause is visible.
     final String? d = e.detail;
     return (d == null || d.isEmpty) ? base : '$base\n$d';
   }
+
+  String _gatewayError(AppLocalizations l, AiFailure e) => switch (e.kind) {
+        AiErrorKind.quotaExceeded => l.askAiErrQuota,
+        AiErrorKind.rateLimited => l.askAiErrRate,
+        _ => l.askAiUnavailable,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +188,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
                 Icon(Icons.error_outline_rounded, size: 16, color: c.expense),
                 const SizedBox(width: DsSpacing.sm),
                 Expanded(
-                  child: Text(_errorText(l, _error!),
+                  child: Text(_error!,
                       style: t.bodySmall?.copyWith(color: c.expense)),
                 ),
               ],
