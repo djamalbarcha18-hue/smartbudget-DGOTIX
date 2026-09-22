@@ -143,6 +143,102 @@ class AiUsageController extends Notifier<Map<String, AiUsageStat>> {
   }
 }
 
+/// An optional monthly cap the user sets to rationalize spending. Either field
+/// may be null (no cap on that dimension).
+class AiUsageLimit {
+  const AiUsageLimit({this.maxRequests, this.maxCostUsd});
+  final int? maxRequests;
+  final double? maxCostUsd;
+
+  bool get isSet => maxRequests != null || maxCostUsd != null;
+}
+
+/// Persisted monthly limit (per device). Null fields mean "no limit".
+final aiUsageLimitProvider =
+    NotifierProvider<AiUsageLimitController, AiUsageLimit>(
+        AiUsageLimitController.new);
+
+class AiUsageLimitController extends Notifier<AiUsageLimit> {
+  static const String _reqKey = 'sb_ai_limit_req';
+  static const String _costKey = 'sb_ai_limit_cost';
+
+  @override
+  AiUsageLimit build() {
+    _load();
+    return const AiUsageLimit();
+  }
+
+  Future<void> _load() async {
+    try {
+      final SharedPreferences p = await SharedPreferences.getInstance();
+      final int? req = p.getInt(_reqKey);
+      final double? cost = p.getDouble(_costKey);
+      if (req != null || cost != null) {
+        state = AiUsageLimit(maxRequests: req, maxCostUsd: cost);
+      }
+    } catch (_) {
+      // Keep no-limit default.
+    }
+  }
+
+  Future<void> save({int? maxRequests, double? maxCostUsd}) async {
+    final int? req = (maxRequests != null && maxRequests > 0) ? maxRequests : null;
+    final double? cost = (maxCostUsd != null && maxCostUsd > 0) ? maxCostUsd : null;
+    state = AiUsageLimit(maxRequests: req, maxCostUsd: cost);
+    try {
+      final SharedPreferences p = await SharedPreferences.getInstance();
+      if (req != null) {
+        await p.setInt(_reqKey, req);
+      } else {
+        await p.remove(_reqKey);
+      }
+      if (cost != null) {
+        await p.setDouble(_costKey, cost);
+      } else {
+        await p.remove(_costKey);
+      }
+    } catch (_) {
+      // Non-fatal.
+    }
+  }
+
+  Future<void> clear() => save();
+}
+
+/// How the current month's usage sits against the user's limit.
+enum UsageLevel { ok, near, over }
+
+class UsageAlert {
+  const UsageAlert({required this.level, this.reqRatio, this.costRatio});
+  final UsageLevel level;
+  final double? reqRatio; // used / max requests (null = no request cap)
+  final double? costRatio; // cost / max cost (null = no cost cap)
+}
+
+/// Evaluates this month's usage against the limit (near at >=80%, over at >=100%).
+final aiUsageAlertProvider = Provider<UsageAlert>((ref) {
+  final AiUsageLimit limit = ref.watch(aiUsageLimitProvider);
+  if (!limit.isSet) return const UsageAlert(level: UsageLevel.ok);
+  final AiUsageSummary u = ref.watch(aiUsageMonthProvider);
+
+  final double? reqRatio = (limit.maxRequests != null && limit.maxRequests! > 0)
+      ? u.requests / limit.maxRequests!
+      : null;
+  final double? costRatio = (limit.maxCostUsd != null && limit.maxCostUsd! > 0)
+      ? u.estCostUsd / limit.maxCostUsd!
+      : null;
+
+  final double worst = <double>[
+    if (reqRatio != null) reqRatio,
+    if (costRatio != null) costRatio,
+  ].fold<double>(0, (double m, double v) => v > m ? v : m);
+
+  final UsageLevel level = worst >= 1.0
+      ? UsageLevel.over
+      : (worst >= 0.8 ? UsageLevel.near : UsageLevel.ok);
+  return UsageAlert(level: level, reqRatio: reqRatio, costRatio: costRatio);
+});
+
 /// The current calendar month's usage, rolled up across models.
 final aiUsageMonthProvider = Provider<AiUsageSummary>((ref) {
   final Map<String, AiUsageStat> map = ref.watch(aiUsageProvider);

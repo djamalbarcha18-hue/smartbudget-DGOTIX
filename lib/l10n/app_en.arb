@@ -537,6 +537,13 @@
   "usageReset": "Reset",
   "usageEmpty": "No requests yet this month.",
   "usageNote": "Counted on this device from provider responses — an estimate for guidance, not your provider's bill.",
+  "limitTitle": "Monthly limit",
+  "limitEdit": "Set monthly limit",
+  "limitRequests": "Max requests / month",
+  "limitCost": "Max cost / month (USD)",
+  "limitHint": "Optional — leave a field blank for no limit. You'll be warned as you approach it.",
+  "limitNearWarn": "You're close to your monthly AI limit.",
+  "limitOverWarn": "You've passed your monthly AI limit.",
 
   "settingsDeveloper": "Developer",
   "sampleDataHint": "Fill 2026 with realistic sample income, expenses and budgets to try the template. Safe to run more than once — it never duplicates.",
