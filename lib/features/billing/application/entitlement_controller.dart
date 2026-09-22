@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/billing/data/entitlement_service.dart';
 import 'package:smartbudget/features/billing/domain/entitlement.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 
@@ -69,7 +72,29 @@ class EntitlementController extends Notifier<Entitlement> {
   }
 }
 
-/// The plan actually in force right now (paid plan or an active trial).
+/// The authoritative entitlement fetched from the server, when the user is
+/// signed in and a backend is configured; otherwise [Entitlement.free]. On a
+/// successful fetch it also refreshes the local cache so the next cold start
+/// shows the last-known plan instantly.
+final remoteEntitlementProvider = FutureProvider<Entitlement>((ref) async {
+  final bool available =
+      AppEnv.hasSupabase && ref.watch(authControllerProvider).isAuthenticated;
+  if (!available) return Entitlement.free;
+  final Entitlement e = await ref.read(entitlementServiceProvider).fetch();
+  try {
+    ref.read(entitlementProvider.notifier).hydrate(e);
+  } catch (_) {
+    // Cache refresh is best-effort.
+  }
+  return e;
+});
+
+/// The plan actually in force right now (paid plan or an active trial). Prefers
+/// the server value once it resolves, falling back to the persisted local cache
+/// (which defaults to FREE) so the UI is correct offline and at startup.
 final effectivePlanProvider = Provider<Plan>((ref) {
-  return ref.watch(entitlementProvider).effectivePlanAt(DateTime.now());
+  final Entitlement e =
+      ref.watch(remoteEntitlementProvider).valueOrNull ??
+          ref.watch(entitlementProvider);
+  return e.effectivePlanAt(DateTime.now());
 });
