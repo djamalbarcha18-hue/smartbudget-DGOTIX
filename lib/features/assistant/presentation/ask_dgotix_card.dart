@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -13,6 +14,9 @@ import 'package:smartbudget/features/assistant/application/ai_key_controller.dar
 import 'package:smartbudget/features/assistant/application/ai_usage_controller.dart';
 import 'package:smartbudget/features/assistant/application/ask_ai_controller.dart';
 import 'package:smartbudget/features/assistant/data/ai_chat_service.dart';
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/domain/feature_gate.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// "Ask DGOTIX AI" — a lightweight chat that sends the user's question (plus a
@@ -30,6 +34,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
   final TextEditingController _ctrl = TextEditingController();
   bool _busy = false;
   String? _error; // already-localized message
+  bool _errorIsQuota = false; // error is a quota wall ⇒ offer Upgrade
 
   @override
   void dispose() {
@@ -52,6 +57,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     setState(() {
       _busy = true;
       _error = null;
+      _errorIsQuota = false;
     });
 
     try {
@@ -77,7 +83,12 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     } on AiChatException catch (e) {
       if (mounted) setState(() => _error = _byokError(l, e));
     } on AiFailure catch (e) {
-      if (mounted) setState(() => _error = _gatewayError(l, e));
+      if (mounted) {
+        setState(() {
+          _error = _gatewayError(l, e);
+          _errorIsQuota = e.kind == AiErrorKind.quotaExceeded;
+        });
+      }
     } catch (_) {
       if (mounted) setState(() => _error = l.askAiErrGeneric);
     } finally {
@@ -110,6 +121,10 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final List<ChatMessage> msgs = ref.watch(chatMessagesProvider);
+    // Quota nudge applies only to the server gateway (server quota). BYOK uses
+    // the user's own key/quota, so it is never nudged toward an upgrade.
+    final bool onGateway = ref.watch(aiBackendProvider) == AiBackend.gateway;
+    final GateDecision gate = ref.watch(featureGateProvider(Feature.dgotixAi));
     final List<String> suggestions = <String>[
       l.askAiSuggest1,
       l.askAiSuggest2,
@@ -193,8 +208,16 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
                 ),
               ],
             ),
+            if (_errorIsQuota) ...<Widget>[
+              const SizedBox(height: DsSpacing.sm),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: _UpgradeButton(label: l.aiUpgrade),
+              ),
+            ],
           ],
 
+          if (onGateway && _error == null) _QuotaNudge(gate: gate),
           const SizedBox(height: DsSpacing.md),
           Row(
             children: <Widget>[
@@ -241,6 +264,100 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Advisory usage nudge for the server gateway. Shows nothing until the user
+/// crosses ~80% of the period allowance (per docs/PRICING.md §6); at/over the
+/// limit it surfaces the upgrade-only wall. Never suggests BYOK.
+class _QuotaNudge extends StatelessWidget {
+  const _QuotaNudge({required this.gate});
+  final GateDecision gate;
+
+  @override
+  Widget build(BuildContext context) {
+    final int? limit = gate.limit;
+    final int? remaining = gate.remaining;
+    final double? frac = gate.usedFraction;
+    // Not metered / unlimited / comfortably under budget ⇒ no nudge.
+    if (limit == null || remaining == null || frac == null || frac < 0.8) {
+      return const SizedBox.shrink();
+    }
+
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final bool over = !gate.allowed;
+    final Color color = over ? c.expense : c.saving;
+    final bool lifetime = gate.window == QuotaWindow.lifetime;
+    final String left = lifetime
+        ? l.aiQuotaLeftLifetime(remaining, limit)
+        : l.aiQuotaLeftMonth(remaining, limit);
+
+    return Padding(
+      padding: const EdgeInsets.only(top: DsSpacing.sm),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+            horizontal: DsSpacing.md, vertical: DsSpacing.sm),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.12),
+          borderRadius: DsRadius.brMd,
+          border: Border.all(color: color.withValues(alpha: 0.35)),
+        ),
+        child: Row(
+          children: <Widget>[
+            Icon(over ? Icons.lock_outline_rounded : Icons.info_outline_rounded,
+                size: 16, color: color),
+            const SizedBox(width: DsSpacing.sm),
+            Expanded(
+              child: Text(
+                over ? l.askAiErrQuota : '${l.aiQuotaNear} $left',
+                style: t.labelSmall
+                    ?.copyWith(color: color, fontWeight: FontWeight.w600),
+              ),
+            ),
+            const SizedBox(width: DsSpacing.sm),
+            _UpgradeButton(label: l.aiUpgrade),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A compact button that takes the user to the Plans screen. Upgrade is the
+/// only call to action on a quota wall — BYOK is never offered here.
+class _UpgradeButton extends StatelessWidget {
+  const _UpgradeButton({required this.label});
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    return Material(
+      color: c.brand,
+      borderRadius: DsRadius.brPill,
+      child: InkWell(
+        borderRadius: DsRadius.brPill,
+        onTap: () => context.go('/plans'),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: DsSpacing.md, vertical: 6),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(Icons.arrow_upward_rounded, size: 14, color: c.onBrand),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: c.onBrand, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
