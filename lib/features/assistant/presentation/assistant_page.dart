@@ -8,6 +8,7 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/assistant/application/assistant_controller.dart';
 import 'package:smartbudget/features/assistant/domain/insight_engine.dart';
+import 'package:smartbudget/features/assistant/presentation/ai_key_card.dart';
 import 'package:smartbudget/features/assistant/presentation/insight_view.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -15,8 +16,9 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 /// the user's own data. No financial rule is invented here: every line is
 /// phrased by the presentation from an [Insight] the domain engine produced.
 ///
-/// A conversational assistant (server-side model) is intentionally deferred to
-/// the backend phase — no API secret ever ships in the client.
+/// Users can optionally connect their OWN personal AI key (BYOK) via
+/// [AiKeyCard]; that key is a personal secret kept only on the user's device and
+/// is never shipped to or used by our servers.
 class AssistantPage extends ConsumerWidget {
   const AssistantPage({super.key});
 
@@ -45,6 +47,8 @@ class AssistantPage extends ConsumerWidget {
               const SizedBox(height: DsSpacing.xs),
               Text(l.assistantSubtitle,
                   style: Theme.of(context).textTheme.bodySmall),
+              const SizedBox(height: DsSpacing.xl),
+              const AiKeyCard(),
               const SizedBox(height: DsSpacing.xl),
               if (insights.isEmpty)
                 _EmptyInsights(message: l.assistantEmpty)
