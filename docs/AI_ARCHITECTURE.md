@@ -90,12 +90,36 @@ supabase secrets set GEMINI_API_KEY=... OPENAI_API_KEY=... ANTHROPIC_API_KEY=...
 supabase secrets set ALLOWED_ORIGIN=https://djamalbarcha18-hue.github.io
 ```
 
+## Quotas are plan-driven
+
+Enforcement reads the user's **plan** from `ai_entitlements` and applies the
+allowance from `supabase/functions/_shared/quota.ts`, which mirrors the app's
+`FeatureCatalog` and `docs/PRICING.md`:
+
+| plan | DGOTIX AI answers | window |
+|------|-------------------|--------|
+| free | 5 | one-time (lifetime) |
+| basic | 30 | monthly |
+| pro | 150 | monthly |
+
+FREE's one-time allowance is counted in `ai_usage_lifetime`; paid plans are
+counted in `ai_usage_monthly`. A per-plan monthly USD ceiling
+(`AI_MONTHLY_COST_CEILING_USD`) is a secondary guard so a run of unusually
+expensive answers can't blow the budget even under the request count. A
+time-boxed `trial_plan` / `trial_expires_at` temporarily lifts the plan and
+lapses back with no data loss. **Cloud OCR** quotas (3 / 15 / 100) live in the
+same file (`OCR_QUOTA`) with counters `ocr_usage_monthly` / `ocr_usage_lifetime`,
+ready for the receipt-scan function to enforce.
+
+To change a user's tier, set their **plan** (limits follow automatically) — the
+numeric `*_limit` columns are legacy overrides, not the source of truth.
+
 Emergency switch examples (SQL editor):
 
 ```sql
 update ai_provider_flags set enabled = false where provider_id = 'google';   -- kill Gemini
 update ai_model_flags set enabled = false where model_id = 'gpt-4o';         -- kill one model
-update ai_entitlements set monthly_request_limit = 200 where user_id = '...'; -- raise a quota
+update ai_entitlements set plan = 'pro' where user_id = '...';               -- change a user's tier
 ```
 
 ## Client wiring

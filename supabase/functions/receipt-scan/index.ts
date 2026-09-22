@@ -15,7 +15,9 @@ import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId } from "../_shared/auth.ts";
 import { loadGeminiKey } from "../_shared/keys.ts";
 
-const MODEL = Deno.env.get("GEMINI_MODEL") ?? "gemini-2.0-flash";
+// `gemini-flash-latest` is a stable alias that always tracks the newest Flash,
+// so it never 404s the way a pinned retired id (e.g. gemini-2.0-flash) does.
+const MODEL = Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest";
 
 // Categories mirror the app's expense taxonomy (Arabic canonical labels).
 const CATEGORIES = [

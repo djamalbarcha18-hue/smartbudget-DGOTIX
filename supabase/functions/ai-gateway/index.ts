@@ -24,6 +24,12 @@ import {
   recordSuccess,
   type TaskType,
 } from "../_shared/ai/gateway.ts";
+import {
+  AI_MONTHLY_COST_CEILING_USD,
+  AI_QUOTA,
+  effectivePlan,
+  normalizePlan,
+} from "../_shared/quota.ts";
 
 const VALID_TASKS = new Set<string>([
   "chat", "analysis", "financial_insight", "report", "receipt_scan", "receipt_retry",
@@ -52,19 +58,34 @@ Deno.serve(async (req: Request) => {
     const db = serviceClient();
     const month = monthKey();
 
-    // ---- Entitlement + quota ----
+    // ---- Entitlement + quota (plan-driven; server is the source of truth) ----
     const { data: ent } = await db.from("ai_entitlements")
-      .select("monthly_request_limit, monthly_cost_limit_usd")
+      .select("plan, trial_plan, trial_expires_at")
       .eq("user_id", userId).maybeSingle();
-    const reqLimit = ent?.monthly_request_limit ?? 50;
-    const costLimit = Number(ent?.monthly_cost_limit_usd ?? 0.5);
+    const plan = effectivePlan(
+      normalizePlan(ent?.plan),
+      ent?.trial_plan ? normalizePlan(ent.trial_plan) : null,
+      (ent?.trial_expires_at as string | null) ?? null,
+    );
+    const allow = AI_QUOTA[plan];
+    const costCeiling = AI_MONTHLY_COST_CEILING_USD[plan];
 
+    // Monthly cost is always the secondary guard; the request count is checked
+    // against the plan's window (FREE = one-time lifetime, paid = monthly).
     const { data: usage } = await db.from("ai_usage_monthly")
       .select("requests, est_cost_usd")
       .eq("user_id", userId).eq("month", month).maybeSingle();
-    const usedReq = usage?.requests ?? 0;
     const usedCost = Number(usage?.est_cost_usd ?? 0);
-    if (usedReq >= reqLimit || usedCost >= costLimit) {
+
+    let usedReq: number;
+    if (allow.window === "lifetime") {
+      const { data: life } = await db.from("ai_usage_lifetime")
+        .select("requests").eq("user_id", userId).maybeSingle();
+      usedReq = life?.requests ?? 0;
+    } else {
+      usedReq = usage?.requests ?? 0;
+    }
+    if (usedReq >= allow.limit || usedCost >= costCeiling) {
       return jsonResponse({ error: "quota_exceeded" }, 429, cors);
     }
 
@@ -132,6 +153,7 @@ async function bumpUsage(
   cost: number,
 ): Promise<void> {
   // Atomic-ish upsert increment via RPC if present, else read-modify-write.
+  const nowIso = new Date().toISOString();
   try {
     const { data: cur } = await db.from("ai_usage_monthly")
       .select("requests, input_tokens, output_tokens, est_cost_usd")
@@ -143,7 +165,17 @@ async function bumpUsage(
       input_tokens: (cur?.input_tokens ?? 0) + inTok,
       output_tokens: (cur?.output_tokens ?? 0) + outTok,
       est_cost_usd: Number(cur?.est_cost_usd ?? 0) + cost,
-      updated_at: new Date().toISOString(),
+      updated_at: nowIso,
+    });
+  } catch (_) { /* non-fatal */ }
+  // Lifetime counter backs the FREE one-time allowance; bump it every time.
+  try {
+    const { data: life } = await db.from("ai_usage_lifetime")
+      .select("requests").eq("user_id", userId).maybeSingle();
+    await db.from("ai_usage_lifetime").upsert({
+      user_id: userId,
+      requests: (life?.requests ?? 0) + 1,
+      updated_at: nowIso,
     });
   } catch (_) { /* non-fatal */ }
 }
