@@ -503,6 +503,8 @@
   "aiKeyConnectedSub": "Your {provider} key is connected ({masked}).",
   "@aiKeyConnectedSub": { "placeholders": { "provider": { "type": "String" }, "masked": { "type": "String" } } },
   "aiKeyProviderLabel": "AI provider",
+  "aiKeyGetKey": "Get a key from {provider}",
+  "@aiKeyGetKey": { "placeholders": { "provider": { "type": "String" } } },
   "aiKeyField": "API key",
   "aiKeyWarningTitle": "Your key stays yours",
   "aiKeyWarning": "This is your personal API key. It is stored only on this device, is never sent to SmartBudget or DGoTiX, and we never use it for anything but your own AI requests. You alone own it — remove it anytime.",

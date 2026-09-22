@@ -28,6 +28,23 @@ extension AiProviderX on AiProvider {
         AiProvider.gemini => 'Google Gemini',
         AiProvider.other => 'Other',
       };
+
+  /// The provider's own console/page where the user can create or copy their
+  /// personal API key, or null when there is no well-known page (Other).
+  String? get consoleUrl => switch (this) {
+        AiProvider.openai => 'https://platform.openai.com/api-keys',
+        AiProvider.anthropic => 'https://console.anthropic.com/settings/keys',
+        AiProvider.gemini => 'https://aistudio.google.com/apikey',
+        AiProvider.other => null,
+      };
+
+  /// Short name of where the key comes from, used on the "get a key" button.
+  String get consoleName => switch (this) {
+        AiProvider.openai => 'OpenAI',
+        AiProvider.anthropic => 'Anthropic',
+        AiProvider.gemini => 'Google',
+        AiProvider.other => '',
+      };
 }
 
 /// The user's personal AI key configuration. The key is a personal secret owned

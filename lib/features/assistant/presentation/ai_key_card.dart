@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -115,6 +116,15 @@ class _AiKeySheetState extends ConsumerState<_AiKeySheet> {
     super.dispose();
   }
 
+  /// Opens the provider's key console in a new tab (web) / external browser.
+  Future<void> _openConsole(String url) async {
+    try {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } catch (_) {
+      // Non-fatal — the user can still paste a key manually.
+    }
+  }
+
   Future<void> _save() async {
     final String key = _ctrl.text.trim();
     if (key.isEmpty) return;
@@ -202,7 +212,28 @@ class _AiKeySheetState extends ConsumerState<_AiKeySheet> {
                     ),
                 ],
               ),
-              const SizedBox(height: DsSpacing.lg),
+
+              // Direct link to the selected provider's console to create/copy a
+              // personal key (e.g. Google AI Studio for Gemini).
+              if (_provider.consoleUrl != null) ...<Widget>[
+                const SizedBox(height: DsSpacing.xs),
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: TextButton.icon(
+                    onPressed: () => _openConsole(_provider.consoleUrl!),
+                    icon: const Icon(Icons.open_in_new_rounded, size: 16),
+                    label: Text(l.aiKeyGetKey(_provider.consoleName)),
+                    style: TextButton.styleFrom(
+                      foregroundColor: c.brand,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: DsSpacing.sm, vertical: 4),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  ),
+                ),
+              ],
+              const SizedBox(height: DsSpacing.md),
 
               Text(l.aiKeyField,
                   style: t.labelMedium?.copyWith(color: c.textMuted)),

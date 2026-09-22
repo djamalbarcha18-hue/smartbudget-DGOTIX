@@ -502,6 +502,7 @@
   "aiKeyConnectedTitle": "مفتاح الذكاء الاصطناعي الشخصي مربوط",
   "aiKeyConnectedSub": "مفتاح {provider} الخاص بك مربوط ({masked}).",
   "aiKeyProviderLabel": "مزوّد الذكاء الاصطناعي",
+  "aiKeyGetKey": "احصل على مفتاح من {provider}",
   "aiKeyField": "مفتاح API",
   "aiKeyWarningTitle": "مفتاحك يبقى ملكك وحدك",
   "aiKeyWarning": "هذا مفتاح API الشخصي الخاص بك. يُحفظ على هذا الجهاز فقط، ولا يُرسَل أبدًا إلى SmartBudget أو DGoTiX، ولا نستخدمه لأي غرض سوى طلباتك أنت. أنت وحدك مالكه — يمكنك إزالته في أي وقت.",
