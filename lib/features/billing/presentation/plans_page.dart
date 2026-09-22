@@ -8,6 +8,8 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
+import 'package:smartbudget/features/billing/data/coupon_service.dart';
+import 'package:smartbudget/features/billing/domain/coupon.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
@@ -71,6 +73,8 @@ class PlansPage extends ConsumerWidget {
                   card,
                   const SizedBox(height: DsSpacing.md),
                 ],
+              const SizedBox(height: DsSpacing.md),
+              const _CouponBox(),
             ],
           ),
         ),
@@ -78,6 +82,148 @@ class PlansPage extends ConsumerWidget {
     );
   }
 }
+
+/// "Have a coupon?" — validates a marketing code against the server and shows
+/// its effect. Pre-checkout preview only (probe mode): it never redeems the
+/// code. A coupon changes price/trial, never feature access.
+class _CouponBox extends ConsumerStatefulWidget {
+  const _CouponBox();
+
+  @override
+  ConsumerState<_CouponBox> createState() => _CouponBoxState();
+}
+
+class _CouponBoxState extends ConsumerState<_CouponBox> {
+  final TextEditingController _ctrl = TextEditingController();
+  bool _busy = false;
+  CouponResult? _result;
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _apply() async {
+    final String code = _ctrl.text.trim();
+    if (code.isEmpty || _busy) return;
+    setState(() {
+      _busy = true;
+      _result = null;
+    });
+    final CouponResult r = await ref.read(couponServiceProvider).validate(code);
+    if (mounted) {
+      setState(() {
+        _busy = false;
+        _result = r;
+      });
+    }
+  }
+
+  String _validMessage(AppLocalizations l, CouponResult r) => switch (r.kind) {
+        CouponKind.percent => l.couponValidPercent(r.value.round()),
+        CouponKind.fixed => l.couponValidFixed('\$${_trim(r.value)}'),
+        CouponKind.trialExtension => l.couponValidTrial(r.trialDays ?? 0),
+        CouponKind.unknown => l.couponApply,
+      };
+
+  String _invalidMessage(AppLocalizations l, CouponReason reason) =>
+      switch (reason) {
+        CouponReason.expired => l.couponExpired,
+        CouponReason.exhausted => l.couponExhausted,
+        CouponReason.alreadyUsed => l.couponAlreadyUsed,
+        CouponReason.notApplicable => l.couponNotApplicable,
+        CouponReason.network => l.couponSignIn,
+        CouponReason.invalid => l.couponInvalid,
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final CouponResult? r = _result;
+
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Icon(Icons.local_offer_outlined, size: 18, color: c.brand),
+              const SizedBox(width: DsSpacing.sm),
+              Text(l.couponHave,
+                  style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.md),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: TextField(
+                  controller: _ctrl,
+                  enabled: !_busy,
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) => _apply(),
+                  textCapitalization: TextCapitalization.characters,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    hintText: l.couponPlaceholder,
+                    filled: true,
+                    fillColor: c.surfaceMuted,
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: DsSpacing.md, vertical: DsSpacing.sm),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: DsRadius.brMd,
+                      borderSide: BorderSide(color: c.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: DsRadius.brMd,
+                      borderSide: BorderSide(color: c.brand),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: DsSpacing.sm),
+              DsButton(
+                label: _busy ? l.couponChecking : l.couponApply,
+                onPressed: _busy ? null : _apply,
+              ),
+            ],
+          ),
+          if (r != null) ...<Widget>[
+            const SizedBox(height: DsSpacing.sm),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Icon(
+                  r.valid
+                      ? Icons.check_circle_rounded
+                      : Icons.error_outline_rounded,
+                  size: 16,
+                  color: r.valid ? c.income : c.expense,
+                ),
+                const SizedBox(width: DsSpacing.sm),
+                Expanded(
+                  child: Text(
+                    r.valid
+                        ? _validMessage(l, r)
+                        : _invalidMessage(l, r.reason ?? CouponReason.invalid),
+                    style: t.bodySmall?.copyWith(
+                        color: r.valid ? c.income : c.expense),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+String _trim(double v) =>
+    v == v.roundToDouble() ? v.toInt().toString() : v.toStringAsFixed(2);
 
 class _PlanCard extends StatelessWidget {
   const _PlanCard({

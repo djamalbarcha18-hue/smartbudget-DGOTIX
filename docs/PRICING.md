@@ -144,6 +144,14 @@ A coupon (server-side `coupons` table) has:
 Trials are delivered as a PRO entitlement with an `expires_at`; when it lapses
 the account falls back to FREE with no loss of the user's own data.
 
+**Implemented:** `supabase/coupons.sql` (tables `coupons` + `coupon_redemptions`,
+server-only RLS) and the `coupon-validate` Edge Function, which validates a code
+(window, global cap, per-user cap) and returns the resulting price or trial
+without redeeming it — redemption happens at checkout. The Plans screen has a
+"Have a coupon?" field that previews a code via the function's probe mode.
+Deploy: `supabase db execute -f supabase/coupons.sql` + `supabase functions
+deploy coupon-validate`.
+
 ---
 
 ## 8. Pricing rationale (market context)

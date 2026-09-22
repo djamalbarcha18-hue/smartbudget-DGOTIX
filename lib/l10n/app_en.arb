@@ -694,5 +694,21 @@
   "planFeatCloudSync": "Full cloud sync & backup",
   "planFeatPriority": "Priority support",
   "planBadgePro": "PRO",
-  "planManage": "Plan"
+  "planManage": "Plan",
+  "couponHave": "Have a coupon?",
+  "couponPlaceholder": "Enter code",
+  "couponApply": "Apply",
+  "couponChecking": "Checking…",
+  "couponValidPercent": "{percent}% off — applied at checkout",
+  "@couponValidPercent": { "placeholders": { "percent": { "type": "int" } } },
+  "couponValidFixed": "{amount} off — applied at checkout",
+  "@couponValidFixed": { "placeholders": { "amount": { "type": "String" } } },
+  "couponValidTrial": "Adds {days} trial days — applied at checkout",
+  "@couponValidTrial": { "placeholders": { "days": { "type": "int" } } },
+  "couponInvalid": "This code isn't valid.",
+  "couponExpired": "This code has expired.",
+  "couponExhausted": "This code has reached its limit.",
+  "couponAlreadyUsed": "You've already used this code.",
+  "couponNotApplicable": "This code doesn't apply to this plan.",
+  "couponSignIn": "Sign in to use a coupon."
 }

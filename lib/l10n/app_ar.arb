@@ -690,5 +690,21 @@
   "planFeatCloudSync": "مزامنة ونسخ احتياطي سحابي كامل",
   "planFeatPriority": "دعم ذو أولوية",
   "planBadgePro": "PRO",
-  "planManage": "الباقة"
+  "planManage": "الباقة",
+  "couponHave": "لديك كوبون؟",
+  "couponPlaceholder": "أدخل الكود",
+  "couponApply": "تطبيق",
+  "couponChecking": "جارٍ التحقق…",
+  "couponValidPercent": "خصم {percent}% — يُطبّق عند الدفع",
+  "@couponValidPercent": { "placeholders": { "percent": { "type": "int" } } },
+  "couponValidFixed": "خصم {amount} — يُطبّق عند الدفع",
+  "@couponValidFixed": { "placeholders": { "amount": { "type": "String" } } },
+  "couponValidTrial": "يضيف {days} يومًا تجريبيًا — يُطبّق عند الدفع",
+  "@couponValidTrial": { "placeholders": { "days": { "type": "int" } } },
+  "couponInvalid": "هذا الكود غير صالح.",
+  "couponExpired": "انتهت صلاحية هذا الكود.",
+  "couponExhausted": "بلغ هذا الكود حدّه الأقصى.",
+  "couponAlreadyUsed": "لقد استخدمت هذا الكود من قبل.",
+  "couponNotApplicable": "هذا الكود لا ينطبق على هذه الباقة.",
+  "couponSignIn": "سجّل الدخول لاستخدام كوبون."
 }

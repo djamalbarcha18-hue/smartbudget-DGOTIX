@@ -38,6 +38,21 @@ export const AI_MONTHLY_COST_CEILING_USD: Record<Plan, number> = {
   pro: 10.0,
 };
 
+/**
+ * Display prices in USD (mirrors lib/features/billing/domain/plan.dart and
+ * docs/PRICING.md). Used by coupon math to compute a discounted price. The
+ * billing provider remains authoritative at real checkout. `yearly` is null
+ * where a plan has no such option. KEEP IN SYNC with the Dart Plan prices.
+ */
+export const PLAN_PRICE_USD: Record<
+  Plan,
+  { monthly: number; yearly: number | null }
+> = {
+  free: { monthly: 0, yearly: null },
+  basic: { monthly: 7.99, yearly: 50 },
+  pro: { monthly: 14.99, yearly: 119 },
+};
+
 const RANK: Record<Plan, number> = { free: 0, basic: 1, pro: 2 };
 
 /** Coerce an unknown/invalid stored plan to the safe FREE default. */
