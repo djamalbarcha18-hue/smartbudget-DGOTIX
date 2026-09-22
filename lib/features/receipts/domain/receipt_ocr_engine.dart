@@ -31,6 +31,7 @@ enum ReceiptScanError {
   noTotal,
   network,
   rateLimited,
+  quotaExceeded,
   providerError,
   offlineUnsupported,
   unknown,

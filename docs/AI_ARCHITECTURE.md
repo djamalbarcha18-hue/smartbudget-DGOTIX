@@ -108,8 +108,11 @@ counted in `ai_usage_monthly`. A per-plan monthly USD ceiling
 expensive answers can't blow the budget even under the request count. A
 time-boxed `trial_plan` / `trial_expires_at` temporarily lifts the plan and
 lapses back with no data loss. **Cloud OCR** quotas (3 / 15 / 100) live in the
-same file (`OCR_QUOTA`) with counters `ocr_usage_monthly` / `ocr_usage_lifetime`,
-ready for the receipt-scan function to enforce.
+same file (`OCR_QUOTA`) with counters `ocr_usage_monthly` / `ocr_usage_lifetime`.
+The `receipt-scan` function enforces them **only when it serves the scan with a
+server Gemini key**; with a per-user BYOK key it does not meter (the user pays,
+on their own quota) — the same split as the AI assistant. Set `GEMINI_API_KEY`
+on the function to serve + meter OCR.
 
 To change a user's tier, set their **plan** (limits follow automatically) — the
 numeric `*_limit` columns are legacy overrides, not the source of truth.

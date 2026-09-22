@@ -12,8 +12,14 @@
 //
 // Deploy:  supabase functions deploy receipt-scan
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
-import { HttpError, requireUserId } from "../_shared/auth.ts";
+import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
 import { loadGeminiKey } from "../_shared/keys.ts";
+import {
+  effectivePlan,
+  normalizePlan,
+  OCR_QUOTA,
+  type Plan,
+} from "../_shared/quota.ts";
 
 // `gemini-flash-latest` is a stable alias that always tracks the newest Flash,
 // so it never 404s the way a pinned retired id (e.g. gemini-2.0-flash) does.
@@ -86,8 +92,20 @@ Deno.serve(async (req: Request) => {
     const mimeType = String(body?.mimeType ?? "image/jpeg");
     if (!imageBase64) return jsonResponse({ error: "no_image" }, 400, cors);
 
-    const apiKey = await loadGeminiKey(userId);
+    // Prefer the server key (we serve + meter). Fall back to the user's own key
+    // (BYOK): they pay with their key, so it is NOT metered against the plan —
+    // exactly like the AI assistant's BYOK path.
+    const serverKey = (Deno.env.get("GEMINI_API_KEY") ?? "").trim();
+    const useServerKey = serverKey.length > 0;
+    const apiKey = useServerKey ? serverKey : await loadGeminiKey(userId);
     if (!apiKey) return jsonResponse({ error: "no_key" }, 400, cors);
+
+    // Server-served OCR is metered per plan (docs/PRICING.md §3). BYOK is exempt.
+    const db = useServerKey ? serviceClient() : null;
+    const month = monthKey();
+    if (db && await ocrQuotaExceeded(db, userId, month)) {
+      return jsonResponse({ error: "quota_exceeded" }, 429, cors);
+    }
 
     const geminiBody = {
       contents: [
@@ -144,6 +162,9 @@ Deno.serve(async (req: Request) => {
       return jsonResponse({ ok: false, reason: "no_total" }, 200, cors);
     }
 
+    // Count only a successful extraction, and only when we served it.
+    if (db) await bumpOcr(db, userId, month);
+
     return jsonResponse(
       {
         ok: true,
@@ -165,6 +186,73 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: code }, status, cors);
   }
 });
+
+function monthKey(): string {
+  const d = new Date();
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
+async function resolvePlan(
+  db: ReturnType<typeof serviceClient>,
+  userId: string,
+): Promise<Plan> {
+  const { data: ent } = await db.from("ai_entitlements")
+    .select("plan, trial_plan, trial_expires_at")
+    .eq("user_id", userId).maybeSingle();
+  return effectivePlan(
+    normalizePlan(ent?.plan),
+    ent?.trial_plan ? normalizePlan(ent.trial_plan) : null,
+    (ent?.trial_expires_at as string | null) ?? null,
+  );
+}
+
+/** True when the server-served cloud OCR allowance for the plan is spent. */
+async function ocrQuotaExceeded(
+  db: ReturnType<typeof serviceClient>,
+  userId: string,
+  month: string,
+): Promise<boolean> {
+  const allow = OCR_QUOTA[await resolvePlan(db, userId)];
+  let used: number;
+  if (allow.window === "lifetime") {
+    const { data } = await db.from("ocr_usage_lifetime")
+      .select("scans").eq("user_id", userId).maybeSingle();
+    used = data?.scans ?? 0;
+  } else {
+    const { data } = await db.from("ocr_usage_monthly")
+      .select("scans").eq("user_id", userId).eq("month", month).maybeSingle();
+    used = data?.scans ?? 0;
+  }
+  return used >= allow.limit;
+}
+
+/** Increment both the monthly and lifetime cloud-OCR counters. */
+async function bumpOcr(
+  db: ReturnType<typeof serviceClient>,
+  userId: string,
+  month: string,
+): Promise<void> {
+  const nowIso = new Date().toISOString();
+  try {
+    const { data: cur } = await db.from("ocr_usage_monthly")
+      .select("scans").eq("user_id", userId).eq("month", month).maybeSingle();
+    await db.from("ocr_usage_monthly").upsert({
+      user_id: userId,
+      month,
+      scans: (cur?.scans ?? 0) + 1,
+      updated_at: nowIso,
+    });
+  } catch (_) { /* non-fatal */ }
+  try {
+    const { data: life } = await db.from("ocr_usage_lifetime")
+      .select("scans").eq("user_id", userId).maybeSingle();
+    await db.from("ocr_usage_lifetime").upsert({
+      user_id: userId,
+      scans: (life?.scans ?? 0) + 1,
+      updated_at: nowIso,
+    });
+  } catch (_) { /* non-fatal */ }
+}
 
 function toStr(v: unknown): string {
   return typeof v === "string" ? v.trim() : "";

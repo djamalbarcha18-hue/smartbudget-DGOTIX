@@ -483,6 +483,7 @@
   "receiptErrNoTotal": "Couldn't find a total on that receipt.",
   "receiptErrNetwork": "No connection — couldn't reach the scanner.",
   "receiptErrRateLimited": "Rate limit reached on your Gemini key. Try again shortly.",
+  "receiptErrQuota": "You've reached your cloud receipt-scan limit. Upgrade your plan for more, or scan on-device.",
   "receiptErrOffline": "Offline scanning isn't available on the web yet.",
   "receiptErrGeneric": "Couldn't scan the receipt. Please try again.",
 

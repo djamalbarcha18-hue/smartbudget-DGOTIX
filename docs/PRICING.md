@@ -60,6 +60,12 @@ and is metered **server-side**:
 
 Same policy as AI: exceeding cloud OCR → **Upgrade** CTA, never BYOK.
 
+Enforcement mirrors the AI split: when a **server** Gemini key is configured the
+`receipt-scan` function serves the scan and meters it against the plan quota
+(counting only successful extractions); when it isn't, the function falls back
+to the user's **own** key (BYOK), which — like the AI assistant's BYOK path — is
+**not** metered (the user pays with their key, on their quota).
+
 ---
 
 ## 4. Token governance (why quotas are safe)

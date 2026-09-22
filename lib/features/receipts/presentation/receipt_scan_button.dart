@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:smartbudget/design_system/components/ds_button.dart';
@@ -76,6 +77,7 @@ class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
     final AppLocalizations l = AppLocalizations.of(context);
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     final NavigatorState navigator = Navigator.of(context);
+    final GoRouter router = GoRouter.of(context);
 
     setState(() => _busy = true);
     try {
@@ -103,8 +105,12 @@ class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
       );
     } on ReceiptScanException catch (e) {
       if (e.code == ReceiptScanError.cancelled) return;
+      // A quota wall is upgrade-only (never "use your own key").
+      final SnackBarAction? action = e.code == ReceiptScanError.quotaExceeded
+          ? SnackBarAction(label: l.aiUpgrade, onPressed: () => router.go('/plans'))
+          : null;
       messenger.showSnackBar(
-        SnackBar(content: Text(_messageFor(e.code, l))),
+        SnackBar(content: Text(_messageFor(e.code, l)), action: action),
       );
     } catch (_) {
       messenger.showSnackBar(SnackBar(content: Text(_messageFor(
@@ -134,6 +140,8 @@ class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
         return l.receiptErrNetwork;
       case ReceiptScanError.rateLimited:
         return l.receiptErrRateLimited;
+      case ReceiptScanError.quotaExceeded:
+        return l.receiptErrQuota;
       case ReceiptScanError.offlineUnsupported:
         return l.receiptErrOffline;
       case ReceiptScanError.providerError:
