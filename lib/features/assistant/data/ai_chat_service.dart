@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import 'package:smartbudget/features/ai/domain/ai_registry.dart';
 import 'package:smartbudget/features/assistant/application/ai_key_controller.dart';
 
 /// Why an AI request failed, mapped to a friendly localized message by the UI.
@@ -73,11 +74,11 @@ class AiChatService {
   /// network) stop immediately.
   Future<AiChatResult> _gemini(
       String key, String model, String system, String q) async {
+    // Candidates come from the registry (active Gemini models only), so a
+    // retired id is never tried and new models are picked up automatically.
     final List<String> candidates = <String>[
       model,
-      'gemini-2.0-flash',
-      'gemini-2.5-flash',
-      'gemini-1.5-flash',
+      ...ModelRegistry.activeIdsFor(AiProviderId.google),
     ];
     final Set<String> tried = <String>{};
     AiChatException? last;

@@ -3,41 +3,30 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/features/ai/domain/ai_registry.dart';
 import 'package:smartbudget/features/assistant/data/ai_chat_service.dart';
 
 String _monthKey(DateTime d) =>
     '${d.year}-${d.month.toString().padLeft(2, '0')}';
 
-/// When the built-in price table below was last reviewed. Shown to the user so
-/// they know the estimate's basis (the app does NOT auto-sync provider prices —
-/// there is no public pricing API a browser can read, and each account's real
-/// price can differ by tier/discount/free-quota). Users can override any price.
+/// When the built-in prices in [ModelRegistry] were last reviewed. Shown to the
+/// user so they know the estimate's basis (the app does NOT auto-sync provider
+/// prices — there is no public pricing API a browser can read, and each
+/// account's real price can differ by tier/discount/free-quota). Users can
+/// override any price.
 const String kPricesAsOf = '2026-09';
 
-/// Built-in reference prices in USD per 1,000,000 tokens, (input, output).
-/// Estimates only; the user can override per model (see [aiPriceOverrideProvider]).
-const Map<String, (double, double)> _defaultPricePerMTok =
-    <String, (double, double)>{
-  'gpt-4o-mini': (0.15, 0.60),
-  'gpt-4o': (2.50, 10.0),
-  'gpt-4.1-mini': (0.40, 1.60),
-  'claude-3-5-haiku-latest': (0.80, 4.0),
-  'claude-3-5-sonnet-latest': (3.0, 15.0),
-  'gemini-2.0-flash': (0.10, 0.40),
-  'gemini-2.5-flash': (0.30, 2.50),
-  'gemini-2.0-flash-lite': (0.075, 0.30),
-  'gemini-1.5-flash': (0.075, 0.30),
-  'gemini-1.5-pro': (1.25, 5.0),
-};
-
-/// The built-in default price for a model, or null if unknown.
-(double, double)? defaultPriceOf(String model) => _defaultPricePerMTok[model];
+/// The built-in default price for a model (from the registry), or null.
+(double, double)? defaultPriceOf(String model) {
+  final AiModel? m = ModelRegistry.byId(model);
+  return m == null ? null : (m.inputPer1M, m.outputPer1M);
+}
 
 /// The price actually used for a model: a user override if set, else the
 /// built-in default, else (0, 0) — USD per 1,000,000 tokens (input, output).
 (double, double) effectivePriceOf(
     String model, Map<String, (double, double)> overrides) {
-  return overrides[model] ?? _defaultPricePerMTok[model] ?? (0.0, 0.0);
+  return overrides[model] ?? defaultPriceOf(model) ?? (0.0, 0.0);
 }
 
 double _estCostUsd(

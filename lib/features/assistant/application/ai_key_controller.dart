@@ -1,8 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/features/ai/domain/ai_registry.dart';
+
 /// The AI provider a personal key belongs to. Kept generic so users can bring a
-/// key from whichever service they have an account with.
+/// key from whichever service they have an account with. Model lists and prices
+/// come from [ModelRegistry] (the single source of truth) — never hardcoded.
 enum AiProvider { openai, anthropic, gemini, other }
 
 extension AiProviderX on AiProvider {
@@ -46,29 +49,26 @@ extension AiProviderX on AiProvider {
         AiProvider.other => '',
       };
 
-  /// Selectable models for this provider (first is the default). Product model
-  /// ids are proper nouns, so they are the same in every language.
-  List<String> get models => switch (this) {
-        AiProvider.openai => const <String>[
-            'gpt-4o-mini',
-            'gpt-4o',
-            'gpt-4.1-mini',
-          ],
-        AiProvider.anthropic => const <String>[
-            'claude-3-5-haiku-latest',
-            'claude-3-5-sonnet-latest',
-          ],
-        AiProvider.gemini => const <String>[
-            'gemini-2.0-flash',
-            'gemini-2.5-flash',
-            'gemini-2.0-flash-lite',
-            'gemini-1.5-flash',
-          ],
-        AiProvider.other => const <String>[],
+  /// Maps to the registry's provider id (null for [AiProvider.other]).
+  AiProviderId? get providerId => switch (this) {
+        AiProvider.openai => AiProviderId.openai,
+        AiProvider.anthropic => AiProviderId.anthropic,
+        AiProvider.gemini => AiProviderId.google,
+        AiProvider.other => null,
       };
 
+  /// Selectable ACTIVE models for this provider, from the registry (source of
+  /// truth) — retired ids are never offered.
+  List<String> get models {
+    final AiProviderId? pid = providerId;
+    return pid == null ? const <String>[] : ModelRegistry.activeIdsFor(pid);
+  }
+
   /// The provider's default model (empty for [AiProvider.other]).
-  String get defaultModel => models.isNotEmpty ? models.first : '';
+  String get defaultModel {
+    final AiProviderId? pid = providerId;
+    return pid == null ? '' : ModelRegistry.defaultIdFor(pid);
+  }
 }
 
 /// The user's personal AI key configuration. The key is a personal secret owned
@@ -127,11 +127,24 @@ class AiKeyController extends Notifier<AiKeyConfig?> {
       final SharedPreferences p = await SharedPreferences.getInstance();
       final String? secret = p.getString(_secretKey);
       if (secret == null || secret.trim().isEmpty) return;
-      state = AiKeyConfig(
-        provider: AiProviderX.fromStorage(p.getString(_providerKey)),
-        key: secret,
-        model: p.getString(_modelKey),
-      );
+      final AiProvider provider =
+          AiProviderX.fromStorage(p.getString(_providerKey));
+      final String? storedModel = p.getString(_modelKey);
+
+      // Migrate a retired/unknown stored model id to a live replacement (e.g.
+      // gemini-2.0-flash → gemini-flash-latest) so a stale setting can't 404.
+      String? model = storedModel;
+      final AiProviderId? pid = provider.providerId;
+      if (pid != null && storedModel != null && storedModel.isNotEmpty) {
+        final String resolved =
+            ModelRegistry.resolveUsableId(pid, storedModel);
+        if (resolved.isNotEmpty && resolved != storedModel) {
+          model = resolved;
+          await p.setString(_modelKey, resolved);
+        }
+      }
+
+      state = AiKeyConfig(provider: provider, key: secret, model: model);
     } catch (_) {
       // Keep null (not connected).
     }
