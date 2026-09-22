@@ -3,6 +3,18 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:smartbudget/features/billing/domain/plan.dart';
 
+/// A payment method / gateway the checkout can use.
+enum PayProvider { paddle, paypal }
+
+extension PayProviderX on PayProvider {
+  String get id => name; // 'paddle' | 'paypal'
+  static PayProvider? fromId(String? id) => switch (id) {
+        'paddle' => PayProvider.paddle,
+        'paypal' => PayProvider.paypal,
+        _ => null,
+      };
+}
+
 /// Why a checkout couldn't start. [notConfigured] means the owner hasn't wired
 /// the payment provider yet — the UI treats that as "billing coming soon".
 enum CheckoutError { notConfigured, unknownPrice, provider, network }
@@ -29,10 +41,12 @@ class CheckoutService {
   Future<CheckoutStart> start({
     required Plan plan,
     required BillingPeriod period,
+    PayProvider provider = PayProvider.paddle,
   }) async {
     final Map<String, dynamic> body = <String, dynamic>{
       'plan': plan.storageId,
       'period': period == BillingPeriod.yearly ? 'yearly' : 'monthly',
+      'provider': provider.id,
     };
     try {
       final FunctionResponse res = await Supabase.instance.client.functions
@@ -62,3 +76,23 @@ class CheckoutService {
 
 final checkoutServiceProvider =
     Provider<CheckoutService>((_) => const CheckoutService());
+
+/// The payment methods the server actually has configured (secrets set), so the
+/// Plans screen only offers gateways that work. Empty on any failure — the UI
+/// then falls back to a single default attempt with its graceful messaging.
+final enabledProvidersProvider = FutureProvider<List<PayProvider>>((ref) async {
+  try {
+    final FunctionResponse res =
+        await Supabase.instance.client.functions.invoke('billing-config');
+    final Object? data = res.data;
+    if (data is! Map) return const <PayProvider>[];
+    final Object? list = data['providers'];
+    if (list is! List) return const <PayProvider>[];
+    return list
+        .map((Object? e) => PayProviderX.fromId(e?.toString()))
+        .whereType<PayProvider>()
+        .toList();
+  } catch (_) {
+    return const <PayProvider>[];
+  }
+});

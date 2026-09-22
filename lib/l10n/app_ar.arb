@@ -710,5 +710,8 @@
   "planChooseBilling": "اختر طريقة الدفع",
   "checkoutOpening": "جارٍ فتح الدفع الآمن…",
   "checkoutError": "تعذّر بدء الدفع. حاول مرة أخرى.",
-  "checkoutSignIn": "سجّل الدخول لترقية باقتك."
+  "checkoutSignIn": "سجّل الدخول لترقية باقتك.",
+  "payChooseMethod": "اختر طريقة الدفع",
+  "payMethodCard": "بطاقة ائتمان أو خصم",
+  "payMethodPaypal": "PayPal"
 }

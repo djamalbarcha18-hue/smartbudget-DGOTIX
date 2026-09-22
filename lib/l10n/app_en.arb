@@ -714,5 +714,8 @@
   "planChooseBilling": "Choose how to pay",
   "checkoutOpening": "Opening secure checkout…",
   "checkoutError": "Couldn't start checkout. Please try again.",
-  "checkoutSignIn": "Sign in to upgrade your plan."
+  "checkoutSignIn": "Sign in to upgrade your plan.",
+  "payChooseMethod": "Choose a payment method",
+  "payMethodCard": "Credit or debit card",
+  "payMethodPaypal": "PayPal"
 }

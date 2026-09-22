@@ -389,7 +389,66 @@ class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
   Future<void> _onTap() async {
     final BillingPeriod? period = await _pickPeriod();
     if (period == null || !mounted) return;
-    await _start(period);
+
+    // Which payment methods are actually configured?
+    List<PayProvider> providers;
+    try {
+      providers = await ref.read(enabledProvidersProvider.future);
+    } catch (_) {
+      providers = const <PayProvider>[];
+    }
+    if (!mounted) return;
+
+    final PayProvider provider;
+    if (providers.length >= 2) {
+      final PayProvider? chosen = await _pickProvider(providers);
+      if (chosen == null || !mounted) return;
+      provider = chosen;
+    } else {
+      provider = providers.isNotEmpty ? providers.first : PayProvider.paddle;
+    }
+    await _start(period, provider);
+  }
+
+  Future<PayProvider?> _pickProvider(List<PayProvider> providers) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    return showModalBottomSheet<PayProvider>(
+      context: context,
+      backgroundColor: c.bgElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const SizedBox(height: DsSpacing.sm),
+            Padding(
+              padding: const EdgeInsets.all(DsSpacing.md),
+              child: Text(l.payChooseMethod,
+                  style: Theme.of(ctx)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w700)),
+            ),
+            for (final PayProvider p in providers)
+              ListTile(
+                leading: Icon(
+                  p == PayProvider.paypal
+                      ? Icons.account_balance_wallet_outlined
+                      : Icons.credit_card_outlined,
+                  color: c.brand,
+                ),
+                title: Text(
+                    p == PayProvider.paypal ? l.payMethodPaypal : l.payMethodCard),
+                onTap: () => Navigator.of(ctx).pop(p),
+              ),
+            const SizedBox(height: DsSpacing.sm),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<BillingPeriod?> _pickPeriod() {
@@ -437,7 +496,7 @@ class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
     );
   }
 
-  Future<void> _start(BillingPeriod period) async {
+  Future<void> _start(BillingPeriod period, PayProvider provider) async {
     final AppLocalizations l = AppLocalizations.of(context);
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     if (!ref.read(authControllerProvider).isAuthenticated) {
@@ -447,7 +506,7 @@ class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
     setState(() => _busy = true);
     final CheckoutStart r = await ref
         .read(checkoutServiceProvider)
-        .start(plan: widget.plan, period: period);
+        .start(plan: widget.plan, period: period, provider: provider);
     if (!mounted) return;
     setState(() => _busy = false);
 
