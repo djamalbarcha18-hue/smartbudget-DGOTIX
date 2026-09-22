@@ -513,6 +513,18 @@
   "aiKeySaved": "Personal AI key connected.",
   "aiKeyRemoved": "Personal AI key removed.",
 
+  "askAiTitle": "Ask DGOTIX AI",
+  "askAiIntro": "Ask anything about your budget, savings or spending — answered live with your own key.",
+  "askAiHint": "Ask about your finances…",
+  "askAiThinking": "Thinking…",
+  "askAiClear": "Clear conversation",
+  "askAiDisclaimer": "AI-generated using your own key. Double-check important decisions.",
+  "askAiErrInvalidKey": "Your API key was rejected. Check it in the key settings above.",
+  "askAiErrNetwork": "Couldn't reach the AI service. Check your connection and try again.",
+  "askAiErrUnsupported": "Live answers aren't available for this provider yet. Pick OpenAI, Gemini or Anthropic.",
+  "askAiErrRate": "The provider is rate-limiting your key. Try again shortly.",
+  "askAiErrGeneric": "Something went wrong. Please try again.",
+
   "settingsDeveloper": "Developer",
   "sampleDataHint": "Fill 2026 with realistic sample income, expenses and budgets to try the template. Safe to run more than once — it never duplicates.",
   "loadSampleData": "Load 2026 sample data",
