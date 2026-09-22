@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
@@ -7,7 +8,9 @@ import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
+import 'package:smartbudget/features/billing/data/checkout_service.dart';
 import 'package:smartbudget/features/billing/data/coupon_service.dart';
 import 'package:smartbudget/features/billing/domain/coupon.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
@@ -353,15 +356,123 @@ class _PlanCard extends StatelessWidget {
     if (!plan.atLeast(current)) {
       return const SizedBox.shrink();
     }
+    return _UpgradeCta(plan: plan);
+  }
+}
+
+/// The upgrade button for a paid plan: asks monthly vs yearly, then opens the
+/// server-created checkout URL. When the provider isn't configured yet it falls
+/// back gracefully to the "billing coming soon" note. Upgrade is the only path
+/// here — never BYOK.
+class _UpgradeCta extends ConsumerStatefulWidget {
+  const _UpgradeCta({required this.plan});
+  final Plan plan;
+
+  @override
+  ConsumerState<_UpgradeCta> createState() => _UpgradeCtaState();
+}
+
+class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
+  bool _busy = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
     return DsButton(
-      label: l.planUpgradeTo(planName(l, plan)),
+      label: _busy ? l.checkoutOpening : l.planUpgradeTo(planName(l, widget.plan)),
       icon: Icons.arrow_upward_rounded,
       expand: true,
-      onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l.planBillingSoon)),
+      onPressed: _busy ? null : _onTap,
+    );
+  }
+
+  Future<void> _onTap() async {
+    final BillingPeriod? period = await _pickPeriod();
+    if (period == null || !mounted) return;
+    await _start(period);
+  }
+
+  Future<BillingPeriod?> _pickPeriod() {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final int? save = _yearlySavePercentFor(widget.plan);
+    return showModalBottomSheet<BillingPeriod>(
+      context: context,
+      backgroundColor: c.bgElevated,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const SizedBox(height: DsSpacing.sm),
+            Padding(
+              padding: const EdgeInsets.all(DsSpacing.md),
+              child: Text(l.planChooseBilling,
+                  style: Theme.of(ctx)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w700)),
+            ),
+            ListTile(
+              leading: Icon(Icons.calendar_view_month_outlined, color: c.brand),
+              title: Text(l.planPerMonth(
+                  _money(widget.plan.priceUsd(BillingPeriod.monthly)))),
+              onTap: () => Navigator.of(ctx).pop(BillingPeriod.monthly),
+            ),
+            ListTile(
+              leading: Icon(Icons.calendar_today_outlined, color: c.brand),
+              title: Text(l.planPerYear(
+                  _money(widget.plan.priceUsd(BillingPeriod.yearly)))),
+              trailing: (save != null && save > 0)
+                  ? _Pill(text: l.planYearlySave(save), color: c.income)
+                  : null,
+              onTap: () => Navigator.of(ctx).pop(BillingPeriod.yearly),
+            ),
+            const SizedBox(height: DsSpacing.sm),
+          ],
+        ),
       ),
     );
   }
+
+  Future<void> _start(BillingPeriod period) async {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    if (!ref.read(authControllerProvider).isAuthenticated) {
+      messenger.showSnackBar(SnackBar(content: Text(l.checkoutSignIn)));
+      return;
+    }
+    setState(() => _busy = true);
+    final CheckoutStart r = await ref
+        .read(checkoutServiceProvider)
+        .start(plan: widget.plan, period: period);
+    if (!mounted) return;
+    setState(() => _busy = false);
+
+    if (r.ok) {
+      await launchUrl(Uri.parse(r.url!),
+          mode: LaunchMode.externalApplication,
+          webOnlyWindowName: '_blank');
+      // When they return, re-fetch so the new plan shows without a restart.
+      if (mounted) ref.invalidate(remoteEntitlementProvider);
+    } else if (r.error == CheckoutError.notConfigured) {
+      messenger.showSnackBar(SnackBar(content: Text(l.planBillingSoon)));
+    } else {
+      messenger.showSnackBar(SnackBar(content: Text(l.checkoutError)));
+    }
+  }
+}
+
+/// Whole-percent yearly saving vs 12× monthly for a plan, or null.
+int? _yearlySavePercentFor(Plan plan) {
+  final double? m = plan.priceUsd(BillingPeriod.monthly);
+  final double? y = plan.priceUsd(BillingPeriod.yearly);
+  if (m == null || y == null || m <= 0) return null;
+  final double full = m * 12;
+  if (full <= 0) return null;
+  return ((full - y) / full * 100).round();
 }
 
 String _money(double? v) {

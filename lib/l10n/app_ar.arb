@@ -706,5 +706,9 @@
   "couponExhausted": "بلغ هذا الكود حدّه الأقصى.",
   "couponAlreadyUsed": "لقد استخدمت هذا الكود من قبل.",
   "couponNotApplicable": "هذا الكود لا ينطبق على هذه الباقة.",
-  "couponSignIn": "سجّل الدخول لاستخدام كوبون."
+  "couponSignIn": "سجّل الدخول لاستخدام كوبون.",
+  "planChooseBilling": "اختر طريقة الدفع",
+  "checkoutOpening": "جارٍ فتح الدفع الآمن…",
+  "checkoutError": "تعذّر بدء الدفع. حاول مرة أخرى.",
+  "checkoutSignIn": "سجّل الدخول لترقية باقتك."
 }
