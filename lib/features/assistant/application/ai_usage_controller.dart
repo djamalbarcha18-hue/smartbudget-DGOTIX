@@ -8,10 +8,16 @@ import 'package:smartbudget/features/assistant/data/ai_chat_service.dart';
 String _monthKey(DateTime d) =>
     '${d.year}-${d.month.toString().padLeft(2, '0')}';
 
-/// Approximate provider prices in USD per 1,000,000 tokens, (input, output).
-/// These are estimates for guidance only and may drift from the provider's
-/// actual billing (free tiers can be $0). Update as prices change.
-const Map<String, (double, double)> _pricingPerMTok = <String, (double, double)>{
+/// When the built-in price table below was last reviewed. Shown to the user so
+/// they know the estimate's basis (the app does NOT auto-sync provider prices —
+/// there is no public pricing API a browser can read, and each account's real
+/// price can differ by tier/discount/free-quota). Users can override any price.
+const String kPricesAsOf = '2026-09';
+
+/// Built-in reference prices in USD per 1,000,000 tokens, (input, output).
+/// Estimates only; the user can override per model (see [aiPriceOverrideProvider]).
+const Map<String, (double, double)> _defaultPricePerMTok =
+    <String, (double, double)>{
   'gpt-4o-mini': (0.15, 0.60),
   'gpt-4o': (2.50, 10.0),
   'gpt-4.1-mini': (0.40, 1.60),
@@ -23,9 +29,19 @@ const Map<String, (double, double)> _pricingPerMTok = <String, (double, double)>
   'gemini-1.5-pro': (1.25, 5.0),
 };
 
-double _estCostUsd(String model, AiUsageStat s) {
-  final (double, double)? p = _pricingPerMTok[model];
-  if (p == null) return 0;
+/// The built-in default price for a model, or null if unknown.
+(double, double)? defaultPriceOf(String model) => _defaultPricePerMTok[model];
+
+/// The price actually used for a model: a user override if set, else the
+/// built-in default, else (0, 0) — USD per 1,000,000 tokens (input, output).
+(double, double) effectivePriceOf(
+    String model, Map<String, (double, double)> overrides) {
+  return overrides[model] ?? _defaultPricePerMTok[model] ?? (0.0, 0.0);
+}
+
+double _estCostUsd(
+    String model, AiUsageStat s, Map<String, (double, double)> overrides) {
+  final (double, double) p = effectivePriceOf(model, overrides);
   return s.inputTokens / 1e6 * p.$1 + s.outputTokens / 1e6 * p.$2;
 }
 
@@ -239,9 +255,81 @@ final aiUsageAlertProvider = Provider<UsageAlert>((ref) {
   return UsageAlert(level: level, reqRatio: reqRatio, costRatio: costRatio);
 });
 
+/// Per-model USD price overrides the user set (per 1,000,000 tokens). Persisted
+/// on-device so a stale built-in table never forces a wrong estimate — the user
+/// adjusts their own model's price to match their real provider pricing.
+final aiPriceOverrideProvider =
+    NotifierProvider<AiPriceOverrideController, Map<String, (double, double)>>(
+        AiPriceOverrideController.new);
+
+class AiPriceOverrideController
+    extends Notifier<Map<String, (double, double)>> {
+  static const String _key = 'sb_ai_prices';
+
+  @override
+  Map<String, (double, double)> build() {
+    _load();
+    return const <String, (double, double)>{};
+  }
+
+  Future<void> _load() async {
+    try {
+      final SharedPreferences p = await SharedPreferences.getInstance();
+      final String? raw = p.getString(_key);
+      if (raw == null || raw.isEmpty) return;
+      final Map<String, dynamic> m = jsonDecode(raw) as Map<String, dynamic>;
+      state = m.map((String k, dynamic v) {
+        final List<dynamic> pair = v as List<dynamic>;
+        return MapEntry<String, (double, double)>(k,
+            ((pair[0] as num).toDouble(), (pair[1] as num).toDouble()));
+      });
+    } catch (_) {
+      // Keep defaults.
+    }
+  }
+
+  /// Sets an override, or removes it when the values match the built-in default.
+  void set(String model, double inputPerM, double outputPerM) {
+    final (double, double)? def = defaultPriceOf(model);
+    final Map<String, (double, double)> next =
+        Map<String, (double, double)>.of(state);
+    if (def != null && def.$1 == inputPerM && def.$2 == outputPerM) {
+      next.remove(model);
+    } else {
+      next[model] = (inputPerM, outputPerM);
+    }
+    state = next;
+    _persist();
+  }
+
+  void reset() {
+    state = const <String, (double, double)>{};
+    _persist();
+  }
+
+  Future<void> _persist() async {
+    try {
+      final SharedPreferences p = await SharedPreferences.getInstance();
+      if (state.isEmpty) {
+        await p.remove(_key);
+      } else {
+        await p.setString(
+            _key,
+            jsonEncode(state.map((String k, (double, double) v) =>
+                MapEntry<String, dynamic>(
+                    k, <double>[v.$1, v.$2]))));
+      }
+    } catch (_) {
+      // Non-fatal.
+    }
+  }
+}
+
 /// The current calendar month's usage, rolled up across models.
 final aiUsageMonthProvider = Provider<AiUsageSummary>((ref) {
   final Map<String, AiUsageStat> map = ref.watch(aiUsageProvider);
+  final Map<String, (double, double)> prices =
+      ref.watch(aiPriceOverrideProvider);
   final String month = _monthKey(DateTime.now());
   int req = 0;
   int inTok = 0;
@@ -256,7 +344,7 @@ final aiUsageMonthProvider = Provider<AiUsageSummary>((ref) {
     req += s.requests;
     inTok += s.inputTokens;
     outTok += s.outputTokens;
-    cost += _estCostUsd(model, s);
+    cost += _estCostUsd(model, s, prices);
     perModel[model] = (perModel[model] ?? const AiUsageStat()).plus(
         req: s.requests, inTok: s.inputTokens, outTok: s.outputTokens);
   }

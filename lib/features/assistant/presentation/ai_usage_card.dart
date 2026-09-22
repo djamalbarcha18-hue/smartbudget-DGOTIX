@@ -7,6 +7,7 @@ import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/assistant/application/ai_key_controller.dart';
 import 'package:smartbudget/features/assistant/application/ai_usage_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -135,10 +136,28 @@ class AiUsageCard extends ConsumerWidget {
               Icon(Icons.info_outline_rounded, size: 13, color: c.textFaint),
               const SizedBox(width: DsSpacing.xs),
               Expanded(
-                child: Text(l.usageNote,
+                child: Text('${l.usageNote} ${l.pricesAsOf(kPricesAsOf)}',
                     style: t.labelSmall?.copyWith(color: c.textFaint)),
               ),
             ],
+          ),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              onPressed: () {
+                final AiKeyConfig? cfg = ref.read(aiKeyProvider);
+                _PriceSheet.show(context, cfg?.provider.models ?? const <String>[]);
+              },
+              icon: Icon(Icons.price_change_outlined, size: 15, color: c.brand),
+              label: Text(l.pricesAdjust,
+                  style: t.labelSmall?.copyWith(color: c.brand)),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: DsSpacing.sm, vertical: 2),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+            ),
           ),
         ],
       ),
@@ -390,6 +409,151 @@ class _LimitSheetState extends ConsumerState<_LimitSheet> {
     );
   }
 }
+
+/// Sheet to override the USD price per 1M tokens for the connected provider's
+/// models, so the estimate stays accurate when provider prices change.
+class _PriceSheet extends ConsumerStatefulWidget {
+  const _PriceSheet({required this.models});
+  final List<String> models;
+
+  static Future<void> show(BuildContext context, List<String> models) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _PriceSheet(models: models),
+    );
+  }
+
+  @override
+  ConsumerState<_PriceSheet> createState() => _PriceSheetState();
+}
+
+class _PriceSheetState extends ConsumerState<_PriceSheet> {
+  final Map<String, TextEditingController> _in = <String, TextEditingController>{};
+  final Map<String, TextEditingController> _out = <String, TextEditingController>{};
+
+  @override
+  void initState() {
+    super.initState();
+    final Map<String, (double, double)> overrides =
+        ref.read(aiPriceOverrideProvider);
+    for (final String m in widget.models) {
+      final (double, double) p = effectivePriceOf(m, overrides);
+      _in[m] = TextEditingController(text: _fmtPrice(p.$1));
+      _out[m] = TextEditingController(text: _fmtPrice(p.$2));
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final TextEditingController c in _in.values) {
+      c.dispose();
+    }
+    for (final TextEditingController c in _out.values) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  void _save() {
+    final AiPriceOverrideController ctl =
+        ref.read(aiPriceOverrideProvider.notifier);
+    for (final String m in widget.models) {
+      final double? inp = double.tryParse(_in[m]!.text.trim());
+      final double? out = double.tryParse(_out[m]!.text.trim());
+      if (inp != null && out != null) ctl.set(m, inp, out);
+    }
+    Navigator.of(context).pop();
+  }
+
+  void _reset() {
+    ref.read(aiPriceOverrideProvider.notifier).reset();
+    Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Container(
+        decoration: BoxDecoration(
+          color: c.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          border: Border.all(color: c.border),
+        ),
+        padding: const EdgeInsets.all(DsSpacing.xl),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Icon(Icons.price_change_outlined, size: 20, color: c.brand),
+                  const SizedBox(width: DsSpacing.sm),
+                  Expanded(
+                    child: Text(l.pricesTitle,
+                        style:
+                            t.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: DsSpacing.xs),
+              Text('${l.pricesHint} ${l.pricesAsOf(kPricesAsOf)}',
+                  style: t.bodySmall?.copyWith(color: c.textMuted)),
+              const SizedBox(height: DsSpacing.lg),
+              if (widget.models.isEmpty)
+                Text(l.usageEmpty,
+                    style: t.bodySmall?.copyWith(color: c.textMuted))
+              else
+                for (final String m in widget.models) ...<Widget>[
+                  Text(m,
+                      style: t.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: DsSpacing.xs),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: _Field(
+                            controller: _in[m]!,
+                            label: l.pricesInput,
+                            digitsOnly: false,
+                            color: c),
+                      ),
+                      const SizedBox(width: DsSpacing.md),
+                      Expanded(
+                        child: _Field(
+                            controller: _out[m]!,
+                            label: l.pricesOutput,
+                            digitsOnly: false,
+                            color: c),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: DsSpacing.md),
+                ],
+              const SizedBox(height: DsSpacing.sm),
+              DsButton(
+                  label: l.save, icon: Icons.check_rounded, onPressed: _save),
+              const SizedBox(height: DsSpacing.sm),
+              DsButton(
+                  label: l.pricesReset,
+                  variant: DsButtonVariant.secondary,
+                  onPressed: _reset),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+String _fmtPrice(double v) =>
+    v == v.roundToDouble() ? v.toInt().toString() : v.toString();
 
 class _Field extends StatelessWidget {
   const _Field({
