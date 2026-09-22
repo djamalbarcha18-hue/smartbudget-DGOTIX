@@ -563,6 +563,12 @@
   "scopeYear": "Year",
   "noComparison": "No comparison",
 
+  "sectionExpenseBreakdown": "Expense breakdown",
+  "breakdownHint": "Tap a category to see its amount and share.",
+  "clearSelection": "Clear",
+  "ofTotalExpenses": "{pct}% of total expenses",
+  "@ofTotalExpenses": { "placeholders": { "pct": { "type": "int" } } },
+
   "alertsSection": "Alerts & actions",
   "alertsAllClearTitle": "All clear",
   "alertsAllClear": "Nothing needs your attention right now.",

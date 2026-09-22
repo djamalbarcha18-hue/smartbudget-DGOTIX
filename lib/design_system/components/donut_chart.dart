@@ -31,6 +31,8 @@ class DonutChart extends StatefulWidget {
     this.centerTop,
     this.centerBottom,
     this.trackColor,
+    this.selectedIndex,
+    this.onSelectionChanged,
   });
 
   final List<DonutSegment> segments;
@@ -43,15 +45,24 @@ class DonutChart extends StatefulWidget {
   final String? centerBottom;
   final Color? trackColor;
 
+  /// Controlled selection. When [onSelectionChanged] is provided the chart is
+  /// "controlled": the sticky selection is driven by [selectedIndex] and taps
+  /// report through the callback (so the selection can be shared with a sibling
+  /// chart). When null, the chart manages its own tap selection internally.
+  final int? selectedIndex;
+  final ValueChanged<int?>? onSelectionChanged;
+
   @override
   State<DonutChart> createState() => _DonutChartState();
 }
 
 class _DonutChartState extends State<DonutChart> {
-  int? _tapped; // sticky selection (toggled by tap)
+  int? _tapped; // sticky selection (toggled by tap) — uncontrolled mode only
   int? _hover; // transient selection (pointer hover)
 
-  int? get _active => _hover ?? _tapped;
+  bool get _controlled => widget.onSelectionChanged != null;
+  int? get _sticky => _controlled ? widget.selectedIndex : _tapped;
+  int? get _active => _hover ?? _sticky;
 
   List<DonutSegment> get _shown {
     final double total = widget.segments
@@ -113,7 +124,12 @@ class _DonutChartState extends State<DonutChart> {
         onTapDown: (d) {
           final int? hit = _hitTest(d.localPosition);
           if (hit == null) return;
-          setState(() => _tapped = _tapped == hit ? null : hit);
+          final int? next = _sticky == hit ? null : hit;
+          if (_controlled) {
+            widget.onSelectionChanged!(next);
+          } else {
+            setState(() => _tapped = next);
+          }
         },
         child: SizedBox(
           width: widget.size,

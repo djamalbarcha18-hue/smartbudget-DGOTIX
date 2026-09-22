@@ -17,15 +17,19 @@ import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/analytics/application/alerts_controller.dart';
+import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/analytics/domain/kpi_math.dart';
+import 'package:smartbudget/features/analytics/presentation/alert_presentation.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/dashboard/application/dashboard_controller.dart';
 import 'package:smartbudget/features/dashboard/presentation/dgotix_insights_section.dart';
+import 'package:smartbudget/features/dashboard/presentation/expense_breakdown_section.dart';
 import 'package:smartbudget/features/dashboard/presentation/global_markets_section.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
 import 'package:smartbudget/features/financial_health/application/health_controller.dart';
-import 'package:smartbudget/features/financial_health/domain/health_calculator.dart';
+import 'package:smartbudget/features/financial_health/domain/health_engine.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
@@ -73,6 +77,10 @@ class DashboardPage extends ConsumerWidget {
 
     final String greeting =
         name == null ? l.welcomeGreeting : '${l.welcomeGreeting}، $name';
+
+    // Smart alerts from the shared, data-backed engine (budgets, goals,
+    // cash-flow). Shown only when something actually needs attention.
+    final List<AppAlert> alerts = ref.watch(alertsProvider);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(DsSpacing.pageGutter),
@@ -147,15 +155,17 @@ class DashboardPage extends ConsumerWidget {
           const _HealthHeroCard(),
           const SizedBox(height: DsSpacing.xxl),
 
+          // ---- Smart alerts (only when something needs attention) ----
+          if (alerts.isNotEmpty) ...<Widget>[
+            _AlertsSection(alerts: alerts),
+            const SizedBox(height: DsSpacing.xxl),
+          ],
+
           // ---- DGOTIX AI insights (top on-device analyses) ----
           const DgotixInsightsSection(),
           const SizedBox(height: DsSpacing.xxl),
 
-          // ---- Global markets (live, from keyless public sources) ----
-          const GlobalMarketsSection(),
-          const SizedBox(height: DsSpacing.xxl),
-
-          // ---- Monthly comparison: income vs expense bars + savings line ----
+          // ---- Main analytics: income vs expense bars + savings line ----
           DsSectionHeader(
               title: l.sectionMonthlyComparison,
               icon: Icons.bar_chart_rounded),
@@ -163,19 +173,22 @@ class DashboardPage extends ConsumerWidget {
           const _MonthlyComparisonCard(),
           const SizedBox(height: DsSpacing.xxl),
 
-          // ---- Income & expense distribution (donuts) + recent ----
+          // ---- Expense breakdown: synchronized donut + category bars ----
+          const ExpenseBreakdownSection(),
+          const SizedBox(height: DsSpacing.xxl),
+
+          // ---- Income distribution + recent activity ----
           _ResponsiveGrid(
             minTileWidth: 320,
             childAspectRatio: 0.82,
             children: <Widget>[
               const _IncomeDonutCard(),
-              const _ExpenseDonutCard(),
               const _RecentTransactionsCard(),
             ],
           ),
           const SizedBox(height: DsSpacing.xxl),
 
-          // ---- Later-phase modules (kept as placeholders) ----
+          // ---- Goals / debts / zakat quick access ----
           _ResponsiveGrid(
             minTileWidth: 340,
             childAspectRatio: 1.5,
@@ -185,6 +198,10 @@ class DashboardPage extends ConsumerWidget {
               const _ZakatMiniCard(),
             ],
           ),
+          const SizedBox(height: DsSpacing.xxl),
+
+          // ---- Global markets (live, contextual — kept at the bottom) ----
+          const GlobalMarketsSection(),
         ],
       ),
     );
@@ -350,6 +367,90 @@ class _Header extends StatelessWidget {
   }
 }
 
+/// Compact, tappable list of the top smart alerts (from the shared engine).
+/// Rendered only when [alerts] is non-empty so it never leaves an empty block.
+class _AlertsSection extends StatelessWidget {
+  const _AlertsSection({required this.alerts});
+  final List<AppAlert> alerts;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final List<AppAlert> shown = alerts.take(3).toList();
+
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          DsSectionHeader(
+              title: l.alertsSection,
+              icon: Icons.notifications_active_outlined),
+          const SizedBox(height: DsSpacing.sm),
+          for (int i = 0; i < shown.length; i++) ...<Widget>[
+            if (i > 0) Divider(height: DsSpacing.lg, color: c.border),
+            _AlertRow(alert: shown[i]),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _AlertRow extends StatelessWidget {
+  const _AlertRow({required this.alert});
+  final AppAlert alert;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final AlertView v = describeAlert(context, alert);
+    return InkWell(
+      borderRadius: DsRadius.brSm,
+      onTap: () => context.go(v.route),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: DsSpacing.xs),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: 30,
+              height: 30,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: v.color.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(v.icon, size: 17, color: v.color),
+            ),
+            const SizedBox(width: DsSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(v.title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 1),
+                  Text(v.description,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: c.textMuted)),
+                ],
+              ),
+            ),
+            const SizedBox(width: DsSpacing.sm),
+            Icon(Icons.chevron_right_rounded, size: 18, color: c.textFaint),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Monthly income vs expense bars with a savings (net) line overlay.
 class _MonthlyComparisonCard extends ConsumerWidget {
   const _MonthlyComparisonCard();
@@ -427,17 +528,6 @@ class _IncomeDonutCard extends ConsumerWidget {
     return _DistributionBody(
       title: AppLocalizations.of(context).sectionIncomeDistribution,
       totals: ref.watch(scopedIncomeCategoryTotalsProvider),
-    );
-  }
-}
-
-class _ExpenseDonutCard extends ConsumerWidget {
-  const _ExpenseDonutCard();
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return _DistributionBody(
-      title: AppLocalizations.of(context).sectionExpenseDistribution,
-      totals: ref.watch(scopedExpenseCategoryTotalsProvider),
     );
   }
 }
@@ -652,7 +742,8 @@ class _MiniCard extends StatelessWidget {
 }
 
 /// Prominent, tappable Financial Health score at the top of the dashboard.
-/// A circular gauge + status, colored by health, that opens the full page.
+/// A circular gauge + status colored by health, the key factors that moved the
+/// score (top strength / weakness), and a tap target that opens the full page.
 class _HealthHeroCard extends ConsumerWidget {
   const _HealthHeroCard();
 
@@ -661,7 +752,7 @@ class _HealthHeroCard extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final bool hasData = ref.watch(healthHasDataProvider);
-    final HealthResult r = ref.watch(healthResultProvider);
+    final HealthReport r = ref.watch(healthReportProvider);
     final bool rtl = Directionality.of(context) == TextDirection.rtl;
 
     final (String, Color) meta = switch (r.status) {
@@ -673,86 +764,160 @@ class _HealthHeroCard extends ConsumerWidget {
     };
     final Color tone = hasData ? meta.$2 : c.textMuted;
 
+    // The factors that most shaped the score (from the engine, not invented).
+    final HealthPillarKey? strength =
+        r.strengths.isNotEmpty ? r.strengths.first : null;
+    final HealthPillarKey? weakness =
+        r.weaknesses.isNotEmpty ? r.weaknesses.first : null;
+
     return GlassCard(
       child: InkWell(
         borderRadius: DsRadius.brMd,
         onTap: () => context.go('/health'),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(
-              width: 66,
-              height: 66,
-              child: Stack(
-                alignment: Alignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    width: 66,
-                    height: 66,
-                    child: CircularProgressIndicator(
-                      value: hasData ? (r.score.clamp(0, 100) / 100) : 0,
-                      strokeWidth: 6,
-                      backgroundColor: c.surfaceMuted,
-                      valueColor: AlwaysStoppedAnimation<Color>(tone),
-                    ),
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
+            Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 66,
+                  height: 66,
+                  child: Stack(
+                    alignment: Alignment.center,
                     children: <Widget>[
-                      Text(hasData ? '${r.score.round()}' : '—',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge
-                              ?.copyWith(color: tone, fontWeight: FontWeight.w800)),
-                      Text('/100',
+                      SizedBox(
+                        width: 66,
+                        height: 66,
+                        child: CircularProgressIndicator(
+                          value: hasData ? (r.score.clamp(0, 100) / 100) : 0,
+                          strokeWidth: 6,
+                          backgroundColor: c.surfaceMuted,
+                          valueColor: AlwaysStoppedAnimation<Color>(tone),
+                        ),
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(hasData ? '${r.score.round()}' : '—',
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(
+                                      color: tone, fontWeight: FontWeight.w800)),
+                          Text('/100',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall
+                                  ?.copyWith(color: c.textFaint)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: DsSpacing.lg),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.monitor_heart_outlined,
+                              size: 18, color: tone),
+                          const SizedBox(width: DsSpacing.sm),
+                          Expanded(
+                            child: Text(l.sectionFinancialHealth,
+                                style: Theme.of(context).textTheme.titleMedium),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: DsSpacing.xxs),
+                      Text(
+                        hasData ? meta.$1 : l.healthEmpty,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: hasData ? tone : c.textMuted),
+                      ),
+                      const SizedBox(height: DsSpacing.xxs),
+                      Text(l.viewDetails,
                           style: Theme.of(context)
                               .textTheme
                               .labelSmall
                               ?.copyWith(color: c.textFaint)),
                     ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(width: DsSpacing.sm),
+                Icon(
+                  rtl ? Icons.arrow_back_rounded : Icons.arrow_forward_rounded,
+                  size: 18,
+                  color: c.textMuted,
+                ),
+              ],
             ),
-            const SizedBox(width: DsSpacing.lg),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            if (hasData && (strength != null || weakness != null)) ...<Widget>[
+              const SizedBox(height: DsSpacing.md),
+              Wrap(
+                spacing: DsSpacing.sm,
+                runSpacing: DsSpacing.sm,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.monitor_heart_outlined, size: 18, color: tone),
-                      const SizedBox(width: DsSpacing.sm),
-                      Expanded(
-                        child: Text(l.sectionFinancialHealth,
-                            style: Theme.of(context).textTheme.titleMedium),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: DsSpacing.xxs),
-                  Text(
-                    hasData ? meta.$1 : l.healthEmpty,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: hasData ? tone : c.textMuted),
-                  ),
-                  const SizedBox(height: DsSpacing.xxs),
-                  Text(l.viewDetails,
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelSmall
-                          ?.copyWith(color: c.textFaint)),
+                  if (strength != null)
+                    _FactorChip(
+                      icon: Icons.arrow_upward_rounded,
+                      label: _pillarName(strength, l),
+                      color: c.income,
+                    ),
+                  if (weakness != null)
+                    _FactorChip(
+                      icon: Icons.arrow_downward_rounded,
+                      label: _pillarName(weakness, l),
+                      color: c.expense,
+                    ),
                 ],
               ),
-            ),
-            const SizedBox(width: DsSpacing.sm),
-            Icon(
-              rtl ? Icons.arrow_back_rounded : Icons.arrow_forward_rounded,
-              size: 18,
-              color: c.textMuted,
-            ),
+            ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Short name for a health pillar, reused for the hero's "key factors" chips.
+String _pillarName(HealthPillarKey k, AppLocalizations l) => switch (k) {
+      HealthPillarKey.cashFlow => l.hCashFlow,
+      HealthPillarKey.savings => l.hSavings,
+      HealthPillarKey.resilience => l.hResilience,
+      HealthPillarKey.debt => l.hDebt,
+      HealthPillarKey.incomeStability => l.hIncomeStability,
+      HealthPillarKey.planning => l.hPlanning,
+    };
+
+/// A small pill naming a factor (strength/weakness) that shaped the score.
+class _FactorChip extends StatelessWidget {
+  const _FactorChip(
+      {required this.icon, required this.label, required this.color});
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: DsRadius.brPill,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Icon(icon, size: 13, color: color),
+          const SizedBox(width: 5),
+          Text(label,
+              style: Theme.of(context)
+                  .textTheme
+                  .labelSmall
+                  ?.copyWith(color: color, fontWeight: FontWeight.w700)),
+        ],
       ),
     );
   }

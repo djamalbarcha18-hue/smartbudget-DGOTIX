@@ -563,6 +563,11 @@
   "scopeYear": "سنة",
   "noComparison": "لا تتوفّر مقارنة",
 
+  "sectionExpenseBreakdown": "توزيع المصروفات",
+  "breakdownHint": "اضغط على فئة لعرض قيمتها ونسبتها.",
+  "clearSelection": "مسح",
+  "ofTotalExpenses": "{pct}٪ من إجمالي المصروفات",
+
   "alertsSection": "التنبيهات والإجراءات",
   "alertsAllClearTitle": "كل شيء على ما يرام",
   "alertsAllClear": "لا يوجد ما يستدعي انتباهك حالياً.",
