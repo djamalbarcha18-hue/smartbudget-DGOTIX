@@ -29,6 +29,10 @@ enum Feature {
 
   /// Priority support.
   prioritySupport,
+
+  /// Smart salary split: suggests a per-category budget from the user's own
+  /// recent spending (see features/salary_split).
+  salarySplit,
 }
 
 /// How a metered quota resets.
@@ -106,6 +110,10 @@ abstract final class FeatureCatalog {
     Feature.prioritySupport: FeatureRule(
       feature: Feature.prioritySupport,
       minTier: Plan.pro,
+    ),
+    Feature.salarySplit: FeatureRule(
+      feature: Feature.salarySplit,
+      minTier: Plan.basic,
     ),
   };
 

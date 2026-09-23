@@ -12,6 +12,7 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/analytics/application/alerts_controller.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
+import 'package:smartbudget/features/salary_split/presentation/salary_split_card.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
@@ -51,6 +52,8 @@ class MonthlyBudgetPage extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: DsSpacing.xxl),
+          const SalarySplitCard(),
+          const SizedBox(height: DsSpacing.lg),
           const _BudgetSection(),
           const SizedBox(height: DsSpacing.xxl),
           Text(l.monthTransactions,

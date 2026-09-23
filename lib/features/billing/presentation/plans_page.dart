@@ -355,6 +355,7 @@ class _PlanCard extends StatelessWidget {
       case Plan.basic:
         return <String>[
           l.planFeatEverythingIn(l.planFree),
+          l.planFeatSalarySplit,
           l.planFeatAiMonthly(_limit(Feature.dgotixAi)),
           l.planFeatOcrMonthly(_limit(Feature.cloudOcr)),
           l.planFeatAdvancedReports,

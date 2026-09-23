@@ -97,6 +97,8 @@ abstract final class GuideContent {
         'Set a limit for each category you want to control.',
         'Progress bars fill as you spend; a category over its limit is '
             'flagged.',
+        'On a paid plan, "Suggest a split" divides your income across '
+            'categories from your own recent spending — review it, then apply.',
       ],
     ),
     GuideTopic(
@@ -252,6 +254,8 @@ abstract final class GuideContent {
         'اختر السنة والشهر في الأعلى — شاشة واحدة لكل الأشهر.',
         'حدّد سقفاً لكل فئة تريد ضبطها.',
         'تمتلئ أشرطة التقدّم مع الصرف، وتُميَّز الفئة التي تتجاوز سقفها.',
+        'في الباقات المدفوعة، يقسّم زر "اقترح تقسيمًا" دخلك على الفئات بناءً '
+            'على مصاريفك الأخيرة — راجعه ثم طبّقه.',
       ],
     ),
     GuideTopic(

@@ -67,6 +67,23 @@ void main() {
     });
   });
 
+  group('Salary split is a paid feature', () {
+    test('FREE is asked to upgrade to BASIC', () {
+      final GateDecision d =
+          FeatureGate.evaluate(Feature.salarySplit, plan: Plan.free);
+      expect(d.allowed, isFalse);
+      expect(d.reason, GateReason.needsUpgrade);
+      expect(d.suggestedTier, Plan.basic);
+    });
+
+    test('BASIC and PRO can use it', () {
+      expect(FeatureGate.evaluate(Feature.salarySplit, plan: Plan.basic).allowed,
+          isTrue);
+      expect(FeatureGate.evaluate(Feature.salarySplit, plan: Plan.pro).allowed,
+          isTrue);
+    });
+  });
+
   group('FeatureGate.evaluate', () {
     test('boolean gate below min tier ⇒ needsUpgrade to that tier', () {
       final GateDecision d =

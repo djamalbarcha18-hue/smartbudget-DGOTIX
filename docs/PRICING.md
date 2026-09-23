@@ -97,6 +97,7 @@ The catalog is the source of truth; this is the intended shape:
 | Financial health score & insights (on-device) | ✅ | ✅ | ✅ |
 | Reports & analytics — basic | ✅ | ✅ | ✅ |
 | Reports & analytics — advanced (deep breakdowns, longer history) | — | ✅ | ✅ |
+| Smart salary split (budget suggested from your own spending) | — | ✅ | ✅ |
 | DGOTIX AI assistant | 5 lifetime | 30 / mo | 150 / mo |
 | Cloud receipt OCR | 3 lifetime | 15 / mo | 100 / mo |
 | On-device receipt OCR | ✅ | ✅ | ✅ |

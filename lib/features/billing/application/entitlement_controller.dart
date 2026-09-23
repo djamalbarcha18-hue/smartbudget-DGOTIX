@@ -72,14 +72,18 @@ class EntitlementController extends Notifier<Entitlement> {
   }
 }
 
-/// The authoritative entitlement fetched from the server, when the user is
-/// signed in and a backend is configured; otherwise [Entitlement.free]. On a
-/// successful fetch it also refreshes the local cache so the next cold start
+/// The authoritative entitlement from the server:
+/// - backend configured + signed in → the user's row from the server;
+/// - backend configured + signed out → FREE (never trust a stale cache);
+/// - no backend at all (local demo) → null, meaning "no server answer", so
+///   the local cache applies (which the developer plan preview can set).
+/// A successful fetch also refreshes the local cache so the next cold start
 /// shows the last-known plan instantly.
-final remoteEntitlementProvider = FutureProvider<Entitlement>((ref) async {
-  final bool available =
-      AppEnv.hasSupabase && ref.watch(authControllerProvider).isAuthenticated;
-  if (!available) return Entitlement.free;
+final remoteEntitlementProvider = FutureProvider<Entitlement?>((ref) async {
+  if (!AppEnv.hasSupabase) return null;
+  if (!ref.watch(authControllerProvider).isAuthenticated) {
+    return Entitlement.free;
+  }
   final Entitlement e = await ref.read(entitlementServiceProvider).fetch();
   try {
     ref.read(entitlementProvider.notifier).hydrate(e);

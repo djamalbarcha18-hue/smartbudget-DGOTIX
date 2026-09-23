@@ -21,6 +21,7 @@ int _usedFor(Ref ref, Feature f) {
     case Feature.cloudSyncFull:
     case Feature.portfolioFull:
     case Feature.prioritySupport:
+    case Feature.salarySplit:
       return 0;
   }
 }

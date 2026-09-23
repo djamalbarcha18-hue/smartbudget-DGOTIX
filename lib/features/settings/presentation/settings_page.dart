@@ -19,6 +19,10 @@ import 'package:smartbudget/features/backup/data/cloud_backup_service.dart';
 import 'package:smartbudget/features/backup/data/file_io.dart';
 import 'package:smartbudget/features/backup/domain/backup_model.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
+import 'package:smartbudget/features/billing/domain/entitlement.dart';
+import 'package:smartbudget/features/billing/domain/plan.dart';
+import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/dev/sample_data_controller.dart';
 import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
@@ -446,6 +450,28 @@ class _DeveloperSectionState extends ConsumerState<_DeveloperSection> {
             ),
           ],
         ),
+        // Plan preview — only in the local demo (no backend, no billing), so
+        // paid features can be tried before payments are live. With a backend
+        // the server entitlement always wins, so this is never shown there.
+        if (!AppEnv.hasSupabase) ...<Widget>[
+          const SizedBox(height: DsSpacing.lg),
+          Text(l.devPlanPreview,
+              style: Theme.of(context).textTheme.titleSmall),
+          const SizedBox(height: DsSpacing.xs),
+          Text(l.devPlanPreviewHint,
+              style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: DsSpacing.sm),
+          _SegmentedRow<Plan>(
+            value: ref.watch(effectivePlanProvider),
+            options: <_Segment<Plan>>[
+              for (final Plan p in Plan.values)
+                _Segment<Plan>(p, planName(l, p), null),
+            ],
+            onChanged: (Plan p) => ref
+                .read(entitlementProvider.notifier)
+                .hydrate(Entitlement(plan: p)),
+          ),
+        ],
       ],
     );
   }
