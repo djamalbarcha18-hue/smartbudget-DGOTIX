@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -43,6 +44,12 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
   final String subject =
       a.subject.isEmpty ? '' : Catalog.label(a.subject, ar: ar);
   final String amount = MoneyFormatter.format(a.amount);
+  final DateTime now = DateTime.now();
+  final DateTime? when = a.date;
+  final bool tomorrow = when != null &&
+      DateTime(when.year, when.month, when.day) ==
+          DateTime(now.year, now.month, now.day + 1);
+  final String date = when == null ? '' : DateFormat('yyyy-MM-dd').format(when);
 
   final String title = switch (a.kind) {
     AlertKind.budgetOver => l.alertTitleBudgetOver,
@@ -51,6 +58,8 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     AlertKind.savingsLow => l.alertTitleSavingsLow,
     AlertKind.goalOverdue => l.alertTitleGoalOverdue,
     AlertKind.goalUrgent => l.alertTitleGoalUrgent,
+    AlertKind.recurringUpcoming => l.alertTitleRecurringUpcoming,
+    AlertKind.backupDue => l.alertTitleBackupDue,
   };
   final String description = switch (a.kind) {
     AlertKind.budgetOver => l.alertBudgetOver(subject, amount),
@@ -59,11 +68,17 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     AlertKind.savingsLow => l.alertSavingsLow,
     AlertKind.goalOverdue => l.alertGoalOverdue(subject, amount),
     AlertKind.goalUrgent => l.alertGoalUrgent(subject, amount),
+    AlertKind.recurringUpcoming => tomorrow
+        ? l.alertRecurringTomorrow(subject, amount)
+        : l.alertRecurringUpcoming(subject, amount, date),
+    AlertKind.backupDue => l.alertBackupDue,
   };
   final String action = switch (a.route) {
     '/budget' => l.actionViewBudget,
     '/goals' => l.actionViewGoals,
     '/health' => l.actionViewHealth,
+    '/recurring' => l.actionViewRecurring,
+    '/settings' => l.actionOpenSettings,
     _ => l.actionViewReport,
   };
 

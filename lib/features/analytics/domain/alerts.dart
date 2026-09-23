@@ -14,6 +14,12 @@ enum AlertKind {
   savingsLow,
   goalOverdue,
   goalUrgent,
+
+  /// A recurring transaction falls due within the next few days.
+  recurringUpcoming,
+
+  /// It's time to download a backup file.
+  backupDue,
 }
 
 /// A derived, data-backed alert. Never fabricated: every instance comes from a
@@ -26,6 +32,7 @@ class AppAlert {
     required this.amount,
     required this.route,
     this.focusKey = '',
+    this.date,
   });
 
   final AlertKind kind;
@@ -43,6 +50,9 @@ class AppAlert {
   /// Stable key of the element to highlight on the destination page — the
   /// category for budget alerts, the goal id for goal alerts ('' otherwise).
   final String focusKey;
+
+  /// The date the alert is about (e.g. a recurring item's due date).
+  final DateTime? date;
 }
 
 /// Pure alert engine — turns real aggregates into alerts. No Flutter, no l10n,

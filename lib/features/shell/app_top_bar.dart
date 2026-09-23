@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/currency_flag.dart';
+import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -17,6 +18,8 @@ import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/analytics/presentation/alert_presentation.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
+import 'package:smartbudget/features/notifications/application/notifications_controller.dart';
+import 'package:smartbudget/features/notifications/domain/notification_feed.dart';
 import 'package:smartbudget/features/search/app_search.dart';
 import 'package:smartbudget/features/shell/brand_controls.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
@@ -276,8 +279,10 @@ class _CurrencyChip extends ConsumerWidget {
   }
 }
 
-/// Notifications bell: a live alert count that opens a smoothly-animated panel
-/// (fade + scale from the bell corner). Data-backed via [alertsProvider].
+/// Notifications bell: the count of NEW notifications, opening a
+/// smoothly-animated panel (fade + scale from the bell corner). Opening the
+/// panel marks what it shows as seen; new ones arrive as the data, the date or
+/// the month changes. Data-backed via [notificationsProvider].
 class _NotificationsBell extends ConsumerStatefulWidget {
   const _NotificationsBell();
 
@@ -292,6 +297,10 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
       vsync: this, duration: const Duration(milliseconds: 190));
   OverlayEntry? _entry;
 
+  /// What was unread when the panel opened, so those rows stay marked "new"
+  /// while the user reads them.
+  Set<String> _newIds = const <String>{};
+
   @override
   void dispose() {
     _entry?.remove();
@@ -302,7 +311,14 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
 
   void _toggle() => _entry == null ? _open() : _close();
 
+  void _markAllSeen() {
+    ref.read(seenNotificationsProvider.notifier).markSeen(
+        ref.read(notificationsProvider).map((FeedItem f) => f.id));
+  }
+
   void _open() {
+    _newIds = ref.read(unreadNotificationsProvider);
+    _markAllSeen();
     _entry = OverlayEntry(builder: (_) => _overlay());
     Overlay.of(context).insert(_entry!);
     _anim.forward();
@@ -318,7 +334,11 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
     }
     _entry?.remove();
     _entry = null;
-    if (mounted) setState(() {});
+    if (mounted) {
+      // Anything that arrived while the panel was open has been seen too.
+      _markAllSeen();
+      setState(() {});
+    }
   }
 
   Future<void> _openDetail(AppAlert alert) async {
@@ -368,7 +388,8 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
             child: ScaleTransition(
               scale: Tween<double>(begin: 0.94, end: 1).animate(curved),
               alignment: rtl ? Alignment.topLeft : Alignment.topRight,
-              child: _NotificationsPanel(onOpen: _openDetail, onGo: _goDirect),
+              child: _NotificationsPanel(
+                  newIds: _newIds, onOpen: _openDetail, onGo: _goDirect),
             ),
           ),
         ),
@@ -380,8 +401,7 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
-    final bool hasData = ref.watch(financeSummaryProvider).count > 0;
-    final int count = hasData ? ref.watch(alertsProvider).length : 0;
+    final int count = ref.watch(unreadNotificationsProvider).length;
 
     return CompositedTransformTarget(
       link: _link,
@@ -413,7 +433,12 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
 
 /// The animated notifications panel content (kept live via a Consumer).
 class _NotificationsPanel extends ConsumerWidget {
-  const _NotificationsPanel({required this.onOpen, required this.onGo});
+  const _NotificationsPanel({
+    required this.newIds,
+    required this.onOpen,
+    required this.onGo,
+  });
+  final Set<String> newIds;
   final void Function(AppAlert alert) onOpen;
   final void Function(AppAlert alert) onGo;
 
@@ -422,10 +447,12 @@ class _NotificationsPanel extends ConsumerWidget {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
     final TextTheme t = Theme.of(context).textTheme;
-    final bool hasData = ref.watch(financeSummaryProvider).count > 0;
-    final List<AppAlert> alerts =
-        hasData ? ref.watch(alertsProvider) : const <AppAlert>[];
-    final List<AppAlert> shown = alerts.take(8).toList();
+    final List<FeedItem> items = ref.watch(notificationsProvider);
+    // New ones first, then the rest (each group keeps its urgency order).
+    final List<FeedItem> shown = <FeedItem>[
+      ...items.where((FeedItem f) => newIds.contains(f.id)),
+      ...items.where((FeedItem f) => !newIds.contains(f.id)),
+    ].take(8).toList();
 
     return Material(
       color: Colors.transparent,
@@ -458,7 +485,7 @@ class _NotificationsPanel extends ConsumerWidget {
                   const SizedBox(width: DsSpacing.sm),
                   Expanded(child: Text(l.alertsSection, style: t.titleSmall)),
                   if (shown.isNotEmpty)
-                    _CountBadge(count: alerts.length, color: c.expense),
+                    _CountBadge(count: items.length, color: c.expense),
                 ],
               ),
             ),
@@ -486,9 +513,10 @@ class _NotificationsPanel extends ConsumerWidget {
                   itemCount: shown.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 2),
                   itemBuilder: (BuildContext ctx, int i) => _PanelAlertRow(
-                    alert: shown[i],
-                    onTap: () => onOpen(shown[i]),
-                    onGo: () => onGo(shown[i]),
+                    alert: shown[i].alert,
+                    isNew: newIds.contains(shown[i].id),
+                    onTap: () => onOpen(shown[i].alert),
+                    onGo: () => onGo(shown[i].alert),
                   ),
                 ),
               ),
@@ -502,10 +530,14 @@ class _NotificationsPanel extends ConsumerWidget {
 class _PanelAlertRow extends StatelessWidget {
   const _PanelAlertRow({
     required this.alert,
+    required this.isNew,
     required this.onTap,
     required this.onGo,
   });
   final AppAlert alert;
+
+  /// Unread when the panel opened: tinted, with a "New" tag.
+  final bool isNew;
 
   /// Tapping the row body opens the large detail view.
   final VoidCallback onTap;
@@ -518,7 +550,12 @@ class _PanelAlertRow extends StatelessWidget {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final AlertView v = describeAlert(context, alert);
-    return InkWell(
+    return Ink(
+      decoration: BoxDecoration(
+        color: isNew ? c.brand.withValues(alpha: 0.07) : null,
+        borderRadius: DsRadius.brMd,
+      ),
+      child: InkWell(
       onTap: onTap,
       borderRadius: DsRadius.brMd,
       child: Padding(
@@ -537,8 +574,24 @@ class _PanelAlertRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(v.title,
-                      style: t.labelLarge?.copyWith(color: c.textPrimary)),
+                  Row(
+                    children: <Widget>[
+                      Flexible(
+                        child: Text(v.title,
+                            style: t.labelLarge?.copyWith(
+                                color: c.textPrimary,
+                                fontWeight:
+                                    isNew ? FontWeight.w700 : null)),
+                      ),
+                      if (isNew) ...<Widget>[
+                        const SizedBox(width: 6),
+                        DsBadge(
+                            label: AppLocalizations.of(context)
+                                .notificationsNew,
+                            tone: DsBadgeTone.brand),
+                      ],
+                    ],
+                  ),
                   const SizedBox(height: 2),
                   Text(v.description,
                       style: t.bodySmall?.copyWith(color: c.textMuted),
@@ -563,6 +616,7 @@ class _PanelAlertRow extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

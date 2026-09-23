@@ -844,5 +844,15 @@
   "recurringMonthlyNote": "Weekly and yearly items are counted at their monthly equivalent. Items in another currency are not included.",
   "recurringPosted": "Recurring transactions added: {count}",
   "@recurringPosted": {"placeholders": {"count": {"type": "int"}}},
-  "recurringBadge": "Recurring"
+  "recurringBadge": "Recurring",
+  "alertTitleRecurringUpcoming": "Coming up",
+  "alertRecurringUpcoming": "{subject} ({amount}) is due on {date}.",
+  "@alertRecurringUpcoming": {"placeholders": {"subject": {"type": "String"}, "amount": {"type": "String"}, "date": {"type": "String"}}},
+  "alertRecurringTomorrow": "{subject} ({amount}) is due tomorrow.",
+  "@alertRecurringTomorrow": {"placeholders": {"subject": {"type": "String"}, "amount": {"type": "String"}}},
+  "alertTitleBackupDue": "Time for a backup",
+  "alertBackupDue": "Download a backup file so your data stays safe if this browser's storage is cleared.",
+  "actionViewRecurring": "View recurring",
+  "actionOpenSettings": "Open settings",
+  "notificationsNew": "New"
 }

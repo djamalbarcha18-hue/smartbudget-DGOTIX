@@ -840,5 +840,15 @@
   "recurringMonthlyNote": "تُحتسب البنود الأسبوعية والسنوية بما يعادلها شهريًا، ولا تُحتسب البنود بعملة أخرى.",
   "recurringPosted": "أُضيفت معاملات متكرّرة: {count}",
   "@recurringPosted": {"placeholders": {"count": {"type": "int"}}},
-  "recurringBadge": "متكرّرة"
+  "recurringBadge": "متكرّرة",
+  "alertTitleRecurringUpcoming": "موعد قريب",
+  "alertRecurringUpcoming": "موعد {subject} ({amount}) يوم {date}.",
+  "@alertRecurringUpcoming": {"placeholders": {"subject": {"type": "String"}, "amount": {"type": "String"}, "date": {"type": "String"}}},
+  "alertRecurringTomorrow": "موعد {subject} ({amount}) غدًا.",
+  "@alertRecurringTomorrow": {"placeholders": {"subject": {"type": "String"}, "amount": {"type": "String"}}},
+  "alertTitleBackupDue": "حان وقت النسخ الاحتياطي",
+  "alertBackupDue": "نزّل ملف نسخة احتياطية لتبقى بياناتك في أمان إن مُسحت ذاكرة هذا المتصفح.",
+  "actionViewRecurring": "عرض المعاملات المتكرّرة",
+  "actionOpenSettings": "فتح الإعدادات",
+  "notificationsNew": "جديد"
 }
