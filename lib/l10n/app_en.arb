@@ -725,5 +725,11 @@
   "subCancels": "Cancels {date}",
   "@subCancels": { "placeholders": { "date": { "type": "String" } } },
   "subManage": "Manage subscription",
-  "subManageUnavailable": "Subscription management isn't available right now."
+  "subManageUnavailable": "Subscription management isn't available right now.",
+  "guideTitle": "User guide",
+  "guideSubtitle": "How to use SmartBudget — a quick start, then a walk-through of every feature.",
+  "guideGettingStarted": "Getting started",
+  "guideFeatures": "Features",
+  "guideOpen": "Open",
+  "guideSearchTip": "Tip: press Ctrl+K (⌘K on Mac) anywhere to search and jump to any screen."
 }

@@ -21,6 +21,7 @@ enum AppSection {
   markets,
   aiAssistant,
   plans,
+  guide,
   settings,
   helpSupport,
 }
@@ -60,6 +61,7 @@ class NavDestination {
         AppSection.markets => l.navMarkets,
         AppSection.aiAssistant => l.navAiAssistant,
         AppSection.plans => l.plansTitle,
+        AppSection.guide => l.guideTitle,
         AppSection.settings => l.navSettings,
         AppSection.helpSupport => l.navHelpSupport,
       };
@@ -159,6 +161,13 @@ abstract final class AppNav {
       section: AppSection.plans,
       route: '/plans',
       icon: Icons.workspace_premium_outlined,
+      group: NavGroup.system,
+      isNew: true,
+    ),
+    NavDestination(
+      section: AppSection.guide,
+      route: '/guide',
+      icon: Icons.explore_outlined,
       group: NavGroup.system,
       isNew: true,
     ),

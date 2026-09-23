@@ -721,5 +721,11 @@
   "subCancels": "تُلغى في {date}",
   "@subCancels": { "placeholders": { "date": { "type": "String" } } },
   "subManage": "إدارة الاشتراك",
-  "subManageUnavailable": "إدارة الاشتراك غير متاحة حاليًا."
+  "subManageUnavailable": "إدارة الاشتراك غير متاحة حاليًا.",
+  "guideTitle": "دليل الاستخدام",
+  "guideSubtitle": "كيف تستخدم SmartBudget — بداية سريعة، ثم جولة في كل ميزة.",
+  "guideGettingStarted": "البداية",
+  "guideFeatures": "الميزات",
+  "guideOpen": "فتح",
+  "guideSearchTip": "نصيحة: اضغط Ctrl+K (أو ⌘K على ماك) في أي مكان للبحث والانتقال إلى أي شاشة."
 }

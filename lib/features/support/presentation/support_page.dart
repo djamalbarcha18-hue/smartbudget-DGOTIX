@@ -120,6 +120,10 @@ class SupportPage extends StatelessWidget {
                     ),
                     const SizedBox(height: DsSpacing.sm),
                     _ResourceRow(
+                        icon: Icons.explore_outlined,
+                        label: l.guideTitle,
+                        route: '/guide'),
+                    _ResourceRow(
                         icon: Icons.privacy_tip_outlined,
                         label: l.footerPrivacy,
                         route: '/legal/privacy'),
