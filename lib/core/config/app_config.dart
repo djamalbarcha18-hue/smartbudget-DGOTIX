@@ -13,8 +13,14 @@ abstract final class AppConfig {
   /// Copyright year shown in the footer.
   static const int copyrightYear = 2026;
 
-  /// Placeholder support email — replace with the real address in this ONE spot.
-  static const String supportEmail = 'support@YOUR-DOMAIN.com';
+  /// Support inbox users can write to. Leave EMPTY until a real inbox exists:
+  /// while empty the app never shows an address (the Help page and the legal
+  /// pages point to Help & Support instead). Set it here, in this ONE spot, and
+  /// every screen picks it up.
+  static const String supportEmail = '';
+
+  /// True once a real support inbox has been configured above.
+  static bool get hasSupportEmail => supportEmail.trim().isNotEmpty;
 
   /// Support/legal destinations. Kept as route/URL placeholders for now; the
   /// support architecture (email / chat / tickets / FAQ) plugs in here later

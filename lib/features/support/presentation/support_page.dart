@@ -49,9 +49,24 @@ class SupportPage extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: DsSpacing.xs),
-                    Text(l.supportContactHint,
+                    Text(
+                        AppConfig.hasSupportEmail
+                            ? l.supportContactHint
+                            : l.supportEmailSoon,
                         style: Theme.of(context).textTheme.bodySmall),
                     const SizedBox(height: DsSpacing.lg),
+                    if (!AppConfig.hasSupportEmail)
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: TextButton.icon(
+                          onPressed: () => context.go('/guide'),
+                          icon: Icon(Icons.explore_outlined,
+                              size: 16, color: c.brand),
+                          label: Text(l.guideTitle,
+                              style: TextStyle(color: c.brand)),
+                        ),
+                      )
+                    else
                     Container(
                       padding: const EdgeInsets.all(DsSpacing.md),
                       decoration: BoxDecoration(

@@ -23,7 +23,15 @@ abstract final class LegalContent {
 
   static String get _app => AppConfig.appName;
   static String get _brand => AppConfig.parentBrand;
-  static String get _email => AppConfig.supportEmail;
+  /// How to reach us, phrased to finish a sentence ("contact us …"). Uses the
+  /// support email once one is configured, otherwise the in-app Help page — a
+  /// placeholder address is never shown.
+  static String get _reachEn => AppConfig.hasSupportEmail
+      ? 'at ${AppConfig.supportEmail}'
+      : 'through the Help & Support page in the app';
+  static String get _reachAr => AppConfig.hasSupportEmail
+      ? 'على ${AppConfig.supportEmail}'
+      : 'عبر صفحة المساعدة والدعم في التطبيق';
 
   static List<LegalSection> sections(LegalDoc doc, {required bool ar}) =>
       switch (doc) {
@@ -125,7 +133,7 @@ abstract final class LegalContent {
         LegalSection(
           'Changes and contact',
           'We may update this policy; the date shown above reflects the latest '
-              'version. Questions about privacy: $_email.',
+              'version. For privacy questions, contact us $_reachEn.',
         ),
       ];
 
@@ -213,7 +221,7 @@ abstract final class LegalContent {
         LegalSection(
           'التحديثات والتواصل',
           'قد نحدّث هذه السياسة؛ ويعكس التاريخ أعلاه أحدث نسخة. لأي استفسار حول '
-              'الخصوصية: $_email.',
+              'الخصوصية تواصل معنا $_reachAr.',
         ),
       ];
 
@@ -264,8 +272,8 @@ abstract final class LegalContent {
           'Except where required by law, payments are generally non-refundable '
               'once a billing period has started, since you keep access until '
               'its end. Refund requests are handled according to the payment '
-              'provider\'s policy and applicable consumer law — contact us at '
-              'the address below and we will help.',
+              'provider\'s policy and applicable consumer law — contact us as '
+              'described at the end of these terms and we will help.',
         ),
         const LegalSection(
           'Promotional codes',
@@ -302,7 +310,7 @@ abstract final class LegalContent {
         LegalSection(
           'Changes and contact',
           'These terms may change; continued use after an update means you '
-              'accept the revised terms. Questions: $_email.',
+              'accept the revised terms. For questions, contact us $_reachEn.',
         ),
       ];
 
@@ -350,7 +358,7 @@ abstract final class LegalContent {
           'باستثناء ما يوجبه القانون، تكون المدفوعات عادةً غير قابلة للاسترداد '
               'بعد بدء فترة الفوترة، لأنك تحتفظ بالوصول حتى نهايتها. تُعالَج طلبات '
               'الاسترداد وفق سياسة مزوّد الدفع وقانون حماية المستهلك المطبّق — '
-              'تواصل معنا على العنوان أدناه وسنساعدك.',
+              'تواصل معنا كما هو موضّح في آخر هذه الشروط وسنساعدك.',
         ),
         const LegalSection(
           'الأكواد الترويجية',
@@ -385,7 +393,7 @@ abstract final class LegalContent {
         LegalSection(
           'التغييرات والتواصل',
           'قد تتغيّر هذه الشروط؛ ويعني استمرارك في الاستخدام بعد التحديث قبولك '
-              'للشروط المعدّلة. لأي استفسار: $_email.',
+              'للشروط المعدّلة. لأي استفسار تواصل معنا $_reachAr.',
         ),
       ];
 }
