@@ -3,6 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/backup/domain/backup_model.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
+import 'package:smartbudget/features/debts/domain/debt.dart';
+import 'package:smartbudget/features/goals/domain/goal.dart';
+import 'package:smartbudget/features/portfolio/domain/project.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
 const String usd = 'USD';
@@ -42,6 +45,37 @@ BackupData _sample() => BackupData(
       ],
       customIncome: <String>['محتوى راعٍ'],
       customExpense: <String>['اشتراكات'],
+      goals: <Goal>[
+        Goal(
+          id: 'g1',
+          name: 'Emergency fund',
+          target: Money.fromDouble(5000, usd),
+          saved: Money.fromDouble(1200, usd),
+          deadline: DateTime(2027, 1, 1),
+          createdAt: DateTime(2026, 1, 5),
+        ),
+      ],
+      debts: <Debt>[
+        Debt(
+          id: 'd1',
+          party: 'Ali',
+          type: DebtType.lent,
+          original: Money.fromDouble(400, usd),
+          paid: Money.fromDouble(100, usd),
+          dueDate: DateTime(2026, 6, 1),
+          createdAt: DateTime(2026, 2, 1),
+        ),
+      ],
+      projects: <Project>[
+        Project(
+          id: 'p1',
+          name: 'Laptop',
+          target: Money.fromDouble(1500, usd),
+          saved: Money.fromDouble(300, usd),
+          horizon: ProjectHorizon.mid,
+          createdAt: DateTime(2026, 2, 2),
+        ),
+      ],
     );
 
 void main() {
@@ -78,6 +112,32 @@ void main() {
     test('decoding an unrelated object throws FormatException', () {
       expect(() => BackupCodec.decodeJson('{"foo":"bar"}'),
           throwsA(isA<FormatException>()));
+    });
+
+    test('goals, debts and projects survive a round-trip', () {
+      final BackupData back =
+          BackupCodec.decodeJson(BackupCodec.encodeJson(_sample()));
+      expect(back.goals.single.id, 'g1');
+      expect(back.goals.single.saved, Money.fromDouble(1200, usd));
+      expect(back.goals.single.deadline, DateTime(2027, 1, 1));
+      expect(back.debts.single.party, 'Ali');
+      expect(back.debts.single.type, DebtType.lent);
+      expect(back.debts.single.paid, Money.fromDouble(100, usd));
+      expect(back.projects.single.name, 'Laptop');
+      expect(back.projects.single.horizon, ProjectHorizon.mid);
+    });
+
+    test('backups made before goals/debts/projects were added still load', () {
+      final BackupData d = BackupCodec.decodeJson(
+          '{"schemaVersion":1,"transactions":[],"budgets":[]}');
+      expect(d.goals, isEmpty);
+      expect(d.debts, isEmpty);
+      expect(d.projects, isEmpty);
+    });
+
+    test('a backup holding only goals is still recognised', () {
+      final BackupData d = BackupCodec.decodeJson('{"goals":[]}');
+      expect(d.goals, isEmpty);
     });
 
     test('missing optional sections default to empty, not crash', () {

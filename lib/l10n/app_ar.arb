@@ -801,5 +801,7 @@
   "@splitApplied": {"placeholders": {"count": {"type": "int"}}},
   "devPlanPreview": "معاينة باقة (للتجربة)",
   "devPlanPreviewHint": "متاح فقط في هذه النسخة التجريبية دون خادم: بدّل الباقة لتجربة الميزات المدفوعة. لا يُخصم أي مبلغ، ولا أثر له بعد تفعيل الدفع الحقيقي.",
-  "planFeatSalarySplit": "التقسيم الذكي للراتب"
+  "planFeatSalarySplit": "التقسيم الذكي للراتب",
+  "importDoneAll": "تم استيراد {tx} معاملة و{bud} ميزانية و{plans} من الأهداف والديون والمشاريع.",
+  "@importDoneAll": {"placeholders": {"tx": {"type": "int"}, "bud": {"type": "int"}, "plans": {"type": "int"}}}
 }

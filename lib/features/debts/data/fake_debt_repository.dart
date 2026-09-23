@@ -84,6 +84,25 @@ class FakeDebtRepository implements DebtRepository {
     _controller.close();
   }
 
+  @override
+  Future<int> importMany(List<Debt> debts) async {
+    await _load();
+    final Set<String> existing = _items.map((Debt x) => x.id).toSet();
+    int added = 0;
+    for (final Debt d in debts) {
+      if (d.id.isEmpty || existing.contains(d.id)) continue;
+      _items.add(d);
+      existing.add(d.id);
+      added++;
+    }
+    if (added > 0) {
+      _sort();
+      await _persist();
+      _emit();
+    }
+    return added;
+  }
+
   void _sort() {
     _items.sort((Debt a, Debt b) => b.createdAt.compareTo(a.createdAt));
   }

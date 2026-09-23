@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
+import 'package:smartbudget/features/debts/domain/debt.dart';
+import 'package:smartbudget/features/goals/domain/goal.dart';
+import 'package:smartbudget/features/portfolio/domain/project.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
 /// A complete, portable snapshot of one user's data.
@@ -16,9 +19,14 @@ class BackupData {
     required this.budgets,
     required this.customIncome,
     required this.customExpense,
+    this.goals = const <Goal>[],
+    this.debts = const <Debt>[],
+    this.projects = const <Project>[],
   });
 
-  /// Bump when the on-disk shape changes in a breaking way.
+  /// Bump when the on-disk shape changes in a breaking way. Adding optional
+  /// sections (goals, debts, projects) is not breaking: older files simply
+  /// don't have them and load with those lists empty.
   static const int schemaVersion = 1;
 
   final DateTime exportedAt;
@@ -27,6 +35,9 @@ class BackupData {
   final List<BudgetTarget> budgets;
   final List<String> customIncome;
   final List<String> customExpense;
+  final List<Goal> goals;
+  final List<Debt> debts;
+  final List<Project> projects;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'schemaVersion': schemaVersion,
@@ -36,6 +47,9 @@ class BackupData {
         'transactions':
             transactions.map((Transaction t) => t.toJson()).toList(),
         'budgets': budgets.map((BudgetTarget b) => b.toJson()).toList(),
+        'goals': goals.map((Goal g) => g.toJson()).toList(),
+        'debts': debts.map((Debt d) => d.toJson()).toList(),
+        'projects': projects.map((Project p) => p.toJson()).toList(),
         'customCategories': <String, dynamic>{
           'income': customIncome,
           'expense': customExpense,
@@ -57,6 +71,9 @@ class BackupData {
       budgets: _list<BudgetTarget>(json['budgets'], BudgetTarget.fromJson),
       customIncome: _strings(cc['income']),
       customExpense: _strings(cc['expense']),
+      goals: _list<Goal>(json['goals'], Goal.fromJson),
+      debts: _list<Debt>(json['debts'], Debt.fromJson),
+      projects: _list<Project>(json['projects'], Project.fromJson),
     );
   }
 
@@ -85,7 +102,14 @@ abstract final class BackupCodec {
     if (obj is! Map<String, dynamic>) {
       throw const FormatException('Not a SmartBudget backup file.');
     }
-    if (!obj.containsKey('transactions') && !obj.containsKey('budgets')) {
+    const List<String> sections = <String>[
+      'transactions',
+      'budgets',
+      'goals',
+      'debts',
+      'projects',
+    ];
+    if (!sections.any(obj.containsKey)) {
       throw const FormatException('Backup file is missing expected data.');
     }
     return BackupData.fromJson(obj);

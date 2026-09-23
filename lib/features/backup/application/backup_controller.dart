@@ -4,6 +4,12 @@ import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/features/backup/domain/backup_model.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
+import 'package:smartbudget/features/debts/application/debts_controller.dart';
+import 'package:smartbudget/features/debts/domain/debt.dart';
+import 'package:smartbudget/features/goals/application/goals_controller.dart';
+import 'package:smartbudget/features/goals/domain/goal.dart';
+import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
+import 'package:smartbudget/features/portfolio/domain/project.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -13,12 +19,22 @@ class ImportResult {
   const ImportResult({
     required this.transactionsAdded,
     required this.budgetsAdded,
+    this.goalsAdded = 0,
+    this.debtsAdded = 0,
+    this.projectsAdded = 0,
   });
 
   final int transactionsAdded;
   final int budgetsAdded;
+  final int goalsAdded;
+  final int debtsAdded;
+  final int projectsAdded;
 
-  bool get isEmpty => transactionsAdded == 0 && budgetsAdded == 0;
+  /// Goals + debts + projects restored (shown together in the message).
+  int get plansAdded => goalsAdded + debtsAdded + projectsAdded;
+
+  bool get isEmpty =>
+      transactionsAdded == 0 && budgetsAdded == 0 && plansAdded == 0;
 }
 
 final backupServiceProvider = Provider<BackupService>(BackupService.new);
@@ -28,13 +44,16 @@ class BackupService {
   BackupService(this._ref);
   final Ref _ref;
 
-  /// Reads the live data (via the stream providers, so it reflects what the app
-  /// currently shows) into a portable snapshot.
-  BackupData snapshot() {
-    final List<Transaction> txns =
-        _ref.read(transactionsProvider).valueOrNull ?? const <Transaction>[];
-    final List<BudgetTarget> budgets =
-        _ref.read(budgetsProvider).valueOrNull ?? const <BudgetTarget>[];
+  /// A complete, portable snapshot of everything the user has entered.
+  ///
+  /// Waits for every store to finish loading first, so the backup is complete
+  /// even for screens the user hasn't opened in this session.
+  Future<BackupData> snapshot() async {
+    final List<Transaction> txns = await _ref.read(transactionsProvider.future);
+    final List<BudgetTarget> budgets = await _ref.read(budgetsProvider.future);
+    final List<Goal> goals = await _ref.read(goalsProvider.future);
+    final List<Debt> debts = await _ref.read(debtsProvider.future);
+    final List<Project> projects = await _ref.read(projectsProvider.future);
     final CustomCategories cc = _ref.read(customCategoriesProvider);
     return BackupData(
       exportedAt: DateTime.now(),
@@ -43,13 +62,16 @@ class BackupService {
       budgets: budgets,
       customIncome: cc.income,
       customExpense: cc.expense,
+      goals: goals,
+      debts: debts,
+      projects: projects,
     );
   }
 
-  String exportJson() => BackupCodec.encodeJson(snapshot());
+  Future<String> exportJson() async => BackupCodec.encodeJson(await snapshot());
 
-  String exportTransactionsCsv() =>
-      BackupCodec.transactionsToCsv(snapshot().transactions);
+  Future<String> exportTransactionsCsv() async =>
+      BackupCodec.transactionsToCsv((await snapshot()).transactions);
 
   /// Restores from a JSON backup string. Non-destructive: existing rows are
   /// kept, only new ones are merged in. Throws [FormatException] on bad input.
@@ -67,6 +89,18 @@ class BackupService {
           income: data.customIncome,
           expense: data.customExpense,
         );
-    return ImportResult(transactionsAdded: txAdded, budgetsAdded: budAdded);
+    final int goalsAdded =
+        await _ref.read(goalRepositoryProvider).importMany(data.goals);
+    final int debtsAdded =
+        await _ref.read(debtRepositoryProvider).importMany(data.debts);
+    final int projectsAdded =
+        await _ref.read(projectRepositoryProvider).importMany(data.projects);
+    return ImportResult(
+      transactionsAdded: txAdded,
+      budgetsAdded: budAdded,
+      goalsAdded: goalsAdded,
+      debtsAdded: debtsAdded,
+      projectsAdded: projectsAdded,
+    );
   }
 }

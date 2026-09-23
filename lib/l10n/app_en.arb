@@ -805,5 +805,7 @@
   "@splitApplied": {"placeholders": {"count": {"type": "int"}}},
   "devPlanPreview": "Preview a plan (testing)",
   "devPlanPreviewHint": "Only in this demo without a backend: switch plans to try paid features. Nothing is charged, and it has no effect once real billing is enabled.",
-  "planFeatSalarySplit": "Smart salary split"
+  "planFeatSalarySplit": "Smart salary split",
+  "importDoneAll": "Imported {tx} transactions, {bud} budgets and {plans} goals, debts or projects.",
+  "@importDoneAll": {"placeholders": {"tx": {"type": "int"}, "bud": {"type": "int"}, "plans": {"type": "int"}}}
 }

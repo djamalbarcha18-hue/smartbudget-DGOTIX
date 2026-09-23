@@ -26,6 +26,9 @@ import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/dev/sample_data_controller.dart';
 import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
+import 'package:smartbudget/features/debts/application/debts_controller.dart';
+import 'package:smartbudget/features/goals/application/goals_controller.dart';
+import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
 import 'package:smartbudget/features/receipts/application/receipt_scan_controller.dart';
 import 'package:smartbudget/features/receipts/domain/receipt_ocr_engine.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
@@ -633,7 +636,7 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
     final BackupService svc = ref.read(backupServiceProvider);
     await downloadText(
       filename: 'smartbudget-backup-${_stamp()}.json',
-      text: svc.exportJson(),
+      text: await svc.exportJson(),
       mime: 'application/json;charset=utf-8',
     );
   }
@@ -643,7 +646,7 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
     // BOM so Excel reads UTF-8 (Arabic) correctly.
     await downloadText(
       filename: 'smartbudget-transactions-${_stamp()}.csv',
-      text: '﻿${svc.exportTransactionsCsv()}',
+      text: '﻿${await svc.exportTransactionsCsv()}',
       mime: 'text/csv;charset=utf-8',
     );
   }
@@ -661,7 +664,8 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
         SnackBar(
           content: Text(res.isEmpty
               ? l.importEmpty
-              : l.importDone(res.transactionsAdded, res.budgetsAdded)),
+              : l.importDoneAll(res.transactionsAdded, res.budgetsAdded,
+                  res.plansAdded)),
         ),
       );
     } catch (_) {
@@ -679,7 +683,11 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
     final int txCount =
         ref.watch(transactionsProvider).valueOrNull?.length ?? 0;
     final int budCount = ref.watch(budgetsProvider).valueOrNull?.length ?? 0;
-    final bool hasData = txCount > 0 || budCount > 0;
+    final int planCount =
+        (ref.watch(goalsProvider).valueOrNull?.length ?? 0) +
+            (ref.watch(debtsProvider).valueOrNull?.length ?? 0) +
+            (ref.watch(projectsProvider).valueOrNull?.length ?? 0);
+    final bool hasData = txCount > 0 || budCount > 0 || planCount > 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -739,7 +747,7 @@ class _CloudBackupSectionState extends ConsumerState<_CloudBackupSection> {
     setState(() => _busy = true);
     try {
       final Map<String, dynamic> data =
-          ref.read(backupServiceProvider).snapshot().toJson();
+          (await ref.read(backupServiceProvider).snapshot()).toJson();
       await ref
           .read(cloudBackupServiceProvider)
           .push(data, BackupData.schemaVersion);
@@ -773,7 +781,8 @@ class _CloudBackupSectionState extends ConsumerState<_CloudBackupSection> {
       messenger.showSnackBar(SnackBar(
         content: Text(res.isEmpty
             ? l.importEmpty
-            : l.importDone(res.transactionsAdded, res.budgetsAdded)),
+            : l.importDoneAll(res.transactionsAdded, res.budgetsAdded,
+                res.plansAdded)),
       ));
     } on CloudBackupException {
       messenger.showSnackBar(SnackBar(content: Text(l.cloudFailed)));
