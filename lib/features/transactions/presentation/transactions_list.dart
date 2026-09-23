@@ -7,6 +7,7 @@ import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/recurring/domain/recurrence_engine.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -221,9 +222,25 @@ class TransactionTile extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      '$category · ${DateFormat('yyyy-MM-dd').format(txn.date)}',
-                      style: Theme.of(context).textTheme.labelSmall,
+                    Row(
+                      children: <Widget>[
+                        if (RecurrenceEngine.isRecurring(txn)) ...<Widget>[
+                          Tooltip(
+                            message: l.recurringBadge,
+                            child: Icon(Icons.event_repeat_outlined,
+                                size: 12, color: c.textFaint),
+                          ),
+                          const SizedBox(width: 4),
+                        ],
+                        Flexible(
+                          child: Text(
+                            '$category · ${DateFormat('yyyy-MM-dd').format(txn.date)}',
+                            style: Theme.of(context).textTheme.labelSmall,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

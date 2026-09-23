@@ -10,6 +10,8 @@ import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
 import 'package:smartbudget/features/portfolio/domain/project.dart';
+import 'package:smartbudget/features/recurring/application/recurring_controller.dart';
+import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -22,6 +24,7 @@ class ImportResult {
     this.goalsAdded = 0,
     this.debtsAdded = 0,
     this.projectsAdded = 0,
+    this.recurringAdded = 0,
   });
 
   final int transactionsAdded;
@@ -29,9 +32,12 @@ class ImportResult {
   final int goalsAdded;
   final int debtsAdded;
   final int projectsAdded;
+  final int recurringAdded;
 
-  /// Goals + debts + projects restored (shown together in the message).
-  int get plansAdded => goalsAdded + debtsAdded + projectsAdded;
+  /// Goals, debts, projects and recurring rules restored (shown together in
+  /// the message).
+  int get plansAdded =>
+      goalsAdded + debtsAdded + projectsAdded + recurringAdded;
 
   bool get isEmpty =>
       transactionsAdded == 0 && budgetsAdded == 0 && plansAdded == 0;
@@ -54,6 +60,8 @@ class BackupService {
     final List<Goal> goals = await _ref.read(goalsProvider.future);
     final List<Debt> debts = await _ref.read(debtsProvider.future);
     final List<Project> projects = await _ref.read(projectsProvider.future);
+    final List<RecurringRule> recurring =
+        await _ref.read(recurringRulesProvider.future);
     final CustomCategories cc = _ref.read(customCategoriesProvider);
     return BackupData(
       exportedAt: DateTime.now(),
@@ -65,6 +73,7 @@ class BackupService {
       goals: goals,
       debts: debts,
       projects: projects,
+      recurring: recurring,
     );
   }
 
@@ -95,12 +104,16 @@ class BackupService {
         await _ref.read(debtRepositoryProvider).importMany(data.debts);
     final int projectsAdded =
         await _ref.read(projectRepositoryProvider).importMany(data.projects);
+    final int recurringAdded = await _ref
+        .read(recurringRepositoryProvider)
+        .importMany(data.recurring);
     return ImportResult(
       transactionsAdded: txAdded,
       budgetsAdded: budAdded,
       goalsAdded: goalsAdded,
       debtsAdded: debtsAdded,
       projectsAdded: projectsAdded,
+      recurringAdded: recurringAdded,
     );
   }
 }

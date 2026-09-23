@@ -77,6 +77,20 @@ abstract final class GuideContent {
       ],
     ),
     GuideTopic(
+      route: '/recurring',
+      title: 'Recurring transactions',
+      summary: 'Salary, rent and subscriptions added automatically on their '
+          'date.',
+      steps: <String>[
+        'When adding income or an expense, set "Repeat" to every week, month '
+            'or year.',
+        'Each time it falls due, the app adds it as a normal transaction — '
+            'even if you were away, it catches up when you next open the app.',
+        'On the Recurring screen, pause, resume, change the amount or stop '
+            'repeating. Transactions already added are never changed.',
+      ],
+    ),
+    GuideTopic(
       route: '/expenses',
       title: 'Scan a receipt',
       summary: 'Turn a photo of a receipt into a ready-to-save expense.',
@@ -233,6 +247,18 @@ abstract final class GuideContent {
         'للمداخيل وللمصاريف شاشة لكلٍّ منهما؛ وتعرض شاشة المعاملات الاثنين '
             'معاً.',
         'ابحث في القائمة لإيجاد أي عملية، واضغط عليها لتعديلها أو حذفها.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'المعاملات المتكرّرة',
+      summary: 'الراتب والإيجار والاشتراكات تُضاف تلقائياً في موعدها.',
+      steps: <String>[
+        'عند إضافة دخل أو مصروف، اختر «التكرار»: كل أسبوع أو كل شهر أو كل سنة.',
+        'في كل موعد يضيفها التطبيق كمعاملة عادية — وإن غبت، يستدركها عند فتحك '
+            'التطبيق في المرة القادمة.',
+        'من صفحة المعاملات المتكرّرة يمكنك الإيقاف المؤقت أو الاستئناف أو '
+            'تعديل المبلغ أو إيقاف التكرار. المعاملات المضافة سابقاً لا تتغيّر.',
       ],
     ),
     GuideTopic(

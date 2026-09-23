@@ -23,6 +23,8 @@ import 'package:smartbudget/features/monthly_budget/presentation/monthly_budget_
 import 'package:smartbudget/features/onboarding/domain/onboarding.dart';
 import 'package:smartbudget/features/onboarding/presentation/onboarding_visit_marker.dart';
 import 'package:smartbudget/features/portfolio/presentation/portfolio_page.dart';
+import 'package:smartbudget/features/recurring/presentation/recurring_auto_poster.dart';
+import 'package:smartbudget/features/recurring/presentation/recurring_page.dart';
 import 'package:smartbudget/features/reports/presentation/reports_page.dart';
 import 'package:smartbudget/features/settings/presentation/settings_page.dart';
 import 'package:smartbudget/features/shell/app_shell.dart';
@@ -70,7 +72,7 @@ GoRouter buildRouter(Ref ref) {
       GoRoute(path: '/forgot', builder: (_, __) => const ForgotPasswordPage()),
       ShellRoute(
         builder: (BuildContext context, GoRouterState state, Widget child) =>
-            AppShell(child: child),
+            AppShell(child: RecurringAutoPoster(child: child)),
         routes: <RouteBase>[
           GoRoute(
             path: '/dashboard',
@@ -91,6 +93,11 @@ GoRouter buildRouter(Ref ref) {
             path: '/expenses',
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const NoTransitionPage<void>(child: ExpensesPage()),
+          ),
+          GoRoute(
+            path: '/recurring',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const NoTransitionPage<void>(child: RecurringPage()),
           ),
           GoRoute(
             path: '/budget',
@@ -191,6 +198,7 @@ const Set<AppSection> _implementedSections = <AppSection>{
   AppSection.transactions,
   AppSection.income,
   AppSection.expenses,
+  AppSection.recurring,
   AppSection.monthlyBudget,
   AppSection.goals,
   AppSection.portfolio,

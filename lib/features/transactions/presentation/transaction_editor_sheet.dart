@@ -10,6 +10,8 @@ import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/recurring/application/recurring_controller.dart';
+import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
@@ -38,10 +40,14 @@ class TransactionEditorSheet extends ConsumerStatefulWidget {
     required this.type,
     this.existing,
     this.prefill,
+    this.initialRepeat,
   });
 
   final TransactionType type;
   final Transaction? existing;
+
+  /// Pre-selected repeat for a NEW transaction (e.g. from the Recurring page).
+  final RecurrenceFrequency? initialRepeat;
 
   /// Initial values for a NEW transaction (e.g. from a scanned receipt).
   /// Ignored when [existing] is set. All fields stay editable.
@@ -53,6 +59,7 @@ class TransactionEditorSheet extends ConsumerStatefulWidget {
     required TransactionType type,
     Transaction? existing,
     TransactionDraft? prefill,
+    RecurrenceFrequency? initialRepeat,
   }) {
     return showModalBottomSheet<void>(
       context: context,
@@ -62,6 +69,7 @@ class TransactionEditorSheet extends ConsumerStatefulWidget {
         type: type,
         existing: existing,
         prefill: prefill,
+        initialRepeat: initialRepeat,
       ),
     );
   }
@@ -80,6 +88,7 @@ class _TransactionEditorSheetState
   late DateTime _date;
   String? _category;
   String? _paymentMethod;
+  RecurrenceFrequency? _repeat;
   bool _saving = false;
 
   bool get _isIncome => widget.type == TransactionType.income;
@@ -100,6 +109,7 @@ class _TransactionEditorSheetState
     _date = e?.date ?? p?.date ?? DateTime.now();
     _category = e?.category ?? p?.category;
     _paymentMethod = e?.paymentMethod;
+    _repeat = e == null ? widget.initialRepeat : null;
   }
 
   @override
@@ -139,7 +149,9 @@ class _TransactionEditorSheetState
       createdAt: widget.existing?.createdAt ?? DateTime.now(),
     );
     final TransactionActions actions = ref.read(transactionActionsProvider);
-    if (widget.existing == null) {
+    if (widget.existing == null && _repeat != null) {
+      await ref.read(recurringActionsProvider).startFrom(txn, _repeat!);
+    } else if (widget.existing == null) {
       await actions.add(txn);
     } else {
       await actions.update(txn);
@@ -232,6 +244,14 @@ class _TransactionEditorSheetState
                   ),
                   const SizedBox(height: DsSpacing.lg),
                   _DateField(label: l.fieldDate, date: _date, onTap: _pickDate),
+                  if (widget.existing == null) ...<Widget>[
+                    const SizedBox(height: DsSpacing.lg),
+                    _RepeatDropdown(
+                      value: _repeat,
+                      onChanged: (RecurrenceFrequency? v) =>
+                          setState(() => _repeat = v),
+                    ),
+                  ],
                   const SizedBox(height: DsSpacing.lg),
                   DsTextField(
                     label: '${l.fieldDescription} (${l.optional})',
@@ -301,6 +321,68 @@ class _DateField extends StatelessWidget {
             ),
           ),
         ),
+      ],
+    );
+  }
+}
+
+/// Label for a repeat choice (null = doesn't repeat).
+String repeatLabel(AppLocalizations l, RecurrenceFrequency? f) => switch (f) {
+      null => l.repeatNone,
+      RecurrenceFrequency.weekly => l.repeatWeekly,
+      RecurrenceFrequency.monthly => l.repeatMonthly,
+      RecurrenceFrequency.yearly => l.repeatYearly,
+    };
+
+class _RepeatDropdown extends StatelessWidget {
+  const _RepeatDropdown({required this.value, required this.onChanged});
+
+  final RecurrenceFrequency? value;
+  final ValueChanged<RecurrenceFrequency?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final AppLocalizations l = AppLocalizations.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(l.fieldRepeat, style: t.labelMedium?.copyWith(color: c.textMuted)),
+        const SizedBox(height: 6),
+        DropdownButtonFormField<RecurrenceFrequency?>(
+          initialValue: value,
+          isExpanded: true,
+          dropdownColor: c.bgElevated,
+          style: t.bodyMedium?.copyWith(color: c.textPrimary),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: c.surfaceMuted,
+            prefixIcon: Icon(Icons.event_repeat_outlined,
+                size: 18, color: c.textMuted),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: DsRadius.brMd,
+              borderSide: BorderSide(color: c.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: DsRadius.brMd,
+              borderSide: BorderSide(color: c.brand),
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          ),
+          items: <RecurrenceFrequency?>[null, ...RecurrenceFrequency.values]
+              .map((RecurrenceFrequency? f) =>
+                  DropdownMenuItem<RecurrenceFrequency?>(
+                      value: f, child: Text(repeatLabel(l, f))))
+              .toList(),
+          onChanged: onChanged,
+        ),
+        if (value != null) ...<Widget>[
+          const SizedBox(height: 6),
+          Text(l.repeatHint,
+              style: t.labelSmall?.copyWith(color: c.textFaint)),
+        ],
       ],
     );
   }

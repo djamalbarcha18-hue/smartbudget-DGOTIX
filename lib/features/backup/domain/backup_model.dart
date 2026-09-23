@@ -4,6 +4,7 @@ import 'package:smartbudget/features/budget/domain/budget_target.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/portfolio/domain/project.dart';
+import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
 /// A complete, portable snapshot of one user's data.
@@ -22,10 +23,11 @@ class BackupData {
     this.goals = const <Goal>[],
     this.debts = const <Debt>[],
     this.projects = const <Project>[],
+    this.recurring = const <RecurringRule>[],
   });
 
   /// Bump when the on-disk shape changes in a breaking way. Adding optional
-  /// sections (goals, debts, projects) is not breaking: older files simply
+  /// sections (goals, debts, projects, recurring) is not breaking: older files simply
   /// don't have them and load with those lists empty.
   static const int schemaVersion = 1;
 
@@ -38,6 +40,7 @@ class BackupData {
   final List<Goal> goals;
   final List<Debt> debts;
   final List<Project> projects;
+  final List<RecurringRule> recurring;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'schemaVersion': schemaVersion,
@@ -50,6 +53,7 @@ class BackupData {
         'goals': goals.map((Goal g) => g.toJson()).toList(),
         'debts': debts.map((Debt d) => d.toJson()).toList(),
         'projects': projects.map((Project p) => p.toJson()).toList(),
+        'recurring': recurring.map((RecurringRule r) => r.toJson()).toList(),
         'customCategories': <String, dynamic>{
           'income': customIncome,
           'expense': customExpense,
@@ -74,6 +78,8 @@ class BackupData {
       goals: _list<Goal>(json['goals'], Goal.fromJson),
       debts: _list<Debt>(json['debts'], Debt.fromJson),
       projects: _list<Project>(json['projects'], Project.fromJson),
+      recurring:
+          _list<RecurringRule>(json['recurring'], RecurringRule.fromJson),
     );
   }
 
@@ -108,6 +114,7 @@ abstract final class BackupCodec {
       'goals',
       'debts',
       'projects',
+      'recurring',
     ];
     if (!sections.any(obj.containsKey)) {
       throw const FormatException('Backup file is missing expected data.');

@@ -6,6 +6,7 @@ import 'package:smartbudget/features/budget/domain/budget_target.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/portfolio/domain/project.dart';
+import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
 const String usd = 'USD';
@@ -76,6 +77,19 @@ BackupData _sample() => BackupData(
           createdAt: DateTime(2026, 2, 2),
         ),
       ],
+      recurring: <RecurringRule>[
+        RecurringRule(
+          id: 'r1',
+          type: TransactionType.expense,
+          category: 'السكن',
+          amount: Money.fromDouble(700, usd),
+          description: 'Rent',
+          frequency: RecurrenceFrequency.monthly,
+          startDate: DateTime(2026, 1, 5),
+          lastPosted: DateTime(2026, 9, 5),
+          createdAt: DateTime(2026, 1, 5),
+        ),
+      ],
     );
 
 void main() {
@@ -127,12 +141,28 @@ void main() {
       expect(back.projects.single.horizon, ProjectHorizon.mid);
     });
 
+    test('recurring rules survive a round-trip', () {
+      final BackupData back =
+          BackupCodec.decodeJson(BackupCodec.encodeJson(_sample()));
+      final RecurringRule r = back.recurring.single;
+      expect(r.id, 'r1');
+      expect(r.frequency, RecurrenceFrequency.monthly);
+      expect(r.amount, Money.fromDouble(700, usd));
+      expect(r.lastPosted, DateTime(2026, 9, 5));
+      expect(r.active, isTrue);
+    });
+
+    test('a backup holding only recurring rules is still recognised', () {
+      expect(BackupCodec.decodeJson('{"recurring":[]}').recurring, isEmpty);
+    });
+
     test('backups made before goals/debts/projects were added still load', () {
       final BackupData d = BackupCodec.decodeJson(
           '{"schemaVersion":1,"transactions":[],"budgets":[]}');
       expect(d.goals, isEmpty);
       expect(d.debts, isEmpty);
       expect(d.projects, isEmpty);
+      expect(d.recurring, isEmpty);
     });
 
     test('a backup holding only goals is still recognised', () {
