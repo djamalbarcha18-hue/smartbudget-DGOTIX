@@ -9,6 +9,7 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/auth/presentation/auth_helpers.dart';
 import 'package:smartbudget/features/auth/presentation/widgets/auth_scaffold.dart';
+import 'package:smartbudget/features/auth/presentation/widgets/password_requirements.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
@@ -93,9 +94,10 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                 obscure: true,
                 textInputAction: TextInputAction.done,
                 autofillHints: const <String>[AutofillHints.newPassword],
-                validator: (String? v) => AuthValidators.password(v, l),
+                validator: (String? v) => AuthValidators.newPassword(v, l),
                 onSubmitted: (_) => _submit(),
               ),
+              PasswordRequirements(controller: _password),
               const SizedBox(height: DsSpacing.xl),
               DsButton(
                 label: l.authSignUp,

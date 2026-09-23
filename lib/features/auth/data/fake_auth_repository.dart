@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/features/auth/domain/auth_failure.dart';
+import 'package:smartbudget/features/auth/domain/password_policy.dart';
 import 'package:smartbudget/features/auth/domain/auth_repository.dart';
 import 'package:smartbudget/features/auth/domain/auth_user.dart';
 
@@ -77,6 +78,9 @@ class FakeAuthRepository implements AuthRepository {
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 400));
     _validate(email, password);
+    if (!PasswordPolicy.check(password).isStrong) {
+      throw const AuthFailure(AuthFailureKind.weakPassword);
+    }
     final AuthUser user = AuthUser(
       id: _idFor(email),
       email: email.trim(),
@@ -106,7 +110,29 @@ class FakeAuthRepository implements AuthRepository {
     if (!_isEmail(email)) {
       throw const AuthFailure(AuthFailureKind.userNotFound);
     }
-    // Dev fake: nothing to send.
+    // Dev fake: no email is sent. Any 6-digit code is accepted for the email
+    // that requested it (see resetPasswordWithCode). Never used in production.
+    _pendingResetEmail = email.trim().toLowerCase();
+  }
+
+  String? _pendingResetEmail;
+
+  @override
+  Future<void> resetPasswordWithCode({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    await Future<void>.delayed(const Duration(milliseconds: 350));
+    final String e = email.trim().toLowerCase();
+    if (_pendingResetEmail != e || !RegExp(r'^\d{6,10}$').hasMatch(code.trim())) {
+      throw const AuthFailure(AuthFailureKind.invalidCode);
+    }
+    if (!PasswordPolicy.check(newPassword).isStrong) {
+      throw const AuthFailure(AuthFailureKind.weakPassword);
+    }
+    _pendingResetEmail = null;
+    await _persist(AuthUser(id: _idFor(e), email: email.trim()));
   }
 
   @override

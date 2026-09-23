@@ -76,4 +76,12 @@ class AuthController extends Notifier<AuthState> {
 
   Future<void> sendPasswordReset({required String email}) =>
       _repo.sendPasswordReset(email: email);
+
+  Future<void> resetPasswordWithCode({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) =>
+      _repo.resetPasswordWithCode(
+          email: email, code: code, newPassword: newPassword);
 }

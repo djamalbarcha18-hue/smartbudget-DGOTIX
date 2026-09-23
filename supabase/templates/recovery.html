@@ -1,0 +1,29 @@
+<!--
+  SmartBudget — "Reset Password" email template (Supabase Auth).
+
+  Paste into: Supabase Dashboard → Authentication → Email Templates →
+  "Reset Password". Suggested subject:
+      Your SmartBudget verification code / رمز التحقّق الخاص بك
+  {{ .Token }} is the one-time recovery code the app asks for.
+  Keep it short and self-contained: many mail clients strip <style> blocks.
+-->
+<div style="font-family:Arial,Helvetica,sans-serif;max-width:480px;margin:0 auto;padding:24px;color:#1f2937">
+  <h2 style="margin:0 0 8px">SmartBudget</h2>
+  <p style="margin:0 0 16px">Use this code to reset your password:</p>
+  <p style="font-size:32px;font-weight:bold;letter-spacing:8px;margin:0 0 16px;text-align:center">{{ .Token }}</p>
+  <p style="margin:0 0 24px;color:#6b7280;font-size:13px">
+    The code expires soon and can be used once. If you didn't ask to reset your
+    password, you can ignore this email — your account is unchanged.
+  </p>
+
+  <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0">
+
+  <div dir="rtl" style="text-align:right">
+    <p style="margin:0 0 16px">استخدم هذا الرمز لإعادة تعيين كلمة المرور:</p>
+    <p style="font-size:32px;font-weight:bold;letter-spacing:8px;margin:0 0 16px;text-align:center" dir="ltr">{{ .Token }}</p>
+    <p style="margin:0;color:#6b7280;font-size:13px">
+      تنتهي صلاحية الرمز قريبًا ويُستخدم مرة واحدة. إن لم تطلب إعادة تعيين كلمة
+      المرور فتجاهل هذه الرسالة — حسابك لم يتغيّر.
+    </p>
+  </div>
+</div>

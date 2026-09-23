@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -17,6 +18,7 @@ class DsTextField extends StatefulWidget {
     this.validator,
     this.onSubmitted,
     this.autofillHints,
+    this.inputFormatters,
   });
 
   final String label;
@@ -29,6 +31,7 @@ class DsTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final ValueChanged<String>? onSubmitted;
   final List<String>? autofillHints;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   State<DsTextField> createState() => _DsTextFieldState();
@@ -59,6 +62,7 @@ class _DsTextFieldState extends State<DsTextField> {
           textInputAction: widget.textInputAction,
           validator: widget.validator,
           autofillHints: widget.autofillHints,
+          inputFormatters: widget.inputFormatters,
           onFieldSubmitted: widget.onSubmitted,
           style: t.bodyMedium?.copyWith(color: c.textPrimary),
           decoration: InputDecoration(

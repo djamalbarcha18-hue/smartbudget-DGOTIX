@@ -76,6 +76,47 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> resetPasswordWithCode({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    // 1) Prove ownership of the email with the one-time recovery code. This
+    //    opens a short recovery session.
+    try {
+      await _client.auth.verifyOTP(
+        type: sb.OtpType.recovery,
+        email: email.trim(),
+        token: code.trim(),
+      );
+    } on sb.AuthException catch (e) {
+      throw AuthFailure(AuthFailureKind.invalidCode, e.message);
+    } catch (e) {
+      throw AuthFailure(AuthFailureKind.network, e.toString());
+    }
+
+    // 2) Set the new password inside that session.
+    try {
+      await _client.auth.updateUser(sb.UserAttributes(password: newPassword));
+    } on sb.AuthException catch (e) {
+      // Don't leave a half-finished recovery session signed in.
+      await _safeSignOut();
+      throw AuthFailure(AuthFailureKind.weakPassword, e.message);
+    } catch (e) {
+      await _safeSignOut();
+      throw AuthFailure(AuthFailureKind.unknown, e.toString());
+    }
+  }
+
+  Future<void> _safeSignOut() async {
+    try {
+      await _client.auth.signOut();
+    } catch (_) {
+      // Best-effort.
+    }
+  }
+
+  @override
   void dispose() {}
 
   AuthUser? _map(sb.User? u) {
@@ -95,6 +136,9 @@ class SupabaseAuthRepository implements AuthRepository {
     }
     if (msg.contains('invalid login') || msg.contains('invalid credentials')) {
       return AuthFailure(AuthFailureKind.invalidCredentials, e.message);
+    }
+    if (msg.contains('token') || msg.contains('otp') || msg.contains('expired')) {
+      return AuthFailure(AuthFailureKind.invalidCode, e.message);
     }
     if (msg.contains('password')) {
       return AuthFailure(AuthFailureKind.weakPassword, e.message);

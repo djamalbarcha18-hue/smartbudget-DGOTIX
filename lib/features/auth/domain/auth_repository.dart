@@ -24,8 +24,19 @@ abstract interface class AuthRepository {
 
   Future<void> signOut();
 
-  /// Sends a password-reset email. Throws [AuthFailure] on error.
+  /// Emails a one-time recovery code to [email]. Throws [AuthFailure] on
+  /// error. For privacy it succeeds whether or not an account exists.
   Future<void> sendPasswordReset({required String email});
+
+  /// Verifies the emailed recovery [code] and sets [newPassword]. On success
+  /// the user is signed in. Throws [AuthFailure] ([AuthFailureKind.invalidCode]
+  /// for a wrong/expired code, [AuthFailureKind.weakPassword] if the server
+  /// rejects the password).
+  Future<void> resetPasswordWithCode({
+    required String email,
+    required String code,
+    required String newPassword,
+  });
 
   /// Release resources (close streams). Called on provider dispose.
   void dispose();
