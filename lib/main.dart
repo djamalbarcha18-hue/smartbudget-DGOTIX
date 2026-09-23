@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:smartbudget/app.dart';
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/core/storage/persistent_storage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +18,10 @@ Future<void> main() async {
       anonKey: AppEnv.supabaseAnonKey,
     );
   }
+
+  // Financial data lives in the browser's storage: ask the browser not to
+  // evict it under storage pressure. Fire-and-forget — never blocks startup.
+  requestPersistentStorage().ignore();
 
   runApp(
     const ProviderScope(

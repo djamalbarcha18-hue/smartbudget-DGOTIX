@@ -22,6 +22,7 @@ import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/analytics/domain/kpi_math.dart';
 import 'package:smartbudget/features/analytics/presentation/alert_presentation.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/backup/presentation/backup_reminder_card.dart';
 import 'package:smartbudget/features/dashboard/application/dashboard_controller.dart';
 import 'package:smartbudget/features/dashboard/presentation/dgotix_insights_section.dart';
 import 'package:smartbudget/features/dashboard/presentation/expense_breakdown_section.dart';
@@ -87,6 +88,7 @@ class DashboardPage extends ConsumerWidget {
           _Header(greeting: greeting),
           const SizedBox(height: DsSpacing.xl),
           const WelcomeCard(),
+          const BackupReminderCard(),
 
           // ---- Overview KPIs (real values, or "—" when empty) ----
           Row(

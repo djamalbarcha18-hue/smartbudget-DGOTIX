@@ -807,5 +807,17 @@
   "devPlanPreviewHint": "Only in this demo without a backend: switch plans to try paid features. Nothing is charged, and it has no effect once real billing is enabled.",
   "planFeatSalarySplit": "Smart salary split",
   "importDoneAll": "Imported {tx} transactions, {bud} budgets and {plans} goals, debts or projects.",
-  "@importDoneAll": {"placeholders": {"tx": {"type": "int"}, "bud": {"type": "int"}, "plans": {"type": "int"}}}
+  "@importDoneAll": {"placeholders": {"tx": {"type": "int"}, "bud": {"type": "int"}, "plans": {"type": "int"}}},
+  "backupNever": "Never backed up",
+  "backupToday": "Last backup: today",
+  "backupDaysAgo": "Days since the last backup: {days}",
+  "@backupDaysAgo": {"placeholders": {"days": {"type": "int"}}},
+  "backupReminderNever": "You haven't backed up your data yet",
+  "backupReminderDays": "Your last backup was {days} days ago",
+  "@backupReminderDays": {"placeholders": {"days": {"type": "int"}}},
+  "backupReminderWhy": "Your data is stored in this browser. Clearing browsing data or changing device would erase it — a backup file lets you restore everything.",
+  "backupNow": "Back up now",
+  "backupLater": "Later",
+  "backupDone": "Backup downloaded. Keep the file somewhere safe.",
+  "backupFailed": "Couldn't create the backup. Please try again from Settings."
 }

@@ -15,6 +15,9 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/backup/application/backup_controller.dart';
 import 'package:smartbudget/features/backup/application/cloud_backup_controller.dart';
+import 'package:smartbudget/features/backup/application/backup_export.dart';
+import 'package:smartbudget/features/backup/application/backup_status_controller.dart';
+import 'package:smartbudget/features/backup/domain/backup_reminder.dart';
 import 'package:smartbudget/features/backup/data/cloud_backup_service.dart';
 import 'package:smartbudget/features/backup/data/file_io.dart';
 import 'package:smartbudget/features/backup/domain/backup_model.dart';
@@ -632,14 +635,7 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
     return '${n.year}${two(n.month)}${two(n.day)}-${two(n.hour)}${two(n.minute)}';
   }
 
-  Future<void> _exportJson() async {
-    final BackupService svc = ref.read(backupServiceProvider);
-    await downloadText(
-      filename: 'smartbudget-backup-${_stamp()}.json',
-      text: await svc.exportJson(),
-      mime: 'application/json;charset=utf-8',
-    );
-  }
+  Future<void> _exportJson() => exportFullBackup(ref);
 
   Future<void> _exportCsv() async {
     final BackupService svc = ref.read(backupServiceProvider);
@@ -693,6 +689,8 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Text(l.dataBackupHint, style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: DsSpacing.sm),
+        _LastBackupLine(status: ref.watch(backupStatusProvider)),
         const SizedBox(height: DsSpacing.lg),
         Wrap(
           spacing: DsSpacing.sm,
@@ -728,6 +726,41 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
   }
 }
 
+/// "Last backup: 3 days ago" / "Never backed up" under the backup hint.
+class _LastBackupLine extends StatelessWidget {
+  const _LastBackupLine({required this.status});
+  final BackupStatus? status;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final int? days =
+        BackupReminder.daysSince(status?.lastBackup, DateTime.now());
+    final bool stale = days == null || days >= BackupReminder.everyDays;
+    return Row(
+      children: <Widget>[
+        Icon(stale ? Icons.history_rounded : Icons.verified_outlined,
+            size: 15, color: stale ? c.saving : c.income),
+        const SizedBox(width: DsSpacing.xs),
+        Expanded(
+          child: Text(
+            days == null
+                ? l.backupNever
+                : days == 0
+                    ? l.backupToday
+                    : l.backupDaysAgo(days),
+            style: Theme.of(context)
+                .textTheme
+                .labelMedium
+                ?.copyWith(color: stale ? c.saving : c.textMuted),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 /// Sync a full backup to the signed-in user's account and restore it on any
 /// device. Storage is guarded by Supabase RLS (each user sees only their row).
 class _CloudBackupSection extends ConsumerStatefulWidget {
@@ -752,6 +785,7 @@ class _CloudBackupSectionState extends ConsumerState<_CloudBackupSection> {
           .read(cloudBackupServiceProvider)
           .push(data, BackupData.schemaVersion);
       ref.invalidate(cloudBackupMetaProvider);
+      await ref.read(backupStatusProvider.notifier).markBackedUp();
       messenger.showSnackBar(SnackBar(content: Text(l.cloudBackedUp)));
     } on CloudBackupException catch (e) {
       messenger.showSnackBar(SnackBar(

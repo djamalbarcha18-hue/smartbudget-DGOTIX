@@ -803,5 +803,17 @@
   "devPlanPreviewHint": "متاح فقط في هذه النسخة التجريبية دون خادم: بدّل الباقة لتجربة الميزات المدفوعة. لا يُخصم أي مبلغ، ولا أثر له بعد تفعيل الدفع الحقيقي.",
   "planFeatSalarySplit": "التقسيم الذكي للراتب",
   "importDoneAll": "تم استيراد {tx} معاملة و{bud} ميزانية و{plans} من الأهداف والديون والمشاريع.",
-  "@importDoneAll": {"placeholders": {"tx": {"type": "int"}, "bud": {"type": "int"}, "plans": {"type": "int"}}}
+  "@importDoneAll": {"placeholders": {"tx": {"type": "int"}, "bud": {"type": "int"}, "plans": {"type": "int"}}},
+  "backupNever": "لم تُنشأ أي نسخة احتياطية بعد",
+  "backupToday": "آخر نسخة احتياطية: اليوم",
+  "backupDaysAgo": "عدد الأيام منذ آخر نسخة احتياطية: {days}",
+  "@backupDaysAgo": {"placeholders": {"days": {"type": "int"}}},
+  "backupReminderNever": "لم تنشئ نسخة احتياطية من بياناتك بعد",
+  "backupReminderDays": "آخر نسخة احتياطية لبياناتك منذ {days} يومًا",
+  "@backupReminderDays": {"placeholders": {"days": {"type": "int"}}},
+  "backupReminderWhy": "بياناتك محفوظة في هذا المتصفح. مسح بيانات التصفح أو تغيير الجهاز يحذفها — ملف النسخة الاحتياطية يتيح لك استعادة كل شيء.",
+  "backupNow": "أنشئ نسخة الآن",
+  "backupLater": "لاحقًا",
+  "backupDone": "تم تنزيل النسخة الاحتياطية. احتفظ بالملف في مكان آمن.",
+  "backupFailed": "تعذّر إنشاء النسخة الاحتياطية. حاول مجددًا من الإعدادات."
 }
