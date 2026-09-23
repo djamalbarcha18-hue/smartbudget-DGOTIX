@@ -20,6 +20,8 @@ import 'package:smartbudget/features/legal/domain/legal_content.dart';
 import 'package:smartbudget/features/legal/presentation/legal_page.dart';
 import 'package:smartbudget/features/markets/presentation/markets_page.dart';
 import 'package:smartbudget/features/monthly_budget/presentation/monthly_budget_page.dart';
+import 'package:smartbudget/features/onboarding/domain/onboarding.dart';
+import 'package:smartbudget/features/onboarding/presentation/onboarding_visit_marker.dart';
 import 'package:smartbudget/features/portfolio/presentation/portfolio_page.dart';
 import 'package:smartbudget/features/reports/presentation/reports_page.dart';
 import 'package:smartbudget/features/settings/presentation/settings_page.dart';
@@ -148,12 +150,16 @@ GoRouter buildRouter(Ref ref) {
           GoRoute(
             path: '/guide',
             pageBuilder: (BuildContext context, GoRouterState state) =>
-                const NoTransitionPage<void>(child: GuidePage()),
+                const NoTransitionPage<void>(
+                    child: OnboardingVisitMarker(
+                        step: OnboardingStepId.guide, child: GuidePage())),
           ),
           GoRoute(
             path: '/settings',
             pageBuilder: (BuildContext context, GoRouterState state) =>
-                const NoTransitionPage<void>(child: SettingsPage()),
+                const NoTransitionPage<void>(
+                    child: OnboardingVisitMarker(
+                        step: OnboardingStepId.settings, child: SettingsPage())),
           ),
           GoRoute(
             path: '/support',

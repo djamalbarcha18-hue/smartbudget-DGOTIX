@@ -731,5 +731,18 @@
   "guideGettingStarted": "Getting started",
   "guideFeatures": "Features",
   "guideOpen": "Open",
-  "guideSearchTip": "Tip: press Ctrl+K (⌘K on Mac) anywhere to search and jump to any screen."
+  "guideSearchTip": "Tip: press Ctrl+K (⌘K on Mac) anywhere to search and jump to any screen.",
+  "onbTitle": "Welcome to SmartBudget",
+  "onbSubtitle": "A few quick steps to get the most out of the app.",
+  "onbDoneTitle": "You're all set",
+  "onbDoneSubtitle": "You've covered the basics. The user guide is always there if you need it.",
+  "onbProgress": "{done} of {total} done",
+  "@onbProgress": {"placeholders": {"done": {"type": "int"}, "total": {"type": "int"}}},
+  "onbHide": "Hide",
+  "onbStepSettings": "Choose your language and base currency",
+  "onbStepTransaction": "Add your first income or expense",
+  "onbStepBudget": "Set a monthly budget",
+  "onbStepGoal": "Create a savings goal",
+  "onbStepGuide": "Take a look at the user guide",
+  "onbReopen": "Show the welcome checklist on the dashboard"
 }

@@ -727,5 +727,18 @@
   "guideGettingStarted": "البداية",
   "guideFeatures": "الميزات",
   "guideOpen": "فتح",
-  "guideSearchTip": "نصيحة: اضغط Ctrl+K (أو ⌘K على ماك) في أي مكان للبحث والانتقال إلى أي شاشة."
+  "guideSearchTip": "نصيحة: اضغط Ctrl+K (أو ⌘K على ماك) في أي مكان للبحث والانتقال إلى أي شاشة.",
+  "onbTitle": "مرحبًا بك في SmartBudget",
+  "onbSubtitle": "خطوات سريعة لتستفيد من التطبيق إلى أقصى حد.",
+  "onbDoneTitle": "كل شيء جاهز",
+  "onbDoneSubtitle": "أنهيت الأساسيات. ودليل الاستخدام متاح دائمًا متى احتجته.",
+  "onbProgress": "{done} من {total} مكتملة",
+  "@onbProgress": {"placeholders": {"done": {"type": "int"}, "total": {"type": "int"}}},
+  "onbHide": "إخفاء",
+  "onbStepSettings": "اختر لغتك وعملتك الأساسية",
+  "onbStepTransaction": "أضف أول دخل أو مصروف",
+  "onbStepBudget": "حدّد ميزانية شهرية",
+  "onbStepGoal": "أنشئ هدف ادّخار",
+  "onbStepGuide": "اطّلع على دليل الاستخدام",
+  "onbReopen": "إظهار قائمة الترحيب في لوحة التحكم"
 }

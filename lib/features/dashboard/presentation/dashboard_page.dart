@@ -32,6 +32,7 @@ import 'package:smartbudget/features/financial_health/application/health_control
 import 'package:smartbudget/features/financial_health/domain/health_engine.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
+import 'package:smartbudget/features/onboarding/presentation/welcome_card.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
@@ -85,6 +86,7 @@ class DashboardPage extends ConsumerWidget {
         children: <Widget>[
           _Header(greeting: greeting),
           const SizedBox(height: DsSpacing.xl),
+          const WelcomeCard(),
 
           // ---- Overview KPIs (real values, or "—" when empty) ----
           Row(

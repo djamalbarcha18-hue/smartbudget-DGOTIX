@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -6,6 +7,8 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/guide/domain/guide_content.dart';
+import 'package:smartbudget/features/onboarding/application/onboarding_controller.dart';
+import 'package:smartbudget/features/onboarding/domain/onboarding.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// User guide — "how do I use this?" in one place: a short getting-started
@@ -88,6 +91,7 @@ class GuidePage extends StatelessWidget {
                   ),
                 ],
               ),
+              const _ReopenWelcomeLink(),
             ],
           ),
         ),
@@ -206,6 +210,37 @@ class _NumberedStep extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Brings the dashboard welcome checklist back after it was hidden.
+class _ReopenWelcomeLink extends ConsumerWidget {
+  const _ReopenWelcomeLink();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final OnboardingFlags? flags = ref.watch(onboardingFlagsProvider);
+    if (flags == null || !flags.dismissed) return const SizedBox.shrink();
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    return Padding(
+      padding: const EdgeInsets.only(top: DsSpacing.sm),
+      child: Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: TextButton.icon(
+          onPressed: () {
+            ref.read(onboardingFlagsProvider.notifier).reopen();
+            context.go('/dashboard');
+          },
+          icon: Icon(Icons.checklist_rounded, size: 16, color: c.brand),
+          label: Text(l.onbReopen,
+              style: Theme.of(context)
+                  .textTheme
+                  .labelLarge
+                  ?.copyWith(color: c.brand)),
+        ),
       ),
     );
   }
