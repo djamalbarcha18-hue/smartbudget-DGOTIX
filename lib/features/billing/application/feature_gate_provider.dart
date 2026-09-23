@@ -22,6 +22,7 @@ int _usedFor(Ref ref, Feature f) {
     case Feature.portfolioFull:
     case Feature.prioritySupport:
     case Feature.salarySplit:
+    case Feature.smartAlerts:
       return 0;
   }
 }
@@ -30,5 +31,8 @@ int _usedFor(Ref ref, Feature f) {
 /// usage. Widgets watch this instead of branching on the plan themselves.
 final featureGateProvider = Provider.family<GateDecision, Feature>((ref, f) {
   final Plan plan = ref.watch(effectivePlanProvider);
-  return FeatureGate.evaluate(f, plan: plan, used: _usedFor(ref, f));
+  return FeatureGate.evaluate(f,
+      plan: plan,
+      used: _usedFor(ref, f),
+      period: ref.watch(billingPeriodProvider));
 });

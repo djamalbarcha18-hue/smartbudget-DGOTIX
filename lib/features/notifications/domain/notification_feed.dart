@@ -37,6 +37,14 @@ abstract final class NotificationFeed {
         return 'recurringUpcoming:${a.focusKey}@${_dayKey(d)}';
       case AlertKind.backupDue:
         return 'backupDue@${periodKey(now)}';
+      case AlertKind.unusualExpense:
+        return 'unusualExpense:${a.focusKey}';
+      case AlertKind.weeklyDigest:
+        return 'weeklyDigest@${_dayKey(a.date ?? now)}';
+      case AlertKind.monthlyDigest:
+        return 'monthlyDigest@${periodKey(a.date ?? now)}';
+      case AlertKind.budgetForecast:
+      case AlertKind.categorySpike:
       case AlertKind.budgetOver:
       case AlertKind.budgetNear:
       case AlertKind.netNegative:
@@ -94,9 +102,11 @@ abstract final class NotificationFeed {
     required bool backupDue,
     required String currency,
     required DateTime now,
+    List<AppAlert> smart = const <AppAlert>[],
   }) {
     final List<AppAlert> all = <AppAlert>[
       ...finance,
+      ...smart,
       ...upcoming,
       if (backupDue) backupAlert(currency),
     ];

@@ -5,11 +5,14 @@ import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/backup/application/backup_status_controller.dart';
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/notifications/domain/notification_feed.dart';
+import 'package:smartbudget/features/notifications/domain/smart_alerts.dart';
 import 'package:smartbudget/features/recurring/application/recurring_controller.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
@@ -38,17 +41,22 @@ final notificationsProvider = Provider<List<FeedItem>>((ref) {
       ref.watch(goalsProvider).valueOrNull ?? const <Goal>[];
   final List<RecurringRule> rules =
       ref.watch(recurringRulesProvider).valueOrNull ?? const <RecurringRule>[];
+  final bool smartAllowed =
+      ref.watch(featureGateProvider(Feature.smartAlerts)).allowed;
+
+  final Map<String, int> planned = <String, int>{
+    for (final BudgetTarget b in budgets)
+      if (b.year == now.year && b.month == now.month)
+        b.category: b.planned.minorUnits,
+  };
 
   List<AppAlert> finance = const <AppAlert>[];
+  List<AppAlert> smart = const <AppAlert>[];
   if (txns.isNotEmpty) {
     final List<Transaction> month =
         FinanceCalculator.forMonth(txns, now.year, now.month);
     finance = AlertEngine.build(
-      plannedByCategory: <String, int>{
-        for (final BudgetTarget b in budgets)
-          if (b.year == now.year && b.month == now.month)
-            b.category: b.planned.minorUnits,
-      },
+      plannedByCategory: planned,
       actualByCategory: <String, int>{
         for (final CategoryTotal t in FinanceCalculator.categoryTotals(
             month, TransactionType.expense, currency))
@@ -60,10 +68,19 @@ final notificationsProvider = Provider<List<FeedItem>>((ref) {
       currency: currency,
       now: now,
     );
+    if (smartAllowed) {
+      smart = SmartAlertEngine.build(
+        transactions: txns,
+        plannedThisMonth: planned,
+        currency: currency,
+        now: now,
+      );
+    }
   }
 
   return NotificationFeed.build(
     finance: finance,
+    smart: smart,
     upcoming: NotificationFeed.upcomingRecurring(rules, now),
     backupDue: ref.watch(backupReminderDueProvider),
     currency: currency,

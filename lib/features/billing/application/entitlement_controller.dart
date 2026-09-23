@@ -102,3 +102,11 @@ final effectivePlanProvider = Provider<Plan>((ref) {
           ref.watch(entitlementProvider);
   return e.effectivePlanAt(DateTime.now());
 });
+
+/// How the account's paid plan is billed (null on FREE or when unknown).
+final billingPeriodProvider = Provider<BillingPeriod?>((ref) {
+  final Entitlement e =
+      ref.watch(remoteEntitlementProvider).valueOrNull ??
+          ref.watch(entitlementProvider);
+  return e.paidPeriod;
+});

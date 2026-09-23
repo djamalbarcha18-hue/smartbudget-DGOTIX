@@ -17,6 +17,8 @@ import 'package:smartbudget/features/analytics/application/alerts_controller.dar
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/analytics/presentation/alert_presentation.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/notifications/application/notifications_controller.dart';
 import 'package:smartbudget/features/notifications/domain/notification_feed.dart';
@@ -352,6 +354,11 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
     if (mounted) _goToAlert(alert);
   }
 
+  Future<void> _goPlans() async {
+    await _close();
+    if (mounted) context.go('/plans');
+  }
+
   void _goToAlert(AppAlert alert) {
     // Set a highlight target the destination page picks up, then navigate.
     ref.read(alertFocusProvider.notifier).state =
@@ -389,7 +396,10 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
               scale: Tween<double>(begin: 0.94, end: 1).animate(curved),
               alignment: rtl ? Alignment.topLeft : Alignment.topRight,
               child: _NotificationsPanel(
-                  newIds: _newIds, onOpen: _openDetail, onGo: _goDirect),
+                  newIds: _newIds,
+                  onOpen: _openDetail,
+                  onGo: _goDirect,
+                  onPlans: _goPlans),
             ),
           ),
         ),
@@ -437,8 +447,10 @@ class _NotificationsPanel extends ConsumerWidget {
     required this.newIds,
     required this.onOpen,
     required this.onGo,
+    required this.onPlans,
   });
   final Set<String> newIds;
+  final VoidCallback onPlans;
   final void Function(AppAlert alert) onOpen;
   final void Function(AppAlert alert) onGo;
 
@@ -453,6 +465,8 @@ class _NotificationsPanel extends ConsumerWidget {
       ...items.where((FeedItem f) => newIds.contains(f.id)),
       ...items.where((FeedItem f) => !newIds.contains(f.id)),
     ].take(8).toList();
+    final bool smartLocked =
+        !ref.watch(featureGateProvider(Feature.smartAlerts)).allowed;
 
     return Material(
       color: Colors.transparent,
@@ -520,6 +534,42 @@ class _NotificationsPanel extends ConsumerWidget {
                   ),
                 ),
               ),
+            if (smartLocked) ...<Widget>[
+              Divider(height: 1, color: c.border),
+              InkWell(
+                onTap: onPlans,
+                child: Padding(
+                  padding: const EdgeInsets.all(DsSpacing.md),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Icon(Icons.auto_awesome_outlined,
+                          size: 18, color: c.brand),
+                      const SizedBox(width: DsSpacing.sm),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(l.smartAlertsTitle,
+                                style: t.labelLarge
+                                    ?.copyWith(color: c.textPrimary)),
+                            const SizedBox(height: 2),
+                            Text(l.smartAlertsLocked,
+                                style: t.bodySmall
+                                    ?.copyWith(color: c.textMuted)),
+                            const SizedBox(height: 4),
+                            Text(l.smartAlertsSeePlans,
+                                style: t.labelMedium?.copyWith(
+                                    color: c.brand,
+                                    fontWeight: FontWeight.w700)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),

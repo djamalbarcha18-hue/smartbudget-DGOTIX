@@ -84,6 +84,45 @@ void main() {
     });
   });
 
+  group('Smart alerts are for yearly subscribers', () {
+    test('FREE must upgrade first', () {
+      final GateDecision d =
+          FeatureGate.evaluate(Feature.smartAlerts, plan: Plan.free);
+      expect(d.allowed, isFalse);
+      expect(d.reason, GateReason.needsUpgrade);
+    });
+
+    test('monthly Basic or Pro is asked to switch to yearly', () {
+      for (final Plan p in <Plan>[Plan.basic, Plan.pro]) {
+        final GateDecision d = FeatureGate.evaluate(Feature.smartAlerts,
+            plan: p, period: BillingPeriod.monthly);
+        expect(d.allowed, isFalse);
+        expect(d.reason, GateReason.needsYearly);
+      }
+      expect(
+          FeatureGate.evaluate(Feature.smartAlerts, plan: Plan.pro).reason,
+          GateReason.needsYearly);
+    });
+
+    test('yearly Basic and Pro get it', () {
+      for (final Plan p in <Plan>[Plan.basic, Plan.pro]) {
+        expect(
+            FeatureGate.evaluate(Feature.smartAlerts,
+                    plan: p, period: BillingPeriod.yearly)
+                .allowed,
+            isTrue);
+      }
+    });
+
+    test('other features ignore the billing period', () {
+      expect(
+          FeatureGate.evaluate(Feature.salarySplit,
+                  plan: Plan.basic, period: BillingPeriod.monthly)
+              .allowed,
+          isTrue);
+    });
+  });
+
   group('FeatureGate.evaluate', () {
     test('boolean gate below min tier ⇒ needsUpgrade to that tier', () {
       final GateDecision d =
@@ -162,6 +201,17 @@ void main() {
       );
       expect(e.trialActiveAt(now), isFalse);
       expect(e.effectivePlanAt(now), Plan.basic);
+    });
+
+    test('billing period round-trips; FREE never has a paid period', () {
+      const Entitlement yearly =
+          Entitlement(plan: Plan.basic, period: BillingPeriod.yearly);
+      expect(Entitlement.fromJson(yearly.toJson()).paidPeriod,
+          BillingPeriod.yearly);
+      expect(
+          const Entitlement(period: BillingPeriod.yearly).paidPeriod, isNull);
+      expect(Entitlement.fromJson(const <String, dynamic>{'plan': 'pro'}).period,
+          isNull);
     });
 
     test('JSON round-trips', () {

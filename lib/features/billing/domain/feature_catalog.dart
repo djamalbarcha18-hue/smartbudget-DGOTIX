@@ -33,6 +33,10 @@ enum Feature {
   /// Smart salary split: suggests a per-category budget from the user's own
   /// recent spending (see features/salary_split).
   salarySplit,
+
+  /// Smart alerts: budget forecasts, unusual spending and weekly/monthly
+  /// summaries in the notifications bell. Reserved for YEARLY subscribers.
+  smartAlerts,
 }
 
 /// How a metered quota resets.
@@ -62,10 +66,14 @@ class FeatureRule {
     required this.feature,
     required this.minTier,
     this.quotas,
+    this.yearlyOnly = false,
   });
 
   final Feature feature;
   final Plan minTier;
+
+  /// Only for paid plans billed yearly (any tier at or above [minTier]).
+  final bool yearlyOnly;
 
   /// Per-plan allowance for metered features; null ⇒ boolean gate only.
   final Map<Plan, Quota>? quotas;
@@ -114,6 +122,11 @@ abstract final class FeatureCatalog {
     Feature.salarySplit: FeatureRule(
       feature: Feature.salarySplit,
       minTier: Plan.basic,
+    ),
+    Feature.smartAlerts: FeatureRule(
+      feature: Feature.smartAlerts,
+      minTier: Plan.basic,
+      yearlyOnly: true,
     ),
   };
 

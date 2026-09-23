@@ -20,6 +20,23 @@ enum AlertKind {
 
   /// It's time to download a backup file.
   backupDue,
+
+  // ---- Smart alerts (yearly subscribers) ----
+
+  /// At the current pace a category will end the month over budget.
+  budgetForecast,
+
+  /// A single expense far above what the user usually spends in its category.
+  unusualExpense,
+
+  /// A category's spending this month is well above its recent monthly norm.
+  categorySpike,
+
+  /// Summary of the last completed week.
+  weeklyDigest,
+
+  /// Summary of the month that just ended.
+  monthlyDigest,
 }
 
 /// A derived, data-backed alert. Never fabricated: every instance comes from a
@@ -33,6 +50,8 @@ class AppAlert {
     required this.route,
     this.focusKey = '',
     this.date,
+    this.compareAmount,
+    this.ratio,
   });
 
   final AlertKind kind;
@@ -53,6 +72,13 @@ class AppAlert {
 
   /// The date the alert is about (e.g. a recurring item's due date).
   final DateTime? date;
+
+  /// A reference amount to compare against (the usual amount, the previous
+  /// week's spending, the month's income), when the alert has one.
+  final Money? compareAmount;
+
+  /// A ratio the alert reports (e.g. the month's savings rate), when any.
+  final double? ratio;
 }
 
 /// Pure alert engine — turns real aggregates into alerts. No Flutter, no l10n,

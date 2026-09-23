@@ -98,12 +98,20 @@ The catalog is the source of truth; this is the intended shape:
 | Reports & analytics — basic | ✅ | ✅ | ✅ |
 | Reports & analytics — advanced (deep breakdowns, longer history) | — | ✅ | ✅ |
 | Smart salary split (budget suggested from your own spending) | — | ✅ | ✅ |
+| Smart alerts (budget forecasts, unusual spending, weekly & monthly summaries) | — | yearly billing only | yearly billing only |
 | DGOTIX AI assistant | 5 lifetime | 30 / mo | 150 / mo |
 | Cloud receipt OCR | 3 lifetime | 15 / mo | 100 / mo |
 | On-device receipt OCR | ✅ | ✅ | ✅ |
 | Cloud sync & backup | basic | ✅ | ✅ |
 | Portfolio & markets | view | ✅ | ✅ |
 | Priority support | — | — | ✅ |
+
+> **Smart alerts** are a perk of **yearly** billing on BASIC or PRO (the
+> `yearlyOnly` rule on `Feature.smartAlerts`); monthly subscribers are invited
+> to switch to yearly. The period comes from the server's `subscriptions`
+> row, so it can't be granted client-side. The basic alerts (over/near
+> budget, negative cash flow, goals, upcoming recurring items, backup
+> reminder) stay free for everyone.
 
 > The **financial engine is never gated**. A user who never pays keeps a
 > genuinely useful budgeting app. Paid tiers add AI volume, cloud OCR volume,

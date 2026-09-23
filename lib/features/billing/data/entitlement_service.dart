@@ -4,7 +4,8 @@ import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 import 'package:smartbudget/features/billing/domain/entitlement.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 
-/// Reads the signed-in user's entitlement (plan + trial) from Supabase.
+/// Reads the signed-in user's entitlement (plan + trial + billing period) from
+/// Supabase.
 ///
 /// The server is the source of truth; this only reads. RLS (see
 /// supabase/ai_gateway.sql) lets a user read only their own `ai_entitlements`
@@ -31,9 +32,26 @@ class EntitlementService {
         plan: PlanX.fromStorage(row['plan'] as String?),
         trialPlan: tp == null ? null : PlanX.fromStorage(tp),
         trialExpiresAt: te == null ? null : DateTime.tryParse('$te'),
+        period: await _period(uid),
       );
     } catch (_) {
       return Entitlement.free;
+    }
+  }
+
+  /// The billing period of the user's subscription (RLS: own row only, see
+  /// supabase/billing.sql). Unknown ⇒ null, which simply withholds the
+  /// yearly-only perks — it never blocks anything else.
+  Future<BillingPeriod?> _period(String uid) async {
+    try {
+      final Map<String, dynamic>? row = await _client
+          .from('subscriptions')
+          .select('period')
+          .eq('user_id', uid)
+          .maybeSingle();
+      return Entitlement.billingPeriodFrom(row?['period'] as String?);
+    } catch (_) {
+      return null;
     }
   }
 }

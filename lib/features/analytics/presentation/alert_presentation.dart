@@ -50,6 +50,9 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
       DateTime(when.year, when.month, when.day) ==
           DateTime(now.year, now.month, now.day + 1);
   final String date = when == null ? '' : DateFormat('yyyy-MM-dd').format(when);
+  final String typical =
+      a.compareAmount == null ? '' : MoneyFormatter.format(a.compareAmount!);
+  final String top = subject.isEmpty ? '' : ' ${l.digestTopCategory(subject)}';
 
   final String title = switch (a.kind) {
     AlertKind.budgetOver => l.alertTitleBudgetOver,
@@ -60,6 +63,11 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     AlertKind.goalUrgent => l.alertTitleGoalUrgent,
     AlertKind.recurringUpcoming => l.alertTitleRecurringUpcoming,
     AlertKind.backupDue => l.alertTitleBackupDue,
+    AlertKind.budgetForecast => l.alertTitleBudgetForecast,
+    AlertKind.unusualExpense => l.alertTitleUnusualExpense,
+    AlertKind.categorySpike => l.alertTitleCategorySpike,
+    AlertKind.weeklyDigest => l.alertTitleWeeklyDigest,
+    AlertKind.monthlyDigest => l.alertTitleMonthlyDigest,
   };
   final String description = switch (a.kind) {
     AlertKind.budgetOver => l.alertBudgetOver(subject, amount),
@@ -72,6 +80,21 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
         ? l.alertRecurringTomorrow(subject, amount)
         : l.alertRecurringUpcoming(subject, amount, date),
     AlertKind.backupDue => l.alertBackupDue,
+    AlertKind.budgetForecast => l.alertBudgetForecast(subject, amount),
+    AlertKind.unusualExpense =>
+      l.alertUnusualExpense(amount, subject, date, typical),
+    AlertKind.categorySpike => l.alertCategorySpike(subject, amount, typical),
+    AlertKind.weeklyDigest => (a.compareAmount == null
+            ? l.alertWeeklyDigestFirst(amount)
+            : l.alertWeeklyDigest(
+                amount, _change(a.amount.minorUnits, a.compareAmount!.minorUnits))) +
+        top,
+    AlertKind.monthlyDigest => l.alertMonthlyDigest(
+            when == null ? '' : DateFormat('yyyy-MM').format(when),
+            typical,
+            amount,
+            a.ratio == null ? '—' : '${(a.ratio! * 100).round()}%') +
+        top,
   };
   final String action = switch (a.route) {
     '/budget' => l.actionViewBudget,
@@ -79,6 +102,7 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     '/health' => l.actionViewHealth,
     '/recurring' => l.actionViewRecurring,
     '/settings' => l.actionOpenSettings,
+    '/transactions' => l.actionViewTransactions,
     _ => l.actionViewReport,
   };
 
@@ -90,4 +114,13 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     actionLabel: action,
     route: a.route,
   );
+}
+
+/// Week-over-week change as a signed percentage, e.g. "+12%" or "−8%".
+String _change(int now, int before) {
+  if (before <= 0) return '—';
+  final int pct = ((now - before) * 100 / before).round();
+  if (pct > 0) return '+$pct%';
+  if (pct < 0) return '−${-pct}%';
+  return '0%';
 }

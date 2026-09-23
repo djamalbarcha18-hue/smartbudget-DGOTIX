@@ -475,7 +475,22 @@ class _DeveloperSectionState extends ConsumerState<_DeveloperSection> {
             ],
             onChanged: (Plan p) => ref
                 .read(entitlementProvider.notifier)
-                .hydrate(Entitlement(plan: p)),
+                .hydrate(Entitlement(
+                    plan: p, period: ref.read(entitlementProvider).period)),
+          ),
+          const SizedBox(height: DsSpacing.sm),
+          _SegmentedRow<BillingPeriod>(
+            value: ref.watch(entitlementProvider).period ??
+                BillingPeriod.monthly,
+            options: <_Segment<BillingPeriod>>[
+              _Segment<BillingPeriod>(
+                  BillingPeriod.monthly, l.periodMonthly, null),
+              _Segment<BillingPeriod>(
+                  BillingPeriod.yearly, l.periodYearly, null),
+            ],
+            onChanged: (BillingPeriod b) => ref
+                .read(entitlementProvider.notifier)
+                .hydrate(ref.read(entitlementProvider).copyWith(period: b)),
           ),
         ],
       ],

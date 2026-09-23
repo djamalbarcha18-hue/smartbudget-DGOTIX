@@ -20,6 +20,9 @@ enum GateReason {
 
   /// The plan qualifies but the metered allowance for the period is spent.
   quotaReached,
+
+  /// The tier qualifies, but the feature is reserved for yearly billing.
+  needsYearly,
 }
 
 /// The result of evaluating one feature. Immutable and cheap to build.
@@ -70,11 +73,13 @@ class GateDecision {
 abstract final class FeatureGate {
   /// Decide whether [feature] is available for [plan]. [used] is the count
   /// already consumed this period for a metered feature (ignored for boolean
-  /// gates). Usage is clamped to be non-negative.
+  /// gates). Usage is clamped to be non-negative. [period] is how the paid
+  /// plan is billed; it only matters for yearly-only features.
   static GateDecision evaluate(
     Feature feature, {
     required Plan plan,
     int used = 0,
+    BillingPeriod? period,
   }) {
     final int consumed = used < 0 ? 0 : used;
     final Plan minTier = FeatureCatalog.minTierFor(feature);
@@ -86,6 +91,17 @@ abstract final class FeatureGate {
         allowed: false,
         reason: GateReason.needsUpgrade,
         suggestedTier: minTier,
+      );
+    }
+
+    // Yearly-only perk on a plan that isn't billed yearly: switch to yearly.
+    if (FeatureCatalog.ruleFor(feature).yearlyOnly &&
+        period != BillingPeriod.yearly) {
+      return GateDecision(
+        feature: feature,
+        allowed: false,
+        reason: GateReason.needsYearly,
+        suggestedTier: plan,
       );
     }
 
