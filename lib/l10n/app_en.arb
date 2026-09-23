@@ -766,5 +766,15 @@
   "pwRuleLetter": "A letter (a–z)",
   "pwRuleDigit": "A number (0–9)",
   "pwRuleSymbol": "A symbol (e.g. ! @ # % &)",
-  "supportEmailSoon": "Our support email is being set up. Meanwhile, the user guide and the questions below cover most things."
+  "supportEmailSoon": "Our support email is being set up. Meanwhile, the user guide and the questions below cover most things.",
+  "shareTitle": "Share SmartBudget",
+  "shareSubtitle": "Scan the code to open the platform. Download it for social media or print it on flyers.",
+  "shareSettingsHint": "A QR code and link to the platform — for friends, social media or printed flyers.",
+  "shareShowQr": "Show QR code",
+  "shareCopyLink": "Copy link",
+  "shareDownloadPng": "Image (PNG)",
+  "shareDownloadSvg": "For print (SVG)",
+  "shareLinkCopied": "Link copied.",
+  "shareDownloaded": "Download started.",
+  "shareImageFailed": "Couldn't create the image here. Use the print (SVG) version instead."
 }

@@ -57,6 +57,10 @@ dependencies:
   pdf: ^3.11.1
   printing: ^5.13.3
 
+  # QR code generation for "Share SmartBudget" (pure Dart, outputs SVG). Already
+  # pulled in by `pdf`; declared here because the app uses it directly.
+  barcode: ^2.2.8
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

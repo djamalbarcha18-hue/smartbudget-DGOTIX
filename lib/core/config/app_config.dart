@@ -22,6 +22,17 @@ abstract final class AppConfig {
   /// True once a real support inbox has been configured above.
   static bool get hasSupportEmail => supportEmail.trim().isNotEmpty;
 
+  /// Public address of the platform, used by "Share SmartBudget" and its QR
+  /// code. Leave EMPTY to use the address the app is served from (so the QR
+  /// follows the site automatically); set it once you have your own domain,
+  /// e.g. 'https://smartbudget.example.com/'.
+  static const String publicUrl = '';
+
+  /// Where the app is deployed today — used only when there is no web address
+  /// to read (tests, non-web builds).
+  static const String fallbackUrl =
+      'https://djamalbarcha18-hue.github.io/smartbudget-DGOTIX/';
+
   /// Support/legal destinations. Kept as route/URL placeholders for now; the
   /// support architecture (email / chat / tickets / FAQ) plugs in here later
   /// without touching the footer or sidebar widgets.

@@ -762,5 +762,15 @@
   "pwRuleLetter": "حرف لاتيني (a–z)",
   "pwRuleDigit": "رقم (0–9)",
   "pwRuleSymbol": "رمز (مثل ! @ # % &)",
-  "supportEmailSoon": "نعمل على تجهيز بريد الدعم. في الأثناء، يغطّي دليل الاستخدام والأسئلة أدناه معظم الاستفسارات."
+  "supportEmailSoon": "نعمل على تجهيز بريد الدعم. في الأثناء، يغطّي دليل الاستخدام والأسئلة أدناه معظم الاستفسارات.",
+  "shareTitle": "مشاركة SmartBudget",
+  "shareSubtitle": "امسح الرمز لفتح المنصة. نزّله لوسائل التواصل أو اطبعه على الملصقات.",
+  "shareSettingsHint": "رمز QR ورابط للمنصة — للأصدقاء ووسائل التواصل والملصقات المطبوعة.",
+  "shareShowQr": "عرض رمز QR",
+  "shareCopyLink": "نسخ الرابط",
+  "shareDownloadPng": "صورة (PNG)",
+  "shareDownloadSvg": "للطباعة (SVG)",
+  "shareLinkCopied": "تم نسخ الرابط.",
+  "shareDownloaded": "بدأ التنزيل.",
+  "shareImageFailed": "تعذّر إنشاء الصورة هنا. استخدم نسخة الطباعة (SVG) بدلًا منها."
 }

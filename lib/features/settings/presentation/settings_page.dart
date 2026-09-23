@@ -24,6 +24,7 @@ import 'package:smartbudget/features/dev/sample_data_controller.dart';
 import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/receipts/application/receipt_scan_controller.dart';
 import 'package:smartbudget/features/receipts/domain/receipt_ocr_engine.dart';
+import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -180,6 +181,28 @@ class SettingsPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: DsSpacing.lg),
               ],
+
+              // Share the platform (QR code + link).
+              _SettingsSection(
+                icon: Icons.qr_code_2_rounded,
+                title: l.shareTitle,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(l.shareSettingsHint,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: context.dsColors.textMuted)),
+                    const SizedBox(height: DsSpacing.md),
+                    DsButton(
+                      label: l.shareShowQr,
+                      icon: Icons.qr_code_rounded,
+                      variant: DsButtonVariant.secondary,
+                      onPressed: () => ShareAppSheet.show(context),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: DsSpacing.lg),
 
               // About.
               _SettingsSection(

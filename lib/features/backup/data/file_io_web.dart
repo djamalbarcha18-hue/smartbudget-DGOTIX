@@ -4,6 +4,7 @@
 // in the app imports dart:html directly.
 import 'dart:async';
 import 'dart:html' as html;
+import 'dart:typed_data';
 
 /// Downloads [text] as a file named [filename] with the given [mime] type.
 Future<void> downloadText({
@@ -14,6 +15,26 @@ Future<void> downloadText({
   // Passing the string as a Blob part lets the browser UTF-8 encode it, so
   // Arabic content is preserved.
   final html.Blob blob = html.Blob(<Object>[text], mime);
+  final String url = html.Url.createObjectUrlFromBlob(blob);
+  final html.AnchorElement anchor = html.AnchorElement(href: url)
+    ..download = filename
+    ..style.display = 'none';
+  html.document.body!.append(anchor);
+  anchor.click();
+  anchor.remove();
+  html.Url.revokeObjectUrl(url);
+}
+
+/// Downloads binary [bytes] (e.g. a PNG image) as [filename].
+Future<void> downloadBytes({
+  required String filename,
+  required List<int> bytes,
+  required String mime,
+}) async {
+  // Must be typed data: a plain List<int> would be stringified ("1,2,3").
+  final Uint8List data =
+      bytes is Uint8List ? bytes : Uint8List.fromList(bytes);
+  final html.Blob blob = html.Blob(<Object>[data], mime);
   final String url = html.Url.createObjectUrlFromBlob(blob);
   final html.AnchorElement anchor = html.AnchorElement(href: url)
     ..download = filename

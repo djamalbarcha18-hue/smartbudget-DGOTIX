@@ -8,5 +8,12 @@ Future<void> downloadText({
   required String mime,
 }) async {}
 
+/// Triggers a browser download of binary [bytes]. No-op off the web.
+Future<void> downloadBytes({
+  required String filename,
+  required List<int> bytes,
+  required String mime,
+}) async {}
+
 /// Prompts the user to choose a file and returns its text. Always null off web.
 Future<String?> pickTextFile() async => null;
