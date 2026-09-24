@@ -6,6 +6,7 @@ import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -201,6 +202,7 @@ class _FeasibilityCard extends ConsumerWidget {
       builder: (BuildContext ctx) => AlertDialog(
         title: Text(l.monthlyCapacity),
         content: TextField(
+          inputFormatters: LatinDigitsFormatter.only,
           controller: ctrl,
           autofocus: true,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -410,6 +412,7 @@ class _ProjectCard extends ConsumerWidget {
       builder: (BuildContext ctx) => AlertDialog(
         title: Text('${l.contribute} · ${p.name}'),
         content: TextField(
+          inputFormatters: LatinDigitsFormatter.only,
           controller: ctrl,
           autofocus: true,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),

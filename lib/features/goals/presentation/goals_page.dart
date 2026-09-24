@@ -8,6 +8,7 @@ import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -231,6 +232,7 @@ class _GoalCard extends ConsumerWidget {
       builder: (BuildContext ctx) => AlertDialog(
         title: Text(l.contributeTo(g.name)),
         content: TextField(
+          inputFormatters: LatinDigitsFormatter.only,
           controller: amount,
           autofocus: true,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),

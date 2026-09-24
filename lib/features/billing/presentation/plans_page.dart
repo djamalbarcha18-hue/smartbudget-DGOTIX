@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -266,6 +267,7 @@ class _CouponBoxState extends ConsumerState<_CouponBox> {
             children: <Widget>[
               Expanded(
                 child: TextField(
+                  inputFormatters: LatinDigitsFormatter.only,
                   controller: _ctrl,
                   enabled: !_busy,
                   textInputAction: TextInputAction.done,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 
@@ -62,7 +63,10 @@ class _DsTextFieldState extends State<DsTextField> {
           textInputAction: widget.textInputAction,
           validator: widget.validator,
           autofillHints: widget.autofillHints,
-          inputFormatters: widget.inputFormatters,
+          inputFormatters: <TextInputFormatter>[
+            const LatinDigitsFormatter(),
+            ...?widget.inputFormatters,
+          ],
           onFieldSubmitted: widget.onSubmitted,
           style: t.bodyMedium?.copyWith(color: c.textPrimary),
           decoration: InputDecoration(

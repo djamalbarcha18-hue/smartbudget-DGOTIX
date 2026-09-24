@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -223,6 +224,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
             children: <Widget>[
               Expanded(
                 child: TextField(
+                  inputFormatters: LatinDigitsFormatter.only,
                   controller: _ctrl,
                   enabled: !_busy,
                   textInputAction: TextInputAction.send,

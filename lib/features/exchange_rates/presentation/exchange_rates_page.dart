@@ -8,6 +8,7 @@ import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -220,6 +221,7 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
       builder: (BuildContext ctx) => AlertDialog(
         title: Text('${cur.code} · ${l.rateVsUsd}'),
         content: TextField(
+          inputFormatters: LatinDigitsFormatter.only,
           controller: ctrl,
           autofocus: true,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),

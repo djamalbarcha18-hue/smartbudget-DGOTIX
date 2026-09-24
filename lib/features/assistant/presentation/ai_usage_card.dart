@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -578,11 +579,13 @@ class _Field extends StatelessWidget {
         TextField(
           controller: controller,
           keyboardType: TextInputType.numberWithOptions(decimal: !digitsOnly),
-          inputFormatters: digitsOnly
-              ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
-              : <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))
-                ],
+          inputFormatters: <TextInputFormatter>[
+            const LatinDigitsFormatter(),
+            if (digitsOnly)
+              FilteringTextInputFormatter.digitsOnly
+            else
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+          ],
           decoration: InputDecoration(
             isDense: true,
             hintText: '—',

@@ -10,6 +10,7 @@ import 'package:smartbudget/core/theme/theme_controller.dart';
 import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -581,6 +582,7 @@ class _ReceiptKeySectionState extends ConsumerState<_ReceiptKeySection> {
         ),
         const SizedBox(height: DsSpacing.md),
         TextField(
+          inputFormatters: LatinDigitsFormatter.only,
           controller: _ctrl,
           obscureText: _obscure,
           enabled: !_busy,
@@ -1000,6 +1002,7 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
           children: <Widget>[
             Expanded(
               child: TextField(
+                inputFormatters: LatinDigitsFormatter.only,
                 controller: _ctrl,
                 textInputAction: TextInputAction.done,
                 onSubmitted: (_) => _add(),

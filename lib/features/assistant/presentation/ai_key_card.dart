@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -279,6 +280,7 @@ class _AiKeySheetState extends ConsumerState<_AiKeySheet> {
                   style: t.labelMedium?.copyWith(color: c.textMuted)),
               const SizedBox(height: DsSpacing.xs),
               TextField(
+                inputFormatters: LatinDigitsFormatter.only,
                 controller: _ctrl,
                 obscureText: _obscure,
                 enabled: !_busy,

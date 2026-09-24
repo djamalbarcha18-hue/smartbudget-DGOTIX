@@ -6,6 +6,7 @@ import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/components/savings_jar_icon.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -254,6 +255,7 @@ class _BudgetRow extends ConsumerWidget {
       builder: (BuildContext ctx) => AlertDialog(
         title: Text('${l.setBudget} · ${Catalog.label(category, ar: Localizations.localeOf(context).languageCode == 'ar')}'),
         content: TextField(
+          inputFormatters: LatinDigitsFormatter.only,
           controller: ctrl,
           autofocus: true,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),

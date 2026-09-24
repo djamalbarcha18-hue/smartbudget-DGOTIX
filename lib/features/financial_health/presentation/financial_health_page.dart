@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -437,6 +438,7 @@ class _EmergencyCardState extends ConsumerState<_EmergencyCard> {
             children: <Widget>[
               Expanded(
                 child: TextField(
+                  inputFormatters: LatinDigitsFormatter.only,
                   controller: _ctrl,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
@@ -155,6 +156,7 @@ class _AppSearchDialogState extends ConsumerState<AppSearchDialog> {
                           const SizedBox(width: DsSpacing.sm),
                           Expanded(
                             child: TextField(
+                              inputFormatters: LatinDigitsFormatter.only,
                               controller: _ctrl,
                               autofocus: true,
                               decoration: InputDecoration(

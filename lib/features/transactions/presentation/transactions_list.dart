@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/components/ds_states.dart';
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -106,6 +107,7 @@ class _SearchBar extends StatelessWidget {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
     return TextField(
+      inputFormatters: LatinDigitsFormatter.only,
       controller: controller,
       onChanged: onChanged,
       style: Theme.of(context).textTheme.bodyMedium,

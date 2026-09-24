@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -185,6 +186,7 @@ class _CustomRateFieldState extends ConsumerState<_CustomRateField> {
       children: <Widget>[
         Expanded(
           child: TextField(
+            inputFormatters: LatinDigitsFormatter.only,
             controller: _ctrl,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
@@ -290,6 +292,7 @@ class _CountrySection extends ConsumerWidget {
                 style: Theme.of(ctx).textTheme.bodySmall),
             const SizedBox(height: DsSpacing.md),
             TextField(
+              inputFormatters: LatinDigitsFormatter.only,
               controller: buy,
               autofocus: true,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -297,6 +300,7 @@ class _CountrySection extends ConsumerWidget {
             ),
             const SizedBox(height: DsSpacing.sm),
             TextField(
+              inputFormatters: LatinDigitsFormatter.only,
               controller: sell,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(labelText: l.marketParallelSell),
