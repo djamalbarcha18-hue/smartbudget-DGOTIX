@@ -181,15 +181,107 @@ class HealthPulseCard extends ConsumerWidget {
     final bool hasData = ref.watch(healthHasDataProvider);
     final HealthReport r = ref.watch(healthReportProvider);
     final (String status, Color tone) = _healthMeta(r.status, l, c);
-    return _PulseCard(
-      title: l.sectionFinancialHealth,
-      icon: Icons.monitor_heart_outlined,
-      value: hasData ? '${r.score.round()} / 100' : '—',
-      valueColor: hasData ? tone : null,
-      caption: hasData ? status : l.healthEmpty,
-      progress: hasData ? r.score / 100 : null,
-      progressColor: tone,
+    final TextTheme t = Theme.of(context).textTheme;
+    final bool rtl = Directionality.of(context) == TextDirection.rtl;
+    return GlassCard(
       onTap: () => HealthDetailsDialog.show(context),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          DsSectionHeader(
+            title: l.sectionFinancialHealth,
+            icon: Icons.monitor_heart_outlined,
+            trailing: Icon(
+                rtl ? Icons.chevron_left_rounded : Icons.chevron_right_rounded,
+                size: 18,
+                color: c.textFaint),
+          ),
+          Expanded(
+            child: Row(
+              children: <Widget>[
+                HealthGauge(
+                  score: hasData ? r.score : null,
+                  color: hasData ? tone : c.textFaint,
+                  size: 76,
+                ),
+                const SizedBox(width: DsSpacing.lg),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(hasData ? status : l.healthEmpty,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: t.titleMedium?.copyWith(
+                              color: hasData ? tone : c.textMuted,
+                              fontWeight: FontWeight.w700)),
+                      const SizedBox(height: 2),
+                      Text(l.viewDetails,
+                          style: t.labelSmall?.copyWith(color: c.textFaint)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A circular health gauge: the score inside a ring filled to score / 100.
+class HealthGauge extends StatelessWidget {
+  const HealthGauge({
+    super.key,
+    required this.score,
+    required this.color,
+    this.size = 76,
+  });
+
+  /// 0..100, or null when there isn't enough data (shows "—").
+  final double? score;
+  final Color color;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final double stroke = size * 0.09;
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        alignment: Alignment.center,
+        children: <Widget>[
+          SizedBox(
+            width: size,
+            height: size,
+            child: CircularProgressIndicator(
+              value: score == null ? 0 : (score! / 100).clamp(0.0, 1.0),
+              strokeWidth: stroke,
+              strokeCap: StrokeCap.round,
+              backgroundColor: c.surfaceMuted,
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+            ),
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(score == null ? '—' : '${score!.round()}',
+                  style: DsTypography.mono(
+                          (size >= 100 ? t.headlineMedium : t.titleLarge) ??
+                              const TextStyle())
+                      .copyWith(color: color, fontWeight: FontWeight.w800)),
+              Text('/100',
+                  textDirection: TextDirection.ltr,
+                  style: t.labelSmall?.copyWith(color: c.textFaint)),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -279,27 +371,11 @@ class HealthDetailsDialog extends ConsumerWidget {
               else ...<Widget>[
                 Row(
                   children: <Widget>[
-                    // The score keeps its numeric (LTR) order in Arabic too.
-                    Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: <Widget>[
-                          Text('${r.score.round()}',
-                              style: DsTypography.mono(
-                                      t.displaySmall ?? const TextStyle())
-                                  .copyWith(color: tone)),
-                          const SizedBox(width: DsSpacing.xs),
-                          Text('/ 100', style: t.titleSmall),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: DsSpacing.md),
+                    HealthGauge(score: r.score, color: tone, size: 104),
+                    const SizedBox(width: DsSpacing.lg),
                     Expanded(
                       child: Text(status,
-                          style: t.titleMedium?.copyWith(color: tone)),
+                          style: t.titleLarge?.copyWith(color: tone)),
                     ),
                   ],
                 ),
