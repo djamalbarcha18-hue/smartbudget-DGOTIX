@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:smartbudget/app.dart';
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/l10n/latin_digits.dart';
+import 'package:smartbudget/core/storage/legacy_cleanup.dart';
 import 'package:smartbudget/core/storage/persistent_storage.dart';
 
 Future<void> main() async {
@@ -26,6 +27,9 @@ Future<void> main() async {
   // Financial data lives in the browser's storage: ask the browser not to
   // evict it under storage pressure. Fire-and-forget — never blocks startup.
   requestPersistentStorage().ignore();
+
+  // Erase personal AI keys saved by earlier versions (no longer supported).
+  removeRetiredLocalData().ignore();
 
   runApp(
     const ProviderScope(

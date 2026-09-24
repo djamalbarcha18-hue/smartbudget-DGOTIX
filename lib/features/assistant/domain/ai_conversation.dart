@@ -1,6 +1,6 @@
 /// Pure conversation helpers for DGOTIX AI (no Flutter, no IO): the message
-/// model, the single system prompt shared by every backend, and how much of
-/// the conversation is sent back as memory.
+/// model and how much of the conversation is sent back as memory. The system
+/// prompt lives on the server (supabase/functions/_shared/ai/gateway.ts).
 library;
 
 /// One turn in the Ask-DGOTIX-AI conversation.
@@ -14,22 +14,6 @@ class ChatMessage {
 
   static ChatMessage fromJson(Map<String, dynamic> j) =>
       ChatMessage(fromUser: j['u'] == true, text: (j['t'] ?? '').toString());
-}
-
-abstract final class AiPrompts {
-  /// The one DGOTIX AI system prompt (the gateway keeps an identical copy in
-  /// supabase/functions/_shared/ai/gateway.ts).
-  static String system(String context) =>
-      'You are DGOTIX AI, a concise, practical personal-finance assistant '
-      'inside the SmartBudget app. Use the user\'s real financial context '
-      'below when it helps, and refer to the actual figures. Never invent '
-      'exact figures that are not provided; if something is missing, say so '
-      'and suggest where in the app to add it. Prefer halal-friendly guidance '
-      '(no interest-based products). Reply in the same language as the '
-      'user\'s latest message (Arabic or English). Keep answers short: a '
-      'sentence or two, then at most 5 bullet points using "- ", with **bold** '
-      'for key numbers. Use Latin digits (0-9).\n\n'
-      'User financial context:\n$context';
 }
 
 abstract final class AiConversation {

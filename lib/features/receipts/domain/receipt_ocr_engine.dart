@@ -25,8 +25,6 @@ enum ReceiptScanError {
   cancelled,
   backendUnavailable,
   notSignedIn,
-  noKey,
-  invalidKey,
   unreadable,
   noTotal,
   network,

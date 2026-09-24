@@ -67,8 +67,8 @@ abstract final class ModelRouter {
     return pool;
   }
 
-  /// Candidate MODELS within a single provider (the BYOK case: one key, so
-  /// failover stays inside that provider). Ordered primary → fallbacks, with an
+  /// Candidate MODELS within a single provider (one key, so failover stays
+  /// inside that provider). Ordered primary → fallbacks, with an
   /// optional preferred model id pinned first when it is still usable.
   static List<AiModel> providerCandidates(
     AiProviderId provider,

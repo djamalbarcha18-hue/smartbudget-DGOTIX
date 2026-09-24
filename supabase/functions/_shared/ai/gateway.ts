@@ -184,8 +184,8 @@ export class ProviderError extends Error {
   constructor(public status: number, public detail: string) { super(detail); }
 }
 
-// Keep identical to AiPrompts.system in
-// lib/features/assistant/domain/ai_conversation.dart (the BYOK path).
+// The one DGOTIX AI system prompt. DGOTIX is the only AI provider, so this is
+// the single source of truth (test/ai_assistant_test.dart checks its rules).
 const SYSTEM =
   "You are DGOTIX AI, a concise, practical personal-finance assistant " +
   "inside the SmartBudget app. Use the user's real financial context " +

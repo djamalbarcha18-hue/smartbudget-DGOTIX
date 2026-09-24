@@ -37,10 +37,6 @@ enum Feature {
   /// Smart alerts: budget forecasts, unusual spending and weekly/monthly
   /// summaries in the notifications bell. Reserved for YEARLY subscribers.
   smartAlerts,
-
-  /// Using a personal AI key (BYOK) for DGOTIX AI. PRO only: on other plans
-  /// the assistant runs through the server gateway and its plan quota.
-  byok,
 }
 
 /// How a metered quota resets.
@@ -131,10 +127,6 @@ abstract final class FeatureCatalog {
       feature: Feature.smartAlerts,
       minTier: Plan.basic,
       yearlyOnly: true,
-    ),
-    Feature.byok: FeatureRule(
-      feature: Feature.byok,
-      minTier: Plan.pro,
     ),
   };
 

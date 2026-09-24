@@ -14,19 +14,17 @@ import 'package:smartbudget/features/ai/data/ai_gateway_service.dart';
 import 'package:smartbudget/features/ai/domain/ai_errors.dart';
 import 'package:smartbudget/features/ai/domain/ai_registry.dart';
 import 'package:smartbudget/features/assistant/application/ai_backend.dart';
-import 'package:smartbudget/features/assistant/application/ai_key_controller.dart';
 import 'package:smartbudget/features/assistant/application/ai_usage_controller.dart';
 import 'package:smartbudget/features/assistant/application/ask_ai_controller.dart';
-import 'package:smartbudget/features/assistant/data/ai_chat_service.dart';
 import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/feature_gate.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// "Ask DGOTIX AI" — a lightweight chat that sends the user's question (plus a
-/// compact real-data context) to their chosen provider using their own key, and
-/// shows the live answer. The conversation is saved on-device; suggestion chips
-/// help start. Shown only when a personal key is connected.
+/// compact real-data context) to the DGOTIX AI gateway, which answers within the
+/// plan's quota. The conversation is saved on-device; suggestion chips help
+/// start. Shown only when the gateway is available.
 class AskDgotixCard extends ConsumerStatefulWidget {
   const AskDgotixCard({super.key});
 
@@ -49,8 +47,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
   Future<void> _sendText(String raw) async {
     final String q = raw.trim();
     if (q.isEmpty || _busy) return;
-    final AiBackend? backend = ref.read(aiBackendProvider);
-    if (backend == null) return;
+    if (!ref.read(assistantReadyProvider)) return;
     final AppLocalizations l = AppLocalizations.of(context);
     final String ctx = ref.read(aiContextProvider);
     final ChatMessagesController chat = ref.read(chatMessagesProvider.notifier);
@@ -68,32 +65,12 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     });
 
     try {
-      if (backend == AiBackend.gateway) {
-        // Server path: keys, routing and failover happen in the Edge Function.
-        final GatewayAnswer a = await ref
-            .read(aiGatewayServiceProvider)
-            .ask(
-                task: AiTaskType.chat,
-                prompt: q,
-                context: ctx,
-                history: history);
-        chat.add(ChatMessage(fromUser: false, text: a.text));
-        usage.record(a.model.isEmpty ? 'dgotix-ai' : a.model,
-            AiUsage(inputTokens: a.inputTokens, outputTokens: a.outputTokens));
-      } else {
-        // BYOK path: the user's own key, model failover inside that provider.
-        final AiKeyConfig cfg = ref.read(aiKeyProvider)!;
-        final AiKeyController keyCtl = ref.read(aiKeyProvider.notifier);
-        final AiChatResult r = await ref
-            .read(aiChatServiceProvider)
-            .ask(
-                config: cfg, question: q, context: ctx, history: history);
-        chat.add(ChatMessage(fromUser: false, text: r.text));
-        usage.record(r.usedModel, r.usage);
-        if (r.usedModel != cfg.effectiveModel) keyCtl.setModel(r.usedModel);
-      }
-    } on AiChatException catch (e) {
-      if (mounted) setState(() => _error = _byokError(l, e));
+      // DGOTIX AI: keys, routing, quota and failover all happen server-side.
+      final GatewayAnswer a = await ref.read(aiGatewayServiceProvider).ask(
+          task: AiTaskType.chat, prompt: q, context: ctx, history: history);
+      chat.add(ChatMessage(fromUser: false, text: a.text));
+      usage.record(a.model.isEmpty ? 'dgotix-ai' : a.model,
+          inputTokens: a.inputTokens, outputTokens: a.outputTokens);
     } on AiFailure catch (e) {
       if (mounted) {
         setState(() {
@@ -108,19 +85,6 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     }
   }
 
-  String _byokError(AppLocalizations l, AiChatException e) {
-    final String base = switch (e.kind) {
-      AiChatError.invalidKey => l.askAiErrInvalidKey,
-      AiChatError.unsupported => l.askAiErrUnsupported,
-      AiChatError.rateLimited => l.askAiErrRate,
-      AiChatError.network => l.askAiErrNetwork,
-      AiChatError.empty => l.askAiErrGeneric,
-      AiChatError.unknown => l.askAiErrGeneric,
-    };
-    final String? d = e.detail;
-    return (d == null || d.isEmpty) ? base : '$base\n$d';
-  }
-
   String _gatewayError(AppLocalizations l, AiFailure e) => switch (e.kind) {
         AiErrorKind.quotaExceeded => l.askAiErrQuota,
         AiErrorKind.rateLimited => l.askAiErrRate,
@@ -133,9 +97,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final List<ChatMessage> msgs = ref.watch(chatMessagesProvider);
-    // Quota nudge applies only to the server gateway (server quota). BYOK uses
-    // the user's own key/quota, so it is never nudged toward an upgrade.
-    final bool onGateway = ref.watch(aiBackendProvider) == AiBackend.gateway;
+    // Plan-quota nudges (80% / 90% / 100%); the server is the real enforcer.
     final GateDecision gate = ref.watch(featureGateProvider(Feature.dgotixAi));
     final List<String> suggestions = <String>[
       l.askAiSuggest1,
@@ -229,7 +191,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
             ],
           ],
 
-          if (onGateway && _error == null) _QuotaNudge(gate: gate),
+          if (_error == null) _QuotaNudge(gate: gate),
           const SizedBox(height: DsSpacing.md),
           Row(
             children: <Widget>[
@@ -284,7 +246,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
 
 /// Advisory usage nudge for the server gateway. Shows nothing until the user
 /// crosses ~80% of the period allowance (per docs/PRICING.md §6); at/over the
-/// limit it surfaces the upgrade-only wall. Never suggests BYOK.
+/// limit it surfaces the upgrade-only wall.
 class _QuotaNudge extends StatelessWidget {
   const _QuotaNudge({required this.gate});
   final GateDecision gate;
@@ -341,7 +303,7 @@ class _QuotaNudge extends StatelessWidget {
 }
 
 /// A compact button that takes the user to the Plans screen. Upgrade is the
-/// only call to action on a quota wall — BYOK is never offered here.
+/// only call to action on a quota wall.
 class _UpgradeButton extends StatelessWidget {
   const _UpgradeButton({required this.label});
   final String label;

@@ -55,27 +55,21 @@ void main() {
   });
 
   group('system prompt', () {
-    test('carries the rules and the context', () {
-      final String s = AiPrompts.system('Base currency: USD.');
-      expect(s, contains('DGOTIX AI'));
-      expect(s, contains('Never invent'));
-      expect(s, contains('halal'));
-      expect(s, contains('Latin digits'));
-      expect(s, endsWith('Base currency: USD.'));
-    });
-
-    test('the server gateway uses the very same instructions', () {
+    test('the server gateway carries the DGOTIX AI rules', () {
       final String ts =
           File('supabase/functions/_shared/ai/gateway.ts').readAsStringSync();
       final int start = ts.indexOf('const SYSTEM =');
+      expect(start, greaterThanOrEqualTo(0));
       // The declaration ends at the closing quote followed by ';'.
       final String decl = ts.substring(start, ts.indexOf('";', start) + 1);
       final String server = RegExp(r'"((?:[^"\\]|\\.)*)"')
           .allMatches(decl)
           .map((RegExpMatch m) => m.group(1)!.replaceAll(r'\"', '"'))
           .join();
-      final String app = AiPrompts.system('').split('\n\n').first;
-      expect(server, app);
+      expect(server, contains('DGOTIX AI'));
+      expect(server, contains('Never invent'));
+      expect(server, contains('halal'));
+      expect(server, contains('Latin digits'));
     });
   });
 

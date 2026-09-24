@@ -1,19 +1,20 @@
 // SmartBudget — receipt-scan (Supabase Edge Function, Deno).
 //
-// Receives a receipt image from a signed-in user, loads THAT user's own Gemini
-// key (BYOK, decrypted server-side), and asks Gemini Flash to extract a strict,
-// schema-constrained JSON object. The API key never reaches the frontend and no
-// value is ever invented — an unreadable image returns { ok:false, reason }.
+// Receives a receipt image from a signed-in user and asks Gemini Flash — with
+// DGOTIX's server key (DGOTIX is the only AI provider; users never bring their
+// own key) — to extract a strict, schema-constrained JSON object. Every scan is
+// metered against the plan's cloud-OCR quota. The key never reaches the
+// frontend and no value is ever invented — an unreadable image returns
+// { ok:false, reason }.
 //
 //   POST { imageBase64, mimeType } ->
 //     { ok:true, merchant_name, date, total_amount, currency, category, confidence }
 //     | { ok:false, reason: "unreadable" | "no_total" }
-//     | { error: "no_key" | "invalid_key" | "provider_error" | ... }
+//     | { error: "ocr_unavailable" | "quota_exceeded" | "provider_error" | ... }
 //
 // Deploy:  supabase functions deploy receipt-scan
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
-import { loadGeminiKey } from "../_shared/keys.ts";
 import {
   effectivePlan,
   normalizePlan,
@@ -92,18 +93,15 @@ Deno.serve(async (req: Request) => {
     const mimeType = String(body?.mimeType ?? "image/jpeg");
     if (!imageBase64) return jsonResponse({ error: "no_image" }, 400, cors);
 
-    // Prefer the server key (we serve + meter). Fall back to the user's own key
-    // (BYOK): they pay with their key, so it is NOT metered against the plan —
-    // exactly like the AI assistant's BYOK path.
-    const serverKey = (Deno.env.get("GEMINI_API_KEY") ?? "").trim();
-    const useServerKey = serverKey.length > 0;
-    const apiKey = useServerKey ? serverKey : await loadGeminiKey(userId);
-    if (!apiKey) return jsonResponse({ error: "no_key" }, 400, cors);
+    // DGOTIX's server key only. Without it the cloud scanner is simply not
+    // available yet (the app falls back to on-device OCR where it can).
+    const apiKey = (Deno.env.get("GEMINI_API_KEY") ?? "").trim();
+    if (!apiKey) return jsonResponse({ error: "ocr_unavailable" }, 503, cors);
 
-    // Server-served OCR is metered per plan (docs/PRICING.md §3). BYOK is exempt.
-    const db = useServerKey ? serviceClient() : null;
+    // Every cloud scan is metered per plan (docs/PRICING.md §3).
+    const db = serviceClient();
     const month = monthKey();
-    if (db && await ocrQuotaExceeded(db, userId, month)) {
+    if (await ocrQuotaExceeded(db, userId, month)) {
       return jsonResponse({ error: "quota_exceeded" }, 429, cors);
     }
 
@@ -132,9 +130,10 @@ Deno.serve(async (req: Request) => {
       },
     );
 
-    // A bad or unauthorized key surfaces as 400/403 from Google.
+    // A bad or unauthorized key is OUR configuration problem, never the
+    // user's: report the service as unavailable.
     if (res.status === 400 || res.status === 401 || res.status === 403) {
-      return jsonResponse({ error: "invalid_key" }, 400, cors);
+      return jsonResponse({ error: "ocr_unavailable" }, 503, cors);
     }
     if (res.status === 429) {
       return jsonResponse({ error: "rate_limited" }, 429, cors);
@@ -163,7 +162,7 @@ Deno.serve(async (req: Request) => {
     }
 
     // Count only a successful extraction, and only when we served it.
-    if (db) await bumpOcr(db, userId, month);
+    await bumpOcr(db, userId, month);
 
     return jsonResponse(
       {

@@ -8,10 +8,10 @@ import 'package:smartbudget/features/receipts/domain/scanned_receipt.dart';
 /// Cloud OCR via the `receipt-scan` Supabase Edge Function (Gemini Flash).
 ///
 /// The image never goes to Google directly; it is proxied through the function.
-/// When a server Gemini key is configured the function serves the scan and
-/// meters it against the plan's cloud-OCR quota; otherwise it falls back to the
-/// user's own encrypted key (BYOK), which is NOT metered. Only ever used when
-/// Supabase is configured AND a user is signed in (the controller checks).
+/// DGOTIX is the only AI provider: the function scans with DGOTIX's server key
+/// and meters every scan against the plan's cloud-OCR quota (users never bring
+/// their own key). Only ever used when Supabase is configured AND a user is
+/// signed in (the controller checks).
 class GeminiOnlineEngine implements ReceiptOcrEngine {
   const GeminiOnlineEngine();
 
@@ -68,10 +68,8 @@ class GeminiOnlineEngine implements ReceiptOcrEngine {
 
   ReceiptScanError _codeFromError(String? err) {
     switch (err) {
-      case 'no_key':
-        return ReceiptScanError.noKey;
-      case 'invalid_key':
-        return ReceiptScanError.invalidKey;
+      case 'ocr_unavailable':
+        return ReceiptScanError.backendUnavailable;
       case 'rate_limited':
         return ReceiptScanError.rateLimited;
       case 'quota_exceeded':

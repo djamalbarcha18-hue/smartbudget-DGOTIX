@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
-import 'package:smartbudget/features/assistant/data/ai_chat_service.dart';
 import 'package:smartbudget/features/assistant/domain/ai_conversation.dart';
 import 'package:smartbudget/features/assistant/domain/ai_snapshot.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
@@ -28,10 +27,6 @@ import 'package:smartbudget/features/zakat/domain/zakat_calculator.dart';
 
 export 'package:smartbudget/features/assistant/domain/ai_conversation.dart'
     show ChatMessage;
-
-/// The AI chat service (BYOK, direct-to-provider from the browser).
-final aiChatServiceProvider =
-    Provider<AiChatService>((ref) => const AiChatService());
 
 /// A compact, REAL-DATA snapshot of the user's finances, handed to the model as
 /// context so answers are personal and specific (see [AiSnapshot]). Only

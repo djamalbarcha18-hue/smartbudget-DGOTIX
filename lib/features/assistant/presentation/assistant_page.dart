@@ -11,7 +11,6 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/assistant/application/ai_backend.dart';
 import 'package:smartbudget/features/assistant/application/assistant_controller.dart';
 import 'package:smartbudget/features/assistant/domain/insight_engine.dart';
-import 'package:smartbudget/features/assistant/presentation/ai_key_card.dart';
 import 'package:smartbudget/features/assistant/presentation/ai_usage_card.dart';
 import 'package:smartbudget/features/assistant/presentation/ask_dgotix_card.dart';
 import 'package:smartbudget/features/assistant/presentation/insight_view.dart';
@@ -21,10 +20,8 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 /// the user's own data. No financial rule is invented here: every line is
 /// phrased by the presentation from an [Insight] the domain engine produced.
 ///
-/// PRO users can optionally connect their OWN personal AI key (BYOK) via
-/// [AiKeyCard]; that key is a personal secret kept only on the user's device and
-/// is never shipped to or used by our servers. Other plans chat through the
-/// server gateway within their plan quota.
+/// The conversational assistant is provided by DGOTIX itself (server gateway,
+/// plan quotas); users never bring their own AI key.
 class AssistantPage extends ConsumerWidget {
   const AssistantPage({super.key});
 
@@ -54,17 +51,13 @@ class AssistantPage extends ConsumerWidget {
               Text(l.assistantSubtitle,
                   style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: DsSpacing.xl),
-              // A personal AI key is a PRO feature; other plans use the
-              // server gateway (their plan quota) or see the upgrade card.
-              if (ref.watch(byokAllowedProvider)) ...<Widget>[
-                const AiKeyCard(),
-                const SizedBox(height: DsSpacing.md),
-              ],
+              // DGOTIX AI answers through our servers within the plan quota;
+              // until that service is live, a clear "coming soon" card.
               if (ref.watch(assistantReadyProvider)) ...<Widget>[
                 const AskDgotixCard(),
                 const SizedBox(height: DsSpacing.md),
                 const AiUsageCard(),
-              ] else if (!ref.watch(byokAllowedProvider))
+              ] else
                 const _AssistantLockedCard(),
               const SizedBox(height: DsSpacing.xl),
               if (insights.isEmpty)
@@ -169,9 +162,8 @@ class _DisclaimerNote extends StatelessWidget {
   }
 }
 
-/// Shown when the chat can't run for this account yet: the conversational
-/// assistant is coming to every plan (through our servers); PRO can use it
-/// now. The only call to action is an upgrade.
+/// Shown while the chat service isn't available yet: it is coming to every
+/// plan, with answers included according to the subscription.
 class _AssistantLockedCard extends StatelessWidget {
   const _AssistantLockedCard();
 
@@ -209,6 +201,7 @@ class _AssistantLockedCard extends StatelessWidget {
                 DsButton(
                   label: l.aiLockedCta,
                   icon: Icons.workspace_premium_outlined,
+                  variant: DsButtonVariant.secondary,
                   onPressed: () => context.go('/plans'),
                 ),
               ],

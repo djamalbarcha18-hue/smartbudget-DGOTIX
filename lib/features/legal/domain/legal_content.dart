@@ -19,7 +19,7 @@ class LegalSection {
 /// have it reviewed for their jurisdiction before relying on it.
 abstract final class LegalContent {
   /// Bump when the wording changes materially (shown as "last updated").
-  static const String lastUpdated = '2026-09-23';
+  static const String lastUpdated = '2026-09-24';
 
   static String get _app => AppConfig.appName;
   static String get _brand => AppConfig.parentBrand;
@@ -81,11 +81,10 @@ abstract final class LegalContent {
           'The AI assistant is optional. When you send a question, the text of '
               'that question and a compact summary of the relevant figures are '
               'sent to an AI provider (Google Gemini, OpenAI, or Anthropic) to '
-              'generate a reply — either through our secure server, which uses '
+              'generate a reply, always through our secure server, which uses '
               'our own provider keys and records only usage metadata (never your '
-              'question text or your figures), or, if you connect your own key, '
-              'directly with that provider under your own account. Your inputs '
-              'are processed under the chosen provider\'s policies; we do not use '
+              'question text or your figures). Your inputs are processed under '
+              'that provider\'s policies; we do not use '
               'your data to train any model, and we do not store your prompts. '
               'AI answers are generated automatically and can be inaccurate.',
         ),
@@ -93,7 +92,7 @@ abstract final class LegalContent {
           'Receipt scanning',
           'Scanning a receipt on your device happens locally and sends nothing. '
               'Optional cloud scanning sends the receipt image to an AI provider '
-              '(through our server using our key, or your own key) only to '
+              '(through our server, using our key) only to '
               'extract the merchant, date, amount and category; we do not store '
               'the image.',
         ),
@@ -174,10 +173,9 @@ abstract final class LegalContent {
           'مساعد DGOTIX AI',
           'مساعد الذكاء الاصطناعي اختياري. عند إرسال سؤال، يُرسَل نصّ السؤال '
               'وملخّص موجز للأرقام المعنيّة إلى مزوّد ذكاء اصطناعي (Google Gemini '
-              'أو OpenAI أو Anthropic) لتوليد الإجابة — إمّا عبر خادمنا الآمن الذي '
+              'أو OpenAI أو Anthropic) لتوليد الإجابة، دائماً عبر خادمنا الآمن الذي '
               'يستخدم مفاتيحنا نحن ويسجّل بيانات استخدام فقط (لا نصّ سؤالك ولا '
-              'أرقامك)، أو — إن ربطت مفتاحك الخاص — مباشرةً مع ذلك المزوّد تحت '
-              'حسابك أنت. تُعالَج مدخلاتك وفق سياسات المزوّد المختار؛ ولا نستخدم '
+              'أرقامك). تُعالَج مدخلاتك وفق سياسات ذلك المزوّد؛ ولا نستخدم '
               'بياناتك لتدريب أي نموذج، ولا نخزّن مطالباتك. وإجابات الذكاء '
               'الاصطناعي مولّدة آلياً وقد تكون غير دقيقة.',
         ),
@@ -185,7 +183,7 @@ abstract final class LegalContent {
           'مسح الإيصالات',
           'مسح الإيصال على جهازك يتم محلياً ولا يرسل شيئاً. أمّا المسح السحابي '
               'الاختياري فيُرسل صورة الإيصال إلى مزوّد ذكاء اصطناعي (عبر خادمنا '
-              'بمفتاحنا، أو بمفتاحك الخاص) فقط لاستخراج اسم التاجر والتاريخ '
+              'وبمفتاحنا) فقط لاستخراج اسم التاجر والتاريخ '
               'والمبلغ والفئة؛ ولا نخزّن الصورة.',
         ),
         const LegalSection(

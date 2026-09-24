@@ -28,19 +28,6 @@ extension AiProviderIdX on AiProviderId {
         AiProviderId.openai => 'OpenAI',
         AiProviderId.anthropic => 'Anthropic (Claude)',
       };
-
-  /// Where the user creates/copies a personal key.
-  String? get consoleUrl => switch (this) {
-        AiProviderId.google => 'https://aistudio.google.com/apikey',
-        AiProviderId.openai => 'https://platform.openai.com/api-keys',
-        AiProviderId.anthropic => 'https://console.anthropic.com/settings/keys',
-      };
-
-  String get consoleName => switch (this) {
-        AiProviderId.google => 'Google',
-        AiProviderId.openai => 'OpenAI',
-        AiProviderId.anthropic => 'Anthropic',
-      };
 }
 
 enum AiCapability { text, image, structuredOutput, streaming }

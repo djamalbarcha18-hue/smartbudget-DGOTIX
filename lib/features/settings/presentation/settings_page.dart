@@ -33,8 +33,6 @@ import 'package:smartbudget/features/exchange_rates/application/rates_controller
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
-import 'package:smartbudget/features/receipts/application/receipt_scan_controller.dart';
-import 'package:smartbudget/features/receipts/domain/receipt_ocr_engine.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
@@ -182,16 +180,6 @@ class SettingsPage extends ConsumerWidget {
                 child: const _DeveloperSection(),
               ),
               const SizedBox(height: DsSpacing.lg),
-
-              // Receipt scanning (BYOK Gemini key) — only with a real backend.
-              if (AppEnv.hasSupabase) ...<Widget>[
-                _SettingsSection(
-                  icon: Icons.document_scanner_outlined,
-                  title: l.settingsReceiptScanning,
-                  child: const _ReceiptKeySection(),
-                ),
-                const SizedBox(height: DsSpacing.lg),
-              ],
 
               // Share the platform (QR code + link).
               _SettingsSection(
@@ -494,141 +482,6 @@ class _DeveloperSectionState extends ConsumerState<_DeveloperSection> {
                 .hydrate(ref.read(entitlementProvider).copyWith(period: b)),
           ),
         ],
-      ],
-    );
-  }
-}
-
-/// BYOK: the signed-in user stores their own Gemini API key (encrypted in
-/// Supabase) so the receipt scanner can call Gemini on their behalf.
-class _ReceiptKeySection extends ConsumerStatefulWidget {
-  const _ReceiptKeySection();
-
-  @override
-  ConsumerState<_ReceiptKeySection> createState() => _ReceiptKeySectionState();
-}
-
-class _ReceiptKeySectionState extends ConsumerState<_ReceiptKeySection> {
-  final TextEditingController _ctrl = TextEditingController();
-  bool _busy = false;
-  bool _obscure = true;
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
-
-  Future<void> _save() async {
-    final String key = _ctrl.text.trim();
-    if (key.isEmpty) return;
-    final AppLocalizations l = AppLocalizations.of(context);
-    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    setState(() => _busy = true);
-    try {
-      await ref.read(geminiKeyServiceProvider).save(key);
-      _ctrl.clear();
-      ref.invalidate(geminiKeyStatusProvider);
-      messenger.showSnackBar(SnackBar(content: Text(l.receiptKeySaved)));
-    } on ReceiptScanException {
-      messenger.showSnackBar(SnackBar(content: Text(l.receiptErrInvalidKey)));
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  Future<void> _remove() async {
-    final AppLocalizations l = AppLocalizations.of(context);
-    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    setState(() => _busy = true);
-    try {
-      await ref.read(geminiKeyServiceProvider).remove();
-      ref.invalidate(geminiKeyStatusProvider);
-      messenger.showSnackBar(SnackBar(content: Text(l.receiptKeyRemoved)));
-    } catch (_) {
-      // Non-fatal; status refresh below reflects reality.
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final AppLocalizations l = AppLocalizations.of(context);
-    final DsColors c = context.dsColors;
-    final bool signedIn = ref.watch(authControllerProvider).isAuthenticated;
-
-    if (!signedIn) {
-      return Text(l.receiptErrSignIn,
-          style: Theme.of(context).textTheme.bodySmall);
-    }
-
-    final AsyncValue<bool> status = ref.watch(geminiKeyStatusProvider);
-    final bool hasKey = status.valueOrNull ?? false;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Text(l.receiptKeyHint, style: Theme.of(context).textTheme.bodySmall),
-        const SizedBox(height: DsSpacing.md),
-        Row(
-          children: <Widget>[
-            Icon(hasKey ? Icons.check_circle_outline : Icons.info_outline,
-                size: 16, color: hasKey ? c.income : c.textMuted),
-            const SizedBox(width: DsSpacing.sm),
-            Text(hasKey ? l.receiptKeySet : l.receiptKeyNotSet,
-                style: Theme.of(context).textTheme.labelMedium),
-          ],
-        ),
-        const SizedBox(height: DsSpacing.md),
-        TextField(
-          inputFormatters: LatinDigitsFormatter.only,
-          controller: _ctrl,
-          obscureText: _obscure,
-          enabled: !_busy,
-          decoration: InputDecoration(
-            isDense: true,
-            hintText: l.receiptKeyField,
-            filled: true,
-            fillColor: c.surfaceMuted,
-            contentPadding: const EdgeInsets.symmetric(
-                horizontal: DsSpacing.md, vertical: DsSpacing.sm),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: DsRadius.brMd,
-              borderSide: BorderSide(color: c.border),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: DsRadius.brMd,
-              borderSide: BorderSide(color: c.brand),
-            ),
-            suffixIcon: IconButton(
-              icon: Icon(
-                _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                size: 18,
-                color: c.textMuted,
-              ),
-              onPressed: () => setState(() => _obscure = !_obscure),
-            ),
-          ),
-        ),
-        const SizedBox(height: DsSpacing.sm),
-        Wrap(
-          spacing: DsSpacing.sm,
-          runSpacing: DsSpacing.sm,
-          children: <Widget>[
-            DsButton(
-              label: l.save,
-              variant: DsButtonVariant.primary,
-              onPressed: _busy ? null : _save,
-            ),
-            if (hasKey)
-              DsButton(
-                label: l.receiptKeyRemove,
-                variant: DsButtonVariant.secondary,
-                onPressed: _busy ? null : _remove,
-              ),
-          ],
-        ),
       ],
     );
   }

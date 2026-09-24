@@ -23,18 +23,18 @@ Provider Registry
 └─────────┴─────────┴──────────┘
 ```
 
-## Two paths (both provider-agnostic)
+## One path: the server gateway
 
-1. **Server gateway (`ai-gateway`)** — DGoTiX-provided AI with per-user quota.
-   Keys live only in Edge Function secrets. Routing, failover, circuit breaker,
-   kill switches and observability run server-side and are **config-driven from
-   the DB** (no app release to change them). The client never learns which
-   provider was used or which failed.
-2. **BYOK (client, existing)** — the user brings their own key, kept only on
-   their device; the browser calls the provider directly. Model failover stays
-   inside that one provider (single key).
+DGOTIX is the only AI provider; users never bring their own key.
 
-Both read the same **source-of-truth model registry** so there is no hardcoded
+**Server gateway (`ai-gateway`)** — DGOTIX-provided AI with per-user plan
+quota. Keys live only in Edge Function secrets. Routing, failover, circuit
+breaker, kill switches and observability run server-side and are
+**config-driven from the DB** (no app release to change them). The client never
+learns which provider was used or which failed. The system prompt lives only in
+`supabase/functions/_shared/ai/gateway.ts` (`SYSTEM`).
+
+Client and server read the same **source-of-truth model registry** so there is no hardcoded
 model id in widgets: client `lib/features/ai/domain/ai_registry.dart`, server
 `supabase/functions/_shared/ai/gateway.ts` (`DEFAULT_MODELS`).
 
@@ -109,10 +109,8 @@ expensive answers can't blow the budget even under the request count. A
 time-boxed `trial_plan` / `trial_expires_at` temporarily lifts the plan and
 lapses back with no data loss. **Cloud OCR** quotas (3 / 15 / 100) live in the
 same file (`OCR_QUOTA`) with counters `ocr_usage_monthly` / `ocr_usage_lifetime`.
-The `receipt-scan` function enforces them **only when it serves the scan with a
-server Gemini key**; with a per-user BYOK key it does not meter (the user pays,
-on their own quota) — the same split as the AI assistant. Set `GEMINI_API_KEY`
-on the function to serve + meter OCR.
+The `receipt-scan` function serves every scan with the server Gemini key and
+meters it; without `GEMINI_API_KEY` it answers `ocr_unavailable`.
 
 To change a user's tier, set their **plan** (limits follow automatically) — the
 numeric `*_limit` columns are legacy overrides, not the source of truth.
@@ -129,9 +127,9 @@ update ai_entitlements set plan = 'pro' where user_id = '...';               -- 
 
 `lib/features/ai/data/ai_gateway_service.dart` (`aiGatewayServiceProvider`) is
 the client for the gateway; it returns text + usage + model and a neutral
-failure. The assistant currently uses the BYOK path by default; switching it to
-prefer the gateway when signed in is a small follow-up once the function is
-deployed.
+failure. The assistant uses it whenever Supabase is configured and the user is
+signed in (`assistantReadyProvider`); otherwise it shows an "available soon"
+card. Core financial features never depend on it.
 
 ## Not yet implemented (needs the deploy above)
 

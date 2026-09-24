@@ -5,54 +5,47 @@ expense** form. Hybrid by design:
 
 | Path | Engine | Where it runs | Cost |
 |------|--------|---------------|------|
-| **Online (primary)** | Gemini Flash via a Supabase Edge Function | any platform (web + mobile) | free within each user's own Gemini quota (BYOK) |
+| **Online (primary)** | Gemini Flash via a Supabase Edge Function, with DGOTIX's server key | any platform (web + mobile) | included in the plan's cloud-OCR quota (3 lifetime / 15 / 100 per month) |
 | **Offline (fallback)** | Google ML Kit Text Recognition | Android / iOS only | free, on-device |
 
 > ML Kit has **no web implementation**, so on Flutter Web only the online path
 > is available. The client selects the engine behind a `ReceiptOcrEngine`
 > interface, so wiring ML Kit for the mobile targets later needs no UI changes.
 
-## BYOK (Bring Your Own Key)
+## DGOTIX is the only AI provider
 
-Each user pastes their own Gemini API key once, in **Settings → Receipt
-scanning**. The key is:
-
-1. sent to the `save-gemini-key` Edge Function over HTTPS with the user's
-   session JWT,
-2. encrypted with **AES-256-GCM** inside the function (`KEY_ENCRYPTION_SECRET`),
-3. stored as **ciphertext only** in `user_ai_keys` (RLS blocks all client
-   access; only the service role, used by the functions, can read it),
-4. decrypted server-side per request by `receipt-scan` to call Gemini.
-
-The plaintext key is never returned to any client and never logged. The client
-can only learn *whether* a key is set.
+Users never bring their own key. The `receipt-scan` function calls Gemini with
+DGOTIX's server key (`GEMINI_API_KEY`, an Edge Function secret) and meters every
+successful scan against the plan's cloud-OCR quota (`OCR_QUOTA` in
+`supabase/functions/_shared/quota.ts`). When the quota is reached the only call
+to action is **Upgrade**. The key never reaches the frontend and is never
+logged. Without a server key the function answers `ocr_unavailable` and the app
+says the cloud scan is unavailable; core features are unaffected.
 
 ## One-time setup (project owner)
 
 ```bash
-# 1. Create the table + RLS
+# 1. Drop the retired personal-key table (safe to run more than once)
 psql "$SUPABASE_DB_URL" -f supabase/receipt_scanner.sql
 #    (or paste supabase/receipt_scanner.sql into the Supabase SQL editor)
 
-# 2. Set the encryption secret (32 random bytes, base64)
-supabase secrets set KEY_ENCRYPTION_SECRET="$(openssl rand -base64 32)"
-#    Optional: pin a model / restrict CORS
-supabase secrets set GEMINI_MODEL=gemini-2.0-flash
+# 2. Set the server key (and optionally pin a model / restrict CORS)
+supabase secrets set GEMINI_API_KEY=<your Gemini key>
+supabase secrets set GEMINI_MODEL=gemini-flash-latest
 supabase secrets set ALLOWED_ORIGIN=https://<your-github-pages-origin>
 
-# 3. Deploy the functions
-supabase functions deploy save-gemini-key
+# 3. Deploy the function (and remove the retired one if it was deployed)
 supabase functions deploy receipt-scan
+supabase functions delete save-gemini-key
 ```
 
 `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` are injected
 into Edge Functions automatically — do not set them by hand.
 
-## Per-user setup (end user)
+## End user
 
-1. Get a free key at <https://aistudio.google.com/apikey>.
-2. Paste it in **Settings → Receipt scanning** and press Save.
-3. Open **Expenses → Scan receipt**, take/choose a photo, review, and save.
+Open **Expenses → Scan receipt**, take/choose a photo, review, and save. No
+setup is needed.
 
 ## API contract
 
@@ -71,9 +64,5 @@ into Edge Functions automatically — do not set them by hand.
 { "ok": false, "reason": "unreadable" | "no_total" }
 
 // errors
-{ "error": "no_key" | "invalid_key" | "rate_limited" | "provider_error" | … }
+{ "error": "ocr_unavailable" | "quota_exceeded" | "rate_limited" | "provider_error" | … }
 ```
-
-`POST /functions/v1/save-gemini-key` (JWT required), action-based:
-`{ "action": "status" }` → `{ hasKey }`, `{ "action": "save", "apiKey": "…" }`
-stores it, `{ "action": "delete" }` removes it.

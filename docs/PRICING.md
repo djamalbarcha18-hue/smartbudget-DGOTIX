@@ -41,16 +41,14 @@ below is the count of **successful** assistant answers per period.
 - FREE's 5 is a **lifetime** allowance to feel the value, not a monthly refill.
 - Quotas are **request budgets bounded by token governance** (§4), not raw
   request counts alone — a single abusive request cannot drain the month.
-- **BYOK is never offered as a way around the quota.** When the quota is
-  reached the only call to action is **Upgrade** (or wait for the reset).
-  BYOK stays a silent advanced feature; it is never surfaced as a bypass.
-- **BYOK is a PRO feature** (`Feature.byok`). On FREE and BASIC the
-  assistant runs only through the server gateway and the plan quota; a key
-  saved earlier is ignored until the account is PRO. Until the gateway is
-  live, non-PRO users see an "available soon / upgrade" card instead of the
-  chat. Plan users see only answers used / left — never tokens, dollar costs
-  or model names (internal data); PRO key users get the on-device cost
-  estimate in a collapsed "advanced" section.
+- **DGOTIX is the only AI provider.** Users never bring their own key: every
+  answer goes through the server gateway and counts against the plan quota.
+  This keeps pricing simple and gives the product full control (models,
+  cost, safety). When the quota is reached the only call to action is
+  **Upgrade** (or wait for the reset).
+- Until the gateway is live, the assistant shows an "available soon / see
+  plans" card instead of the chat. Users see only answers used / left, never
+  tokens, dollar costs or model names (internal data).
 
 ## 3. Receipt OCR quotas
 
@@ -65,13 +63,12 @@ and is metered **server-side**:
 | Cloud OCR scans | **3 total** (one-time) | **15 / month** | **100 / month** |
 | On-device OCR | ∞ | ∞ | ∞ |
 
-Same policy as AI: exceeding cloud OCR → **Upgrade** CTA, never BYOK.
+Same policy as AI: exceeding cloud OCR → **Upgrade** CTA.
 
-Enforcement mirrors the AI split: when a **server** Gemini key is configured the
-`receipt-scan` function serves the scan and meters it against the plan quota
-(counting only successful extractions); when it isn't, the function falls back
-to the user's **own** key (BYOK), which — like the AI assistant's BYOK path — is
-**not** metered (the user pays with their key, on their quota).
+The `receipt-scan` function serves every scan with DGOTIX's **server** Gemini
+key and meters it against the plan quota (counting only successful
+extractions). Without a server key it answers `ocr_unavailable`; there is no
+personal-key fallback.
 
 ---
 
@@ -107,7 +104,6 @@ The catalog is the source of truth; this is the intended shape:
 | Smart salary split (budget suggested from your own spending) | — | ✅ | ✅ |
 | Smart alerts (budget forecasts, unusual spending, weekly & monthly summaries) | — | yearly billing only | yearly billing only |
 | DGOTIX AI assistant | 5 lifetime | 30 / mo | 150 / mo |
-| Personal AI key (BYOK, optional) | — | — | ✅ |
 | Cloud receipt OCR | 3 lifetime | 15 / mo | 100 / mo |
 | On-device receipt OCR | ✅ | ✅ | ✅ |
 | Cloud sync & backup | basic | ✅ | ✅ |
@@ -137,7 +133,7 @@ approaches the limit, so the wall is never a surprise:
 - **100%** — blocking state: the assistant/OCR action is disabled with the
   **Upgrade** CTA and the reset date. Core financial features keep working.
 
-Nudges are **upgrade-oriented only**. They never suggest BYOK.
+Nudges are **upgrade-oriented only**.
 
 ---
 
@@ -186,7 +182,8 @@ two features that actually cost us money to serve (AI + cloud OCR).
 
 1. Server is the source of truth for entitlement and quota. The client gate is
    advisory UX only.
-2. Exceeding any quota → **Upgrade** CTA only. Never surface BYOK as a bypass.
+2. Exceeding any quota → **Upgrade** CTA only. DGOTIX is the only AI
+   provider; users never bring their own key.
 3. The financial engine, RTL, and localization are never gated or degraded by
    billing state.
 4. An AI/OCR outage or a lapsed plan never blocks core financial functions.

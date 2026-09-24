@@ -5,14 +5,10 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
-import 'package:smartbudget/features/receipts/data/gemini_key_service.dart';
 import 'package:smartbudget/features/receipts/data/gemini_online_engine.dart';
 import 'package:smartbudget/features/receipts/data/offline_ocr_engine.dart';
 import 'package:smartbudget/features/receipts/domain/receipt_ocr_engine.dart';
 import 'package:smartbudget/features/receipts/domain/scanned_receipt.dart';
-
-final geminiKeyServiceProvider =
-    Provider<GeminiKeyService>((ref) => const GeminiKeyService());
 
 final onlineReceiptEngineProvider =
     Provider<ReceiptOcrEngine>((ref) => const GeminiOnlineEngine());
@@ -21,16 +17,10 @@ final offlineReceiptEngineProvider =
     Provider<ReceiptOcrEngine>((ref) => const OfflineOcrEngine());
 
 /// True when the cloud scanner CAN run: a real backend is configured and a user
-/// is signed in. (Whether the user has set a key is checked at scan time.)
+/// is signed in (the scan itself uses DGOTIX's server key and the plan quota).
 final receiptScanEnabledProvider = Provider<bool>((ref) {
   return AppEnv.hasSupabase &&
       ref.watch(authControllerProvider).isAuthenticated;
-});
-
-/// Whether the signed-in user has stored a Gemini key.
-final geminiKeyStatusProvider = FutureProvider<bool>((ref) async {
-  if (!ref.watch(receiptScanEnabledProvider)) return false;
-  return ref.watch(geminiKeyServiceProvider).hasKey();
 });
 
 final receiptScannerProvider =

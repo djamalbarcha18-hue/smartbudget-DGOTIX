@@ -128,10 +128,6 @@ class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
         return l.receiptErrBackend;
       case ReceiptScanError.notSignedIn:
         return l.receiptErrSignIn;
-      case ReceiptScanError.noKey:
-        return l.receiptErrNoKey;
-      case ReceiptScanError.invalidKey:
-        return l.receiptErrInvalidKey;
       case ReceiptScanError.unreadable:
         return l.receiptErrUnreadable;
       case ReceiptScanError.noTotal:

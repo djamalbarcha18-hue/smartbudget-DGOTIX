@@ -372,7 +372,6 @@ class _PlanCard extends StatelessWidget {
           l.planFeatAdvancedReports,
           l.planFeatCloudSync,
           l.planFeatPriority,
-          l.planFeatByok,
         ];
     }
   }
@@ -470,7 +469,7 @@ class _PlanCard extends StatelessWidget {
 /// The upgrade button for a paid plan: asks monthly vs yearly, then opens the
 /// server-created checkout URL. When the provider isn't configured yet it falls
 /// back gracefully to the "billing coming soon" note. Upgrade is the only path
-/// here — never BYOK.
+/// to more AI: DGOTIX is the sole AI provider and quotas come with the plan.
 class _UpgradeCta extends ConsumerStatefulWidget {
   const _UpgradeCta({required this.plan});
   final Plan plan;
