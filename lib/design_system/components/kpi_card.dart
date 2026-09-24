@@ -60,8 +60,8 @@ class KpiCard extends StatelessWidget {
   final Widget? iconChild;
   final KpiDelta? delta;
 
-  /// The metric's semantic color. Kept for API compatibility; the chrome now
-  /// uses the brand blue everywhere (see build).
+  /// The metric's meaning: pass the theme's income or expense color for those
+  /// metrics; any other value (or none) renders in the brand blue.
   final Color? accent;
   final String? caption;
 
@@ -72,11 +72,16 @@ class KpiCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    // Icons use the logo blue on every card so the row reads as one calm
-    // unit; the metric's meaning is carried by the change badge's color.
-    final Color accentColor = c.brand;
+    // Universal financial colors, decided in one place for every KPI in the
+    // app: green for income, red for expenses, blue (the logo color) for
+    // everything else — net, balance, savings rate…
+    final Color accentColor = accent == c.income
+        ? c.income
+        : (accent == c.expense ? c.expense : c.brand);
 
     return GlassCard(
+      accent: accentColor,
+      tintBorder: true,
       padding: const EdgeInsets.fromLTRB(
           DsSpacing.lg, DsSpacing.lg, DsSpacing.lg, DsSpacing.md),
       child: Column(

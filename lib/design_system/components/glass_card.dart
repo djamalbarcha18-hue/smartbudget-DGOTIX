@@ -22,6 +22,7 @@ class GlassCard extends StatefulWidget {
     this.borderRadius = DsRadius.brLg,
     this.onTap,
     this.accent,
+    this.tintBorder = false,
     this.hoverable = true,
   });
 
@@ -32,6 +33,10 @@ class GlassCard extends StatefulWidget {
 
   /// Optional accent: tints the thin top edge line (no glow).
   final Color? accent;
+
+  /// Also tint the card's border with [accent] (used to mark income, expense
+  /// and balance cards with their universal colors).
+  final bool tintBorder;
 
   /// Whether the card reacts to hover. Disable for very large containers.
   final bool hoverable;
@@ -108,7 +113,11 @@ class _GlassCardState extends State<GlassCard> {
                 end: AlignmentDirectional.bottomEnd,
                 colors: <Color>[g.fillTop, g.fill],
               ),
-              border: Border.all(color: lifted ? g.hoverBorder : g.borderColor),
+              border: Border.all(
+                color: (widget.tintBorder && accent != null)
+                    ? accent.withValues(alpha: lifted ? 0.75 : 0.45)
+                    : (lifted ? g.hoverBorder : g.borderColor),
+              ),
             ),
             child: content,
           ),

@@ -453,7 +453,7 @@ class _MonthlyComparisonCard extends ConsumerWidget {
       children: <Widget>[
         _LegendDot(color: c.income, label: l.legendIncome),
         _LegendDot(color: c.expense, label: l.legendExpenses),
-        _LegendDot(color: c.net, label: l.legendNet),
+        _LegendDot(color: c.brand, label: l.legendNet),
       ],
     );
     final Widget header = DsSectionHeader(
@@ -492,7 +492,7 @@ class _MonthlyComparisonCard extends ConsumerWidget {
               points: points,
               income: c.income,
               expense: c.expense,
-              net: c.net,
+              net: c.brand,
               axis: c.textFaint,
               grid: c.border,
               monthLabels: MonthNames.short(ar: ar),

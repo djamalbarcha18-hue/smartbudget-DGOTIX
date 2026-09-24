@@ -120,6 +120,7 @@ class _Totals extends ConsumerWidget {
     Widget tile(String label, Money m, Color color) => Expanded(
           child: GlassCard(
             accent: color,
+            tintBorder: true,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[

@@ -147,8 +147,14 @@ class _NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final DsGlass g = context.dsGlass;
-    // Icons always carry the logo blue; inactive ones are a touch softer.
-    final Color fg = selected ? c.brand : c.brand.withValues(alpha: 0.75);
+    // Icons carry the logo blue, except the income / expense arrows which use
+    // their universal colors; inactive icons are a touch softer.
+    final Color base = switch (destination.section) {
+      AppSection.income => c.income,
+      AppSection.expenses => c.expense,
+      _ => c.brand,
+    };
+    final Color fg = selected ? base : base.withValues(alpha: 0.75);
 
     // Active item: a soft teal glass pill with an accent edge and glow.
     final BoxDecoration? active = selected
