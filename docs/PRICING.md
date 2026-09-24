@@ -44,6 +44,13 @@ below is the count of **successful** assistant answers per period.
 - **BYOK is never offered as a way around the quota.** When the quota is
   reached the only call to action is **Upgrade** (or wait for the reset).
   BYOK stays a silent advanced feature; it is never surfaced as a bypass.
+- **BYOK is a PRO feature** (`Feature.byok`). On FREE and BASIC the
+  assistant runs only through the server gateway and the plan quota; a key
+  saved earlier is ignored until the account is PRO. Until the gateway is
+  live, non-PRO users see an "available soon / upgrade" card instead of the
+  chat. Plan users see only answers used / left — never tokens, dollar costs
+  or model names (internal data); PRO key users get the on-device cost
+  estimate in a collapsed "advanced" section.
 
 ## 3. Receipt OCR quotas
 
@@ -100,6 +107,7 @@ The catalog is the source of truth; this is the intended shape:
 | Smart salary split (budget suggested from your own spending) | — | ✅ | ✅ |
 | Smart alerts (budget forecasts, unusual spending, weekly & monthly summaries) | — | yearly billing only | yearly billing only |
 | DGOTIX AI assistant | 5 lifetime | 30 / mo | 150 / mo |
+| Personal AI key (BYOK, optional) | — | — | ✅ |
 | Cloud receipt OCR | 3 lifetime | 15 / mo | 100 / mo |
 | On-device receipt OCR | ✅ | ✅ | ✅ |
 | Cloud sync & backup | basic | ✅ | ✅ |

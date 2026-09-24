@@ -887,5 +887,16 @@
   "@upcomingNext": {"placeholders": {"name": {"type": "String"}, "date": {"type": "String"}}},
   "myPlansTitle": "خططي",
   "askAiCopy": "نسخ الإجابة",
-  "askAiCopied": "تم نسخ الإجابة"
+  "askAiCopied": "تم نسخ الإجابة",
+  "aiLockedTitle": "المحادثة مع DGOTIX AI",
+  "aiLockedBody": "المساعد المحادثي يصل قريبًا إلى كل الباقات، ويمكن لمشتركي Pro استخدامه الآن.",
+  "aiLockedCta": "الترقية إلى Pro",
+  "usageQuotaUsed": "استُخدمت {used} من {limit} إجابة",
+  "@usageQuotaUsed": {"placeholders": {"used": {"type": "int"}, "limit": {"type": "int"}}},
+  "usageQuotaMonthly": "يتجدّد الرصيد في بداية كل شهر.",
+  "usageQuotaLifetime": "رصيد تجريبي لمرة واحدة.",
+  "usageAdvancedTitle": "تفاصيل الاستهلاك (متقدّم)",
+  "usageRequestsThisMonth": "طلبات هذا الشهر: {count}",
+  "@usageRequestsThisMonth": {"placeholders": {"count": {"type": "int"}}},
+  "planFeatByok": "استخدام مفتاح ذكاء اصطناعي شخصي (اختياري)"
 }

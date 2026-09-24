@@ -372,6 +372,7 @@ class _PlanCard extends StatelessWidget {
           l.planFeatAdvancedReports,
           l.planFeatCloudSync,
           l.planFeatPriority,
+          l.planFeatByok,
         ];
     }
   }

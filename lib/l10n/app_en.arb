@@ -891,5 +891,16 @@
   "@upcomingNext": {"placeholders": {"name": {"type": "String"}, "date": {"type": "String"}}},
   "myPlansTitle": "My plans",
   "askAiCopy": "Copy answer",
-  "askAiCopied": "Answer copied"
+  "askAiCopied": "Answer copied",
+  "aiLockedTitle": "Chat with DGOTIX AI",
+  "aiLockedBody": "The conversational assistant is coming to every plan soon. Pro subscribers can use it today.",
+  "aiLockedCta": "Upgrade to Pro",
+  "usageQuotaUsed": "{used} of {limit} answers used",
+  "@usageQuotaUsed": {"placeholders": {"used": {"type": "int"}, "limit": {"type": "int"}}},
+  "usageQuotaMonthly": "Resets at the start of every month.",
+  "usageQuotaLifetime": "One-time trial allowance.",
+  "usageAdvancedTitle": "Usage details (advanced)",
+  "usageRequestsThisMonth": "Requests this month: {count}",
+  "@usageRequestsThisMonth": {"placeholders": {"count": {"type": "int"}}},
+  "planFeatByok": "Use your own AI key (optional)"
 }

@@ -123,6 +123,27 @@ void main() {
     });
   });
 
+  group('Personal AI key is PRO only', () {
+    test('FREE and BASIC are asked to upgrade to PRO', () {
+      for (final Plan p in <Plan>[Plan.free, Plan.basic]) {
+        final GateDecision d = FeatureGate.evaluate(Feature.byok, plan: p);
+        expect(d.allowed, isFalse);
+        expect(d.reason, GateReason.needsUpgrade);
+        expect(d.suggestedTier, Plan.pro);
+      }
+    });
+
+    test('PRO can use it, monthly or yearly', () {
+      expect(FeatureGate.evaluate(Feature.byok, plan: Plan.pro).allowed,
+          isTrue);
+      expect(
+          FeatureGate.evaluate(Feature.byok,
+                  plan: Plan.pro, period: BillingPeriod.yearly)
+              .allowed,
+          isTrue);
+    });
+  });
+
   group('FeatureGate.evaluate', () {
     test('boolean gate below min tier ⇒ needsUpgrade to that tier', () {
       final GateDecision d =

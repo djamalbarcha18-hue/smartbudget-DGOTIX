@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/features/assistant/application/ai_backend.dart';
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/domain/feature_gate.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
@@ -14,8 +19,96 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Shows this month's AI usage (requests, tokens, approximate cost) counted from
 /// provider responses on this device, to help the user rationalize consumption.
+/// AI usage, shown the way each kind of user needs it:
+/// - plan users (server gateway): only their answers left this period — no
+///   tokens, dollars or model names (those are internal);
+/// - PRO users on their own key: the same simple line, with the on-device
+///   cost estimate, limits and prices tucked into a collapsed "advanced"
+///   section (they pay their provider, so the estimate is useful to them).
 class AiUsageCard extends ConsumerWidget {
   const AiUsageCard({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (ref.watch(aiBackendProvider) == AiBackend.byok) {
+      return const _ByokUsageCard();
+    }
+    return const _QuotaUsageCard();
+  }
+}
+
+/// Plan quota: "12 of 30 answers used · resets monthly", with an upgrade
+/// button once it runs out.
+class _QuotaUsageCard extends ConsumerWidget {
+  const _QuotaUsageCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final GateDecision d = ref.watch(featureGateProvider(Feature.dgotixAi));
+    final int? limit = d.limit;
+    final int used =
+        (limit != null && d.remaining != null) ? limit - d.remaining! : 0;
+    final double ratio = d.usedFraction ?? 0;
+    final Color bar =
+        ratio >= 1 ? c.expense : (ratio >= 0.8 ? c.warning : c.brand);
+
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Icon(Icons.speed_rounded, size: 18, color: c.brand),
+              const SizedBox(width: DsSpacing.sm),
+              Expanded(
+                child: Text(l.usageTitle,
+                    style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+              ),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.md),
+          if (limit == null)
+            Text(l.usageEmpty, style: t.bodySmall)
+          else ...<Widget>[
+            Text(l.usageQuotaUsed(used, limit),
+                style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+            const SizedBox(height: DsSpacing.sm),
+            ClipRRect(
+              borderRadius: DsRadius.brPill,
+              child: LinearProgressIndicator(
+                value: ratio.clamp(0.0, 1.0),
+                minHeight: 6,
+                backgroundColor: c.surfaceMuted,
+                valueColor: AlwaysStoppedAnimation<Color>(bar),
+              ),
+            ),
+            const SizedBox(height: DsSpacing.xs),
+            Text(
+                d.window == QuotaWindow.lifetime
+                    ? l.usageQuotaLifetime
+                    : l.usageQuotaMonthly,
+                style: t.labelSmall?.copyWith(color: c.textFaint)),
+            if (!d.allowed) ...<Widget>[
+              const SizedBox(height: DsSpacing.md),
+              DsButton(
+                label: l.upgradeCta,
+                icon: Icons.workspace_premium_outlined,
+                onPressed: () => context.go('/plans'),
+              ),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// PRO + own key: the detailed on-device estimate, collapsed by default.
+class _ByokUsageCard extends ConsumerWidget {
+  const _ByokUsageCard();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,7 +120,41 @@ class AiUsageCard extends ConsumerWidget {
     final UsageAlert alert = ref.watch(aiUsageAlertProvider);
 
     return GlassCard(
-      child: Column(
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: EdgeInsets.zero,
+          iconColor: c.textMuted,
+          collapsedIconColor: c.textMuted,
+          leading: Icon(Icons.speed_rounded, size: 18, color: c.brand),
+          title: Text(l.usageAdvancedTitle,
+              style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+          subtitle: Text(l.usageRequestsThisMonth(u.requests),
+              style: t.labelSmall?.copyWith(color: c.textMuted)),
+          children: <Widget>[
+            _ByokDetails(u: u, limit: limit, alert: alert),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ByokDetails extends ConsumerWidget {
+  const _ByokDetails(
+      {required this.u, required this.limit, required this.alert});
+  final AiUsageSummary u;
+  final AiUsageLimit limit;
+  final UsageAlert alert;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Row(
@@ -161,7 +288,6 @@ class AiUsageCard extends ConsumerWidget {
             ),
           ),
         ],
-      ),
     );
   }
 }

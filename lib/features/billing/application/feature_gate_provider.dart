@@ -23,6 +23,7 @@ int _usedFor(Ref ref, Feature f) {
     case Feature.prioritySupport:
     case Feature.salarySplit:
     case Feature.smartAlerts:
+    case Feature.byok:
       return 0;
   }
 }

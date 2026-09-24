@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/design_system/brand/branded_title.dart';
+import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -19,9 +21,10 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 /// the user's own data. No financial rule is invented here: every line is
 /// phrased by the presentation from an [Insight] the domain engine produced.
 ///
-/// Users can optionally connect their OWN personal AI key (BYOK) via
+/// PRO users can optionally connect their OWN personal AI key (BYOK) via
 /// [AiKeyCard]; that key is a personal secret kept only on the user's device and
-/// is never shipped to or used by our servers.
+/// is never shipped to or used by our servers. Other plans chat through the
+/// server gateway within their plan quota.
 class AssistantPage extends ConsumerWidget {
   const AssistantPage({super.key});
 
@@ -51,13 +54,18 @@ class AssistantPage extends ConsumerWidget {
               Text(l.assistantSubtitle,
                   style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: DsSpacing.xl),
-              const AiKeyCard(),
-              if (ref.watch(assistantReadyProvider)) ...<Widget>[
+              // A personal AI key is a PRO feature; other plans use the
+              // server gateway (their plan quota) or see the upgrade card.
+              if (ref.watch(byokAllowedProvider)) ...<Widget>[
+                const AiKeyCard(),
                 const SizedBox(height: DsSpacing.md),
+              ],
+              if (ref.watch(assistantReadyProvider)) ...<Widget>[
                 const AskDgotixCard(),
                 const SizedBox(height: DsSpacing.md),
                 const AiUsageCard(),
-              ],
+              ] else if (!ref.watch(byokAllowedProvider))
+                const _AssistantLockedCard(),
               const SizedBox(height: DsSpacing.xl),
               if (insights.isEmpty)
                 _EmptyInsights(message: l.assistantEmpty)
@@ -157,6 +165,57 @@ class _DisclaimerNote extends StatelessWidget {
                   ?.copyWith(color: c.textFaint)),
         ),
       ],
+    );
+  }
+}
+
+/// Shown when the chat can't run for this account yet: the conversational
+/// assistant is coming to every plan (through our servers); PRO can use it
+/// now. The only call to action is an upgrade.
+class _AssistantLockedCard extends StatelessWidget {
+  const _AssistantLockedCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    return GlassCard(
+      accent: c.brand,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: 40,
+            height: 40,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: c.brand.withValues(alpha: 0.12),
+              borderRadius: DsRadius.brMd,
+            ),
+            child: Icon(Icons.forum_outlined, color: c.brand),
+          ),
+          const SizedBox(width: DsSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(l.aiLockedTitle,
+                    style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                const SizedBox(height: DsSpacing.xs),
+                Text(l.aiLockedBody,
+                    style: t.bodySmall?.copyWith(color: c.textMuted)),
+                const SizedBox(height: DsSpacing.md),
+                DsButton(
+                  label: l.aiLockedCta,
+                  icon: Icons.workspace_premium_outlined,
+                  onPressed: () => context.go('/plans'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
