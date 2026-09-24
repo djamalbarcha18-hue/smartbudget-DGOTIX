@@ -880,5 +880,14 @@
   "smartAlertsSeePlans": "See yearly plans",
   "planFeatSmartAlerts": "Smart alerts (with yearly billing)",
   "txnTypeIncome": "Income",
-  "txnTypeExpense": "Expense"
+  "txnTypeExpense": "Expense",
+  "budgetThisMonth": "This month's budget",
+  "budgetUsedCaption": "{spent} of {planned}",
+  "@budgetUsedCaption": {"placeholders": {"spent": {"type": "String"}, "planned": {"type": "String"}}},
+  "budgetNotSet": "No budget set for this month",
+  "upcomingTitle": "Due in 7 days",
+  "upcomingNone": "Nothing due in the next 7 days",
+  "upcomingNext": "Next: {name} · {date}",
+  "@upcomingNext": {"placeholders": {"name": {"type": "String"}, "date": {"type": "String"}}},
+  "myPlansTitle": "My plans"
 }

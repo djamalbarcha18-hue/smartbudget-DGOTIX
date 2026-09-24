@@ -47,7 +47,7 @@ class _BackupReminderCardState extends ConsumerState<BackupReminderCard> {
         ref.watch(backupStatusProvider)?.lastBackup, DateTime.now());
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: DsSpacing.xl),
+      padding: const EdgeInsets.only(bottom: DsSpacing.gridGap),
       child: GlassCard(
         accent: c.saving,
         child: Row(

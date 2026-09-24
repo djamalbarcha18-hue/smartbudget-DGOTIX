@@ -32,7 +32,7 @@ class WelcomeCard extends ConsumerWidget {
     final OnboardingController ctl = ref.read(onboardingFlagsProvider.notifier);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: DsSpacing.xl),
+      padding: const EdgeInsets.only(bottom: DsSpacing.gridGap),
       child: GlassCard(
         accent: c.brand,
         child: Column(
@@ -89,15 +89,23 @@ class WelcomeCard extends ConsumerWidget {
               ],
             ),
             if (!allDone) ...<Widget>[
-              const SizedBox(height: DsSpacing.sm),
-              for (int i = 0; i < steps.length; i++)
-                _StepRow(
-                  index: i + 1,
-                  step: steps[i],
-                  label: _label(l, steps[i].id),
-                  // Opening settings/guide ticks itself off (visit marker).
-                  onTap: () => context.go(steps[i].route),
-                ),
+              const SizedBox(height: DsSpacing.md),
+              // Steps as compact chips on one line (wrapping on phones), so
+              // the checklist stays a slim strip above the figures.
+              Wrap(
+                spacing: DsSpacing.sm,
+                runSpacing: DsSpacing.sm,
+                children: <Widget>[
+                  for (int i = 0; i < steps.length; i++)
+                    _StepRow(
+                      index: i + 1,
+                      step: steps[i],
+                      label: _label(l, steps[i].id),
+                      // Opening settings/guide ticks itself off (visit marker).
+                      onTap: () => context.go(steps[i].route),
+                    ),
+                ],
+              ),
             ],
           ],
         ),
@@ -132,18 +140,24 @@ class _StepRow extends StatelessWidget {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     return InkWell(
-      borderRadius: DsRadius.brMd,
+      borderRadius: DsRadius.brPill,
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: DsSpacing.sm),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          borderRadius: DsRadius.brPill,
+          color: c.surfaceMuted,
+          border: Border.all(color: c.border),
+        ),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             if (step.done)
-              Icon(Icons.check_circle_rounded, size: 22, color: c.income)
+              Icon(Icons.check_circle_rounded, size: 18, color: c.income)
             else
               Container(
-                width: 22,
-                height: 22,
+                width: 18,
+                height: 18,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -152,17 +166,14 @@ class _StepRow extends StatelessWidget {
                 child: Text('$index',
                     style: t.labelSmall?.copyWith(color: c.textMuted)),
               ),
-            const SizedBox(width: DsSpacing.md),
-            Expanded(
-              child: Text(
-                label,
-                style: t.bodyMedium?.copyWith(
-                  color: step.done ? c.textMuted : c.textPrimary,
-                  decoration: step.done ? TextDecoration.lineThrough : null,
-                ),
+            const SizedBox(width: DsSpacing.sm),
+            Text(
+              label,
+              style: t.bodySmall?.copyWith(
+                color: step.done ? c.textMuted : c.textPrimary,
+                decoration: step.done ? TextDecoration.lineThrough : null,
               ),
             ),
-            Icon(Icons.chevron_right_rounded, size: 18, color: c.textFaint),
           ],
         ),
       ),

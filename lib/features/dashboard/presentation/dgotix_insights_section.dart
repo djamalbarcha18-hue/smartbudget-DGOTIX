@@ -24,51 +24,73 @@ class DgotixInsightsSection extends ConsumerWidget {
     final List<Insight> insights = ref.watch(insightsProvider);
     final List<Insight> shown = insights.take(3).toList();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    final Widget header = Row(
       children: <Widget>[
-        Row(
-          children: <Widget>[
-            Icon(Icons.auto_awesome_outlined, size: 20, color: c.brand),
-            const SizedBox(width: DsSpacing.sm),
-            Expanded(
-              child: BrandedTitle(l.brandAi,
-                  style: Theme.of(context).textTheme.titleLarge),
-            ),
-            TextButton(
-              onPressed: () => context.go('/assistant'),
-              child: Text(l.viewDetails),
-            ),
-          ],
+        Icon(Icons.auto_awesome_outlined, size: 20, color: c.brand),
+        const SizedBox(width: DsSpacing.sm),
+        Expanded(
+          child: BrandedTitle(l.brandAi,
+              style: Theme.of(context).textTheme.titleMedium),
         ),
-        const SizedBox(height: DsSpacing.md),
-        GlassCard(
-          child: shown.isEmpty
-              ? Row(
-                  children: <Widget>[
-                    Icon(Icons.insights_outlined, size: 18, color: c.textFaint),
-                    const SizedBox(width: DsSpacing.sm),
-                    Expanded(
-                      child: Text(l.assistantEmpty,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: c.textMuted)),
+        TextButton(
+          onPressed: () => context.go('/assistant'),
+          child: Text(l.viewDetails),
+        ),
+      ],
+    );
+
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          header,
+          const SizedBox(height: DsSpacing.sm),
+          if (shown.isEmpty)
+            Row(
+              children: <Widget>[
+                Icon(Icons.insights_outlined, size: 18, color: c.textFaint),
+                const SizedBox(width: DsSpacing.sm),
+                Expanded(
+                  child: Text(l.assistantEmpty,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: c.textMuted)),
+                ),
+              ],
+            )
+          else
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints cons) {
+                // Wide: the insights side by side, one strip. Narrow: a list.
+                if (cons.maxWidth >= 760) {
+                  return IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        for (int i = 0; i < shown.length; i++) ...<Widget>[
+                          if (i > 0)
+                            VerticalDivider(
+                                width: DsSpacing.xl, color: c.border),
+                          Expanded(child: _InsightRow(insight: shown[i])),
+                        ],
+                      ],
                     ),
-                  ],
-                )
-              : Column(
+                  );
+                }
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     for (int i = 0; i < shown.length; i++) ...<Widget>[
-                      if (i > 0)
-                        Divider(height: DsSpacing.lg, color: c.border),
+                      if (i > 0) Divider(height: DsSpacing.lg, color: c.border),
                       _InsightRow(insight: shown[i]),
                     ],
                   ],
-                ),
-        ),
-      ],
+                );
+              },
+            ),
+        ],
+      ),
     );
   }
 }

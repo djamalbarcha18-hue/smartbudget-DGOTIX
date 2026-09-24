@@ -57,34 +57,39 @@ class GlobalMarketsSection extends ConsumerWidget {
       _fx(fx, 'JPY', l),
     ];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: DsSectionHeader(
-                  title: l.sectionGlobalMarkets,
-                  icon: Icons.public_outlined),
-            ),
-            TextButton(
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          DsSectionHeader(
+            title: l.sectionGlobalMarkets,
+            icon: Icons.public_outlined,
+            trailing: TextButton(
               onPressed: () => context.go('/markets'),
               child: Text(l.viewDetails),
             ),
-          ],
-        ),
-        const SizedBox(height: DsSpacing.md),
-        GlassCard(
-          child: Wrap(
-            spacing: DsSpacing.md,
-            runSpacing: DsSpacing.md,
-            children: <Widget>[
-              for (final _Indicator t in tiles)
-                SizedBox(width: 168, child: _MarketTile(indicator: t)),
-            ],
           ),
-        ),
-      ],
+          const SizedBox(height: DsSpacing.md),
+          // An even grid: as many equal columns as fit, every tile the same
+          // width, so rows line up edge to edge.
+          LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints cons) {
+              const double gap = DsSpacing.md;
+              final int cols =
+                  (cons.maxWidth / 140).floor().clamp(2, tiles.length);
+              final double w = (cons.maxWidth - gap * (cols - 1)) / cols;
+              return Wrap(
+                spacing: gap,
+                runSpacing: gap,
+                children: <Widget>[
+                  for (final _Indicator t in tiles)
+                    SizedBox(width: w, child: _MarketTile(indicator: t)),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
