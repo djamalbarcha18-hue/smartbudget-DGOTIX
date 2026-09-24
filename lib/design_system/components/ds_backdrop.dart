@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// The ambient scene behind the app's glass: a deep gradient with a few large,
-/// very soft light pools. It is what gives the translucent surfaces something
+/// The calm scene behind the app's glass: the page color as a gentle gradient
+/// with a couple of very soft light pools in the brand blue. It is what gives the translucent surfaces something
 /// to refract — without it, glass on a flat color just looks grey.
 ///
 /// Static and cheap: painted once inside a [RepaintBoundary] and only repainted
@@ -43,24 +43,23 @@ class _BackdropPainter extends CustomPainter {
   final Color bottom;
   final List<_Glow> glows;
 
+  // The original page colors, with a very soft DGOTIX-blue light so the glass
+  // has depth — calm, a single hue, nothing competing with the data.
   static const _BackdropPainter dark = _BackdropPainter(
-    top: Color(0xFF071A2A),
-    bottom: Color(0xFF040B14),
+    top: Color(0xFF0E1628),
+    bottom: Color(0xFF0B1120),
     glows: <_Glow>[
-      _Glow(Offset(0.92, 0.02), 0.55, Color(0x4714B8A6)), // teal, top corner
-      _Glow(Offset(0.18, 0.28), 0.45, Color(0x291D4ED8)), // deep blue
-      _Glow(Offset(0.06, 0.98), 0.50, Color(0x3810B981)), // emerald, low corner
-      _Glow(Offset(0.70, 0.85), 0.40, Color(0x2406B6D4)), // cyan haze
+      _Glow(Offset(0.92, 0.02), 0.55, Color(0x261680F7)),
+      _Glow(Offset(0.10, 0.90), 0.50, Color(0x141680F7)),
     ],
   );
 
   static const _BackdropPainter light = _BackdropPainter(
-    top: Color(0xFFF1F7FA),
-    bottom: Color(0xFFE5EEF3),
+    top: Color(0xFFF7FAFD),
+    bottom: Color(0xFFF0F4F9),
     glows: <_Glow>[
-      _Glow(Offset(0.92, 0.02), 0.55, Color(0x2614B8A6)),
-      _Glow(Offset(0.18, 0.30), 0.45, Color(0x1A38BDF8)),
-      _Glow(Offset(0.06, 0.98), 0.50, Color(0x1A10B981)),
+      _Glow(Offset(0.92, 0.02), 0.55, Color(0x171680F7)),
+      _Glow(Offset(0.10, 0.90), 0.50, Color(0x0F1680F7)),
     ],
   );
 

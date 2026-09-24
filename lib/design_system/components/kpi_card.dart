@@ -59,6 +59,9 @@ class KpiCard extends StatelessWidget {
   /// place of a Material [icon]. Its colour/size come from the chip's IconTheme.
   final Widget? iconChild;
   final KpiDelta? delta;
+
+  /// The metric's semantic color. Kept for API compatibility; the chrome now
+  /// uses the brand blue everywhere (see build).
   final Color? accent;
   final String? caption;
 
@@ -69,10 +72,11 @@ class KpiCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final Color accentColor = accent ?? c.brand;
+    // Icons use the logo blue on every card so the row reads as one calm
+    // unit; the metric's meaning is carried by the change badge's color.
+    final Color accentColor = c.brand;
 
     return GlassCard(
-      accent: accentColor,
       padding: const EdgeInsets.fromLTRB(
           DsSpacing.lg, DsSpacing.lg, DsSpacing.lg, DsSpacing.md),
       child: Column(

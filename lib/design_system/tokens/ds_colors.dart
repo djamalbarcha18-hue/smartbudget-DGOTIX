@@ -7,12 +7,11 @@ import 'package:flutter/material.dart';
 /// values. This keeps the palette swappable from a single place and makes the
 /// system reusable across future DGOTIX products.
 ///
-/// Semantic mapping (premium FinTech glass direction):
-///   primary accent   -> teal     (brand)
-///   income / growth  -> emerald
-///   expense / down   -> rose red (only for losses and warnings)
-///   saving / net     -> sky blue / cyan
-/// The DGOTIX logo keeps its own blue; UI accents use the tokens below.
+/// Semantic mapping is inherited from the existing SmartBudget identity:
+///   income / growth  -> emerald  (#10B981)
+///   expense / down   -> red      (#EF4444)
+///   saving / accent  -> blue     (#3B82F6) / cyan (#06B6D4)
+///   brand primary    -> DGOTIX blue (#1680F7, extracted from the official logo)
 @immutable
 class DsColors extends ThemeExtension<DsColors> {
   const DsColors({
@@ -68,52 +67,48 @@ class DsColors extends ThemeExtension<DsColors> {
   /// Ambient shadow color.
   final Color shadow;
 
-  /// Premium dark experience (primary theme): deep navy glass with a teal
-  /// primary accent, emerald for gains and a rose red reserved for losses and
-  /// warnings. Saturation is kept controlled so financial figures stay the
-  /// most prominent thing on screen.
+  /// Premium dark experience (primary theme).
   static const DsColors dark = DsColors(
-    brand: Color(0xFF2DD4BF), // teal-400 — primary accent
-    brandStrong: Color(0xFF5EEAD4),
-    income: Color(0xFF34D399), // emerald-400
-    expense: Color(0xFFF7566E), // rose red
-    saving: Color(0xFF38BDF8), // sky-400
-    net: Color(0xFF22D3EE), // cyan-400
-    warning: Color(0xFFFBBF24),
-    bgPage: Color(0xFF050E1A),
-    bgElevated: Color(0xFF0A1828), // opaque sheets, menus, dialogs
-    surface: Color(0xFF0F2133),
-    surfaceMuted: Color(0x14FFFFFF), // white @ 8% — inset fields on glass
-    border: Color(0x1FFFFFFF), // white @ 12%
-    borderStrong: Color(0x38FFFFFF), // white @ 22%
-    textPrimary: Color(0xFFEAF2F8),
-    textMuted: Color(0xFFA3B5C7),
-    textFaint: Color(0xFF6F869C),
-    onBrand: Color(0xFF042F2B), // dark ink on the bright teal (AA contrast)
-    shadow: Color(0x80000000),
+    brand: Color(0xFF1680F7),
+    brandStrong: Color(0xFF3B93FF),
+    income: Color(0xFF10B981),
+    expense: Color(0xFFEF4444),
+    saving: Color(0xFF3B82F6),
+    net: Color(0xFF06B6D4),
+    warning: Color(0xFFF59E0B),
+    bgPage: Color(0xFF0B1120),
+    bgElevated: Color(0xFF0F172A),
+    surface: Color(0xFF1E293B),
+    surfaceMuted: Color(0xFF172033),
+    border: Color(0x1AFFFFFF), // white @ 10%
+    borderStrong: Color(0x33FFFFFF), // white @ 20%
+    textPrimary: Color(0xFFF1F5F9),
+    textMuted: Color(0xFF94A3B8),
+    textFaint: Color(0xFF64748B),
+    onBrand: Color(0xFFFFFFFF),
+    shadow: Color(0x66000000),
   );
 
-  /// Clean, premium light experience (not a mere inversion of dark): frosted
-  /// white glass over a cool mist background, same teal/emerald semantics.
+  /// Clean, premium light experience (not a mere inversion of dark).
   static const DsColors light = DsColors(
-    brand: Color(0xFF0D9488), // teal-600
-    brandStrong: Color(0xFF0F766E),
+    brand: Color(0xFF1680F7),
+    brandStrong: Color(0xFF0F6FE0),
     income: Color(0xFF059669),
-    expense: Color(0xFFE11D48),
-    saving: Color(0xFF0284C7),
+    expense: Color(0xFFDC2626),
+    saving: Color(0xFF2563EB),
     net: Color(0xFF0891B2),
     warning: Color(0xFFD97706),
-    bgPage: Color(0xFFEEF4F7),
+    bgPage: Color(0xFFF4F7FB),
     bgElevated: Color(0xFFFFFFFF),
     surface: Color(0xFFFFFFFF),
-    surfaceMuted: Color(0x0F0F2A3D), // ink @ 6% — inset fields on glass
-    border: Color(0x170F2A3D),
-    borderStrong: Color(0x290F2A3D),
-    textPrimary: Color(0xFF0B1B2B),
-    textMuted: Color(0xFF475A6D),
-    textFaint: Color(0xFF7A8C9E),
+    surfaceMuted: Color(0xFFEEF2F8),
+    border: Color(0x14000000), // black @ ~8%
+    borderStrong: Color(0x24000000),
+    textPrimary: Color(0xFF0F172A),
+    textMuted: Color(0xFF475569),
+    textFaint: Color(0xFF94A3B8),
     onBrand: Color(0xFFFFFFFF),
-    shadow: Color(0x1A0F2A3D),
+    shadow: Color(0x1A0F172A),
   );
 
   @override

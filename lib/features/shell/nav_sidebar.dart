@@ -147,7 +147,8 @@ class _NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final DsGlass g = context.dsGlass;
-    final Color fg = selected ? c.brand : c.textMuted;
+    // Icons always carry the logo blue; inactive ones are a touch softer.
+    final Color fg = selected ? c.brand : c.brand.withValues(alpha: 0.75);
 
     // Active item: a soft teal glass pill with an accent edge and glow.
     final BoxDecoration? active = selected
@@ -220,14 +221,14 @@ class _UpgradeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     return GlassCard(
-      accent: c.warning,
+      accent: c.brand,
       padding: const EdgeInsets.all(DsSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(
             children: <Widget>[
-              Icon(Icons.workspace_premium_outlined, size: 18, color: c.warning),
+              Icon(Icons.workspace_premium_outlined, size: 18, color: c.brand),
               const SizedBox(width: DsSpacing.sm),
               Expanded(
                 child: Text(

@@ -86,7 +86,7 @@ class AppTopBar extends StatelessWidget {
         IconButton(
           onPressed: onOpenMenu,
           tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-          icon: Icon(Icons.menu_rounded, color: c.textMuted),
+          icon: Icon(Icons.menu_rounded, color: c.brand),
         ),
         Expanded(
           child: SingleChildScrollView(
@@ -101,7 +101,7 @@ class AppTopBar extends StatelessWidget {
                 IconButton(
                   onPressed: () => AppSearchDialog.show(context),
                   tooltip: AppLocalizations.of(context).searchHint,
-                  icon: Icon(Icons.search_rounded, color: c.textMuted),
+                  icon: Icon(Icons.search_rounded, color: c.brand),
                 ),
                 const ThemeToggleButton(),
               ],
@@ -137,7 +137,7 @@ class _SearchField extends StatelessWidget {
           ),
           child: Row(
             children: <Widget>[
-              Icon(Icons.search_rounded, size: 18, color: c.textFaint),
+              Icon(Icons.search_rounded, size: 18, color: c.brand),
               const SizedBox(width: DsSpacing.sm),
               Expanded(
                 child: Text(
@@ -185,7 +185,7 @@ class _ChipBox extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Icon(icon, size: 15, color: c.textMuted),
+          Icon(icon, size: 15, color: c.brand),
           const SizedBox(width: DsSpacing.xs),
           Text(label, style: Theme.of(context).textTheme.labelLarge),
           Icon(Icons.arrow_drop_down_rounded, size: 18, color: c.textMuted),
@@ -450,7 +450,7 @@ class _NotificationsBellState extends ConsumerState<_NotificationsBell>
             child: Stack(
               clipBehavior: Clip.none,
               children: <Widget>[
-                Icon(Icons.notifications_none_rounded, color: c.textMuted),
+                Icon(Icons.notifications_none_rounded, color: c.brand),
                 if (count > 0)
                   PositionedDirectional(
                     end: -4,

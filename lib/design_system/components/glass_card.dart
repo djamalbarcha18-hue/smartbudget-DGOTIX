@@ -30,8 +30,7 @@ class GlassCard extends StatefulWidget {
   final BorderRadius borderRadius;
   final VoidCallback? onTap;
 
-  /// Optional accent (e.g. a KPI's income/expense color): tints the top edge
-  /// with a soft gradient line and a faint corner glow.
+  /// Optional accent: tints the thin top edge line (no glow).
   final Color? accent;
 
   /// Whether the card reacts to hover. Disable for very large containers.
@@ -61,26 +60,6 @@ class _GlassCardState extends State<GlassCard> {
       // plain container would (the decorations are positioned overlays).
       fit: StackFit.passthrough,
       children: <Widget>[
-        // Faint accent glow in the top-start corner.
-        if (accent != null)
-          PositionedDirectional(
-            top: -60,
-            start: -40,
-            child: IgnorePointer(
-              child: Container(
-                width: 180,
-                height: 160,
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    colors: <Color>[
-                      accent.withValues(alpha: 0.16),
-                      accent.withValues(alpha: 0),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
         // Top edge: a highlight line (accent-tinted when an accent is set).
         Positioned(
           top: 0,
@@ -93,7 +72,7 @@ class _GlassCardState extends State<GlassCard> {
                 gradient: LinearGradient(
                   colors: <Color>[
                     (accent ?? g.highlight).withValues(alpha: 0),
-                    accent?.withValues(alpha: 0.85) ?? g.highlight,
+                    accent?.withValues(alpha: 0.6) ?? g.highlight,
                     (accent ?? g.highlight).withValues(alpha: 0),
                   ],
                 ),

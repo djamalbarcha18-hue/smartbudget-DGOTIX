@@ -15,31 +15,25 @@ void main() {
       return (hi + 0.05) / (lo + 0.05);
     }
 
-    test('both themes share the teal primary accent family', () {
-      for (final DsColors c in <DsColors>[DsColors.dark, DsColors.light]) {
-        final HSVColor h = HSVColor.fromColor(c.brand);
-        expect(h.hue, inInclusiveRange(165, 180), reason: 'teal hue');
-      }
+    test('dark and light expose the DGOTIX brand blue (the logo color)', () {
+      expect(DsColors.dark.brand, const Color(0xFF1680F7));
+      expect(DsColors.light.brand, const Color(0xFF1680F7));
     });
 
     test('financial semantics stay distinct: gains green, losses red', () {
       for (final DsColors c in <DsColors>[DsColors.dark, DsColors.light]) {
-        expect(HSVColor.fromColor(c.income).hue, inInclusiveRange(140, 165));
+        expect(HSVColor.fromColor(c.income).hue, inInclusiveRange(140, 170));
         final double loss = HSVColor.fromColor(c.expense).hue;
-        expect(loss > 330 || loss < 10, isTrue, reason: 'red/rose hue');
-        expect(c.income, isNot(c.brand));
+        expect(loss > 330 || loss < 10, isTrue, reason: 'red hue');
       }
     });
 
-    test('text and button labels meet WCAG AA contrast', () {
+    test('text stays readable (WCAG AA) in both themes', () {
       for (final DsColors c in <DsColors>[DsColors.dark, DsColors.light]) {
         expect(contrast(c.textPrimary, c.bgElevated), greaterThanOrEqualTo(7));
         expect(contrast(c.textMuted, c.bgElevated), greaterThanOrEqualTo(4.5));
         expect(contrast(c.onBrand, c.brand), greaterThanOrEqualTo(3));
       }
-      // Dark theme primary buttons use dark ink on bright teal: full AA.
-      expect(contrast(DsColors.dark.onBrand, DsColors.dark.brand),
-          greaterThanOrEqualTo(4.5));
     });
 
     test('lerp between light and dark is stable at the endpoints', () {

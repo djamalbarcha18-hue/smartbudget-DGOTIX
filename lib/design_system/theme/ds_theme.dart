@@ -54,7 +54,8 @@ abstract final class DsTheme {
       textTheme: textTheme,
       splashFactory: InkSparkle.splashFactory,
       dividerTheme: DividerThemeData(color: colors.border, thickness: 1),
-      iconTheme: IconThemeData(color: colors.textMuted, size: 20),
+      // Icons default to the logo blue across the whole app.
+      iconTheme: IconThemeData(color: colors.brand, size: 20),
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
           color: colors.bgElevated,

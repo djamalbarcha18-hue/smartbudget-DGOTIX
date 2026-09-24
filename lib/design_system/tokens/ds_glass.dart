@@ -2,9 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-/// Glassmorphism tokens — premium and restrained: translucent surfaces over an
-/// ambient backdrop (see `DsBackdrop`), a light blur, hairline borders, a soft
-/// top highlight and depth from shadows rather than neon glow.
+/// Glassmorphism tokens — premium and restrained: translucent surfaces over a
+/// calm backdrop (see `DsBackdrop`), a light blur, hairline borders, a soft top
+/// highlight and depth from shadows rather than glow. Colors stay on the
+/// original SmartBudget palette with DGOTIX blue as the only accent.
 ///
 /// Consumed by [GlassCard], the shell panels and any surface that wants the
 /// frosted look, so the whole app shares one glass language.
@@ -53,38 +54,39 @@ class DsGlass extends ThemeExtension<DsGlass> {
 
   ImageFilter get blur => ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma);
 
+  // Colors follow the original SmartBudget palette (slate glass, DGOTIX blue
+  // accents); only the glass treatment is layered on top.
   static const DsGlass dark = DsGlass(
-    blurSigma: 18,
-    fill: Color(0x8C0A1B2B), // deep navy @ 55%
-    fillTop: Color(0x8C15334A), // lifted teal-navy @ 55%
-    fillStrong: Color(0xCC081626),
-    borderColor: Color(0x24B9E6F2), // cool white @ 14%
-    hoverBorder: Color(0x662DD4BF), // teal @ 40%
-    highlight: Color(0x33FFFFFF),
-    glow: Color(0x262DD4BF),
+    blurSigma: 16,
+    fill: Color(0x991E293B), // slate-800 @ 60%
+    fillTop: Color(0xB32A3A54),
+    fillStrong: Color(0xD90F172A), // slate-900 @ 85%
+    borderColor: Color(0x1FFFFFFF),
+    hoverBorder: Color(0x661680F7), // DGOTIX blue @ 40%
+    highlight: Color(0x24FFFFFF),
+    glow: Color(0x261680F7),
     shadow: <BoxShadow>[
-      BoxShadow(color: Color(0x59000000), blurRadius: 30, offset: Offset(0, 16)),
+      BoxShadow(color: Color(0x59000000), blurRadius: 28, offset: Offset(0, 14)),
     ],
     hoverShadow: <BoxShadow>[
-      BoxShadow(color: Color(0x73000000), blurRadius: 36, offset: Offset(0, 20)),
-      BoxShadow(color: Color(0x1A2DD4BF), blurRadius: 24),
+      BoxShadow(color: Color(0x6B000000), blurRadius: 34, offset: Offset(0, 18)),
     ],
   );
 
   static const DsGlass light = DsGlass(
-    blurSigma: 16,
-    fill: Color(0xB3FFFFFF), // white @ 70%
-    fillTop: Color(0xE6FFFFFF),
-    fillStrong: Color(0xD9FFFFFF),
-    borderColor: Color(0x1F0F2A3D),
-    hoverBorder: Color(0x660D9488),
-    highlight: Color(0xE6FFFFFF),
-    glow: Color(0x1A0D9488),
+    blurSigma: 14,
+    fill: Color(0xCCFFFFFF), // white @ 80%
+    fillTop: Color(0xF2FFFFFF),
+    fillStrong: Color(0xE6FFFFFF),
+    borderColor: Color(0x14000000),
+    hoverBorder: Color(0x4D1680F7),
+    highlight: Color(0x99FFFFFF),
+    glow: Color(0x1A1680F7),
     shadow: <BoxShadow>[
-      BoxShadow(color: Color(0x140F2A3D), blurRadius: 24, offset: Offset(0, 12)),
+      BoxShadow(color: Color(0x140F172A), blurRadius: 24, offset: Offset(0, 12)),
     ],
     hoverShadow: <BoxShadow>[
-      BoxShadow(color: Color(0x240F2A3D), blurRadius: 30, offset: Offset(0, 16)),
+      BoxShadow(color: Color(0x1F0F172A), blurRadius: 30, offset: Offset(0, 16)),
     ],
   );
 

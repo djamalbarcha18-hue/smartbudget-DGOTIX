@@ -22,7 +22,7 @@ class ThemeToggleButton extends ConsumerWidget {
       onPressed: () => ref.read(themeModeProvider.notifier).toggle(),
       icon: Icon(
         isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-        color: c.textMuted,
+        color: c.brand,
         size: 20,
       ),
     );
@@ -39,7 +39,7 @@ class LanguageToggleButton extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     return TextButton.icon(
       onPressed: () => ref.read(localeProvider.notifier).toggle(),
-      icon: Icon(Icons.translate_outlined, size: 18, color: c.textMuted),
+      icon: Icon(Icons.translate_outlined, size: 18, color: c.brand),
       label: Text(l.languageToggleTooltip, style: TextStyle(color: c.textMuted)),
       style: TextButton.styleFrom(foregroundColor: c.textMuted),
     );

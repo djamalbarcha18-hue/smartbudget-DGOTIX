@@ -56,7 +56,7 @@ class DsEmpty extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Icon(icon, size: 40, color: c.textFaint),
+            Icon(icon, size: 40, color: c.brand.withValues(alpha: 0.6)),
             const SizedBox(height: DsSpacing.md),
             Text(title, style: t.titleMedium, textAlign: TextAlign.center),
             if (message != null) ...<Widget>[
