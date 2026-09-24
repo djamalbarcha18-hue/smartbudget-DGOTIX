@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/design_system/components/markdown_text.dart';
+import 'package:smartbudget/features/assistant/domain/ai_conversation.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -55,6 +58,9 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
 
     _ctrl.clear();
     chat.add(ChatMessage(fromUser: true, text: q));
+    // Memory: the recent turns before this question, trimmed and alternating.
+    final List<ChatMessage> history =
+        AiConversation.history(ref.read(chatMessagesProvider));
     setState(() {
       _busy = true;
       _error = null;
@@ -66,7 +72,11 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
         // Server path: keys, routing and failover happen in the Edge Function.
         final GatewayAnswer a = await ref
             .read(aiGatewayServiceProvider)
-            .ask(task: AiTaskType.chat, prompt: q, context: ctx);
+            .ask(
+                task: AiTaskType.chat,
+                prompt: q,
+                context: ctx,
+                history: history);
         chat.add(ChatMessage(fromUser: false, text: a.text));
         usage.record(a.model.isEmpty ? 'dgotix-ai' : a.model,
             AiUsage(inputTokens: a.inputTokens, outputTokens: a.outputTokens));
@@ -76,7 +86,8 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
         final AiKeyController keyCtl = ref.read(aiKeyProvider.notifier);
         final AiChatResult r = await ref
             .read(aiChatServiceProvider)
-            .ask(config: cfg, question: q, context: ctx);
+            .ask(
+                config: cfg, question: q, context: ctx, history: history);
         chat.add(ChatMessage(fromUser: false, text: r.text));
         usage.record(r.usedModel, r.usage);
         if (r.usedModel != cfg.effectiveModel) keyCtl.setModel(r.usedModel);
@@ -451,10 +462,37 @@ class _Bubble extends StatelessWidget {
             border: Border.all(
                 color: user ? c.brand.withValues(alpha: 0.30) : c.border),
           ),
-          child: SelectableText(
-            msg.text,
-            style: t.bodyMedium?.copyWith(color: c.textPrimary),
-          ),
+          child: user
+              ? SelectableText(
+                  msg.text,
+                  style: t.bodyMedium?.copyWith(color: c.textPrimary),
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    // Formatted answer (bold, bullets) instead of raw symbols.
+                    MarkdownText(msg.text),
+                    Align(
+                      alignment: AlignmentDirectional.centerEnd,
+                      child: IconButton(
+                        visualDensity: VisualDensity.compact,
+                        tooltip: AppLocalizations.of(context).askAiCopy,
+                        icon: Icon(Icons.copy_rounded,
+                            size: 16, color: c.textFaint),
+                        onPressed: () async {
+                          final ScaffoldMessengerState? m =
+                              ScaffoldMessenger.maybeOf(context);
+                          final String done =
+                              AppLocalizations.of(context).askAiCopied;
+                          await Clipboard.setData(
+                              ClipboardData(text: msg.text));
+                          m?.showSnackBar(SnackBar(content: Text(done)));
+                        },
+                      ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );

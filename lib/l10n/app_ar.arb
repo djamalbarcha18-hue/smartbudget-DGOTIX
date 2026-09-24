@@ -358,14 +358,14 @@
 
   "pageAssistant": "مساعد AI",
   "assistantInsightsTitle": "رؤى ذكية",
-  "assistantSubtitle": "تُحسب محلياً من بياناتك — لا تغادر أي بيانات جهازك.",
+  "assistantSubtitle": "الرؤى الذكية تُحسب على جهازك. وعند سؤال المساعد يُرسَل ملخّص رقمي مختصر لماليتك (بلا أسماء ولا أوصاف) إلى مزوّد الذكاء الاصطناعي ليجيب.",
   "assistantEmpty": "أضِف دخلاً ومصروفات للحصول على رؤى مخصّصة.",
-  "assistantDisclaimer": "هذه الرؤى قائمة على قواعد وتُحسب على جهازك. المساعد المحادثي يأتي مع الخادم.",
+  "assistantDisclaimer": "هذه الرؤى قائمة على قواعد وتُحسب على جهازك.",
   "insightNetDeficit": "أنفقت {amount} أكثر مما كسبت هذه السنة.",
   "@insightNetDeficit": { "placeholders": { "amount": { "type": "String" } } },
   "insightNetSurplus": "احتفظت بـ {amount} فوق إنفاقك هذه السنة.",
   "@insightNetSurplus": { "placeholders": { "amount": { "type": "String" } } },
-  "insightSavingsRate": "معدّل ادّخارك هو {rate}.",
+  "insightSavingsRate": "معدّل ادّخارك هذه السنة هو {rate}.",
   "@insightSavingsRate": { "placeholders": { "rate": { "type": "String" } } },
   "insightTopExpense": "أكبر مصروف لديك هو {category} بمبلغ {amount}.",
   "@insightTopExpense": { "placeholders": { "category": { "type": "String" }, "amount": { "type": "String" } } },
@@ -885,5 +885,7 @@
   "upcomingNone": "لا مواعيد خلال الأيام السبعة القادمة",
   "upcomingNext": "الأقرب: {name} · {date}",
   "@upcomingNext": {"placeholders": {"name": {"type": "String"}, "date": {"type": "String"}}},
-  "myPlansTitle": "خططي"
+  "myPlansTitle": "خططي",
+  "askAiCopy": "نسخ الإجابة",
+  "askAiCopied": "تم نسخ الإجابة"
 }

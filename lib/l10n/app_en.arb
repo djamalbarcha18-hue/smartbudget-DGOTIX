@@ -358,14 +358,14 @@
 
   "pageAssistant": "AI Assistant",
   "assistantInsightsTitle": "Smart insights",
-  "assistantSubtitle": "Generated locally from your own data — no data leaves your device.",
+  "assistantSubtitle": "Smart insights are computed on your device. When you ask DGOTIX AI, a short numeric summary of your finances (no names or descriptions) is sent to the AI provider to answer.",
   "assistantEmpty": "Add income and expenses to get personalised insights.",
-  "assistantDisclaimer": "These insights are rule-based and computed on your device. A conversational assistant arrives with the backend.",
+  "assistantDisclaimer": "These insights are rule-based and computed on your device.",
   "insightNetDeficit": "You spent {amount} more than you earned this year.",
   "@insightNetDeficit": { "placeholders": { "amount": { "type": "String" } } },
   "insightNetSurplus": "You kept {amount} beyond your spending this year.",
   "@insightNetSurplus": { "placeholders": { "amount": { "type": "String" } } },
-  "insightSavingsRate": "Your savings rate is {rate}.",
+  "insightSavingsRate": "Your savings rate this year is {rate}.",
   "@insightSavingsRate": { "placeholders": { "rate": { "type": "String" } } },
   "insightTopExpense": "Your largest expense is {category} at {amount}.",
   "@insightTopExpense": { "placeholders": { "category": { "type": "String" }, "amount": { "type": "String" } } },
@@ -889,5 +889,7 @@
   "upcomingNone": "Nothing due in the next 7 days",
   "upcomingNext": "Next: {name} · {date}",
   "@upcomingNext": {"placeholders": {"name": {"type": "String"}, "date": {"type": "String"}}},
-  "myPlansTitle": "My plans"
+  "myPlansTitle": "My plans",
+  "askAiCopy": "Copy answer",
+  "askAiCopied": "Answer copied"
 }

@@ -38,14 +38,17 @@ InsightView describeInsight(BuildContext context, Insight i) {
     InsightTone.info => Icons.lightbulb_outline_rounded,
   };
 
+  // Figures are wrapped in a left-to-right isolate so a trailing "%" or "$"
+  // stays with its number inside an Arabic sentence (not "٪45.0." flipped).
+  String iso(String s) => '\u2066$s\u2069';
   String money(int? minor) =>
-      MoneyFormatter.format(Money(minor ?? 0, i.currency ?? 'USD'));
+      iso(MoneyFormatter.format(Money(minor ?? 0, i.currency ?? 'USD')));
 
   final String message = switch (i.key) {
     InsightKey.netDeficit => l.insightNetDeficit(money(i.amountMinor)),
     InsightKey.netSurplus => l.insightNetSurplus(money(i.amountMinor)),
     InsightKey.savingsRate =>
-      l.insightSavingsRate(MoneyFormatter.percent(i.rate ?? 0)),
+      l.insightSavingsRate(iso(MoneyFormatter.percent(i.rate ?? 0))),
     InsightKey.topExpenseCategory => l.insightTopExpense(
         Catalog.label(i.category ?? '', ar: ar), money(i.amountMinor)),
     InsightKey.healthExcellent => l.insightHealthExcellent,

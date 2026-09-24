@@ -8,7 +8,8 @@
 //
 // Deploy:  supabase functions deploy ai-gateway
 // Secrets: supabase secrets set GEMINI_API_KEY=... OPENAI_API_KEY=... ANTHROPIC_API_KEY=...
-// Body:    { "task": "chat", "prompt": "…", "context": "…" }
+// Body:    { "task": "chat", "prompt": "…", "context": "…",
+//            "history": [{ "role": "user"|"assistant", "text": "…" }] }
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
 import {
@@ -53,6 +54,7 @@ Deno.serve(async (req: Request) => {
     const task = (VALID_TASKS.has(body?.task) ? body.task : "chat") as TaskType;
     const prompt = String(body?.prompt ?? "").trim();
     const context = String(body?.context ?? "");
+    const history = sanitizeHistory(body?.history);
     if (!prompt) return jsonResponse({ error: "empty_prompt" }, 400, cors);
 
     const db = serviceClient();
@@ -104,7 +106,7 @@ Deno.serve(async (req: Request) => {
       const m = tried[i];
       const started = Date.now();
       try {
-        const out = await generate(m.provider as ProviderId, m.id, "", buildPrompt(context, prompt));
+        const out = await generate(m.provider as ProviderId, m.id, "", buildPrompt(context, history, prompt));
         recordSuccess(m.provider as ProviderId);
         const cost = estCostUsd(m, out.inputTokens, out.outputTokens);
         await bumpUsage(db, userId, month, out.inputTokens, out.outputTokens, cost);
@@ -138,10 +140,33 @@ Deno.serve(async (req: Request) => {
   }
 });
 
-function buildPrompt(context: string, prompt: string): string {
-  return context && context.trim().length > 0
-    ? `User financial context:\n${context}\n\nQuestion:\n${prompt}`
-    : prompt;
+type Turn = { role: "user" | "assistant"; text: string };
+
+/// Conversation memory from the client, re-validated here: at most 6 turns,
+/// each capped, roles restricted — the client can't inflate the request.
+function sanitizeHistory(raw: unknown): Turn[] {
+  if (!Array.isArray(raw)) return [];
+  const out: Turn[] = [];
+  for (const t of raw.slice(-6)) {
+    const role = t?.role === "assistant" ? "assistant" : t?.role === "user" ? "user" : null;
+    const text = String(t?.text ?? "").trim().slice(0, 1000);
+    if (role && text) out.push({ role, text });
+  }
+  return out;
+}
+
+function buildPrompt(context: string, history: Turn[], prompt: string): string {
+  const parts: string[] = [];
+  if (context && context.trim().length > 0) {
+    parts.push(`User financial context:\n${context}`);
+  }
+  if (history.length > 0) {
+    parts.push("Conversation so far:\n" + history
+      .map((t) => `${t.role === "user" ? "User" : "DGOTIX AI"}: ${t.text}`)
+      .join("\n"));
+  }
+  parts.push(`Question:\n${prompt}`);
+  return parts.join("\n\n");
 }
 
 async function bumpUsage(

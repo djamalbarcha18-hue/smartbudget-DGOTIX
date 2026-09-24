@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:smartbudget/features/ai/domain/ai_registry.dart';
 import 'package:smartbudget/features/assistant/application/ai_key_controller.dart';
+import 'package:smartbudget/features/assistant/domain/ai_conversation.dart';
 
 /// Why an AI request failed, mapped to a friendly localized message by the UI.
 enum AiChatError { invalidKey, unsupported, rateLimited, network, empty, unknown }
@@ -46,25 +47,23 @@ class AiChatService {
     required AiKeyConfig config,
     required String question,
     required String context,
+    List<ChatMessage> history = const <ChatMessage>[],
   }) {
-    final String system = _systemPrompt(context);
+    final String system = AiPrompts.system(context);
     final String model = config.effectiveModel;
+    // Memory: the earlier turns, then the new question.
+    final List<ChatMessage> q = <ChatMessage>[
+      ...history,
+      ChatMessage(fromUser: true, text: question),
+    ];
     return switch (config.provider) {
-      AiProvider.gemini => _gemini(config.key, model, system, question),
-      AiProvider.openai => _openai(config.key, model, system, question),
-      AiProvider.anthropic => _anthropic(config.key, model, system, question),
+      AiProvider.gemini => _gemini(config.key, model, system, q),
+      AiProvider.openai => _openai(config.key, model, system, q),
+      AiProvider.anthropic => _anthropic(config.key, model, system, q),
       AiProvider.other => Future<AiChatResult>.error(
           const AiChatException(AiChatError.unsupported)),
     };
   }
-
-  String _systemPrompt(String context) =>
-      'You are DGOTIX AI, a concise, practical personal-finance assistant inside '
-      "the SmartBudget app. Use the user's real financial context below when it "
-      'helps. Be specific and actionable, keep answers short, and never invent '
-      "exact figures that aren't provided. Prefer halal-friendly guidance. Reply "
-      "in the same language as the user's question (Arabic or English).\n\n"
-      'User financial context:\n$context';
 
   // ---- Providers ----
 
@@ -73,7 +72,7 @@ class AiChatService {
   /// default never blocks a valid key. Other errors (bad key, rate limit,
   /// network) stop immediately.
   Future<AiChatResult> _gemini(
-      String key, String model, String system, String q) async {
+      String key, String model, String system, List<ChatMessage> q) async {
     // Candidates come from the registry (active Gemini models only), so a
     // retired id is never tried and new models are picked up automatically.
     final List<String> candidates = <String>[
@@ -101,7 +100,7 @@ class AiChatService {
   }
 
   Future<AiChatResult> _geminiOnce(
-      String key, String model, String system, String q) async {
+      String key, String model, String system, List<ChatMessage> q) async {
     final Uri uri = Uri.parse(
         'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$key');
     final String body = await _send(
@@ -114,11 +113,13 @@ class AiChatService {
           ]
         },
         'contents': <Map<String, dynamic>>[
-          <String, dynamic>{
-            'parts': <Map<String, String>>[
-              <String, String>{'text': q}
-            ]
-          }
+          for (final ChatMessage m in q)
+            <String, dynamic>{
+              'role': m.fromUser ? 'user' : 'model',
+              'parts': <Map<String, String>>[
+                <String, String>{'text': m.text}
+              ]
+            }
         ],
         'generationConfig': <String, dynamic>{
           'temperature': 0.4,
@@ -161,7 +162,8 @@ class AiChatService {
     );
   }
 
-  Future<AiChatResult> _openai(String key, String model, String system, String q) async {
+  Future<AiChatResult> _openai(
+      String key, String model, String system, List<ChatMessage> q) async {
     final Uri uri = Uri.parse('https://api.openai.com/v1/chat/completions');
     final String body = await _send(
       uri,
@@ -173,7 +175,11 @@ class AiChatService {
         'model': model,
         'messages': <Map<String, String>>[
           <String, String>{'role': 'system', 'content': system},
-          <String, String>{'role': 'user', 'content': q},
+          for (final ChatMessage m in q)
+            <String, String>{
+              'role': m.fromUser ? 'user' : 'assistant',
+              'content': m.text,
+            },
         ],
         'temperature': 0.4,
         'max_tokens': 800,
@@ -198,7 +204,8 @@ class AiChatService {
     );
   }
 
-  Future<AiChatResult> _anthropic(String key, String model, String system, String q) async {
+  Future<AiChatResult> _anthropic(
+      String key, String model, String system, List<ChatMessage> q) async {
     final Uri uri = Uri.parse('https://api.anthropic.com/v1/messages');
     final String body = await _send(
       uri,
@@ -214,7 +221,11 @@ class AiChatService {
         'max_tokens': 800,
         'system': system,
         'messages': <Map<String, String>>[
-          <String, String>{'role': 'user', 'content': q},
+          for (final ChatMessage m in q)
+            <String, String>{
+              'role': m.fromUser ? 'user' : 'assistant',
+              'content': m.text,
+            },
         ],
       },
     );

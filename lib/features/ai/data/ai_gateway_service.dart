@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:smartbudget/features/assistant/domain/ai_conversation.dart';
 import 'package:smartbudget/features/ai/domain/ai_errors.dart';
 import 'package:smartbudget/features/ai/domain/ai_registry.dart';
 
@@ -32,6 +33,7 @@ class AiGatewayService {
     required AiTaskType task,
     required String prompt,
     required String context,
+    List<ChatMessage> history = const <ChatMessage>[],
   }) async {
     late final FunctionResponse res;
     try {
@@ -41,6 +43,15 @@ class AiGatewayService {
           'task': task.name,
           'prompt': prompt,
           'context': context,
+          // Conversation memory (already trimmed by AiConversation.history);
+          // the gateway re-validates and caps it server-side.
+          'history': <Map<String, String>>[
+            for (final ChatMessage m in history)
+              <String, String>{
+                'role': m.fromUser ? 'user' : 'assistant',
+                'text': m.text,
+              },
+          ],
         },
       );
     } on FunctionException catch (e) {
