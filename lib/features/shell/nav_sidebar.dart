@@ -4,6 +4,8 @@ import 'package:smartbudget/design_system/brand/dgotix_brand_lockup.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/glass_panel.dart';
+import 'package:smartbudget/design_system/tokens/ds_glass.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -17,24 +19,23 @@ class NavSidebar extends StatelessWidget {
     required this.currentRoute,
     required this.onSelect,
     this.width = 264,
+    this.floating = false,
   });
 
   final String currentRoute;
   final ValueChanged<String> onSelect;
   final double width;
 
+  /// Desktop: a floating, rounded glass panel over the backdrop. Inside the
+  /// mobile drawer it stays a plain full-height surface.
+  final bool floating;
+
   @override
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
 
-    return Container(
-      width: width,
-      decoration: BoxDecoration(
-        color: c.bgElevated,
-        border: Border(right: BorderSide(color: c.border)),
-      ),
-      child: Column(
+    final Widget body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           const Padding(
@@ -60,7 +61,17 @@ class NavSidebar extends StatelessWidget {
             child: _UpgradeCard(l: l),
           ),
         ],
+    );
+    if (floating) {
+      return SizedBox(width: width, child: GlassPanel(child: body));
+    }
+    return Container(
+      width: width,
+      decoration: BoxDecoration(
+        color: c.bgElevated,
+        border: BorderDirectional(end: BorderSide(color: c.border)),
       ),
+      child: body,
     );
   }
 
@@ -135,16 +146,37 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
+    final DsGlass g = context.dsGlass;
     final Color fg = selected ? c.brand : c.textMuted;
+
+    // Active item: a soft teal glass pill with an accent edge and glow.
+    final BoxDecoration? active = selected
+        ? BoxDecoration(
+            borderRadius: DsRadius.brMd,
+            gradient: LinearGradient(
+              begin: AlignmentDirectional.centerStart,
+              end: AlignmentDirectional.centerEnd,
+              colors: <Color>[
+                c.brand.withValues(alpha: 0.24),
+                c.brand.withValues(alpha: 0.06),
+              ],
+            ),
+            border: Border.all(color: c.brand.withValues(alpha: 0.38)),
+            boxShadow: <BoxShadow>[BoxShadow(color: g.glow, blurRadius: 16)],
+          )
+        : null;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Material(
-        color: selected ? c.brand.withValues(alpha: 0.12) : Colors.transparent,
+      child: DecoratedBox(
+        decoration: active ?? const BoxDecoration(),
+        child: Material(
+        color: Colors.transparent,
         borderRadius: DsRadius.brMd,
         child: InkWell(
           onTap: onTap,
           borderRadius: DsRadius.brMd,
+          hoverColor: c.textPrimary.withValues(alpha: 0.05),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: DsSpacing.md,
@@ -174,6 +206,7 @@ class _NavItem extends StatelessWidget {
             ),
           ),
         ),
+      ),
       ),
     );
   }

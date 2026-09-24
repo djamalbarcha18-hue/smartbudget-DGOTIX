@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/core/l10n/month_names.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
+import 'package:smartbudget/design_system/components/glass_panel.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -40,20 +42,14 @@ class AppTopBar extends StatelessWidget {
     final DsColors c = context.dsColors;
     final bool isMobile = context.isMobile;
 
-    return Container(
-      height: 64,
-      decoration: BoxDecoration(
-        color: c.bgElevated,
-        border: Border(bottom: BorderSide(color: c.border)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.lg),
-      child: Row(
+    return GlassPanel(
+      borderRadius: DsRadius.brLg,
+      padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? DsSpacing.xs : DsSpacing.md),
+      child: SizedBox(
+      height: 60,
+      child: isMobile ? _mobile(context, c) : Row(
         children: <Widget>[
-          if (isMobile)
-            IconButton(
-              onPressed: onOpenMenu,
-              icon: Icon(Icons.menu_rounded, color: c.textMuted),
-            ),
           Expanded(
             child: Align(
               alignment: AlignmentDirectional.centerStart,
@@ -77,6 +73,44 @@ class AppTopBar extends StatelessWidget {
           const _ProfileChip(),
         ],
       ),
+      ),
+    );
+  }
+
+  /// Phone layout: menu and the always-needed actions stay pinned; the period
+  /// and currency selectors (plus search and theme) scroll sideways instead of
+  /// overflowing the bar.
+  Widget _mobile(BuildContext context, DsColors c) {
+    return Row(
+      children: <Widget>[
+        IconButton(
+          onPressed: onOpenMenu,
+          tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+          icon: Icon(Icons.menu_rounded, color: c.textMuted),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: <Widget>[
+                const _MonthChip(),
+                const SizedBox(width: DsSpacing.xs),
+                const _YearChip(),
+                const SizedBox(width: DsSpacing.xs),
+                const _CurrencyChip(),
+                IconButton(
+                  onPressed: () => AppSearchDialog.show(context),
+                  tooltip: AppLocalizations.of(context).searchHint,
+                  icon: Icon(Icons.search_rounded, color: c.textMuted),
+                ),
+                const ThemeToggleButton(),
+              ],
+            ),
+          ),
+        ),
+        const _NotificationsBell(),
+        const _ProfileChip(),
+      ],
     );
   }
 }
@@ -161,15 +195,6 @@ class _ChipBox extends StatelessWidget {
   }
 }
 
-const List<String> _monthsAr = <String>[
-  'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-  'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
-];
-const List<String> _monthsEn = <String>[
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
-
 /// Global month selector — shared with Monthly Budget via [selectedMonthProvider].
 class _MonthChip extends ConsumerWidget {
   const _MonthChip();
@@ -178,7 +203,7 @@ class _MonthChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final DsColors c = context.dsColors;
     final bool ar = Localizations.localeOf(context).languageCode == 'ar';
-    final List<String> names = ar ? _monthsAr : _monthsEn;
+    final List<String> names = MonthNames.full(ar: ar);
     final int month = ref.watch(selectedMonthProvider);
     final int value = (month >= 1 && month <= 12) ? month : DateTime.now().month;
 

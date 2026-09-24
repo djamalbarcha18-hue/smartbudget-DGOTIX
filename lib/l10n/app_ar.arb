@@ -874,5 +874,7 @@
   "smartAlertsTitle": "التنبيهات الذكية",
   "smartAlertsLocked": "توقّع تجاوز الميزانية والمصروفات غير المعتادة والملخّص الأسبوعي والشهري متاحة مع الاشتراكات السنوية.",
   "smartAlertsSeePlans": "عرض الاشتراكات السنوية",
-  "planFeatSmartAlerts": "تنبيهات ذكية (مع الاشتراك السنوي)"
+  "planFeatSmartAlerts": "تنبيهات ذكية (مع الاشتراك السنوي)",
+  "txnTypeIncome": "دخل",
+  "txnTypeExpense": "مصروف"
 }

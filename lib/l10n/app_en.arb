@@ -878,5 +878,7 @@
   "smartAlertsTitle": "Smart alerts",
   "smartAlertsLocked": "Spending forecasts, unusual expenses and weekly and monthly summaries come with yearly plans.",
   "smartAlertsSeePlans": "See yearly plans",
-  "planFeatSmartAlerts": "Smart alerts (with yearly billing)"
+  "planFeatSmartAlerts": "Smart alerts (with yearly billing)",
+  "txnTypeIncome": "Income",
+  "txnTypeExpense": "Expense"
 }

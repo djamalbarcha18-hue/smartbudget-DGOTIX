@@ -4,12 +4,17 @@ import 'package:smartbudget/design_system/tokens/ds_glass.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 
-/// The core surface of the DGOTIX design system: a moderate glassmorphism card.
+/// The core surface of the DGOTIX design system: a premium glass card.
 ///
-/// Semi-transparent fill + light backdrop blur + hairline border + soft shadow
-/// + a 1px inner top highlight for the "glass edge". Deliberately restrained
-/// (premium FinTech, not gaming UI).
-class GlassCard extends StatelessWidget {
+/// A translucent gradient fill over the ambient backdrop, a light backdrop blur,
+/// a hairline border, a soft top highlight and an ambient shadow. On pointer
+/// devices it lifts slightly and its border warms to the accent on hover
+/// (skipped when the platform asks for reduced motion).
+///
+/// Blurs are drawn with [BackdropFilter.grouped], so every card inside the
+/// app shell's `BackdropGroup` shares one backdrop pass — far cheaper on the
+/// web than one independent blur per card.
+class GlassCard extends StatefulWidget {
   const GlassCard({
     super.key,
     required this.child,
@@ -17,6 +22,7 @@ class GlassCard extends StatelessWidget {
     this.borderRadius = DsRadius.brLg,
     this.onTap,
     this.accent,
+    this.hoverable = true,
   });
 
   final Widget child;
@@ -24,80 +30,128 @@ class GlassCard extends StatelessWidget {
   final BorderRadius borderRadius;
   final VoidCallback? onTap;
 
-  /// Optional accent color for a subtle top border (used e.g. to color a KPI
-  /// tile by its semantic — income/expense/…).
+  /// Optional accent (e.g. a KPI's income/expense color): tints the top edge
+  /// with a soft gradient line and a faint corner glow.
   final Color? accent;
+
+  /// Whether the card reacts to hover. Disable for very large containers.
+  final bool hoverable;
+
+  @override
+  State<GlassCard> createState() => _GlassCardState();
+}
+
+class _GlassCardState extends State<GlassCard> {
+  bool _hover = false;
+
+  void _setHover(bool v) {
+    if (_hover != v) setState(() => _hover = v);
+  }
 
   @override
   Widget build(BuildContext context) {
     final DsGlass g = context.dsGlass;
+    final bool reduceMotion = MediaQuery.disableAnimationsOf(context);
+    final bool lifted = _hover && widget.hoverable;
+    final BorderRadius br = widget.borderRadius;
+    final Color? accent = widget.accent;
 
-    final Widget surface = DecoratedBox(
+    final Widget content = Stack(
+      // Pass the card's constraints straight to the content, exactly as a
+      // plain container would (the decorations are positioned overlays).
+      fit: StackFit.passthrough,
+      children: <Widget>[
+        // Faint accent glow in the top-start corner.
+        if (accent != null)
+          PositionedDirectional(
+            top: -60,
+            start: -40,
+            child: IgnorePointer(
+              child: Container(
+                width: 180,
+                height: 160,
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    colors: <Color>[
+                      accent.withValues(alpha: 0.16),
+                      accent.withValues(alpha: 0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        // Top edge: a highlight line (accent-tinted when an accent is set).
+        Positioned(
+          top: 0,
+          left: 16,
+          right: 16,
+          child: IgnorePointer(
+            child: Container(
+              height: 1,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: <Color>[
+                    (accent ?? g.highlight).withValues(alpha: 0),
+                    accent?.withValues(alpha: 0.85) ?? g.highlight,
+                    (accent ?? g.highlight).withValues(alpha: 0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Padding(padding: widget.padding, child: widget.child),
+      ],
+    );
+
+    Widget surface = AnimatedContainer(
+      duration: reduceMotion ? Duration.zero : const Duration(milliseconds: 180),
+      curve: Curves.easeOutCubic,
+      transform: lifted && !reduceMotion
+          ? Matrix4.translationValues(0, -2, 0)
+          : Matrix4.identity(),
       decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        boxShadow: g.shadow,
+        borderRadius: br,
+        boxShadow: lifted ? g.hoverShadow : g.shadow,
       ),
       child: ClipRRect(
-        borderRadius: borderRadius,
-        child: BackdropFilter(
+        borderRadius: br,
+        child: BackdropFilter.grouped(
           filter: g.blur,
-          child: DecoratedBox(
+          child: AnimatedContainer(
+            duration:
+                reduceMotion ? Duration.zero : const Duration(milliseconds: 180),
             decoration: BoxDecoration(
-              borderRadius: borderRadius,
+              borderRadius: br,
               gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+                begin: AlignmentDirectional.topStart,
+                end: AlignmentDirectional.bottomEnd,
                 colors: <Color>[g.fillTop, g.fill],
               ),
-              border: Border.all(color: g.borderColor),
+              border: Border.all(color: lifted ? g.hoverBorder : g.borderColor),
             ),
-            child: _Highlight(
-              color: g.highlight,
-              borderRadius: borderRadius,
-              accent: accent,
-              child: Padding(padding: padding, child: child),
-            ),
+            child: content,
           ),
         ),
       ),
     );
 
-    if (onTap == null) return surface;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: borderRadius,
-        child: surface,
-      ),
-    );
-  }
-}
-
-/// Paints the 1px inner top highlight (and optional accent bar) via a border.
-class _Highlight extends StatelessWidget {
-  const _Highlight({
-    required this.child,
-    required this.color,
-    required this.borderRadius,
-    this.accent,
-  });
-
-  final Widget child;
-  final Color color;
-  final BorderRadius borderRadius;
-  final Color? accent;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        border: Border(
-          top: BorderSide(color: accent ?? color, width: accent != null ? 2 : 1),
+    if (widget.onTap != null) {
+      surface = Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: widget.onTap,
+          borderRadius: br,
+          child: surface,
         ),
-      ),
-      child: child,
+      );
+    }
+    if (!widget.hoverable) return surface;
+    return MouseRegion(
+      onEnter: (_) => _setHover(true),
+      onExit: (_) => _setHover(false),
+      child: surface,
     );
   }
 }

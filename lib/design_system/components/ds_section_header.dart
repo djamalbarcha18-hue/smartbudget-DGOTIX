@@ -21,13 +21,26 @@ class DsSectionHeader extends StatelessWidget {
     return Row(
       children: <Widget>[
         if (icon != null) ...<Widget>[
-          Icon(icon, size: 18, color: c.brand),
-          const SizedBox(width: 8),
+          Container(
+            width: 30,
+            height: 30,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: c.brand.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(9),
+              border: Border.all(color: c.brand.withValues(alpha: 0.22)),
+            ),
+            child: Icon(icon, size: 16, color: c.brand),
+          ),
+          const SizedBox(width: 10),
         ],
         Expanded(
           child: Text(
             title,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(fontWeight: FontWeight.w700),
             overflow: TextOverflow.ellipsis,
           ),
         ),

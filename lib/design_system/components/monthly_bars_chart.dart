@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show NumberFormat;
 
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
@@ -23,19 +24,44 @@ class _BarsLayout {
     required this.chartH,
     required this.groupW,
     required this.count,
+    required this.left,
+    required this.gridValues,
+    required this.valueToY,
   });
   final List<_BarHit> bars;
   final double zeroY;
   final double chartH;
   final double groupW;
   final int count;
+
+  /// Start of the plot area (after the value-axis labels).
+  final double left;
+
+  /// Gridline values (minor units), from the lowest to the highest.
+  final List<int> gridValues;
+  final double Function(int minor) valueToY;
 }
 
-_BarsLayout _layout(Size size, List<MonthPoint> points) {
-  const double labelBand = 18;
+/// A "nice" step (1, 2, 2.5 or 5 × 10^k) so gridlines land on round numbers.
+int _niceStep(int roughMinor) {
+  if (roughMinor <= 0) return 1;
+  int mag = 1;
+  while (mag * 10 <= roughMinor) {
+    mag *= 10;
+  }
+  for (final double m in <double>[1, 2, 2.5, 5, 10]) {
+    final int step = (mag * m).round();
+    if (step >= roughMinor) return step;
+  }
+  return mag * 10;
+}
+
+_BarsLayout _layout(Size size, List<MonthPoint> points, {double axisW = 0}) {
+  const double labelBand = 22;
   final double chartH = size.height - labelBand;
   final int count = points.length;
-  final double groupW = count == 0 ? 0 : size.width / count;
+  final double plotW = size.width - axisW;
+  final double groupW = count == 0 ? 0 : plotW / count;
 
   int maxPos = 0;
   int negAbs = 0;
@@ -49,25 +75,36 @@ _BarsLayout _layout(Size size, List<MonthPoint> points) {
       if (v < 0 && -v > negAbs) negAbs = -v;
     }
   }
-  final int range = maxPos + negAbs;
-  if (range <= 0) {
+  if (maxPos + negAbs <= 0) {
     return _BarsLayout(
         bars: const <_BarHit>[],
         zeroY: chartH,
         chartH: chartH,
         groupW: groupW,
-        count: count);
+        count: count,
+        left: axisW,
+        gridValues: const <int>[],
+        valueToY: (_) => chartH);
   }
 
-  final double zeroY = (maxPos / range) * chartH;
-  final double barW = (groupW * 0.22).clamp(2.5, 13.0);
-  const double innerGap = 2;
+  // Round the scale out to whole gridline steps (4 bands above zero).
+  final int step = _niceStep(((maxPos > 0 ? maxPos : negAbs) / 4).ceil());
+  final int top = maxPos <= 0 ? 0 : step * (maxPos / step).ceil();
+  final int bottom = negAbs <= 0 ? 0 : step * (negAbs / step).ceil();
+  final int range = top + bottom;
+  final double topPad = 6;
+  final double usableH = chartH - topPad;
+  double y(int minor) => topPad + ((top - minor) / range) * usableH;
+  final double zeroY = y(0);
+
+  final double barW = (groupW * 0.2).clamp(3.0, 14.0);
+  const double innerGap = 3;
   final double totalBarsW = 3 * barW + 2 * innerGap;
 
   final List<_BarHit> bars = <_BarHit>[];
   for (int i = 0; i < count; i++) {
     final MonthPoint p = points[i];
-    final double groupStart = groupW * i + (groupW - totalBarsW) / 2;
+    final double groupStart = axisW + groupW * i + (groupW - totalBarsW) / 2;
     final List<int> vals = <int>[
       p.income.minorUnits,
       p.expense.minorUnits,
@@ -76,10 +113,10 @@ _BarsLayout _layout(Size size, List<MonthPoint> points) {
     for (int s = 0; s < 3; s++) {
       final int minor = vals[s];
       final double left = groupStart + s * (barW + innerGap);
-      final double len = (minor.abs() / range) * chartH;
+      final double end = y(minor);
       final Rect rect = minor >= 0
-          ? Rect.fromLTWH(left, zeroY - len, barW, len)
-          : Rect.fromLTWH(left, zeroY, barW, len);
+          ? Rect.fromLTRB(left, end, left + barW, zeroY)
+          : Rect.fromLTRB(left, zeroY, left + barW, end);
       bars.add(_BarHit(rect, minor, i, s));
     }
   }
@@ -88,7 +125,12 @@ _BarsLayout _layout(Size size, List<MonthPoint> points) {
       zeroY: zeroY,
       chartH: chartH,
       groupW: groupW,
-      count: count);
+      count: count,
+      left: axisW,
+      gridValues: <int>[
+        for (int v = -bottom; v <= top; v += step) v,
+      ],
+      valueToY: y);
 }
 
 /// Three grouped bars per month — income, expense and savings (net) — for a
@@ -104,7 +146,8 @@ class MonthlyBarsChart extends StatefulWidget {
     required this.net,
     required this.axis,
     required this.grid,
-    this.height = 220,
+    this.height = 240,
+    this.monthLabels,
   });
 
   final List<MonthPoint> points;
@@ -114,6 +157,9 @@ class MonthlyBarsChart extends StatefulWidget {
   final Color axis;
   final Color grid;
   final double height;
+
+  /// Axis labels for each point (e.g. month names); defaults to 1..12.
+  final List<String>? monthLabels;
 
   @override
   State<MonthlyBarsChart> createState() => _MonthlyBarsChartState();
@@ -131,6 +177,9 @@ class _MonthlyBarsChartState extends State<MonthlyBarsChart> {
   String get _currency =>
       widget.points.isEmpty ? 'USD' : widget.points.first.income.currencyCode;
 
+  /// Room for the value-axis labels.
+  static const double _axisWidth = 44;
+
   _BarHit? _hitAt(Offset local, List<_BarHit> bars) {
     for (final _BarHit b in bars) {
       if (b.rect.inflate(2).contains(local)) return b;
@@ -145,7 +194,8 @@ class _MonthlyBarsChartState extends State<MonthlyBarsChart> {
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           final Size size = Size(constraints.maxWidth, widget.height);
-          final _BarsLayout layout = _layout(size, widget.points);
+          final _BarsLayout layout =
+              _layout(size, widget.points, axisW: _axisWidth);
           final ({int month, int series})? active = _active;
           _BarHit? sel;
           if (active != null) {
@@ -187,6 +237,13 @@ class _MonthlyBarsChartState extends State<MonthlyBarsChart> {
                       axis: widget.axis,
                       grid: widget.grid,
                       selected: active,
+                      currency: _currency,
+                      monthLabels: widget.monthLabels,
+                      // The app font, so axis text renders like all other
+                      // text (a bare TextStyle falls back to a font the web
+                      // build may not have loaded).
+                      labelStyle: Theme.of(context).textTheme.labelSmall ??
+                          const TextStyle(),
                     ),
                   ),
                   if (sel != null)
@@ -270,6 +327,9 @@ class _BarsPainter extends CustomPainter {
     required this.net,
     required this.axis,
     required this.grid,
+    required this.currency,
+    required this.labelStyle,
+    this.monthLabels,
     this.selected,
   });
 
@@ -279,47 +339,104 @@ class _BarsPainter extends CustomPainter {
   final Color net;
   final Color axis;
   final Color grid;
+  final String currency;
+  final TextStyle labelStyle;
+  final List<String>? monthLabels;
   final ({int month, int series})? selected;
 
   Color _color(int s) => s == 0 ? income : (s == 1 ? expense : net);
+
+  static final NumberFormat _compact = NumberFormat.compact(locale: 'en');
+
+  void _text(Canvas canvas, String text, Offset at, TextAlign align,
+      {double size = 10.5}) {
+    final TextPainter tp = TextPainter(
+      text: TextSpan(
+          text: text,
+          style: labelStyle.copyWith(
+              color: axis, fontSize: size, fontWeight: FontWeight.w600)),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    final double dx = switch (align) {
+      TextAlign.right => at.dx - tp.width,
+      TextAlign.center => at.dx - tp.width / 2,
+      _ => at.dx,
+    };
+    tp.paint(canvas, Offset(dx, at.dy - tp.height / 2));
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
     if (layout.count == 0) return;
 
-    // Zero baseline.
-    canvas.drawLine(
-      Offset(0, layout.zeroY),
-      Offset(size.width, layout.zeroY),
-      Paint()
-        ..color = grid
-        ..strokeWidth = 1,
-    );
+    // Gridlines with round value labels (Latin digits, compact).
+    final Paint gridPaint = Paint()
+      ..color = grid
+      ..strokeWidth = 1;
+    for (final int v in layout.gridValues) {
+      final double y = layout.valueToY(v);
+      canvas.drawLine(Offset(layout.left, y), Offset(size.width, y),
+          v == 0 ? (Paint()..color = axis.withValues(alpha: 0.45)) : gridPaint);
+      // v == 0 is spelled out: on the web `-0` survives and prints as "-0".
+      _text(canvas, v == 0 ? '0' : _compact.format(Money(v, currency).asDouble),
+          Offset(layout.left - 8, y), TextAlign.right);
+    }
 
-    const Radius r = Radius.circular(2);
+    // Soft column highlight behind the active month.
+    if (selected != null) {
+      final double x = layout.left + layout.groupW * selected!.month;
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(x + 2, 0, layout.groupW - 4, layout.chartH),
+            const Radius.circular(8)),
+        Paint()..color = axis.withValues(alpha: 0.08),
+      );
+    }
+
+    const Radius r = Radius.circular(4);
     for (final _BarHit b in layout.bars) {
       if (b.minor == 0) continue;
       final bool dim = selected != null &&
           (selected!.month != b.month || selected!.series != b.series);
+      final Color col = _color(b.series).withValues(alpha: dim ? 0.28 : 1.0);
+      // Vertical gradient: full color at the value end, fading to the base.
       final Paint paint = Paint()
-        ..color = _color(b.series).withValues(alpha: dim ? 0.28 : 1.0);
+        ..shader = LinearGradient(
+          begin: b.minor > 0 ? Alignment.topCenter : Alignment.bottomCenter,
+          end: b.minor > 0 ? Alignment.bottomCenter : Alignment.topCenter,
+          colors: <Color>[col, col.withValues(alpha: col.a * 0.35)],
+        ).createShader(b.rect);
       final RRect rr = b.minor > 0
           ? RRect.fromRectAndCorners(b.rect, topLeft: r, topRight: r)
           : RRect.fromRectAndCorners(b.rect, bottomLeft: r, bottomRight: r);
       canvas.drawRRect(rr, paint);
     }
 
-    // Month labels (1..12) centered under each group.
+    // Month labels centered under each group; month numbers when the names
+    // would collide (narrow phones).
+    List<String>? labels = monthLabels;
+    if (labels != null) {
+      for (final String name in labels) {
+        final TextPainter probe = TextPainter(
+          text: TextSpan(text: name, style: labelStyle.copyWith(fontSize: 10.5)),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        if (probe.width > layout.groupW - 4) {
+          labels = null;
+          break;
+        }
+      }
+    }
     for (int i = 0; i < layout.count; i++) {
-      final TextPainter tp = TextPainter(
-        text: TextSpan(
-            text: '${i + 1}', style: TextStyle(color: axis, fontSize: 9)),
-        textDirection: TextDirection.ltr,
-      )..layout();
-      tp.paint(
+      final String label =
+          (labels != null && i < labels.length) ? labels[i] : '${i + 1}';
+      _text(
         canvas,
-        Offset(layout.groupW * i + layout.groupW / 2 - tp.width / 2,
-            layout.chartH + 5),
+        label,
+        Offset(layout.left + layout.groupW * i + layout.groupW / 2,
+            layout.chartH + 12),
+        TextAlign.center,
+        size: 10.5,
       );
     }
   }
@@ -330,5 +447,9 @@ class _BarsPainter extends CustomPainter {
       old.income != income ||
       old.expense != expense ||
       old.net != net ||
+      old.axis != axis ||
+      old.grid != grid ||
+      old.monthLabels != monthLabels ||
+      old.labelStyle != labelStyle ||
       old.selected != selected;
 }

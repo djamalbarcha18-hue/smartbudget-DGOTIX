@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
+import 'package:smartbudget/core/l10n/month_names.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
@@ -17,6 +19,7 @@ import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/design_system/tokens/ds_typography.dart';
 import 'package:smartbudget/features/analytics/application/alerts_controller.dart';
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/analytics/domain/kpi_math.dart';
@@ -34,6 +37,7 @@ import 'package:smartbudget/features/financial_health/domain/health_engine.dart'
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/onboarding/presentation/welcome_card.dart';
+import 'package:smartbudget/features/recurring/domain/recurrence_engine.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
@@ -157,10 +161,6 @@ class DashboardPage extends ConsumerWidget {
           const SizedBox(height: DsSpacing.xxl),
 
           // ---- Monthly comparison: income vs expense bars + savings line ----
-          DsSectionHeader(
-              title: l.sectionMonthlyComparison,
-              icon: Icons.bar_chart_rounded),
-          const SizedBox(height: DsSpacing.md),
           const _MonthlyComparisonCard(),
           const SizedBox(height: DsSpacing.xxl),
 
@@ -174,13 +174,11 @@ class DashboardPage extends ConsumerWidget {
           const SizedBox(height: DsSpacing.xxl),
 
           // ---- Goals / debts / zakat quick access ----
-          _ResponsiveGrid(
-            minTileWidth: 340,
-            childAspectRatio: 1.5,
+          const _EqualHeightRow(
             children: <Widget>[
-              const _GoalsMiniCard(),
-              const _DebtsMiniCard(),
-              const _ZakatMiniCard(),
+              _GoalsMiniCard(),
+              _DebtsMiniCard(),
+              _ZakatMiniCard(),
             ],
           ),
           const SizedBox(height: DsSpacing.xxl),
@@ -448,20 +446,41 @@ class _MonthlyComparisonCard extends ConsumerWidget {
     final bool hasData = points.any((MonthPoint p) =>
         p.income.minorUnits > 0 || p.expense.minorUnits > 0);
 
+    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final Widget legend = Wrap(
+      spacing: DsSpacing.lg,
+      runSpacing: DsSpacing.xs,
+      children: <Widget>[
+        _LegendDot(color: c.income, label: l.legendIncome),
+        _LegendDot(color: c.expense, label: l.legendExpenses),
+        _LegendDot(color: c.net, label: l.legendNet),
+      ],
+    );
+    final Widget header = DsSectionHeader(
+        title: l.sectionMonthlyComparison, icon: Icons.bar_chart_rounded);
+
     return GlassCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Wrap(
-            spacing: DsSpacing.lg,
-            runSpacing: DsSpacing.xs,
-            children: <Widget>[
-              _LegendDot(color: c.income, label: l.legendIncome),
-              _LegendDot(color: c.expense, label: l.legendExpenses),
-              _LegendDot(color: c.net, label: l.legendNet),
-            ],
+          LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints cons) =>
+                cons.maxWidth >= 560
+                    ? Row(children: <Widget>[
+                        Expanded(child: header),
+                        const SizedBox(width: DsSpacing.md),
+                        legend,
+                      ])
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          header,
+                          const SizedBox(height: DsSpacing.sm),
+                          legend,
+                        ],
+                      ),
           ),
-          const SizedBox(height: DsSpacing.md),
+          const SizedBox(height: DsSpacing.lg),
           if (!hasData)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: DsSpacing.xl),
@@ -476,6 +495,7 @@ class _MonthlyComparisonCard extends ConsumerWidget {
               net: c.net,
               axis: c.textFaint,
               grid: c.border,
+              monthLabels: MonthNames.short(ar: ar),
             ),
         ],
       ),
@@ -506,10 +526,10 @@ class _LegendDot extends StatelessWidget {
   }
 }
 
-/// Distribution & activity band: expense breakdown (donut + bars), the income
-/// donut beside it, and Recent Transactions at the far end — arranged to use
-/// the available width intelligently and reflow on smaller screens. All three
-/// panels are given a bounded height so their internal scroll areas behave.
+/// Distribution & activity band: the expense breakdown (donut + bars) beside
+/// the income donut, then recent transactions as a full-width table. Reflows
+/// on smaller screens; the two distribution panels get a bounded height so
+/// their internal scroll areas behave.
 class _AnalyticsBand extends StatelessWidget {
   const _AnalyticsBand();
 
@@ -518,58 +538,34 @@ class _AnalyticsBand extends StatelessWidget {
     const double gap = DsSpacing.gridGap;
     const Widget breakdown = ExpenseBreakdownSection();
     const Widget income = _IncomeDonutCard();
-    const Widget recent = _RecentTransactionsCard();
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints cons) {
         final double w = cons.maxWidth;
-
-        // Desktop: all three side by side (breakdown widest, recent at the end).
-        if (w >= 1024) {
-          return SizedBox(
-            height: 400,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Expanded(flex: 5, child: breakdown),
-                const SizedBox(width: gap),
-                Expanded(flex: 3, child: income),
-                const SizedBox(width: gap),
-                Expanded(flex: 4, child: recent),
-              ],
-            ),
-          );
-        }
-
-        // Tablet: breakdown + income on one row, recent full-width below.
-        if (w >= 640) {
-          return Column(
-            children: <Widget>[
-              SizedBox(
-                height: 380,
-                child: Row(
+        final Widget distribution = w >= 640
+            ? SizedBox(
+                height: w >= 1024 ? 400 : 380,
+                child: const Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Expanded(flex: 3, child: breakdown),
-                    const SizedBox(width: gap),
-                    Expanded(flex: 2, child: income),
+                    Expanded(flex: 7, child: breakdown),
+                    SizedBox(width: gap),
+                    Expanded(flex: 5, child: income),
                   ],
                 ),
-              ),
-              const SizedBox(height: gap),
-              SizedBox(height: 300, child: recent),
-            ],
-          );
-        }
-
-        // Mobile: stacked, each panel with a comfortable fixed height.
+              )
+            : const Column(
+                children: <Widget>[
+                  SizedBox(height: 440, child: breakdown),
+                  SizedBox(height: gap),
+                  SizedBox(height: 320, child: income),
+                ],
+              );
         return Column(
           children: <Widget>[
-            SizedBox(height: 440, child: breakdown),
+            distribution,
             const SizedBox(height: gap),
-            SizedBox(height: 320, child: income),
-            const SizedBox(height: gap),
-            SizedBox(height: 340, child: recent),
+            const _RecentTransactionsCard(),
           ],
         );
       },
@@ -703,38 +699,220 @@ class _RecentTransactionsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
     final List<Transaction> all =
         ref.watch(transactionsProvider).valueOrNull ?? const <Transaction>[];
     final List<Transaction> recent = all.take(5).toList();
 
     return GlassCard(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           DsSectionHeader(
             title: l.recentTransactions,
             icon: Icons.receipt_long_outlined,
+            trailing: recent.isEmpty
+                ? null
+                : TextButton(
+                    onPressed: () => context.go('/transactions'),
+                    style: TextButton.styleFrom(foregroundColor: c.brand),
+                    child: Text(l.viewAll),
+                  ),
           ),
           const SizedBox(height: DsSpacing.md),
           if (recent.isEmpty)
-            Expanded(
-              child: Center(
-                child: Text(l.emptyTransactionsMessage,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    textAlign: TextAlign.center),
-              ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: DsSpacing.xl),
+              child: Text(l.emptyTransactionsMessage,
+                  style: Theme.of(context).textTheme.bodySmall,
+                  textAlign: TextAlign.center),
             )
           else
-            Expanded(
-              child: ListView.separated(
-                itemCount: recent.length,
-                separatorBuilder: (_, __) =>
-                    const SizedBox(height: DsSpacing.sm),
-                itemBuilder: (BuildContext context, int i) =>
-                    TransactionTile(txn: recent[i]),
-              ),
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints cons) {
+                // Wide: a proper table. Narrow: the compact tiles.
+                if (cons.maxWidth >= 720) {
+                  return _TransactionsTable(txns: recent);
+                }
+                return Column(
+                  children: <Widget>[
+                    for (int i = 0; i < recent.length; i++) ...<Widget>[
+                      if (i > 0) const SizedBox(height: DsSpacing.sm),
+                      TransactionTile(txn: recent[i]),
+                    ],
+                  ],
+                );
+              },
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// Recent transactions as a table: date, type, category, description and
+/// amount. Rows open the editor, like everywhere else transactions appear.
+class _TransactionsTable extends StatelessWidget {
+  const _TransactionsTable({required this.txns});
+  final List<Transaction> txns;
+
+  static const List<int> _flex = <int>[2, 2, 2, 4, 2];
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final TextStyle? head =
+        t.labelMedium?.copyWith(color: c.textFaint, fontWeight: FontWeight.w700);
+
+    Widget cell(int i, Widget child, {bool end = false}) => Expanded(
+          flex: _flex[i],
+          child: Align(
+            alignment: end
+                ? AlignmentDirectional.centerEnd
+                : AlignmentDirectional.centerStart,
+            child: child,
+          ),
+        );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Container(
+          padding: const EdgeInsets.symmetric(
+              horizontal: DsSpacing.md, vertical: DsSpacing.sm),
+          decoration: BoxDecoration(
+            color: c.surfaceMuted,
+            borderRadius: DsRadius.brMd,
+          ),
+          child: Row(
+            children: <Widget>[
+              cell(0, Text(l.fieldDate, style: head)),
+              cell(1, Text(l.fieldType, style: head)),
+              cell(2, Text(l.fieldCategory, style: head)),
+              cell(3, Text(l.fieldDescription, style: head)),
+              cell(4, Text(l.fieldAmount, style: head), end: true),
+              const SizedBox(width: 28),
+            ],
+          ),
+        ),
+        for (int i = 0; i < txns.length; i++) ...<Widget>[
+          if (i > 0) Divider(height: 1, color: c.border),
+          _TableRow(txn: txns[i], cell: cell),
+        ],
+      ],
+    );
+  }
+}
+
+class _TableRow extends StatelessWidget {
+  const _TableRow({required this.txn, required this.cell});
+  final Transaction txn;
+  final Widget Function(int i, Widget child, {bool end}) cell;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final bool rtl = Directionality.of(context) == TextDirection.rtl;
+    final Color tone = txn.isIncome ? c.income : c.expense;
+    final String category = Catalog.label(txn.category, ar: ar);
+
+    return InkWell(
+      borderRadius: DsRadius.brMd,
+      hoverColor: c.textPrimary.withValues(alpha: 0.04),
+      onTap: () =>
+          TransactionEditorSheet.show(context, type: txn.type, existing: txn),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: DsSpacing.md, vertical: DsSpacing.md),
+        child: Row(
+          children: <Widget>[
+            cell(
+              0,
+              Text(DateFormat('yyyy-MM-dd').format(txn.date),
+                  style: DsTypography.mono(t.bodySmall ?? const TextStyle())),
+            ),
+            cell(
+              1,
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: tone.withValues(alpha: 0.12),
+                  borderRadius: DsRadius.brPill,
+                  border: Border.all(color: tone.withValues(alpha: 0.28)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(
+                        txn.isIncome
+                            ? Icons.south_west_rounded
+                            : Icons.north_east_rounded,
+                        size: 12,
+                        color: tone),
+                    const SizedBox(width: 4),
+                    Text(txn.isIncome ? l.txnTypeIncome : l.txnTypeExpense,
+                        style: t.labelSmall?.copyWith(
+                            color: tone, fontWeight: FontWeight.w700)),
+                  ],
+                ),
+              ),
+            ),
+            cell(
+              2,
+              Text(category,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: t.bodySmall?.copyWith(color: c.textPrimary)),
+            ),
+            cell(
+              3,
+              Row(
+                children: <Widget>[
+                  if (RecurrenceEngine.isRecurring(txn)) ...<Widget>[
+                    Tooltip(
+                      message: l.recurringBadge,
+                      child: Icon(Icons.event_repeat_outlined,
+                          size: 14, color: c.textFaint),
+                    ),
+                    const SizedBox(width: 6),
+                  ],
+                  Flexible(
+                    child: Text(
+                        txn.description.isEmpty ? '—' : txn.description,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: t.bodySmall),
+                  ),
+                ],
+              ),
+            ),
+            cell(
+              4,
+              Text(
+                '${txn.isIncome ? '+' : '−'} ${MoneyFormatter.format(txn.amount)}',
+                style: DsTypography.mono(t.titleSmall ?? const TextStyle())
+                    .copyWith(color: tone, fontWeight: FontWeight.w700),
+              ),
+              end: true,
+            ),
+            SizedBox(
+              width: 28,
+              child: Icon(
+                  rtl
+                      ? Icons.chevron_left_rounded
+                      : Icons.chevron_right_rounded,
+                  size: 18,
+                  color: c.textFaint),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -882,7 +1060,8 @@ class _HealthHeroCard extends ConsumerWidget {
                         height: 66,
                         child: CircularProgressIndicator(
                           value: hasData ? (r.score.clamp(0, 100) / 100) : 0,
-                          strokeWidth: 6,
+                          strokeWidth: 7,
+                          strokeCap: StrokeCap.round,
                           backgroundColor: c.surfaceMuted,
                           valueColor: AlwaysStoppedAnimation<Color>(tone),
                         ),
@@ -1084,12 +1263,10 @@ class _ResponsiveGrid extends StatelessWidget {
   const _ResponsiveGrid({
     required this.children,
     required this.minTileWidth,
-    this.childAspectRatio,
   });
 
   final List<Widget> children;
   final double minTileWidth;
-  final double? childAspectRatio;
 
   @override
   Widget build(BuildContext context) {
@@ -1106,14 +1283,47 @@ class _ResponsiveGrid extends StatelessWidget {
           runSpacing: gap,
           children: children
               .map(
-                (Widget child) => SizedBox(
-                  width: tileW,
-                  height:
-                      childAspectRatio != null ? tileW / childAspectRatio! : null,
-                  child: child,
-                ),
+                (Widget child) => SizedBox(width: tileW, child: child),
               )
               .toList(growable: false),
+        );
+      },
+    );
+  }
+}
+
+/// Lays [children] side by side at equal height on wide screens (so a row of
+/// summary cards lines up without dead space), stacked on narrow ones.
+class _EqualHeightRow extends StatelessWidget {
+  const _EqualHeightRow({required this.children});
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    const double gap = DsSpacing.gridGap;
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints cons) {
+        if (cons.maxWidth < 760) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              for (int i = 0; i < children.length; i++) ...<Widget>[
+                if (i > 0) const SizedBox(height: gap),
+                children[i],
+              ],
+            ],
+          );
+        }
+        return IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              for (int i = 0; i < children.length; i++) ...<Widget>[
+                if (i > 0) const SizedBox(width: gap),
+                Expanded(child: children[i]),
+              ],
+            ],
+          ),
         );
       },
     );

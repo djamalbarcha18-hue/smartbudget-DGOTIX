@@ -73,6 +73,8 @@ class KpiCard extends StatelessWidget {
 
     return GlassCard(
       accent: accentColor,
+      padding: const EdgeInsets.fromLTRB(
+          DsSpacing.lg, DsSpacing.lg, DsSpacing.lg, DsSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -81,28 +83,53 @@ class KpiCard extends StatelessWidget {
             children: <Widget>[
               if (icon != null || iconChild != null) ...<Widget>[
                 _IconChip(icon: icon, iconChild: iconChild, color: accentColor),
-                const SizedBox(width: DsSpacing.sm),
+                const SizedBox(width: DsSpacing.md),
               ],
               Expanded(
                 child: Text(
                   label,
-                  style: t.titleSmall?.copyWith(color: c.textMuted),
+                  style: t.titleSmall?.copyWith(
+                      color: c.textMuted, fontWeight: FontWeight.w700),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (delta != null) _TrendPill(delta: delta!),
             ],
           ),
           const SizedBox(height: DsSpacing.md),
-          Text(
-            value ?? '—',
-            style: DsTypography.mono(
-              t.headlineMedium ?? const TextStyle(),
-            ).copyWith(color: value == null ? c.textFaint : c.textPrimary),
+          // The figure is the hero: large, tabular, never clipped (it scales
+          // down instead on narrow tiles).
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: AlignmentDirectional.centerStart,
+            child: Text(
+              value ?? '—',
+              maxLines: 1,
+              style: DsTypography.mono(
+                t.headlineMedium ?? const TextStyle(),
+              ).copyWith(
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                color: value == null ? c.textFaint : c.textPrimary,
+              ),
+            ),
           ),
-          if (caption != null) ...<Widget>[
-            const SizedBox(height: DsSpacing.xxs),
-            Text(caption!, style: t.labelSmall?.copyWith(color: c.textFaint)),
+          if (delta != null || caption != null) ...<Widget>[
+            const SizedBox(height: DsSpacing.sm),
+            Row(
+              children: <Widget>[
+                if (delta != null) ...<Widget>[
+                  _TrendPill(delta: delta!),
+                  const SizedBox(width: DsSpacing.sm),
+                ],
+                if (caption != null)
+                  Flexible(
+                    child: Text(caption!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: t.labelSmall?.copyWith(color: c.textFaint)),
+                  ),
+              ],
+            ),
           ],
           if (sparkline != null) ...<Widget>[
             const SizedBox(height: DsSpacing.md),
@@ -123,20 +150,30 @@ class _IconChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 34,
-      height: 34,
+      width: 40,
+      height: 40,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withValues(alpha: 0.28)),
+        borderRadius: BorderRadius.circular(12),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[
+            color.withValues(alpha: 0.30),
+            color.withValues(alpha: 0.08),
+          ],
+        ),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
+        boxShadow: <BoxShadow>[
+          BoxShadow(color: color.withValues(alpha: 0.18), blurRadius: 14),
+        ],
       ),
       child: iconChild != null
           ? IconTheme.merge(
-              data: IconThemeData(color: color, size: 18),
+              data: IconThemeData(color: color, size: 20),
               child: iconChild!,
             )
-          : Icon(icon, size: 18, color: color),
+          : Icon(icon, size: 20, color: color),
     );
   }
 }
