@@ -54,6 +54,9 @@
   "upgradeTitle": "SmartBudget Pro",
   "upgradeSubtitle": "استفد من المميزات الكاملة",
   "upgradeCta": "ترقية الآن",
+  "betaTitle": "نسخة تجريبية",
+  "betaAllUnlocked": "كل الميزات مفتوحة مجانًا خلال المرحلة التجريبية.",
+  "betaPlansNote": "تبدأ الباقات المدفوعة بعد انتهاء المرحلة التجريبية. حتى ذلك الحين استمتع بكل شيء دون أي دفع.",
 
   "emptyDashboardTitle": "لا توجد بيانات للعرض بعد",
   "emptyDashboardMessage": "اربط بيانات SmartBudget لعرض نظرتك المالية الحيّة هنا.",

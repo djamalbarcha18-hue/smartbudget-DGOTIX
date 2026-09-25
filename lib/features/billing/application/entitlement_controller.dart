@@ -96,7 +96,9 @@ final remoteEntitlementProvider = FutureProvider<Entitlement?>((ref) async {
 /// The plan actually in force right now (paid plan or an active trial). Prefers
 /// the server value once it resolves, falling back to the persisted local cache
 /// (which defaults to FREE) so the UI is correct offline and at startup.
+/// During the beta ([AppEnv.betaAllAccess]) everyone is on PRO.
 final effectivePlanProvider = Provider<Plan>((ref) {
+  if (AppEnv.betaAllAccess) return Plan.pro;
   final Entitlement e =
       ref.watch(remoteEntitlementProvider).valueOrNull ??
           ref.watch(entitlementProvider);
@@ -104,7 +106,9 @@ final effectivePlanProvider = Provider<Plan>((ref) {
 });
 
 /// How the account's paid plan is billed (null on FREE or when unknown).
+/// During the beta it is yearly, so yearly-only extras are unlocked too.
 final billingPeriodProvider = Provider<BillingPeriod?>((ref) {
+  if (AppEnv.betaAllAccess) return BillingPeriod.yearly;
   final Entitlement e =
       ref.watch(remoteEntitlementProvider).valueOrNull ??
           ref.watch(entitlementProvider);

@@ -54,6 +54,9 @@
   "upgradeTitle": "SmartBudget Pro",
   "upgradeSubtitle": "Unlock the full experience",
   "upgradeCta": "Upgrade now",
+  "betaTitle": "Beta",
+  "betaAllUnlocked": "Every feature is unlocked for free during the beta.",
+  "betaPlansNote": "Paid plans will start after the beta. Until then, enjoy everything with no payment.",
 
   "emptyDashboardTitle": "No data to display yet",
   "emptyDashboardMessage": "Connect your SmartBudget data to see your live financial overview here.",

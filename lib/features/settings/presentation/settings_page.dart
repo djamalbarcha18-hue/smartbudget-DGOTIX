@@ -448,7 +448,8 @@ class _DeveloperSectionState extends ConsumerState<_DeveloperSection> {
         // Plan preview — only in the local demo (no backend, no billing), so
         // paid features can be tried before payments are live. With a backend
         // the server entitlement always wins, so this is never shown there.
-        if (!AppEnv.hasSupabase) ...<Widget>[
+        // Hidden during the beta, when every feature is already unlocked.
+        if (!AppEnv.hasSupabase && !AppEnv.betaAllAccess) ...<Widget>[
           const SizedBox(height: DsSpacing.lg),
           Text(l.devPlanPreview,
               style: Theme.of(context).textTheme.titleSmall),

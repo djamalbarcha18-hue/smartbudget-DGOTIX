@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -197,13 +198,15 @@ class _AssistantLockedCard extends StatelessWidget {
                 const SizedBox(height: DsSpacing.xs),
                 Text(l.aiLockedBody,
                     style: t.bodySmall?.copyWith(color: c.textMuted)),
-                const SizedBox(height: DsSpacing.md),
-                DsButton(
-                  label: l.aiLockedCta,
-                  icon: Icons.workspace_premium_outlined,
-                  variant: DsButtonVariant.secondary,
-                  onPressed: () => context.go('/plans'),
-                ),
+                if (!AppEnv.betaAllAccess) ...<Widget>[
+                  const SizedBox(height: DsSpacing.md),
+                  DsButton(
+                    label: l.aiLockedCta,
+                    icon: Icons.workspace_premium_outlined,
+                    variant: DsButtonVariant.secondary,
+                    onPressed: () => context.go('/plans'),
+                  ),
+                ],
               ],
             ),
           ),

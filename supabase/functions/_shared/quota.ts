@@ -64,12 +64,27 @@ export function normalizePlan(p: unknown): Plan {
  * The plan actually in force now: the higher of the paid plan and an active
  * trial. An expired or malformed trial is ignored (falls back to the plan).
  */
+/**
+ * Beta: every signed-in user gets PRO limits (mirrors AppEnv.betaAllAccess in
+ * the app). ON by default while SmartBudget is in beta; set the Edge Function
+ * secret BETA_ALL_ACCESS=false when paid plans go live.
+ */
+export function betaAllAccess(): boolean {
+  try {
+    return (Deno.env.get("BETA_ALL_ACCESS") ?? "true").trim().toLowerCase() !==
+      "false";
+  } catch {
+    return true;
+  }
+}
+
 export function effectivePlan(
   plan: Plan,
   trialPlan: Plan | null,
   trialExpiresAt: string | null,
   now: Date = new Date(),
 ): Plan {
+  if (betaAllAccess()) return "pro";
   if (trialPlan && trialExpiresAt) {
     const exp = new Date(trialExpiresAt);
     if (!isNaN(exp.getTime()) && now < exp && RANK[trialPlan] >= RANK[plan]) {

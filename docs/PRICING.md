@@ -8,6 +8,14 @@
 
 Status: **design locked** · Prices in **USD** · Last reviewed **2026-09**.
 
+> **Beta: everything is unlocked.** While SmartBudget is in beta every user
+> gets PRO limits plus the yearly-only extras, and upgrade prompts, checkout
+> buttons and the coupon box are hidden. One switch on each side turns it off
+> when paid plans go live:
+> - app: build with `--dart-define=BETA_ALL_ACCESS=false` (`AppEnv.betaAllAccess`);
+> - server: set the Edge Function secret `BETA_ALL_ACCESS=false`
+>   (`betaAllAccess()` in `supabase/functions/_shared/quota.ts`).
+
 ---
 
 ## 1. Plans at a glance

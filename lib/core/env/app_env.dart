@@ -48,4 +48,12 @@ abstract final class AppEnv {
   /// True when a parallel-market proxy URL is configured; drives whether the
   /// country parallel rows fetch live data or render "unavailable".
   static bool get hasParallelApi => parallelApiUrl.isNotEmpty;
+
+  /// Beta: every paid feature is unlocked for everyone (PRO limits, yearly
+  /// extras) and upgrade prompts are hidden. ON while the app is in beta; turn
+  /// it off when paid plans go live by building with
+  ///   --dart-define=BETA_ALL_ACCESS=false
+  /// (the server mirror is the BETA_ALL_ACCESS Edge Function secret).
+  static const bool betaAllAccess =
+      bool.fromEnvironment('BETA_ALL_ACCESS', defaultValue: true);
 }

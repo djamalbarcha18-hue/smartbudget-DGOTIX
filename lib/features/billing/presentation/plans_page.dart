@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -62,6 +63,7 @@ class PlansPage extends ConsumerWidget {
               Text(l.plansSubtitle,
                   style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: DsSpacing.xl),
+              if (AppEnv.betaAllAccess) const _BetaBanner(),
               const _CurrentPlanCard(),
               if (wide)
                 IntrinsicHeight(
@@ -80,10 +82,49 @@ class PlansPage extends ConsumerWidget {
                   card,
                   const SizedBox(height: DsSpacing.md),
                 ],
-              const SizedBox(height: DsSpacing.md),
-              const _CouponBox(),
+              if (!AppEnv.betaAllAccess) ...<Widget>[
+                const SizedBox(height: DsSpacing.md),
+                const _CouponBox(),
+              ],
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Beta notice: every feature is free until paid plans launch.
+class _BetaBanner extends StatelessWidget {
+  const _BetaBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: DsSpacing.md),
+      child: GlassCard(
+        accent: c.brand,
+        child: Row(
+          children: <Widget>[
+            Icon(Icons.science_outlined, size: 20, color: c.brand),
+            const SizedBox(width: DsSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(l.betaAllUnlocked,
+                      style: t.titleSmall
+                          ?.copyWith(fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 2),
+                  Text(l.betaPlansNote,
+                      style: t.labelSmall?.copyWith(color: c.textMuted)),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -391,7 +432,8 @@ class _PlanCard extends StatelessWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final bool isCurrent = plan == current;
+    // During the beta everything is unlocked, so no card is "current".
+    final bool isCurrent = !AppEnv.betaAllAccess && plan == current;
 
     final double? monthly = plan.priceUsd(BillingPeriod.monthly);
     final double? yearly = plan.priceUsd(BillingPeriod.yearly);
@@ -450,6 +492,8 @@ class _PlanCard extends StatelessWidget {
 
   Widget _cta(
       BuildContext context, AppLocalizations l, DsColors c, bool isCurrent) {
+    // Beta: nothing to buy yet.
+    if (AppEnv.betaAllAccess) return const SizedBox.shrink();
     if (isCurrent) {
       return DsButton(
         label: l.planCurrent,

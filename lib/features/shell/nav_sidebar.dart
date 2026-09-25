@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:smartbudget/core/env/app_env.dart';
 
 import 'package:smartbudget/design_system/brand/dgotix_brand_lockup.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
@@ -234,11 +236,16 @@ class _UpgradeCard extends StatelessWidget {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Icon(Icons.workspace_premium_outlined, size: 18, color: c.brand),
+              Icon(
+                  AppEnv.betaAllAccess
+                      ? Icons.science_outlined
+                      : Icons.workspace_premium_outlined,
+                  size: 18,
+                  color: c.brand),
               const SizedBox(width: DsSpacing.sm),
               Expanded(
                 child: Text(
-                  l.upgradeTitle,
+                  AppEnv.betaAllAccess ? l.betaTitle : l.upgradeTitle,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         color: c.textPrimary,
                       ),
@@ -247,14 +254,16 @@ class _UpgradeCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: DsSpacing.xs),
-          Text(l.upgradeSubtitle, style: Theme.of(context).textTheme.labelSmall),
-          const SizedBox(height: DsSpacing.md),
-          DsButton(
-            label: l.upgradeCta,
-            expand: true,
-            // Billing is a future phase (AppConfig-gated); no-op for now.
-            onPressed: () {},
-          ),
+          Text(AppEnv.betaAllAccess ? l.betaAllUnlocked : l.upgradeSubtitle,
+              style: Theme.of(context).textTheme.labelSmall),
+          if (!AppEnv.betaAllAccess) ...<Widget>[
+            const SizedBox(height: DsSpacing.md),
+            DsButton(
+              label: l.upgradeCta,
+              expand: true,
+              onPressed: () => context.go('/plans'),
+            ),
+          ],
         ],
       ),
     );
