@@ -18,6 +18,7 @@ import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/goals/domain/goal_calculator.dart';
 import 'package:smartbudget/features/goals/presentation/goal_editor_sheet.dart';
+import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 class GoalsPage extends ConsumerWidget {
@@ -133,6 +134,13 @@ class _GoalCard extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis),
               ),
               _GoalStatusBadge(status: status),
+              if (status == GoalStatus.completed)
+                IconButton(
+                  tooltip: l.shareAchievement,
+                  icon: Icon(Icons.ios_share_rounded, size: 18, color: c.brand),
+                  onPressed: () =>
+                      ShareAppSheet.show(context, tab: ShareTab.progress),
+                ),
               PopupMenuButton<String>(
                 icon: Icon(Icons.more_vert_rounded, size: 18, color: c.textFaint),
                 color: c.bgElevated,

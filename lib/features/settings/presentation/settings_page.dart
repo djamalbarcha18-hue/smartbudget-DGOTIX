@@ -181,9 +181,9 @@ class SettingsPage extends ConsumerWidget {
               ),
               const SizedBox(height: DsSpacing.lg),
 
-              // Share the platform (QR code + link).
+              // Share the platform (social channels, progress card, QR code).
               _SettingsSection(
-                icon: Icons.qr_code_2_rounded,
+                icon: Icons.ios_share_rounded,
                 title: l.shareTitle,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,8 +193,8 @@ class SettingsPage extends ConsumerWidget {
                             color: context.dsColors.textMuted)),
                     const SizedBox(height: DsSpacing.md),
                     DsButton(
-                      label: l.shareShowQr,
-                      icon: Icons.qr_code_rounded,
+                      label: l.shareOpen,
+                      icon: Icons.ios_share_rounded,
                       variant: DsButtonVariant.secondary,
                       onPressed: () => ShareAppSheet.show(context),
                     ),

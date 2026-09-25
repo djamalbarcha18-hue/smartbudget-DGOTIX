@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
@@ -9,6 +10,8 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/financial_health/application/health_controller.dart';
 import 'package:smartbudget/features/financial_health/domain/health_engine.dart';
+import 'package:smartbudget/features/share/domain/share_highlight.dart';
+import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 class FinancialHealthPage extends ConsumerWidget {
@@ -114,6 +117,19 @@ class _HealthBody extends ConsumerWidget {
                         .textTheme
                         .labelSmall
                         ?.copyWith(color: context.dsColors.textFaint)),
+              ],
+              if (r.score >= ShareHighlight.minHealthScore) ...<Widget>[
+                const SizedBox(height: DsSpacing.md),
+                Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: DsButton(
+                    label: l.shareYourScore,
+                    icon: Icons.ios_share_rounded,
+                    variant: DsButtonVariant.secondary,
+                    onPressed: () =>
+                        ShareAppSheet.show(context, tab: ShareTab.progress),
+                  ),
+                ),
               ],
             ],
           ),

@@ -11,6 +11,7 @@ import 'package:smartbudget/design_system/tokens/ds_glass.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/features/shell/nav_destinations.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -256,14 +257,21 @@ class _UpgradeCard extends StatelessWidget {
           const SizedBox(height: DsSpacing.xs),
           Text(AppEnv.betaAllAccess ? l.betaAllUnlocked : l.upgradeSubtitle,
               style: Theme.of(context).textTheme.labelSmall),
-          if (!AppEnv.betaAllAccess) ...<Widget>[
-            const SizedBox(height: DsSpacing.md),
+          const SizedBox(height: DsSpacing.md),
+          if (AppEnv.betaAllAccess)
+            DsButton(
+              label: l.shareTabInvite,
+              icon: Icons.group_add_outlined,
+              variant: DsButtonVariant.secondary,
+              expand: true,
+              onPressed: () => ShareAppSheet.show(context),
+            )
+          else
             DsButton(
               label: l.upgradeCta,
               expand: true,
               onPressed: () => context.go('/plans'),
             ),
-          ],
         ],
       ),
     );
