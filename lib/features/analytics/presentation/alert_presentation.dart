@@ -5,6 +5,7 @@ import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
+import 'package:smartbudget/features/seasons/presentation/season_text.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -42,8 +43,11 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     AlertSeverity.success => (c.income, Icons.check_circle_outline_rounded),
   };
 
-  final String subject =
-      a.subject.isEmpty ? '' : Catalog.label(a.subject, ar: ar);
+  final String subject = a.subject.isEmpty
+      ? ''
+      : a.subject.startsWith('season:')
+          ? seasonName(l, seasonKindFromKey(a.subject), '')
+          : Catalog.label(a.subject, ar: ar);
   final String amount = MoneyFormatter.format(a.amount);
   final DateTime now = AppClock.now();
   final DateTime? when = a.date;
@@ -69,6 +73,9 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     AlertKind.categorySpike => l.alertTitleCategorySpike,
     AlertKind.weeklyDigest => l.alertTitleWeeklyDigest,
     AlertKind.monthlyDigest => l.alertTitleMonthlyDigest,
+    AlertKind.seasonApproaching => l.alertTitleSeason,
+    AlertKind.daretPayment => l.alertTitleDaretPayment,
+    AlertKind.daretPayout => l.alertTitleDaretPayout,
   };
   final String description = switch (a.kind) {
     AlertKind.budgetOver => l.alertBudgetOver(subject, amount),
@@ -96,6 +103,16 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
             amount,
             a.ratio == null ? '—' : '${(a.ratio! * 100).round()}%') +
         top,
+    AlertKind.seasonApproaching => l.alertSeason(
+        subject,
+        a.date == null ? 0 : _daysFrom(now, a.date!),
+        amount),
+    AlertKind.daretPayment => tomorrow
+        ? l.alertDaretPaymentTomorrow(amount, subject)
+        : l.alertDaretPayment(amount, subject, date),
+    AlertKind.daretPayout => tomorrow
+        ? l.alertDaretPayoutTomorrow(amount, subject)
+        : l.alertDaretPayout(amount, subject, date),
   };
   final String action = switch (a.route) {
     '/budget' => l.actionViewBudget,
@@ -104,6 +121,8 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     '/recurring' => l.actionViewRecurring,
     '/settings' => l.actionOpenSettings,
     '/transactions' => l.actionViewTransactions,
+    '/seasons' => l.actionViewSeasons,
+    '/daret' => l.actionViewDaret,
     _ => l.actionViewReport,
   };
 
@@ -116,6 +135,10 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     route: a.route,
   );
 }
+
+int _daysFrom(DateTime now, DateTime d) => DateTime(d.year, d.month, d.day)
+    .difference(DateTime(now.year, now.month, now.day))
+    .inDays;
 
 /// Week-over-week change as a signed percentage, e.g. "+12%" or "−8%".
 String _change(int now, int before) {

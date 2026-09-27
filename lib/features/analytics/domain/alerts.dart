@@ -37,6 +37,17 @@ enum AlertKind {
 
   /// Summary of the month that just ended.
   monthlyDigest,
+
+  // ---- Planning ----
+
+  /// A planned season (Ramadan, Eid…) is near and not fully funded yet.
+  seasonApproaching,
+
+  /// A daret (rotating savings) contribution is due soon.
+  daretPayment,
+
+  /// It's the user's turn to collect the daret pot soon.
+  daretPayout,
 }
 
 /// A derived, data-backed alert. Never fabricated: every instance comes from a

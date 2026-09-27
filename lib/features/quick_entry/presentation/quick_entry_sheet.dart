@@ -122,7 +122,7 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
       return switch (diff) {
         0 => l.quickToday,
         1 => l.quickYesterday,
-        _ => '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}',
+        _ => '\u2066${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}\u2069',
       };
     }
 

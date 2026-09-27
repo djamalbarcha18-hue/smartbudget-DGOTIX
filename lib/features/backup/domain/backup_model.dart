@@ -6,6 +6,7 @@ import 'package:smartbudget/features/debts/domain/debt.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/portfolio/domain/project.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
+import 'package:smartbudget/features/seasons/domain/season.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
 /// A complete, portable snapshot of one user's data.
@@ -25,6 +26,7 @@ class BackupData {
     this.debts = const <Debt>[],
     this.projects = const <Project>[],
     this.recurring = const <RecurringRule>[],
+    this.seasons = const <SeasonPlan>[],
   });
 
   /// Bump when the on-disk shape changes in a breaking way. Adding optional
@@ -42,6 +44,7 @@ class BackupData {
   final List<Debt> debts;
   final List<Project> projects;
   final List<RecurringRule> recurring;
+  final List<SeasonPlan> seasons;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'schemaVersion': schemaVersion,
@@ -55,6 +58,7 @@ class BackupData {
         'debts': debts.map((Debt d) => d.toJson()).toList(),
         'projects': projects.map((Project p) => p.toJson()).toList(),
         'recurring': recurring.map((RecurringRule r) => r.toJson()).toList(),
+        'seasons': seasons.map((SeasonPlan p) => p.toJson()).toList(),
         'customCategories': <String, dynamic>{
           'income': customIncome,
           'expense': customExpense,
@@ -81,6 +85,7 @@ class BackupData {
       projects: _list<Project>(json['projects'], Project.fromJson),
       recurring:
           _list<RecurringRule>(json['recurring'], RecurringRule.fromJson),
+      seasons: _list<SeasonPlan>(json['seasons'], SeasonPlan.fromJson),
     );
   }
 
@@ -116,6 +121,7 @@ abstract final class BackupCodec {
       'debts',
       'projects',
       'recurring',
+      'seasons',
     ];
     if (!sections.any(obj.containsKey)) {
       throw const FormatException('Backup file is missing expected data.');

@@ -13,6 +13,7 @@ import 'package:smartbudget/features/portfolio/application/portfolio_controller.
 import 'package:smartbudget/features/portfolio/domain/project.dart';
 import 'package:smartbudget/features/recurring/application/recurring_controller.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
+import 'package:smartbudget/features/seasons/application/seasons_controller.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -26,6 +27,7 @@ class ImportResult {
     this.debtsAdded = 0,
     this.projectsAdded = 0,
     this.recurringAdded = 0,
+    this.othersAdded = 0,
   });
 
   final int transactionsAdded;
@@ -35,10 +37,13 @@ class ImportResult {
   final int projectsAdded;
   final int recurringAdded;
 
+  /// Season plans, darets and other planning items.
+  final int othersAdded;
+
   /// Goals, debts, projects and recurring rules restored (shown together in
   /// the message).
   int get plansAdded =>
-      goalsAdded + debtsAdded + projectsAdded + recurringAdded;
+      goalsAdded + debtsAdded + projectsAdded + recurringAdded + othersAdded;
 
   bool get isEmpty =>
       transactionsAdded == 0 && budgetsAdded == 0 && plansAdded == 0;
@@ -65,6 +70,7 @@ class BackupService {
         await _ref.read(recurringRulesProvider.future);
     final CustomCategories cc = _ref.read(customCategoriesProvider);
     return BackupData(
+      seasons: await _ref.read(seasonStoreProvider).all(),
       exportedAt: AppClock.now(),
       baseCurrency: _ref.read(baseCurrencyProvider),
       transactions: txns,
@@ -108,7 +114,10 @@ class BackupService {
     final int recurringAdded = await _ref
         .read(recurringRepositoryProvider)
         .importMany(data.recurring);
+    final int othersAdded =
+        await _ref.read(seasonStoreProvider).importMany(data.seasons);
     return ImportResult(
+      othersAdded: othersAdded,
       transactionsAdded: txAdded,
       budgetsAdded: budAdded,
       goalsAdded: goalsAdded,

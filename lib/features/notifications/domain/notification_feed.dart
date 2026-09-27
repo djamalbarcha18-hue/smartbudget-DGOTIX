@@ -43,6 +43,11 @@ abstract final class NotificationFeed {
         return 'weeklyDigest@${_dayKey(a.date ?? now)}';
       case AlertKind.monthlyDigest:
         return 'monthlyDigest@${periodKey(a.date ?? now)}';
+      case AlertKind.seasonApproaching:
+        return 'seasonApproaching:${a.focusKey}@${periodKey(now)}';
+      case AlertKind.daretPayment:
+      case AlertKind.daretPayout:
+        return '${a.kind.name}:${a.focusKey}@${_dayKey(a.date ?? now)}';
       case AlertKind.budgetForecast:
       case AlertKind.categorySpike:
       case AlertKind.budgetOver:
@@ -103,11 +108,13 @@ abstract final class NotificationFeed {
     required String currency,
     required DateTime now,
     List<AppAlert> smart = const <AppAlert>[],
+    List<AppAlert> planning = const <AppAlert>[],
   }) {
     final List<AppAlert> all = <AppAlert>[
       ...finance,
       ...smart,
       ...upcoming,
+      ...planning,
       if (backupDue) backupAlert(currency),
     ];
     final Set<String> ids = <String>{};

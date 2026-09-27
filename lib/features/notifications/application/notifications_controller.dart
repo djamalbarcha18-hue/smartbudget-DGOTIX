@@ -16,6 +16,9 @@ import 'package:smartbudget/features/notifications/domain/notification_feed.dart
 import 'package:smartbudget/features/notifications/domain/smart_alerts.dart';
 import 'package:smartbudget/features/recurring/application/recurring_controller.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
+import 'package:smartbudget/features/seasons/application/seasons_controller.dart';
+import 'package:smartbudget/features/seasons/domain/season.dart';
+import 'package:smartbudget/features/seasons/domain/season_alerts.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -83,6 +86,9 @@ final notificationsProvider = Provider<List<FeedItem>>((ref) {
     finance: finance,
     smart: smart,
     upcoming: NotificationFeed.upcomingRecurring(rules, now),
+    planning: SeasonAlerts.build(
+        ref.watch(seasonPlansProvider).valueOrNull ?? const <SeasonPlan>[],
+        now),
     backupDue: ref.watch(backupReminderDueProvider),
     currency: currency,
     now: now,
