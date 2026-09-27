@@ -35,6 +35,7 @@ import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_section.dart';
+import 'package:smartbudget/features/install/presentation/install_widgets.dart';
 import 'package:smartbudget/features/settings/presentation/clock_section.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
@@ -139,6 +140,14 @@ class SettingsPage extends ConsumerWidget {
                 icon: Icons.lock_outline_rounded,
                 title: l.settingsLock,
                 child: const AppLockSection(),
+              ),
+              const SizedBox(height: DsSpacing.lg),
+
+              // Install on the home screen (PWA).
+              _SettingsSection(
+                icon: Icons.install_mobile_rounded,
+                title: l.installSettingsTitle,
+                child: const InstallSection(),
               ),
               const SizedBox(height: DsSpacing.lg),
 

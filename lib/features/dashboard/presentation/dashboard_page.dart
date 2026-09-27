@@ -34,6 +34,7 @@ import 'package:smartbudget/features/transactions/application/transactions_contr
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/install/presentation/install_widgets.dart';
 import 'package:smartbudget/features/quick_entry/presentation/quick_entry_sheet.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/features/transactions/presentation/transactions_list.dart';
@@ -130,6 +131,7 @@ class DashboardPage extends ConsumerWidget {
           const SizedBox(height: DsSpacing.xl),
           const WelcomeCard(),
           const BackupReminderCard(),
+          const InstallBanner(),
 
           // ① The four headline figures, one uniform row.
           _ResponsiveGrid(minTileWidth: 220, children: kpis),
