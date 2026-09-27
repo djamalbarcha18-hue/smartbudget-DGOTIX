@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
@@ -75,11 +76,25 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
                     ],
                   ),
                 ),
-                _CurrencyDropdown(
-                  value: base,
-                  currencies: currencies,
-                  onChanged: (String v) =>
-                      ref.read(baseCurrencyProvider.notifier).set(v),
+                const SizedBox(width: DsSpacing.md),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        CurrencyFlag(Currencies.byCode(base), width: 22),
+                        const SizedBox(width: DsSpacing.sm),
+                        Text(base,
+                            style: Theme.of(context).textTheme.titleMedium),
+                      ],
+                    ),
+                    TextButton.icon(
+                      onPressed: () => context.go('/settings'),
+                      icon: const Icon(Icons.settings_outlined, size: 16),
+                      label: Text(l.baseCurrencyChangeInSettings),
+                    ),
+                  ],
                 ),
               ],
             ),

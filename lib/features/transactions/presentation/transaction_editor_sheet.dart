@@ -256,7 +256,8 @@ class _TransactionEditorSheetState
                   ),
                   const SizedBox(height: DsSpacing.lg),
                   DsTextField(
-                    label: '${l.fieldAmount} (${cur.symbol})',
+                    label: l.fieldAmount,
+                    suffixText: cur.code,
                     controller: _amount,
                     prefixIcon: Icons.tag_rounded,
                     keyboardType: const TextInputType.numberWithOptions(

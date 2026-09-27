@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
+import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -71,6 +72,7 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
     final ZakatInputs inputs = ref.watch(zakatInputsProvider);
+    final String base = ref.watch(baseCurrencyProvider);
     final ZakatResult r = ref.watch(zakatResultProvider);
     final HawlStatus? hawl = ref.watch(zakatHawlProvider);
     final bool needsPrices =
@@ -95,6 +97,7 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
                 DsTextField(
                   label: l.zakatGoldPrice,
                   controller: _gold,
+                  suffixText: base,
                   prefixIcon: Icons.circle,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
@@ -104,6 +107,7 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
                 DsTextField(
                   label: l.zakatSilverPrice,
                   controller: _silver,
+                  suffixText: base,
                   prefixIcon: Icons.circle_outlined,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
@@ -137,6 +141,7 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
                 DsTextField(
                   label: l.zakatCash,
                   controller: _cash,
+                  suffixText: base,
                   prefixIcon: Icons.payments_outlined,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
@@ -146,6 +151,7 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
                 DsTextField(
                   label: l.zakatMetalsHoldings,
                   controller: _metals,
+                  suffixText: base,
                   prefixIcon: Icons.diamond_outlined,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
@@ -155,6 +161,7 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
                 DsTextField(
                   label: l.zakatInvestments,
                   controller: _investments,
+                  suffixText: base,
                   prefixIcon: Icons.trending_up_rounded,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),

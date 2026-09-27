@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'package:smartbudget/design_system/components/currency_suffix.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// Asks for one positive amount. Returns null when cancelled or invalid.
+/// Asks for one positive amount, in [currency] when given (shown in the
+/// field). Returns null when cancelled or invalid.
 Future<double?> showAmountDialog(
   BuildContext context, {
   required String title,
   double? initial,
+  String? currency,
 }) async {
   final AppLocalizations l = AppLocalizations.of(context);
   final TextEditingController amount = TextEditingController(
@@ -21,7 +24,10 @@ Future<double?> showAmountDialog(
         controller: amount,
         autofocus: true,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        decoration: InputDecoration(labelText: l.fieldAmount),
+        decoration: InputDecoration(
+          labelText: l.fieldAmount,
+          suffixIcon: currency == null ? null : CurrencySuffix(currency),
+        ),
         onSubmitted: (_) => Navigator.of(ctx).pop(true),
       ),
       actions: <Widget>[

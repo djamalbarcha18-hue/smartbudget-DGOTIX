@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:smartbudget/design_system/components/currency_suffix.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -20,6 +21,7 @@ class DsTextField extends StatefulWidget {
     this.onSubmitted,
     this.autofillHints,
     this.inputFormatters,
+    this.suffixText,
   });
 
   final String label;
@@ -33,6 +35,9 @@ class DsTextField extends StatefulWidget {
   final ValueChanged<String>? onSubmitted;
   final List<String>? autofillHints;
   final List<TextInputFormatter>? inputFormatters;
+
+  /// Currency code shown at the end of the field (always visible).
+  final String? suffixText;
 
   @override
   State<DsTextField> createState() => _DsTextFieldState();
@@ -88,7 +93,9 @@ class _DsTextFieldState extends State<DsTextField> {
                       color: c.textMuted,
                     ),
                   )
-                : null,
+                : widget.suffixText == null
+                    ? null
+                    : CurrencySuffix(widget.suffixText!),
             enabledBorder: border(c.border),
             focusedBorder: border(c.brand),
             errorBorder: border(c.expense),

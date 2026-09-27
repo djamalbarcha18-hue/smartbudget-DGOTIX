@@ -11,8 +11,8 @@ void main() {
       final Set<int> months =
           s.transactions.map((Transaction t) => t.date.month).toSet();
       expect(months, <int>{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-      expect(s.transactions.every((Transaction t) => t.date.year == 2026),
-          isTrue);
+      expect(
+          s.transactions.every((Transaction t) => t.date.year == 2026), isTrue);
       expect(s.budgets.every((b) => b.year == 2026), isTrue);
     });
 
@@ -31,9 +31,8 @@ void main() {
     test('uses only real catalog categories', () {
       final SampleDataSet s = SampleData.build(currency: 'USD');
       for (final Transaction t in s.transactions) {
-        final List<String> valid = t.isIncome
-            ? Catalog.incomeCategories
-            : Catalog.expenseCategories;
+        final List<String> valid =
+            t.isIncome ? Catalog.incomeCategories : Catalog.expenseCategories;
         expect(valid.contains(t.category), isTrue,
             reason: 'unknown category: ${t.category}');
       }
@@ -45,6 +44,25 @@ void main() {
         s.transactions.every((Transaction t) => t.amount.currencyCode == 'EUR'),
         isTrue,
       );
+    });
+
+    test('scales amounts into the requested currency', () {
+      final SampleDataSet usd = SampleData.build(currency: 'USD');
+      final SampleDataSet dzd = SampleData.build(currency: 'DZD', scale: 135);
+      expect(dzd.transactions.first.amount.currencyCode, 'DZD');
+      expect(dzd.goals.first.target.currencyCode, 'DZD');
+      expect(dzd.budgets.first.planned.currencyCode, 'DZD');
+      expect(dzd.goals.first.target.asDouble,
+          usd.goals.first.target.asDouble * 135);
+      // Scaled-up amounts are whole units.
+      expect(
+        dzd.transactions
+            .every((Transaction t) => t.amount.minorUnits % 100 == 0),
+        isTrue,
+      );
+      // Same stable ids whatever the currency, so clearing works.
+      expect(dzd.transactions.map((Transaction t) => t.id).toList(),
+          usd.transactions.map((Transaction t) => t.id).toList());
     });
   });
 }

@@ -303,7 +303,8 @@ class _PlanCard extends ConsumerWidget {
               variant: DsButtonVariant.secondary,
               onPressed: () async {
                 final double? n = await showAmountDialog(context,
-                    title: l.seasonAddSaving);
+                    title: l.seasonAddSaving,
+                    currency: p.budget.currencyCode);
                 if (n == null) return;
                 await ref.read(seasonActionsProvider).contribute(
                     p, Money.fromDouble(n, p.budget.currencyCode));

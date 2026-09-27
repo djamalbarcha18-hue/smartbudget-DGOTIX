@@ -329,8 +329,8 @@ class _RuleEditDialogState extends ConsumerState<_RuleEditDialog> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               DsTextField(
-                label:
-                    '${l.fieldAmount} (${widget.rule.amount.currency.symbol})',
+                label: l.fieldAmount,
+                suffixText: widget.rule.amount.currencyCode,
                 controller: _amount,
                 prefixIcon: Icons.tag_rounded,
                 keyboardType:

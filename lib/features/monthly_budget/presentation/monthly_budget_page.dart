@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/design_system/components/currency_suffix.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
@@ -259,7 +260,9 @@ class _BudgetRow extends ConsumerWidget {
           controller: ctrl,
           autofocus: true,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: InputDecoration(labelText: l.fieldAmount),
+          decoration: InputDecoration(
+              labelText: l.fieldAmount,
+              suffixIcon: CurrencySuffix(currency)),
         ),
         actions: <Widget>[
           TextButton(

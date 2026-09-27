@@ -6,6 +6,7 @@ import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/amount_dialog.dart';
+import 'package:smartbudget/design_system/components/currency_suffix.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -291,6 +292,7 @@ class _SeasonEditorSheetState extends ConsumerState<SeasonEditorSheet> {
                     const TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(
                   labelText: '${l.seasonSavedSoFar} (${l.optional})',
+                  suffixIcon: CurrencySuffix(currency),
                 ),
               ),
               if (_error != null) ...<Widget>[

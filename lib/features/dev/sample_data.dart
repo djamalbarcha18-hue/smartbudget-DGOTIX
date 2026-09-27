@@ -17,12 +17,27 @@ class SampleDataSet {
 
 /// Deterministic demo data for testing the template (default year 2026).
 ///
-/// Amounts are in the user's base [currency]. Ids are stable, so importing more
+/// Amounts are in the user's base [currency], sized in US dollars and
+/// multiplied by [scale] (units of [currency] per 1 USD) so they look
+/// realistic in any currency. Ids are stable, so importing more
 /// than once is idempotent (the repositories merge by id / by
 /// year+month+category and skip duplicates). All categories are real
 /// [Catalog] expense/income categories so they render everywhere.
 abstract final class SampleData {
-  static SampleDataSet build({required String currency, int year = 2026}) {
+  static SampleDataSet build({
+    required String currency,
+    int year = 2026,
+    double scale = 1,
+  }) {
+    final double k = scale > 0 ? scale : 1;
+    // Whole units once scaled up (e.g. dinars); cents otherwise.
+    Money money(double usd) {
+      final double v = usd * k;
+      return Money.fromDouble(
+          k >= 10 ? v.roundToDouble() : (v * 100).roundToDouble() / 100,
+          currency);
+    }
+
     final List<Transaction> txns = <Transaction>[];
     final List<BudgetTarget> budgets = <BudgetTarget>[];
     final DateTime created = DateTime(year, 1, 1);
@@ -42,7 +57,7 @@ abstract final class SampleData {
           date: DateTime(year, month, day),
           type: type,
           category: category,
-          amount: Money.fromDouble(amount, currency),
+          amount: money(amount),
           description: description,
           paymentMethod: payment,
           createdAt: created,
@@ -54,7 +69,7 @@ abstract final class SampleData {
           year: year,
           month: month,
           category: category,
-          planned: Money.fromDouble(amount, currency),
+          planned: money(amount),
           createdAt: created,
         );
 
@@ -113,24 +128,24 @@ abstract final class SampleData {
       Goal(
         id: 'smpl-goal-emergency',
         name: 'صندوق الطوارئ',
-        target: Money.fromDouble(10000, currency),
-        saved: Money.fromDouble(6500, currency),
+        target: money(10000),
+        saved: money(6500),
         deadline: DateTime(year, 12, 31),
         createdAt: created,
       ),
       Goal(
         id: 'smpl-goal-car',
         name: 'شراء سيارة',
-        target: Money.fromDouble(25000, currency),
-        saved: Money.fromDouble(9000, currency),
+        target: money(25000),
+        saved: money(9000),
         deadline: DateTime(year + 1, 6, 30),
         createdAt: created,
       ),
       Goal(
         id: 'smpl-goal-trip',
         name: 'إجازة العائلة',
-        target: Money.fromDouble(4000, currency),
-        saved: Money.fromDouble(2500, currency),
+        target: money(4000),
+        saved: money(2500),
         deadline: DateTime(year, 8, 15),
         createdAt: created,
       ),

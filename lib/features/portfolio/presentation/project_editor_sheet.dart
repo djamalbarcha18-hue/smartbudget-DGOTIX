@@ -144,7 +144,8 @@ class _ProjectEditorSheetState extends ConsumerState<ProjectEditorSheet> {
                   ),
                   const SizedBox(height: DsSpacing.lg),
                   DsTextField(
-                    label: '${l.fieldTarget} (${cur.symbol})',
+                    label: l.fieldTarget,
+                    suffixText: cur.code,
                     controller: _target,
                     prefixIcon: Icons.tag_rounded,
                     keyboardType:

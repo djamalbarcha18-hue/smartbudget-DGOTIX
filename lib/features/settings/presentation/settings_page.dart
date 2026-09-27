@@ -36,6 +36,7 @@ import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_section.dart';
 import 'package:smartbudget/features/install/presentation/install_widgets.dart';
+import 'package:smartbudget/features/settings/presentation/base_currency_change.dart';
 import 'package:smartbudget/features/settings/presentation/clock_section.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
@@ -128,7 +129,7 @@ class SettingsPage extends ConsumerWidget {
                     _CurrencyDropdown(
                       value: base,
                       onChanged: (String v) =>
-                          ref.read(baseCurrencyProvider.notifier).set(v),
+                          changeBaseCurrency(context, ref, v),
                     ),
                   ],
                 ),

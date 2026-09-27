@@ -23,7 +23,6 @@ import 'package:smartbudget/features/analytics/presentation/alert_presentation.d
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
-import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/notifications/application/notifications_controller.dart';
 import 'package:smartbudget/features/notifications/domain/notification_feed.dart';
 import 'package:smartbudget/features/search/app_search.dart';
@@ -255,8 +254,9 @@ class _YearChip extends ConsumerWidget {
   }
 }
 
-/// Quick selector for the template (base) currency — flag + code + menu.
-/// Changing it updates every money value across the app (symbol shown in front).
+/// Shows the template (base) currency — flag + code. Display only: changing
+/// it hides records kept in the old currency from totals, so the switch lives
+/// in Settings (with a confirmation); tapping here opens Settings.
 class _CurrencyChip extends ConsumerWidget {
   const _CurrencyChip();
 
@@ -266,44 +266,28 @@ class _CurrencyChip extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final String code = ref.watch(baseCurrencyProvider);
     final Currency cur = Currencies.byCode(code);
-    final List<Currency> currencies = ref.watch(currenciesByStrengthProvider);
 
-    return PopupMenuButton<String>(
-      tooltip: l.baseCurrency,
-      offset: const Offset(0, 48),
-      color: c.bgElevated,
-      onSelected: (String v) =>
-          ref.read(baseCurrencyProvider.notifier).set(v),
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        for (final Currency x in currencies)
-          PopupMenuItem<String>(
-            value: x.code,
-            child: Row(
-              children: <Widget>[
-                CurrencyFlag(x, width: 20),
-                const SizedBox(width: DsSpacing.sm),
-                Text('${x.code} · ${x.symbol}',
-                    style: Theme.of(context).textTheme.bodyMedium),
-              ],
-            ),
+    return Tooltip(
+      message: l.baseCurrencyChipTip(cur.code),
+      child: InkWell(
+        borderRadius: DsRadius.brMd,
+        onTap: () => context.go('/settings'),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+              horizontal: DsSpacing.sm, vertical: 6),
+          decoration: BoxDecoration(
+            color: c.surfaceMuted,
+            borderRadius: DsRadius.brMd,
+            border: Border.all(color: c.border),
           ),
-      ],
-      child: Container(
-        padding:
-            const EdgeInsets.symmetric(horizontal: DsSpacing.sm, vertical: 6),
-        decoration: BoxDecoration(
-          color: c.surfaceMuted,
-          borderRadius: DsRadius.brMd,
-          border: Border.all(color: c.border),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            CurrencyFlag(cur, width: 18),
-            const SizedBox(width: DsSpacing.xs),
-            Text(cur.code, style: Theme.of(context).textTheme.labelLarge),
-            Icon(Icons.arrow_drop_down_rounded, size: 18, color: c.textMuted),
-          ],
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CurrencyFlag(cur, width: 18),
+              const SizedBox(width: DsSpacing.xs),
+              Text(cur.code, style: Theme.of(context).textTheme.labelLarge),
+            ],
+          ),
         ),
       ),
     );

@@ -143,7 +143,8 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
                   ),
                   const SizedBox(height: DsSpacing.lg),
                   DsTextField(
-                    label: '${l.fieldOriginal} (${cur.symbol})',
+                    label: l.fieldOriginal,
+                    suffixText: cur.code,
                     controller: _original,
                     prefixIcon: Icons.tag_rounded,
                     keyboardType:
@@ -157,7 +158,8 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
                   ),
                   const SizedBox(height: DsSpacing.lg),
                   DsTextField(
-                    label: '${l.fieldPaid} (${cur.symbol}) · ${l.optional}',
+                    label: '${l.fieldPaid} · ${l.optional}',
+                    suffixText: cur.code,
                     controller: _paid,
                     prefixIcon: Icons.payments_outlined,
                     keyboardType:
