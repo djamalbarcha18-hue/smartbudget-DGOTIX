@@ -62,13 +62,13 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
 
   Future<void> _save(AppLocalizations l) async {
     if (_entries.isEmpty) return;
-    final String currency = ref.read(baseCurrencyProvider);
     final TransactionActions actions = ref.read(transactionActionsProvider);
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     final List<String> ids = <String>[];
     final String fallbackWallet = ref.read(effectiveDefaultWalletProvider);
     for (final QuickEntry e in _entries) {
       final String wallet = e.walletId ?? fallbackWallet;
+      final String cur = ref.read(walletCurrencyProvider(wallet));
       final String id = '${TransactionActions.newId()}-${ids.length}';
       ids.add(id);
       await actions.add(Transaction(
@@ -76,7 +76,7 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
         date: e.date,
         type: e.type,
         category: e.category,
-        amount: Money.fromDouble(e.amount, currency),
+        amount: Money.fromDouble(e.amount, cur),
         description: e.description,
         walletId: wallet == Wallet.generalId ? null : wallet,
         createdAt: AppClock.now(),
@@ -119,7 +119,7 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final bool ar = Localizations.localeOf(context).languageCode == 'ar';
-    final String currency = ref.watch(baseCurrencyProvider);
+    ref.watch(baseCurrencyProvider);
     final DateTime today = AppClock.now();
     final List<Wallet> wallets = ref.watch(walletsProvider);
     final bool hasWallets = wallets.length > 1;
@@ -233,8 +233,8 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
                         ),
                       ),
                       Text(
-                        MoneyFormatter.format(
-                            Money.fromDouble(e.amount, currency)),
+                        MoneyFormatter.format(Money.fromDouble(
+                            e.amount, walletOf(e.walletId).currency)),
                         style: t.titleSmall?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: e.type == TransactionType.income

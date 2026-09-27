@@ -6,6 +6,7 @@ import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/storage/local_list_store.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
@@ -50,8 +51,13 @@ final walletsProvider = Provider<List<Wallet>>((ref) {
   final String currency = ref.watch(baseCurrencyProvider);
   final List<Wallet> stored =
       ref.watch(_storedWalletsProvider).valueOrNull ?? const <Wallet>[];
-  final Wallet general = stored.firstWhere((Wallet w) => w.isGeneral,
-      orElse: () => Wallet.general(currency));
+  // General always uses the base currency (its stored opening balance only
+  // counts while that currency matches).
+  final Wallet? stored0 =
+      stored.where((Wallet w) => w.isGeneral).firstOrNull;
+  final Wallet general = stored0 != null && stored0.currency == currency
+      ? stored0
+      : Wallet.general(currency);
   return <Wallet>[
     general,
     ...stored.where((Wallet w) => !w.isGeneral),
@@ -62,13 +68,32 @@ final walletsProvider = Provider<List<Wallet>>((ref) {
 final hasWalletsProvider =
     Provider<bool>((ref) => ref.watch(walletsProvider).length > 1);
 
+/// Each wallet's balance, in minor units of that wallet's own currency.
 final walletBalancesProvider = Provider<Map<String, int>>((ref) {
   return WalletMath.balances(
     wallets: ref.watch(walletsProvider),
     txns: ref.watch(transactionsProvider).valueOrNull ?? const <Transaction>[],
     moves: ref.watch(walletMovesProvider).valueOrNull ?? const <WalletMove>[],
-    currency: ref.watch(baseCurrencyProvider),
   );
+});
+
+/// All wallets together in the base currency, at the app's exchange rates.
+final walletTotalProvider =
+    Provider<({int total, List<String> missing})>((ref) {
+  return WalletMath.totalIn(
+    base: ref.watch(baseCurrencyProvider),
+    wallets: ref.watch(walletsProvider),
+    balances: ref.watch(walletBalancesProvider),
+    ratesVsUsd: ref.watch(ratesProvider),
+  );
+});
+
+/// Currency of a wallet id (unknown ids resolve to General = base currency).
+final walletCurrencyProvider = Provider.family<String, String?>((ref, id) {
+  final List<Wallet> wallets = ref.watch(walletsProvider);
+  final Set<String> known = <String>{for (final Wallet w in wallets) w.id};
+  final String rid = WalletMath.resolve(id, known);
+  return wallets.firstWhere((Wallet w) => w.id == rid).currency;
 });
 
 /// The wallet new transactions go to (General unless the user picks one).
@@ -141,6 +166,7 @@ class WalletActions {
     required String toId,
     required Money amount,
     required DateTime date,
+    Money? toAmount,
     String note = '',
   }) =>
       _ref.read(walletMoveStoreProvider).upsert(WalletMove(
@@ -150,6 +176,10 @@ class WalletActions {
             amount: amount,
             fromId: fromId,
             toId: toId,
+            toAmount: toAmount != null &&
+                    toAmount.currencyCode != amount.currencyCode
+                ? toAmount
+                : null,
             note: note,
             createdAt: AppClock.now(),
           ));

@@ -29,6 +29,8 @@ Wallet w(String id, int opening, {WalletType type = WalletType.cash}) => Wallet(
       createdAt: DateTime(2026),
     );
 
+int sum(Map<String, int> b) => b.values.fold(0, (int a, int x) => a + x);
+
 void main() {
   final List<Wallet> wallets = <Wallet>[
     Wallet.general('DZD', opening: const Money(5000, 'DZD')),
@@ -46,12 +48,11 @@ void main() {
         tx(30000, wallet: 'ccp', type: TransactionType.income),
       ],
       moves: const <WalletMove>[],
-      currency: 'DZD',
     );
     expect(b['general'], 5000 - 1000 - 2000);
     expect(b['cash'], 10000 - 500);
     expect(b['ccp'], 110000);
-    expect(WalletMath.total(b), 2000 + 9500 + 110000);
+    expect(sum(b), 2000 + 9500 + 110000);
   });
 
   test('a transfer moves money without changing the total', () {
@@ -67,12 +68,12 @@ void main() {
       ),
     ];
     final Map<String, int> before = WalletMath.balances(
-        wallets: wallets, txns: const <Transaction>[], moves: const <WalletMove>[], currency: 'DZD');
+        wallets: wallets, txns: const <Transaction>[], moves: const <WalletMove>[]);
     final Map<String, int> after = WalletMath.balances(
-        wallets: wallets, txns: const <Transaction>[], moves: moves, currency: 'DZD');
+        wallets: wallets, txns: const <Transaction>[], moves: moves);
     expect(after['ccp'], 60000);
     expect(after['cash'], 30000);
-    expect(WalletMath.total(after), WalletMath.total(before));
+    expect(sum(after), sum(before));
   });
 
   test('an adjustment corrects one wallet by a signed amount', () {
@@ -89,7 +90,6 @@ void main() {
           createdAt: DateTime(2026, 9, 12),
         ),
       ],
-      currency: 'DZD',
     );
     expect(b['cash'], 8500);
   });
@@ -99,7 +99,6 @@ void main() {
       wallets: wallets,
       txns: <Transaction>[tx(999, wallet: 'cash', cur: 'EUR')],
       moves: const <WalletMove>[],
-      currency: 'DZD',
     );
     expect(b['cash'], 10000);
   });
@@ -166,5 +165,97 @@ void main() {
     expect(WalletSuggestions.forCurrency('DZD').map(((WalletType, String) s) => s.$2),
         contains('CCP'));
     expect(WalletSuggestions.forCurrency('XYZ'), isEmpty);
+  });
+
+  group('multi-currency', () {
+    final Wallet eur = Wallet(
+      id: 'eur',
+      name: 'Revolut',
+      type: WalletType.bank,
+      opening: const Money(100000, 'EUR'), // 1,000.00 €
+      createdAt: DateTime(2026),
+    );
+    final List<Wallet> ws = <Wallet>[
+      Wallet.general('DZD', opening: const Money(5000000, 'DZD')), // 50,000 DA
+      eur,
+    ];
+    const Map<String, double> rates = <String, double>{
+      'USD': 1, 'DZD': 134.5, 'EUR': 0.92,
+    };
+
+    test('each wallet keeps its own currency', () {
+      final Map<String, int> b = WalletMath.balances(
+        wallets: ws,
+        txns: <Transaction>[
+          tx(2500, wallet: 'eur', cur: 'EUR'), // 25.00 € spent
+          tx(100000), // 1,000 DA from General
+          tx(999, wallet: 'eur'), // a DZD amount in the EUR wallet: ignored
+        ],
+        moves: const <WalletMove>[],
+      );
+      expect(b['eur'], 97500);
+      expect(b['general'], 4900000);
+    });
+
+    test('a cross-currency transfer uses the amount actually received', () {
+      final Map<String, int> b = WalletMath.balances(
+        wallets: ws,
+        txns: const <Transaction>[],
+        moves: <WalletMove>[
+          WalletMove(
+            id: 'x',
+            kind: MoveKind.transfer,
+            date: DateTime(2026, 9, 20),
+            amount: const Money(20000, 'EUR'), // 200 €
+            toAmount: const Money(5000000, 'DZD'), // 50,000 DA (parallel rate)
+            fromId: 'eur',
+            toId: 'general',
+            createdAt: DateTime(2026, 9, 20),
+          ),
+        ],
+      );
+      expect(b['eur'], 80000);
+      expect(b['general'], 10000000);
+    });
+
+    test('the total converts to the base currency', () {
+      final ({int total, List<String> missing}) t = WalletMath.totalIn(
+        base: 'DZD',
+        wallets: ws,
+        balances: <String, int>{'general': 5000000, 'eur': 92000},
+        ratesVsUsd: rates,
+      );
+      // 920 € = 1,000 USD = 134,500 DA; + 50,000 DA.
+      expect(t.total, 18450000);
+      expect(t.missing, isEmpty);
+    });
+
+    test('a currency without a rate is flagged, never guessed', () {
+      final ({int total, List<String> missing}) t = WalletMath.totalIn(
+        base: 'DZD',
+        wallets: ws,
+        balances: <String, int>{'general': 5000000, 'eur': 92000},
+        ratesVsUsd: const <String, double>{'USD': 1, 'DZD': 134.5},
+      );
+      expect(t.total, 5000000);
+      expect(t.missing, <String>['EUR']);
+    });
+
+    test('the received amount survives JSON', () {
+      final WalletMove m = WalletMove(
+        id: 'x',
+        kind: MoveKind.transfer,
+        date: DateTime(2026, 9, 20),
+        amount: const Money(20000, 'EUR'),
+        toAmount: const Money(5000000, 'DZD'),
+        fromId: 'eur',
+        toId: 'general',
+        createdAt: DateTime(2026, 9, 20),
+      );
+      final WalletMove r = WalletMove.fromJson(m.toJson());
+      expect(r.received.minorUnits, 5000000);
+      expect(r.received.currencyCode, 'DZD');
+      expect(r.amount.currencyCode, 'EUR');
+    });
   });
 }

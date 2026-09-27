@@ -1,4 +1,5 @@
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/features/exchange_rates/domain/exchange_rate_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
 enum WalletType { cash, bank, card, ewallet, savings, other }
@@ -24,10 +25,13 @@ class Wallet {
   final WalletType type;
 
   /// Balance when the wallet was added (before any recorded transaction).
+  /// Its currency is the wallet's currency.
   final Money opening;
   final DateTime createdAt;
 
   bool get isGeneral => id == generalId;
+
+  String get currency => opening.currencyCode;
 
   static Wallet general(String currency, {Money? opening}) => Wallet(
         id: generalId,
@@ -80,6 +84,7 @@ class WalletMove {
     required this.toId,
     required this.createdAt,
     this.fromId,
+    this.toAmount,
     this.note = '',
   });
 
@@ -95,6 +100,12 @@ class WalletMove {
 
   /// Destination of a transfer, or the adjusted wallet.
   final String toId;
+
+  /// What arrived, when the two wallets use different currencies (the real
+  /// exchange rate often differs from the official one).
+  final Money? toAmount;
+
+  Money get received => toAmount ?? amount;
   final String note;
   final DateTime createdAt;
 
@@ -106,6 +117,8 @@ class WalletMove {
         'currency': amount.currencyCode,
         if (fromId != null) 'fromId': fromId,
         'toId': toId,
+        if (toAmount != null) 'toAmountMinor': toAmount!.minorUnits,
+        if (toAmount != null) 'toCurrency': toAmount!.currencyCode,
         'note': note,
         'createdAt': createdAt.toIso8601String(),
       };
@@ -121,6 +134,10 @@ class WalletMove {
           (j['currency'] as String?) ?? 'USD'),
       fromId: j['fromId'] as String?,
       toId: (j['toId'] as String?) ?? Wallet.generalId,
+      toAmount: j['toAmountMinor'] == null
+          ? null
+          : Money((j['toAmountMinor'] as num).toInt(),
+              (j['toCurrency'] as String?) ?? 'USD'),
       note: (j['note'] as String?) ?? '',
       createdAt:
           DateTime.tryParse((j['createdAt'] as String?) ?? '') ?? DateTime(2026),
@@ -134,40 +151,82 @@ abstract final class WalletMath {
   static String resolve(String? id, Set<String> known) =>
       id != null && known.contains(id) ? id : Wallet.generalId;
 
-  /// Current balance of every wallet, in minor units of [currency]. Only
-  /// amounts in [currency] count (like every total in the app).
+  /// Current balance of every wallet, in minor units of that wallet's own
+  /// currency. Amounts in another currency than the wallet's are left out
+  /// (never silently converted).
   static Map<String, int> balances({
     required List<Wallet> wallets,
     required List<Transaction> txns,
     required List<WalletMove> moves,
-    required String currency,
   }) {
-    final Set<String> known = <String>{for (final Wallet w in wallets) w.id};
-    final Map<String, int> out = <String, int>{
-      for (final Wallet w in wallets)
-        w.id: w.opening.currencyCode == currency ? w.opening.minorUnits : 0,
+    final Map<String, Wallet> byId = <String, Wallet>{
+      for (final Wallet w in wallets) w.id: w,
     };
-    out.putIfAbsent(Wallet.generalId, () => 0);
+    final Set<String> known = byId.keys.toSet();
+    final Map<String, int> out = <String, int>{
+      for (final Wallet w in wallets) w.id: w.opening.minorUnits,
+    };
+    void add(String id, Money m) {
+      final Wallet? w = byId[id];
+      if (w == null || m.currencyCode != w.currency) return;
+      out[id] = (out[id] ?? 0) + m.minorUnits;
+    }
+
     for (final Transaction t in txns) {
-      if (t.amount.currencyCode != currency) continue;
       final String id = resolve(t.walletId, known);
-      out[id] = out[id]! +
-          (t.isIncome ? t.amount.minorUnits : -t.amount.minorUnits);
+      add(id, t.isIncome ? t.amount : Money(-t.amount.minorUnits, t.amount.currencyCode));
     }
     for (final WalletMove m in moves) {
-      if (m.amount.currencyCode != currency) continue;
       final String to = resolve(m.toId, known);
       if (m.kind == MoveKind.transfer) {
         final String from = resolve(m.fromId, known);
-        out[from] = out[from]! - m.amount.minorUnits;
+        add(from, Money(-m.amount.minorUnits, m.amount.currencyCode));
+        add(to, m.received);
+      } else {
+        add(to, m.amount);
       }
-      out[to] = out[to]! + m.amount.minorUnits;
     }
     return out;
   }
 
-  static int total(Map<String, int> balances) =>
-      balances.values.fold(0, (int a, int b) => a + b);
+  /// [m] in [to] at the app's rates (units per 1 USD), or null when a rate
+  /// is missing.
+  static Money? convert(Money m, String to, Map<String, double> ratesVsUsd) {
+    if (m.currencyCode == to) return m;
+    final double? rf = ratesVsUsd[m.currencyCode];
+    final double? rt = ratesVsUsd[to];
+    if (rf == null || rt == null || rf <= 0 || rt <= 0) return null;
+    return Money.fromDouble(
+        ExchangeRateCalculator.convert(
+            amount: m.asDouble,
+            from: m.currencyCode,
+            to: to,
+            ratesVsUsd: ratesVsUsd),
+        to);
+  }
+
+  /// Everything in [base]. Wallets whose currency has no rate are left out
+  /// and listed in `missing` (never guessed).
+  static ({int total, List<String> missing}) totalIn({
+    required String base,
+    required List<Wallet> wallets,
+    required Map<String, int> balances,
+    required Map<String, double> ratesVsUsd,
+  }) {
+    int total = 0;
+    final List<String> missing = <String>[];
+    for (final Wallet w in wallets) {
+      final int b = balances[w.id] ?? 0;
+      if (b == 0) continue;
+      final Money? c = convert(Money(b, w.currency), base, ratesVsUsd);
+      if (c == null) {
+        if (!missing.contains(w.currency)) missing.add(w.currency);
+      } else {
+        total += c.minorUnits;
+      }
+    }
+    return (total: total, missing: missing);
+  }
 
   /// Income and expenses recorded in [walletId] during a month.
   static ({int income, int expense}) monthFlow(

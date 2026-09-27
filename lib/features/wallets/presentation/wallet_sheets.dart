@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/amount_dialog.dart';
+import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
 import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
@@ -107,6 +110,7 @@ class _WalletEditorSheetState extends ConsumerState<WalletEditorSheet> {
           : _plain(widget.existing!.opening.minorUnits,
               widget.existing!.opening.currencyCode));
   late WalletType _type = widget.existing?.type ?? WalletType.cash;
+  late String? _currency = widget.existing?.currency;
   bool _makeDefault = false;
   String? _error;
 
@@ -124,7 +128,9 @@ class _WalletEditorSheetState extends ConsumerState<WalletEditorSheet> {
       setState(() => _error = l.valRequired);
       return;
     }
-    final String currency = ref.read(baseCurrencyProvider);
+    final String currency = _general
+        ? ref.read(baseCurrencyProvider)
+        : _currency ?? ref.read(baseCurrencyProvider);
     final String raw = _opening.text.trim();
     final double opening = raw.isEmpty
         ? 0
@@ -152,9 +158,10 @@ class _WalletEditorSheetState extends ConsumerState<WalletEditorSheet> {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final String currency = ref.watch(baseCurrencyProvider);
+    final String base = ref.watch(baseCurrencyProvider);
+    final String currency = _general ? base : _currency ?? base;
     final List<(WalletType, String)> suggestions =
-        WalletSuggestions.forCurrency(currency);
+        WalletSuggestions.forCurrency(base);
 
     return _Frame(
       icon: Icons.wallet_outlined,
@@ -200,6 +207,34 @@ class _WalletEditorSheetState extends ConsumerState<WalletEditorSheet> {
                   onSelected: (_) => setState(() => _type = type),
                 ),
             ],
+          ),
+          const SizedBox(height: DsSpacing.md),
+          DropdownButtonFormField<String>(
+            initialValue: currency,
+            isExpanded: true,
+            decoration: InputDecoration(
+              labelText: l.walletCurrency,
+              helperText: widget.existing == null
+                  ? l.walletCurrencyHint
+                  : l.walletCurrencyLocked,
+              helperMaxLines: 2,
+            ),
+            items: <DropdownMenuItem<String>>[
+              for (final Currency cur in Currencies.all)
+                DropdownMenuItem<String>(
+                  value: cur.code,
+                  child: Row(
+                    children: <Widget>[
+                      CurrencyFlag(cur, width: 20),
+                      const SizedBox(width: DsSpacing.sm),
+                      Text('${cur.code} · ${cur.symbol}'),
+                    ],
+                  ),
+                ),
+            ],
+            onChanged: widget.existing != null
+                ? null
+                : (String? v) => setState(() => _currency = v),
           ),
           const SizedBox(height: DsSpacing.md),
         ],
@@ -257,7 +292,9 @@ class TransferSheet extends ConsumerStatefulWidget {
 
 class _TransferSheetState extends ConsumerState<TransferSheet> {
   final TextEditingController _amount = TextEditingController();
+  final TextEditingController _received = TextEditingController();
   final TextEditingController _note = TextEditingController();
+  bool _receivedEdited = false;
   String? _from;
   String? _to;
   DateTime _date = AppClock.now();
@@ -266,8 +303,27 @@ class _TransferSheetState extends ConsumerState<TransferSheet> {
   @override
   void dispose() {
     _amount.dispose();
+    _received.dispose();
     _note.dispose();
     super.dispose();
+  }
+
+  String _cur(String? id) => ref.read(walletCurrencyProvider(id));
+
+  /// Keeps "received" in step with the amount at the app's rate until the
+  /// user types the real figure themselves.
+  void _syncReceived() {
+    if (_receivedEdited) return;
+    final double? a = parseAmount(_amount.text);
+    final String fc = _cur(_from);
+    final String tc = _cur(_to);
+    if (a == null || fc == tc) {
+      _received.text = '';
+      return;
+    }
+    final Money? conv = WalletMath.convert(
+        Money.fromDouble(a, fc), tc, ref.read(ratesProvider));
+    _received.text = conv == null ? '' : _plain(conv.minorUnits, tc);
   }
 
   Future<void> _save(AppLocalizations l) async {
@@ -280,14 +336,37 @@ class _TransferSheetState extends ConsumerState<TransferSheet> {
       setState(() => _error = l.valAmountInvalid);
       return;
     }
+    final String fc = _cur(_from);
+    final String tc = _cur(_to);
+    final double? received = fc == tc ? null : parseAmount(_received.text);
+    if (fc != tc && received == null) {
+      setState(() => _error = l.walletReceivedRequired);
+      return;
+    }
     await ref.read(walletActionsProvider).transfer(
           fromId: _from!,
           toId: _to!,
-          amount: Money.fromDouble(amount, ref.read(baseCurrencyProvider)),
+          amount: Money.fromDouble(amount, fc),
+          toAmount: received == null ? null : Money.fromDouble(received, tc),
           date: _date,
           note: _note.text.trim(),
         );
     if (mounted) Navigator.of(context).pop();
+  }
+
+  /// "1 EUR = 245.50 DZD", from what the user typed.
+  String? _rateLine(AppLocalizations l) {
+    final double? a = parseAmount(_amount.text);
+    final double? r = parseAmount(_received.text);
+    if (a == null || r == null) return null;
+    final double rate = r / a;
+    final String shown = rate >= 100
+        ? rate.toStringAsFixed(2)
+        : rate >= 1
+            ? rate.toStringAsFixed(4)
+            : rate.toStringAsFixed(6);
+    // Isolated left-to-right so "1 USD = 134.50 DZD" never flips in Arabic.
+    return '\u2066${l.walletRateLine(_cur(_from), shown, _cur(_to))}\u2069';
   }
 
   @override
@@ -297,7 +376,6 @@ class _TransferSheetState extends ConsumerState<TransferSheet> {
     final TextTheme t = Theme.of(context).textTheme;
     final List<Wallet> wallets = ref.watch(walletsProvider);
     final Map<String, int> balances = ref.watch(walletBalancesProvider);
-    final String currency = ref.watch(baseCurrencyProvider);
     _from ??= widget.fromId ?? wallets.first.id;
     _to ??= wallets.firstWhere((Wallet w) => w.id != _from,
         orElse: () => wallets.first).id;
@@ -312,7 +390,7 @@ class _TransferSheetState extends ConsumerState<TransferSheet> {
               DropdownMenuItem<String>(
                 value: w.id,
                 child: Text(
-                    '${walletName(l, w)} · ${MoneyFormatter.format(Money(balances[w.id] ?? 0, currency))}',
+                    '${walletName(l, w)} · ${MoneyFormatter.format(Money(balances[w.id] ?? 0, w.currency))}',
                     overflow: TextOverflow.ellipsis),
               ),
           ],
@@ -326,16 +404,44 @@ class _TransferSheetState extends ConsumerState<TransferSheet> {
         Text(l.walletTransferHint,
             style: t.bodySmall?.copyWith(color: c.textMuted)),
         const SizedBox(height: DsSpacing.md),
-        picker(l.walletFrom, _from, (String? v) => setState(() => _from = v)),
+        picker(l.walletFrom, _from, (String? v) => setState(() {
+              _from = v;
+              _syncReceived();
+            })),
         const SizedBox(height: DsSpacing.md),
-        picker(l.walletTo, _to, (String? v) => setState(() => _to = v)),
+        picker(l.walletTo, _to, (String? v) => setState(() {
+              _to = v;
+              _syncReceived();
+            })),
         const SizedBox(height: DsSpacing.md),
         TextField(
           controller: _amount,
           inputFormatters: LatinDigitsFormatter.only,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: InputDecoration(labelText: '${l.fieldAmount} ($currency)'),
+          onChanged: (_) => setState(_syncReceived),
+          decoration:
+              InputDecoration(labelText: '${l.walletSent} (${_cur(_from)})'),
         ),
+        if (_cur(_from) != _cur(_to)) ...<Widget>[
+          const SizedBox(height: DsSpacing.md),
+          TextField(
+            controller: _received,
+            inputFormatters: LatinDigitsFormatter.only,
+            keyboardType:
+                const TextInputType.numberWithOptions(decimal: true),
+            onChanged: (_) => setState(() => _receivedEdited = true),
+            decoration: InputDecoration(
+              labelText: '${l.walletReceivedLabel} (${_cur(_to)})',
+              helperText: l.walletReceivedHint,
+              helperMaxLines: 3,
+            ),
+          ),
+          if (_rateLine(l) != null) ...<Widget>[
+            const SizedBox(height: DsSpacing.xs),
+            Text(_rateLine(l)!,
+                style: t.labelMedium?.copyWith(color: c.brand)),
+          ],
+        ],
         const SizedBox(height: DsSpacing.md),
         TextField(
           controller: _note,
@@ -403,7 +509,7 @@ class _ReconcileSheetState extends ConsumerState<ReconcileSheet> {
         double.tryParse(raw.replaceAll(' ', '').replaceAll(',', '.'));
     return v == null
         ? null
-        : Money.fromDouble(v, ref.read(baseCurrencyProvider)).minorUnits;
+        : Money.fromDouble(v, widget.wallet.currency).minorUnits;
   }
 
   @override
@@ -411,7 +517,7 @@ class _ReconcileSheetState extends ConsumerState<ReconcileSheet> {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final String currency = ref.watch(baseCurrencyProvider);
+    final String currency = widget.wallet.currency;
     final int app = ref.watch(walletBalancesProvider)[widget.wallet.id] ?? 0;
     final int? actual = _actualMinor;
     final int? diff = actual == null ? null : actual - app;

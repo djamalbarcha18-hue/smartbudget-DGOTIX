@@ -11,6 +11,7 @@ import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -37,7 +38,10 @@ class WalletsPage extends ConsumerWidget {
     final List<WalletMove> moves =
         ref.watch(walletMovesProvider).valueOrNull ?? const <WalletMove>[];
     final bool hasWallets = wallets.length > 1;
-    final int total = WalletMath.total(balances);
+    final ({int total, List<String> missing}) totalInfo =
+        ref.watch(walletTotalProvider);
+    final int total = totalInfo.total;
+    final bool mixed = wallets.any((Wallet w) => w.currency != currency);
 
     final bool wide = !context.isMobile;
     Widget grid(List<Widget> children) => LayoutBuilder(
@@ -124,7 +128,8 @@ class WalletsPage extends ConsumerWidget {
                     children: <Widget>[
                       Text(l.walletTotal,
                           style: t.labelLarge?.copyWith(color: c.textMuted)),
-                      Text(MoneyFormatter.format(Money(total, currency)),
+                      Text(
+                          '${mixed ? '≈ ' : ''}${MoneyFormatter.format(Money(total, currency))}',
                           style: t.headlineMedium?.copyWith(
                               fontWeight: FontWeight.w800,
                               color: total < 0 ? c.expense : null)),
@@ -134,6 +139,12 @@ class WalletsPage extends ConsumerWidget {
                             : l.walletOnlyGeneral,
                         style: t.bodySmall?.copyWith(color: c.textMuted),
                       ),
+                      if (mixed)
+                        Text(l.walletTotalAtRates,
+                            style: t.labelSmall?.copyWith(color: c.textFaint)),
+                      if (totalInfo.missing.isNotEmpty)
+                        Text(l.walletMissingRate(totalInfo.missing.join('، ')),
+                            style: t.labelSmall?.copyWith(color: c.warning)),
                     ],
                   ),
                 ),
@@ -204,7 +215,11 @@ class _WalletCard extends ConsumerWidget {
     };
     final DateTime now = AppClock.now();
     final ({int income, int expense}) flow = WalletMath.monthFlow(
-        wallet.id, txns, known, currency, now.year, now.month);
+        wallet.id, txns, known, wallet.currency, now.year, now.month);
+    final Money bal = Money(balance, wallet.currency);
+    final Money? inBase = wallet.currency == currency
+        ? null
+        : WalletMath.convert(bal, currency, ref.watch(ratesProvider));
     final Color color = walletColor(wallet);
 
     return GlassCard(
@@ -238,7 +253,7 @@ class _WalletCard extends ConsumerWidget {
                       Text(
                           wallet.isGeneral
                               ? l.walletGeneralHint
-                              : walletTypeName(l, wallet.type),
+                              : '${walletTypeName(l, wallet.type)} · ${wallet.currency}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: t.bodySmall?.copyWith(color: c.textMuted)),
@@ -295,21 +310,24 @@ class _WalletCard extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: DsSpacing.lg),
-            Text(MoneyFormatter.format(Money(balance, currency)),
+            Text(MoneyFormatter.format(bal),
                 style: t.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                     color: balance < 0 ? c.expense : null)),
+            if (inBase != null)
+              Text('≈ ${MoneyFormatter.format(inBase)}',
+                  style: t.labelMedium?.copyWith(color: c.textMuted)),
             const SizedBox(height: DsSpacing.sm),
             Row(
               children: <Widget>[
                 Icon(Icons.south_west_rounded, size: 14, color: c.income),
                 const SizedBox(width: 4),
-                Text(MoneyFormatter.format(Money(flow.income, currency)),
+                Text(MoneyFormatter.format(Money(flow.income, wallet.currency)),
                     style: t.labelMedium?.copyWith(color: c.income)),
                 const SizedBox(width: DsSpacing.md),
                 Icon(Icons.north_east_rounded, size: 14, color: c.expense),
                 const SizedBox(width: 4),
-                Text(MoneyFormatter.format(Money(flow.expense, currency)),
+                Text(MoneyFormatter.format(Money(flow.expense, wallet.currency)),
                     style: t.labelMedium?.copyWith(color: c.expense)),
                 const Spacer(),
                 Text(l.walletThisMonth,
@@ -362,8 +380,16 @@ class _MoveRow extends ConsumerWidget {
               ],
             ),
           ),
-          Text(MoneyFormatter.format(move.amount),
-              style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Text(MoneyFormatter.format(move.amount),
+                  style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+              if (move.toAmount != null)
+                Text(l.walletReceived(MoneyFormatter.format(move.toAmount!)),
+                    style: t.labelSmall?.copyWith(color: c.textMuted)),
+            ],
+          ),
           IconButton(
             tooltip: l.delete,
             icon: Icon(Icons.close_rounded, size: 16, color: c.textFaint),

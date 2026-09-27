@@ -94,6 +94,7 @@ class _TransactionEditorSheetState
   String? _paymentMethod;
   RecurrenceFrequency? _repeat;
   String? _walletId;
+  String? _initialWallet;
   bool _saving = false;
 
   bool get _isIncome => widget.type == TransactionType.income;
@@ -118,6 +119,15 @@ class _TransactionEditorSheetState
     _walletId = e != null
         ? e.walletId ?? Wallet.generalId
         : ref.read(effectiveDefaultWalletProvider);
+    _initialWallet = _walletId;
+  }
+
+  /// The wallet's currency; an edited transaction keeps its own currency
+  /// unless it is moved to another wallet.
+  String _currency() {
+    final Transaction? e = widget.existing;
+    if (e != null && _walletId == _initialWallet) return e.amount.currencyCode;
+    return ref.read(walletCurrencyProvider(_walletId));
   }
 
   @override
@@ -144,7 +154,7 @@ class _TransactionEditorSheetState
         double.tryParse(_amount.text.trim().replaceAll(',', '.')) ?? 0;
 
     setState(() => _saving = true);
-    final String currency = ref.read(baseCurrencyProvider);
+    final String currency = _currency();
     final Transaction txn = Transaction(
       id: widget.existing?.id ?? TransactionActions.newId(),
       date: _date,
@@ -174,7 +184,9 @@ class _TransactionEditorSheetState
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
-    final Currency cur = Currencies.byCode(ref.watch(baseCurrencyProvider));
+    ref.watch(walletsProvider);
+    final String base = ref.watch(baseCurrencyProvider);
+    final Currency cur = Currencies.byCode(_currency());
     final Color accent = _isIncome ? c.income : c.expense;
     final String title = widget.existing != null
         ? (_isIncome ? l.editIncome : l.editExpense)
@@ -275,6 +287,14 @@ class _TransactionEditorSheetState
                       value: _walletId,
                       onChanged: (String? v) => setState(() => _walletId = v),
                     ),
+                    if (cur.code != base) ...<Widget>[
+                      const SizedBox(height: DsSpacing.xs),
+                      Text(l.walletForeignNote(cur.code, base),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall
+                              ?.copyWith(color: c.warning)),
+                    ],
                     const SizedBox(height: DsSpacing.lg),
                   ],
                   _CategoryDropdown(
