@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
+import 'package:smartbudget/features/daret/domain/daret.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/portfolio/domain/project.dart';
@@ -27,6 +28,7 @@ class BackupData {
     this.projects = const <Project>[],
     this.recurring = const <RecurringRule>[],
     this.seasons = const <SeasonPlan>[],
+    this.darets = const <Daret>[],
   });
 
   /// Bump when the on-disk shape changes in a breaking way. Adding optional
@@ -45,6 +47,7 @@ class BackupData {
   final List<Project> projects;
   final List<RecurringRule> recurring;
   final List<SeasonPlan> seasons;
+  final List<Daret> darets;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'schemaVersion': schemaVersion,
@@ -59,6 +62,7 @@ class BackupData {
         'projects': projects.map((Project p) => p.toJson()).toList(),
         'recurring': recurring.map((RecurringRule r) => r.toJson()).toList(),
         'seasons': seasons.map((SeasonPlan p) => p.toJson()).toList(),
+        'darets': darets.map((Daret d) => d.toJson()).toList(),
         'customCategories': <String, dynamic>{
           'income': customIncome,
           'expense': customExpense,
@@ -86,6 +90,7 @@ class BackupData {
       recurring:
           _list<RecurringRule>(json['recurring'], RecurringRule.fromJson),
       seasons: _list<SeasonPlan>(json['seasons'], SeasonPlan.fromJson),
+      darets: _list<Daret>(json['darets'], Daret.fromJson),
     );
   }
 
@@ -122,6 +127,7 @@ abstract final class BackupCodec {
       'projects',
       'recurring',
       'seasons',
+      'darets',
     ];
     if (!sections.any(obj.containsKey)) {
       throw const FormatException('Backup file is missing expected data.');

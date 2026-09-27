@@ -10,6 +10,8 @@ import 'package:smartbudget/features/billing/application/feature_gate_provider.d
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
+import 'package:smartbudget/features/daret/application/daret_controller.dart';
+import 'package:smartbudget/features/daret/domain/daret.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/notifications/domain/notification_feed.dart';
@@ -86,9 +88,13 @@ final notificationsProvider = Provider<List<FeedItem>>((ref) {
     finance: finance,
     smart: smart,
     upcoming: NotificationFeed.upcomingRecurring(rules, now),
-    planning: SeasonAlerts.build(
-        ref.watch(seasonPlansProvider).valueOrNull ?? const <SeasonPlan>[],
-        now),
+    planning: <AppAlert>[
+      ...SeasonAlerts.build(
+          ref.watch(seasonPlansProvider).valueOrNull ?? const <SeasonPlan>[],
+          now),
+      ...DaretMath.alerts(
+          ref.watch(daretsProvider).valueOrNull ?? const <Daret>[], now),
+    ],
     backupDue: ref.watch(backupReminderDueProvider),
     currency: currency,
     now: now,
