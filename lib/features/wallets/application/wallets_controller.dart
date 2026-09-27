@@ -200,12 +200,15 @@ class WalletActions {
   Future<void> recordDifference(
       String walletId, Money delta, String description) {
     final bool extra = delta.minorUnits > 0;
+    final Money amount = Money(delta.minorUnits.abs(), delta.currencyCode);
     return _ref.read(transactionActionsProvider).add(Transaction(
           id: TransactionActions.newId(),
           date: _today(),
           type: extra ? TransactionType.income : TransactionType.expense,
           category: 'أخرى',
-          amount: Money(delta.minorUnits.abs(), delta.currencyCode),
+          amount: amount,
+          baseAmount: WalletMath.baseValue(amount,
+              _ref.read(baseCurrencyProvider), _ref.read(ratesProvider)),
           description: description,
           walletId: walletId == Wallet.generalId ? null : walletId,
           createdAt: AppClock.now(),
@@ -220,3 +223,37 @@ class WalletActions {
     return DateTime(n.year, n.month, n.day);
   }
 }
+
+
+/// Foreign-currency transactions saved before base values were recorded get
+/// one, once real rates are known (live or entered by hand — never from the
+/// rough built-in defaults). Runs whenever rates or transactions change and
+/// only touches transactions still missing a value.
+final baseValueBackfillProvider = Provider<void>((ref) {
+  final FxStatus fx = ref.watch(fxStatusProvider);
+  final List<Transaction> txns =
+      ref.watch(transactionsProvider).valueOrNull ?? const <Transaction>[];
+  final String base = ref.watch(baseCurrencyProvider);
+  final Map<String, double> rates = ref.watch(ratesProvider);
+  // A rate is trusted when it is USD (the reference), typed by the user, or
+  // from the live feed.
+  bool known(String c) =>
+      c == 'USD' ||
+      fx.manualCodes.contains(c) ||
+      (fx.live && fx.liveCodes.contains(c));
+  final List<Transaction> fixes = <Transaction>[];
+  for (final Transaction t in txns) {
+    final String cur = t.amount.currencyCode;
+    if (cur == base || t.baseAmount != null) continue;
+    if (!known(cur) || !known(base)) continue;
+    final Money? v = WalletMath.baseValue(t.amount, base, rates);
+    if (v != null) fixes.add(t.copyWith(baseAmount: v));
+  }
+  if (fixes.isEmpty) return;
+  final TransactionActions actions = ref.read(transactionActionsProvider);
+  Future<void>.microtask(() async {
+    for (final Transaction t in fixes) {
+      await actions.update(t);
+    }
+  });
+});

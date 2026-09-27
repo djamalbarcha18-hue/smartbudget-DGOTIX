@@ -22,6 +22,7 @@ class Transaction {
     this.paymentMethod,
     this.notes,
     this.walletId,
+    this.baseAmount,
     required this.createdAt,
   });
 
@@ -36,9 +37,35 @@ class Transaction {
 
   /// The wallet it moved money in or out of; null = the "General" wallet.
   final String? walletId;
+
+  /// For an amount in a foreign currency: its value in the base currency at
+  /// the rate of the day it was recorded, so reports can include it without
+  /// shifting every time exchange rates move. Null when the amount is
+  /// already in the base currency (or no rate was known).
+  final Money? baseAmount;
   final DateTime createdAt;
 
   bool get isIncome => type == TransactionType.income;
+
+  /// This transaction expressed in [currency] for totals: itself, a copy
+  /// carrying its recorded [baseAmount], or null when it has no value there.
+  Transaction? inCurrency(String currency) {
+    if (amount.currencyCode == currency) return this;
+    final Money? b = baseAmount;
+    if (b == null || b.currencyCode != currency) return null;
+    return Transaction(
+      id: id,
+      date: date,
+      type: type,
+      category: category,
+      amount: b,
+      description: description,
+      paymentMethod: paymentMethod,
+      notes: notes,
+      walletId: walletId,
+      createdAt: createdAt,
+    );
+  }
   bool get isExpense => type == TransactionType.expense;
 
   Transaction copyWith({
@@ -51,6 +78,8 @@ class Transaction {
     String? notes,
     String? walletId,
     bool clearWallet = false,
+    Money? baseAmount,
+    bool clearBase = false,
   }) {
     return Transaction(
       id: id,
@@ -62,6 +91,7 @@ class Transaction {
       paymentMethod: paymentMethod ?? this.paymentMethod,
       notes: notes ?? this.notes,
       walletId: clearWallet ? null : walletId ?? this.walletId,
+      baseAmount: clearBase ? null : baseAmount ?? this.baseAmount,
       createdAt: createdAt,
     );
   }
@@ -77,6 +107,8 @@ class Transaction {
         'paymentMethod': paymentMethod,
         'notes': notes,
         if (walletId != null) 'walletId': walletId,
+        if (baseAmount != null) 'baseMinor': baseAmount!.minorUnits,
+        if (baseAmount != null) 'baseCurrency': baseAmount!.currencyCode,
         'createdAt': createdAt.toIso8601String(),
       };
 
@@ -97,6 +129,10 @@ class Transaction {
       paymentMethod: json['paymentMethod'] as String?,
       notes: json['notes'] as String?,
       walletId: json['walletId'] as String?,
+      baseAmount: json['baseMinor'] == null
+          ? null
+          : Money((json['baseMinor'] as num).toInt(),
+              (json['baseCurrency'] as String?) ?? 'USD'),
       createdAt: DateTime.tryParse((json['createdAt'] as String?) ?? '') ??
           AppClock.now(),
     );

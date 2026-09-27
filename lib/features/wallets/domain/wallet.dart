@@ -205,6 +205,12 @@ abstract final class WalletMath {
         to);
   }
 
+  /// What a foreign-currency [amount] is worth in [base] today, to store on
+  /// the transaction; null when it's already in [base] or no rate is known.
+  static Money? baseValue(
+          Money amount, String base, Map<String, double> ratesVsUsd) =>
+      amount.currencyCode == base ? null : convert(amount, base, ratesVsUsd);
+
   /// Everything in [base]. Wallets whose currency has no rate are left out
   /// and listed in `missing` (never guessed).
   static ({int total, List<String> missing}) totalIn({

@@ -169,8 +169,9 @@ abstract final class SalarySplitEngine {
     int thisMonth = 0;
     final Map<(int, int), int> byMonth = <(int, int), int>{};
     final List<(int, int)> window = historyWindow(year, month);
-    for (final Transaction t in transactions) {
-      if (!t.isIncome || t.amount.currencyCode != currency) continue;
+    for (final Transaction t0 in transactions) {
+      final Transaction? t = t0.inCurrency(currency);
+      if (t == null || !t.isIncome) continue;
       if (t.date.year == year && t.date.month == month) {
         thisMonth += t.amount.minorUnits;
       } else if (_inWindow(t.date, window)) {
@@ -214,8 +215,9 @@ abstract final class SalarySplitEngine {
     final List<(int, int)> window = historyWindow(year, month);
     final Map<String, int> totals = <String, int>{};
     final Set<(int, int)> monthsSeen = <(int, int)>{};
-    for (final Transaction t in transactions) {
-      if (!t.isExpense || t.amount.currencyCode != cur) continue;
+    for (final Transaction t0 in transactions) {
+      final Transaction? t = t0.inCurrency(cur);
+      if (t == null || !t.isExpense) continue;
       if (!_inWindow(t.date, window)) continue;
       totals[t.category] = (totals[t.category] ?? 0) + t.amount.minorUnits;
       monthsSeen.add((t.date.year, t.date.month));

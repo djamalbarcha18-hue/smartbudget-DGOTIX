@@ -9,6 +9,7 @@ import 'package:smartbudget/core/theme/theme_controller.dart';
 import 'package:smartbudget/core/time/clock_sync_controller.dart';
 import 'package:smartbudget/design_system/theme/ds_theme.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_gate.dart';
+import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Single router instance for the app lifetime (auth-guarded).
@@ -27,6 +28,8 @@ class SmartBudgetApp extends ConsumerWidget {
     final GoRouter router = ref.watch(_routerProvider);
     // Keeps the periodic world-time sync running for the app's lifetime.
     ref.listen(clockSyncProvider, (_, __) {});
+    // Gives older foreign-currency transactions their base-currency value.
+    ref.listen(baseValueBackfillProvider, (_, __) {});
 
     return MaterialApp.router(
       title: '${AppConfig.appName} — by ${AppConfig.parentBrand}',

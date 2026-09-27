@@ -1,14 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/recurring/data/fake_recurring_repository.dart';
 import 'package:smartbudget/features/recurring/domain/recurrence_engine.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_repository.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/wallets/domain/wallet.dart';
 
 /// The active rules store, scoped to the signed-in user.
 final recurringRepositoryProvider = Provider<RecurringRepository>((ref) {
@@ -69,6 +72,7 @@ class RecurringActions {
       paymentMethod: txn.paymentMethod,
       notes: txn.notes,
       walletId: txn.walletId,
+      baseAmount: txn.baseAmount,
       createdAt: txn.createdAt,
     );
     await _ref.read(transactionActionsProvider).add(first);
@@ -111,9 +115,17 @@ class RecurringActions {
         await _ref.read(recurringRulesProvider.future);
     final PostingPlan plan = RecurrenceEngine.plan(rules, now);
     if (plan.isEmpty) return 0;
-    final int added = await _ref
-        .read(financeRepositoryProvider)
-        .importMany(plan.transactions);
+    // Foreign-currency occurrences get their base value at today's rate.
+    final String base = _ref.read(baseCurrencyProvider);
+    final Map<String, double> rates = _ref.read(ratesProvider);
+    final List<Transaction> txns = <Transaction>[
+      for (final Transaction t in plan.transactions)
+        t.amount.currencyCode == base
+            ? t
+            : t.copyWith(baseAmount: WalletMath.baseValue(t.amount, base, rates)),
+    ];
+    final int added =
+        await _ref.read(financeRepositoryProvider).importMany(txns);
     await _rules.updateMany(plan.updatedRules);
     return added;
   }

@@ -9,6 +9,7 @@ import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/quick_entry/domain/quick_entry_parser.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
@@ -69,6 +70,7 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
     for (final QuickEntry e in _entries) {
       final String wallet = e.walletId ?? fallbackWallet;
       final String cur = ref.read(walletCurrencyProvider(wallet));
+      final Money money = Money.fromDouble(e.amount, cur);
       final String id = '${TransactionActions.newId()}-${ids.length}';
       ids.add(id);
       await actions.add(Transaction(
@@ -76,7 +78,9 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
         date: e.date,
         type: e.type,
         category: e.category,
-        amount: Money.fromDouble(e.amount, cur),
+        amount: money,
+        baseAmount: WalletMath.baseValue(
+            money, ref.read(baseCurrencyProvider), ref.read(ratesProvider)),
         description: e.description,
         walletId: wallet == Wallet.generalId ? null : wallet,
         createdAt: AppClock.now(),

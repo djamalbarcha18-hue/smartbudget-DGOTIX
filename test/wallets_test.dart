@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/backup/domain/backup_model.dart';
+import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
 
@@ -256,6 +257,64 @@ void main() {
       expect(r.received.minorUnits, 5000000);
       expect(r.received.currencyCode, 'DZD');
       expect(r.amount.currencyCode, 'EUR');
+    });
+  });
+
+  group('reports include foreign-currency transactions', () {
+    Transaction eurSpend(int minor, int baseMinor) => Transaction(
+          id: 'e${_n++}',
+          date: DateTime(2026, 9, 10),
+          type: TransactionType.expense,
+          category: 'المطاعم',
+          amount: Money(minor, 'EUR'),
+          baseAmount: Money(baseMinor, 'DZD'),
+          walletId: 'eur',
+          createdAt: DateTime(2026, 9, 10),
+        );
+
+    test('inCurrency uses the value recorded on the day', () {
+      final Transaction t = eurSpend(1000, 250000);
+      expect(t.inCurrency('EUR'), same(t));
+      final Transaction? d = t.inCurrency('DZD');
+      expect(d!.amount, const Money(250000, 'DZD'));
+      expect(d.category, 'المطاعم');
+      expect(t.inCurrency('USD'), isNull);
+    });
+
+    test('summaries and category totals count them in the base currency', () {
+      final List<Transaction> txns = <Transaction>[
+        tx(100000, type: TransactionType.income), // 1,000 DA income
+        tx(20000), // 200 DA food
+        eurSpend(1000, 250000), // 10 € dining = 2,500 DA
+        Transaction(
+          id: 'nobase',
+          date: DateTime(2026, 9, 10),
+          type: TransactionType.expense,
+          category: 'المطاعم',
+          amount: const Money(500, 'EUR'),
+          createdAt: DateTime(2026, 9, 10),
+        ), // no recorded value: left out, never guessed
+      ];
+      final FinanceSummary s = FinanceCalculator.summarize(txns, 'DZD');
+      expect(s.expense.minorUnits, 270000);
+      expect(s.income.minorUnits, 100000);
+      final List<CategoryTotal> cats = FinanceCalculator.categoryTotals(
+          txns, TransactionType.expense, 'DZD');
+      expect(cats.first.category, 'المطاعم');
+      expect(cats.first.amount.minorUnits, 250000);
+    });
+
+    test('the recorded value survives JSON', () {
+      final Transaction r = Transaction.fromJson(eurSpend(1000, 250000).toJson());
+      expect(r.baseAmount, const Money(250000, 'DZD'));
+      expect(tx(100).toJson().containsKey('baseMinor'), isFalse);
+    });
+
+    test('baseValue is null for base-currency amounts', () {
+      const Map<String, double> rates = <String, double>{'USD': 1, 'DZD': 134.5, 'EUR': 0.92};
+      expect(WalletMath.baseValue(const Money(100, 'DZD'), 'DZD', rates), isNull);
+      expect(WalletMath.baseValue(const Money(9200, 'EUR'), 'DZD', rates),
+          const Money(1345000, 'DZD'));
     });
   });
 }

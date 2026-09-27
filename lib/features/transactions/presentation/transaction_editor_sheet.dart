@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
@@ -11,6 +12,7 @@ import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/recurring/application/recurring_controller.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
@@ -155,12 +157,24 @@ class _TransactionEditorSheetState
 
     setState(() => _saving = true);
     final String currency = _currency();
+    final String base = ref.read(baseCurrencyProvider);
+    final Money money = Money.fromDouble(amount, currency);
+    final Transaction? old = widget.existing;
+    // Keep the rate it was recorded at unless the amount itself changed.
+    final Money? baseValue = currency == base
+        ? null
+        : old != null &&
+                old.amount == money &&
+                old.baseAmount?.currencyCode == base
+            ? old.baseAmount
+            : WalletMath.baseValue(money, base, ref.read(ratesProvider));
     final Transaction txn = Transaction(
       id: widget.existing?.id ?? TransactionActions.newId(),
       date: _date,
       type: widget.type,
       category: _category ?? Catalog.categoriesFor(widget.type).last,
-      amount: Money.fromDouble(amount, currency),
+      amount: money,
+      baseAmount: baseValue,
       description: _description.text.trim(),
       paymentMethod: _paymentMethod,
       notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
@@ -255,6 +269,28 @@ class _TransactionEditorSheetState
                       return n > 0 ? null : l.valAmountInvalid;
                     },
                   ),
+                  if (cur.code != base) ...<Widget>[
+                    const SizedBox(height: DsSpacing.xs),
+                    ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: _amount,
+                      builder: (BuildContext context, TextEditingValue v, _) {
+                        final double n = double.tryParse(
+                                v.text.trim().replaceAll(',', '.')) ??
+                            0;
+                        final Money? eq = WalletMath.convert(
+                            Money.fromDouble(n, cur.code),
+                            base,
+                            ref.watch(ratesProvider));
+                        return Text(
+                          eq == null
+                              ? l.walletForeignNoRate(cur.code)
+                              : l.walletForeignNote(MoneyFormatter.format(eq)),
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              color: eq == null ? c.warning : c.textMuted),
+                        );
+                      },
+                    ),
+                  ],
                   const SizedBox(height: DsSpacing.lg),
                   _CategoryDropdown(
                     label: l.fieldCategory,
@@ -287,14 +323,7 @@ class _TransactionEditorSheetState
                       value: _walletId,
                       onChanged: (String? v) => setState(() => _walletId = v),
                     ),
-                    if (cur.code != base) ...<Widget>[
-                      const SizedBox(height: DsSpacing.xs),
-                      Text(l.walletForeignNote(cur.code, base),
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelSmall
-                              ?.copyWith(color: c.warning)),
-                    ],
+
                     const SizedBox(height: DsSpacing.lg),
                   ],
                   _CategoryDropdown(

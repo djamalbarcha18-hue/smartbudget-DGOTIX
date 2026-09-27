@@ -45,7 +45,8 @@ abstract final class SmartAlertEngine {
     required DateTime now,
   }) {
     final List<Transaction> txns = transactions
-        .where((Transaction t) => t.amount.currencyCode == currency)
+        .map((Transaction t) => t.inCurrency(currency))
+        .whereType<Transaction>()
         .toList();
     if (txns.isEmpty) return const <AppAlert>[];
     final AppAlert? weekly = weeklyDigest(txns, currency, now);

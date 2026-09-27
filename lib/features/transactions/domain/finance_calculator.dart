@@ -59,7 +59,9 @@ abstract final class FinanceCalculator {
     List<Transaction> txns,
     String baseCurrency,
   ) =>
-      txns.where((Transaction t) => t.amount.currencyCode == baseCurrency);
+      txns
+          .map((Transaction t) => t.inCurrency(baseCurrency))
+          .whereType<Transaction>();
 
   static FinanceSummary summarize(
     List<Transaction> txns,
