@@ -34,6 +34,7 @@ import 'package:smartbudget/features/transactions/application/transactions_contr
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/quick_entry/presentation/quick_entry_sheet.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/features/transactions/presentation/transactions_list.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -289,6 +290,12 @@ class _Header extends StatelessWidget {
 
     final List<Widget> actions = <Widget>[
       _ScopeToggle(scope: scope),
+      DsButton(
+        label: l.quickTitle,
+        icon: Icons.bolt_rounded,
+        variant: DsButtonVariant.secondary,
+        onPressed: () => QuickEntrySheet.show(context),
+      ),
       DsButton(
         label: l.addIncome,
         icon: Icons.south_west_rounded,

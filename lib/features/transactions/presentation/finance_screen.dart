@@ -9,6 +9,7 @@ import 'package:smartbudget/features/receipts/presentation/receipt_scan_button.d
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/features/transactions/presentation/transactions_list.dart';
+import 'package:smartbudget/features/quick_entry/presentation/quick_entry_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Shared screen for Transactions / Income / Expenses: a title, quick-add
@@ -25,6 +26,13 @@ class FinanceScreen extends StatelessWidget {
     final bool isMobile = context.isMobile;
 
     final List<Widget> addButtons = <Widget>[
+      if (type == null)
+        DsButton(
+          label: l.quickTitle,
+          icon: Icons.bolt_rounded,
+          variant: DsButtonVariant.secondary,
+          onPressed: () => QuickEntrySheet.show(context),
+        ),
       if (type == null || type == TransactionType.income)
         DsButton(
           label: l.addIncome,
