@@ -8,6 +8,7 @@ import 'package:smartbudget/core/router/app_router.dart';
 import 'package:smartbudget/core/theme/theme_controller.dart';
 import 'package:smartbudget/core/time/clock_sync_controller.dart';
 import 'package:smartbudget/design_system/theme/ds_theme.dart';
+import 'package:smartbudget/features/app_lock/presentation/app_lock_gate.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Single router instance for the app lifetime (auth-guarded).
@@ -37,6 +38,8 @@ class SmartBudgetApp extends ConsumerWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       routerConfig: router,
+      builder: (BuildContext context, Widget? child) =>
+          AppLockGate(child: child ?? const SizedBox.shrink()),
     );
   }
 }

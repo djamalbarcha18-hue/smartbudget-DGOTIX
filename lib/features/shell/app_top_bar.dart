@@ -17,6 +17,7 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/analytics/application/alerts_controller.dart';
+import 'package:smartbudget/features/app_lock/application/app_lock_controller.dart';
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/analytics/presentation/alert_presentation.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
@@ -69,6 +70,7 @@ class AppTopBar extends StatelessWidget {
           const SizedBox(width: DsSpacing.xs),
           if (!isMobile) const LanguageToggleButton(),
           const ThemeToggleButton(),
+          const _LockNowButton(),
           const _NotificationsBell(),
           const SizedBox(width: DsSpacing.xs),
           const _ProfileChip(),
@@ -109,6 +111,7 @@ class AppTopBar extends StatelessWidget {
             ),
           ),
         ),
+        const _LockNowButton(),
         const _NotificationsBell(),
         const _ProfileChip(),
       ],
@@ -303,6 +306,23 @@ class _CurrencyChip extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Locks the app right away (shown only when a PIN is set).
+class _LockNowButton extends ConsumerWidget {
+  const _LockNowButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bool enabled =
+        ref.watch(appLockProvider.select((AppLockState s) => s.config.enabled));
+    if (!enabled) return const SizedBox.shrink();
+    return IconButton(
+      tooltip: AppLocalizations.of(context).lockNow,
+      icon: Icon(Icons.lock_outline_rounded, color: context.dsColors.brand),
+      onPressed: () => ref.read(appLockProvider.notifier).lock(),
     );
   }
 }

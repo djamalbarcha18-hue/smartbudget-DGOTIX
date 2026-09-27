@@ -57,6 +57,9 @@ dependencies:
   pdf: ^3.11.1
   printing: ^5.13.3
 
+  # Hashing the app-lock PIN (salted, iterated SHA-256) — never stored in clear.
+  crypto: ^3.0.3
+
   # QR code generation for "Share SmartBudget" (pure Dart, outputs SVG). Already
   # pulled in by `pdf`; declared here because the app uses it directly.
   barcode: ^2.2.8

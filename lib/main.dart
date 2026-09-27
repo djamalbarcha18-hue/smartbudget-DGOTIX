@@ -8,6 +8,9 @@ import 'package:smartbudget/core/l10n/latin_digits.dart';
 import 'package:smartbudget/core/storage/legacy_cleanup.dart';
 import 'package:smartbudget/core/storage/persistent_storage.dart';
 import 'package:smartbudget/core/time/network_time.dart';
+import 'package:smartbudget/features/app_lock/application/app_lock_controller.dart';
+import 'package:smartbudget/features/app_lock/data/lock_store.dart';
+import 'package:smartbudget/features/app_lock/domain/lock_config.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,9 +43,15 @@ Future<void> main() async {
   // Erase personal AI keys saved by earlier versions (no longer supported).
   removeRetiredLocalData().ignore();
 
+  // Read before the first frame so a locked app never shows its content.
+  final LockConfig lock = await LockStore.load();
+
   runApp(
-    const ProviderScope(
-      child: SmartBudgetApp(),
+    ProviderScope(
+      overrides: <Override>[
+        initialLockConfigProvider.overrideWithValue(lock),
+      ],
+      child: const SmartBudgetApp(),
     ),
   );
 }
