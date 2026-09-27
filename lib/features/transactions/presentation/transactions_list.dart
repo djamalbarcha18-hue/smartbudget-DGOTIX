@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
+import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
@@ -13,6 +13,9 @@ import 'package:smartbudget/features/transactions/application/transactions_contr
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
+import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
+import 'package:smartbudget/features/wallets/domain/wallet.dart';
+import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// A searchable, filterable list of transactions. When [type] is null it shows
@@ -176,6 +179,7 @@ class TransactionTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final List<Wallet> wallets = ref.watch(walletsProvider);
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
     final Color accent = txn.isIncome ? c.income : c.expense;
@@ -236,7 +240,20 @@ class TransactionTile extends ConsumerWidget {
                         ],
                         Flexible(
                           child: Text(
-                            '$category · ${DateFormat('yyyy-MM-dd').format(txn.date)}',
+                            <String>[
+                              category,
+                              isoDate(txn.date),
+                              if (wallets.length > 1)
+                                walletName(
+                                    l,
+                                    wallets.firstWhere(
+                                        (Wallet w) =>
+                                            w.id ==
+                                            WalletMath.resolve(txn.walletId, <String>{
+                                              for (final Wallet x in wallets) x.id,
+                                            }),
+                                        orElse: () => wallets.first)),
+                            ].join(' · '),
                             style: Theme.of(context).textTheme.labelSmall,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

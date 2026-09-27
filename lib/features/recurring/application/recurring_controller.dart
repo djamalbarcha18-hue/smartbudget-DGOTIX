@@ -53,6 +53,7 @@ class RecurringActions {
       description: txn.description,
       paymentMethod: txn.paymentMethod,
       notes: txn.notes,
+      walletId: txn.walletId,
       frequency: frequency,
       startDate: start,
       lastPosted: start,
@@ -67,6 +68,7 @@ class RecurringActions {
       description: txn.description,
       paymentMethod: txn.paymentMethod,
       notes: txn.notes,
+      walletId: txn.walletId,
       createdAt: txn.createdAt,
     );
     await _ref.read(transactionActionsProvider).add(first);

@@ -10,6 +10,7 @@ import 'package:smartbudget/features/portfolio/domain/project.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/seasons/domain/season.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/wallets/domain/wallet.dart';
 
 /// A complete, portable snapshot of one user's data.
 ///
@@ -31,6 +32,8 @@ class BackupData {
     this.seasons = const <SeasonPlan>[],
     this.darets = const <Daret>[],
     this.challenges = const <Challenge>[],
+    this.wallets = const <Wallet>[],
+    this.walletMoves = const <WalletMove>[],
   });
 
   /// Bump when the on-disk shape changes in a breaking way. Adding optional
@@ -51,6 +54,8 @@ class BackupData {
   final List<SeasonPlan> seasons;
   final List<Daret> darets;
   final List<Challenge> challenges;
+  final List<Wallet> wallets;
+  final List<WalletMove> walletMoves;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'schemaVersion': schemaVersion,
@@ -67,6 +72,8 @@ class BackupData {
         'seasons': seasons.map((SeasonPlan p) => p.toJson()).toList(),
         'darets': darets.map((Daret d) => d.toJson()).toList(),
         'challenges': challenges.map((Challenge c) => c.toJson()).toList(),
+        'wallets': wallets.map((Wallet w) => w.toJson()).toList(),
+        'walletMoves': walletMoves.map((WalletMove m) => m.toJson()).toList(),
         'customCategories': <String, dynamic>{
           'income': customIncome,
           'expense': customExpense,
@@ -96,6 +103,8 @@ class BackupData {
       seasons: _list<SeasonPlan>(json['seasons'], SeasonPlan.fromJson),
       darets: _list<Daret>(json['darets'], Daret.fromJson),
       challenges: _list<Challenge>(json['challenges'], Challenge.fromJson),
+      wallets: _list<Wallet>(json['wallets'], Wallet.fromJson),
+      walletMoves: _list<WalletMove>(json['walletMoves'], WalletMove.fromJson),
     );
   }
 
@@ -134,6 +143,7 @@ abstract final class BackupCodec {
       'seasons',
       'darets',
       'challenges',
+      'wallets',
     ];
     if (!sections.any(obj.containsKey)) {
       throw const FormatException('Backup file is missing expected data.');

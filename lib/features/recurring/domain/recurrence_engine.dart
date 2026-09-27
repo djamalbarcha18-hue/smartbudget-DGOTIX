@@ -127,6 +127,7 @@ abstract final class RecurrenceEngine {
       description: rule.description,
       paymentMethod: rule.paymentMethod,
       notes: rule.notes,
+      walletId: rule.walletId,
       createdAt: createdAt,
     );
   }

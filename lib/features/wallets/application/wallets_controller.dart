@@ -1,0 +1,192 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/storage/local_list_store.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
+import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/wallets/domain/wallet.dart';
+
+String _uid(Ref ref) => ref.watch(authControllerProvider).user?.id ?? 'guest';
+
+final walletStoreProvider = Provider<LocalListStore<Wallet>>((ref) {
+  final LocalListStore<Wallet> store = LocalListStore<Wallet>(
+    key: 'sb_wallets_${_uid(ref)}',
+    fromJson: Wallet.fromJson,
+    toJson: (Wallet w) => w.toJson(),
+    idOf: (Wallet w) => w.id,
+    compare: (Wallet a, Wallet b) => a.createdAt.compareTo(b.createdAt),
+  );
+  ref.onDispose(store.dispose);
+  return store;
+});
+
+final walletMoveStoreProvider = Provider<LocalListStore<WalletMove>>((ref) {
+  final LocalListStore<WalletMove> store = LocalListStore<WalletMove>(
+    key: 'sb_wallet_moves_${_uid(ref)}',
+    fromJson: WalletMove.fromJson,
+    toJson: (WalletMove m) => m.toJson(),
+    idOf: (WalletMove m) => m.id,
+    compare: (WalletMove a, WalletMove b) {
+      final int d = b.date.compareTo(a.date);
+      return d != 0 ? d : b.createdAt.compareTo(a.createdAt);
+    },
+  );
+  ref.onDispose(store.dispose);
+  return store;
+});
+
+final _storedWalletsProvider = StreamProvider<List<Wallet>>(
+    (ref) => ref.watch(walletStoreProvider).watchAll());
+
+final walletMovesProvider = StreamProvider<List<WalletMove>>(
+    (ref) => ref.watch(walletMoveStoreProvider).watchAll());
+
+/// Every wallet, "General" first (it always exists).
+final walletsProvider = Provider<List<Wallet>>((ref) {
+  final String currency = ref.watch(baseCurrencyProvider);
+  final List<Wallet> stored =
+      ref.watch(_storedWalletsProvider).valueOrNull ?? const <Wallet>[];
+  final Wallet general = stored.firstWhere((Wallet w) => w.isGeneral,
+      orElse: () => Wallet.general(currency));
+  return <Wallet>[
+    general,
+    ...stored.where((Wallet w) => !w.isGeneral),
+  ];
+});
+
+/// True once the user has added a wallet of their own.
+final hasWalletsProvider =
+    Provider<bool>((ref) => ref.watch(walletsProvider).length > 1);
+
+final walletBalancesProvider = Provider<Map<String, int>>((ref) {
+  return WalletMath.balances(
+    wallets: ref.watch(walletsProvider),
+    txns: ref.watch(transactionsProvider).valueOrNull ?? const <Transaction>[],
+    moves: ref.watch(walletMovesProvider).valueOrNull ?? const <WalletMove>[],
+    currency: ref.watch(baseCurrencyProvider),
+  );
+});
+
+/// The wallet new transactions go to (General unless the user picks one).
+final defaultWalletProvider =
+    NotifierProvider<DefaultWalletController, String>(DefaultWalletController.new);
+
+class DefaultWalletController extends Notifier<String> {
+  late String _key;
+
+  @override
+  String build() {
+    _key = 'sb_default_wallet_${_uid(ref)}';
+    _load();
+    return Wallet.generalId;
+  }
+
+  Future<void> _load() async {
+    try {
+      final SharedPreferences p = await SharedPreferences.getInstance();
+      state = p.getString(_key) ?? Wallet.generalId;
+    } catch (_) {
+      // Keep General.
+    }
+  }
+
+  Future<void> set(String id) async {
+    state = id;
+    try {
+      final SharedPreferences p = await SharedPreferences.getInstance();
+      await p.setString(_key, id);
+    } catch (_) {
+      // Non-fatal.
+    }
+  }
+}
+
+/// The default wallet, if it still exists (else General).
+final effectiveDefaultWalletProvider = Provider<String>((ref) {
+  final Set<String> known = <String>{
+    for (final Wallet w in ref.watch(walletsProvider)) w.id,
+  };
+  return WalletMath.resolve(ref.watch(defaultWalletProvider), known);
+});
+
+final walletActionsProvider = Provider<WalletActions>(WalletActions.new);
+
+class WalletActions {
+  WalletActions(this._ref);
+  final Ref _ref;
+
+  static String _id(String prefix) =>
+      '$prefix-${AppClock.now().microsecondsSinceEpoch.toRadixString(36)}';
+
+  static String newWalletId() => _id('wallet');
+
+  Future<void> save(Wallet w) => _ref.read(walletStoreProvider).upsert(w);
+
+  /// Removes a wallet. Its transactions and transfers then count toward
+  /// General (nothing is lost from the total).
+  Future<void> delete(String id) async {
+    if (id == Wallet.generalId) return;
+    await _ref.read(walletStoreProvider).delete(id);
+    if (_ref.read(defaultWalletProvider) == id) {
+      await _ref.read(defaultWalletProvider.notifier).set(Wallet.generalId);
+    }
+  }
+
+  Future<void> transfer({
+    required String fromId,
+    required String toId,
+    required Money amount,
+    required DateTime date,
+    String note = '',
+  }) =>
+      _ref.read(walletMoveStoreProvider).upsert(WalletMove(
+            id: _id('move'),
+            kind: MoveKind.transfer,
+            date: DateTime(date.year, date.month, date.day),
+            amount: amount,
+            fromId: fromId,
+            toId: toId,
+            note: note,
+            createdAt: AppClock.now(),
+          ));
+
+  /// Corrects [walletId] by [delta] without touching income or expenses.
+  Future<void> adjust(String walletId, Money delta) =>
+      _ref.read(walletMoveStoreProvider).upsert(WalletMove(
+            id: _id('adjust'),
+            kind: MoveKind.adjustment,
+            date: _today(),
+            amount: delta,
+            toId: walletId,
+            createdAt: AppClock.now(),
+          ));
+
+  /// Records the difference found when reconciling as a real transaction:
+  /// money missing becomes an expense, extra money an income.
+  Future<void> recordDifference(
+      String walletId, Money delta, String description) {
+    final bool extra = delta.minorUnits > 0;
+    return _ref.read(transactionActionsProvider).add(Transaction(
+          id: TransactionActions.newId(),
+          date: _today(),
+          type: extra ? TransactionType.income : TransactionType.expense,
+          category: 'أخرى',
+          amount: Money(delta.minorUnits.abs(), delta.currencyCode),
+          description: description,
+          walletId: walletId == Wallet.generalId ? null : walletId,
+          createdAt: AppClock.now(),
+        ));
+  }
+
+  Future<void> deleteMove(String id) =>
+      _ref.read(walletMoveStoreProvider).delete(id);
+
+  static DateTime _today() {
+    final DateTime n = AppClock.now();
+    return DateTime(n.year, n.month, n.day);
+  }
+}

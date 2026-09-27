@@ -1,4 +1,5 @@
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/wallets/domain/wallet.dart';
 
 /// One parsed line of quick entry ("قهوة 200", "salaire 85000", …).
 class QuickEntry {
@@ -9,6 +10,7 @@ class QuickEntry {
     required this.description,
     required this.date,
     this.recognized = true,
+    this.walletId,
   });
 
   final TransactionType type;
@@ -21,6 +23,9 @@ class QuickEntry {
 
   /// False when no keyword matched and the category fell back to "Other".
   final bool recognized;
+
+  /// A wallet named in the text ("… CCP", "… نقد"); null = use the default.
+  final String? walletId;
 }
 
 /// Turns short free text into transactions, entirely on the device: Arabic
@@ -38,13 +43,15 @@ abstract final class QuickEntryParser {
     required DateTime today,
     List<String> customIncome = const <String>[],
     List<String> customExpense = const <String>[],
+    List<Wallet> wallets = const <Wallet>[],
   }) =>
       input
           .split(_split)
           .map((String s) => parse(s,
               today: today,
               customIncome: customIncome,
-              customExpense: customExpense))
+              customExpense: customExpense,
+              wallets: wallets))
           .whereType<QuickEntry>()
           .toList();
 
@@ -53,6 +60,7 @@ abstract final class QuickEntryParser {
     required DateTime today,
     List<String> customIncome = const <String>[],
     List<String> customExpense = const <String>[],
+    List<Wallet> wallets = const <Wallet>[],
   }) {
     String text = _latinDigits(input).trim();
     if (text.isEmpty) return null;
@@ -91,6 +99,38 @@ abstract final class QuickEntryParser {
         date = date.subtract(Duration(days: days));
         rest = _removeWord(rest, word);
         break;
+      }
+    }
+
+    // A wallet named in the text: the user's own names first (longest wins),
+    // then generic cash words for their cash wallet.
+    String? walletId;
+    {
+      final String n = _normalize(rest);
+      String? matched;
+      for (final Wallet w in wallets) {
+        if (w.isGeneral || w.name.trim().isEmpty) continue;
+        if (_containsWord(n, w.name) &&
+            (matched == null || w.name.length > matched.length)) {
+          matched = w.name;
+          walletId = w.id;
+        }
+      }
+      if (matched != null) {
+        rest = _removeWord(rest, matched);
+      } else {
+        final Wallet? cash = wallets
+            .where((Wallet w) => w.type == WalletType.cash && !w.isGeneral)
+            .firstOrNull;
+        if (cash != null) {
+          for (final String word in _cashWords) {
+            if (_containsWord(n, word)) {
+              walletId = cash.id;
+              rest = _removeWord(rest, word);
+              break;
+            }
+          }
+        }
       }
     }
 
@@ -151,6 +191,7 @@ abstract final class QuickEntryParser {
       description: description,
       date: date,
       recognized: fits,
+      walletId: walletId,
     );
   }
 
@@ -257,6 +298,10 @@ abstract final class QuickEntryParser {
     ('اليوم', 0),
     ('today', 0),
     ('aujourd hui', 0),
+  ];
+
+  static const List<String> _cashWords = <String>[
+    'نقدا', 'نقد', 'كاش', 'cash', 'especes', 'espece', 'liquide',
   ];
 
   static const List<String> _incomeMarkers = <String>[

@@ -17,6 +17,9 @@ import 'package:smartbudget/features/transactions/application/custom_categories_
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
+import 'package:smartbudget/features/wallets/domain/wallet.dart';
+import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Initial values for a NEW transaction, e.g. extracted from a scanned receipt.
@@ -90,6 +93,7 @@ class _TransactionEditorSheetState
   String? _category;
   String? _paymentMethod;
   RecurrenceFrequency? _repeat;
+  String? _walletId;
   bool _saving = false;
 
   bool get _isIncome => widget.type == TransactionType.income;
@@ -111,6 +115,9 @@ class _TransactionEditorSheetState
     _category = e?.category ?? p?.category;
     _paymentMethod = e?.paymentMethod;
     _repeat = e == null ? widget.initialRepeat : null;
+    _walletId = e != null
+        ? e.walletId ?? Wallet.generalId
+        : ref.read(effectiveDefaultWalletProvider);
   }
 
   @override
@@ -147,6 +154,9 @@ class _TransactionEditorSheetState
       description: _description.text.trim(),
       paymentMethod: _paymentMethod,
       notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
+      walletId: _walletId == null || _walletId == Wallet.generalId
+          ? null
+          : _walletId,
       createdAt: widget.existing?.createdAt ?? AppClock.now(),
     );
     final TransactionActions actions = ref.read(transactionActionsProvider);
@@ -260,6 +270,13 @@ class _TransactionEditorSheetState
                     prefixIcon: Icons.notes_rounded,
                   ),
                   const SizedBox(height: DsSpacing.lg),
+                  if (ref.watch(hasWalletsProvider)) ...<Widget>[
+                    _WalletDropdown(
+                      value: _walletId,
+                      onChanged: (String? v) => setState(() => _walletId = v),
+                    ),
+                    const SizedBox(height: DsSpacing.lg),
+                  ],
                   _CategoryDropdown(
                     label: '${l.fieldPaymentMethod} (${l.optional})',
                     hint: l.fieldPaymentMethod,
@@ -441,6 +458,66 @@ class _CategoryDropdown extends StatelessWidget {
               .map((String e) => DropdownMenuItem<String>(
                   value: e, child: Text(Catalog.label(e, ar: ar))))
               .toList(),
+          onChanged: onChanged,
+        ),
+      ],
+    );
+  }
+}
+
+
+class _WalletDropdown extends ConsumerWidget {
+  const _WalletDropdown({required this.value, required this.onChanged});
+  final String? value;
+  final ValueChanged<String?> onChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final AppLocalizations l = AppLocalizations.of(context);
+    final List<Wallet> wallets = ref.watch(walletsProvider);
+    final Set<String> known = <String>{for (final Wallet w in wallets) w.id};
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(l.fieldWallet, style: t.labelMedium?.copyWith(color: c.textMuted)),
+        const SizedBox(height: 6),
+        DropdownButtonFormField<String>(
+          initialValue: WalletMath.resolve(value, known),
+          isExpanded: true,
+          dropdownColor: c.bgElevated,
+          style: t.bodyMedium?.copyWith(color: c.textPrimary),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: c.surfaceMuted,
+            prefixIcon: Icon(Icons.wallet_outlined, color: c.textMuted),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: DsRadius.brMd,
+              borderSide: BorderSide(color: c.border),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: DsRadius.brMd,
+              borderSide: BorderSide(color: c.brand),
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          ),
+          items: <DropdownMenuItem<String>>[
+            for (final Wallet w in wallets)
+              DropdownMenuItem<String>(
+                value: w.id,
+                child: Row(
+                  children: <Widget>[
+                    Icon(walletIcon(w), size: 18, color: walletColor(w)),
+                    const SizedBox(width: DsSpacing.sm),
+                    Flexible(
+                        child: Text(walletName(l, w),
+                            overflow: TextOverflow.ellipsis)),
+                  ],
+                ),
+              ),
+          ],
           onChanged: onChanged,
         ),
       ],

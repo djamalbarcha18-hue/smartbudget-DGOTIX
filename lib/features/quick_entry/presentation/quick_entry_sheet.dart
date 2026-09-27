@@ -15,6 +15,9 @@ import 'package:smartbudget/features/transactions/application/transactions_contr
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
+import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
+import 'package:smartbudget/features/wallets/domain/wallet.dart';
+import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// "Quick entry": type "قهوة 200" (or several, separated by «،») and save.
@@ -53,7 +56,8 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
     setState(() => _entries = QuickEntryParser.parseAll(v,
         today: AppClock.now(),
         customIncome: cc.income,
-        customExpense: cc.expense));
+        customExpense: cc.expense,
+        wallets: ref.read(walletsProvider)));
   }
 
   Future<void> _save(AppLocalizations l) async {
@@ -62,7 +66,9 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
     final TransactionActions actions = ref.read(transactionActionsProvider);
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     final List<String> ids = <String>[];
+    final String fallbackWallet = ref.read(effectiveDefaultWalletProvider);
     for (final QuickEntry e in _entries) {
+      final String wallet = e.walletId ?? fallbackWallet;
       final String id = '${TransactionActions.newId()}-${ids.length}';
       ids.add(id);
       await actions.add(Transaction(
@@ -72,6 +78,7 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
         category: e.category,
         amount: Money.fromDouble(e.amount, currency),
         description: e.description,
+        walletId: wallet == Wallet.generalId ? null : wallet,
         createdAt: AppClock.now(),
       ));
     }
@@ -114,6 +121,12 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
     final bool ar = Localizations.localeOf(context).languageCode == 'ar';
     final String currency = ref.watch(baseCurrencyProvider);
     final DateTime today = AppClock.now();
+    final List<Wallet> wallets = ref.watch(walletsProvider);
+    final bool hasWallets = wallets.length > 1;
+    final String defaultWallet = ref.watch(effectiveDefaultWalletProvider);
+    Wallet walletOf(String? id) => wallets.firstWhere(
+        (Wallet w) => w.id == (id ?? defaultWallet),
+        orElse: () => wallets.first);
 
     String dayLabel(DateTime d) {
       final int diff = DateTime(today.year, today.month, today.day)
@@ -208,6 +221,8 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
                               <String>[
                                 if (e.description.isNotEmpty) e.description,
                                 dayLabel(e.date),
+                                if (hasWallets)
+                                  walletName(l, walletOf(e.walletId)),
                               ].join(' · '),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

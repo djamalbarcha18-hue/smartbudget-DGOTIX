@@ -24,6 +24,7 @@ class RecurringRule {
     this.description = '',
     this.paymentMethod,
     this.notes,
+    this.walletId,
     required this.frequency,
     required this.startDate,
     required this.lastPosted,
@@ -38,6 +39,9 @@ class RecurringRule {
   final String description;
   final String? paymentMethod;
   final String? notes;
+
+  /// Wallet each posted occurrence uses; null = the "General" wallet.
+  final String? walletId;
   final RecurrenceFrequency frequency;
 
   /// Date of the first occurrence (the anchor of the schedule).
@@ -68,6 +72,7 @@ class RecurringRule {
       description: description ?? this.description,
       paymentMethod: paymentMethod,
       notes: notes,
+      walletId: walletId,
       frequency: frequency,
       startDate: startDate,
       lastPosted: lastPosted ?? this.lastPosted,
@@ -85,6 +90,7 @@ class RecurringRule {
         'description': description,
         'paymentMethod': paymentMethod,
         'notes': notes,
+        if (walletId != null) 'walletId': walletId,
         'frequency': frequency.name,
         'startDate': startDate.toIso8601String(),
         'lastPosted': lastPosted.toIso8601String(),
@@ -110,6 +116,7 @@ class RecurringRule {
       description: (json['description'] as String?) ?? '',
       paymentMethod: json['paymentMethod'] as String?,
       notes: json['notes'] as String?,
+      walletId: json['walletId'] as String?,
       frequency: RecurrenceFrequency.values.firstWhere(
         (RecurrenceFrequency f) => f.name == json['frequency'],
         orElse: () => RecurrenceFrequency.monthly,

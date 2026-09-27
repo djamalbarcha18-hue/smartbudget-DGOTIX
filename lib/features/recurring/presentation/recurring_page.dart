@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
+import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -166,8 +166,7 @@ class _RuleCard extends ConsumerWidget {
     final String category = Catalog.label(rule.category, ar: ar);
     final String title =
         rule.description.isEmpty ? category : rule.description;
-    final String next = DateFormat('yyyy-MM-dd')
-        .format(RecurrenceEngine.nextOccurrence(rule));
+    final String next = isoDate(RecurrenceEngine.nextOccurrence(rule));
     final RecurringActions actions = ref.read(recurringActionsProvider);
 
     return GlassCard(

@@ -36,6 +36,7 @@ import 'package:smartbudget/features/shell/placeholder_page.dart';
 import 'package:smartbudget/features/shell/splash_page.dart';
 import 'package:smartbudget/features/support/presentation/support_page.dart';
 import 'package:smartbudget/features/transactions/presentation/transactions_page.dart';
+import 'package:smartbudget/features/wallets/presentation/wallets_page.dart';
 import 'package:smartbudget/features/zakat/presentation/zakat_page.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -111,6 +112,11 @@ GoRouter buildRouter(Ref ref) {
             path: '/goals',
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const NoTransitionPage<void>(child: GoalsPage()),
+          ),
+          GoRoute(
+            path: '/wallets',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const NoTransitionPage<void>(child: WalletsPage()),
           ),
           GoRoute(
             path: '/challenges',
@@ -215,6 +221,7 @@ const Set<AppSection> _implementedSections = <AppSection>{
   AppSection.dashboard,
   AppSection.challenges,
   AppSection.transactions,
+  AppSection.wallets,
   AppSection.income,
   AppSection.expenses,
   AppSection.recurring,

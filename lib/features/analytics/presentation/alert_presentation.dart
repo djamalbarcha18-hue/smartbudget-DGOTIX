@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -54,7 +55,7 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
   final bool tomorrow = when != null &&
       DateTime(when.year, when.month, when.day) ==
           DateTime(now.year, now.month, now.day + 1);
-  final String date = when == null ? '' : DateFormat('yyyy-MM-dd').format(when);
+  final String date = when == null ? '' : isoDate(when);
   final String typical =
       a.compareAmount == null ? '' : MoneyFormatter.format(a.compareAmount!);
   final String top = subject.isEmpty ? '' : ' ${l.digestTopCategory(subject)}';

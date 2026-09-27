@@ -21,6 +21,7 @@ class Transaction {
     this.description = '',
     this.paymentMethod,
     this.notes,
+    this.walletId,
     required this.createdAt,
   });
 
@@ -32,6 +33,9 @@ class Transaction {
   final String description;
   final String? paymentMethod;
   final String? notes;
+
+  /// The wallet it moved money in or out of; null = the "General" wallet.
+  final String? walletId;
   final DateTime createdAt;
 
   bool get isIncome => type == TransactionType.income;
@@ -45,6 +49,8 @@ class Transaction {
     String? description,
     String? paymentMethod,
     String? notes,
+    String? walletId,
+    bool clearWallet = false,
   }) {
     return Transaction(
       id: id,
@@ -55,6 +61,7 @@ class Transaction {
       description: description ?? this.description,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       notes: notes ?? this.notes,
+      walletId: clearWallet ? null : walletId ?? this.walletId,
       createdAt: createdAt,
     );
   }
@@ -69,6 +76,7 @@ class Transaction {
         'description': description,
         'paymentMethod': paymentMethod,
         'notes': notes,
+        if (walletId != null) 'walletId': walletId,
         'createdAt': createdAt.toIso8601String(),
       };
 
@@ -88,6 +96,7 @@ class Transaction {
       description: (json['description'] as String?) ?? '',
       paymentMethod: json['paymentMethod'] as String?,
       notes: json['notes'] as String?,
+      walletId: json['walletId'] as String?,
       createdAt: DateTime.tryParse((json['createdAt'] as String?) ?? '') ??
           AppClock.now(),
     );

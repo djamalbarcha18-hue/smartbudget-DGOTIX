@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart' show DateFormat;
 
+import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -498,7 +498,7 @@ class UpcomingPulseCard extends ConsumerWidget {
           ? r.description
           : Catalog.label(r.category, ar: ar);
       caption = l.upcomingNext(
-          name, DateFormat('yyyy-MM-dd').format(due.first.$2));
+          name, isoDate(due.first.$2));
     }
     return _PulseCard(
       title: l.upcomingTitle,
