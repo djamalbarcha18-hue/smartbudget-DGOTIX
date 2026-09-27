@@ -1,3 +1,4 @@
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/markets/data/market_http.dart';
 import 'package:smartbudget/features/markets/data/rate_cache.dart';
 import 'package:smartbudget/features/markets/domain/commodity_config.dart';
@@ -71,7 +72,7 @@ class BackendMarketProvider implements MarketDataProvider {
       }
     }
 
-    final DateTime now = DateTime.now();
+    final DateTime now = AppClock.now();
     return specs.map((CommoditySpec spec) {
       final Map<String, dynamic>? r = byCode[spec.code];
       final double? price = r == null ? null : asDoubleOrNull(r['priceUsd']);

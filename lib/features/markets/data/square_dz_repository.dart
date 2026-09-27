@@ -1,3 +1,4 @@
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/markets/data/market_http.dart';
 import 'package:smartbudget/features/markets/data/rate_cache.dart';
 import 'package:smartbudget/features/markets/domain/market_config.dart';
@@ -115,6 +116,6 @@ class SquareDzRepository implements ParallelMarketRepository {
         if (p != null) return p;
       }
     }
-    return DateTime.now();
+    return AppClock.now();
   }
 }

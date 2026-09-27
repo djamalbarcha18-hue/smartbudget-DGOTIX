@@ -1,3 +1,4 @@
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/markets/data/market_http.dart';
 import 'package:smartbudget/features/markets/data/rate_cache.dart';
 import 'package:smartbudget/features/markets/domain/commodity_config.dart';
@@ -62,7 +63,7 @@ class GoldApiMetalsRepository implements MarketDataProvider {
   static CommodityQuote parse(CommoditySpec spec, Map<String, dynamic>? data) {
     final double? price = data == null ? null : asDoubleOrNull(data['price']);
     if (price == null) return _unavailable(spec);
-    DateTime updated = DateTime.now();
+    DateTime updated = AppClock.now();
     final dynamic u = data!['updatedAt'];
     if (u is String) {
       final DateTime? p = DateTime.tryParse(u);
@@ -90,7 +91,7 @@ class GoldApiMetalsRepository implements MarketDataProvider {
         unitLabel: spec.unitLabel,
         currency: 'USD',
         source: 'gold-api.com',
-        updatedAt: DateTime.now(),
+        updatedAt: AppClock.now(),
         quality: PriceQuality.unavailable,
       );
 }

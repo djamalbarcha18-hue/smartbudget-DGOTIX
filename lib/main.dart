@@ -7,6 +7,7 @@ import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/l10n/latin_digits.dart';
 import 'package:smartbudget/core/storage/legacy_cleanup.dart';
 import 'package:smartbudget/core/storage/persistent_storage.dart';
+import 'package:smartbudget/core/time/network_time.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,14 @@ Future<void> main() async {
       anonKey: AppEnv.supabaseAnonKey,
     );
   }
+
+  // Correct "now" against world time before the first screen, so the current
+  // month and due dates are right even when the device clock is wrong. Capped
+  // so a slow or offline start is never held up (the clock then falls back to
+  // device time and re-syncs later).
+  await NetworkTime()
+      .sync()
+      .timeout(const Duration(milliseconds: 1500), onTimeout: () => false);
 
   // Financial data lives in the browser's storage: ask the browser not to
   // evict it under storage pressure. Fire-and-forget — never blocks startup.

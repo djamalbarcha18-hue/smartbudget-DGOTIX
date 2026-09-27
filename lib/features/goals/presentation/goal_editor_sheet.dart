@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -69,7 +70,7 @@ class _GoalEditorSheetState extends ConsumerState<GoalEditorSheet> {
       // Saved is derived (contributions); preserve on edit, start at 0 on create.
       saved: e?.saved ?? Money.zero(currency),
       deadline: _deadline,
-      createdAt: e?.createdAt ?? DateTime.now(),
+      createdAt: e?.createdAt ?? AppClock.now(),
     );
     final GoalActions actions = ref.read(goalActionsProvider);
     if (e == null) {
@@ -147,7 +148,7 @@ class _GoalEditorSheetState extends ConsumerState<GoalEditorSheet> {
                       final DateTime? p = await showDatePicker(
                         context: context,
                         initialDate: _deadline ??
-                            DateTime.now().add(const Duration(days: 365)),
+                            AppClock.now().add(const Duration(days: 365)),
                         firstDate: DateTime(2015),
                         lastDate: DateTime(2100),
                       );

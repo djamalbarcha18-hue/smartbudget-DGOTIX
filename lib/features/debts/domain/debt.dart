@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 
 /// Money lent (to me → an asset) vs borrowed (I owe → a liability).
 /// Mirrors SmartBudget V1's "🟢 لي (دائن)" / "🔴 عليّ (مدين)".
@@ -87,7 +88,7 @@ class Debt {
       date: parse(json['date'] as String?),
       dueDate: parse(json['dueDate'] as String?),
       notes: json['notes'] as String?,
-      createdAt: parse(json['createdAt'] as String?) ?? DateTime.now(),
+      createdAt: parse(json['createdAt'] as String?) ?? AppClock.now(),
     );
   }
 }

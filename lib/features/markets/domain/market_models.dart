@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:smartbudget/core/time/app_clock.dart';
+
 /// How a rate was priced. Also the user-selectable "Rate Type" for valuation.
 enum MarketType { official, parallel, p2p, custom }
 
@@ -120,7 +122,7 @@ class FxSnapshot {
     final int? unix = _asInt(json['time_last_update_unix']);
     final DateTime updated = unix != null
         ? DateTime.fromMillisecondsSinceEpoch(unix * 1000, isUtc: true)
-        : DateTime.now().toUtc();
+        : AppClock.now().toUtc();
     return FxSnapshot(
       ratesPerUsd: parsed,
       updatedAt: updated,

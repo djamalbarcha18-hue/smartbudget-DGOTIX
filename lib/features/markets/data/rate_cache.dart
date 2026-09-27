@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/time/app_clock.dart';
+
 /// A tiny TTL cache over shared_preferences for market responses.
 ///
 /// Performance rule: the app never calls an API on every page open — a fresh
@@ -17,7 +19,7 @@ class RateCache {
   Future<dynamic> read(String key, {required Duration maxAge}) async {
     final _Entry? e = await _readEntry(key);
     if (e == null) return null;
-    final int age = DateTime.now().millisecondsSinceEpoch - e.t;
+    final int age = AppClock.now().millisecondsSinceEpoch - e.t;
     if (age > maxAge.inMilliseconds) return null;
     return e.v;
   }
@@ -32,7 +34,7 @@ class RateCache {
       await p.setString(
         _k(key),
         jsonEncode(<String, dynamic>{
-          't': DateTime.now().millisecondsSinceEpoch,
+          't': AppClock.now().millisecondsSinceEpoch,
           'v': value,
         }),
       );

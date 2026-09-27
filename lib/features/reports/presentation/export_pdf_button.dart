@@ -9,6 +9,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/reports/application/reports_controller.dart';
 import 'package:smartbudget/features/reports/data/report_pdf.dart';
 import 'package:smartbudget/features/reports/domain/report_period.dart';
@@ -64,7 +65,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
         title: l.navReports,
         subtitle: periodText,
         generatedLabel: l.reportGeneratedOn(
-            DateFormat('yyyy-MM-dd').format(DateTime.now())),
+            DateFormat('yyyy-MM-dd').format(AppClock.now())),
         kpis: <ReportRow>[
           ReportRow(l.kpiTotalIncome, MoneyFormatter.format(s.income)),
           ReportRow(l.kpiTotalExpenses, MoneyFormatter.format(s.expense)),

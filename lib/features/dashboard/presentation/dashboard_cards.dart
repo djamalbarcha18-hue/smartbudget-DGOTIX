@@ -6,6 +6,7 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_section_header.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -476,7 +477,7 @@ class UpcomingPulseCard extends ConsumerWidget {
     final bool ar = Localizations.localeOf(context).languageCode == 'ar';
     final List<RecurringRule> rules =
         ref.watch(recurringRulesProvider).valueOrNull ?? const <RecurringRule>[];
-    final DateTime today = RecurrenceEngine.dateOnly(DateTime.now());
+    final DateTime today = RecurrenceEngine.dateOnly(AppClock.now());
     final DateTime limit = DateTime(today.year, today.month, today.day + days);
 
     final List<(RecurringRule, DateTime)> due = <(RecurringRule, DateTime)>[

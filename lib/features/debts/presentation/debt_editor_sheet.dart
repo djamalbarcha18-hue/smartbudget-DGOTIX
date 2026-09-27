@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -75,10 +76,10 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
       type: _type,
       original: Money.fromDouble(original, currency),
       paid: Money.fromDouble(paid, currency),
-      date: widget.existing?.date ?? DateTime.now(),
+      date: widget.existing?.date ?? AppClock.now(),
       dueDate: _dueDate,
       notes: widget.existing?.notes,
-      createdAt: widget.existing?.createdAt ?? DateTime.now(),
+      createdAt: widget.existing?.createdAt ?? AppClock.now(),
     );
     final DebtActions actions = ref.read(debtActionsProvider);
     if (widget.existing == null) {
@@ -168,7 +169,7 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
                     onPick: () async {
                       final DateTime? p = await showDatePicker(
                         context: context,
-                        initialDate: _dueDate ?? DateTime.now(),
+                        initialDate: _dueDate ?? AppClock.now(),
                         firstDate: DateTime(2015),
                         lastDate: DateTime(2100),
                       );

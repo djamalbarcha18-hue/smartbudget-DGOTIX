@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
@@ -44,7 +45,7 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
   final String subject =
       a.subject.isEmpty ? '' : Catalog.label(a.subject, ar: ar);
   final String amount = MoneyFormatter.format(a.amount);
-  final DateTime now = DateTime.now();
+  final DateTime now = AppClock.now();
   final DateTime? when = a.date;
   final bool tomorrow = when != null &&
       DateTime(when.year, when.month, when.day) ==

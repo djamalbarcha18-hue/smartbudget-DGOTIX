@@ -1,5 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
+import 'package:smartbudget/core/time/app_clock.dart';
+
 /// Failure kinds surfaced to the UI without leaking the Supabase SDK.
 enum CloudBackupErrorKind { notSignedIn, network, unknown }
 
@@ -78,7 +80,7 @@ class CloudBackupService {
     int schemaVersion,
   ) async {
     return _guard(() async {
-      final DateTime now = DateTime.now().toUtc();
+      final DateTime now = AppClock.now().toUtc();
       await _client.from(_table).upsert(
         <String, dynamic>{
           'user_id': _uid,

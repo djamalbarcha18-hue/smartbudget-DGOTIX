@@ -1,4 +1,5 @@
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/markets/data/market_http.dart';
 import 'package:smartbudget/features/markets/data/rate_cache.dart';
 import 'package:smartbudget/features/markets/domain/market_config.dart';
@@ -75,7 +76,7 @@ class BackendParallelRepository implements ParallelMarketRepository {
       final double? buy = asDoubleOrNull(m['buy']);
       final double? sell = asDoubleOrNull(m['sell']);
       if (buy == null && sell == null) continue; // never fabricate
-      DateTime updated = DateTime.now();
+      DateTime updated = AppClock.now();
       final Object? f = m['updatedAt'];
       if (f is String) {
         final DateTime? p = DateTime.tryParse(f);

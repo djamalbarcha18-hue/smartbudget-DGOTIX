@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
 /// How often a recurring transaction repeats.
@@ -94,7 +95,7 @@ class RecurringRule {
   factory RecurringRule.fromJson(Map<String, dynamic> json) {
     final DateTime start =
         DateTime.tryParse((json['startDate'] as String?) ?? '') ??
-            DateTime.now();
+            AppClock.now();
     return RecurringRule(
       id: (json['id'] as String?) ?? '',
       type: TransactionType.values.firstWhere(
@@ -118,7 +119,7 @@ class RecurringRule {
           DateTime.tryParse((json['lastPosted'] as String?) ?? '') ?? start,
       active: (json['active'] as bool?) ?? true,
       createdAt: DateTime.tryParse((json['createdAt'] as String?) ?? '') ??
-          DateTime.now(),
+          AppClock.now(),
     );
   }
 }

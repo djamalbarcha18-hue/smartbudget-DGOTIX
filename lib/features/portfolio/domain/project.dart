@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 
 /// Time-horizon "compartment" a project is filed under.
 enum ProjectHorizon { near, mid, long }
@@ -92,7 +93,7 @@ class Project {
       note: json['note'] as String?,
       createdAt:
           DateTime.tryParse((json['createdAt'] as String?) ?? '') ??
-              DateTime.now(),
+              AppClock.now(),
     );
   }
 }

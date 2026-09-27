@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/goals/data/fake_goal_repository.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
@@ -38,5 +39,5 @@ class GoalActions {
   }
 
   static String newId() =>
-      'goal-${DateTime.now().microsecondsSinceEpoch.toRadixString(36)}';
+      'goal-${AppClock.now().microsecondsSinceEpoch.toRadixString(36)}';
 }

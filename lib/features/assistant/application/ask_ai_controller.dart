@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/assistant/domain/ai_conversation.dart';
 import 'package:smartbudget/features/assistant/domain/ai_snapshot.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
@@ -33,7 +34,7 @@ export 'package:smartbudget/features/assistant/domain/ai_conversation.dart'
 /// figures the app already computed — never guessed — and no descriptions,
 /// notes or names.
 final aiContextProvider = Provider<String>((ref) {
-  final DateTime now = DateTime.now();
+  final DateTime now = AppClock.now();
   final String currency = ref.watch(baseCurrencyProvider);
   final List<Transaction> all =
       ref.watch(transactionsProvider).valueOrNull ?? const <Transaction>[];

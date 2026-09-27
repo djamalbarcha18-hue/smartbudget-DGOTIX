@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
 
 /// Debts position summary (mirrors V1 debtSummary: amounts still outstanding).
@@ -36,7 +37,7 @@ abstract final class DebtCalculator {
   static DebtStatus status(Debt d, {DateTime? now}) {
     final Money r = remaining(d);
     if (r.isZero) return DebtStatus.paid;
-    final DateTime today = now ?? DateTime.now();
+    final DateTime today = now ?? AppClock.now();
     if (d.dueDate != null && d.dueDate!.isBefore(_dateOnly(today))) {
       return DebtStatus.overdue;
     }

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
 import 'package:smartbudget/features/budget/domain/budget_repository.dart';
 
@@ -77,12 +78,12 @@ class FakeBudgetRepository implements BudgetRepository {
         );
       } else {
         _items.add(BudgetTarget(
-          id: 'bud-${DateTime.now().microsecondsSinceEpoch.toRadixString(36)}',
+          id: 'bud-${AppClock.now().microsecondsSinceEpoch.toRadixString(36)}',
           year: year,
           month: month,
           category: category,
           planned: planned,
-          createdAt: DateTime.now(),
+          createdAt: AppClock.now(),
         ));
       }
     }

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/backup/application/backup_status_controller.dart';
@@ -22,16 +23,16 @@ import 'package:smartbudget/features/transactions/domain/transaction.dart';
 /// Ticks every 15 minutes so time-based notifications (a new day, a new
 /// month, an item coming due) refresh while the app stays open.
 final notificationClockProvider = StreamProvider<DateTime>((ref) async* {
-  yield DateTime.now();
+  yield AppClock.now();
   yield* Stream<DateTime>.periodic(
-      const Duration(minutes: 15), (_) => DateTime.now());
+      const Duration(minutes: 15), (_) => AppClock.now());
 });
 
 /// The bell's notifications, always about TODAY (current month and year),
 /// whatever period the user is browsing.
 final notificationsProvider = Provider<List<FeedItem>>((ref) {
   final DateTime now =
-      ref.watch(notificationClockProvider).valueOrNull ?? DateTime.now();
+      ref.watch(notificationClockProvider).valueOrNull ?? AppClock.now();
   final String currency = ref.watch(baseCurrencyProvider);
   final List<Transaction> txns =
       ref.watch(transactionsProvider).valueOrNull ?? const <Transaction>[];

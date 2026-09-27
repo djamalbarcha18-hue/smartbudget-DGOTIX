@@ -1,4 +1,5 @@
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/portfolio/domain/project.dart';
 
 /// Per-project funding status after the waterfall allocation.
@@ -115,7 +116,7 @@ abstract final class PortfolioPlanner {
     required String currency,
     DateTime? now,
   }) {
-    final DateTime t = now ?? DateTime.now();
+    final DateTime t = now ?? AppClock.now();
 
     // Pre-compute per-project figures.
     final List<_Row> rows = projects.map((Project p) {

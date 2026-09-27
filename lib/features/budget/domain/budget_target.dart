@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 
 /// A planned (expected) expense amount for one category in one month.
 ///
@@ -46,7 +47,7 @@ class BudgetTarget {
         (json['currency'] as String?) ?? 'USD',
       ),
       createdAt:
-          DateTime.tryParse((json['createdAt'] as String?) ?? '') ?? DateTime.now(),
+          DateTime.tryParse((json['createdAt'] as String?) ?? '') ?? AppClock.now(),
     );
   }
 }

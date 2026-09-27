@@ -6,6 +6,7 @@ import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/core/localization/locale_controller.dart';
 import 'package:smartbudget/core/router/app_router.dart';
 import 'package:smartbudget/core/theme/theme_controller.dart';
+import 'package:smartbudget/core/time/clock_sync_controller.dart';
 import 'package:smartbudget/design_system/theme/ds_theme.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -23,6 +24,8 @@ class SmartBudgetApp extends ConsumerWidget {
     final ThemeMode themeMode = ref.watch(themeModeProvider);
     final Locale locale = ref.watch(localeProvider);
     final GoRouter router = ref.watch(_routerProvider);
+    // Keeps the periodic world-time sync running for the app's lifetime.
+    ref.listen(clockSyncProvider, (_, __) {});
 
     return MaterialApp.router(
       title: '${AppConfig.appName} — by ${AppConfig.parentBrand}',

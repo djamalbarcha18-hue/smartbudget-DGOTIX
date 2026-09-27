@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/portfolio/data/fake_project_repository.dart';
 import 'package:smartbudget/features/portfolio/domain/portfolio_planner.dart';
@@ -102,5 +103,5 @@ class ProjectActions {
   }
 
   static String newId() =>
-      'proj-${DateTime.now().microsecondsSinceEpoch.toRadixString(36)}';
+      'proj-${AppClock.now().microsecondsSinceEpoch.toRadixString(36)}';
 }

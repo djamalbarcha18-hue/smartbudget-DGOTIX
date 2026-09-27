@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -44,7 +45,7 @@ class _BackupReminderCardState extends ConsumerState<BackupReminderCard> {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final int? days = BackupReminder.daysSince(
-        ref.watch(backupStatusProvider)?.lastBackup, DateTime.now());
+        ref.watch(backupStatusProvider)?.lastBackup, AppClock.now());
 
     return Padding(
       padding: const EdgeInsets.only(bottom: DsSpacing.gridGap),

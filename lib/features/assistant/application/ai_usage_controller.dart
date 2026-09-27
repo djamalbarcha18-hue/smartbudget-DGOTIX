@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/time/app_clock.dart';
+
 String _monthKey(DateTime d) =>
     '${d.year}-${d.month.toString().padLeft(2, '0')}';
 
@@ -80,7 +82,7 @@ class AiUsageController extends Notifier<Map<String, AiUsageStat>> {
   /// Records one answered request (the local counter behind the quota
   /// nudges; the server remains the real enforcer).
   void record(String model, {int inputTokens = 0, int outputTokens = 0}) {
-    final String k = '${_monthKey(DateTime.now())}|$model';
+    final String k = '${_monthKey(AppClock.now())}|$model';
     final AiUsageStat cur = state[k] ?? const AiUsageStat();
     state = <String, AiUsageStat>{
       ...state,
@@ -118,7 +120,7 @@ class AiUsageController extends Notifier<Map<String, AiUsageStat>> {
 /// The current calendar month's usage, rolled up across models.
 final aiUsageMonthProvider = Provider<AiUsageSummary>((ref) {
   final Map<String, AiUsageStat> map = ref.watch(aiUsageProvider);
-  final String month = _monthKey(DateTime.now());
+  final String month = _monthKey(AppClock.now());
   int req = 0;
   int inTok = 0;
   int outTok = 0;

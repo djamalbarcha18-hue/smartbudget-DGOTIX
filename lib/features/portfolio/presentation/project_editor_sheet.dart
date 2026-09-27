@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -82,7 +83,7 @@ class _ProjectEditorSheetState extends ConsumerState<ProjectEditorSheet> {
       horizon: _horizon,
       targetDate: _targetDate,
       note: _note.text.trim().isEmpty ? null : _note.text.trim(),
-      createdAt: e?.createdAt ?? DateTime.now(),
+      createdAt: e?.createdAt ?? AppClock.now(),
     );
     final ProjectActions actions = ref.read(projectActionsProvider);
     if (e == null) {
@@ -174,9 +175,9 @@ class _ProjectEditorSheetState extends ConsumerState<ProjectEditorSheet> {
                       final DateTime? p = await showDatePicker(
                         context: context,
                         initialDate: _targetDate ??
-                            DateTime.now()
+                            AppClock.now()
                                 .add(Duration(days: 30 * _horizon.defaultMonths)),
-                        firstDate: DateTime.now(),
+                        firstDate: AppClock.now(),
                         lastDate: DateTime(2100),
                       );
                       if (p != null) setState(() => _targetDate = p);

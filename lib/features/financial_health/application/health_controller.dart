@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
@@ -137,7 +138,7 @@ final healthReportProvider = Provider<HealthReport>((ref) {
       // Debt balances are a present-day snapshot; only the current calendar
       // year lets us compare them to income on the same time scope. For a
       // past year we keep the debt score but lower its Data Confidence.
-      debtDataCurrent: year == DateTime.now().year,
+      debtDataCurrent: year == AppClock.now().year,
     ),
   );
 });

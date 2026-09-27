@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/recurring/data/fake_recurring_repository.dart';
 import 'package:smartbudget/features/recurring/domain/recurrence_engine.dart';
@@ -36,7 +37,7 @@ class RecurringActions {
   RecurringRepository get _rules => _ref.read(recurringRepositoryProvider);
 
   static String newId() =>
-      'rule-${DateTime.now().microsecondsSinceEpoch.toRadixString(36)}';
+      'rule-${AppClock.now().microsecondsSinceEpoch.toRadixString(36)}';
 
   /// Saves [txn] as the first occurrence of a new rule repeating at
   /// [frequency], then posts anything already due (a start date in the past
@@ -55,7 +56,7 @@ class RecurringActions {
       frequency: frequency,
       startDate: start,
       lastPosted: start,
-      createdAt: DateTime.now(),
+      createdAt: AppClock.now(),
     );
     final Transaction first = Transaction(
       id: RecurrenceEngine.occurrenceId(ruleId, start),
@@ -78,7 +79,7 @@ class RecurringActions {
 
   /// Resumes without back-filling the occurrences missed while paused.
   Future<void> resume(RecurringRule rule) async {
-    await _rules.update(RecurrenceEngine.resume(rule, DateTime.now()));
+    await _rules.update(RecurrenceEngine.resume(rule, AppClock.now()));
     await postDue();
   }
 
@@ -98,7 +99,7 @@ class RecurringActions {
   /// run never duplicates.
   Future<int> postDue({DateTime? now}) {
     final Future<int> run =
-        _queue.then((_) => _post(now ?? DateTime.now()));
+        _queue.then((_) => _post(now ?? AppClock.now()));
     _queue = run.then((_) {}, onError: (Object _) {});
     return run;
   }

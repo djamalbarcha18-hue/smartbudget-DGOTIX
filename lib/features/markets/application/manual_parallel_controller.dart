@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/time/app_clock.dart';
+
 /// A user-entered parallel ("street") rate for one currency pair in one country.
 /// Per-viewer and stored locally — shown honestly as "manual", never mixed up
 /// with a live feed.
@@ -26,7 +28,7 @@ class ManualParallel {
     final ManualParallel e = ManualParallel(
       buy: d(o['buy']),
       sell: d(o['sell']),
-      updatedAt: DateTime.tryParse('${o['at']}') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse('${o['at']}') ?? AppClock.now(),
     );
     return e.isEmpty ? null : e;
   }
@@ -83,7 +85,7 @@ class ManualParallelController extends Notifier<Map<String, ManualParallel>> {
     if (b == null && s == null) {
       next.remove(k);
     } else {
-      next[k] = ManualParallel(buy: b, sell: s, updatedAt: DateTime.now());
+      next[k] = ManualParallel(buy: b, sell: s, updatedAt: AppClock.now());
     }
     state = next;
     await _persist();

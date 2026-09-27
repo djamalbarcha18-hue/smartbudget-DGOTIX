@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
@@ -68,7 +69,7 @@ class BackupData {
     return BackupData(
       exportedAt:
           DateTime.tryParse((json['exportedAt'] as String?) ?? '') ??
-              DateTime.now(),
+              AppClock.now(),
       baseCurrency: (json['baseCurrency'] as String?) ?? 'USD',
       transactions: _list<Transaction>(
           json['transactions'], Transaction.fromJson),

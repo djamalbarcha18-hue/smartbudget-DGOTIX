@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/billing/data/entitlement_service.dart';
 import 'package:smartbudget/features/billing/domain/entitlement.dart';
@@ -102,7 +103,7 @@ final effectivePlanProvider = Provider<Plan>((ref) {
   final Entitlement e =
       ref.watch(remoteEntitlementProvider).valueOrNull ??
           ref.watch(entitlementProvider);
-  return e.effectivePlanAt(DateTime.now());
+  return e.effectivePlanAt(AppClock.now());
 });
 
 /// How the account's paid plan is billed (null on FREE or when unknown).

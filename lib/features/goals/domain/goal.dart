@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 
 /// A savings goal (domain entity).
 ///
@@ -62,7 +63,7 @@ class Goal {
           ? null
           : DateTime.tryParse(json['deadline'] as String),
       createdAt:
-          DateTime.tryParse((json['createdAt'] as String?) ?? '') ?? DateTime.now(),
+          DateTime.tryParse((json['createdAt'] as String?) ?? '') ?? AppClock.now(),
     );
   }
 }

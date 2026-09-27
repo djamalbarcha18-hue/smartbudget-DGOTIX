@@ -1,3 +1,4 @@
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/markets/data/market_http.dart';
 import 'package:smartbudget/features/markets/data/rate_cache.dart';
 import 'package:smartbudget/features/markets/domain/market_config.dart';
@@ -67,7 +68,7 @@ class CoinGeckoCryptoRepository implements CryptoRepository {
       }
     }
 
-    final DateTime now = DateTime.now();
+    final DateTime now = AppClock.now();
     return assets.map((CryptoAsset a) {
       final Map<String, dynamic>? m = byId[a.coingeckoId];
       double? usd;

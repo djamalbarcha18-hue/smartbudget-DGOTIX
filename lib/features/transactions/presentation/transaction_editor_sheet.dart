@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -106,7 +107,7 @@ class _TransactionEditorSheetState
     _description =
         TextEditingController(text: e?.description ?? p?.description ?? '');
     _notes = TextEditingController(text: e?.notes ?? '');
-    _date = e?.date ?? p?.date ?? DateTime.now();
+    _date = e?.date ?? p?.date ?? AppClock.now();
     _category = e?.category ?? p?.category;
     _paymentMethod = e?.paymentMethod;
     _repeat = e == null ? widget.initialRepeat : null;
@@ -146,7 +147,7 @@ class _TransactionEditorSheetState
       description: _description.text.trim(),
       paymentMethod: _paymentMethod,
       notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
-      createdAt: widget.existing?.createdAt ?? DateTime.now(),
+      createdAt: widget.existing?.createdAt ?? AppClock.now(),
     );
     final TransactionActions actions = ref.read(transactionActionsProvider);
     if (widget.existing == null && _repeat != null) {

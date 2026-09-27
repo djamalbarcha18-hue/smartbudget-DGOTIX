@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/backup/domain/backup_model.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
@@ -64,7 +65,7 @@ class BackupService {
         await _ref.read(recurringRulesProvider.future);
     final CustomCategories cc = _ref.read(customCategoriesProvider);
     return BackupData(
-      exportedAt: DateTime.now(),
+      exportedAt: AppClock.now(),
       baseCurrency: _ref.read(baseCurrencyProvider),
       transactions: txns,
       budgets: budgets,

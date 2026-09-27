@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/transactions/data/fake_transaction_repository.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
@@ -24,11 +25,11 @@ final transactionsProvider = StreamProvider<List<Transaction>>((ref) {
 
 /// Currently viewed year (defaults to the current calendar year).
 final selectedYearProvider =
-    StateProvider<int>((ref) => DateTime.now().year);
+    StateProvider<int>((ref) => AppClock.now().year);
 
 /// Currently viewed month 1..12 (for the Monthly Budget screen).
 final selectedMonthProvider =
-    StateProvider<int>((ref) => DateTime.now().month);
+    StateProvider<int>((ref) => AppClock.now().month);
 
 /// Transactions filtered to the selected year AND month.
 final monthTransactionsProvider = Provider<List<Transaction>>((ref) {
@@ -118,5 +119,5 @@ class TransactionActions {
   Future<void> delete(String id) => _repo.delete(id);
 
   static String newId() =>
-      'txn-${DateTime.now().microsecondsSinceEpoch.toRadixString(36)}';
+      'txn-${AppClock.now().microsecondsSinceEpoch.toRadixString(36)}';
 }

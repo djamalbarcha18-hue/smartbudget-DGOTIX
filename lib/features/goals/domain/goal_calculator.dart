@@ -1,4 +1,5 @@
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 
 /// Goal status (V1 thresholds).
@@ -20,7 +21,7 @@ abstract final class GoalCalculator {
   static int? monthsRemaining(Goal g, {DateTime? now}) {
     final DateTime? dl = g.deadline;
     if (dl == null) return null;
-    final DateTime t = now ?? DateTime.now();
+    final DateTime t = now ?? AppClock.now();
     final int months = (dl.year - t.year) * 12 + (dl.month - t.month);
     return months < 0 ? 0 : months;
   }

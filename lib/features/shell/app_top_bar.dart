@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:smartbudget/core/l10n/month_names.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
@@ -205,7 +206,7 @@ class _MonthChip extends ConsumerWidget {
     final bool ar = Localizations.localeOf(context).languageCode == 'ar';
     final List<String> names = MonthNames.full(ar: ar);
     final int month = ref.watch(selectedMonthProvider);
-    final int value = (month >= 1 && month <= 12) ? month : DateTime.now().month;
+    final int value = (month >= 1 && month <= 12) ? month : AppClock.now().month;
 
     return PopupMenuButton<int>(
       tooltip: names[value - 1],
@@ -232,7 +233,7 @@ class _YearChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final DsColors c = context.dsColors;
     final int year = ref.watch(selectedYearProvider);
-    final int now = DateTime.now().year;
+    final int now = AppClock.now().year;
     final List<int> years = List<int>.generate(10, (int i) => now + i);
     final int value = years.contains(year) ? year : now;
 

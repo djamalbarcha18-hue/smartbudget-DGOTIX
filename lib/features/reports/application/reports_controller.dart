@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/reports/domain/report_period.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
@@ -25,7 +26,7 @@ final selectedReportPeriodProvider =
     StateProvider<ReportPeriod>((ref) => ReportPeriod.yearly);
 
 final selectedReportSubProvider = StateProvider<int>(
-    (ref) => ReportPeriods.defaultSub(ReportPeriod.yearly, DateTime.now()));
+    (ref) => ReportPeriods.defaultSub(ReportPeriod.yearly, AppClock.now()));
 
 /// Transactions for the selected year filtered to the selected period's months.
 final reportTransactionsProvider = Provider<List<Transaction>>((ref) {

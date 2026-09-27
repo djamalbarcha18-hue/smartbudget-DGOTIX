@@ -7,6 +7,7 @@ import 'package:smartbudget/core/localization/locale_controller.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/theme/theme_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -33,6 +34,7 @@ import 'package:smartbudget/features/exchange_rates/application/rates_controller
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
+import 'package:smartbudget/features/settings/presentation/clock_section.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
@@ -128,6 +130,14 @@ class SettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: DsSpacing.lg),
+
+              // World time sync + time zone.
+              _SettingsSection(
+                icon: Icons.schedule_rounded,
+                title: l.settingsTime,
+                child: const ClockSection(),
               ),
               const SizedBox(height: DsSpacing.lg),
 
@@ -501,7 +511,7 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
   bool _busy = false;
 
   String _stamp() {
-    final DateTime n = DateTime.now();
+    final DateTime n = AppClock.now();
     String two(int v) => v.toString().padLeft(2, '0');
     return '${n.year}${two(n.month)}${two(n.day)}-${two(n.hour)}${two(n.minute)}';
   }
@@ -607,7 +617,7 @@ class _LastBackupLine extends StatelessWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final int? days =
-        BackupReminder.daysSince(status?.lastBackup, DateTime.now());
+        BackupReminder.daysSince(status?.lastBackup, AppClock.now());
     final bool stale = days == null || days >= BackupReminder.everyDays;
     return Row(
       children: <Widget>[

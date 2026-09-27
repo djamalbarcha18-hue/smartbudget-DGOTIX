@@ -1,3 +1,4 @@
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/markets/domain/commodity_config.dart';
 import 'package:smartbudget/features/markets/domain/commodity_models.dart';
 import 'package:smartbudget/features/markets/domain/market_category.dart';
@@ -17,7 +18,7 @@ class UnavailableMarketProvider implements MarketDataProvider {
 
   @override
   Future<List<CommodityQuote>> fetch(List<CommoditySpec> specs) async {
-    final DateTime now = DateTime.now();
+    final DateTime now = AppClock.now();
     return specs
         .map((CommoditySpec s) => CommodityQuote(
               code: s.code,

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/debts/data/fake_debt_repository.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
@@ -38,5 +39,5 @@ class DebtActions {
   Future<void> delete(String id) => _repo.delete(id);
 
   static String newId() =>
-      'debt-${DateTime.now().microsecondsSinceEpoch.toRadixString(36)}';
+      'debt-${AppClock.now().microsecondsSinceEpoch.toRadixString(36)}';
 }

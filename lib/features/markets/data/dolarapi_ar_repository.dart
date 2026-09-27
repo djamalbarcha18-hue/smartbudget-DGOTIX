@@ -1,3 +1,4 @@
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/markets/data/market_http.dart';
 import 'package:smartbudget/features/markets/data/rate_cache.dart';
 import 'package:smartbudget/features/markets/domain/market_config.dart';
@@ -60,7 +61,7 @@ class DolarApiArRepository implements ParallelMarketRepository {
     final double? buy = asDoubleOrNull(data['compra']);
     final double? sell = asDoubleOrNull(data['venta']);
     if (buy == null && sell == null) return const <FxQuote>[];
-    DateTime updated = DateTime.now();
+    DateTime updated = AppClock.now();
     final dynamic f = data['fechaActualizacion'];
     if (f is String) {
       final DateTime? p = DateTime.tryParse(f);

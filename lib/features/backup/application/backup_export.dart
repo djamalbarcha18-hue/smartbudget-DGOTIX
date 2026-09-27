@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/backup/application/backup_controller.dart';
 import 'package:smartbudget/features/backup/application/backup_status_controller.dart';
 import 'package:smartbudget/features/backup/data/file_io.dart';
@@ -14,7 +15,7 @@ String _stamp(DateTime n) {
 Future<void> exportFullBackup(WidgetRef ref) async {
   final String json = await ref.read(backupServiceProvider).exportJson();
   await downloadText(
-    filename: 'smartbudget-backup-${_stamp(DateTime.now())}.json',
+    filename: 'smartbudget-backup-${_stamp(AppClock.now())}.json',
     text: json,
     mime: 'application/json;charset=utf-8',
   );

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
@@ -190,5 +191,5 @@ final zakatResultProvider = Provider<ZakatResult>((ref) {
 final zakatHawlProvider = Provider<HawlStatus?>((ref) {
   final DateTime? start = ref.watch(zakatInputsProvider).hawlStart;
   if (start == null) return null;
-  return HawlStatus.compute(start, DateTime.now());
+  return HawlStatus.compute(start, AppClock.now());
 });

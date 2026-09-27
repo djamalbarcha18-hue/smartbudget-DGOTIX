@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/backup/domain/backup_reminder.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -43,7 +44,7 @@ class BackupStatusController extends Notifier<BackupStatus?> {
 
   /// Call after a FULL backup succeeded (JSON export or cloud backup).
   Future<void> markBackedUp() async {
-    final DateTime now = DateTime.now();
+    final DateTime now = AppClock.now();
     state = BackupStatus(lastBackup: now);
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();
@@ -57,7 +58,7 @@ class BackupStatusController extends Notifier<BackupStatus?> {
   /// Hide the reminder for [BackupReminder.snoozeDays] days.
   Future<void> snooze() async {
     final DateTime until =
-        DateTime.now().add(const Duration(days: BackupReminder.snoozeDays));
+        AppClock.now().add(const Duration(days: BackupReminder.snoozeDays));
     state = BackupStatus(lastBackup: state?.lastBackup, snoozedUntil: until);
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();
@@ -78,7 +79,7 @@ final backupReminderDueProvider = Provider<bool>((ref) {
     if (t.createdAt.isBefore(oldest)) oldest = t.createdAt;
   }
   return BackupReminder.isDue(
-    now: DateTime.now(),
+    now: AppClock.now(),
     lastBackup: status.lastBackup,
     oldestData: oldest,
     snoozedUntil: status.snoozedUntil,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
@@ -59,7 +60,7 @@ class ReportsPage extends ConsumerWidget {
                     if (p == null) return;
                     ref.read(selectedReportPeriodProvider.notifier).state = p;
                     ref.read(selectedReportSubProvider.notifier).state =
-                        ReportPeriods.defaultSub(p, DateTime.now());
+                        ReportPeriods.defaultSub(p, AppClock.now());
                   },
                 ),
               ),
@@ -86,8 +87,8 @@ class ReportsPage extends ConsumerWidget {
                   dropdownColor: c.bgElevated,
                   items: <DropdownMenuItem<int>>[
                     // Current year and the next nine (e.g. 2026–2035).
-                    for (int y = DateTime.now().year;
-                        y <= DateTime.now().year + 9;
+                    for (int y = AppClock.now().year;
+                        y <= AppClock.now().year + 9;
                         y++)
                       DropdownMenuItem<int>(value: y, child: Text('$y')),
                   ],

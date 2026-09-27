@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 
 /// Income or expense — the two transaction kinds (mirrors SmartBudget).
 enum TransactionType { income, expense }
@@ -88,7 +89,7 @@ class Transaction {
       paymentMethod: json['paymentMethod'] as String?,
       notes: json['notes'] as String?,
       createdAt: DateTime.tryParse((json['createdAt'] as String?) ?? '') ??
-          DateTime.now(),
+          AppClock.now(),
     );
   }
 }
