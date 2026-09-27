@@ -7,6 +7,7 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 /// year/month selector rather than 12 separate pages.
 enum AppSection {
   dashboard,
+  challenges,
   transactions,
   income,
   expenses,
@@ -50,6 +51,7 @@ class NavDestination {
 
   String label(AppLocalizations l) => switch (section) {
         AppSection.dashboard => l.navDashboard,
+        AppSection.challenges => l.navChallenges,
         AppSection.transactions => l.navTransactions,
         AppSection.income => l.navIncome,
         AppSection.expenses => l.navExpenses,
@@ -81,6 +83,13 @@ abstract final class AppNav {
       route: '/dashboard',
       icon: Icons.dashboard_outlined,
       group: NavGroup.overview,
+    ),
+    NavDestination(
+      section: AppSection.challenges,
+      route: '/challenges',
+      icon: Icons.emoji_events_outlined,
+      group: NavGroup.overview,
+      isNew: true,
     ),
     NavDestination(
       section: AppSection.transactions,

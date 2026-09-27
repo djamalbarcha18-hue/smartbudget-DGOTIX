@@ -5,6 +5,7 @@ import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/backup/domain/backup_model.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
+import 'package:smartbudget/features/challenges/application/challenges_controller.dart';
 import 'package:smartbudget/features/daret/application/daret_controller.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
@@ -73,6 +74,7 @@ class BackupService {
     return BackupData(
       seasons: await _ref.read(seasonStoreProvider).all(),
       darets: await _ref.read(daretStoreProvider).all(),
+      challenges: await _ref.read(challengeStoreProvider).all(),
       exportedAt: AppClock.now(),
       baseCurrency: _ref.read(baseCurrencyProvider),
       transactions: txns,
@@ -118,7 +120,8 @@ class BackupService {
         .importMany(data.recurring);
     final int othersAdded =
         await _ref.read(seasonStoreProvider).importMany(data.seasons) +
-            await _ref.read(daretStoreProvider).importMany(data.darets);
+            await _ref.read(daretStoreProvider).importMany(data.darets) +
+            await _ref.read(challengeStoreProvider).importMany(data.challenges);
     return ImportResult(
       othersAdded: othersAdded,
       transactionsAdded: txAdded,

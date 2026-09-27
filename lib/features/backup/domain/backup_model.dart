@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
+import 'package:smartbudget/features/challenges/domain/challenges.dart';
 import 'package:smartbudget/features/daret/domain/daret.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
@@ -29,6 +30,7 @@ class BackupData {
     this.recurring = const <RecurringRule>[],
     this.seasons = const <SeasonPlan>[],
     this.darets = const <Daret>[],
+    this.challenges = const <Challenge>[],
   });
 
   /// Bump when the on-disk shape changes in a breaking way. Adding optional
@@ -48,6 +50,7 @@ class BackupData {
   final List<RecurringRule> recurring;
   final List<SeasonPlan> seasons;
   final List<Daret> darets;
+  final List<Challenge> challenges;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'schemaVersion': schemaVersion,
@@ -63,6 +66,7 @@ class BackupData {
         'recurring': recurring.map((RecurringRule r) => r.toJson()).toList(),
         'seasons': seasons.map((SeasonPlan p) => p.toJson()).toList(),
         'darets': darets.map((Daret d) => d.toJson()).toList(),
+        'challenges': challenges.map((Challenge c) => c.toJson()).toList(),
         'customCategories': <String, dynamic>{
           'income': customIncome,
           'expense': customExpense,
@@ -91,6 +95,7 @@ class BackupData {
           _list<RecurringRule>(json['recurring'], RecurringRule.fromJson),
       seasons: _list<SeasonPlan>(json['seasons'], SeasonPlan.fromJson),
       darets: _list<Daret>(json['darets'], Daret.fromJson),
+      challenges: _list<Challenge>(json['challenges'], Challenge.fromJson),
     );
   }
 
@@ -128,6 +133,7 @@ abstract final class BackupCodec {
       'recurring',
       'seasons',
       'darets',
+      'challenges',
     ];
     if (!sections.any(obj.containsKey)) {
       throw const FormatException('Backup file is missing expected data.');
