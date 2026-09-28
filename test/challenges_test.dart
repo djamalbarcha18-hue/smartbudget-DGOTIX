@@ -18,8 +18,12 @@ Transaction tx(DateTime d, int minor,
       createdAt: d,
     );
 
-Challenge ch(ChallengeType t, DateTime start) =>
-    Challenge(id: 'c', type: t, start: start, createdAt: start);
+Transaction side(DateTime d, int minor) => tx(d, minor, category: 'المطاعم');
+
+Challenge ch(int days, DateTime start,
+        {Set<String> cats = SideFree.defaultCategories}) =>
+    Challenge(
+        id: 'c', days: days, categories: cats, start: start, createdAt: start);
 
 ChallengeProgress eval(Challenge c, List<Transaction> txns, DateTime now) =>
     ChallengeEngine.evaluate(c, txns, 'DZD', now);
@@ -27,106 +31,119 @@ ChallengeProgress eval(Challenge c, List<Transaction> txns, DateTime now) =>
 void main() {
   final DateTime s = DateTime(2026, 9, 1);
 
-  group('no eating out for 7 days', () {
-    final Challenge c = ch(ChallengeType.noEatingOut7, s);
-
-    test('clean days count up and it is won after day 7', () {
-      final List<Transaction> t = <Transaction>[tx(DateTime(2026, 9, 3), 500)];
-      final ChallengeProgress mid = eval(c, t, DateTime(2026, 9, 4, 18));
-      expect(mid.status, ChallengeStatus.active);
-      expect(mid.current, 4);
-      expect(mid.daysLeft, 4);
-      expect(eval(c, t, DateTime(2026, 9, 7, 23)).status, ChallengeStatus.active);
-      expect(eval(c, t, DateTime(2026, 9, 8)).status, ChallengeStatus.won);
+  group('days without side spending', () {
+    test('essentials never break it; the strip shows each day', () {
+      final ChallengeProgress p = eval(
+        ch(7, s),
+        <Transaction>[
+          tx(DateTime(2026, 9, 2), 5000), // groceries: fine
+          tx(DateTime(2026, 9, 3), 90000, category: 'السكن'),
+        ],
+        DateTime(2026, 9, 4, 12),
+      );
+      expect(p.status, ChallengeStatus.active);
+      expect(p.clean, 3);
+      expect(p.marks, <DayMark>[
+        DayMark.clean,
+        DayMark.clean,
+        DayMark.clean,
+        DayMark.today,
+        DayMark.upcoming,
+        DayMark.upcoming,
+        DayMark.upcoming,
+      ]);
+      expect(p.daysLeft, 4);
     });
 
-    test('one restaurant expense in the window loses it', () {
+    test('a 7-day run forgives one slip, not two', () {
+      final Challenge c = ch(7, s);
+      final List<Transaction> one = <Transaction>[side(DateTime(2026, 9, 3), 800)];
+      final ChallengeProgress won = eval(c, one, DateTime(2026, 9, 8));
+      expect(won.status, ChallengeStatus.won);
+      expect(won.clean, 6);
+      expect(won.slips, 1);
+      expect(won.sideSpent, const Money(800, 'DZD'));
+
+      final ChallengeProgress lost = eval(
+          c,
+          <Transaction>[...one, side(DateTime(2026, 9, 5), 500)],
+          DateTime(2026, 9, 5, 20));
+      expect(lost.status, ChallengeStatus.lost);
+    });
+
+    test('3 days allow no slip; a slip today counts right away', () {
+      final ChallengeProgress p = eval(ch(3, s),
+          <Transaction>[side(DateTime(2026, 9, 2, 9), 300)], DateTime(2026, 9, 2, 10));
+      expect(p.status, ChallengeStatus.lost);
+      expect(p.marks[1], DayMark.slip);
+    });
+
+    test('only the chosen categories count', () {
+      final ChallengeProgress p = eval(
+          ch(3, s, cats: const <String>{'التسوق'}),
+          <Transaction>[side(DateTime(2026, 9, 2), 300)],
+          DateTime(2026, 9, 4));
+      expect(p.status, ChallengeStatus.won);
+      expect(p.clean, 3);
+    });
+
+    test('estimates money kept from the weeks before', () {
+      // 28 days before: 2 800 DZD on extras → 100 a day on average.
       final List<Transaction> t = <Transaction>[
-        tx(DateTime(2026, 9, 5), 1200, category: 'المطاعم'),
+        for (int i = 1; i <= 28; i++)
+          side(s.subtract(Duration(days: i)), 10000),
+        side(DateTime(2026, 9, 2), 5000),
       ];
-      expect(eval(c, t, DateTime(2026, 9, 6)).status, ChallengeStatus.lost);
-      // Outside the window it doesn't count.
-      expect(
-          eval(c, <Transaction>[tx(DateTime(2026, 9, 9), 1200, category: 'المطاعم')],
-                  DateTime(2026, 9, 10))
-              .status,
-          ChallengeStatus.won);
+      final ChallengeProgress p = eval(ch(7, s), t, DateTime(2026, 9, 8));
+      // 7 days × 100.00 − 50.00 spent.
+      expect(p.saved, const Money(65000, 'DZD'));
+      // No history → no estimate.
+      expect(eval(ch(7, s), const <Transaction>[], DateTime(2026, 9, 8)).saved,
+          isNull);
+      // Day one isn't over yet → no estimate.
+      expect(eval(ch(7, s), t, DateTime(2026, 9, 1, 20)).saved, isNull);
+    });
+
+    test('old challenges load as the nearest side-free one', () {
+      final Challenge c = Challenge.fromJson(<String, dynamic>{
+        'id': 'x',
+        'type': 'noEatingOut7',
+        'start': '2026-09-01',
+        'createdAt': '2026-09-01T10:00:00.000',
+      });
+      expect(c.days, 7);
+      expect(c.categories, <String>{'المطاعم'});
+      final Challenge round = Challenge.fromJson(ch(14, s).toJson());
+      expect(round.days, 14);
+      expect(round.categories, SideFree.defaultCategories);
+      expect(round.end, DateTime(2026, 9, 14));
+    });
+
+    test('allowed slips grow by week', () {
+      expect(SideFree.durations.map(SideFree.allowedSlips).toList(),
+          <int>[0, 1, 2, 4]);
     });
   });
 
-  group('3 spend-free days in a week', () {
-    final Challenge c = ch(ChallengeType.noSpend3of7, s);
-    test('won as soon as 3 finished days had no expense', () {
-      final List<Transaction> t = <Transaction>[
-        tx(DateTime(2026, 9, 1), 100),
-        tx(DateTime(2026, 9, 3), 100),
-      ];
-      // Finished days 1..4: free on 2 and 4 → 2.
-      expect(eval(c, t, DateTime(2026, 9, 5)).current, 2);
-      expect(eval(c, t, DateTime(2026, 9, 5)).status, ChallengeStatus.active);
-      expect(eval(c, t, DateTime(2026, 9, 6)).status, ChallengeStatus.won);
-    });
-
-    test('lost when the week ends short', () {
-      final List<Transaction> t = <Transaction>[
-        for (int d = 1; d <= 6; d++) tx(DateTime(2026, 9, d), 100),
-      ];
-      expect(eval(c, t, DateTime(2026, 9, 8)).status, ChallengeStatus.lost);
-    });
-  });
-
-  group('log every day for 7 days', () {
-    final Challenge c = ch(ChallengeType.logDaily7, s);
-    test('today can still be logged; a missed past day loses', () {
-      final List<Transaction> t = <Transaction>[
-        tx(DateTime(2026, 9, 1), 100),
-        tx(DateTime(2026, 9, 2), 100, type: TransactionType.income),
-      ];
-      expect(eval(c, t, DateTime(2026, 9, 3)).status, ChallengeStatus.active);
-      expect(eval(c, t, DateTime(2026, 9, 4)).status, ChallengeStatus.lost);
-    });
-
-    test('won once all 7 days are logged', () {
-      final List<Transaction> t = <Transaction>[
-        for (int d = 1; d <= 7; d++) tx(DateTime(2026, 9, d), 100),
-      ];
-      expect(eval(c, t, DateTime(2026, 9, 7, 20)).status, ChallengeStatus.won);
-    });
-  });
-
-  group('save 20% this month', () {
-    final Challenge c = ch(ChallengeType.save20Month, DateTime(2026, 9, 10));
+  group('clean-day streaks', () {
     final List<Transaction> t = <Transaction>[
-      tx(DateTime(2026, 9, 1), 100000, type: TransactionType.income),
-      tx(DateTime(2026, 9, 12), 75000),
+      tx(DateTime(2026, 9, 1), 100), // tracking starts
+      side(DateTime(2026, 9, 5), 100),
+      side(DateTime(2026, 9, 10), 100),
     ];
-    test('tracks the month\'s rate and decides at month end', () {
-      expect(c.end, DateTime(2026, 9, 30));
-      final ChallengeProgress mid = eval(c, t, DateTime(2026, 9, 20));
-      expect(mid.status, ChallengeStatus.active);
-      expect(mid.current, 25);
-      expect(eval(c, t, DateTime(2026, 10, 1)).status, ChallengeStatus.won);
-      expect(
-          eval(c, <Transaction>[...t, tx(DateTime(2026, 9, 25), 10000)],
-                  DateTime(2026, 10, 1))
-              .status,
-          ChallengeStatus.lost);
-    });
-  });
+    const Set<String> cats = SideFree.defaultCategories;
 
-  group('streaks', () {
-    final List<Transaction> t = <Transaction>[
-      for (int d = 1; d <= 5; d++) tx(DateTime(2026, 9, d), 100),
-      for (int d = 10; d <= 12; d++) tx(DateTime(2026, 9, d), 100),
-    ];
-    test('current streak runs to today, or yesterday before today\'s entry', () {
-      expect(Streaks.current(t, DateTime(2026, 9, 12, 9)), 3);
-      expect(Streaks.current(t, DateTime(2026, 9, 13, 9)), 3);
-      expect(Streaks.current(t, DateTime(2026, 9, 14)), 0);
+    test('current run ends yesterday and never goes before tracking', () {
+      expect(SideFreeStreaks.current(t, cats, DateTime(2026, 9, 14)), 3);
+      expect(SideFreeStreaks.current(t, cats, DateTime(2026, 9, 11)), 0);
+      expect(SideFreeStreaks.current(t, cats, DateTime(2026, 9, 3)), 2);
     });
-    test('longest streak', () => expect(Streaks.longest(t), 5));
-    test('spend-free days this month (finished days only)', () {
-      expect(Streaks.noSpendDaysThisMonth(t, DateTime(2026, 9, 13)), 4);
+
+    test('longest run and this month', () {
+      expect(SideFreeStreaks.longest(t, cats, DateTime(2026, 9, 14)), 4);
+      expect(SideFreeStreaks.thisMonth(t, cats, DateTime(2026, 9, 14)), 11);
+      expect(SideFreeStreaks.current(const <Transaction>[], cats,
+          DateTime(2026, 9, 14)), 0);
     });
   });
 
@@ -135,6 +152,7 @@ void main() {
       final DateTime now = DateTime(2026, 10, 5);
       final List<Transaction> t = <Transaction>[
         for (int d = 1; d <= 8; d++) tx(DateTime(2026, 9, d), 1000),
+        side(DateTime(2026, 9, 20), 500),
         tx(DateTime(2026, 9, 1), 100000, type: TransactionType.income),
       ];
       final Set<BadgeKind> b = Badges.earned(
@@ -156,11 +174,11 @@ void main() {
           b,
           containsAll(<BadgeKind>[
             BadgeKind.firstEntry,
-            BadgeKind.streak7,
+            BadgeKind.cleanWeek,
             BadgeKind.saver20,
             BadgeKind.budgetKept,
           ]));
-      expect(b, isNot(contains(BadgeKind.streak30)));
+      expect(b, isNot(contains(BadgeKind.cleanMonth)));
       expect(b, isNot(contains(BadgeKind.goalReached)));
       expect(Badges.earned(txns: const <Transaction>[], currency: 'DZD', now: now),
           isEmpty);

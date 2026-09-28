@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/l10n/date_text.dart';
+import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
@@ -14,58 +15,29 @@ import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
 import 'package:smartbudget/features/challenges/application/challenges_controller.dart';
 import 'package:smartbudget/features/challenges/domain/challenges.dart';
+import 'package:smartbudget/features/challenges/presentation/challenge_share.dart';
 import 'package:smartbudget/features/daret/application/daret_controller.dart';
 import 'package:smartbudget/features/daret/domain/daret.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/seasons/application/seasons_controller.dart';
 import 'package:smartbudget/features/seasons/domain/season.dart';
-import 'package:smartbudget/features/share/data/native_share.dart';
-import 'package:smartbudget/features/share/domain/share_qr.dart';
+import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
+import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
-
-String challengeTitle(AppLocalizations l, ChallengeType t) => switch (t) {
-      ChallengeType.noEatingOut7 => l.chNoEatingOut,
-      ChallengeType.noShopping7 => l.chNoShopping,
-      ChallengeType.noSpend3of7 => l.chNoSpend3,
-      ChallengeType.logDaily7 => l.chLogDaily,
-      ChallengeType.save10Month => l.chSave(10),
-      ChallengeType.save20Month => l.chSave(20),
-    };
-
-String _challengeBody(AppLocalizations l, ChallengeType t) => switch (t) {
-      ChallengeType.noEatingOut7 => l.chNoEatingOutBody,
-      ChallengeType.noShopping7 => l.chNoShoppingBody,
-      ChallengeType.noSpend3of7 => l.chNoSpend3Body,
-      ChallengeType.logDaily7 => l.chLogDailyBody,
-      ChallengeType.save10Month => l.chSaveBody(10),
-      ChallengeType.save20Month => l.chSaveBody(20),
-    };
-
-IconData _challengeIcon(ChallengeType t) => switch (t) {
-      ChallengeType.noEatingOut7 => Icons.no_meals_outlined,
-      ChallengeType.noShopping7 => Icons.remove_shopping_cart_outlined,
-      ChallengeType.noSpend3of7 => Icons.money_off_rounded,
-      ChallengeType.logDaily7 => Icons.edit_calendar_outlined,
-      ChallengeType.save10Month => Icons.savings_outlined,
-      ChallengeType.save20Month => Icons.savings_rounded,
-    };
 
 (IconData, String, String) _badge(AppLocalizations l, BadgeKind b) => switch (b) {
       BadgeKind.firstEntry =>
         (Icons.flag_rounded, l.bFirstEntry, l.bFirstEntryHint),
-      BadgeKind.streak7 => (
+      BadgeKind.cleanWeek => (
           Icons.local_fire_department_rounded,
-          l.bStreak(7),
-          l.bStreakHint(7)
+          l.bCleanWeek,
+          l.bCleanWeekHint
         ),
-      BadgeKind.streak30 => (
-          Icons.whatshot_rounded,
-          l.bStreak(30),
-          l.bStreakHint(30)
-        ),
+      BadgeKind.cleanMonth =>
+        (Icons.whatshot_rounded, l.bCleanMonth, l.bCleanMonthHint),
       BadgeKind.saver20 => (Icons.savings_rounded, l.bSaver, l.bSaverHint),
       BadgeKind.budgetKept =>
         (Icons.verified_rounded, l.bBudgetKept, l.bBudgetKeptHint),
@@ -79,6 +51,9 @@ IconData _challengeIcon(ChallengeType t) => switch (t) {
         (Icons.groups_2_rounded, l.bDaret, l.bDaretHint),
     };
 
+String _catLabel(BuildContext context, String c) => Catalog.label(c,
+    ar: Localizations.localeOf(context).languageCode == 'ar');
+
 class ChallengesPage extends ConsumerWidget {
   const ChallengesPage({super.key});
 
@@ -89,36 +64,45 @@ class ChallengesPage extends ConsumerWidget {
     final TextTheme t = Theme.of(context).textTheme;
     final DateTime now = AppClock.now();
     final String currency = ref.watch(baseCurrencyProvider);
+    final Set<String> side = ref.watch(sideCategoriesProvider);
     final List<Transaction> txns =
         ref.watch(transactionsProvider).valueOrNull ?? const <Transaction>[];
     final List<Challenge> mine =
         ref.watch(challengesProvider).valueOrNull ?? const <Challenge>[];
 
-    final Map<Challenge, ChallengeProgress> progress = <Challenge, ChallengeProgress>{
+    final Map<Challenge, ChallengeProgress> progress =
+        <Challenge, ChallengeProgress>{
       for (final Challenge ch in mine)
         ch: ChallengeEngine.evaluate(ch, txns, currency, now),
     };
-    // Active first, then results from the last 30 days.
-    final List<Challenge> shown = mine
+    final List<Challenge> newest = List<Challenge>.of(mine)
+      ..sort((Challenge a, Challenge b) => b.createdAt.compareTo(a.createdAt));
+    final Challenge? active = newest
+        .where((Challenge ch) => progress[ch]!.status == ChallengeStatus.active)
+        .firstOrNull;
+    // Without a running challenge, the latest result (last 7 days) is shown
+    // up front, so a win can be shared and a miss retried right away.
+    final Challenge? result = active != null
+        ? null
+        : newest
+            .where((Challenge ch) =>
+                now.difference(ch.end).inDays <= 7 ||
+                progress[ch]!.status == ChallengeStatus.lost &&
+                    now.difference(ch.createdAt).inDays <= 7)
+            .firstOrNull;
+    final List<Challenge> history = newest
         .where((Challenge ch) =>
-            progress[ch]!.status == ChallengeStatus.active ||
-            now.difference(ch.end).inDays <= 30)
-        .toList()
-      ..sort((Challenge a, Challenge b) {
-        final bool aa = progress[a]!.status == ChallengeStatus.active;
-        final bool bb = progress[b]!.status == ChallengeStatus.active;
-        if (aa != bb) return aa ? -1 : 1;
-        return b.start.compareTo(a.start);
-      });
-    final Set<ChallengeType> running = <ChallengeType>{
-      for (final Challenge ch in mine)
-        if (progress[ch]!.status == ChallengeStatus.active) ch.type,
-    };
+            ch != active &&
+            ch != result &&
+            progress[ch]!.status != ChallengeStatus.active &&
+            now.difference(ch.end).inDays <= 90)
+        .toList();
 
     final Set<BadgeKind> earned = Badges.earned(
       txns: txns,
       currency: currency,
       now: now,
+      sideCategories: side,
       budgets: ref.watch(budgetsProvider).valueOrNull ?? const <BudgetTarget>[],
       goals: ref.watch(goalsProvider).valueOrNull ?? const <Goal>[],
       challenges: mine,
@@ -160,16 +144,16 @@ class ChallengesPage extends ConsumerWidget {
             _StatTile(
               icon: Icons.local_fire_department_rounded,
               color: const Color(0xFFF97316),
-              label: l.chStreak,
-              value: l.chDays(Streaks.current(txns, now)),
-              hint: l.chLongest(Streaks.longest(txns)),
+              label: l.sfStreak,
+              value: l.chDays(SideFreeStreaks.current(txns, side, now)),
+              hint: l.chLongest(SideFreeStreaks.longest(txns, side, now)),
             ),
             _StatTile(
               icon: Icons.spa_outlined,
               color: c.income,
-              label: l.chNoSpendDays,
-              value: '${Streaks.noSpendDaysThisMonth(txns, now)}',
-              hint: l.chNoSpendDaysHint,
+              label: l.sfMonth,
+              value: '${SideFreeStreaks.thisMonth(txns, side, now)}',
+              hint: l.sfMonthHint,
             ),
             _StatTile(
               icon: Icons.military_tech_rounded,
@@ -180,23 +164,29 @@ class ChallengesPage extends ConsumerWidget {
             ),
           ]),
           const SizedBox(height: DsSpacing.xxl),
-          if (shown.isNotEmpty) ...<Widget>[
-            Text(l.chMine,
+          if (active != null)
+            _ActiveCard(challenge: active, progress: progress[active]!)
+          else ...<Widget>[
+            if (result != null) ...<Widget>[
+              _ResultCard(challenge: result, progress: progress[result]!),
+              const SizedBox(height: DsSpacing.lg),
+            ],
+            const _StartCard(),
+          ],
+          if (history.isNotEmpty) ...<Widget>[
+            const SizedBox(height: DsSpacing.xxl),
+            Text(l.sfHistory,
                 style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
             const SizedBox(height: DsSpacing.md),
-            grid(<Widget>[
-              for (final Challenge ch in shown)
-                _ChallengeCard(challenge: ch, progress: progress[ch]!),
-            ], maxCols: 2),
-            const SizedBox(height: DsSpacing.xxl),
+            GlassCard(
+              child: Column(
+                children: <Widget>[
+                  for (final Challenge ch in history)
+                    _HistoryRow(challenge: ch, progress: progress[ch]!),
+                ],
+              ),
+            ),
           ],
-          Text(l.chStart,
-              style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-          const SizedBox(height: DsSpacing.md),
-          grid(<Widget>[
-            for (final ChallengeType type in ChallengeType.values)
-              if (!running.contains(type)) _OfferCard(type: type),
-          ]),
           const SizedBox(height: DsSpacing.xxl),
           Text(l.chBadges,
               style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
@@ -265,78 +255,33 @@ class _StatTile extends StatelessWidget {
   }
 }
 
-class _OfferCard extends ConsumerWidget {
-  const _OfferCard({required this.type});
-  final ChallengeType type;
+/// Pick a length and what counts as side spending, then start today.
+class _StartCard extends ConsumerStatefulWidget {
+  const _StartCard();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final AppLocalizations l = AppLocalizations.of(context);
-    final DsColors c = context.dsColors;
-    final TextTheme t = Theme.of(context).textTheme;
-    return GlassCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Icon(_challengeIcon(type), color: c.brand),
-              const SizedBox(width: DsSpacing.sm),
-              Expanded(
-                child: Text(challengeTitle(l, type),
-                    style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-              ),
-            ],
-          ),
-          const SizedBox(height: DsSpacing.sm),
-          Text(_challengeBody(l, type),
-              style: t.bodySmall?.copyWith(color: c.textMuted, height: 1.4)),
-          const SizedBox(height: DsSpacing.md),
-          DsButton(
-            label: l.chStartIt,
-            icon: Icons.play_arrow_rounded,
-            variant: DsButtonVariant.secondary,
-            onPressed: () => ref.read(challengeActionsProvider).start(type),
-          ),
-        ],
-      ),
-    );
-  }
+  ConsumerState<_StartCard> createState() => _StartCardState();
 }
 
-class _ChallengeCard extends ConsumerWidget {
-  const _ChallengeCard({required this.challenge, required this.progress});
-  final Challenge challenge;
-  final ChallengeProgress progress;
+class _StartCardState extends ConsumerState<_StartCard> {
+  int _days = 7;
 
-  Future<void> _share(BuildContext context, AppLocalizations l) async {
-    final String text = l.chShareText(challengeTitle(l, challenge.type));
-    final String url = ShareQr.appUrl();
-    final NativeShareResult r = await shareNatively(text: text, url: url);
-    if (r != NativeShareResult.unsupported) return;
-    await Clipboard.setData(ClipboardData(text: '$text\n$url'));
-    if (context.mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(l.shareTextCopied)));
-    }
-  }
+  /// Null until the user changes it: follows their saved choice meanwhile.
+  Set<String>? _picked;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final ChallengeProgress p = progress;
-    final ChallengeActions actions = ref.read(challengeActionsProvider);
-
-    final Color color = switch (p.status) {
-      ChallengeStatus.active => c.brand,
-      ChallengeStatus.won => c.income,
-      ChallengeStatus.lost => c.textMuted,
-    };
-    final String detail = challenge.type.monthly
-        ? l.chSaveProgress(p.current, p.target)
-        : l.chProgress(p.current, p.target);
+    final Set<String> picked = _picked ?? ref.watch(sideCategoriesProvider);
+    final List<String> custom =
+        ref.watch(customCategoriesProvider).forType(TransactionType.expense);
+    final List<String> options = <String>{
+      ...SideFree.suggested,
+      ...custom,
+      ...picked,
+    }.toList();
 
     return GlassCard(
       child: Column(
@@ -345,81 +290,450 @@ class _ChallengeCard extends ConsumerWidget {
           Row(
             children: <Widget>[
               Container(
-                width: 40,
-                height: 40,
+                width: 44,
+                height: 44,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.14),
+                  color: c.brand.withValues(alpha: 0.14),
                   borderRadius: DsRadius.brMd,
                 ),
-                child: Icon(
-                    p.status == ChallengeStatus.won
-                        ? Icons.emoji_events_rounded
-                        : _challengeIcon(challenge.type),
-                    color: color),
+                child: Icon(Icons.spa_rounded, color: c.brand),
               ),
               const SizedBox(width: DsSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(challengeTitle(l, challenge.type),
-                        style: t.titleSmall
-                            ?.copyWith(fontWeight: FontWeight.w700)),
-                    Text(
-                      switch (p.status) {
-                        ChallengeStatus.active => l.chDaysLeft(p.daysLeft),
-                        ChallengeStatus.won => l.chWon,
-                        ChallengeStatus.lost => l.chLost,
-                      },
-                      style: t.bodySmall?.copyWith(color: color),
-                    ),
+                    Text(l.sfStartTitle,
+                        style: t.labelMedium?.copyWith(color: c.textMuted)),
+                    Text(l.sfTitle(_days),
+                        style: t.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w800)),
                   ],
                 ),
-              ),
-              IconButton(
-                tooltip: p.status == ChallengeStatus.active
-                    ? l.chGiveUp
-                    : l.delete,
-                icon: Icon(Icons.close_rounded, size: 18, color: c.textFaint),
-                onPressed: () => actions.remove(challenge.id),
               ),
             ],
           ),
           const SizedBox(height: DsSpacing.md),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(999),
-            child: LinearProgressIndicator(
-              value: p.status == ChallengeStatus.won ? 1 : p.fraction,
-              minHeight: 9,
-              backgroundColor: c.surfaceMuted,
-              valueColor: AlwaysStoppedAnimation<Color>(color),
-            ),
-          ),
+          Text(l.sfHow,
+              style: t.bodySmall?.copyWith(color: c.textMuted, height: 1.5)),
+          const SizedBox(height: DsSpacing.lg),
+          Text(l.sfDuration, style: t.titleSmall),
           const SizedBox(height: DsSpacing.sm),
-          Text(detail, style: t.labelMedium?.copyWith(color: c.textMuted)),
-          if (p.status != ChallengeStatus.active) ...<Widget>[
-            const SizedBox(height: DsSpacing.md),
-            Wrap(
-              spacing: DsSpacing.sm,
-              runSpacing: DsSpacing.sm,
-              children: <Widget>[
-                if (p.status == ChallengeStatus.won)
-                  DsButton(
-                    label: l.chShare,
-                    icon: Icons.ios_share_rounded,
-                    onPressed: () => _share(context, l),
-                  ),
-                DsButton(
-                  label: l.chAgain,
-                  icon: Icons.replay_rounded,
-                  variant: DsButtonVariant.secondary,
-                  onPressed: () => actions.start(challenge.type),
+          Wrap(
+            spacing: DsSpacing.sm,
+            runSpacing: DsSpacing.sm,
+            children: <Widget>[
+              for (final int d in SideFree.durations)
+                ChoiceChip(
+                  label: Text(l.chDays(d)),
+                  selected: _days == d,
+                  onSelected: (_) => setState(() => _days = d),
                 ),
-              ],
-            ),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.xs),
+          Text(l.sfSlipsRule(SideFree.allowedSlips(_days)),
+              style: t.labelSmall?.copyWith(color: c.textFaint)),
+          const SizedBox(height: DsSpacing.lg),
+          Text(l.sfWhatCounts, style: t.titleSmall),
+          Text(l.sfWhatCountsHint,
+              style: t.labelSmall?.copyWith(color: c.textFaint)),
+          const SizedBox(height: DsSpacing.sm),
+          Wrap(
+            spacing: DsSpacing.sm,
+            runSpacing: DsSpacing.sm,
+            children: <Widget>[
+              for (final String cat in options)
+                FilterChip(
+                  label: Text(_catLabel(context, cat)),
+                  selected: picked.contains(cat),
+                  onSelected: (bool on) => setState(() {
+                    final Set<String> next = Set<String>.of(picked);
+                    on ? next.add(cat) : next.remove(cat);
+                    _picked = next;
+                  }),
+                ),
+            ],
+          ),
+          if (picked.isEmpty) ...<Widget>[
+            const SizedBox(height: DsSpacing.xs),
+            Text(l.sfPickOne, style: t.bodySmall?.copyWith(color: c.expense)),
           ],
+          const SizedBox(height: DsSpacing.lg),
+          DsButton(
+            label: l.sfStart,
+            icon: Icons.play_arrow_rounded,
+            expand: true,
+            onPressed: picked.isEmpty
+                ? null
+                : () => ref.read(challengeActionsProvider).start(_days, picked),
+          ),
         ],
       ),
+    );
+  }
+}
+
+/// The running challenge: its days, today's state and what's left.
+class _ActiveCard extends ConsumerWidget {
+  const _ActiveCard({required this.challenge, required this.progress});
+  final Challenge challenge;
+  final ChallengeProgress progress;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final ChallengeProgress p = progress;
+    final int dayIndex = p.days - p.daysLeft + 1;
+    final bool slipToday = p.marks.length >= dayIndex &&
+        p.marks[dayIndex - 1] == DayMark.slip;
+
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: c.brand.withValues(alpha: 0.14),
+                  borderRadius: DsRadius.brMd,
+                ),
+                child: Icon(Icons.local_fire_department_rounded,
+                    color: c.brand),
+              ),
+              const SizedBox(width: DsSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(l.sfTitle(challenge.days),
+                        style: t.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w800)),
+                    Text(
+                        '${l.sfDayOf(dayIndex, p.days)} · ${l.chDaysLeft(p.daysLeft)}',
+                        style: t.bodySmall?.copyWith(color: c.textMuted)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.lg),
+          DayStrip(marks: p.marks),
+          const SizedBox(height: DsSpacing.lg),
+          _Line(
+            icon: slipToday
+                ? Icons.sentiment_neutral_rounded
+                : Icons.check_circle_rounded,
+            color: slipToday ? c.warning : c.income,
+            text: slipToday ? l.sfTodaySlip : l.sfTodayClean,
+          ),
+          const SizedBox(height: DsSpacing.xs),
+          _Line(
+            icon: Icons.event_available_rounded,
+            color: c.textMuted,
+            text:
+                '${l.sfCleanCount(p.clean, p.days)} · ${l.sfSlipsLeft(p.slipsLeft)}',
+          ),
+          if (p.saved != null) ...<Widget>[
+            const SizedBox(height: DsSpacing.xs),
+            Tooltip(
+              message: l.sfSavedHint,
+              child: _Line(
+                icon: Icons.savings_rounded,
+                color: c.saving,
+                text: l.sfSaved(MoneyFormatter.format(p.saved!)),
+              ),
+            ),
+          ],
+          const SizedBox(height: DsSpacing.md),
+          _CategoryTags(categories: challenge.categories),
+          const SizedBox(height: DsSpacing.lg),
+          Wrap(
+            spacing: DsSpacing.sm,
+            runSpacing: DsSpacing.sm,
+            children: <Widget>[
+              if (p.clean > 0)
+                DsButton(
+                  label: l.sfShareProgress,
+                  icon: Icons.ios_share_rounded,
+                  onPressed: () =>
+                      ChallengeShareSheet.show(context, challenge, p),
+                ),
+              DsButton(
+                label: l.chGiveUp,
+                icon: Icons.close_rounded,
+                variant: DsButtonVariant.ghost,
+                onPressed: () =>
+                    ref.read(challengeActionsProvider).remove(challenge.id),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The latest result: a win to share, or a miss to retry (shorter).
+class _ResultCard extends ConsumerWidget {
+  const _ResultCard({required this.challenge, required this.progress});
+  final Challenge challenge;
+  final ChallengeProgress progress;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final ChallengeProgress p = progress;
+    final bool won = p.status == ChallengeStatus.won;
+    final Color color = won ? c.income : c.textMuted;
+    // After a miss, suggest the next shorter length.
+    final int again = won
+        ? challenge.days
+        : SideFree.durations.lastWhere((int d) => d < challenge.days,
+            orElse: () => challenge.days);
+
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.14),
+                  borderRadius: DsRadius.brMd,
+                ),
+                child: Icon(
+                    won
+                        ? Icons.emoji_events_rounded
+                        : Icons.replay_circle_filled_rounded,
+                    color: won ? const Color(0xFFF59E0B) : color),
+              ),
+              const SizedBox(width: DsSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(won ? l.chWon : l.chLost,
+                        style: t.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: won ? c.income : null)),
+                    Text(l.sfTitle(challenge.days),
+                        style: t.bodySmall?.copyWith(color: c.textMuted)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.md),
+          Text(won ? l.sfWonBody : l.sfLostBody,
+              style: t.bodyMedium?.copyWith(color: c.textMuted)),
+          const SizedBox(height: DsSpacing.md),
+          DayStrip(marks: p.marks),
+          const SizedBox(height: DsSpacing.md),
+          _Line(
+            icon: Icons.event_available_rounded,
+            color: c.textMuted,
+            text: l.sfCleanCount(p.clean, p.days),
+          ),
+          if (won && p.saved != null) ...<Widget>[
+            const SizedBox(height: DsSpacing.xs),
+            _Line(
+              icon: Icons.savings_rounded,
+              color: c.saving,
+              text: l.sfSaved(MoneyFormatter.format(p.saved!)),
+            ),
+          ],
+          const SizedBox(height: DsSpacing.lg),
+          Wrap(
+            spacing: DsSpacing.sm,
+            runSpacing: DsSpacing.sm,
+            children: <Widget>[
+              if (won)
+                DsButton(
+                  label: l.chShare,
+                  icon: Icons.ios_share_rounded,
+                  onPressed: () =>
+                      ChallengeShareSheet.show(context, challenge, p),
+                ),
+              DsButton(
+                label: '${l.chAgain} · ${l.chDays(again)}',
+                icon: Icons.replay_rounded,
+                variant:
+                    won ? DsButtonVariant.secondary : DsButtonVariant.primary,
+                onPressed: () => ref
+                    .read(challengeActionsProvider)
+                    .start(again, challenge.categories),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HistoryRow extends ConsumerWidget {
+  const _HistoryRow({required this.challenge, required this.progress});
+  final Challenge challenge;
+  final ChallengeProgress progress;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final bool won = progress.status == ChallengeStatus.won;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: DsSpacing.xs),
+      child: Row(
+        children: <Widget>[
+          Icon(won ? Icons.emoji_events_rounded : Icons.cancel_outlined,
+              size: 22,
+              color: won ? const Color(0xFFF59E0B) : c.textFaint),
+          const SizedBox(width: DsSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(l.sfTitle(challenge.days), style: t.titleSmall),
+                Text(
+                    '${isoDate(challenge.start)} · ${l.sfCleanCount(progress.clean, progress.days)}',
+                    style: t.bodySmall?.copyWith(color: c.textMuted)),
+              ],
+            ),
+          ),
+          if (won)
+            IconButton(
+              tooltip: l.chShare,
+              icon: Icon(Icons.ios_share_rounded, size: 18, color: c.brand),
+              onPressed: () =>
+                  ChallengeShareSheet.show(context, challenge, progress),
+            ),
+          IconButton(
+            tooltip: l.delete,
+            icon: Icon(Icons.close_rounded, size: 18, color: c.textFaint),
+            onPressed: () =>
+                ref.read(challengeActionsProvider).remove(challenge.id),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// One circle per day: a check when clean, a cross when there was side
+/// spending, a ring for today and the day number for the days ahead.
+class DayStrip extends StatelessWidget {
+  const DayStrip({super.key, required this.marks});
+  final List<DayMark> marks;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final double size = marks.length > 14 ? 26 : 34;
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: <Widget>[
+        for (int i = 0; i < marks.length; i++)
+          Container(
+            width: size,
+            height: size,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: switch (marks[i]) {
+                DayMark.clean => c.income,
+                DayMark.slip => c.expense.withValues(alpha: 0.18),
+                DayMark.today => c.brand.withValues(alpha: 0.12),
+                DayMark.upcoming => c.surfaceMuted,
+              },
+              border: marks[i] == DayMark.today
+                  ? Border.all(color: c.brand, width: 2)
+                  : marks[i] == DayMark.slip
+                      ? Border.all(color: c.expense)
+                      : null,
+            ),
+            child: switch (marks[i]) {
+              DayMark.clean =>
+                Icon(Icons.check_rounded, size: size * 0.55, color: Colors.white),
+              DayMark.slip =>
+                Icon(Icons.close_rounded, size: size * 0.5, color: c.expense),
+              _ => Text('${i + 1}',
+                  style: t.labelSmall?.copyWith(
+                      color: marks[i] == DayMark.today
+                          ? c.brand
+                          : c.textFaint,
+                      fontWeight: FontWeight.w700)),
+            },
+          ),
+      ],
+    );
+  }
+}
+
+class _Line extends StatelessWidget {
+  const _Line({required this.icon, required this.color, required this.text});
+  final IconData icon;
+  final Color color;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Icon(icon, size: 18, color: color),
+        const SizedBox(width: DsSpacing.sm),
+        Expanded(
+          child: Text(text,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: context.dsColors.textPrimary)),
+        ),
+      ],
+    );
+  }
+}
+
+/// What this challenge counts as side spending (read-only).
+class _CategoryTags extends StatelessWidget {
+  const _CategoryTags({required this.categories});
+  final Set<String> categories;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: <Widget>[
+        for (final String cat in categories)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: c.surfaceMuted,
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(color: c.border),
+            ),
+            child: Text(_catLabel(context, cat),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(color: c.textMuted)),
+          ),
+      ],
     );
   }
 }
