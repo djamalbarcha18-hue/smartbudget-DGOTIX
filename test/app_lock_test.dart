@@ -119,5 +119,64 @@ void main() {
       await ctrl.disable();
       expect((await LockStore.load()).enabled, isFalse);
     });
+
+    test('recovery code resets the PIN, keeps data and retires the code',
+        () async {
+      final ProviderContainer pc = containerWith(const LockConfig());
+      final AppLockController ctrl = pc.read(appLockProvider.notifier);
+      final String code = await ctrl.enable('1234');
+      expect(pc.read(appLockProvider).config.hasRecovery, isTrue);
+      ctrl.lock();
+
+      expect(ctrl.checkRecovery('AAAA-AAAA-AAAA'), PinResult.wrong);
+      // Lower-case, spaces: still accepted.
+      final String typed = code.toLowerCase().replaceAll('-', ' ');
+      expect(ctrl.checkRecovery(typed), PinResult.ok);
+      expect(pc.read(appLockProvider).locked, isTrue);
+
+      final String? fresh = await ctrl.resetWithRecovery(typed, '9876');
+      expect(fresh, isNotNull);
+      expect(fresh, isNot(code));
+      // Still locked until the new code has been shown.
+      expect(pc.read(appLockProvider).locked, isTrue);
+      ctrl.finishRecovery();
+      expect(pc.read(appLockProvider).locked, isFalse);
+
+      final LockConfig saved = await LockStore.load();
+      expect(saved.matches('9876'), isTrue);
+      expect(saved.matchesRecovery(code), isFalse);
+      expect(saved.matchesRecovery(fresh!), isTrue);
+    });
+
+    test('wrong recovery codes share the PIN lock-out', () {
+      final ProviderContainer pc = containerWith(
+          const LockConfig().withPin('1234').withRecovery('K7QM-2XPA-9RTD'));
+      final AppLockController ctrl = pc.read(appLockProvider.notifier);
+      for (int i = 0; i < 5; i++) {
+        expect(ctrl.checkRecovery('ZZZZ-ZZZZ-ZZZZ'), PinResult.wrong);
+      }
+      expect(ctrl.checkRecovery('K7QM-2XPA-9RTD'), PinResult.waiting);
+    });
+
+    test('changing the PIN keeps the recovery code', () async {
+      final ProviderContainer pc = containerWith(const LockConfig());
+      final AppLockController ctrl = pc.read(appLockProvider.notifier);
+      final String code = await ctrl.enable('1234');
+      await ctrl.setPin('5555');
+      expect(pc.read(appLockProvider).config.matchesRecovery(code), isTrue);
+      final String next = await ctrl.newRecoveryCode();
+      expect(pc.read(appLockProvider).config.matchesRecovery(code), isFalse);
+      expect(pc.read(appLockProvider).config.matchesRecovery(next), isTrue);
+    });
+  });
+
+  group('RecoveryCode', () {
+    test('12 unambiguous characters in groups of 4', () {
+      final String code = RecoveryCode.generate(Random(7));
+      expect(code, matches(RegExp(r'^[2-9A-HJ-NP-Z]{4}(-[2-9A-HJ-NP-Z]{4}){2}$')));
+      expect(RecoveryCode.isWellFormed(RecoveryCode.normalize(code)), isTrue);
+      expect(RecoveryCode.isWellFormed('K7QM2XPA9RT0'), isFalse);
+      expect(RecoveryCode.isWellFormed('K7QM2XPA'), isFalse);
+    });
   });
 }

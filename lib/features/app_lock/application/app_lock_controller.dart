@@ -68,6 +68,36 @@ class AppLockController extends Notifier<AppLockState> {
       state = state.copyWith(locked: false, failures: 0, clearRetry: true);
       return PinResult.ok;
     }
+    _fail();
+    return PinResult.wrong;
+  }
+
+  /// "Forgot PIN": checks the recovery code without unlocking yet (a new PIN
+  /// comes first). Wrong codes count toward the same lock-out as PINs.
+  PinResult checkRecovery(String code) {
+    if (waitRemaining > Duration.zero) return PinResult.waiting;
+    if (state.config.matchesRecovery(code)) {
+      state = state.copyWith(failures: 0, clearRetry: true);
+      return PinResult.ok;
+    }
+    _fail();
+    return PinResult.wrong;
+  }
+
+  /// Sets [newPin] after a valid recovery [code] and returns the NEW recovery
+  /// code (the used one is retired). The app stays locked until
+  /// [finishRecovery], so the new code can be shown first.
+  Future<String?> resetWithRecovery(String code, String newPin) async {
+    if (!state.config.matchesRecovery(code)) return null;
+    final String fresh = RecoveryCode.generate();
+    await _save(state.config.withPin(newPin).withRecovery(fresh),
+        locked: true);
+    return fresh;
+  }
+
+  void finishRecovery() => state = state.copyWith(locked: false);
+
+  void _fail() {
     final int f = state.failures + 1;
     final Duration wait = lockoutAfter(f);
     state = state.copyWith(
@@ -75,7 +105,6 @@ class AppLockController extends Notifier<AppLockState> {
       retryAt: wait == Duration.zero ? null : AppClock.now().add(wait),
       clearRetry: wait == Duration.zero,
     );
-    return PinResult.wrong;
   }
 
   Future<bool> unlockWithDevice() async {
@@ -104,7 +133,23 @@ class AppLockController extends Notifier<AppLockState> {
 
   bool checkPin(String pin) => state.config.matches(pin);
 
+  /// Changes the PIN (the recovery code stays valid).
   Future<void> setPin(String pin) => _save(state.config.withPin(pin));
+
+  /// Turns the lock on with [pin] and returns its recovery code, which is
+  /// shown once and never stored in clear.
+  Future<String> enable(String pin) async {
+    final String code = RecoveryCode.generate();
+    await _save(state.config.withPin(pin).withRecovery(code));
+    return code;
+  }
+
+  /// Replaces the recovery code (the old one stops working).
+  Future<String> newRecoveryCode() async {
+    final String code = RecoveryCode.generate();
+    await _save(state.config.withRecovery(code));
+    return code;
+  }
 
   Future<void> disable() => _save(const LockConfig());
 
@@ -127,8 +172,8 @@ class AppLockController extends Notifier<AppLockState> {
     reloadApp();
   }
 
-  Future<void> _save(LockConfig c) async {
+  Future<void> _save(LockConfig c, {bool locked = false}) async {
     await LockStore.save(c);
-    state = state.copyWith(config: c, locked: false);
+    state = state.copyWith(config: c, locked: locked);
   }
 }
