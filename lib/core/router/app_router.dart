@@ -43,6 +43,9 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 /// Public auth routes (no shell, no guard-away).
 const Set<String> _authRoutes = <String>{'/login', '/signup', '/forgot'};
 
+/// Open to everyone, signed in or not (the public policy links).
+const Set<String> _publicRoutes = <String>{'/privacy', '/terms'};
+
 /// Builds the router with an auth guard driven by [authControllerProvider].
 ///
 /// - unknown        → splash ('/')
@@ -60,6 +63,7 @@ GoRouter buildRouter(Ref ref) {
     redirect: (BuildContext context, GoRouterState state) {
       final AuthStatus status = ref.read(authControllerProvider).status;
       final String loc = state.matchedLocation;
+      if (_publicRoutes.contains(loc)) return null;
       final bool onAuth = _authRoutes.contains(loc);
       final bool onSplash = loc == '/';
 
@@ -74,6 +78,16 @@ GoRouter buildRouter(Ref ref) {
       GoRoute(path: '/login', builder: (_, __) => const LoginPage()),
       GoRoute(path: '/signup', builder: (_, __) => const SignupPage()),
       GoRoute(path: '/forgot', builder: (_, __) => const ForgotPasswordPage()),
+      GoRoute(
+        path: '/privacy',
+        builder: (_, GoRouterState s) => PublicLegalPage(
+            doc: LegalDoc.privacy, lang: s.uri.queryParameters['lang']),
+      ),
+      GoRoute(
+        path: '/terms',
+        builder: (_, GoRouterState s) => PublicLegalPage(
+            doc: LegalDoc.terms, lang: s.uri.queryParameters['lang']),
+      ),
       ShellRoute(
         builder: (BuildContext context, GoRouterState state, Widget child) =>
             AppShell(child: RecurringAutoPoster(child: child)),

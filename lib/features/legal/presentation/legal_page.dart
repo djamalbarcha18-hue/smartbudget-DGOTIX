@@ -10,9 +10,12 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 /// Renders a legal document (Privacy Policy or Terms of Service) from the
 /// shared, bilingual [LegalContent]. Pure presentation — no business logic.
 class LegalPage extends StatelessWidget {
-  const LegalPage({super.key, required this.doc});
+  const LegalPage({super.key, required this.doc, this.showBack = true});
 
   final LegalDoc doc;
+
+  /// Off on the public pages (no app behind them to go back to).
+  final bool showBack;
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +36,10 @@ class LegalPage extends StatelessWidget {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  const DsBackButton(fallbackRoute: '/support'),
-                  const SizedBox(width: DsSpacing.xs),
+                  if (showBack) ...<Widget>[
+                    const DsBackButton(fallbackRoute: '/support'),
+                    const SizedBox(width: DsSpacing.xs),
+                  ],
                   Expanded(
                     child: Text(title,
                         style: Theme.of(context).textTheme.headlineSmall),
@@ -73,6 +78,33 @@ class LegalPage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// The policy on its own public page (`/#/privacy`, `/#/terms`), readable
+/// without an account: the address given to Google Play and the App Store.
+/// `?lang=en` or `?lang=ar` picks the language.
+class PublicLegalPage extends StatelessWidget {
+  const PublicLegalPage({super.key, required this.doc, this.lang});
+
+  final LegalDoc doc;
+  final String? lang;
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget page = Scaffold(
+      backgroundColor: context.dsColors.bgPage,
+      body: SafeArea(child: LegalPage(doc: doc, showBack: false)),
+    );
+    if (lang != 'ar' && lang != 'en') return page;
+    return Localizations.override(
+      context: context,
+      locale: Locale(lang!),
+      child: Directionality(
+        textDirection: lang == 'ar' ? TextDirection.rtl : TextDirection.ltr,
+        child: page,
       ),
     );
   }

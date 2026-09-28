@@ -63,8 +63,8 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Where your data lives',
-          'By default everything is saved locally in your browser on your '
-              'device — no account is required and no financial data leaves your '
+          'By default everything is saved locally on your device (in the app, '
+              'or in your browser for the web version) — no account is required and no financial data leaves your '
               'device. If cloud sync is enabled and you sign in and choose to '
               'back up, a copy of your data is stored in the operator\'s '
               'Supabase database, tied to your account and protected by '
@@ -125,6 +125,7 @@ abstract final class LegalContent {
         const LegalSection(
           'Your controls',
           'You can export a full backup at any time, remove your data by '
+              'deleting your account (see below), uninstalling the app or '
               'clearing this site\'s storage in your browser, and — when cloud '
               'sync is enabled — sign out or overwrite your cloud backup. You can '
               'cancel a paid subscription at any time (see the Terms).',
@@ -169,7 +170,8 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'أين تُحفظ بياناتك',
-          'افتراضياً يُحفظ كل شيء محلياً في متصفحك على جهازك — لا حاجة لحساب '
+          'افتراضياً يُحفظ كل شيء محلياً على جهازك (في التطبيق، أو في متصفحك '
+              'لنسخة الويب) — لا حاجة لحساب '
               'ولا تغادر أي بيانات مالية جهازك. وإذا فُعّلت المزامنة السحابية '
               'وسجّلت الدخول واخترت النسخ الاحتياطي، تُخزَّن نسخة من بياناتك في '
               'قاعدة بيانات Supabase الخاصة بالمشغّل، مرتبطة بحسابك ومحميّة بأمان '
@@ -222,8 +224,9 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'خياراتك وتحكّمك',
-          'يمكنك تصدير نسخة احتياطية كاملة في أي وقت، وإزالة بياناتك بمسح تخزين '
-              'هذا الموقع من متصفحك، و— عند تفعيل المزامنة السحابية — تسجيل '
+          'يمكنك تصدير نسخة احتياطية كاملة في أي وقت، وإزالة بياناتك بحذف حسابك '
+              '(انظر أدناه) أو إلغاء تثبيت التطبيق أو مسح تخزين هذا الموقع من '
+              'متصفحك، و— عند تفعيل المزامنة السحابية — تسجيل '
               'الخروج أو استبدال نسختك السحابية. ويمكنك إلغاء الاشتراك المدفوع في '
               'أي وقت (انظر الشروط).',
         ),
