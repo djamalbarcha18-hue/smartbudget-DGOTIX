@@ -19,7 +19,7 @@ class LegalSection {
 /// have it reviewed for their jurisdiction before relying on it.
 abstract final class LegalContent {
   /// Bump when the wording changes materially (shown as "last updated").
-  static const String lastUpdated = '2026-09-24';
+  static const String lastUpdated = '2026-09-28';
 
   static String get _app => AppConfig.appName;
   static String get _brand => AppConfig.parentBrand;
@@ -129,6 +129,17 @@ abstract final class LegalContent {
               'sync is enabled — sign out or overwrite your cloud backup. You can '
               'cancel a paid subscription at any time (see the Terms).',
         ),
+        const LegalSection(
+          'Deleting your account and data',
+          'In the app (Android, iPhone or web), open Settings, then Account, '
+              'then "Delete my account". This permanently deletes your account '
+              'and everything stored for it on our servers (profile, cloud '
+              'backup, subscription record and usage counts), and erases your '
+              'data on that device. If you no longer have the app installed, '
+              'sign in on the web version and do the same. Cancel any paid '
+              'subscription first. Deletion cannot be undone, so export a '
+              'backup beforehand if you may want your data later.',
+        ),
         LegalSection(
           'Changes and contact',
           'We may update this policy; the date shown above reflects the latest '
@@ -215,6 +226,16 @@ abstract final class LegalContent {
               'هذا الموقع من متصفحك، و— عند تفعيل المزامنة السحابية — تسجيل '
               'الخروج أو استبدال نسختك السحابية. ويمكنك إلغاء الاشتراك المدفوع في '
               'أي وقت (انظر الشروط).',
+        ),
+        const LegalSection(
+          'حذف حسابك وبياناتك',
+          'من داخل التطبيق (أندرويد أو آيفون أو الويب) افتح الإعدادات ثم «الحساب» '
+              'ثم «حذف حسابي». يحذف ذلك نهائياً حسابك وكل ما خُزِّن له على خوادمنا '
+              '(الملف الشخصي والنسخة السحابية وسجلّ الاشتراك وعدّادات الاستخدام)، '
+              'ويمسح بياناتك على ذلك الجهاز. وإن لم يعد التطبيق مثبّتاً لديك، '
+              'سجّل الدخول في نسخة الويب وافعل الشيء نفسه. ألغِ أي اشتراك مدفوع '
+              'أولاً. لا يمكن التراجع عن الحذف، فصدّر نسخة احتياطية قبله إن كنت '
+              'قد تحتاج بياناتك لاحقاً.',
         ),
         LegalSection(
           'التحديثات والتواصل',

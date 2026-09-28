@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -34,6 +35,7 @@ import 'package:smartbudget/features/exchange_rates/application/rates_controller
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
+import 'package:smartbudget/features/account/presentation/delete_account_section.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_section.dart';
 import 'package:smartbudget/features/install/presentation/install_widgets.dart';
 import 'package:smartbudget/features/settings/presentation/base_currency_change.dart';
@@ -144,13 +146,15 @@ class SettingsPage extends ConsumerWidget {
               ),
               const SizedBox(height: DsSpacing.lg),
 
-              // Install on the home screen (PWA).
-              _SettingsSection(
-                icon: Icons.install_mobile_rounded,
-                title: l.installSettingsTitle,
-                child: const InstallSection(),
-              ),
-              const SizedBox(height: DsSpacing.lg),
+              // Install on the home screen (PWA) — the web app only.
+              if (kIsWeb) ...<Widget>[
+                _SettingsSection(
+                  icon: Icons.install_mobile_rounded,
+                  title: l.installSettingsTitle,
+                  child: const InstallSection(),
+                ),
+                const SizedBox(height: DsSpacing.lg),
+              ],
 
               // World time sync + time zone.
               _SettingsSection(
@@ -202,13 +206,16 @@ class SettingsPage extends ConsumerWidget {
                 const SizedBox(height: DsSpacing.lg),
               ],
 
-              // Developer — sample data for testing the template.
-              _SettingsSection(
-                icon: Icons.science_outlined,
-                title: l.settingsDeveloper,
-                child: const _DeveloperSection(),
-              ),
-              const SizedBox(height: DsSpacing.lg),
+              // Developer — sample data for testing the template (never in
+              // the store app).
+              if (!AppEnv.storeBuild) ...<Widget>[
+                _SettingsSection(
+                  icon: Icons.science_outlined,
+                  title: l.settingsDeveloper,
+                  child: const _DeveloperSection(),
+                ),
+                const SizedBox(height: DsSpacing.lg),
+              ],
 
               // Share the platform (social channels, progress card, QR code).
               _SettingsSection(
@@ -229,6 +236,14 @@ class SettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: DsSpacing.lg),
+
+              // Account — delete it and its data (store requirement).
+              _SettingsSection(
+                icon: Icons.manage_accounts_outlined,
+                title: l.settingsAccount,
+                child: const DeleteAccountSection(),
               ),
               const SizedBox(height: DsSpacing.lg),
 

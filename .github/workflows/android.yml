@@ -1,0 +1,88 @@
+name: Android build
+
+# Builds the Google Play version of SmartBudget (STORE_BUILD: no outside
+# payment, no developer tools):
+#   - app-release.aab  -> upload to Google Play Console
+#   - app-release.apk  -> install directly on a phone to test
+# Both are attached to the run as the "smartbudget-android" artifact.
+#
+# Signing: add these repository secrets (Settings > Secrets and variables >
+# Actions). Without them the build is signed with a debug key: fine to install
+# for testing, but Google Play will not accept it.
+#   ANDROID_KEYSTORE_BASE64   the upload keystore (.jks), base64-encoded
+#   ANDROID_KEYSTORE_PASSWORD
+#   ANDROID_KEY_ALIAS
+#   ANDROID_KEY_PASSWORD
+# Optional (online features), same as the web build:
+#   SUPABASE_URL, SUPABASE_ANON_KEY
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    name: Build Android (Google Play)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::No ANDROID_KEYSTORE_BASE64 secret: signed with a debug key (installable for testing, not accepted by Google Play)."
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > android/upload-keystore.jks
+          {
+            echo "storeFile=upload-keystore.jks"
+            echo "storePassword=$KEYSTORE_PASSWORD"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > android/key.properties
+
+      - name: Build app bundle and APK
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          DEFINES="--dart-define=STORE_BUILD=true"
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
+            DEFINES="$DEFINES --dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
+          fi
+          flutter build appbundle --release $DEFINES
+          flutter build apk --release $DEFINES
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartbudget-android
+          path: |
+            build/app/outputs/bundle/release/app-release.aab
+            build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+
+      - name: Remove signing files
+        if: always()
+        run: rm -f android/upload-keystore.jks android/key.properties

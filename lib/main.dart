@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:smartbudget/app.dart';
+import 'package:smartbudget/core/app_restart.dart';
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/l10n/latin_digits.dart';
 import 'package:smartbudget/core/storage/legacy_cleanup.dart';
@@ -28,6 +29,14 @@ Future<void> main() async {
     );
   }
 
+  AppRestart.register(_start);
+  await _start();
+}
+
+/// Everything that must run again when the app restarts after its local data
+/// was erased (mobile has no page reload): a fresh [ProviderScope] (new key),
+/// the lock read again.
+Future<void> _start() async {
   // Correct "now" against world time before the first screen, so the current
   // month and due dates are right even when the device clock is wrong. Capped
   // so a slow or offline start is never held up (the clock then falls back to
@@ -48,6 +57,7 @@ Future<void> main() async {
 
   runApp(
     ProviderScope(
+      key: UniqueKey(),
       overrides: <Override>[
         initialLockConfigProvider.overrideWithValue(lock),
       ],

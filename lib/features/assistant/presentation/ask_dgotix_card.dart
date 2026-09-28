@@ -16,6 +16,7 @@ import 'package:smartbudget/features/ai/domain/ai_registry.dart';
 import 'package:smartbudget/features/assistant/application/ai_backend.dart';
 import 'package:smartbudget/features/assistant/application/ai_usage_controller.dart';
 import 'package:smartbudget/features/assistant/application/ask_ai_controller.dart';
+import 'package:smartbudget/features/assistant/data/ai_report_service.dart';
 import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/feature_gate.dart';
@@ -132,7 +133,6 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
             ],
           ),
           const SizedBox(height: DsSpacing.sm),
-
           if (msgs.isEmpty && !_busy && _error == null) ...<Widget>[
             Text(l.askAiIntro,
                 style: t.bodySmall?.copyWith(color: c.textMuted)),
@@ -151,7 +151,6 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
               _Bubble(msg: m),
               const SizedBox(height: DsSpacing.sm),
             ],
-
           if (_busy) ...<Widget>[
             const SizedBox(height: DsSpacing.xs),
             Row(
@@ -159,8 +158,8 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
                 SizedBox(
                   width: 14,
                   height: 14,
-                  child: CircularProgressIndicator(
-                      strokeWidth: 2, color: c.brand),
+                  child:
+                      CircularProgressIndicator(strokeWidth: 2, color: c.brand),
                 ),
                 const SizedBox(width: DsSpacing.sm),
                 Text(l.askAiThinking,
@@ -168,7 +167,6 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
               ],
             ),
           ],
-
           if (_error != null) ...<Widget>[
             const SizedBox(height: DsSpacing.xs),
             Row(
@@ -190,7 +188,6 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
               ),
             ],
           ],
-
           if (_error == null) _QuotaNudge(gate: gate),
           const SizedBox(height: DsSpacing.md),
           Row(
@@ -318,8 +315,8 @@ class _UpgradeButton extends StatelessWidget {
         borderRadius: DsRadius.brPill,
         onTap: () => context.go('/plans'),
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: DsSpacing.md, vertical: 6),
+          padding:
+              const EdgeInsets.symmetric(horizontal: DsSpacing.md, vertical: 6),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -327,8 +324,10 @@ class _UpgradeButton extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 label,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: c.onBrand, fontWeight: FontWeight.w700),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(color: c.onBrand, fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -400,21 +399,40 @@ class _SendButton extends StatelessWidget {
   }
 }
 
-class _Bubble extends StatelessWidget {
+class _Bubble extends ConsumerWidget {
   const _Bubble({required this.msg});
   final ChatMessage msg;
 
+  Future<void> _report(BuildContext context, WidgetRef ref) async {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final ScaffoldMessengerState? messenger =
+        ScaffoldMessenger.maybeOf(context);
+    final (AiReportReason, String)? r =
+        await showDialog<(AiReportReason, String)>(
+      context: context,
+      builder: (_) => const _ReportDialog(),
+    );
+    if (r == null) return;
+    final bool sent = await ref
+        .read(aiReportServiceProvider)
+        .send(reason: r.$1, answer: msg.text, note: r.$2);
+    ref.read(chatMessagesProvider.notifier).remove(msg);
+    messenger?.showSnackBar(
+        SnackBar(content: Text(sent ? l.aiReportThanks : l.aiReportFailed)));
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final bool user = msg.fromUser;
     return Align(
-      alignment:
-          user ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
+      alignment: user
+          ? AlignmentDirectional.centerEnd
+          : AlignmentDirectional.centerStart,
       child: ConstrainedBox(
-        constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width * 0.82),
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.82),
         child: Container(
           padding: const EdgeInsets.symmetric(
               horizontal: DsSpacing.md, vertical: DsSpacing.sm),
@@ -435,28 +453,112 @@ class _Bubble extends StatelessWidget {
                   children: <Widget>[
                     // Formatted answer (bold, bullets) instead of raw symbols.
                     MarkdownText(msg.text),
-                    Align(
-                      alignment: AlignmentDirectional.centerEnd,
-                      child: IconButton(
-                        visualDensity: VisualDensity.compact,
-                        tooltip: AppLocalizations.of(context).askAiCopy,
-                        icon: Icon(Icons.copy_rounded,
-                            size: 16, color: c.textFaint),
-                        onPressed: () async {
-                          final ScaffoldMessengerState? m =
-                              ScaffoldMessenger.maybeOf(context);
-                          final String done =
-                              AppLocalizations.of(context).askAiCopied;
-                          await Clipboard.setData(
-                              ClipboardData(text: msg.text));
-                          m?.showSnackBar(SnackBar(content: Text(done)));
-                        },
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        IconButton(
+                          visualDensity: VisualDensity.compact,
+                          tooltip: AppLocalizations.of(context).aiReport,
+                          icon: Icon(Icons.flag_outlined,
+                              size: 16, color: c.textFaint),
+                          onPressed: () => _report(context, ref),
+                        ),
+                        IconButton(
+                          visualDensity: VisualDensity.compact,
+                          tooltip: AppLocalizations.of(context).askAiCopy,
+                          icon: Icon(Icons.copy_rounded,
+                              size: 16, color: c.textFaint),
+                          onPressed: () async {
+                            final ScaffoldMessengerState? m =
+                                ScaffoldMessenger.maybeOf(context);
+                            final String done =
+                                AppLocalizations.of(context).askAiCopied;
+                            await Clipboard.setData(
+                                ClipboardData(text: msg.text));
+                            m?.showSnackBar(SnackBar(content: Text(done)));
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),
         ),
       ),
+    );
+  }
+}
+
+/// Pick why the answer is a problem (and optionally say more).
+class _ReportDialog extends StatefulWidget {
+  const _ReportDialog();
+
+  @override
+  State<_ReportDialog> createState() => _ReportDialogState();
+}
+
+class _ReportDialogState extends State<_ReportDialog> {
+  AiReportReason? _reason;
+  final TextEditingController _note = TextEditingController();
+
+  @override
+  void dispose() {
+    _note.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    String label(AiReportReason r) => switch (r) {
+          AiReportReason.inaccurate => l.aiReportInaccurate,
+          AiReportReason.harmful => l.aiReportHarmful,
+          AiReportReason.other => l.aiReportOther,
+        };
+    return AlertDialog(
+      backgroundColor: c.bgElevated,
+      title: Text(l.aiReport),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(l.aiReportWhy, style: t.bodyMedium),
+          const SizedBox(height: DsSpacing.sm),
+          Wrap(
+            spacing: DsSpacing.sm,
+            runSpacing: DsSpacing.sm,
+            children: <Widget>[
+              for (final AiReportReason r in AiReportReason.values)
+                ChoiceChip(
+                  label: Text(label(r)),
+                  selected: _reason == r,
+                  onSelected: (_) => setState(() => _reason = r),
+                ),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.md),
+          TextField(
+            controller: _note,
+            maxLength: 500,
+            maxLines: 3,
+            minLines: 1,
+            decoration: InputDecoration(labelText: l.aiReportNote),
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l.cancel),
+        ),
+        FilledButton(
+          onPressed: _reason == null
+              ? null
+              : () => Navigator.of(context).pop((_reason!, _note.text)),
+          child: Text(l.aiReportSend),
+        ),
+      ],
     );
   }
 }

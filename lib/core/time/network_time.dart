@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:http/http.dart' as http;
 
+import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/core/time/http_date.dart';
 
@@ -12,7 +13,16 @@ import 'package:smartbudget/core/time/http_date.dart';
 class NetworkTime {
   NetworkTime({http.Client? client, Uri? origin})
       : _client = client ?? http.Client(),
-        _origin = origin ?? Uri.base;
+        _origin = origin ?? _defaultOrigin();
+
+  /// The site the app is served from; in the mobile app (no web address) the
+  /// public deployment, which answers the same way.
+  static Uri _defaultOrigin() {
+    final Uri base = Uri.base;
+    return base.scheme == 'http' || base.scheme == 'https'
+        ? base
+        : Uri.parse(AppConfig.fallbackUrl);
+  }
 
   final http.Client _client;
   final Uri _origin;

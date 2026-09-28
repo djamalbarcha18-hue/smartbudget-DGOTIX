@@ -183,6 +183,15 @@ class ChatMessagesController extends Notifier<List<ChatMessage>> {
     _persist();
   }
 
+  /// Drops one message (a reported answer is hidden this way).
+  void remove(ChatMessage m) {
+    state = <ChatMessage>[
+      for (final ChatMessage x in state)
+        if (!identical(x, m)) x,
+    ];
+    _persist();
+  }
+
   Future<void> _persist() async {
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();

@@ -54,6 +54,15 @@ abstract final class AppEnv {
   /// it off when paid plans go live by building with
   ///   --dart-define=BETA_ALL_ACCESS=false
   /// (the server mirror is the BETA_ALL_ACCESS Edge Function secret).
+  ///
+  /// Always on in a store build: Google Play and the App Store only allow
+  /// their own billing for digital subscriptions, so the store app never
+  /// offers the web checkout.
   static const bool betaAllAccess =
-      bool.fromEnvironment('BETA_ALL_ACCESS', defaultValue: true);
+      storeBuild || bool.fromEnvironment('BETA_ALL_ACCESS', defaultValue: true);
+
+  /// The Google Play / App Store build (`--dart-define=STORE_BUILD=true`):
+  /// no outside payment, no developer tools.
+  static const bool storeBuild =
+      bool.fromEnvironment('STORE_BUILD', defaultValue: false);
 }

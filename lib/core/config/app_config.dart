@@ -8,7 +8,7 @@ abstract final class AppConfig {
   static const String tagline = 'Plan · Track · Grow';
 
   /// App version (kept in sync with pubspec).
-  static const String version = '0.1.0';
+  static const String version = '1.0.0';
 
   /// Copyright year shown in the footer.
   static const int copyrightYear = 2026;
