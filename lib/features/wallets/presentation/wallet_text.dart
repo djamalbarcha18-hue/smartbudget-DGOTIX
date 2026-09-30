@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -22,7 +23,7 @@ IconData walletIcon(Wallet w) => w.isGeneral
         WalletType.bank => Icons.account_balance_outlined,
         WalletType.card => Icons.credit_card_rounded,
         WalletType.ewallet => Icons.phone_iphone_rounded,
-        WalletType.savings => Icons.savings_outlined,
+        WalletType.savings => SbIcons.moneyBox,
         WalletType.other => Icons.wallet_outlined,
       };
 

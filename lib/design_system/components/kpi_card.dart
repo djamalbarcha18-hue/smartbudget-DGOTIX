@@ -55,7 +55,7 @@ class KpiCard extends StatelessWidget {
   final String? value;
   final IconData? icon;
 
-  /// A custom glyph (e.g. SavingsJarGlyph) rendered inside the icon chip in
+  /// A custom glyph (e.g. `Icon(SbIcons.moneyBox)`) rendered inside the icon chip in
   /// place of a Material [icon]. Its colour/size come from the chip's IconTheme.
   final Widget? iconChild;
   final KpiDelta? delta;

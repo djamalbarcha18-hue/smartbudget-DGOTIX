@@ -99,3 +99,9 @@ flutter:
     # Bundled Arabic font for offline PDF export (Tajawal, OFL — matches the
     # app's Arabic typography). See docs/THIRD_PARTY_LICENSES.md.
     - assets/fonts/
+
+  # SmartBudget's own icons (money box instead of the pig-shaped "savings").
+  fonts:
+    - family: SbIcons
+      fonts:
+        - asset: assets/fonts/icons/SbIcons.ttf

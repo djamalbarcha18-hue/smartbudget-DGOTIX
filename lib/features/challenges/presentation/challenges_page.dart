@@ -7,6 +7,7 @@ import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -38,7 +39,7 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
         ),
       BadgeKind.cleanMonth =>
         (Icons.whatshot_rounded, l.bCleanMonth, l.bCleanMonthHint),
-      BadgeKind.saver20 => (Icons.savings_rounded, l.bSaver, l.bSaverHint),
+      BadgeKind.saver20 => (SbIcons.moneyBoxFilled, l.bSaver, l.bSaverHint),
       BadgeKind.budgetKept =>
         (Icons.verified_rounded, l.bBudgetKept, l.bBudgetKeptHint),
       BadgeKind.goalReached =>
@@ -444,7 +445,7 @@ class _ActiveCard extends ConsumerWidget {
             Tooltip(
               message: l.sfSavedHint,
               child: _Line(
-                icon: Icons.savings_rounded,
+                icon: SbIcons.moneyBoxFilled,
                 color: c.saving,
                 text: l.sfSaved(MoneyFormatter.format(p.saved!)),
               ),
@@ -548,7 +549,7 @@ class _ResultCard extends ConsumerWidget {
           if (won && p.saved != null) ...<Widget>[
             const SizedBox(height: DsSpacing.xs),
             _Line(
-              icon: Icons.savings_rounded,
+              icon: SbIcons.moneyBoxFilled,
               color: c.saving,
               text: l.sfSaved(MoneyFormatter.format(p.saved!)),
             ),

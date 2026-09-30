@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:smartbudget/core/config/app_config.dart';
+import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/features/financial_health/domain/health_engine.dart';
 import 'package:smartbudget/features/share/domain/share_highlight.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -57,7 +58,7 @@ class ShareProgressCard extends StatelessWidget {
           l.shareCardHealthLabel(statusLabel(l, h.healthStatus!)),
         ),
       HighlightKind.savings => (
-          Icons.savings_rounded,
+          SbIcons.moneyBoxFilled,
           '${h.savingsPct}',
           '%',
           l.shareCardSavingsLabel,

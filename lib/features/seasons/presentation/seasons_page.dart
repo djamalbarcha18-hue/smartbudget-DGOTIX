@@ -8,6 +8,7 @@ import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/amount_dialog.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -153,7 +154,7 @@ class _SuggestionCard extends ConsumerWidget {
           const SizedBox(height: DsSpacing.md),
           DsButton(
             label: l.seasonPlanIt,
-            icon: Icons.savings_outlined,
+            icon: SbIcons.moneyBox,
             variant: DsButtonVariant.secondary,
             onPressed: () =>
                 SeasonEditorSheet.show(context, kind: kind, window: w),

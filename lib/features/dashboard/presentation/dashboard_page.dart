@@ -10,11 +10,11 @@ import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/donut_chart.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/monthly_bars_chart.dart';
+import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/design_system/tokens/ds_chart_palette.dart';
 import 'package:smartbudget/design_system/components/ds_section_header.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
-import 'package:smartbudget/design_system/components/savings_jar_icon.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -83,7 +83,7 @@ class DashboardPage extends ConsumerWidget {
       KpiCard(
         label: l.kpiNetProfit,
         value: hasData ? MoneyFormatter.format(summary.net) : null,
-        iconChild: const SavingsJarGlyph(),
+        iconChild: const Icon(SbIcons.moneyBox),
         delta: hasData
             ? _pctDelta(context, netChange, positiveWhenUp: true)
             : null,
@@ -112,7 +112,7 @@ class DashboardPage extends ConsumerWidget {
       KpiCard(
         label: l.kpiSavingsRate,
         value: hasData ? MoneyFormatter.percent(summary.savingsRate) : null,
-        iconChild: const SavingsJarGlyph(),
+        iconChild: const Icon(SbIcons.moneyBox),
         delta: hasData
             ? _pointsDelta(
                 context, summary.savingsRate, prev.savingsRate, hasPrev)

@@ -6,7 +6,7 @@ import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
-import 'package:smartbudget/design_system/components/savings_jar_icon.dart';
+import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -108,8 +108,8 @@ class ReportsPage extends ConsumerWidget {
             children: <Widget>[
               _kpi(l.kpiTotalIncome, hasData ? MoneyFormatter.format(report.summary.income) : null, c.income, Icons.south_west_outlined),
               _kpi(l.kpiTotalExpenses, hasData ? MoneyFormatter.format(report.summary.expense) : null, c.expense, Icons.north_east_outlined),
-              _kpi(l.kpiNetProfit, hasData ? MoneyFormatter.format(report.summary.net) : null, c.net, null, iconChild: const SavingsJarGlyph()),
-              _kpi(l.kpiSavingsRate, hasData ? MoneyFormatter.percent(report.summary.savingsRate) : null, c.saving, null, iconChild: const SavingsJarGlyph()),
+              _kpi(l.kpiNetProfit, hasData ? MoneyFormatter.format(report.summary.net) : null, c.net, null, iconChild: const Icon(SbIcons.moneyBox)),
+              _kpi(l.kpiSavingsRate, hasData ? MoneyFormatter.percent(report.summary.savingsRate) : null, c.saving, null, iconChild: const Icon(SbIcons.moneyBox)),
             ],
           ),
           const SizedBox(height: DsSpacing.xxl),
