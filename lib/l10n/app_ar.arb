@@ -267,11 +267,12 @@
   "navSettings": "الإعدادات",
   "navHelpSupport": "المساعدة والدعم",
 
-  "navGroupOverview": "نظرة عامة",
-  "navGroupMoney": "الأموال",
-  "navGroupPlanning": "التخطيط",
-  "navGroupIntelligence": "الذكاء",
-  "navGroupSystem": "النظام",
+  "navGroupDaily": "يوميًا",
+  "navGroupPlanning": "التخطيط والادخار",
+  "navGroupInsights": "التحليل",
+  "navGroupSpecial": "خطط خاصة",
+  "navGroupMarkets": "العملات والأسواق",
+  "navGroupSystem": "الحساب والمساعدة",
 
   "badgeNew": "جديد",
   "badgePro": "Pro",
@@ -781,8 +782,8 @@
   "insightZakatDue": "الزكاة واجبة: {amount}.",
   "@insightZakatDue": { "placeholders": { "amount": { "type": "String" } } },
 
-  "navMarkets": "أسعار الصرف والأسواق",
-  "pageMarkets": "أسعار الصرف والأسواق",
+  "navMarkets": "الأسواق",
+  "pageMarkets": "الأسواق",
   "marketsSubtitle": "أسواق العملات الرسمية والموازية إضافةً للعملات الرقمية — مباشرة من مصادر عامة، على جهازك.",
   "marketsRefresh": "تحديث",
   "rateType": "نوع السعر",

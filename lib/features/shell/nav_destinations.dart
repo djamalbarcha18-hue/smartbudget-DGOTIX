@@ -31,8 +31,10 @@ enum AppSection {
   helpSupport,
 }
 
-/// Sidebar groups for a calm, scannable information architecture.
-enum NavGroup { overview, money, planning, intelligence, system }
+/// Sidebar groups, ordered by how often people need them: every day, then
+/// planning and saving, then insight, occasional plans, markets, and finally
+/// account & help.
+enum NavGroup { daily, planning, insights, special, markets, system }
 
 /// Immutable descriptor for a navigation destination.
 class NavDestination {
@@ -80,51 +82,39 @@ class NavDestination {
 /// The canonical navigation list (outline icons; no emoji).
 abstract final class AppNav {
   static const List<NavDestination> destinations = <NavDestination>[
+    // Every day: see where you stand, record, check the accounts.
     NavDestination(
       section: AppSection.dashboard,
       route: '/dashboard',
       icon: Icons.dashboard_outlined,
-      group: NavGroup.overview,
-    ),
-    NavDestination(
-      section: AppSection.challenges,
-      route: '/challenges',
-      icon: Icons.emoji_events_outlined,
-      group: NavGroup.overview,
-      isNew: true,
+      group: NavGroup.daily,
     ),
     NavDestination(
       section: AppSection.transactions,
       route: '/transactions',
       icon: Icons.receipt_long_outlined,
-      group: NavGroup.money,
-    ),
-    NavDestination(
-      section: AppSection.wallets,
-      route: '/wallets',
-      icon: Icons.wallet_outlined,
-      group: NavGroup.money,
-      isNew: true,
-    ),
-    NavDestination(
-      section: AppSection.income,
-      route: '/income',
-      icon: Icons.south_west_outlined,
-      group: NavGroup.money,
+      group: NavGroup.daily,
     ),
     NavDestination(
       section: AppSection.expenses,
       route: '/expenses',
       icon: Icons.north_east_outlined,
-      group: NavGroup.money,
+      group: NavGroup.daily,
     ),
     NavDestination(
-      section: AppSection.recurring,
-      route: '/recurring',
-      icon: Icons.event_repeat_outlined,
-      group: NavGroup.money,
+      section: AppSection.income,
+      route: '/income',
+      icon: Icons.south_west_outlined,
+      group: NavGroup.daily,
+    ),
+    NavDestination(
+      section: AppSection.wallets,
+      route: '/wallets',
+      icon: Icons.wallet_outlined,
+      group: NavGroup.daily,
       isNew: true,
     ),
+    // Plan & save: the month's budget and what it builds toward.
     NavDestination(
       section: AppSection.monthlyBudget,
       route: '/budget',
@@ -138,25 +128,17 @@ abstract final class AppNav {
       group: NavGroup.planning,
     ),
     NavDestination(
-      section: AppSection.seasons,
-      route: '/seasons',
-      icon: Icons.celebration_outlined,
+      section: AppSection.challenges,
+      route: '/challenges',
+      icon: Icons.emoji_events_outlined,
       group: NavGroup.planning,
       isNew: true,
     ),
     NavDestination(
-      section: AppSection.daret,
-      route: '/daret',
-      icon: Icons.groups_2_outlined,
+      section: AppSection.recurring,
+      route: '/recurring',
+      icon: Icons.event_repeat_outlined,
       group: NavGroup.planning,
-      isNew: true,
-    ),
-    NavDestination(
-      section: AppSection.portfolio,
-      route: '/portfolio',
-      icon: Icons.account_balance_wallet_outlined,
-      group: NavGroup.planning,
-      isNew: true,
     ),
     NavDestination(
       section: AppSection.debts,
@@ -164,58 +146,66 @@ abstract final class AppNav {
       icon: Icons.account_balance_outlined,
       group: NavGroup.planning,
     ),
-    NavDestination(
-      section: AppSection.financialHealth,
-      route: '/health',
-      icon: Icons.monitor_heart_outlined,
-      group: NavGroup.intelligence,
-    ),
+    // Insights: how it's going.
     NavDestination(
       section: AppSection.reports,
       route: '/reports',
       icon: Icons.insights_outlined,
-      group: NavGroup.intelligence,
+      group: NavGroup.insights,
     ),
     NavDestination(
-      section: AppSection.zakat,
-      route: '/zakat',
-      icon: Icons.mosque_outlined,
-      group: NavGroup.intelligence,
-      isNew: true,
-    ),
-    NavDestination(
-      section: AppSection.exchangeRates,
-      route: '/exchange-rates',
-      icon: Icons.currency_exchange_outlined,
-      group: NavGroup.intelligence,
-    ),
-    NavDestination(
-      section: AppSection.markets,
-      route: '/markets',
-      icon: Icons.travel_explore_outlined,
-      group: NavGroup.intelligence,
-      isNew: true,
+      section: AppSection.financialHealth,
+      route: '/health',
+      icon: Icons.monitor_heart_outlined,
+      group: NavGroup.insights,
     ),
     NavDestination(
       section: AppSection.aiAssistant,
       route: '/assistant',
       icon: Icons.auto_awesome_outlined,
-      group: NavGroup.intelligence,
+      group: NavGroup.insights,
     ),
+    // Occasional plans: seasons, daret, projects, zakat.
     NavDestination(
-      section: AppSection.plans,
-      route: '/plans',
-      icon: Icons.workspace_premium_outlined,
-      group: NavGroup.system,
+      section: AppSection.seasons,
+      route: '/seasons',
+      icon: Icons.celebration_outlined,
+      group: NavGroup.special,
       isNew: true,
     ),
     NavDestination(
-      section: AppSection.guide,
-      route: '/guide',
-      icon: Icons.explore_outlined,
-      group: NavGroup.system,
+      section: AppSection.daret,
+      route: '/daret',
+      icon: Icons.groups_2_outlined,
+      group: NavGroup.special,
       isNew: true,
     ),
+    NavDestination(
+      section: AppSection.portfolio,
+      route: '/portfolio',
+      icon: Icons.account_balance_wallet_outlined,
+      group: NavGroup.special,
+    ),
+    NavDestination(
+      section: AppSection.zakat,
+      route: '/zakat',
+      icon: Icons.mosque_outlined,
+      group: NavGroup.special,
+    ),
+    // Markets & currencies.
+    NavDestination(
+      section: AppSection.exchangeRates,
+      route: '/exchange-rates',
+      icon: Icons.currency_exchange_outlined,
+      group: NavGroup.markets,
+    ),
+    NavDestination(
+      section: AppSection.markets,
+      route: '/markets',
+      icon: Icons.travel_explore_outlined,
+      group: NavGroup.markets,
+    ),
+    // Account & help.
     NavDestination(
       section: AppSection.settings,
       route: '/settings',
@@ -223,9 +213,21 @@ abstract final class AppNav {
       group: NavGroup.system,
     ),
     NavDestination(
+      section: AppSection.guide,
+      route: '/guide',
+      icon: Icons.explore_outlined,
+      group: NavGroup.system,
+    ),
+    NavDestination(
       section: AppSection.helpSupport,
       route: '/support',
       icon: Icons.help_outline_rounded,
+      group: NavGroup.system,
+    ),
+    NavDestination(
+      section: AppSection.plans,
+      route: '/plans',
+      icon: Icons.workspace_premium_outlined,
       group: NavGroup.system,
     ),
   ];

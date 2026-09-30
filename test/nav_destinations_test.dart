@@ -25,4 +25,22 @@ void main() {
       expect(count, 1, reason: '$s appears $count times');
     }
   });
+
+  test('groups come in one block each, in usage order, dashboard first', () {
+    final List<NavGroup> seen = <NavGroup>[];
+    for (final NavDestination d in AppNav.destinations) {
+      if (seen.isEmpty || seen.last != d.group) {
+        expect(seen.contains(d.group), isFalse,
+            reason: '${d.group} is split in two places');
+        seen.add(d.group);
+      }
+    }
+    expect(seen, NavGroup.values);
+    expect(AppNav.destinations.first.section, AppSection.dashboard);
+  });
+
+  test('the "new" badge stays rare so it still means something', () {
+    expect(AppNav.destinations.where((NavDestination d) => d.isNew).length,
+        lessThanOrEqualTo(4));
+  });
 }

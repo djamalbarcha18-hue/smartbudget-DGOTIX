@@ -109,10 +109,11 @@ class _GroupHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final String text = switch (group) {
-      NavGroup.overview => l.navGroupOverview,
-      NavGroup.money => l.navGroupMoney,
+      NavGroup.daily => l.navGroupDaily,
       NavGroup.planning => l.navGroupPlanning,
-      NavGroup.intelligence => l.navGroupIntelligence,
+      NavGroup.insights => l.navGroupInsights,
+      NavGroup.special => l.navGroupSpecial,
+      NavGroup.markets => l.navGroupMarkets,
       NavGroup.system => l.navGroupSystem,
     };
     return Padding(

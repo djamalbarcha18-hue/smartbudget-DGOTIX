@@ -267,11 +267,12 @@
   "navSettings": "Settings",
   "navHelpSupport": "Help & Support",
 
-  "navGroupOverview": "Overview",
-  "navGroupMoney": "Money",
-  "navGroupPlanning": "Planning",
-  "navGroupIntelligence": "Intelligence",
-  "navGroupSystem": "System",
+  "navGroupDaily": "Every day",
+  "navGroupPlanning": "Plan & save",
+  "navGroupInsights": "Insights",
+  "navGroupSpecial": "Special plans",
+  "navGroupMarkets": "Currencies & markets",
+  "navGroupSystem": "Account & help",
 
   "badgeNew": "New",
   "badgePro": "Pro",
@@ -781,8 +782,8 @@
   "insightZakatDue": "Zakat is due: {amount}.",
   "@insightZakatDue": { "placeholders": { "amount": { "type": "String" } } },
 
-  "navMarkets": "Exchange Rates & Markets",
-  "pageMarkets": "Exchange Rates & Markets",
+  "navMarkets": "Markets",
+  "pageMarkets": "Markets",
   "marketsSubtitle": "Official and parallel FIAT markets plus crypto — live from public sources, on your device.",
   "marketsRefresh": "Refresh",
   "rateType": "Rate type",
