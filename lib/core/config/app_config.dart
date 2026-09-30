@@ -28,10 +28,10 @@ abstract final class AppConfig {
   /// e.g. 'https://smartbudget.example.com/'.
   static const String publicUrl = '';
 
-  /// Where the app is deployed today — used only when there is no web address
-  /// to read (tests, non-web builds).
-  static const String fallbackUrl =
-      'https://djamalbarcha18-hue.github.io/smartbudget-DGOTIX/';
+  /// The platform's own domain — used when there is no web address to read
+  /// (the Android app, tests). The web app shares the address it is served
+  /// from, which is this domain too (github.io redirects to it).
+  static const String fallbackUrl = 'https://smartbudget.dgotix.com/';
 
   /// Support/legal destinations. Kept as route/URL placeholders for now; the
   /// support architecture (email / chat / tickets / FAQ) plugs in here later

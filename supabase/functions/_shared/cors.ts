@@ -1,7 +1,7 @@
 // Shared CORS headers for SmartBudget Edge Functions.
 //
 // ALLOWED_ORIGIN should be set to the site origin in production
-// (e.g. https://djamalbarcha18-hue.github.io) instead of "*".
+// (e.g. https://smartbudget.dgotix.com) instead of "*".
 export function corsHeaders(): HeadersInit {
   return {
     "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") ?? "*",

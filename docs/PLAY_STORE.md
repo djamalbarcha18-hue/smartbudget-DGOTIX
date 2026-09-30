@@ -59,7 +59,7 @@ Each upload to Google Play needs a higher version code: bump `version` in
    - at least 2 phone screenshots (Arabic and English)
    - short and full description, **support e-mail** (required)
 5. Policy pages (public, no sign-in needed):
-   - Privacy policy: `https://djamalbarcha18-hue.github.io/smartbudget-DGOTIX/#/privacy`
+   - Privacy policy: `https://smartbudget.dgotix.com/#/privacy`
      (`?lang=en` for English)
    - Account deletion: the same page, section "Deleting your account and
      data" (in-app: Settings → Account → Delete my account; on the web, sign in

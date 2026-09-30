@@ -16,7 +16,7 @@ The URL and anon key are public client config (safe to embed), injected at build
 
 ```bash
 flutter build web --release \
-  --base-href /smartbudget-DGOTIX/ \
+  --base-href / \
   --dart-define=SUPABASE_URL=https://<project>.supabase.co \
   --dart-define=SUPABASE_ANON_KEY=<anon-key>
 ```

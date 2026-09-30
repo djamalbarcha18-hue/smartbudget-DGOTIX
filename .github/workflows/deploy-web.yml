@@ -36,9 +36,15 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # base-href must match the project-pages sub-path exactly (leading + trailing slash).
+      # Served at https://smartbudget.dgotix.com/ (custom domain). The base is
+      # made relative ("./") so the same bundle also works at the old
+      # github.io/smartbudget-DGOTIX/ address (routes are hash-based, so the
+      # page itself never moves).
       - name: Build web (release)
-        run: flutter build web --release --base-href /smartbudget-DGOTIX/
+        run: |
+          flutter build web --release --base-href /
+          sed -i 's#<base href="/">#<base href="./">#' build/web/index.html
+          grep -q '<base href="./">' build/web/index.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

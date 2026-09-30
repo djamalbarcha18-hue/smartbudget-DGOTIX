@@ -56,7 +56,7 @@ fits selling worldwide from MENA.
    supabase secrets set PADDLE_API_KEY=...          # server-side API key
    supabase secrets set PADDLE_API_URL=https://sandbox-api.paddle.com   # or https://api.paddle.com
    supabase secrets set PADDLE_WEBHOOK_SECRET=...   # from the notification destination
-   supabase secrets set CHECKOUT_SUCCESS_URL=https://djamalbarcha18-hue.github.io/smartbudget-DGOTIX/#/plans
+   supabase secrets set CHECKOUT_SUCCESS_URL=https://smartbudget.dgotix.com/#/plans
    ```
 
 5. **Webhook**: in Paddle → Developer tools → Notifications, add a destination

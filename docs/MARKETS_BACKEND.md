@@ -30,7 +30,7 @@ supabase functions deploy market-proxy
 # choose your provider + key (server-side only):
 supabase secrets set MARKET_PROVIDER=metalpriceapi
 supabase secrets set METALPRICEAPI_KEY=xxxxxxxx
-supabase secrets set ALLOWED_ORIGIN=https://djamalbarcha18-hue.github.io
+supabase secrets set ALLOWED_ORIGIN=https://smartbudget.dgotix.com
 ```
 
 `MARKET_PROVIDER=none` (the default) is safe to deploy with no key — every

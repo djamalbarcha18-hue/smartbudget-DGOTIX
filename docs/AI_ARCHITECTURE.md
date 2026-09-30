@@ -87,7 +87,7 @@ supabase functions deploy ai-gateway
 
 # 3. Server keys (only where you want that provider enabled)
 supabase secrets set GEMINI_API_KEY=... OPENAI_API_KEY=... ANTHROPIC_API_KEY=...
-supabase secrets set ALLOWED_ORIGIN=https://djamalbarcha18-hue.github.io
+supabase secrets set ALLOWED_ORIGIN=https://smartbudget.dgotix.com
 ```
 
 ## Quotas are plan-driven
