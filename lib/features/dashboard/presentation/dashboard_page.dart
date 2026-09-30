@@ -157,12 +157,17 @@ class DashboardPage extends ConsumerWidget {
             sideNarrowHeight: 300,
           ),
           const SizedBox(height: gap),
-          const _PanelRow(
-            height: 400,
-            main: ExpenseBreakdownSection(),
-            mainNarrowHeight: 440,
-            side: _IncomeDonutCard(),
-            sideNarrowHeight: 340,
+
+          // ④ Under the monthly comparison, where the money went and where
+          //    it came from: expense and income distribution, two equal halves.
+          const _EqualRow(
+            height: 360,
+            narrowHeight: 420,
+            minRowWidth: 880,
+            children: <Widget>[
+              ExpenseBreakdownSection(),
+              _IncomeDonutCard(),
+            ],
           ),
           const SizedBox(height: gap),
           const _PanelRow(
@@ -173,7 +178,7 @@ class DashboardPage extends ConsumerWidget {
           ),
           const SizedBox(height: gap),
 
-          // ④ DGOTIX AI insights, then live global markets at the bottom.
+          // ⑤ DGOTIX AI insights, then live global markets at the bottom.
           const DgotixInsightsSection(),
           const SizedBox(height: gap),
           const GlobalMarketsSection(),
@@ -550,20 +555,46 @@ class _DistributionBody extends StatelessWidget {
             )
           else
             Expanded(
-              child: Column(
-                children: <Widget>[
-                  Center(
+              child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints cons) {
+                  // Same donut and layout as the expense card beside it.
+                  final Widget donut = Center(
                     child: DonutChart(
                       segments: segments,
-                      size: 168,
-                      thickness: 30,
+                      size: 140,
+                      thickness: 26,
                       centerTop: MoneyFormatter.compact(
                           Money(totalMinor, totals.first.amount.currencyCode)),
+                      centerBottom: title,
                     ),
-                  ),
-                  const SizedBox(height: DsSpacing.md),
-                  Expanded(child: ListView(children: legend)),
-                ],
+                  );
+                  if (cons.maxWidth >= 380) {
+                    return Row(
+                      children: <Widget>[
+                        SizedBox(width: 156, child: donut),
+                        const SizedBox(width: DsSpacing.lg),
+                        Expanded(
+                          child: Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: ConstrainedBox(
+                              // Keep each share next to its category.
+                              constraints: const BoxConstraints(maxWidth: 190),
+                              child: ListView(
+                                  shrinkWrap: true, children: legend),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return Column(
+                    children: <Widget>[
+                      donut,
+                      const SizedBox(height: DsSpacing.md),
+                      Expanded(child: ListView(children: legend)),
+                    ],
+                  );
+                },
               ),
             ),
         ],
@@ -830,24 +861,32 @@ class _ResponsiveGrid extends StatelessWidget {
   }
 }
 
-/// A row of equal cards at a fixed height (wide screens); stacked on phones.
+/// A row of equal cards at a fixed height (wide screens); stacked below
+/// [minRowWidth], each card [narrowHeight] tall (default: [height]).
 class _EqualRow extends StatelessWidget {
-  const _EqualRow({required this.children, required this.height});
+  const _EqualRow({
+    required this.children,
+    required this.height,
+    this.narrowHeight,
+    this.minRowWidth = 700,
+  });
   final List<Widget> children;
   final double height;
+  final double? narrowHeight;
+  final double minRowWidth;
 
   @override
   Widget build(BuildContext context) {
     const double gap = DsSpacing.gridGap;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints cons) {
-        if (cons.maxWidth < 700) {
+        if (cons.maxWidth < minRowWidth) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               for (int i = 0; i < children.length; i++) ...<Widget>[
                 if (i > 0) const SizedBox(height: gap),
-                SizedBox(height: height, child: children[i]),
+                SizedBox(height: narrowHeight ?? height, child: children[i]),
               ],
             ],
           );
@@ -876,14 +915,12 @@ class _PanelRow extends StatelessWidget {
     required this.main,
     required this.side,
     required this.height,
-    this.mainNarrowHeight,
     this.sideNarrowHeight,
   });
 
   final Widget main;
   final Widget side;
   final double height;
-  final double? mainNarrowHeight;
   final double? sideNarrowHeight;
 
   @override
@@ -907,7 +944,7 @@ class _PanelRow extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            SizedBox(height: mainNarrowHeight ?? height, child: main),
+            SizedBox(height: height, child: main),
             const SizedBox(height: gap),
             SizedBox(height: sideNarrowHeight ?? height, child: side),
           ],
