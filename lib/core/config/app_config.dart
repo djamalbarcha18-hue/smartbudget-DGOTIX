@@ -17,7 +17,7 @@ abstract final class AppConfig {
   /// while empty the app never shows an address (the Help page and the legal
   /// pages point to Help & Support instead). Set it here, in this ONE spot, and
   /// every screen picks it up.
-  static const String supportEmail = '';
+  static const String supportEmail = 'support@dgotix.com';
 
   /// True once a real support inbox has been configured above.
   static bool get hasSupportEmail => supportEmail.trim().isNotEmpty;

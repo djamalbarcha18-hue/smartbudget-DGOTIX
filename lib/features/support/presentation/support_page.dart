@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -95,6 +96,17 @@ class SupportPage extends StatelessWidget {
                                         .titleSmall),
                               ],
                             ),
+                          ),
+                          IconButton(
+                            tooltip: l.supportWriteEmail,
+                            onPressed: () => launchUrl(Uri(
+                              scheme: 'mailto',
+                              path: AppConfig.supportEmail,
+                              query: 'subject='
+                                  '${Uri.encodeComponent(l.supportEmailSubject)}',
+                            )),
+                            icon: Icon(Icons.send_outlined,
+                                size: 16, color: c.brand),
                           ),
                           IconButton(
                             tooltip: l.supportCopyEmail,

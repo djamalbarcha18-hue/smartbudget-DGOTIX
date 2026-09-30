@@ -57,7 +57,8 @@ Each upload to Google Play needs a higher version code: bump `version` in
    - app icon 512×512: `assets/launcher/play_store_icon_512.png`
    - feature graphic 1024×500: `assets/launcher/play_feature_graphic.png`
    - at least 2 phone screenshots (Arabic and English)
-   - short and full description, **support e-mail** (required)
+   - short and full description, **support e-mail**: `support@dgotix.com`
+     (forwarded to the owner's Gmail by Namecheap)
 5. Policy pages (public, no sign-in needed):
    - Privacy policy: `https://smartbudget.dgotix.com/#/privacy`
      (`?lang=en` for English)
