@@ -344,6 +344,8 @@
   "valEmail": "Enter a valid email address",
   "valPasswordShort": "Password must be at least 6 characters",
   "authErrInvalid": "Incorrect email or password",
+  "authDeviceAccountHint": "Accounts are now real and protected on the DGOTIX server. Create your account once with the same e-mail, and your data on this device comes back automatically",
+  "authCreateAccountAction": "Create account",
   "authErrEmailInUse": "This email is already registered",
   "authErrWeak": "Password is too weak",
   "authErrUserNotFound": "No account found for this email",

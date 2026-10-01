@@ -8,6 +8,16 @@ import 'package:smartbudget/features/auth/domain/auth_user.dart';
 /// ending in `_<that id>`. When the same e-mail address first signs in to a
 /// real account on this device, that data is moved to the account's id so
 /// nothing looks lost. Data the account already has is never overwritten.
+/// True when this device holds data saved by the device-only account of
+/// [email], i.e. its owner used the app before real accounts and must create
+/// the real account (same e-mail) rather than sign in.
+bool hasDeviceOnlyData(SharedPreferences prefs, String email) {
+  final String suffix = '_${FakeAuthRepository.idFor(email)}';
+  return prefs
+      .getKeys()
+      .any((String k) => k.startsWith('sb_') && k.endsWith(suffix));
+}
+
 Future<void> adoptDeviceData(SharedPreferences prefs, AuthUser user) async {
   final String oldId = FakeAuthRepository.idFor(user.email);
   if (oldId == user.id) return;

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/auth/data/device_data_adoption.dart';
+import 'package:smartbudget/features/auth/domain/auth_failure.dart';
 import 'package:smartbudget/features/auth/presentation/auth_helpers.dart';
 import 'package:smartbudget/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -42,10 +46,27 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           );
       // Navigation is handled by the router's auth guard.
     } catch (error) {
+      final bool wrongLogin = error is AuthFailure &&
+          error.kind == AuthFailureKind.invalidCredentials;
+      // Accounts made before real sign-in lived on the device only: their
+      // owners must create the real account once (their data follows).
+      final bool deviceOnly = wrongLogin &&
+          AppEnv.hasSupabase &&
+          hasDeviceOnlyData(
+              await SharedPreferences.getInstance(), _email.text);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(authFailureMessage(error, l))),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: wrongLogin ? 10 : 4),
+        content: Text(deviceOnly
+            ? l.authDeviceAccountHint
+            : authFailureMessage(error, l)),
+        action: wrongLogin
+            ? SnackBarAction(
+                label: l.authCreateAccountAction,
+                onPressed: () => context.go('/signup'),
+              )
+            : null,
+      ));
     } finally {
       if (mounted) setState(() => _loading = false);
     }

@@ -38,4 +38,13 @@ void main() {
 
     expect(prefs.getString('sb_txns_7f1c-real-uuid'), '[current]');
   });
+
+  test('tells whether the device has data of a device-only account', () async {
+    SharedPreferences.setMockInitialValues(<String, Object>{
+      'sb_txns_$devId': '[1]',
+    });
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    expect(hasDeviceOnlyData(prefs, ' SARA@example.com'), isTrue);
+    expect(hasDeviceOnlyData(prefs, 'other@example.com'), isFalse);
+  });
 }
