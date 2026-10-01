@@ -40,9 +40,19 @@ jobs:
       # made relative ("./") so the same bundle also works at the old
       # github.io/smartbudget-DGOTIX/ address (routes are hash-based, so the
       # page itself never moves).
+      # Online features (sign-in, cloud backup, AI) turn on only when both
+      # repository secrets SUPABASE_URL and SUPABASE_ANON_KEY are set (the anon
+      # key is public by design; never add the service_role key here).
       - name: Build web (release)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          flutter build web --release --base-href /
+          DEFINES=""
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
+            DEFINES="--dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
+          fi
+          flutter build web --release --base-href / $DEFINES
           sed -i 's#<base href="/">#<base href="./">#' build/web/index.html
           grep -q '<base href="./">' build/web/index.html
 
