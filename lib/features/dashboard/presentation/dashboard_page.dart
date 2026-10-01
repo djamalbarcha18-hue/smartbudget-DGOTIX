@@ -158,15 +158,17 @@ class DashboardPage extends ConsumerWidget {
           ),
           const SizedBox(height: gap),
 
-          // ④ Under the monthly comparison, where the money went and where
-          //    it came from: expense and income distribution, two equal halves.
+          // ④ Under the monthly comparison, where the money came from and
+          //    where it went: income first, then expenses, two equal halves.
+          //    The row follows the reading direction (income on the right in
+          //    Arabic, on the left in English; on top when stacked).
           const _EqualRow(
             height: 360,
             narrowHeight: 420,
             minRowWidth: 880,
             children: <Widget>[
-              ExpenseBreakdownSection(),
               _IncomeDonutCard(),
+              ExpenseBreakdownSection(),
             ],
           ),
           const SizedBox(height: gap),
