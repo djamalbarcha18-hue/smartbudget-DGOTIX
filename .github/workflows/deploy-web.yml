@@ -45,8 +45,11 @@ jobs:
       # key is public by design; never add the service_role key here).
       - name: Build web (release)
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          # The project's URL and publishable key are public by design (they
+          # ship inside the app); repository secrets of the same name override
+          # them. Never put the secret / service_role key here.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://fconhnyognxcpvmwobus.supabase.co' }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'sb_publishable_5xtM1xBGuJJldtP_87Tzpg_XDB3Euff' }}
         run: |
           DEFINES=""
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
