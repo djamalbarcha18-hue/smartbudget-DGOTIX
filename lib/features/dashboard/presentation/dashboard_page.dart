@@ -148,17 +148,7 @@ class DashboardPage extends ConsumerWidget {
           ),
           const SizedBox(height: gap),
 
-          // ③ Every analysis row is a main panel (8/12) and a companion
-          //    (4/12) of the same height, so nothing leaves a gap.
-          const _PanelRow(
-            height: 380,
-            main: _MonthlyComparisonCard(),
-            side: AlertsPanel(),
-            sideNarrowHeight: 300,
-          ),
-          const SizedBox(height: gap),
-
-          // ④ Under the monthly comparison, where the money came from and
+          // ③ Right under the month pulse, where the money came from and
           //    where it went: income first, then expenses, two equal halves.
           //    The row follows the reading direction (income on the right in
           //    Arabic, on the left in English; on top when stacked).
@@ -170,6 +160,16 @@ class DashboardPage extends ConsumerWidget {
               _IncomeDonutCard(),
               ExpenseBreakdownSection(),
             ],
+          ),
+          const SizedBox(height: gap),
+
+          // ④ Every analysis row is a main panel (8/12) and a companion
+          //    (4/12) of the same height, so nothing leaves a gap.
+          const _PanelRow(
+            height: 380,
+            main: _MonthlyComparisonCard(),
+            side: AlertsPanel(),
+            sideNarrowHeight: 300,
           ),
           const SizedBox(height: gap),
           const _PanelRow(
