@@ -8,6 +8,7 @@ enum AuthFailureKind {
   weakPassword,
   userNotFound,
   invalidCode,
+  emailNotConfirmed,
   network,
   unknown,
 }

@@ -39,11 +39,19 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
     try {
-      await ref.read(authControllerProvider.notifier).signUp(
-            email: _email.text,
-            password: _password.text,
-            displayName: _name.text,
-          );
+      final bool signedIn =
+          await ref.read(authControllerProvider.notifier).signUp(
+                email: _email.text,
+                password: _password.text,
+                displayName: _name.text,
+              );
+      if (!signedIn && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: const Duration(seconds: 10),
+          content: Text(l.authConfirmEmailSent(_email.text.trim())),
+        ));
+        context.go('/login');
+      }
     } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

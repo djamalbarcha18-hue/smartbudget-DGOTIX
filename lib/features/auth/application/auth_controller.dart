@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/features/auth/data/device_data_adoption.dart';
 import 'package:smartbudget/features/auth/data/fake_auth_repository.dart';
 import 'package:smartbudget/features/auth/data/supabase_auth_repository.dart';
 import 'package:smartbudget/features/auth/domain/auth_repository.dart';
@@ -52,8 +54,10 @@ class AuthController extends Notifier<AuthState> {
   @override
   AuthState build() {
     final AuthRepository repo = ref.watch(authRepositoryProvider);
-    final StreamSubscription<AuthUser?> sub =
-        repo.authStateChanges().listen((AuthUser? user) {
+    final StreamSubscription<AuthUser?> sub = repo
+        .authStateChanges()
+        .asyncMap(_adoptDeviceData)
+        .listen((AuthUser? user) {
       state = state._resolved(user);
     });
     ref.onDispose(sub.cancel);
@@ -62,15 +66,30 @@ class AuthController extends Notifier<AuthState> {
 
   AuthRepository get _repo => ref.read(authRepositoryProvider);
 
+  /// Runs before the user is published, so per-user stores load the moved
+  /// data rather than an empty account.
+  static Future<AuthUser?> _adoptDeviceData(AuthUser? user) async {
+    if (user == null || !AppEnv.hasSupabase) return user;
+    try {
+      await adoptDeviceData(await SharedPreferences.getInstance(), user);
+    } catch (_) {
+      // Best-effort: the old data stays where it was.
+    }
+    return user;
+  }
+
   Future<void> signIn({required String email, required String password}) =>
       _repo.signIn(email: email, password: password);
 
-  Future<void> signUp({
+  /// False when the e-mail address must be confirmed before signing in.
+  Future<bool> signUp({
     required String email,
     required String password,
     String? displayName,
-  }) =>
-      _repo.signUp(email: email, password: password, displayName: displayName);
+  }) async =>
+      await _repo.signUp(
+          email: email, password: password, displayName: displayName) !=
+      null;
 
   Future<void> signOut() => _repo.signOut();
 

@@ -59,6 +59,7 @@ String authFailureMessage(Object error, AppLocalizations l) {
     AuthFailureKind.weakPassword => l.authErrWeak,
     AuthFailureKind.userNotFound => l.authErrUserNotFound,
     AuthFailureKind.invalidCode => l.authErrInvalidCode,
+    AuthFailureKind.emailNotConfirmed => l.authErrNotConfirmed,
     AuthFailureKind.network => l.authErrNetwork,
     AuthFailureKind.unknown => l.authErrUnknown,
   };

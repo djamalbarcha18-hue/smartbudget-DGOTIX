@@ -15,8 +15,10 @@ abstract interface class AuthRepository {
   /// Throws [AuthFailure] on error.
   Future<AuthUser> signIn({required String email, required String password});
 
+  /// Returns the signed-in user, or null when the account was created but the
+  /// e-mail address must be confirmed (link sent by e-mail) before signing in.
   /// Throws [AuthFailure] on error.
-  Future<AuthUser> signUp({
+  Future<AuthUser?> signUp({
     required String email,
     required String password,
     String? displayName,

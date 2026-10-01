@@ -65,13 +65,13 @@ class FakeAuthRepository implements AuthRepository {
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 350));
     _validate(email, password);
-    final AuthUser user = AuthUser(id: _idFor(email), email: email.trim());
+    final AuthUser user = AuthUser(id: idFor(email), email: email.trim());
     await _persist(user);
     return user;
   }
 
   @override
-  Future<AuthUser> signUp({
+  Future<AuthUser?> signUp({
     required String email,
     required String password,
     String? displayName,
@@ -82,7 +82,7 @@ class FakeAuthRepository implements AuthRepository {
       throw const AuthFailure(AuthFailureKind.weakPassword);
     }
     final AuthUser user = AuthUser(
-      id: _idFor(email),
+      id: idFor(email),
       email: email.trim(),
       displayName: displayName?.trim(),
     );
@@ -132,7 +132,7 @@ class FakeAuthRepository implements AuthRepository {
       throw const AuthFailure(AuthFailureKind.weakPassword);
     }
     _pendingResetEmail = null;
-    await _persist(AuthUser(id: _idFor(e), email: email.trim()));
+    await _persist(AuthUser(id: idFor(e), email: email.trim()));
   }
 
   @override
@@ -171,5 +171,8 @@ class FakeAuthRepository implements AuthRepository {
   bool _isEmail(String s) =>
       RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(s.trim());
 
-  String _idFor(String email) => 'dev-${email.trim().toLowerCase().hashCode}';
+  /// The device-only id for [email]. Data saved under it is moved to the real
+  /// account on first sign-in (see `adoptDeviceData`).
+  static String idFor(String email) =>
+      'dev-${email.trim().toLowerCase().hashCode}';
 }

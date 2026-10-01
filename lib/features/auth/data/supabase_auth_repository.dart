@@ -38,7 +38,7 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<AuthUser> signUp({
+  Future<AuthUser?> signUp({
     required String email,
     required String password,
     String? displayName,
@@ -51,9 +51,17 @@ class SupabaseAuthRepository implements AuthRepository {
             ? <String, dynamic>{'display_name': displayName.trim()}
             : null,
       );
-      final AuthUser? user = _map(res.user);
-      if (user == null) throw const AuthFailure(AuthFailureKind.unknown);
-      return user;
+      final sb.User? created = res.user;
+      if (created == null) throw const AuthFailure(AuthFailureKind.unknown);
+      // With e-mail confirmation on, signing up an address that already has
+      // an account returns a placeholder user with no identities (and sends
+      // nothing) instead of an error.
+      if (created.identities?.isEmpty ?? false) {
+        throw const AuthFailure(AuthFailureKind.emailAlreadyInUse);
+      }
+      // No session yet: the confirmation link must be opened first.
+      if (res.session == null) return null;
+      return _map(created);
     } on sb.AuthException catch (e) {
       throw _failure(e);
     } catch (e) {
@@ -133,6 +141,9 @@ class SupabaseAuthRepository implements AuthRepository {
     final String msg = e.message.toLowerCase();
     if (msg.contains('already registered') || msg.contains('already in use')) {
       return AuthFailure(AuthFailureKind.emailAlreadyInUse, e.message);
+    }
+    if (msg.contains('not confirmed')) {
+      return AuthFailure(AuthFailureKind.emailNotConfirmed, e.message);
     }
     if (msg.contains('invalid login') || msg.contains('invalid credentials')) {
       return AuthFailure(AuthFailureKind.invalidCredentials, e.message);
