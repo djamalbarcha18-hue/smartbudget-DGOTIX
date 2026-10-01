@@ -8,7 +8,10 @@ business logic changes — only which backend the repositories bind to.
 ## 1. Create the project & schema
 
 1. Create a project at https://supabase.com (free tier is enough).
-2. In the SQL editor, run `supabase/schema.sql` (tables + Row Level Security).
+2. In the SQL editor, paste and run `supabase/setup_all.sql`: every table,
+   Row Level Security policy and the currency list, in one transaction. It is
+   safe to run again. After editing any file in `supabase/`, rebuild it with
+   `tool/build_supabase_setup.sh`.
 
 ## 2. Build with credentials
 

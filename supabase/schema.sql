@@ -36,6 +36,49 @@ create table if not exists exchange_rates (
 );
 create index if not exists idx_rates_code_time on exchange_rates(code, fetched_at desc);
 
+-- Every currency the app offers (lib/core/money/currency.dart). profiles
+-- .base_currency references this table, so it must be filled before the
+-- first sign-up or creating the profile row fails.
+insert into currencies (code, name_ar, name_en, symbol, decimals) values
+  ('USD', 'الدولار الأمريكي', 'US Dollar', '$', 2),
+  ('DZD', 'الدينار الجزائري', 'Algerian Dinar', 'د.ج', 2),
+  ('SAR', 'الريال السعودي', 'Saudi Riyal', 'ر.س', 2),
+  ('AED', 'الدرهم الإماراتي', 'UAE Dirham', 'د.إ', 2),
+  ('QAR', 'الريال القطري', 'Qatari Riyal', 'ر.ق', 2),
+  ('KWD', 'الدينار الكويتي', 'Kuwaiti Dinar', 'د.ك', 3),
+  ('BHD', 'الدينار البحريني', 'Bahraini Dinar', 'د.ب', 3),
+  ('OMR', 'الريال العماني', 'Omani Rial', 'ر.ع', 3),
+  ('JOD', 'الدينار الأردني', 'Jordanian Dinar', 'د.أ', 3),
+  ('EGP', 'الجنيه المصري', 'Egyptian Pound', 'ج.م', 2),
+  ('MAD', 'الدرهم المغربي', 'Moroccan Dirham', 'د.م', 2),
+  ('TND', 'الدينار التونسي', 'Tunisian Dinar', 'د.ت', 3),
+  ('LYD', 'الدينار الليبي', 'Libyan Dinar', 'د.ل', 3),
+  ('IQD', 'الدينار العراقي', 'Iraqi Dinar', 'د.ع', 3),
+  ('LBP', 'الليرة اللبنانية', 'Lebanese Pound', 'ل.ل', 2),
+  ('SYP', 'الليرة السورية', 'Syrian Pound', 'ل.س', 2),
+  ('SDG', 'الجنيه السوداني', 'Sudanese Pound', 'ج.س', 2),
+  ('YER', 'الريال اليمني', 'Yemeni Rial', 'ر.ي', 2),
+  ('MRU', 'الأوقية الموريتانية', 'Mauritanian Ouguiya', 'أ.م', 2),
+  ('EUR', 'اليورو', 'Euro', '€', 2),
+  ('GBP', 'الجنيه الإسترليني', 'Pound Sterling', '£', 2),
+  ('JPY', 'الين الياباني', 'Japanese Yen', '¥', 0),
+  ('CNY', 'اليوان الصيني', 'Chinese Yuan', '¥', 2),
+  ('CHF', 'الفرنك السويسري', 'Swiss Franc', 'Fr', 2),
+  ('CAD', 'الدولار الكندي', 'Canadian Dollar', 'C$', 2),
+  ('AUD', 'الدولار الأسترالي', 'Australian Dollar', 'A$', 2),
+  ('INR', 'الروبية الهندية', 'Indian Rupee', '₹', 2),
+  ('TRY', 'الليرة التركية', 'Turkish Lira', '₺', 2),
+  ('RUB', 'الروبل الروسي', 'Russian Ruble', '₽', 2),
+  ('BRL', 'الريال البرازيلي', 'Brazilian Real', 'R$', 2),
+  ('ZAR', 'الراند الجنوب إفريقي', 'South African Rand', 'R', 2),
+  ('SGD', 'الدولار السنغافوري', 'Singapore Dollar', 'S$', 2),
+  ('KRW', 'الوون الكوري الجنوبي', 'South Korean Won', '₩', 0),
+  ('SEK', 'الكرونة السويدية', 'Swedish Krona', 'kr', 2),
+  ('MXN', 'البيزو المكسيكي', 'Mexican Peso', 'Mex$', 2)
+on conflict (code) do update set
+  name_ar = excluded.name_ar, name_en = excluded.name_en,
+  symbol = excluded.symbol, decimals = excluded.decimals;
+
 -- ---------------------------------------------------------------------------
 -- Profiles (1:1 with auth.users)
 -- ---------------------------------------------------------------------------
@@ -196,12 +239,15 @@ alter table financial_health_snapshots  enable row level security;
 -- client). Rates are refreshed by a trusted scheduled job using the service role.
 alter table currencies     enable row level security;
 alter table exchange_rates enable row level security;
+drop policy if exists currencies_read on currencies;
 create policy currencies_read on currencies
   for select using (auth.role() = 'authenticated');
+drop policy if exists exchange_rates_read on exchange_rates;
 create policy exchange_rates_read on exchange_rates
   for select using (auth.role() = 'authenticated');
 
 -- Profiles: a user sees/edits only their own profile row.
+drop policy if exists profiles_self on profiles;
 create policy profiles_self on profiles
   for all using (id = auth.uid()) with check (id = auth.uid());
 
@@ -213,6 +259,7 @@ begin
     'categories','payment_methods','transactions','budgets','goals',
     'goal_allocations','debts','zakat_records','financial_health_snapshots'
   ] loop
+    execute format('drop policy if exists %1$s_owner on %1$s;', t);
     execute format(
       'create policy %1$s_owner on %1$s for all
          using (user_id = auth.uid()) with check (user_id = auth.uid());', t);
