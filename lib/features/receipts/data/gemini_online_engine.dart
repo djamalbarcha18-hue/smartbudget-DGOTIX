@@ -22,14 +22,19 @@ class GeminiOnlineEngine implements ReceiptOcrEngine {
   @override
   Future<ScannedReceipt> recognize(ReceiptImage image) async {
     final SupabaseClient client = Supabase.instance.client;
-    final String b64 = base64Encode(image.bytes);
+    final bool split = image.parts.length > 1;
+    final String b64 = split ? '' : base64Encode(image.bytes);
 
     late final FunctionResponse res;
     try {
       res = await client.functions.invoke(
         'receipt-scan',
         body: <String, dynamic>{
-          'imageBase64': b64,
+          if (split)
+            // Strips of a very long receipt, read in parallel by the server.
+            'images': <String>[for (final p in image.parts) base64Encode(p)]
+          else
+            'imageBase64': b64,
           'mimeType': image.mimeType,
           // The invoice reader: items and totals, amounts as printed.
           'v': 2,

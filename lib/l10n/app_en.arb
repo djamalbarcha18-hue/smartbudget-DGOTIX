@@ -926,6 +926,8 @@
   "@invoiceReadIn": {"placeholders": {"seconds": {"type": "String"}}},
   "invoiceFromMemory": "Already read: shown instantly",
   "invoiceTimings": "Preparing {prepare} ms · reading {reading} ms (AI {model} ms) · checks {checks} ms",
+  "invoiceImageSize": "Image {before} KB → {after} KB · {parts} part(s)",
+  "@invoiceImageSize": {"placeholders": {"before": {"type": "int"}, "after": {"type": "int"}, "parts": {"type": "int"}}},
   "@invoiceTimings": {"placeholders": {"prepare": {"type": "int"}, "reading": {"type": "int"}, "model": {"type": "int"}, "checks": {"type": "int"}}},
 
   "askAiTitle": "Ask DGOTIX AI",

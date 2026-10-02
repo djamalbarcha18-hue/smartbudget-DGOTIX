@@ -52,6 +52,10 @@ dependencies:
   # The captured bytes are sent to the receipt-scan Edge Function (Gemini).
   image_picker: ^1.1.2
 
+  # Receipt photos: crop away the background and lift faded thermal print
+  # before sending (pure Dart, works on web and mobile).
+  image: ^4.2.0
+
   # Branded PDF export for reports (pure-Dart document builder + cross-platform
   # print/save, incl. web). printing also supplies Arabic-capable Google fonts.
   pdf: ^3.11.1

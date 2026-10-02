@@ -4,9 +4,17 @@ import 'package:smartbudget/features/receipts/domain/scanned_receipt.dart';
 
 /// A receipt image to recognize (raw bytes + mime type).
 class ReceiptImage {
-  const ReceiptImage({required this.bytes, required this.mimeType});
+  const ReceiptImage({
+    required this.bytes,
+    required this.mimeType,
+    this.parts = const <Uint8List>[],
+  });
   final Uint8List bytes;
   final String mimeType;
+
+  /// A very long receipt cut into overlapping strips, top to bottom (read
+  /// in parallel); empty for a single image ([bytes]).
+  final List<Uint8List> parts;
 }
 
 /// Pluggable OCR engine. The online (Gemini) and offline (ML Kit, mobile-only,

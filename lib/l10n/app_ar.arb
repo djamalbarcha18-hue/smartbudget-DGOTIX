@@ -922,6 +922,7 @@
   "invoiceReadIn": "قُرئت في {seconds} ث",
   "invoiceFromMemory": "قُرئت من قبل: عُرضت فوراً",
   "invoiceTimings": "التجهيز {prepare} م.ث · القراءة {reading} م.ث (الذكاء الاصطناعي {model} م.ث) · التحقق {checks} م.ث",
+  "invoiceImageSize": "الصورة {before} ك.ب ← {after} ك.ب · {parts} جزء",
 
   "askAiTitle": "اسأل DGOTIX AI",
   "askAiIntro": "اسأل أي شيء عن ميزانيتك أو ادّخارك أو مصروفاتك — بإجابة حيّة.",

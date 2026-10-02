@@ -192,7 +192,13 @@ class _InvoiceReviewSheetState extends State<InvoiceReviewSheet> {
         padding: const EdgeInsets.symmetric(vertical: DsSpacing.xs),
         child: Text(
           _showTimings
-              ? '$main\n${l.invoiceTimings(tm.prepare, tm.reading, tm.model, tm.checks)}'
+              ? <String>[
+                  main,
+                  l.invoiceTimings(tm.prepare, tm.reading, tm.model, tm.checks),
+                  if (tm.sentBytes > 0)
+                    l.invoiceImageSize(tm.originalBytes ~/ 1024,
+                        tm.sentBytes ~/ 1024, tm.parts),
+                ].join('\n')
               : main,
           style: t.labelSmall?.copyWith(color: c.textFaint),
         ),

@@ -1,6 +1,6 @@
-import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -9,6 +9,8 @@ import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/receipts/data/gemini_online_engine.dart';
 import 'package:smartbudget/features/receipts/data/offline_ocr_engine.dart';
+import 'package:smartbudget/features/receipts/data/receipt_image_native.dart';
+import 'package:smartbudget/features/receipts/data/receipt_image_prep.dart';
 import 'package:smartbudget/features/receipts/data/receipt_scan_cache.dart';
 import 'package:smartbudget/features/receipts/domain/invoice_analyzer.dart';
 import 'package:smartbudget/features/receipts/domain/invoice_duplicates.dart';
@@ -47,10 +49,10 @@ class ReceiptScanner {
   final ImagePicker _picker;
 
   /// Receipts need sharp text, not big photos: 1280 px across keeps small
-  /// print legible while sending far less than a full camera image (the
-  /// height allows long receipts).
+  /// print legible while sending far less than a full camera image. The
+  /// height allows long receipts, which are then read in strips.
   static const double maxWidth = 1280;
-  static const double maxHeight = 2560;
+  static const double maxHeight = 4096;
   static const int jpegQuality = 80;
 
   ReceiptScanCache get _cache => ReceiptScanCache(
@@ -76,14 +78,24 @@ class ReceiptScanner {
     final String hash = sha256.convert(bytes).toString();
     final ReceiptScanCache cache = _cache;
     final Map<String, dynamic>? known = await cache.lookup(hash);
-    final int prepare = sw.elapsedMilliseconds;
     if (known != null) {
-      return _check(known, hash,
-          ScanTimings(prepare: prepare, fromCache: true), onStage);
+      return _check(
+          known,
+          hash,
+          ScanTimings(prepare: sw.elapsedMilliseconds, fromCache: true),
+          onStage);
     }
 
-    final ReceiptImage image =
-        ReceiptImage(bytes: bytes, mimeType: _mimeFor(file));
+    // Crop, gray, faded print, strips: by the browser's own engine on the
+    // web, in a background isolate on mobile. Anything unsure: as photographed.
+    final PreparedReceipt prepared = await _prepare(bytes);
+    final bool changed = !identical(prepared.parts.first, bytes);
+    final ReceiptImage image = ReceiptImage(
+      bytes: prepared.parts.first,
+      parts: prepared.parts.length > 1 ? prepared.parts : const <Uint8List>[],
+      mimeType: changed ? 'image/jpeg' : _mimeFor(file),
+    );
+    final int prepare = sw.elapsedMilliseconds;
     onStage?.call(ScanStage.reading);
     sw
       ..reset()
@@ -97,9 +109,28 @@ class ReceiptScanner {
     return _check(
       raw,
       hash,
-      ScanTimings(prepare: prepare, reading: reading, model: read.timings.model),
+      ScanTimings(
+        prepare: prepare,
+        reading: reading,
+        model: read.timings.model,
+        originalBytes: prepared.originalBytes,
+        sentBytes: prepared.sentBytes,
+        parts: prepared.parts.length,
+      ),
       onStage,
     );
+  }
+
+  static Future<PreparedReceipt> _prepare(Uint8List bytes) async {
+    try {
+      if (kIsWeb) {
+        return await prepareWithPlatform(bytes) ??
+            PreparedReceipt(parts: <Uint8List>[bytes], originalBytes: bytes.length);
+      }
+      return await compute(prepareReceiptInBackground, bytes);
+    } catch (_) {
+      return PreparedReceipt(parts: <Uint8List>[bytes], originalBytes: bytes.length);
+    }
   }
 
   ScannedReceipt _check(

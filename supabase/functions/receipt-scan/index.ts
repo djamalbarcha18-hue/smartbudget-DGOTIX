@@ -13,9 +13,12 @@
 //     | { error: "ocr_unavailable" | "quota_exceeded" | "provider_error" | ... }
 //
 //   POST { imageBase64, mimeType, v: 2 } ->       (invoice reader)
+//   POST { images: [b64, b64, b64], mimeType, v: 2 } -> the same, for a very
+//     long receipt cut into overlapping strips: read in parallel, merged
+//     (header from the first, totals from the last), counted as one scan.
 //     { ok:true, v:2, data:{ r, inv, dt, cur, sym, sup, cus, cat,
 //                            it:[{ n, q, u, t, c }], sub, dis, tax, tot, paid, due },
-//       ms:{ model } }
+//       ms:{ model, parts } }
 //     | { ok:false, reason } | { error }
 //   v2 reads only the header, the item lines and the totals, and copies every
 //   amount exactly as printed: the app decides the number format and checks
@@ -24,6 +27,7 @@
 //
 // Deploy:  supabase functions deploy receipt-scan
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
+import { mergeReadings, type Reading } from "../_shared/invoice_merge.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
 import {
   effectivePlan,
@@ -180,7 +184,14 @@ Deno.serve(async (req: Request) => {
     const body = await req.json().catch(() => ({}));
     const imageBase64 = String(body?.imageBase64 ?? "");
     const mimeType = String(body?.mimeType ?? "image/jpeg");
-    if (!imageBase64) return jsonResponse({ error: "no_image" }, 400, cors);
+    // A very long receipt comes as strips (v2), read in parallel.
+    const images: string[] = Array.isArray(body?.images)
+      ? (body.images as unknown[]).map((v) => String(v ?? "")).filter((v) => v)
+        .slice(0, 3)
+      : [];
+    if (!imageBase64 && images.length === 0) {
+      return jsonResponse({ error: "no_image" }, 400, cors);
+    }
 
     // DGOTIX's server key only. Without it the cloud scanner is simply not
     // available yet (the app falls back to on-device OCR where it can).
@@ -195,7 +206,15 @@ Deno.serve(async (req: Request) => {
     }
 
     if (Number(body?.v) === 2) {
-      return await scanV2(db, userId, month, apiKey, imageBase64, mimeType, cors);
+      return await scanV2(
+        db,
+        userId,
+        month,
+        apiKey,
+        images.length > 0 ? images : [imageBase64],
+        mimeType,
+        cors,
+      );
     }
 
     const geminiBody = {
@@ -279,69 +298,41 @@ Deno.serve(async (req: Request) => {
   }
 });
 
-/** v2: one structured-extraction call; the app parses and checks it. */
+/** v2: one structured-extraction call per image (several, in parallel, for
+ * the strips of a very long receipt); the app parses and checks the result. */
 async function scanV2(
   db: ReturnType<typeof serviceClient>,
   userId: string,
   month: string,
   apiKey: string,
-  imageBase64: string,
+  images: string[],
   mimeType: string,
   cors: HeadersInit,
 ): Promise<Response> {
   const started = Date.now();
-  const call = (noThinking: boolean) =>
-    fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{
-            parts: [
-              { text: PROMPT_V2 },
-              { inline_data: { mime_type: mimeType, data: imageBase64 } },
-            ],
-          }],
-          generationConfig: {
-            responseMimeType: "application/json",
-            responseSchema: SCHEMA_V2,
-            temperature: 0,
-            maxOutputTokens: 8192,
-            // Reading a receipt needs no reasoning: skipping the model's
-            // "thinking" step is the biggest saving in waiting time.
-            ...(noThinking ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
-          },
-        }),
-      },
-    );
+  const n = images.length;
+  const results = await Promise.all(
+    images.map((img, i) =>
+      readOne(
+        apiKey,
+        img,
+        mimeType,
+        n > 1
+          ? ` This image is part ${i + 1} of ${n} of ONE long receipt, cut top ` +
+            "to bottom with a small overlap. Read the item lines it shows; " +
+            "read header fields only if they appear in it, and totals only " +
+            "if they appear in it (else '')."
+          : "",
+      )
+    ),
+  );
+  const failed = results.find((r) => "error" in r);
+  if (failed && "error" in failed) {
+    return jsonResponse({ error: failed.error }, failed.status, cors);
+  }
+  const parts = results.map((r) => (r as { data: Reading }).data);
+  const d: Reading = n > 1 ? mergeReadings(parts) : parts[0];
 
-  let res = await call(true);
-  // A model that can't turn thinking off rejects the setting: ask again
-  // without it rather than failing the scan.
-  if (res.status === 400) {
-    const detail = await res.text();
-    if (/thinking/i.test(detail)) res = await call(false);
-    else return jsonResponse({ error: "ocr_unavailable" }, 503, cors);
-  }
-  if (res.status === 401 || res.status === 403 || res.status === 400) {
-    return jsonResponse({ error: "ocr_unavailable" }, 503, cors);
-  }
-  if (res.status === 429) {
-    return jsonResponse({ error: "rate_limited" }, 429, cors);
-  }
-  if (!res.ok) return jsonResponse({ error: "provider_error" }, 502, cors);
-
-  const out = await res.json();
-  const text: string | undefined =
-    out?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) return jsonResponse({ error: "empty_response" }, 502, cors);
-  let d: Record<string, unknown>;
-  try {
-    d = JSON.parse(text);
-  } catch {
-    return jsonResponse({ error: "bad_json" }, 502, cors);
-  }
   if (d.r === false) {
     return jsonResponse({ ok: false, reason: "unreadable" }, 200, cors);
   }
@@ -352,6 +343,7 @@ async function scanV2(
     return jsonResponse({ ok: false, reason: "no_total" }, 200, cors);
   }
 
+  // One receipt, one scan, however many strips it took.
   await bumpOcr(db, userId, month);
 
   // Card numbers never leave the server, even if the model copied one.
@@ -379,10 +371,68 @@ async function scanV2(
     due: toStr(d.due),
   };
   return jsonResponse(
-    { ok: true, v: 2, data, ms: { model: Date.now() - started } },
+    { ok: true, v: 2, data, ms: { model: Date.now() - started, parts: n } },
     200,
     cors,
   );
+}
+
+/** One Gemini reading of one image: the parsed JSON, or an error to return. */
+async function readOne(
+  apiKey: string,
+  imageBase64: string,
+  mimeType: string,
+  partNote: string,
+): Promise<{ data: Reading } | { error: string; status: number }> {
+  const call = (noThinking: boolean) =>
+    fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              { text: PROMPT_V2 + partNote },
+              { inline_data: { mime_type: mimeType, data: imageBase64 } },
+            ],
+          }],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: SCHEMA_V2,
+            temperature: 0,
+            maxOutputTokens: 8192,
+            // Reading a receipt needs no reasoning: skipping the model's
+            // "thinking" step is the biggest saving in waiting time.
+            ...(noThinking ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
+          },
+        }),
+      },
+    );
+
+  let res = await call(true);
+  // A model that can't turn thinking off rejects the setting: ask again
+  // without it rather than failing the scan.
+  if (res.status === 400) {
+    const detail = await res.text();
+    if (/thinking/i.test(detail)) res = await call(false);
+    else return { error: "ocr_unavailable", status: 503 };
+  }
+  if (res.status === 401 || res.status === 403 || res.status === 400) {
+    return { error: "ocr_unavailable", status: 503 };
+  }
+  if (res.status === 429) return { error: "rate_limited", status: 429 };
+  if (!res.ok) return { error: "provider_error", status: 502 };
+
+  const out = await res.json();
+  const text: string | undefined =
+    out?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) return { error: "empty_response", status: 502 };
+  try {
+    return { data: JSON.parse(text) as Reading };
+  } catch {
+    return { error: "bad_json", status: 502 };
+  }
 }
 
 /** Hides anything shaped like a payment card number (Luhn-valid). */

@@ -105,6 +105,9 @@ class ScanTimings {
     this.model = 0,
     this.checks = 0,
     this.fromCache = false,
+    this.originalBytes = 0,
+    this.sentBytes = 0,
+    this.parts = 1,
   });
 
   /// Hashing the image and looking it up in memory.
@@ -122,6 +125,13 @@ class ScanTimings {
   /// Answered from memory: the same photo was read before.
   final bool fromCache;
 
+  /// Size of the photo, and of what was sent after cleanup (0 = not sent).
+  final int originalBytes;
+  final int sentBytes;
+
+  /// Images sent: 1, or the strips of a very long receipt.
+  final int parts;
+
   int get total => prepare + reading + checks;
 
   ScanTimings copyWith({int? checks}) => ScanTimings(
@@ -130,6 +140,9 @@ class ScanTimings {
         model: model,
         checks: checks ?? this.checks,
         fromCache: fromCache,
+        originalBytes: originalBytes,
+        sentBytes: sentBytes,
+        parts: parts,
       );
 }
 
