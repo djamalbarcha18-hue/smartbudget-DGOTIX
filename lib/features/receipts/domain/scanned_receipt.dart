@@ -1,3 +1,5 @@
+import 'package:smartbudget/features/receipts/domain/invoice_reading.dart';
+
 /// Structured data extracted from a receipt image (by the cloud engine now,
 /// by the offline engine later). Pure — no Flutter/IO deps — so it is unit
 /// testable and reusable across engines.
@@ -10,7 +12,45 @@ class ScannedReceipt {
     required this.category,
     required this.confidence,
     required this.fromCloud,
+    this.raw,
+    this.invoice,
+    this.timings = const ScanTimings(),
+    this.imageHash,
   });
+
+  /// The invoice reader's reading (v2 scanner), with its items, totals and
+  /// checks. Null for an older scanner that only returns the total.
+  final InvoiceReading? invoice;
+
+  /// What the server read, as returned (kept to answer a rescan of the same
+  /// photo from memory).
+  final Map<String, dynamic>? raw;
+  final ScanTimings timings;
+
+  /// SHA-256 of the image sent.
+  final String? imageHash;
+
+  /// The reading as the expense to prefill: the invoice reader's total when
+  /// there is one.
+  factory ScannedReceipt.fromInvoice(
+    InvoiceReading r, {
+    required Map<String, dynamic> raw,
+    required ScanTimings timings,
+    String? imageHash,
+  }) =>
+      ScannedReceipt(
+        merchantName: r.supplier ?? '',
+        date: r.date,
+        totalAmount: r.total ?? 0,
+        currency: r.currency ?? '',
+        category: r.category ?? '',
+        confidence: r.confidence.total,
+        fromCloud: true,
+        raw: raw,
+        invoice: r,
+        timings: timings,
+        imageHash: imageHash,
+      );
 
   final String merchantName;
 
@@ -56,3 +96,40 @@ class ScannedReceipt {
     return DateTime.tryParse(s);
   }
 }
+
+/// Where the time of a scan went, in milliseconds (0 = not measured).
+class ScanTimings {
+  const ScanTimings({
+    this.prepare = 0,
+    this.reading = 0,
+    this.model = 0,
+    this.checks = 0,
+    this.fromCache = false,
+  });
+
+  /// Hashing the image and looking it up in memory.
+  final int prepare;
+
+  /// Sending the image and getting the reading back (includes [model]).
+  final int reading;
+
+  /// Of which: the AI model, as measured by the server.
+  final int model;
+
+  /// Parsing amounts and checking the arithmetic, on the device.
+  final int checks;
+
+  /// Answered from memory: the same photo was read before.
+  final bool fromCache;
+
+  int get total => prepare + reading + checks;
+
+  ScanTimings copyWith({int? checks}) => ScanTimings(
+        prepare: prepare,
+        reading: reading,
+        model: model,
+        checks: checks ?? this.checks,
+        fromCache: fromCache,
+      );
+}
+

@@ -5,7 +5,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:smartbudget/features/receipts/domain/receipt_ocr_engine.dart';
 import 'package:smartbudget/features/receipts/domain/scanned_receipt.dart';
 
-/// Cloud OCR via the `receipt-scan` Supabase Edge Function (Gemini Flash).
+/// Cloud OCR via the `receipt-scan` Supabase Edge Function (Gemini Flash):
+/// one call per photo, which reads the header, items and totals (v2).
 ///
 /// The image never goes to Google directly; it is proxied through the function.
 /// DGOTIX is the only AI provider: the function scans with DGOTIX's server key
@@ -30,6 +31,8 @@ class GeminiOnlineEngine implements ReceiptOcrEngine {
         body: <String, dynamic>{
           'imageBase64': b64,
           'mimeType': image.mimeType,
+          // The invoice reader: items and totals, amounts as printed.
+          'v': 2,
         },
       );
     } on FunctionException catch (e) {
@@ -44,7 +47,25 @@ class GeminiOnlineEngine implements ReceiptOcrEngine {
     }
     final Map<String, dynamic> map = data.cast<String, dynamic>();
 
+    if (map['ok'] == true && map['v'] == 2 && map['data'] is Map) {
+      // Parsed and checked by the caller (InvoiceAnalyzer).
+      final Object? ms = map['ms'];
+      return ScannedReceipt(
+        merchantName: '',
+        date: null,
+        totalAmount: 0,
+        currency: '',
+        category: '',
+        confidence: 0,
+        fromCloud: true,
+        raw: (map['data'] as Map).cast<String, dynamic>(),
+        timings: ScanTimings(
+          model: ms is Map && ms['model'] is num ? (ms['model'] as num).round() : 0,
+        ),
+      );
+    }
     if (map['ok'] == true) {
+      // A server not yet updated: total only.
       return ScannedReceipt.fromCloudJson(map);
     }
     final String? reason = map['reason']?.toString();

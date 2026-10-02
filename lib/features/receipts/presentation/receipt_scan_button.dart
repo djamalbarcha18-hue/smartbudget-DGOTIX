@@ -7,14 +7,18 @@ import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/receipts/application/receipt_scan_controller.dart';
+import 'package:smartbudget/features/receipts/domain/invoice_reading.dart';
 import 'package:smartbudget/features/receipts/domain/receipt_ocr_engine.dart';
 import 'package:smartbudget/features/receipts/domain/scanned_receipt.dart';
+import 'package:smartbudget/features/receipts/presentation/invoice_review_sheet.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
+import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// "Scan receipt" action: capture → cloud OCR → prefilled Add-expense sheet.
+/// "Scan receipt" action: capture → reading (with its stages on the button) →
+/// the checked invoice → prefilled Add-expense sheet.
 class ReceiptScanButton extends ConsumerStatefulWidget {
   const ReceiptScanButton({super.key});
 
@@ -24,12 +28,19 @@ class ReceiptScanButton extends ConsumerStatefulWidget {
 
 class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
   bool _busy = false;
+  ScanStage? _stage;
 
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
+    final String busyLabel = switch (_stage) {
+      ScanStage.preparing => l.receiptStagePreparing,
+      ScanStage.reading => l.receiptStageReading,
+      ScanStage.checking => l.receiptStageChecking,
+      null => l.receiptScanning,
+    };
     return DsButton(
-      label: _busy ? l.receiptScanning : l.scanReceipt,
+      label: _busy ? busyLabel : l.scanReceipt,
       icon: Icons.document_scanner_outlined,
       variant: DsButtonVariant.secondary,
       onPressed: _busy ? null : _start,
@@ -81,9 +92,49 @@ class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
 
     setState(() => _busy = true);
     try {
-      final ScannedReceipt r =
-          await ref.read(receiptScannerProvider).scan(source: source);
+      final ReceiptScanner scanner = ref.read(receiptScannerProvider);
+      final ScannedReceipt r = await scanner.scan(
+        source: source,
+        onStage: (ScanStage s) {
+          if (mounted) setState(() => _stage = s);
+        },
+      );
 
+      final InvoiceReading? invoice = r.invoice;
+      if (invoice != null) {
+        final bool duplicate = await scanner.isLikelyDuplicate(r);
+        if (!mounted) return;
+        setState(() {
+          _busy = false;
+          _stage = null;
+        });
+        final InvoiceReading? accepted = await InvoiceReviewSheet.show(
+          navigator.context,
+          reading: invoice,
+          timings: r.timings,
+          duplicate: duplicate,
+          walletCurrency: ref.read(walletCurrencyProvider(
+              ref.read(effectiveDefaultWalletProvider))),
+        );
+        if (accepted == null) return;
+        await scanner.markAdded(r);
+        if (!mounted) return;
+        await TransactionEditorSheet.show(
+          navigator.context,
+          type: TransactionType.expense,
+          prefill: TransactionDraft(
+            amount: accepted.total,
+            category: Catalog.expenseCategories.contains(accepted.category)
+                ? accepted.category
+                : null,
+            date: accepted.date,
+            description: accepted.supplier,
+          ),
+        );
+        return;
+      }
+
+      // An older scanner (total only): straight to the expense sheet.
       final TransactionDraft draft = TransactionDraft(
         amount: r.totalAmount,
         // Only prefill a category the dropdown actually offers.
@@ -118,7 +169,12 @@ class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
         l,
       ))));
     } finally {
-      if (mounted) setState(() => _busy = false);
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          _stage = null;
+        });
+      }
     }
   }
 
