@@ -15,10 +15,29 @@ export class HttpError extends Error {
   }
 }
 
+/**
+ * A project API key provided by Supabase to every Edge Function: the legacy
+ * JWT key when the project has one, otherwise the new-style key from the
+ * JSON map (`{"default": "sb_..."}`) Supabase provides alongside.
+ */
+function projectKey(legacy: string, map: string): string | undefined {
+  const key = Deno.env.get(legacy);
+  if (key) return key;
+  try {
+    const keys = JSON.parse(Deno.env.get(map) ?? "{}") as Record<
+      string,
+      string
+    >;
+    return keys["default"] ?? Object.values(keys)[0];
+  } catch {
+    return undefined;
+  }
+}
+
 /** Service-role client — bypasses RLS. NEVER expose its key to clients. */
 export function serviceClient(): SupabaseClient {
   const url = Deno.env.get("SUPABASE_URL");
-  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const key = projectKey("SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_SECRET_KEYS");
   if (!url || !key) throw new HttpError(500, "server_misconfigured");
   return createClient(url, key, { auth: { persistSession: false } });
 }
@@ -30,7 +49,7 @@ export async function requireUserId(req: Request): Promise<string> {
   if (!token) throw new HttpError(401, "missing_token");
 
   const url = Deno.env.get("SUPABASE_URL");
-  const anon = Deno.env.get("SUPABASE_ANON_KEY");
+  const anon = projectKey("SUPABASE_ANON_KEY", "SUPABASE_PUBLISHABLE_KEYS");
   if (!url || !anon) throw new HttpError(500, "server_misconfigured");
 
   const client = createClient(url, anon, {

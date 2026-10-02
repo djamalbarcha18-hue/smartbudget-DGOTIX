@@ -1,0 +1,41 @@
+# Supabase CLI settings used when deploying the Edge Functions
+# (.github/workflows/supabase-functions.yml).
+project_id = "smartbudget"
+
+# Every function checks the caller itself: user functions verify the session
+# with requireUserId(), payment webhooks verify the provider's signature, and
+# the market proxies are public. The platform's own JWT check is turned off:
+# it doesn't work with the new publishable/secret API keys, and the webhooks
+# carry no Supabase token at all.
+[functions.ai-gateway]
+verify_jwt = false
+
+[functions.billing-config]
+verify_jwt = false
+
+[functions.coupon-validate]
+verify_jwt = false
+
+[functions.create-checkout]
+verify_jwt = false
+
+[functions.delete-account]
+verify_jwt = false
+
+[functions.manage-subscription]
+verify_jwt = false
+
+[functions.market-proxy]
+verify_jwt = false
+
+[functions.paddle-webhook]
+verify_jwt = false
+
+[functions.parallel-proxy]
+verify_jwt = false
+
+[functions.paypal-webhook]
+verify_jwt = false
+
+[functions.receipt-scan]
+verify_jwt = false
