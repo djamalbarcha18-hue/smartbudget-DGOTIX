@@ -79,7 +79,7 @@ Each upload to Google Play needs a higher version code: bump `version` in
 | Data | Collected | Why | Notes |
 |---|---|---|---|
 | E-mail address | yes, with sign-in (Supabase) | account | not shared |
-| Financial info (budget data) | only with cloud backup | backup, app functionality | encrypted in transit, deletable |
+| Financial info (budget data) | only with cloud backup or the AI assistant | backup, app functionality | encrypted in transit, deletable; the assistant gets totals by month and category (amounts and dates, no descriptions or names), passed to the AI provider and not stored |
 | Photos (receipt images) | only with cloud receipt scan | app functionality | sent to the AI provider through our server, not stored |
 | App interactions: AI questions | only with the AI assistant | app functionality | question text sent to the AI provider, not stored |
 

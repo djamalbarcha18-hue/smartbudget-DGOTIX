@@ -79,7 +79,11 @@ abstract final class LegalContent {
         const LegalSection(
           'DGOTIX AI assistant',
           'The AI assistant is optional. When you send a question, the text of '
-              'that question and a compact summary of the relevant figures are '
+              'that question and a summary of your figures (totals by month and '
+              'category for up to 12 months, budgets, wallet balances, goals, '
+              'recurring transactions, seasonal budgets and daret groups; '
+              'amounts and dates only, never descriptions, notes or the names '
+              'you give things) are '
               'sent to an AI provider (Google Gemini, OpenAI, or Anthropic) to '
               'generate a reply, always through our secure server, which uses '
               'our own provider keys and records only usage metadata (never your '
@@ -185,7 +189,10 @@ abstract final class LegalContent {
         const LegalSection(
           'مساعد DGOTIX AI',
           'مساعد الذكاء الاصطناعي اختياري. عند إرسال سؤال، يُرسَل نصّ السؤال '
-              'وملخّص موجز للأرقام المعنيّة إلى مزوّد ذكاء اصطناعي (Google Gemini '
+              'وملخّص لأرقامك (المجاميع حسب الشهر والفئة لمدة تصل إلى 12 شهراً، '
+              'والميزانيات، وأرصدة المحافظ، والأهداف، والمعاملات المتكررة، '
+              'وميزانيات المواسم، والدارت؛ مبالغ وتواريخ فقط، دون الأوصاف أو '
+              'الملاحظات أو الأسماء التي تعطيها) إلى مزوّد ذكاء اصطناعي (Google Gemini '
               'أو OpenAI أو Anthropic) لتوليد الإجابة، دائماً عبر خادمنا الآمن الذي '
               'يستخدم مفاتيحنا نحن ويسجّل بيانات استخدام فقط (لا نصّ سؤالك ولا '
               'أرقامك). تُعالَج مدخلاتك وفق سياسات ذلك المزوّد؛ ولا نستخدم '

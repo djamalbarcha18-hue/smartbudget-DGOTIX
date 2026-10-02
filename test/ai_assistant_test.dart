@@ -107,6 +107,104 @@ void main() {
       expect(s, contains('Zakat: not due'));
     });
 
+    test('detailed figures: history, budgets, wallets, goals and more', () {
+      final String s = AiSnapshot.build(const AiSnapshotInput(
+        currency: 'DZD',
+        today: '2026-10-02',
+        hasData: true,
+        incomeCategories: <AiCategoryLine>[
+          AiCategoryLine('الراتب', '80,000 DA', 1),
+        ],
+        history: <AiMonthLine>[
+          AiMonthLine(
+            label: '2026-03',
+            income: '80,000 DA',
+            expense: '52,000 DA',
+            net: '28,000 DA',
+            categories: <AiCategoryLine>[
+              AiCategoryLine('الطعام', '21,000 DA', 0.4),
+            ],
+          ),
+          AiMonthLine(
+            label: '2026-10',
+            income: '80,000 DA',
+            expense: '3,000 DA',
+            net: '77,000 DA',
+            current: true,
+          ),
+        ],
+        categoryBudgets: <AiBudgetLine>[
+          AiBudgetLine('الطعام', '20,000 DA', '3,000 DA', 0.15),
+        ],
+        wallets: <AiWalletLine>[
+          AiWalletLine('general', '50,000 DA'),
+          AiWalletLine('bank #2', '120,000 DA'),
+        ],
+        goals: <AiGoalLine>[
+          AiGoalLine(
+              saved: '40,000 DA',
+              target: '100,000 DA',
+              progress: 0.4,
+              deadline: '2027-06-30'),
+        ],
+        recurring: <AiRecurringLine>[
+          AiRecurringLine(
+              income: false,
+              category: 'السكن',
+              amount: '25,000 DA',
+              frequency: 'monthly',
+              next: '2026-10-05'),
+        ],
+        seasons: <AiSeasonLine>[
+          AiSeasonLine(
+              kind: 'ramadan',
+              start: '2027-02-08',
+              end: '2027-03-09',
+              status: 'upcoming',
+              budget: '60,000 DA',
+              setAside: '10,000 DA'),
+        ],
+        darets: <AiDaretLine>[
+          AiDaretLine(
+              contribution: '10,000 DA',
+              frequency: 'monthly',
+              rounds: 10,
+              paidRounds: 4,
+              myTurn: '2027-01-15',
+              payoutReceived: false,
+              nextPayment: '2026-10-15'),
+        ],
+      ));
+      expect(s, contains('Income by category this month: الراتب 80,000 DA.'));
+      expect(s, contains('- 2026-03: income 80,000 DA, expenses 52,000 DA, '
+          'net 28,000 DA; expenses by category: الطعام 21,000 DA.'));
+      expect(s, contains('- 2026-10 (in progress): income 80,000 DA'));
+      expect(s, contains('الطعام planned 20,000 DA, spent 3,000 DA (15%)'));
+      expect(s, contains('general 50,000 DA; bank #2 120,000 DA'));
+      expect(s, contains('#1 saved 40,000 DA of 100,000 DA (40%), '
+          'deadline 2027-06-30'));
+      expect(s, contains('expense السكن 25,000 DA monthly, next 2026-10-05'));
+      expect(s, contains('ramadan 2027-02-08 to 2027-03-09 (upcoming): '
+          'budget 60,000 DA, set aside 10,000 DA.'));
+      expect(s, contains('#1 10,000 DA monthly, 4 of 10 rounds paid, '
+          'my payout 2027-01-15 (not received yet), next payment 2026-10-15'));
+    });
+
+    test('empty detail sections are left out', () {
+      final String s = AiSnapshot.build(const AiSnapshotInput(
+          currency: 'USD', today: '2026-09-24', hasData: true));
+      for (final String section in <String>[
+        'Monthly history',
+        'Wallet balances',
+        'Goals:',
+        'Recurring transactions',
+        'Seasonal budgets',
+        'Daret',
+      ]) {
+        expect(s, isNot(contains(section)));
+      }
+    });
+
     test('an unset budget is stated, never guessed', () {
       final String s = AiSnapshot.build(const AiSnapshotInput(
           currency: 'USD', today: '2026-09-24', hasData: true));
