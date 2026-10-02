@@ -7,6 +7,7 @@ import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/receipts/application/receipt_scan_controller.dart';
+import 'package:smartbudget/features/receipts/domain/invoice_notes.dart';
 import 'package:smartbudget/features/receipts/domain/invoice_reading.dart';
 import 'package:smartbudget/features/receipts/domain/receipt_ocr_engine.dart';
 import 'package:smartbudget/features/receipts/domain/scanned_receipt.dart';
@@ -129,6 +130,8 @@ class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
                 : null,
             date: accepted.date,
             description: accepted.supplier,
+            // The products stay with the expense.
+            notes: InvoiceNotes.of(accepted),
           ),
         );
         return;

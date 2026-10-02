@@ -22,6 +22,8 @@ class DsTextField extends StatefulWidget {
     this.autofillHints,
     this.inputFormatters,
     this.suffixText,
+    this.minLines,
+    this.maxLines = 1,
   });
 
   final String label;
@@ -38,6 +40,10 @@ class DsTextField extends StatefulWidget {
 
   /// Currency code shown at the end of the field (always visible).
   final String? suffixText;
+
+  /// Multi-line fields (notes): grows from [minLines] up to [maxLines].
+  final int? minLines;
+  final int maxLines;
 
   @override
   State<DsTextField> createState() => _DsTextFieldState();
@@ -64,6 +70,8 @@ class _DsTextFieldState extends State<DsTextField> {
         TextFormField(
           controller: widget.controller,
           obscureText: _obscured,
+          minLines: widget.obscure ? null : widget.minLines,
+          maxLines: widget.obscure ? 1 : widget.maxLines,
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction,
           validator: widget.validator,

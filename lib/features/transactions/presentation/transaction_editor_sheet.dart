@@ -31,12 +31,14 @@ class TransactionDraft {
     this.category,
     this.date,
     this.description,
+    this.notes,
   });
 
   final double? amount;
   final String? category;
   final DateTime? date;
   final String? description;
+  final String? notes;
 }
 
 /// Quick-add / edit sheet for a single transaction (income or expense).
@@ -113,7 +115,7 @@ class _TransactionEditorSheetState
     );
     _description =
         TextEditingController(text: e?.description ?? p?.description ?? '');
-    _notes = TextEditingController(text: e?.notes ?? '');
+    _notes = TextEditingController(text: e?.notes ?? p?.notes ?? '');
     _date = e?.date ?? p?.date ?? AppClock.now();
     _category = e?.category ?? p?.category;
     _paymentMethod = e?.paymentMethod;
@@ -317,6 +319,16 @@ class _TransactionEditorSheetState
                     label: '${l.fieldDescription} (${l.optional})',
                     controller: _description,
                     prefixIcon: Icons.notes_rounded,
+                  ),
+                  const SizedBox(height: DsSpacing.lg),
+                  // Free notes; a scanned invoice puts its products here.
+                  DsTextField(
+                    label: '${l.fieldNotes} (${l.optional})',
+                    controller: _notes,
+                    prefixIcon: Icons.receipt_long_outlined,
+                    keyboardType: TextInputType.multiline,
+                    minLines: 1,
+                    maxLines: 6,
                   ),
                   const SizedBox(height: DsSpacing.lg),
                   if (ref.watch(hasWalletsProvider)) ...<Widget>[
