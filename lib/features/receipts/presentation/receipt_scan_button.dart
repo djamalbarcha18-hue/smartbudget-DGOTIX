@@ -114,6 +114,7 @@ class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
           reading: invoice,
           timings: r.timings,
           duplicate: duplicate,
+          offline: !r.fromCloud,
           walletCurrency: ref.read(walletCurrencyProvider(
               ref.read(effectiveDefaultWalletProvider))),
         );

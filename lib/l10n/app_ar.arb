@@ -912,6 +912,7 @@
   "invoiceIssueDateOdd": "تحقّق من التاريخ: يبدو غير معتاد.",
   "invoiceIssueResolved": "قُرئ مبلغ غير واضح بالطريقة التي تجعل الحساب صحيحاً.",
   "invoiceDuplicate": "قد تكون هذه الفاتورة مكررة.",
+  "invoiceReadOffline": "قُرئت على الجهاز بدون إنترنت (الطباعة الفرنسية والإنجليزية فقط): تحقّق من الأرقام.",
   "invoiceForeignCurrency": "المبالغ بعملة {code}. اختر محفظة بعملة {code} عند الحفظ، أو حوّلها.",
   "invoiceAddExpense": "إضافة كمصروف",
   "invoiceEditLine": "تعديل السطر",

@@ -105,7 +105,10 @@ class ReceiptScanner {
     final Map<String, dynamic>? raw = read.raw;
     if (raw == null) return read; // older scanner: total only
 
-    await cache.store(hash, raw);
+    // Only cloud readings are remembered: an offline one is read again by
+    // the cloud next time.
+    final bool offline = raw['src'] == 'device';
+    if (!offline) await cache.store(hash, raw);
     return _check(
       raw,
       hash,
@@ -118,6 +121,7 @@ class ReceiptScanner {
         parts: prepared.parts.length,
       ),
       onStage,
+      fromCloud: !offline,
     );
   }
 
@@ -137,8 +141,9 @@ class ReceiptScanner {
     Map<String, dynamic> raw,
     String hash,
     ScanTimings timings,
-    void Function(ScanStage stage)? onStage,
-  ) {
+    void Function(ScanStage stage)? onStage, {
+    bool fromCloud = true,
+  }) {
     onStage?.call(ScanStage.checking);
     final Stopwatch sw = Stopwatch()..start();
     final InvoiceReading reading = InvoiceAnalyzer.analyze(
@@ -151,6 +156,7 @@ class ReceiptScanner {
       raw: raw,
       timings: timings.copyWith(checks: sw.elapsedMilliseconds),
       imageHash: hash,
+      fromCloud: fromCloud,
     );
   }
 
@@ -168,8 +174,14 @@ class ReceiptScanner {
     try {
       return await _ref.read(onlineReceiptEngineProvider).recognize(image);
     } on ReceiptScanException catch (e) {
-      // Fall back to on-device OCR only when the cloud is unreachable.
-      if (e.code == ReceiptScanError.network) {
+      // Read on the device when the cloud can't: no connection, the plan's
+      // cloud scans used up, or the service down.
+      if (const <ReceiptScanError>{
+        ReceiptScanError.network,
+        ReceiptScanError.quotaExceeded,
+        ReceiptScanError.rateLimited,
+        ReceiptScanError.backendUnavailable,
+      }.contains(e.code)) {
         final ReceiptOcrEngine offline =
             _ref.read(offlineReceiptEngineProvider);
         if (offline.isAvailable) return offline.recognize(image);

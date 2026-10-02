@@ -26,9 +26,13 @@ class InvoiceReviewSheet extends StatefulWidget {
     required this.timings,
     this.duplicate = false,
     this.walletCurrency,
+    this.offline = false,
   });
 
   final InvoiceReading reading;
+
+  /// Read on the device (no network): worth checking the figures.
+  final bool offline;
   final ScanTimings timings;
   final bool duplicate;
 
@@ -43,6 +47,7 @@ class InvoiceReviewSheet extends StatefulWidget {
     required ScanTimings timings,
     bool duplicate = false,
     String? walletCurrency,
+    bool offline = false,
   }) {
     return showModalBottomSheet<InvoiceReading>(
       context: context,
@@ -53,6 +58,7 @@ class InvoiceReviewSheet extends StatefulWidget {
         timings: timings,
         duplicate: duplicate,
         walletCurrency: walletCurrency,
+        offline: offline,
       ),
     );
   }
@@ -127,6 +133,11 @@ class _InvoiceReviewSheetState extends State<InvoiceReviewSheet> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       _timingLine(c, l, t),
+                      if (widget.offline)
+                        _Notice(
+                            text: l.invoiceReadOffline,
+                            icon: Icons.wifi_off_rounded,
+                            color: c.warning),
                       if (widget.duplicate)
                         _Notice(
                             text: l.invoiceDuplicate,

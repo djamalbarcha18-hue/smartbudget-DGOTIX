@@ -37,6 +37,7 @@ class ScannedReceipt {
     required Map<String, dynamic> raw,
     required ScanTimings timings,
     String? imageHash,
+    bool fromCloud = true,
   }) =>
       ScannedReceipt(
         merchantName: r.supplier ?? '',
@@ -45,7 +46,7 @@ class ScannedReceipt {
         currency: r.currency ?? '',
         category: r.category ?? '',
         confidence: r.confidence.total,
-        fromCloud: true,
+        fromCloud: fromCloud,
         raw: raw,
         invoice: r,
         timings: timings,

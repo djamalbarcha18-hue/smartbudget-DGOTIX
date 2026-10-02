@@ -3,10 +3,19 @@
 Reads a receipt photo into the fields a budget needs, and checks them.
 
 ```
-photo ─ image_picker (1280 px wide max, JPEG 80)
+photo ─ image_picker (1280 px wide, up to 4096 px tall, JPEG 80)
       ─ SHA-256 ─ already read on this device? → answer from memory (no call)
-      ─ receipt-scan v2: ONE Gemini call, thinking off, structured JSON with
-        short keys: header, item lines, totals; amounts copied as printed
+      ─ cleanup (conservative): crop to the receipt, gray, stretch faded
+        print; receipts taller than 3.2 × their width cut into ≤ 3
+        overlapping strips. Web: the browser's own image engine
+        (receipt_image_native_web.dart, ~120 ms); mobile: Dart in a
+        background isolate (receipt_image_prep.dart)
+      ─ receipt-scan v2: ONE Gemini call per image (strips in parallel,
+        merged by _shared/invoice_merge.ts, counted as one scan), thinking
+        off, structured JSON with short keys: header, item lines, totals;
+        amounts copied as printed
+      ─ offline (Android, no network / no cloud quota): ML Kit Latin text
+        recognition → OfflineReceiptParser → the same short-key reading
       ─ InvoiceAnalyzer (on the device, pure Dart, unit tested):
           number format of the whole invoice ("1 250,50", "1,250.50",
           "1.250" decided by the other amounts or by the arithmetic),
@@ -16,7 +25,8 @@ photo ─ image_picker (1280 px wide max, JPEG 80)
           confidence per field, review level (verified / warning / review)
       ─ InvoiceReviewSheet: header, items, totals, ✓ Verified / ⚠ Needs
         review; flagged lines can be corrected; "may be a duplicate" hint
-      ─ Add expense (prefilled: total, supplier, date, category)
+      ─ Add expense (prefilled: total, supplier, date, category, and the
+        products in the note)
 ```
 
 - Never invented: a value that is not printed stays null; a missing total is

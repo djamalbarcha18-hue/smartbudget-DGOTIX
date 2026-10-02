@@ -914,6 +914,7 @@
   "invoiceIssueDateOdd": "Check the date: it looks unusual.",
   "invoiceIssueResolved": "An unclear amount was read the way that adds up.",
   "invoiceDuplicate": "This invoice may be a duplicate.",
+  "invoiceReadOffline": "Read on this device without internet (French and English print only): check the figures.",
   "invoiceForeignCurrency": "Amounts are in {code}. Choose a {code} wallet when saving, or convert them.",
   "@invoiceForeignCurrency": {"placeholders": {"code": {"type": "String"}}},
   "invoiceAddExpense": "Add expense",
