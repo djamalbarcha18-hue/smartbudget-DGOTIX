@@ -81,3 +81,19 @@ Sign-in never applies the new rules, so existing users with older passwords are
 never locked out; they are only asked for a strong password the next time they
 set one. Without a Supabase project configured, the dev fake accepts any 6-digit
 code for the email that requested it (development only).
+
+## Current production setup (SmartBudget)
+
+- Project `fconhnyognxcpvmwobus` (EU, Ireland). URL and publishable key are
+  set in `.github/workflows/deploy-web.yml` and `android.yml`.
+- Database: `supabase/setup_all.sql` applied.
+- Edge Functions: deployed by `.github/workflows/supabase-functions.yml`
+  (secret `SUPABASE_ACCESS_TOKEN`, a project-scoped token, 90-day expiry).
+  Function secret `GEMINI_API_KEY` is set in the dashboard.
+- Email: custom SMTP through Brevo (`smtp-relay.brevo.com:587`), sender
+  `SmartBudget <support@dgotix.com>`; `dgotix.com` authenticated in Brevo
+  (Brevo code, DKIM `brevo1`/`brevo2`, DMARC records at Namecheap). The Brevo
+  SMTP key expires after a year, or after 90 days without any email sent.
+- Reset Password template: `supabase/templates/recovery.html` (code-based;
+  8-digit codes, the app accepts 6 to 10).
+- "Confirm email" is off: sign-up signs people in directly.
