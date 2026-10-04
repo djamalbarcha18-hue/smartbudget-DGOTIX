@@ -109,7 +109,7 @@ code), **Accepted** (documented risk).
 | 20 | Low | Android | Release builds fall back to the debug key when no release key is configured. | Owner: create the upload key before Play publication |
 | 21 | Info | Web/mobile | The Supabase session lives in localStorage / app storage (no HttpOnly cookie, inherent to supabase_flutter). | Accepted: mitigated by CSP and short-lived access tokens |
 | 22 | Info | Local features | Pro-only features computed on the device (salary split, smart alerts) can be unlocked by a modified client. | Accepted: no server data or cost involved; metered features are enforced server-side |
-| 23 | Info | DNS | No dangling records: `smartbudget` → GitHub Pages, `www` → Namecheap parking, apex/others unset. | Owner: verify the domain in GitHub Pages settings |
+| 23 | Info | DNS | No dangling records: `smartbudget` → GitHub Pages, `www` → Namecheap parking, apex/others unset. | Done: `dgotix.com` is verified in GitHub Pages |
 
 **Checked with no issue found:**
 - **SQL injection:** queries go through the supabase-js query builder, and the
@@ -197,16 +197,18 @@ Supabase Auth supports TOTP MFA without a rebuild:
    - Set the webhook secrets: `PADDLE_WEBHOOK_SECRET`, `PAYPAL_WEBHOOK_ID`.
    - Run one full sandbox purchase, renewal and cancellation for each
      provider.
-4. **Gemini key:** in Google Cloud, restrict it to the Generative Language
-   API and set a daily quota and a budget alert.
-5. **Supabase Auth settings:**
-   - Email OTP expiry of 15 minutes.
-   - Keep the default rate limits.
-   - Consider a CAPTCHA (Cloudflare Turnstile) on sign-up and reset if abuse
-     appears.
+4. **Gemini:** the key is on the free tier (no billing, so no charges, but
+   Google may use free-tier content to improve its products). Before the
+   public launch, move to the paid tier with a budget alert, restrict the
+   key to the Generative Language API, and say in the privacy policy that
+   receipts and AI questions are processed by Google Gemini.
+5. **Supabase Auth settings:** done: email OTP expiry is 15 minutes, the
+   minimum password is 8 characters (letters and digits), and secure email
+   change is on. Keep the default rate limits, and consider a CAPTCHA
+   (Cloudflare Turnstile) on sign-up and reset if abuse appears.
 6. **Android:** create the upload/release key, and store it in GitHub
    secrets.
-7. **GitHub Pages:** verify `dgotix.com` under the account's Pages settings.
+7. **GitHub Pages:** done: `dgotix.com` is verified for the account.
 8. **Later:**
    - Cloudflare proxy (HSTS, frame-ancestors, Permissions-Policy, WAF,
      rate limits).
