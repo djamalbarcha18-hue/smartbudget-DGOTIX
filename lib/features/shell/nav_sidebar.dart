@@ -46,8 +46,7 @@ class NavSidebar extends StatelessWidget {
               horizontal: DsSpacing.lg,
               vertical: DsSpacing.xl,
             ),
-            child: DgotixBrandLockup(
-                logoHeight: 56, gap: DsSpacing.sm, showTagline: true),
+            child: DgotixBrandLockup(logoHeight: 56),
           ),
           Divider(height: 1, color: c.border),
           Expanded(

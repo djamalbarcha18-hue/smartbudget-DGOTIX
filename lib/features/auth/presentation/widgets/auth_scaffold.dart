@@ -41,7 +41,9 @@ class AuthScaffold extends StatelessWidget {
             ),
             Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(DsSpacing.xl),
+                // Clear of the language/theme buttons above on narrow screens.
+                padding: const EdgeInsets.fromLTRB(
+                    DsSpacing.xl, 72, DsSpacing.xl, DsSpacing.xl),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 420),
                   child: Column(
