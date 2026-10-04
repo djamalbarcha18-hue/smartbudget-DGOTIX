@@ -7,6 +7,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// device. The first signed-in account to open it after the update takes it
 /// over, and the shared copy is removed.
 abstract final class AccountKeys {
+  /// Personal data older versions kept for the whole device (see [open]).
+  static const List<String> sharedByOlderVersions = <String>[
+    'sb_ai_chat',
+    'sb_ai_usage',
+    'sb_backup_snooze',
+    'sb_custom_categories',
+    'sb_emergency_savings',
+    'sb_last_backup',
+    'sb_portfolio_capacity',
+    'sb_zakat_inputs',
+  ];
+
+  /// The account [key] holds data for, or null for a device-wide key.
+  static String? ownerOf(String key) => _owned.firstMatch(key)?.group(1);
+
+  // `sb_<name>_<account id>`: a server account (UUID), or an account from
+  // before real accounts (`dev-<number>`).
+  static final RegExp _owned = RegExp(
+      r'^sb_.+_([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+      r'|dev--?\d+)$');
+
   /// The key for [base] of the account [userId] (`guest` when signed out).
   static String of(String base, String? userId) =>
       '${base}_${userId ?? 'guest'}';

@@ -58,6 +58,11 @@ jobs:
           flutter build web --release --base-href / $DEFINES
           sed -i 's#<base href="/">#<base href="./">#' build/web/index.html
           grep -q '<base href="./">' build/web/index.html
+          # The page's Content-Security-Policy (web/index.html) must allow the
+          # Supabase project, or sign-in and sync would be blocked.
+          if [ -n "$SUPABASE_URL" ] && ! grep -q "connect-src[^;]*${SUPABASE_URL%/}" build/web/index.html; then
+            echo "web/index.html: add $SUPABASE_URL to connect-src"; exit 1
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

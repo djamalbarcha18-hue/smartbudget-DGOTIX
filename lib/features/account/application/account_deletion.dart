@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/core/storage/account_keys.dart';
 import 'package:smartbudget/features/app_lock/data/device_auth.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 
@@ -12,7 +13,7 @@ final accountDeletionProvider =
     Provider<AccountDeletion>((ref) => AccountDeletion(ref));
 
 /// "Delete my account" (required by Google Play and the App Store): the
-/// server account and everything stored for it, then all app data on this
+/// server account and everything stored for it, then its data on this
 /// device, then a fresh start.
 class AccountDeletion {
   AccountDeletion(this._ref);
@@ -29,7 +30,7 @@ class AccountDeletion {
       if (error != null) return AccountDeletionResult.failed;
     }
 
-    await wipeLocal(await SharedPreferences.getInstance());
+    await wipeLocal(await SharedPreferences.getInstance(), userId);
     try {
       await _ref.read(authControllerProvider.notifier).signOut();
     } catch (_) {
@@ -55,8 +56,26 @@ class AccountDeletion {
     }
   }
 
-  /// Erases everything the app stored on this device. Some personal data
-  /// (AI chat, zakat inputs, custom categories…) isn't keyed per user, so
-  /// nothing less guarantees none of it is left behind.
-  static Future<void> wipeLocal(SharedPreferences prefs) => prefs.clear();
+  /// Erases the account's data from this device. When no other account has
+  /// data here, everything the app stored goes (a fresh start); otherwise
+  /// the other accounts' data and the device's own settings (language,
+  /// theme, app lock) stay.
+  static Future<void> wipeLocal(SharedPreferences prefs, String userId) async {
+    final Set<String> keys = prefs.getKeys();
+    final bool othersHere = keys.any((String k) {
+      final String? owner = AccountKeys.ownerOf(k);
+      return owner != null && owner != userId;
+    });
+    if (!othersHere) {
+      await prefs.clear();
+      return;
+    }
+    for (final String k in keys) {
+      if (AccountKeys.ownerOf(k) == userId ||
+          AccountKeys.sharedByOlderVersions.contains(k) ||
+          k == 'sb_entitlement') {
+        await prefs.remove(k);
+      }
+    }
+  }
 }
