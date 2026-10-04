@@ -3,7 +3,8 @@
 // The webhook is the only thing that grants/revokes entitlement, so these
 // helpers keep ai_entitlements + subscriptions in sync. Nothing here talks to a
 // specific provider except verifyPaddleSignature (clearly named).
-import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.117.2";
+import { HttpError } from "./auth.ts";
 import { normalizePlan, type Plan } from "./quota.ts";
 
 export interface PriceMapping {
@@ -11,16 +12,21 @@ export interface PriceMapping {
   period: "monthly" | "yearly";
 }
 
-/** Resolve a provider price id to (plan, period) via billing_prices. */
+/**
+ * Resolve a provider price id to (plan, period) via billing_prices. Webhooks
+ * pass [includeRetired]: a price no longer sold still maps for the people
+ * subscribed on it.
+ */
 export async function priceToPlan(
   db: SupabaseClient,
   priceId: string,
   provider = "paddle",
+  includeRetired = false,
 ): Promise<PriceMapping | null> {
   const { data } = await db.from("billing_prices")
     .select("plan, period, active")
     .eq("price_id", priceId).eq("provider", provider).maybeSingle();
-  if (!data || data.active !== true) return null;
+  if (!data || (!includeRetired && data.active !== true)) return null;
   return {
     plan: normalizePlan(data.plan),
     period: data.period === "yearly" ? "yearly" : "monthly",
@@ -46,11 +52,12 @@ export async function setEntitlementPlan(
   userId: string,
   plan: Plan,
 ): Promise<void> {
-  await db.from("ai_entitlements").upsert({
+  const { error } = await db.from("ai_entitlements").upsert({
     user_id: userId,
     plan,
     updated_at: new Date().toISOString(),
   }, { onConflict: "user_id" });
+  if (error) throw new HttpError(500, "entitlement_write_failed");
 }
 
 /** Upsert the user's current subscription snapshot. */
@@ -66,9 +73,12 @@ export async function upsertSubscription(
     status?: string | null;
     currentPeriodEnd?: string | null;
     cancelAtPeriodEnd?: boolean;
+    // When the provider event happened; stored only where the database has
+    // the column (supabase/security_hardening.sql).
+    eventAt?: string | null;
   },
 ): Promise<void> {
-  await db.from("subscriptions").upsert({
+  const { error } = await db.from("subscriptions").upsert({
     user_id: row.userId,
     provider: row.provider,
     provider_customer_id: row.customerId ?? null,
@@ -79,10 +89,33 @@ export async function upsertSubscription(
     current_period_end: row.currentPeriodEnd ?? null,
     cancel_at_period_end: row.cancelAtPeriodEnd ?? false,
     updated_at: new Date().toISOString(),
+    ...(row.eventAt ? { provider_event_at: row.eventAt } : {}),
   }, { onConflict: "user_id" });
+  if (error) throw new HttpError(500, "subscription_write_failed");
 }
 
-/** True once, then false — records the event id so replays are ignored. */
+/**
+ * Whether a provider event is older than the last one applied for the user,
+ * so a late delivery can't undo a newer change (a cancellation, say).
+ * [tracked] is false while the database can't store event times yet.
+ */
+export async function eventOrder(
+  db: SupabaseClient,
+  userId: string,
+  eventAt: string | null,
+): Promise<{ stale: boolean; tracked: boolean }> {
+  const { data, error } = await db.from("subscriptions")
+    .select("provider_event_at").eq("user_id", userId).maybeSingle();
+  if (error) return { stale: false, tracked: false };
+  const at = eventAt ? Date.parse(eventAt) : NaN;
+  const last = data?.provider_event_at ? Date.parse(data.provider_event_at) : NaN;
+  return { stale: !isNaN(at) && !isNaN(last) && at < last, tracked: true };
+}
+
+/**
+ * True once, then false — records the event id so replays are ignored. Any
+ * other failure throws, so the provider retries the delivery later.
+ */
 export async function markEventOnce(
   db: SupabaseClient,
   eventId: string,
@@ -92,8 +125,23 @@ export async function markEventOnce(
   if (!eventId) return true; // no id ⇒ can't dedupe; let caller proceed
   const { error } = await db.from("billing_events")
     .insert({ event_id: eventId, type, provider });
+  if (!error) return true;
   // A duplicate primary key means we've already processed this event.
-  return error == null;
+  if (error.code === "23505") return false;
+  throw new HttpError(500, "event_store_failed");
+}
+
+/** Forgets an event that couldn't be applied, so its retry is processed. */
+export async function unmarkEvent(
+  db: SupabaseClient,
+  eventId: string,
+): Promise<void> {
+  if (!eventId) return;
+  try {
+    await db.from("billing_events").delete().eq("event_id", eventId);
+  } catch (_) {
+    // The retry will then be seen as a duplicate; logged by the caller.
+  }
 }
 
 /** How far a Paddle webhook's signing time may be from now, in seconds. */

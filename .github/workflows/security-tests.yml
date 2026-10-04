@@ -1,0 +1,58 @@
+name: Security tests
+
+# Access control on the database and the payment / usage-limit logic of the
+# Edge Functions, checked on every push so a change can't quietly reopen a
+# hole that was closed.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+# Read-only: these jobs only check out the code.
+permissions:
+  contents: read
+
+jobs:
+  database:
+    name: Access control (database)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply the database setup twice (it must be safe to re-run)
+        run: |
+          psql -v ON_ERROR_STOP=1 -q -f supabase/tests/supabase_stub.sql
+          psql -v ON_ERROR_STOP=1 -q -f supabase/setup_all.sql
+          psql -v ON_ERROR_STOP=1 -q -f supabase/setup_all.sql
+
+      - name: Each user reaches only their own data
+        run: psql -v ON_ERROR_STOP=1 -f supabase/tests/access_control_test.sql
+
+  functions:
+    name: Payments and usage limits (Edge Functions)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
+        with:
+          deno-version: v2.x
+
+      - name: Unit tests
+        run: deno test --import-map supabase/tests/import_map.json supabase/functions/_shared/
+
+      - name: Webhook and usage-limit scenarios
+        run: deno run -A --import-map supabase/tests/import_map.json supabase/tests/functions_test.ts

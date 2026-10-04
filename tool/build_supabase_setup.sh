@@ -5,7 +5,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/../supabase"
 files=(schema.sql cloud_backup.sql billing.sql coupons.sql ai_gateway.sql
-       ai_reports.sql receipt_scanner.sql)
+       ai_reports.sql receipt_scanner.sql security_hardening.sql)
 {
   echo "-- ============================================================================"
   echo "-- SmartBudget: full database setup in one paste (Supabase SQL editor)."

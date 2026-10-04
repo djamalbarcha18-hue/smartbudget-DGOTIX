@@ -10,13 +10,15 @@
 // Point the Paddle notification destination at this function's URL.
 import { HttpError, serviceClient } from "../_shared/auth.ts";
 import {
+  eventOrder,
   markEventOnce,
   priceToPlan,
   setEntitlementPlan,
+  unmarkEvent,
   upsertSubscription,
   verifyPaddleSignature,
 } from "../_shared/billing.ts";
-import { normalizePlan, type Plan } from "../_shared/quota.ts";
+import type { Plan } from "../_shared/quota.ts";
 
 function ok(body: unknown = { ok: true }): Response {
   return new Response(JSON.stringify(body), {
@@ -57,54 +59,12 @@ Deno.serve(async (req: Request) => {
     // Idempotency: a replayed event is acknowledged but not re-applied.
     if (!(await markEventOnce(db, eventId, type))) return ok({ duplicate: true });
 
-    const custom = data?.custom_data ?? {};
-    const userId = String(custom?.user_id ?? "");
-
-    switch (type) {
-      case "subscription.activated":
-      case "subscription.created":
-      case "subscription.updated":
-      case "subscription.canceled": {
-        if (!userId) return ok({ ignored: "no_user" });
-        const status = String(data?.status ?? "");
-        const priceId = String(data?.items?.[0]?.price?.id ?? "");
-        const mapped = priceId ? await priceToPlan(db, priceId) : null;
-        const active = status === "active" || status === "trialing";
-        // Active/trialing ⇒ the paid plan; anything else (canceled, paused) ⇒ free.
-        const plan: Plan = active
-          ? (mapped?.plan ?? normalizePlan(custom?.plan))
-          : "free";
-        const scheduled = data?.scheduled_change ?? null;
-
-        await setEntitlementPlan(db, userId, plan);
-        await upsertSubscription(db, {
-          userId,
-          provider: "paddle",
-          customerId: data?.customer_id ?? null,
-          subscriptionId: data?.id ?? null,
-          plan,
-          period: mapped?.period ?? (custom?.period ?? null),
-          status,
-          currentPeriodEnd: data?.current_billing_period?.ends_at ?? null,
-          cancelAtPeriodEnd: scheduled?.action === "cancel",
-        });
-        return ok();
-      }
-
-      case "transaction.completed": {
-        // Record a coupon redemption if one rode along (best-effort).
-        const code = String(custom?.coupon ?? "").trim().toUpperCase();
-        if (userId && code) {
-          try {
-            await db.from("coupon_redemptions")
-              .insert({ code, user_id: userId });
-          } catch (_) { /* non-fatal */ }
-        }
-        return ok();
-      }
-
-      default:
-        return ok({ ignored: type });
+    try {
+      return await apply(db, type, data, String(evt?.occurred_at ?? "") || null);
+    } catch (e) {
+      // Not applied: forget the event so Paddle's retry is processed.
+      await unmarkEvent(db, eventId);
+      throw e;
     }
   } catch (e) {
     const status = e instanceof HttpError ? e.status : 500;
@@ -114,3 +74,70 @@ Deno.serve(async (req: Request) => {
     });
   }
 });
+
+// deno-lint-ignore no-explicit-any
+type Json = any;
+
+/** Applies one verified, first-seen event. */
+async function apply(
+  db: Json,
+  type: string,
+  data: Json,
+  eventAt: string | null,
+): Promise<Response> {
+  const custom = data?.custom_data ?? {};
+  const userId = String(custom?.user_id ?? "");
+
+  switch (type) {
+    case "subscription.activated":
+    case "subscription.created":
+    case "subscription.updated":
+    case "subscription.canceled": {
+      if (!userId) return ok({ ignored: "no_user" });
+      const status = String(data?.status ?? "");
+      const priceId = String(data?.items?.[0]?.price?.id ?? "");
+      const mapped = priceId
+        ? await priceToPlan(db, priceId, "paddle", true)
+        : null;
+      const active = status === "active" || status === "trialing";
+      // The plan comes only from our own price map, never from data the
+      // checkout carried: a price we don't sell grants nothing.
+      if (active && !mapped) return ok({ ignored: "unknown_price" });
+      const order = await eventOrder(db, userId, eventAt);
+      if (order.stale) return ok({ ignored: "older_event" });
+      // Active/trialing ⇒ the paid plan; anything else (canceled, paused) ⇒ free.
+      const plan: Plan = active && mapped ? mapped.plan : "free";
+      const scheduled = data?.scheduled_change ?? null;
+
+      await setEntitlementPlan(db, userId, plan);
+      await upsertSubscription(db, {
+        userId,
+        provider: "paddle",
+        customerId: data?.customer_id ?? null,
+        subscriptionId: data?.id ?? null,
+        plan,
+        period: mapped?.period ?? (custom?.period ?? null),
+        status,
+        currentPeriodEnd: data?.current_billing_period?.ends_at ?? null,
+        cancelAtPeriodEnd: scheduled?.action === "cancel",
+        eventAt: order.tracked ? eventAt : null,
+      });
+      return ok();
+    }
+
+    case "transaction.completed": {
+      // Record a coupon redemption if one rode along (best-effort).
+      const code = String(custom?.coupon ?? "").trim().toUpperCase();
+      if (userId && code) {
+        try {
+          await db.from("coupon_redemptions")
+            .insert({ code, user_id: userId });
+        } catch (_) { /* non-fatal */ }
+      }
+      return ok();
+    }
+
+    default:
+      return ok({ ignored: type });
+  }
+}

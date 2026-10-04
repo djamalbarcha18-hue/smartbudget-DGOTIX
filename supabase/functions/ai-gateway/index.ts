@@ -13,6 +13,7 @@
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
 import { capText, readJsonBody } from "../_shared/body.ts";
+import { releaseUsage, reserveUsage } from "../_shared/usage.ts";
 import {
   candidates,
   classify,
@@ -56,6 +57,8 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "method_not_allowed" }, 405, cors);
   }
 
+  // Gives back the request counted below if no answer comes of it.
+  let giveBack: (() => Promise<void>) | null = null;
   try {
     const userId = await requireUserId(req);
     const body = await readJsonBody(req, MAX_BODY_BYTES);
@@ -98,12 +101,25 @@ Deno.serve(async (req: Request) => {
     if (usedReq >= allow.limit || usedCost >= costCeiling) {
       return jsonResponse({ error: "quota_exceeded" }, 429, cors);
     }
+    // Count the request now, atomically, so parallel requests can't all pass
+    // the check above (null: database not updated yet, counted on success).
+    const reservation = await reserveUsage(db, userId, "ai", month, allow);
+    if (reservation === "quota") {
+      return jsonResponse({ error: "quota_exceeded" }, 429, cors);
+    }
+    if (reservation === "global") {
+      await log(db, userId, task, null, null, false, 0, 0, 0, 0, "global_limit");
+      return jsonResponse({ error: "ai_unavailable" }, 503, cors);
+    }
+    const reserved = reservation === "ok";
+    if (reserved) giveBack = () => releaseUsage(db, userId, "ai", month);
 
     // ---- Route + failover ----
     const cfg = await loadConfig(db);
     const pool = candidates(task, cfg).filter((m) => !isOpen(m.provider));
     if (pool.length === 0) {
       await log(db, userId, task, null, null, false, 0, 0, 0, 0, "no_provider");
+      await giveBack?.();
       return jsonResponse({ error: "ai_unavailable" }, 503, cors);
     }
 
@@ -117,7 +133,8 @@ Deno.serve(async (req: Request) => {
         const out = await generate(m.provider as ProviderId, m.id, "", buildPrompt(context, history, prompt));
         recordSuccess(m.provider as ProviderId);
         const cost = estCostUsd(m, out.inputTokens, out.outputTokens);
-        await bumpUsage(db, userId, month, out.inputTokens, out.outputTokens, cost);
+        giveBack = null;
+        await bumpUsage(db, userId, month, out.inputTokens, out.outputTokens, cost, reserved);
         await log(db, userId, task, m.provider, m.id, i > 0, Date.now() - started,
           out.inputTokens, out.outputTokens, cost, null);
         // Never leak the provider name or that a fallback happened as an error.
@@ -140,8 +157,10 @@ Deno.serve(async (req: Request) => {
         if (!c.retryable) break;
       }
     }
+    await giveBack?.();
     return jsonResponse({ error: "ai_unavailable", code: lastCode }, 503, cors);
   } catch (e) {
+    await giveBack?.();
     const status = e instanceof HttpError ? e.status : 500;
     const code = e instanceof HttpError ? e.code : "server_error";
     return jsonResponse({ error: code }, status, corsHeaders());
@@ -184,8 +203,10 @@ async function bumpUsage(
   inTok: number,
   outTok: number,
   cost: number,
+  // The request itself was already counted by reserveUsage: add only the
+  // tokens and cost.
+  counted = false,
 ): Promise<void> {
-  // Atomic-ish upsert increment via RPC if present, else read-modify-write.
   const nowIso = new Date().toISOString();
   try {
     const { data: cur } = await db.from("ai_usage_monthly")
@@ -194,13 +215,14 @@ async function bumpUsage(
     await db.from("ai_usage_monthly").upsert({
       user_id: userId,
       month,
-      requests: (cur?.requests ?? 0) + 1,
+      requests: (cur?.requests ?? 0) + (counted ? 0 : 1),
       input_tokens: (cur?.input_tokens ?? 0) + inTok,
       output_tokens: (cur?.output_tokens ?? 0) + outTok,
       est_cost_usd: Number(cur?.est_cost_usd ?? 0) + cost,
       updated_at: nowIso,
     });
   } catch (_) { /* non-fatal */ }
+  if (counted) return;
   // Lifetime counter backs the FREE one-time allowance; bump it every time.
   try {
     const { data: life } = await db.from("ai_usage_lifetime")

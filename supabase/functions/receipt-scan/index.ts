@@ -30,6 +30,7 @@ import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { mergeReadings, type Reading } from "../_shared/invoice_merge.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
 import { readJsonBody } from "../_shared/body.ts";
+import { releaseUsage, reserveUsage } from "../_shared/usage.ts";
 import {
   effectivePlan,
   normalizePlan,
@@ -189,6 +190,9 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: "method_not_allowed" }, 405, cors);
   }
 
+  // The scan counted up front, given back unless a reading comes of it.
+  const usage: ScanUsage = { reserved: false, counted: false };
+  let giveBack: (() => Promise<void>) | null = null;
   try {
     const userId = await requireUserId(req);
     const body = await readJsonBody(req, MAX_BODY_BYTES);
@@ -218,9 +222,22 @@ Deno.serve(async (req: Request) => {
     // Every cloud scan is metered per plan (docs/PRICING.md §3).
     const db = serviceClient();
     const month = monthKey();
-    if (await ocrQuotaExceeded(db, userId, month)) {
+    const plan = await resolvePlan(db, userId);
+    if (await ocrQuotaExceeded(db, userId, month, plan)) {
       return jsonResponse({ error: "quota_exceeded" }, 429, cors);
     }
+    // Count the scan now, atomically, so parallel scans can't all pass the
+    // check above (null: database not updated yet, counted on success).
+    const reservation = await reserveUsage(db, userId, "ocr", month, OCR_QUOTA[plan]);
+    if (reservation === "quota") {
+      return jsonResponse({ error: "quota_exceeded" }, 429, cors);
+    }
+    if (reservation === "global") {
+      // The app reads the receipt on the device instead.
+      return jsonResponse({ error: "ocr_unavailable" }, 503, cors);
+    }
+    usage.reserved = reservation === "ok";
+    giveBack = () => releaseUsage(db, userId, "ocr", month);
 
     if (Number(body?.v) === 2) {
       return await scanV2(
@@ -231,6 +248,7 @@ Deno.serve(async (req: Request) => {
         images.length > 0 ? images : [imageBase64],
         mimeType,
         cors,
+        usage,
       );
     }
 
@@ -251,10 +269,11 @@ Deno.serve(async (req: Request) => {
     };
 
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        // The key goes in a header, never the URL (URLs end up in logs).
+        headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
         body: JSON.stringify(geminiBody),
       },
     );
@@ -291,7 +310,7 @@ Deno.serve(async (req: Request) => {
     }
 
     // Count only a successful extraction, and only when we served it.
-    await bumpOcr(db, userId, month);
+    await countScan(db, userId, month, usage);
 
     return jsonResponse(
       {
@@ -312,8 +331,27 @@ Deno.serve(async (req: Request) => {
     const status = e instanceof HttpError ? e.status : 500;
     const code = e instanceof HttpError ? e.code : "server_error";
     return jsonResponse({ error: code }, status, cors);
+  } finally {
+    if (usage.reserved && !usage.counted) await giveBack?.();
   }
 });
+
+/** Whether this request's scan was counted up front, and whether it counts. */
+interface ScanUsage {
+  reserved: boolean;
+  counted: boolean;
+}
+
+/** A reading was served: it counts (already, when reserved up front). */
+async function countScan(
+  db: ReturnType<typeof serviceClient>,
+  userId: string,
+  month: string,
+  usage: ScanUsage,
+): Promise<void> {
+  usage.counted = true;
+  if (!usage.reserved) await bumpOcr(db, userId, month);
+}
 
 /** v2: one structured-extraction call per image (several, in parallel, for
  * the strips of a very long receipt); the app parses and checks the result. */
@@ -325,6 +363,7 @@ async function scanV2(
   images: string[],
   mimeType: string,
   cors: HeadersInit,
+  usage: ScanUsage,
 ): Promise<Response> {
   const started = Date.now();
   const n = images.length;
@@ -361,7 +400,7 @@ async function scanV2(
   }
 
   // One receipt, one scan, however many strips it took.
-  await bumpOcr(db, userId, month);
+  await countScan(db, userId, month, usage);
 
   // Card numbers never leave the server, even if the model copied one.
   const data = {
@@ -403,10 +442,11 @@ async function readOne(
 ): Promise<{ data: Reading } | { error: string; status: number }> {
   const call = (noThinking: boolean) =>
     fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        // The key goes in a header, never the URL (URLs end up in logs).
+        headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
         body: JSON.stringify({
           contents: [{
             parts: [
@@ -495,8 +535,9 @@ async function ocrQuotaExceeded(
   db: ReturnType<typeof serviceClient>,
   userId: string,
   month: string,
+  plan: Plan,
 ): Promise<boolean> {
-  const allow = OCR_QUOTA[await resolvePlan(db, userId)];
+  const allow = OCR_QUOTA[plan];
   let used: number;
   if (allow.window === "lifetime") {
     const { data } = await db.from("ocr_usage_lifetime")

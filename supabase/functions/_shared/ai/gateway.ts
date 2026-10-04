@@ -8,7 +8,7 @@
 // Config is read from DB tables (ai_provider_flags / ai_model_flags) so an
 // owner can disable a provider/model or change priority WITHOUT a new app
 // release or client change.
-import { type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.117.2";
 
 export type ProviderId = "google" | "openai" | "anthropic";
 export type Capability = "text" | "image" | "structured" | "streaming";
@@ -224,8 +224,9 @@ async function post(url: string, headers: HeadersInit, body: unknown): Promise<R
 async function geminiGen(model: string, sys: string, prompt: string): Promise<GenResult> {
   const key = Deno.env.get(PROVIDER_ENV.google) ?? "";
   const res = await post(
-    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
-    { "Content-Type": "application/json" },
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+    // The key goes in a header, never the URL (URLs end up in logs).
+    { "Content-Type": "application/json", "x-goog-api-key": key },
     {
       systemInstruction: { parts: [{ text: sys }] },
       contents: [{ parts: [{ text: prompt }] }],
