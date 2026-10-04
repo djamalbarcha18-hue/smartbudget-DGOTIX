@@ -3,15 +3,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/storage/account_keys.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
 import 'package:smartbudget/features/financial_health/domain/health_calculator.dart';
 import 'package:smartbudget/features/financial_health/domain/health_categories.dart';
 import 'package:smartbudget/features/financial_health/domain/health_engine.dart';
-import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
+import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -29,17 +31,23 @@ final emergencySavingsProvider =
         EmergencySavingsController.new);
 
 class EmergencySavingsController extends Notifier<double?> {
-  static const String _key = 'sb_emergency_savings';
+  static const String _base = 'sb_emergency_savings';
+  String _key = '';
 
   @override
   double? build() {
-    _load();
+    final String? account = ref.watch(currentAccountIdProvider);
+    _key = AccountKeys.of(_base, account);
+    _load(account);
     return null;
   }
 
-  Future<void> _load() async {
+  Future<void> _load(String? account) async {
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();
+      if (await AccountKeys.open(p, _base, account) != _key) {
+        return; // another account signed in meanwhile
+      }
       if (p.containsKey(_key)) state = p.getDouble(_key);
     } catch (_) {
       // Keep null (unknown).

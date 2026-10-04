@@ -103,6 +103,8 @@ class GeminiOnlineEngine implements ReceiptOcrEngine {
       case 'missing_token':
       case 'invalid_token':
         return ReceiptScanError.notSignedIn;
+      case 'too_large':
+        return ReceiptScanError.unreadable;
       case 'no_image':
       case 'provider_error':
       case 'empty_response':

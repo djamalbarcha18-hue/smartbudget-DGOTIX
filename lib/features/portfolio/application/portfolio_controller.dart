@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/storage/account_keys.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/portfolio/data/fake_project_repository.dart';
@@ -30,17 +31,23 @@ final portfolioCapacityProvider =
         PortfolioCapacityController.new);
 
 class PortfolioCapacityController extends Notifier<int> {
-  static const String _key = 'sb_portfolio_capacity';
+  static const String _base = 'sb_portfolio_capacity';
+  String _key = '';
 
   @override
   int build() {
-    _load();
+    final String? account = ref.watch(currentAccountIdProvider);
+    _key = AccountKeys.of(_base, account);
+    _load(account);
     return 0;
   }
 
-  Future<void> _load() async {
+  Future<void> _load(String? account) async {
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();
+      if (await AccountKeys.open(p, _base, account) != _key) {
+        return; // another account signed in meanwhile
+      }
       final int? v = p.getInt(_key);
       if (v != null) state = v;
     } catch (_) {

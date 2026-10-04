@@ -6,7 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/storage/account_keys.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
@@ -67,11 +69,14 @@ final zakatInputsProvider =
         ZakatInputsController.new);
 
 class ZakatInputsController extends Notifier<ZakatInputs> {
-  static const String _key = 'sb_zakat_inputs';
+  static const String _base = 'sb_zakat_inputs';
+  String _key = '';
 
   @override
   ZakatInputs build() {
-    _load();
+    final String? account = ref.watch(currentAccountIdProvider);
+    _key = AccountKeys.of(_base, account);
+    _load(account);
     return const ZakatInputs(
       goldPricePerGram: 0,
       silverPricePerGram: 0,
@@ -79,9 +84,12 @@ class ZakatInputsController extends Notifier<ZakatInputs> {
     );
   }
 
-  Future<void> _load() async {
+  Future<void> _load(String? account) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (await AccountKeys.open(prefs, _base, account) != _key) {
+        return; // another account signed in meanwhile
+      }
       final String? raw = prefs.getString(_key);
       if (raw != null && raw.isNotEmpty) {
         final Map<String, dynamic> m = jsonDecode(raw) as Map<String, dynamic>;

@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/storage/account_keys.dart';
 import 'package:smartbudget/features/auth/data/fake_auth_repository.dart';
 import 'package:smartbudget/features/auth/domain/auth_user.dart';
 
@@ -29,23 +30,10 @@ Future<void> adoptDeviceData(SharedPreferences prefs, AuthUser user) async {
   for (final String key in keys) {
     final String newKey =
         '${key.substring(0, key.length - oldId.length)}${user.id}';
-    if (!prefs.containsKey(newKey)) {
-      final Object? value = prefs.get(key);
-      switch (value) {
-        case String v:
-          await prefs.setString(newKey, v);
-        case bool v:
-          await prefs.setBool(newKey, v);
-        case int v:
-          await prefs.setInt(newKey, v);
-        case double v:
-          await prefs.setDouble(newKey, v);
-        case List<String> v:
-          await prefs.setStringList(newKey, v);
-        default:
-          continue;
-      }
+    if (prefs.containsKey(newKey)) {
+      await prefs.remove(key);
+    } else {
+      await movePref(prefs, key, newKey);
     }
-    await prefs.remove(key);
   }
 }

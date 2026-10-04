@@ -50,6 +50,11 @@ class AuthState {
 final authControllerProvider =
     NotifierProvider<AuthController, AuthState>(AuthController.new);
 
+/// The signed-in account's id (null when signed out). Changes only when
+/// another account signs in or out, so data kept per account reloads then.
+final currentAccountIdProvider = Provider<String?>((ref) =>
+    ref.watch(authControllerProvider.select((AuthState s) => s.user?.id)));
+
 class AuthController extends Notifier<AuthState> {
   @override
   AuthState build() {

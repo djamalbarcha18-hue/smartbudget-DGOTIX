@@ -1,12 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/storage/account_keys.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/backup/domain/backup_reminder.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
-/// Last full backup and any snooze of the reminder, stored on this device.
+/// Last full backup and any snooze of the reminder, stored on this device for
+/// each account.
 class BackupStatus {
   const BackupStatus({this.lastBackup, this.snoozedUntil});
   final DateTime? lastBackup;
@@ -19,19 +22,28 @@ final backupStatusProvider =
         BackupStatusController.new);
 
 class BackupStatusController extends Notifier<BackupStatus?> {
-  static const String _kLast = 'sb_last_backup';
-  static const String _kSnooze = 'sb_backup_snooze';
+  static const String _baseLast = 'sb_last_backup';
+  static const String _baseSnooze = 'sb_backup_snooze';
+  String _kLast = '';
+  String _kSnooze = '';
 
   @override
   BackupStatus? build() {
-    _load();
+    final String? account = ref.watch(currentAccountIdProvider);
+    _kLast = AccountKeys.of(_baseLast, account);
+    _kSnooze = AccountKeys.of(_baseSnooze, account);
+    _load(account);
     return null;
   }
 
-  Future<void> _load() async {
+  Future<void> _load(String? account) async {
     BackupStatus s = const BackupStatus();
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();
+      await AccountKeys.open(p, _baseSnooze, account);
+      if (await AccountKeys.open(p, _baseLast, account) != _kLast) {
+        return; // another account signed in meanwhile
+      }
       s = BackupStatus(
         lastBackup: DateTime.tryParse(p.getString(_kLast) ?? ''),
         snoozedUntil: DateTime.tryParse(p.getString(_kSnooze) ?? ''),

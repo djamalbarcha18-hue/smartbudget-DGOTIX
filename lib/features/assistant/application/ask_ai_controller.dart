@@ -6,9 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/storage/account_keys.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/assistant/domain/ai_conversation.dart';
 import 'package:smartbudget/features/assistant/domain/ai_snapshot.dart';
+import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
 import 'package:smartbudget/features/daret/application/daret_controller.dart';
@@ -273,18 +275,24 @@ final chatMessagesProvider =
         ChatMessagesController.new);
 
 class ChatMessagesController extends Notifier<List<ChatMessage>> {
-  static const String _key = 'sb_ai_chat';
+  static const String _base = 'sb_ai_chat';
+  String _key = '';
   static const int _maxStored = 40;
 
   @override
   List<ChatMessage> build() {
-    _load();
+    final String? account = ref.watch(currentAccountIdProvider);
+    _key = AccountKeys.of(_base, account);
+    _load(account);
     return const <ChatMessage>[];
   }
 
-  Future<void> _load() async {
+  Future<void> _load(String? account) async {
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();
+      if (await AccountKeys.open(p, _base, account) != _key) {
+        return; // another account signed in meanwhile
+      }
       final String? raw = p.getString(_key);
       if (raw == null || raw.isEmpty) return;
       final List<dynamic> list = jsonDecode(raw) as List<dynamic>;

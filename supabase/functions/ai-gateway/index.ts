@@ -12,6 +12,7 @@
 //            "history": [{ "role": "user"|"assistant", "text": "…" }] }
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
+import { capText, readJsonBody } from "../_shared/body.ts";
 import {
   candidates,
   classify,
@@ -36,6 +37,13 @@ const VALID_TASKS = new Set<string>([
   "chat", "analysis", "financial_insight", "report", "receipt_scan", "receipt_retry",
 ]);
 
+// Size limits, far above what the app sends (a question of at most 500
+// characters, a few KB of financial context), so a request can't be
+// inflated to run up model costs.
+const MAX_BODY_BYTES = 64 * 1024;
+const MAX_PROMPT_CHARS = 2000;
+const MAX_CONTEXT_CHARS = 24000;
+
 function monthKey(): string {
   const d = new Date();
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
@@ -50,10 +58,10 @@ Deno.serve(async (req: Request) => {
 
   try {
     const userId = await requireUserId(req);
-    const body = await req.json().catch(() => ({}));
+    const body = await readJsonBody(req, MAX_BODY_BYTES);
     const task = (VALID_TASKS.has(body?.task) ? body.task : "chat") as TaskType;
-    const prompt = String(body?.prompt ?? "").trim();
-    const context = String(body?.context ?? "");
+    const prompt = capText(String(body?.prompt ?? "").trim(), MAX_PROMPT_CHARS);
+    const context = capText(String(body?.context ?? ""), MAX_CONTEXT_CHARS);
     const history = sanitizeHistory(body?.history);
     if (!prompt) return jsonResponse({ error: "empty_prompt" }, 400, cors);
 

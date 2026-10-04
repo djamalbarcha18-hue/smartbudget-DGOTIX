@@ -29,6 +29,7 @@
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { mergeReadings, type Reading } from "../_shared/invoice_merge.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
+import { readJsonBody } from "../_shared/body.ts";
 import {
   effectivePlan,
   normalizePlan,
@@ -39,6 +40,15 @@ import {
 // `gemini-flash-latest` is a stable alias that always tracks the newest Flash,
 // so it never 404s the way a pinned retired id (e.g. gemini-2.0-flash) does.
 const MODEL = Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest";
+
+// Size limits, well above a receipt photo from the app (at most 1280 px
+// across, JPEG): one image, or three strips of a long receipt. Only image
+// types are read, so nothing costlier (video, documents) can be sent.
+const MAX_BODY_BYTES = 12 * 1024 * 1024;
+const MAX_IMAGE_B64_CHARS = 6 * 1024 * 1024;
+const IMAGE_TYPES = new Set<string>([
+  "image/jpeg", "image/png", "image/webp", "image/heic", "image/heif",
+]);
 
 // Categories mirror the app's expense taxonomy (Arabic canonical labels).
 const CATEGORIES = [
@@ -181,9 +191,10 @@ Deno.serve(async (req: Request) => {
 
   try {
     const userId = await requireUserId(req);
-    const body = await req.json().catch(() => ({}));
+    const body = await readJsonBody(req, MAX_BODY_BYTES);
     const imageBase64 = String(body?.imageBase64 ?? "");
-    const mimeType = String(body?.mimeType ?? "image/jpeg");
+    const requestedType = String(body?.mimeType ?? "").toLowerCase();
+    const mimeType = IMAGE_TYPES.has(requestedType) ? requestedType : "image/jpeg";
     // A very long receipt comes as strips (v2), read in parallel.
     const images: string[] = Array.isArray(body?.images)
       ? (body.images as unknown[]).map((v) => String(v ?? "")).filter((v) => v)
@@ -191,6 +202,12 @@ Deno.serve(async (req: Request) => {
       : [];
     if (!imageBase64 && images.length === 0) {
       return jsonResponse({ error: "no_image" }, 400, cors);
+    }
+    if (
+      imageBase64.length > MAX_IMAGE_B64_CHARS ||
+      images.some((b64) => b64.length > MAX_IMAGE_B64_CHARS)
+    ) {
+      return jsonResponse({ error: "too_large" }, 413, cors);
     }
 
     // DGOTIX's server key only. Without it the cloud scanner is simply not

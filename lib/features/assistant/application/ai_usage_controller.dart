@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/storage/account_keys.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/auth/application/auth_controller.dart';
 
 String _monthKey(DateTime d) =>
     '${d.year}-${d.month.toString().padLeft(2, '0')}';
@@ -58,17 +60,23 @@ final aiUsageProvider =
         AiUsageController.new);
 
 class AiUsageController extends Notifier<Map<String, AiUsageStat>> {
-  static const String _key = 'sb_ai_usage';
+  static const String _base = 'sb_ai_usage';
+  String _key = '';
 
   @override
   Map<String, AiUsageStat> build() {
-    _load();
+    final String? account = ref.watch(currentAccountIdProvider);
+    _key = AccountKeys.of(_base, account);
+    _load(account);
     return const <String, AiUsageStat>{};
   }
 
-  Future<void> _load() async {
+  Future<void> _load(String? account) async {
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();
+      if (await AccountKeys.open(p, _base, account) != _key) {
+        return; // another account signed in meanwhile
+      }
       final String? raw = p.getString(_key);
       if (raw == null || raw.isEmpty) return;
       final Map<String, dynamic> m = jsonDecode(raw) as Map<String, dynamic>;
