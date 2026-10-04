@@ -6,19 +6,41 @@ import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/design_system/brand/brand_assets.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 
+/// How a lockup badge stands out (light mode; dark mode is always gray).
+enum LockupBadgeStyle {
+  /// Gray outline.
+  subtle,
+
+  /// Blue outline.
+  accent,
+
+  /// Solid blue.
+  solid,
+}
+
 /// The DGOTIX master lockup: the official DGOTIX logo, then the
-/// "Digital Productivity Solutions" line, then "SmartBudget" with its PRO
-/// badge, as in the brand master (DGOTIX_MASTER).
+/// "Digital Productivity Solutions" line, then "SmartBudget" with an optional
+/// badge (the plan, e.g. "PRO"), as in the brand master (DGOTIX_MASTER).
 ///
 /// Dark mode shows it all in the logo's gray; light mode in color (blue mark,
-/// "Smart" dark, "Budget" blue, a blue PRO badge). The two lines under the
+/// "Smart" dark, "Budget" blue, a colored badge). The two lines under the
 /// logo are text rather than part of the SVG: at the master's proportions
 /// they would be about 3 px tall at in-app sizes.
 class DgotixBrandLockup extends StatelessWidget {
-  const DgotixBrandLockup({super.key, this.logoHeight = 40});
+  const DgotixBrandLockup({
+    super.key,
+    this.logoHeight = 40,
+    this.badge,
+    this.badgeStyle = LockupBadgeStyle.solid,
+  });
 
   /// Rendered height of the DGOTIX logo; the lines beneath scale with it.
   final double logoHeight;
+
+  /// Short label after "SmartBudget" (e.g. "PRO"); none when null.
+  final String? badge;
+
+  final LockupBadgeStyle badgeStyle;
 
   /// The logo's own gray (dgotix-logo-mono.svg), for dark mode.
   static const Color _mono = Color(0xFFA6ABB3);
@@ -67,14 +89,22 @@ class DgotixBrandLockup extends StatelessWidget {
             ),
           ]),
         ),
-        SizedBox(width: productSize * 0.4),
-        _ProBadge(size: productSize * 0.62, dark: dark, brand: c.brand),
+        if (badge != null) ...<Widget>[
+          SizedBox(width: productSize * 0.4),
+          _Badge(
+            label: badge!,
+            style: badgeStyle,
+            size: productSize * 0.62,
+            dark: dark,
+            colors: c,
+          ),
+        ],
       ],
     );
 
     return Semantics(
       label: '${AppConfig.parentBrand} · Digital Productivity Solutions · '
-          '${AppConfig.appName} PRO',
+          '${AppConfig.appName}${badge == null ? '' : ' $badge'}',
       container: true,
       child: ExcludeSemantics(
         // The brand reads left to right in every language ("SmartBudget PRO").
@@ -108,34 +138,51 @@ class DgotixBrandLockup extends StatelessWidget {
   }
 }
 
-/// The rounded "PRO" badge after the product name.
-class _ProBadge extends StatelessWidget {
-  const _ProBadge(
-      {required this.size, required this.dark, required this.brand});
+/// The rounded badge after the product name.
+class _Badge extends StatelessWidget {
+  const _Badge({
+    required this.label,
+    required this.style,
+    required this.size,
+    required this.dark,
+    required this.colors,
+  });
 
+  final String label;
+  final LockupBadgeStyle style;
   final double size;
   final bool dark;
-  final Color brand;
+  final DsColors colors;
 
   @override
   Widget build(BuildContext context) {
     const Color mono = DgotixBrandLockup._mono;
+    final Color brand = colors.brand;
+    final (Color fill, Color border, Color text) = dark
+        ? (mono.withValues(alpha: 0.18), mono.withValues(alpha: 0.7),
+            DgotixBrandLockup._monoText)
+        : switch (style) {
+            LockupBadgeStyle.subtle =>
+              (Colors.transparent, colors.textFaint, colors.textMuted),
+            LockupBadgeStyle.accent =>
+              (brand.withValues(alpha: 0.10), brand, brand),
+            LockupBadgeStyle.solid => (brand, brand, Colors.white),
+          };
     return Container(
-      padding:
-          EdgeInsets.symmetric(horizontal: size * 0.7, vertical: size * 0.18),
+      padding: EdgeInsets.symmetric(horizontal: size * 0.7, vertical: size * 0.18),
       decoration: BoxDecoration(
-        color: dark ? mono.withValues(alpha: 0.18) : brand,
+        color: fill,
         borderRadius: BorderRadius.circular(size),
-        border: Border.all(color: dark ? mono.withValues(alpha: 0.7) : brand),
+        border: Border.all(color: border),
       ),
       child: Text(
-        'PRO',
+        label,
         style: GoogleFonts.inter(
           fontSize: size,
           fontWeight: FontWeight.w600,
           letterSpacing: size * 0.14,
           height: 1.1,
-          color: dark ? DgotixBrandLockup._monoText : Colors.white,
+          color: text,
         ),
       ),
     );

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:smartbudget/core/env/app_env.dart';
 
-import 'package:smartbudget/design_system/brand/dgotix_brand_lockup.dart';
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/glass_panel.dart';
-import 'package:smartbudget/design_system/tokens/ds_glass.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
+import 'package:smartbudget/design_system/tokens/ds_glass.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/billing/presentation/plan_brand_lockup.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/features/shell/nav_destinations.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -46,7 +46,7 @@ class NavSidebar extends StatelessWidget {
               horizontal: DsSpacing.lg,
               vertical: DsSpacing.xl,
             ),
-            child: DgotixBrandLockup(logoHeight: 56),
+            child: PlanBrandLockup(logoHeight: 56),
           ),
           Divider(height: 1, color: c.border),
           Expanded(
