@@ -7,7 +7,12 @@
     <application
         android:label="SmartBudget"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:fullBackupContent="false">
+        <!-- No automatic Android backup: it would copy the financial data
+             and the app lock settings to the Google account, outside the
+             app's control. People back up from inside the app instead. -->
         <activity
             android:name=".MainActivity"
             android:exported="true"

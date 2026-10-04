@@ -25,6 +25,11 @@ concurrency:
 env:
   PROJECT_REF: fconhnyognxcpvmwobus
 
+# Read-only: these jobs only check out the code; deploying uses secrets,
+# not the GitHub token.
+permissions:
+  contents: read
+
 jobs:
   deploy:
     name: Deploy Edge Functions
@@ -47,7 +52,7 @@ jobs:
 
       - name: Set up Supabase CLI
         if: steps.token.outputs.ok == 'true'
-        uses: supabase/setup-cli@v1
+        uses: supabase/setup-cli@1dedf2c611547ede7232d26866dd3c56ab903bbb # v1.7.3
         with:
           version: latest
 

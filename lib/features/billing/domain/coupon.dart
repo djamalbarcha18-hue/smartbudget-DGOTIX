@@ -12,6 +12,7 @@ enum CouponReason {
   notApplicable,
   exhausted,
   alreadyUsed,
+  tooManyAttempts,
   network,
 }
 
@@ -65,6 +66,7 @@ class CouponResult {
         'not_applicable' => CouponReason.notApplicable,
         'exhausted' => CouponReason.exhausted,
         'already_used' => CouponReason.alreadyUsed,
+        'rate_limited' => CouponReason.tooManyAttempts,
         _ => CouponReason.invalid,
       };
 }

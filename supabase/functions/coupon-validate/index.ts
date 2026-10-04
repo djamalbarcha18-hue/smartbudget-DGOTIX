@@ -9,7 +9,10 @@
 //     { valid:true, kind, value, targetPlan, targetPeriod,
 //       basePriceUsd?, discountedPriceUsd?, trialDays? }
 //   | { valid:false, reason: "invalid"|"expired"|"not_applicable"
-//                            |"exhausted"|"already_used" }
+//                            |"exhausted"|"already_used"|"rate_limited" }
+//
+// A user may check at most COUPON_CHECKS_PER_HOUR codes an hour, so codes
+// can't be found by trying many.
 //
 // With no (or a non-paid) `plan`, it runs in PROBE mode: it still checks the
 // window and caps and returns the coupon's kind/value/target, but skips the
@@ -22,6 +25,9 @@ import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
 import { normalizePlan, type Plan, PLAN_PRICE_USD } from "../_shared/quota.ts";
 
 type Period = "monthly" | "yearly";
+
+const COUPON_CHECKS_PER_HOUR = 10;
+const HOUR_MS = 60 * 60 * 1000;
 
 function round2(n: number): number {
   return Math.round(n * 100) / 100;
@@ -45,6 +51,9 @@ Deno.serve(async (req: Request) => {
     if (!code) return jsonResponse({ valid: false, reason: "invalid" }, 200, cors);
 
     const db = serviceClient();
+    if (await tooManyChecks(db, userId)) {
+      return jsonResponse({ valid: false, reason: "rate_limited" }, 200, cors);
+    }
     const { data: c } = await db.from("coupons")
       .select(
         "code, kind, value, target_plan, target_period, valid_from, valid_until, max_redemptions, per_user_limit, active",
@@ -137,3 +146,27 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: code }, status, corsHeaders());
   }
 });
+
+/**
+ * Records this check, or returns true when the user has already made
+ * COUPON_CHECKS_PER_HOUR in the last hour. Checks aren't limited while the
+ * coupon_attempts table doesn't exist yet (supabase/coupons.sql not run).
+ */
+async function tooManyChecks(
+  db: ReturnType<typeof serviceClient>,
+  userId: string,
+): Promise<boolean> {
+  const now = Date.now();
+  const { count, error } = await db.from("coupon_attempts")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .gte("attempted_at", new Date(now - HOUR_MS).toISOString());
+  if (error) return false;
+  if ((count ?? 0) >= COUPON_CHECKS_PER_HOUR) return true;
+  await db.from("coupon_attempts").insert({ user_id: userId });
+  // Older checks no longer count: drop them.
+  await db.from("coupon_attempts").delete()
+    .eq("user_id", userId)
+    .lt("attempted_at", new Date(now - 24 * HOUR_MS).toISOString());
+  return false;
+}

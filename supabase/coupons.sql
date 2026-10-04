@@ -35,13 +35,27 @@ create table if not exists coupon_redemptions (
 create index if not exists coupon_redemptions_code_idx on coupon_redemptions(code);
 create index if not exists coupon_redemptions_user_idx on coupon_redemptions(user_id);
 
+-- One row per code checked, so a user can't try codes without limit (the
+-- coupon-validate function allows a few per hour). Kept for a day at most.
+create table if not exists coupon_attempts (
+  id           bigint generated always as identity primary key,
+  user_id      uuid not null references auth.users(id) on delete cascade,
+  attempted_at timestamptz not null default now()
+);
+create index if not exists coupon_attempts_user_idx
+  on coupon_attempts(user_id, attempted_at);
+
 -- ---- RLS ------------------------------------------------------------------
 alter table coupons            enable row level security;
 alter table coupon_redemptions enable row level security;
+alter table coupon_attempts    enable row level security;
 
 -- Coupons: NO client access at all (service role bypasses RLS). A user must go
 -- through the coupon-validate function, which never leaks the code list.
 revoke all on table coupons from anon, authenticated;
+
+-- Attempts: no client access either (only the function counts them).
+revoke all on table coupon_attempts from anon, authenticated;
 
 -- Redemptions: a user may read only their own (writes go through service role).
 drop policy if exists coupon_redemptions_own on coupon_redemptions;

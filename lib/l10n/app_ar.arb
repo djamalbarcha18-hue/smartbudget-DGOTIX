@@ -1095,6 +1095,7 @@
   "couponExpired": "انتهت صلاحية هذا الكود.",
   "couponExhausted": "بلغ هذا الكود حدّه الأقصى.",
   "couponAlreadyUsed": "لقد استخدمت هذا الكود من قبل.",
+  "couponTooManyAttempts": "محاولات كثيرة. حاول مرة أخرى بعد ساعة.",
   "couponNotApplicable": "هذا الكود لا ينطبق على هذه الباقة.",
   "couponSignIn": "سجّل الدخول لاستخدام كوبون.",
   "planChooseBilling": "اختر طريقة الدفع",

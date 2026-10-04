@@ -279,6 +279,7 @@ class _CouponBoxState extends ConsumerState<_CouponBox> {
         CouponReason.expired => l.couponExpired,
         CouponReason.exhausted => l.couponExhausted,
         CouponReason.alreadyUsed => l.couponAlreadyUsed,
+        CouponReason.tooManyAttempts => l.couponTooManyAttempts,
         CouponReason.notApplicable => l.couponNotApplicable,
         CouponReason.network => l.couponSignIn,
         CouponReason.invalid => l.couponInvalid,

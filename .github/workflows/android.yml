@@ -20,6 +20,11 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+# Read-only: these jobs only check out the code; deploying uses secrets,
+# not the GitHub token.
+permissions:
+  contents: read
+
 jobs:
   build-android:
     name: Build Android (Google Play)
@@ -35,7 +40,7 @@ jobs:
           java-version: "17"
 
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           channel: stable
           cache: true

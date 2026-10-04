@@ -96,15 +96,21 @@ export async function markEventOnce(
   return error == null;
 }
 
+/** How far a Paddle webhook's signing time may be from now, in seconds. */
+export const PADDLE_SIGNATURE_MAX_AGE_S = 300;
+
 /**
  * Verify a Paddle Billing webhook signature.
  * Header format: `ts=<unix>;h1=<hex hmac>`; the signed payload is
- * `${ts}:${rawBody}` HMAC-SHA256 with the webhook secret.
+ * `${ts}:${rawBody}` HMAC-SHA256 with the webhook secret. A signature made
+ * more than [PADDLE_SIGNATURE_MAX_AGE_S] from now is refused, so a captured
+ * webhook can't be sent again later (Paddle signs each retry afresh).
  */
 export async function verifyPaddleSignature(
   rawBody: string,
   signatureHeader: string | null,
   secret: string,
+  nowS: number = Date.now() / 1000,
 ): Promise<boolean> {
   if (!signatureHeader || !secret) return false;
   const parts = Object.fromEntries(
@@ -116,6 +122,13 @@ export async function verifyPaddleSignature(
   const ts = parts["ts"];
   const h1 = parts["h1"];
   if (!ts || !h1) return false;
+  const signedAt = Number(ts);
+  if (
+    !Number.isFinite(signedAt) ||
+    Math.abs(nowS - signedAt) > PADDLE_SIGNATURE_MAX_AGE_S
+  ) {
+    return false;
+  }
 
   const key = await crypto.subtle.importKey(
     "raw",

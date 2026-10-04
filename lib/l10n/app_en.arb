@@ -1102,6 +1102,7 @@
   "couponExpired": "This code has expired.",
   "couponExhausted": "This code has reached its limit.",
   "couponAlreadyUsed": "You've already used this code.",
+  "couponTooManyAttempts": "Too many tries. Try again in an hour.",
   "couponNotApplicable": "This code doesn't apply to this plan.",
   "couponSignIn": "Sign in to use a coupon.",
   "planChooseBilling": "Choose how to pay",
