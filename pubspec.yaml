@@ -80,16 +80,19 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^4.0.0
 
-  # Generates the Android launcher icons from assets/launcher/ (run
-  # `dart run flutter_launcher_icons` after changing them).
+  # Generates the Android launcher icons from assets/launcher/ (drawn by
+  # tool/make_app_icons.py; run `dart run flutter_launcher_icons` after).
   flutter_launcher_icons: ^0.14.4
 
 flutter_launcher_icons:
   android: true
   ios: false
   image_path: "assets/launcher/icon_full.png"
-  adaptive_icon_background: "#0B1120"
+  adaptive_icon_background: "assets/launcher/icon_background.png"
   adaptive_icon_foreground: "assets/launcher/icon_foreground.png"
+  adaptive_icon_monochrome: "assets/launcher/icon_monochrome.png"
+  # Logo at about two-thirds of the visible icon, as on the store and web icons.
+  adaptive_icon_foreground_inset: 21
   min_sdk_android: 28
 
 flutter:
