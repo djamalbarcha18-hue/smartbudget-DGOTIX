@@ -1,8 +1,8 @@
 name: Security tests
 
-# Access control on the database and the payment / usage-limit logic of the
-# Edge Functions, checked on every push so a change can't quietly reopen a
-# hole that was closed.
+# Access control on the database, the subscription lifecycle and the payment /
+# usage-limit logic of the Edge Functions, checked on every push so a change
+# can't quietly reopen a hole that was closed.
 on:
   push:
     branches: ["**"]
@@ -40,6 +40,16 @@ jobs:
 
       - name: Each user reaches only their own data
         run: psql -v ON_ERROR_STOP=1 -f supabase/tests/access_control_test.sql
+
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
+        with:
+          deno-version: v2.x
+
+      # The real webhook handlers applying Paddle and PayPal events through the
+      # real SQL (upgrades, downgrades, cancellations, renewals, failed
+      # payments, refunds, duplicates, out-of-order delivery).
+      - name: Subscription lifecycle (webhooks + database)
+        run: deno run -A --import-map supabase/tests/import_map.json supabase/tests/subscription_lifecycle_test.ts
 
   functions:
     name: Payments and usage limits (Edge Functions)

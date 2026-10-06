@@ -1,7 +1,7 @@
 // SmartBudget — billing helpers (provider-agnostic core).
 //
-// The webhook is the only thing that grants/revokes entitlement, so these
-// helpers keep ai_entitlements + subscriptions in sync. Nothing here talks to a
+// Price map, webhook idempotency and Paddle signatures. The webhooks apply
+// subscription changes through subscriptions.ts. Nothing here talks to a
 // specific provider except verifyPaddleSignature (clearly named).
 import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.117.2";
 import { HttpError } from "./auth.ts";
@@ -44,72 +44,6 @@ export async function planToPrice(
     .select("price_id").eq("plan", plan).eq("period", period)
     .eq("provider", provider).eq("active", true).maybeSingle();
   return (data?.price_id as string | undefined) ?? null;
-}
-
-/** Set the user's paid plan (the server source of truth for entitlement). */
-export async function setEntitlementPlan(
-  db: SupabaseClient,
-  userId: string,
-  plan: Plan,
-): Promise<void> {
-  const { error } = await db.from("ai_entitlements").upsert({
-    user_id: userId,
-    plan,
-    updated_at: new Date().toISOString(),
-  }, { onConflict: "user_id" });
-  if (error) throw new HttpError(500, "entitlement_write_failed");
-}
-
-/** Upsert the user's current subscription snapshot. */
-export async function upsertSubscription(
-  db: SupabaseClient,
-  row: {
-    userId: string;
-    provider: string;
-    customerId?: string | null;
-    subscriptionId?: string | null;
-    plan: Plan;
-    period?: string | null;
-    status?: string | null;
-    currentPeriodEnd?: string | null;
-    cancelAtPeriodEnd?: boolean;
-    // When the provider event happened; stored only where the database has
-    // the column (supabase/security_hardening.sql).
-    eventAt?: string | null;
-  },
-): Promise<void> {
-  const { error } = await db.from("subscriptions").upsert({
-    user_id: row.userId,
-    provider: row.provider,
-    provider_customer_id: row.customerId ?? null,
-    provider_subscription_id: row.subscriptionId ?? null,
-    plan: row.plan,
-    period: row.period ?? null,
-    status: row.status ?? null,
-    current_period_end: row.currentPeriodEnd ?? null,
-    cancel_at_period_end: row.cancelAtPeriodEnd ?? false,
-    updated_at: new Date().toISOString(),
-    ...(row.eventAt ? { provider_event_at: row.eventAt } : {}),
-  }, { onConflict: "user_id" });
-  if (error) throw new HttpError(500, "subscription_write_failed");
-}
-
-/**
- * Whether a provider event is older than the last one applied for the user,
- * so a late delivery can't undo a newer change (a cancellation, say).
- * [tracked] is false while the database can't store event times yet.
- */
-export async function eventOrder(
-  db: SupabaseClient,
-  userId: string,
-  eventAt: string | null,
-): Promise<{ stale: boolean; tracked: boolean }> {
-  const { data, error } = await db.from("subscriptions")
-    .select("provider_event_at").eq("user_id", userId).maybeSingle();
-  if (error) return { stale: false, tracked: false };
-  const at = eventAt ? Date.parse(eventAt) : NaN;
-  const last = data?.provider_event_at ? Date.parse(data.provider_event_at) : NaN;
-  return { stale: !isNaN(at) && !isNaN(last) && at < last, tracked: true };
 }
 
 /**

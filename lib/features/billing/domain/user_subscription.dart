@@ -25,6 +25,11 @@ class UserSubscription {
   bool get isPaidActive =>
       plan != Plan.free && (status == 'active' || status == 'trialing');
 
+  /// A paid subscription whose payment failed (or that the provider paused):
+  /// no paid access until the payment method is fixed from Manage.
+  bool get needsPaymentFix =>
+      plan != Plan.free && (status == 'past_due' || status == 'paused');
+
   static UserSubscription? fromRow(Map<String, dynamic>? row) {
     if (row == null) return null;
     final Object? end = row['current_period_end'];

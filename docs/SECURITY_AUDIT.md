@@ -190,6 +190,8 @@ Supabase Auth supports TOTP MFA without a rebuild:
 ## 9. Before real payments and public launch
 
 1. **Run `supabase/security_hardening.sql`** in the Supabase SQL editor.
+   Then run **`supabase/subscription_lifecycle.sql`**: payment webhooks need
+   it (until it runs they answer 500 and the providers retry).
 2. **Turn beta off when paid plans go live:** set the Edge Function secret
    `BETA_ALL_ACCESS=false` (and build the app with `BETA_ALL_ACCESS=false`).
 3. **Payments:**

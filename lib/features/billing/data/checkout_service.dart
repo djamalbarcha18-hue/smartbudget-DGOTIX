@@ -17,7 +17,15 @@ extension PayProviderX on PayProvider {
 
 /// Why a checkout couldn't start. [notConfigured] means the owner hasn't wired
 /// the payment provider yet — the UI treats that as "billing coming soon".
-enum CheckoutError { notConfigured, unknownPrice, provider, network }
+/// [alreadySubscribed]: a subscription is running; plans are changed from
+/// Manage, so nobody is billed twice.
+enum CheckoutError {
+  notConfigured,
+  unknownPrice,
+  provider,
+  network,
+  alreadySubscribed
+}
 
 /// The result of asking the server to start a checkout: either a URL to open or
 /// a reason it couldn't.
@@ -70,6 +78,7 @@ class CheckoutService {
         'not_configured' => CheckoutError.notConfigured,
         'unknown_price' || 'invalid_plan' => CheckoutError.unknownPrice,
         'provider_error' || 'no_checkout_url' => CheckoutError.provider,
+        'already_subscribed' => CheckoutError.alreadySubscribed,
         _ => CheckoutError.network,
       };
 }

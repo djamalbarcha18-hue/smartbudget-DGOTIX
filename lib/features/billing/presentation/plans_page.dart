@@ -131,16 +131,18 @@ class _BetaBanner extends StatelessWidget {
   }
 }
 
-/// Shows the user's active paid subscription (plan + renewal/cancel date) with
-/// a Manage/cancel action that opens the provider's portal. Hidden when there's
-/// no active paid subscription.
+/// Shows the user's active paid subscription (plan + renewal/cancel date), or
+/// one whose payment failed, with a Manage/cancel action that opens the
+/// provider's portal. Hidden when there's neither.
 class _CurrentPlanCard extends ConsumerWidget {
   const _CurrentPlanCard();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final UserSubscription? sub = ref.watch(subscriptionProvider).valueOrNull;
-    if (sub == null || !sub.isPaidActive) return const SizedBox.shrink();
+    if (sub == null || !(sub.isPaidActive || sub.needsPaymentFix)) {
+      return const SizedBox.shrink();
+    }
 
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
@@ -153,7 +155,12 @@ class _CurrentPlanCard extends ConsumerWidget {
         accent: c.brand,
         child: Row(
           children: <Widget>[
-            Icon(Icons.verified_outlined, size: 20, color: c.brand),
+            Icon(
+                sub.needsPaymentFix
+                    ? Icons.error_outline_rounded
+                    : Icons.verified_outlined,
+                size: 20,
+                color: sub.needsPaymentFix ? c.expense : c.brand),
             const SizedBox(width: DsSpacing.md),
             Expanded(
               child: Column(
@@ -162,7 +169,13 @@ class _CurrentPlanCard extends ConsumerWidget {
                   Text(l.subYoureOn(planName(l, sub.plan)),
                       style: t.titleSmall
                           ?.copyWith(fontWeight: FontWeight.w700)),
-                  if (date != null) ...<Widget>[
+                  if (sub.needsPaymentFix) ...<Widget>[
+                    const SizedBox(height: 2),
+                    Text(
+                      l.subPaymentProblem(planName(l, sub.plan)),
+                      style: t.labelSmall?.copyWith(color: c.expense),
+                    ),
+                  ] else if (date != null) ...<Widget>[
                     const SizedBox(height: 2),
                     Text(
                       sub.cancelAtPeriodEnd
@@ -667,6 +680,10 @@ class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
           webOnlyWindowName: '_blank');
       // When they return, re-fetch so the new plan shows without a restart.
       if (mounted) ref.invalidate(remoteEntitlementProvider);
+    } else if (r.error == CheckoutError.alreadySubscribed) {
+      messenger.showSnackBar(
+          SnackBar(content: Text(l.checkoutAlreadySubscribed)));
+      ref.invalidate(subscriptionProvider);
     } else if (r.error == CheckoutError.notConfigured) {
       messenger.showSnackBar(SnackBar(content: Text(l.planBillingSoon)));
     } else {

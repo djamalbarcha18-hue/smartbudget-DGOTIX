@@ -1,24 +1,32 @@
 // SmartBudget — paddle-webhook (Supabase Edge Function, Deno).
 //
 // The ONLY thing that grants or revokes a paid entitlement. Paddle calls this
-// server-to-server; we verify the signature, dedupe by event id, then keep
-// ai_entitlements + subscriptions in sync. The server stays the source of truth
-// — the client never sets its own plan.
+// server-to-server; we verify the signature, dedupe by event id, then apply the
+// event to that one subscription (supabase/subscription_lifecycle.sql), which
+// sets the user's plan from all their subscriptions. The server stays the
+// source of truth — the client never sets its own plan.
+//
+// Handled: subscription.* (created, activated, updated — renewals and plan
+// changes —, past_due, paused, resumed, canceled), a full refund or chargeback
+// (adjustment.*), and coupon redemptions (transaction.completed).
 //
 // Deploy:  supabase functions deploy paddle-webhook --no-verify-jwt
 // Secrets: supabase secrets set PADDLE_WEBHOOK_SECRET=...
 // Point the Paddle notification destination at this function's URL.
 import { HttpError, serviceClient } from "../_shared/auth.ts";
 import {
-  eventOrder,
   markEventOnce,
   priceToPlan,
-  setEntitlementPlan,
   unmarkEvent,
-  upsertSubscription,
   verifyPaddleSignature,
 } from "../_shared/billing.ts";
-import type { Plan } from "../_shared/quota.ts";
+import {
+  applySubscriptionEvent,
+  type ApplyOutcome,
+  ENTITLING,
+  paddleStatus,
+  userIdOrNull,
+} from "../_shared/subscriptions.ts";
 
 function ok(body: unknown = { ok: true }): Response {
   return new Response(JSON.stringify(body), {
@@ -86,58 +94,81 @@ async function apply(
   eventAt: string | null,
 ): Promise<Response> {
   const custom = data?.custom_data ?? {};
-  const userId = String(custom?.user_id ?? "");
 
-  switch (type) {
-    case "subscription.activated":
-    case "subscription.created":
-    case "subscription.updated":
-    case "subscription.canceled": {
-      if (!userId) return ok({ ignored: "no_user" });
-      const status = String(data?.status ?? "");
-      const priceId = String(data?.items?.[0]?.price?.id ?? "");
-      const mapped = priceId
-        ? await priceToPlan(db, priceId, "paddle", true)
-        : null;
-      const active = status === "active" || status === "trialing";
-      // The plan comes only from our own price map, never from data the
-      // checkout carried: a price we don't sell grants nothing.
-      if (active && !mapped) return ok({ ignored: "unknown_price" });
-      const order = await eventOrder(db, userId, eventAt);
-      if (order.stale) return ok({ ignored: "older_event" });
-      // Active/trialing ⇒ the paid plan; anything else (canceled, paused) ⇒ free.
-      const plan: Plan = active && mapped ? mapped.plan : "free";
-      const scheduled = data?.scheduled_change ?? null;
-
-      await setEntitlementPlan(db, userId, plan);
-      await upsertSubscription(db, {
-        userId,
+  if (type.startsWith("subscription.")) {
+    const subscriptionId = String(data?.id ?? "");
+    const status = paddleStatus(data?.status);
+    if (!subscriptionId) return ok({ ignored: "no_subscription" });
+    if (!status) return ok({ ignored: "unknown_status" });
+    const priceId = String(data?.items?.[0]?.price?.id ?? "");
+    const mapped = priceId
+      ? await priceToPlan(db, priceId, "paddle", true)
+      : null;
+    // The plan comes only from our own price map, never from data the
+    // checkout carried: a price we don't sell grants nothing.
+    if (ENTITLING.has(status) && !mapped) return ok({ ignored: "unknown_price" });
+    return result(
+      await applySubscriptionEvent(db, {
         provider: "paddle",
-        customerId: data?.customer_id ?? null,
-        subscriptionId: data?.id ?? null,
-        plan,
-        period: mapped?.period ?? (custom?.period ?? null),
+        subscriptionId,
+        userId: userIdOrNull(custom?.user_id),
+        plan: mapped?.plan ?? null,
+        period: mapped?.period ?? null,
         status,
-        currentPeriodEnd: data?.current_billing_period?.ends_at ?? null,
-        cancelAtPeriodEnd: scheduled?.action === "cancel",
-        eventAt: order.tracked ? eventAt : null,
-      });
-      return ok();
-    }
-
-    case "transaction.completed": {
-      // Record a coupon redemption if one rode along (best-effort).
-      const code = String(custom?.coupon ?? "").trim().toUpperCase();
-      if (userId && code) {
-        try {
-          await db.from("coupon_redemptions")
-            .insert({ code, user_id: userId });
-        } catch (_) { /* non-fatal */ }
-      }
-      return ok();
-    }
-
-    default:
-      return ok({ ignored: type });
+        customerId: data?.customer_id ?? null,
+        periodEnd: data?.current_billing_period?.ends_at ?? null,
+        cancelAtPeriodEnd: data?.scheduled_change?.action === "cancel",
+        eventAt,
+      }),
+    );
   }
+
+  if (type === "adjustment.created" || type === "adjustment.updated") {
+    // A refund (once approved) or a chargeback of the whole payment takes the
+    // subscription's access away until a new period is paid. Partial refunds
+    // and credits change nothing.
+    const action = String(data?.action ?? "");
+    const subscriptionId = String(data?.subscription_id ?? "");
+    if (action !== "refund" && action !== "chargeback") {
+      return ok({ ignored: "adjustment_" + action });
+    }
+    if (!subscriptionId) return ok({ ignored: "no_subscription" });
+    if (String(data?.status ?? "") !== "approved") {
+      return ok({ ignored: "not_approved" });
+    }
+    if (action === "refund" && String(data?.type ?? "") !== "full") {
+      return ok({ ignored: "partial_refund" });
+    }
+    return result(
+      await applySubscriptionEvent(db, {
+        provider: "paddle",
+        subscriptionId,
+        userId: null,
+        plan: null,
+        period: null,
+        status: "refunded",
+        eventAt,
+      }),
+    );
+  }
+
+  if (type === "transaction.completed") {
+    // Record a coupon redemption if one rode along (best-effort).
+    const userId = String(custom?.user_id ?? "");
+    const code = String(custom?.coupon ?? "").trim().toUpperCase();
+    if (userId && code) {
+      try {
+        await db.from("coupon_redemptions")
+          .insert({ code, user_id: userId });
+      } catch (_) { /* non-fatal */ }
+    }
+    return ok();
+  }
+
+  return ok({ ignored: type });
+}
+
+function result(outcome: ApplyOutcome): Response {
+  if (outcome === "applied") return ok();
+  return ok({ ignored: outcome === "stale" ? "older_event" : outcome });
 }

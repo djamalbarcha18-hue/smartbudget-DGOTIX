@@ -1,8 +1,12 @@
 // In-memory stand-in for supabase-js, enough for functions_test.ts. State is
 // shared through globalThis.__db so the test can seed and inspect it.
-// db.failTable (or FAIL_TABLE) makes writes to that table fail; NO_EVENT_COL
-// hides subscriptions.provider_event_at and NO_RPC removes the reservation
-// functions, as in a database without supabase/security_hardening.sql.
+// db.failTable (or FAIL_TABLE) makes writes to that table fail, db.failRpc
+// makes that database function fail; NO_EVENT_COL hides
+// subscriptions.provider_event_at and NO_RPC removes the database functions,
+// as in a database without supabase/security_hardening.sql.
+// apply_subscription_event runs on the real Postgres when the test provides
+// one (globalThis.__pg, see harness.ts); otherwise its calls are recorded in
+// db.calls and answered 'applied'.
 // deno-lint-ignore-file no-explicit-any
 type Row = Record<string, any>;
 const g = globalThis as any;
@@ -28,6 +32,7 @@ class Q {
   eq(c: string, v: any) { this.filters.push((r) => r[c] === v); return this; }
   gte(c: string, v: any) { this.filters.push((r) => r[c] >= v); return this; }
   lt(c: string, v: any) { this.filters.push((r) => r[c] < v); return this; }
+  in(c: string, v: any[]) { this.filters.push((r) => v.includes(r[c])); return this; }
   match(r: Row) { return this.filters.every((f) => f(r)); }
   async run(): Promise<any> {
     const rows = t(this.name);
@@ -78,12 +83,31 @@ function reserve(a: any): string {
   return "ok";
 }
 
+/** A SQL literal for a call argument. */
+function lit(v: any): string {
+  if (v === null || v === undefined) return "null";
+  if (typeof v === "boolean" || typeof v === "number") return String(v);
+  return "'" + String(v).replace(/'/g, "''") + "'";
+}
+
+async function applySubscriptionEvent(a: any): Promise<any> {
+  if (!g.__pg) { (db.calls ??= []).push(a); return { data: "applied", error: null }; }
+  const args = Object.entries(a).map(([k, v]) => `${k} => ${lit(v)}`).join(", ");
+  try {
+    return { data: await g.__pg(`select apply_subscription_event(${args})`), error: null };
+  } catch (e) {
+    return { data: null, error: { code: "P0001", message: String(e) } };
+  }
+}
+
 export function createClient(..._args: unknown[]): any {
   return {
     auth: { getUser: (tok: string) => Promise.resolve({ data: { user: { id: tok.replace("user-", "") } }, error: null }) },
     from: (n: string) => new Q(n),
     rpc: async (fn: string, a: any) => {
       if (Deno.env.get("NO_RPC")) return { data: null, error: { code: "PGRST202", message: "not found" } };
+      if (db.failRpc === fn) return { data: null, error: { code: "XX000", message: "failed" } };
+      if (fn === "apply_subscription_event") return await applySubscriptionEvent(a);
       if (fn === "reserve_usage") return { data: reserve(a), error: null };
       if (fn === "release_usage") {
         const k = a.p_kind === "ai" ? "requests" : "scans";

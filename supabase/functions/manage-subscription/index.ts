@@ -21,7 +21,7 @@ Deno.serve(async (req: Request) => {
     const userId = await requireUserId(req);
     const db = serviceClient();
     const { data: sub } = await db.from("subscriptions")
-      .select("provider, provider_subscription_id, plan")
+      .select("provider, provider_subscription_id, plan, status")
       .eq("user_id", userId).maybeSingle();
 
     if (!sub || sub.plan === "free" || !sub.provider_subscription_id) {
@@ -51,7 +51,10 @@ Deno.serve(async (req: Request) => {
     if (!res.ok) return jsonResponse({ error: "provider_error" }, 502, cors);
     const data = await res.json().catch(() => ({}));
     const urls = data?.data?.management_urls ?? {};
-    const url: string | undefined = urls.cancel ?? urls.update_payment_method;
+    // After a failed payment the card needs fixing; otherwise Manage cancels.
+    const url: string | undefined = sub.status === "past_due"
+      ? urls.update_payment_method ?? urls.cancel
+      : urls.cancel ?? urls.update_payment_method;
     if (!url) return jsonResponse({ error: "not_available" }, 404, cors);
     return jsonResponse({ url }, 200, cors);
   } catch (e) {

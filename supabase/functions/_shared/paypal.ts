@@ -102,3 +102,20 @@ export async function verifyPaypalWebhook(
   const j = await res.json();
   return j?.verification_status === "SUCCESS";
 }
+
+/** A captured payment (sale): its subscription and amount, or throws. */
+export async function paypalSale(
+  token: string,
+  saleId: string,
+): Promise<{ subscriptionId: string | null; total: number }> {
+  const res = await fetch(
+    `${paypalApiBase()}/v1/payments/sale/${encodeURIComponent(saleId)}`,
+    { headers: { "Authorization": `Bearer ${token}` } },
+  );
+  if (!res.ok) throw new Error("paypal_sale_lookup_failed");
+  const j = await res.json();
+  return {
+    subscriptionId: j?.billing_agreement_id ? String(j.billing_agreement_id) : null,
+    total: Number(j?.amount?.total ?? NaN),
+  };
+}

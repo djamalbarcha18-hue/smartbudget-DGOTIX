@@ -6,7 +6,7 @@
 //
 //   POST { plan: "basic"|"pro", period: "monthly"|"yearly",
 //          provider?: "paddle"|"paypal" } -> { url }
-//   | { error: "not_configured" | "unknown_price" | ... }
+//   | { error: "not_configured" | "unknown_price" | "already_subscribed" | ... }
 //
 // Deploy:  supabase functions deploy create-checkout
 // Secrets (Paddle): PADDLE_API_KEY, PADDLE_API_URL
@@ -40,6 +40,20 @@ Deno.serve(async (req: Request) => {
     }
 
     const db = serviceClient();
+    // One subscription at a time: a second one would be billed alongside the
+    // first. Someone already subscribed changes or cancels from Manage; a new
+    // plan can be bought once the current one is set to end.
+    const { data: live, error: liveError } = await db
+      .from("billing_subscriptions")
+      .select("status, cancel_at_period_end")
+      .eq("user_id", userId)
+      .in("status", ["active", "trialing", "past_due", "paused"]);
+    if (liveError) return jsonResponse({ error: "not_configured" }, 503, cors);
+    const blocking = (live ?? []).some((s: { status: string; cancel_at_period_end: boolean }) =>
+      !((s.status === "active" || s.status === "trialing") && s.cancel_at_period_end)
+    );
+    if (blocking) return jsonResponse({ error: "already_subscribed" }, 409, cors);
+
     const successUrl = Deno.env.get("CHECKOUT_SUCCESS_URL") ?? undefined;
     const cancelUrl = Deno.env.get("CHECKOUT_CANCEL_URL") ?? successUrl;
 

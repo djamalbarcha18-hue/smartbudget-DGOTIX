@@ -71,6 +71,9 @@ select pg_temp.attempt('A reserves usage directly', $q$select reserve_usage(auth
 select pg_temp.attempt('A gives back usage directly', $q$select release_usage(auth.uid(), 'ai', '2026-10')$q$, 'denied');
 select pg_temp.attempt('A files a report as B', $q$insert into ai_reports (user_id, reason, answer) values ('bbbbbbbb-0000-0000-0000-000000000002', 'other', 'x')$q$, 'denied');
 select pg_temp.attempt('A reads reports', 'select * from ai_reports', 'rows=0');
+select pg_temp.attempt('A reads payment subscriptions', 'select * from billing_subscriptions', 'denied');
+select pg_temp.attempt('A writes a payment subscription', $q$insert into billing_subscriptions (provider, provider_subscription_id, user_id, plan, status) values ('paddle', 'sub_x', auth.uid(), 'pro', 'active')$q$, 'denied');
+select pg_temp.attempt('A applies a payment event directly', $q$select apply_subscription_event('paddle', 'sub_x', auth.uid(), 'pro', 'monthly', 'active', null, null, false, now())$q$, 'denied');
 
 -- Signed out (anon key only).
 reset role;
@@ -80,6 +83,7 @@ select pg_temp.attempt('anon reads backups', 'select * from user_backups', 'rows
 select pg_temp.attempt('anon reads subscriptions', 'select * from subscriptions', 'rows=0');
 select pg_temp.attempt('anon reads transactions', 'select * from transactions', 'rows=0');
 select pg_temp.attempt('anon reserves usage', $q$select reserve_usage('aaaaaaaa-0000-0000-0000-000000000001', 'ai', '2026-10', 999, false, null)$q$, 'denied');
+select pg_temp.attempt('anon applies a payment event', $q$select apply_subscription_event('paddle', 'sub_x', 'aaaaaaaa-0000-0000-0000-000000000001', 'pro', 'monthly', 'active', null, null, false, now())$q$, 'denied');
 reset role;
 
 select outcome || '  ' || test from results;
