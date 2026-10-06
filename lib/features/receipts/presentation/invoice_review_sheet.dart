@@ -383,6 +383,22 @@ class _InvoiceReviewSheetState extends State<InvoiceReviewSheet> {
       };
       if (m != null) out.add(m);
     }
+    // A currency or date read with too little certainty to call the invoice
+    // verified, and no issue above that already says so.
+    final Set<InvoiceIssue> found = _r.checks.issues;
+    const ReviewPolicy policy = ReviewPolicy.standard;
+    if (_r.currency != null &&
+        _r.confidence.currency < policy.accept &&
+        !found.contains(InvoiceIssue.currencyUnknown) &&
+        !found.contains(InvoiceIssue.currencyConflict)) {
+      out.add(l.invoiceCheckCurrency(_r.currency!));
+    }
+    if (_r.date != null &&
+        _r.confidence.date < policy.accept &&
+        !found.contains(InvoiceIssue.dateMissing) &&
+        !found.contains(InvoiceIssue.dateSuspicious)) {
+      out.add(l.invoiceCheckDate);
+    }
     return out;
   }
 

@@ -7,14 +7,16 @@
        Flutter's CDN, and talk only to the services the app uses (Supabase,
        Google Fonts, the exchange-rate, gold and parallel-market sources).
        Injected code could not send data anywhere else. A service missing
-       here is blocked: add any new one the app calls. -->
+       here is blocked: add any new one the app calls. blob: lets the app
+       read a photo the user picked (receipt scanner); it never leaves the
+       browser. test/web_csp_test.dart checks this list. -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' 'wasm-unsafe-eval' https://www.gstatic.com;
     style-src 'self' 'unsafe-inline';
     font-src 'self' data: https://fonts.gstatic.com;
     img-src 'self' data: blob:;
-    connect-src 'self' https://fconhnyognxcpvmwobus.supabase.co https://www.gstatic.com https://fonts.gstatic.com https://fonts.googleapis.com https://open.er-api.com https://dolarapi.com https://api.gold-api.com https://api.coingecko.com https://squarealgerie.com;
+    connect-src 'self' blob: https://fconhnyognxcpvmwobus.supabase.co https://www.gstatic.com https://fonts.gstatic.com https://fonts.googleapis.com https://open.er-api.com https://dolarapi.com https://api.gold-api.com https://api.coingecko.com https://squarealgerie.com;
     worker-src 'self' blob:;
     manifest-src 'self';
     frame-src 'none';

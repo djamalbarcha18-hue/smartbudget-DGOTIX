@@ -105,6 +105,25 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('a correct invoice with only "\$" says to check the currency',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(430, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    // "$" alone fits several dollars: the reading is not verified, and the
+    // sheet says why instead of showing "Needs review" with no reason.
+    final InvoiceReading r = InvoiceAnalyzer.analyze(
+        <String, dynamic>{...receipt(), 'sym': r'$'},
+        today: today);
+    expect(r.level(), ReviewLevel.warning);
+    await tester.pumpWidget(host(InvoiceReviewSheet(reading: r, timings: const ScanTimings())));
+    expect(
+        find.text("Check the currency: USD was inferred, as the receipt doesn't show it clearly."),
+        findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('Arabic layout renders without overflow',
       (WidgetTester tester) async {
     tester.view.physicalSize = const Size(360, 1400);
