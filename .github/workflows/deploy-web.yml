@@ -57,9 +57,20 @@ jobs:
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
             DEFINES="--dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
           fi
-          flutter build web --release --base-href / $DEFINES
+          # Each deploy gets an id: the app is built with it and the site
+          # publishes it in build.json, so an open or installed app can see a
+          # newer build and offer to reload (lib/core/update). The id also
+          # goes into the script addresses, so a reload can't keep running a
+          # cached older copy.
+          BUILD_ID="${GITHUB_SHA::12}"
+          flutter build web --release --base-href / $DEFINES --dart-define=BUILD_ID=$BUILD_ID
           sed -i 's#<base href="/">#<base href="./">#' build/web/index.html
           grep -q '<base href="./">' build/web/index.html
+          printf '{"build":"%s"}\n' "$BUILD_ID" > build/web/build.json
+          sed -i "s#src=\"flutter_bootstrap.js\"#src=\"flutter_bootstrap.js?v=$BUILD_ID\"#; s#src=\"install_prompt.js\"#src=\"install_prompt.js?v=$BUILD_ID\"#" build/web/index.html
+          sed -i "s#\"mainJsPath\":\"main.dart.js\"#\"mainJsPath\":\"main.dart.js?v=$BUILD_ID\"#" build/web/flutter_bootstrap.js
+          grep -q "flutter_bootstrap.js?v=$BUILD_ID" build/web/index.html
+          grep -q "main.dart.js?v=$BUILD_ID" build/web/flutter_bootstrap.js
           # The page's Content-Security-Policy (web/index.html) must allow the
           # Supabase project, or sign-in and sync would be blocked.
           if [ -n "$SUPABASE_URL" ] && ! grep -q "connect-src[^;]*${SUPABASE_URL%/}" build/web/index.html; then

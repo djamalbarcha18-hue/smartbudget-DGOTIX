@@ -913,6 +913,8 @@
   "invoiceIssueResolved": "قُرئ مبلغ غير واضح بالطريقة التي تجعل الحساب صحيحاً.",
   "invoiceCheckCurrency": "تحقّق من العملة: {code} مستنتجة لأن الفاتورة لا تُظهرها بوضوح.",
   "@invoiceCheckCurrency": {"placeholders": {"code": {"type": "String"}}},
+  "updateAvailable": "نسخة جديدة متاحة",
+  "updateNow": "تحديث",
   "invoiceCheckDate": "تحقّق من التاريخ: لم يكن واضحاً تماماً في الفاتورة.",
   "invoiceDuplicate": "قد تكون هذه الفاتورة مكررة.",
   "invoiceReadOffline": "قُرئت على الجهاز بدون إنترنت (الطباعة الفرنسية والإنجليزية فقط): تحقّق من الأرقام.",

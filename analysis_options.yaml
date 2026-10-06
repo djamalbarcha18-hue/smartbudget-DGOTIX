@@ -5,6 +5,9 @@ analyzer:
     - "**/*.g.dart"
     - "lib/l10n/gen/**"
     - ".dart_tool/**"
+    - build/**
+    - android/**
+    - web/**
 
 # We run on the vetted flutter_lints baseline (which already covers avoid_print,
 # unused imports, etc.). Stricter opt-in style rules (prefer_const_constructors,

@@ -915,6 +915,8 @@
   "invoiceIssueResolved": "An unclear amount was read the way that adds up.",
   "invoiceCheckCurrency": "Check the currency: {code} was inferred, as the receipt doesn't show it clearly.",
   "@invoiceCheckCurrency": {"placeholders": {"code": {"type": "String"}}},
+  "updateAvailable": "A new version is available",
+  "updateNow": "Update",
   "invoiceCheckDate": "Check the date: it wasn't fully clear on the receipt.",
   "invoiceDuplicate": "This invoice may be a duplicate.",
   "invoiceReadOffline": "Read on this device without internet (French and English print only): check the figures.",
