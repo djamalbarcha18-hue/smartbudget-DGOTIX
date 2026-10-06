@@ -10,6 +10,7 @@ import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/auth/presentation/auth_helpers.dart';
 import 'package:smartbudget/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:smartbudget/features/auth/presentation/widgets/password_requirements.dart';
+import 'package:smartbudget/features/auth/presentation/captcha/captcha.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
@@ -39,11 +40,13 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
     try {
+      final String? captcha = await captchaToken(context, ref);
       final bool signedIn =
           await ref.read(authControllerProvider.notifier).signUp(
                 email: _email.text,
                 password: _password.text,
                 displayName: _name.text,
+                captchaToken: captcha,
               );
       if (!signedIn && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

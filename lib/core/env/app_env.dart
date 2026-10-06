@@ -49,6 +49,20 @@ abstract final class AppEnv {
   /// country parallel rows fetch live data or render "unavailable".
   static bool get hasParallelApi => parallelApiUrl.isNotEmpty;
 
+  /// Cloudflare Turnstile site key (public by design). When set, sign-in,
+  /// sign-up and password-reset requests first pass a Turnstile check and send
+  /// its token to Supabase Auth, which verifies it once CAPTCHA protection is
+  /// turned on there (Authentication > Attack Protection). Empty: no check.
+  static const String turnstileSiteKey =
+      String.fromEnvironment('TURNSTILE_SITE_KEY', defaultValue: '');
+
+  /// Where the check page (web/turnstile.html) is served for the Android app;
+  /// the web app frames its own copy. Must be a hostname allowed for the
+  /// Turnstile site key.
+  static const String turnstilePageUrl = String.fromEnvironment(
+      'TURNSTILE_PAGE_URL',
+      defaultValue: 'https://smartbudget.dgotix.com/turnstile.html');
+
   /// Beta: every paid feature is unlocked for everyone (PRO limits, yearly
   /// extras) and upgrade prompts are hidden. ON while the app is in beta; turn
   /// it off when paid plans go live by building with

@@ -12,6 +12,7 @@ import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/auth/presentation/auth_helpers.dart';
 import 'package:smartbudget/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:smartbudget/features/auth/presentation/widgets/password_requirements.dart';
+import 'package:smartbudget/features/auth/presentation/captcha/captcha.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Account recovery in two steps:
@@ -72,9 +73,10 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
     if (!_codeSent && !_emailForm.currentState!.validate()) return;
     setState(() => _loading = true);
     try {
+      final String? captcha = await captchaToken(context, ref);
       await ref
           .read(authControllerProvider.notifier)
-          .sendPasswordReset(email: _email.text);
+          .sendPasswordReset(email: _email.text, captchaToken: captcha);
       if (!mounted) return;
       setState(() => _codeSent = true);
       _startCooldown();

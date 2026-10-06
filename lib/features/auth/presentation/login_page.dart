@@ -13,6 +13,7 @@ import 'package:smartbudget/features/auth/data/device_data_adoption.dart';
 import 'package:smartbudget/features/auth/domain/auth_failure.dart';
 import 'package:smartbudget/features/auth/presentation/auth_helpers.dart';
 import 'package:smartbudget/features/auth/presentation/widgets/auth_scaffold.dart';
+import 'package:smartbudget/features/auth/presentation/captcha/captcha.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -40,9 +41,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
     try {
+      final String? captcha = await captchaToken(context, ref);
       await ref.read(authControllerProvider.notifier).signIn(
             email: _email.text,
             password: _password.text,
+            captchaToken: captcha,
           );
       // Navigation is handled by the router's auth guard.
     } catch (error) {

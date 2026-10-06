@@ -13,7 +13,12 @@ abstract interface class AuthRepository {
   AuthUser? get currentUser;
 
   /// Throws [AuthFailure] on error.
-  Future<AuthUser> signIn({required String email, required String password});
+  /// [captchaToken]: the human check's token, when one is required.
+  Future<AuthUser> signIn({
+    required String email,
+    required String password,
+    String? captchaToken,
+  });
 
   /// Returns the signed-in user, or null when the account was created but the
   /// e-mail address must be confirmed (link sent by e-mail) before signing in.
@@ -22,13 +27,14 @@ abstract interface class AuthRepository {
     required String email,
     required String password,
     String? displayName,
+    String? captchaToken,
   });
 
   Future<void> signOut();
 
   /// Emails a one-time recovery code to [email]. Throws [AuthFailure] on
   /// error. For privacy it succeeds whether or not an account exists.
-  Future<void> sendPasswordReset({required String email});
+  Future<void> sendPasswordReset({required String email, String? captchaToken});
 
   /// Verifies the emailed recovery [code] and sets [newPassword]. On success
   /// the user is signed in. Throws [AuthFailure] ([AuthFailureKind.invalidCode]

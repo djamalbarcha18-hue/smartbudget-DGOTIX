@@ -28,6 +28,30 @@ void main() {
     expect(directives['script-src'], isNot(contains("'unsafe-eval'")));
   });
 
+  test('the only page that may be framed is the site\'s own sign-in check', () {
+    expect(directives['frame-src'], <String>["'self'"]);
+  });
+
+  test('the sign-in check page runs only its own script and Cloudflare\'s', () {
+    final String page = File('web/turnstile.html').readAsStringSync();
+    final RegExpMatch? p =
+        RegExp(r'Content-Security-Policy" content="([^"]*)"').firstMatch(page);
+    final Map<String, List<String>> d = <String, List<String>>{
+      for (final String x in (p?.group(1) ?? '').split(';'))
+        if (x.trim().isNotEmpty)
+          x.trim().split(RegExp(r'\s+')).first:
+              x.trim().split(RegExp(r'\s+')).skip(1).toList(),
+    };
+    expect(d['default-src'], <String>["'none'"]);
+    expect(d['script-src'], <String>["'self'", 'https://challenges.cloudflare.com']);
+    expect(d['frame-src'], <String>['https://challenges.cloudflare.com']);
+    // No inline script: the logic is in turnstile.js.
+    expect(RegExp(r'<script>').hasMatch(page), isFalse);
+    // The token goes only to a page of this same site.
+    expect(File('web/turnstile.js').readAsStringSync(),
+        contains('postMessage(msg, location.origin)'));
+  });
+
   test('a picked photo can be read (receipt scanner on the web)', () {
     // image_picker hands the photo over as a blob: URL read by XHR.
     expect(connect, contains('blob:'));

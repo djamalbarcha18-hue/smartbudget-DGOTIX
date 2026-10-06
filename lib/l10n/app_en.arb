@@ -350,6 +350,8 @@
   "authErrWeak": "Password is too weak",
   "authErrUserNotFound": "No account found for this email",
   "authErrNetwork": "Network error. Please try again",
+  "authErrCaptcha": "Couldn't confirm you're a person. Please try again.",
+  "captchaTitle": "Quick security check",
   "authErrUnknown": "Something went wrong. Please try again",
   "authErrNotConfirmed": "Your e-mail address isn't confirmed yet. Open the confirmation link we sent you, then sign in",
   "authConfirmEmailSent": "Your account is created. We sent a confirmation link to {email}; open it, then sign in",

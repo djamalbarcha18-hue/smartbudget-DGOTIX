@@ -83,23 +83,31 @@ class AuthController extends Notifier<AuthState> {
     return user;
   }
 
-  Future<void> signIn({required String email, required String password}) =>
-      _repo.signIn(email: email, password: password);
+  Future<void> signIn({
+    required String email,
+    required String password,
+    String? captchaToken,
+  }) =>
+      _repo.signIn(email: email, password: password, captchaToken: captchaToken);
 
   /// False when the e-mail address must be confirmed before signing in.
   Future<bool> signUp({
     required String email,
     required String password,
     String? displayName,
+    String? captchaToken,
   }) async =>
       await _repo.signUp(
-          email: email, password: password, displayName: displayName) !=
+          email: email,
+          password: password,
+          displayName: displayName,
+          captchaToken: captchaToken) !=
       null;
 
   Future<void> signOut() => _repo.signOut();
 
-  Future<void> sendPasswordReset({required String email}) =>
-      _repo.sendPasswordReset(email: email);
+  Future<void> sendPasswordReset({required String email, String? captchaToken}) =>
+      _repo.sendPasswordReset(email: email, captchaToken: captchaToken);
 
   Future<void> resetPasswordWithCode({
     required String email,

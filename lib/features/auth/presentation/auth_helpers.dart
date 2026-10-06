@@ -61,6 +61,7 @@ String authFailureMessage(Object error, AppLocalizations l) {
     AuthFailureKind.invalidCode => l.authErrInvalidCode,
     AuthFailureKind.emailNotConfirmed => l.authErrNotConfirmed,
     AuthFailureKind.network => l.authErrNetwork,
+    AuthFailureKind.captchaFailed => l.authErrCaptcha,
     AuthFailureKind.unknown => l.authErrUnknown,
   };
 }

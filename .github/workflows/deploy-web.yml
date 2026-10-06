@@ -52,10 +52,16 @@ jobs:
           # them. Never put the secret / service_role key here.
           SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://fconhnyognxcpvmwobus.supabase.co' }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'sb_publishable_5xtM1xBGuJJldtP_87Tzpg_XDB3Euff' }}
+          # Cloudflare Turnstile site key (public): turns on the human check
+          # before sign-in, sign-up and password reset. Empty: no check.
+          TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY }}
         run: |
           DEFINES=""
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
             DEFINES="--dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
+          fi
+          if [ -n "$TURNSTILE_SITE_KEY" ]; then
+            DEFINES="$DEFINES --dart-define=TURNSTILE_SITE_KEY=$TURNSTILE_SITE_KEY"
           fi
           # Each deploy gets an id: the app is built with it and the site
           # publishes it in build.json, so an open or installed app can see a

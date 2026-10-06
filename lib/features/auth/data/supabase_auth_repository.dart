@@ -22,11 +22,14 @@ class SupabaseAuthRepository implements AuthRepository {
   AuthUser? get currentUser => _map(_client.auth.currentUser);
 
   @override
-  Future<AuthUser> signIn(
-      {required String email, required String password}) async {
+  Future<AuthUser> signIn({
+    required String email,
+    required String password,
+    String? captchaToken,
+  }) async {
     try {
-      final sb.AuthResponse res = await _client.auth
-          .signInWithPassword(email: email.trim(), password: password);
+      final sb.AuthResponse res = await _client.auth.signInWithPassword(
+          email: email.trim(), password: password, captchaToken: captchaToken);
       final AuthUser? user = _map(res.user);
       if (user == null) throw const AuthFailure(AuthFailureKind.unknown);
       return user;
@@ -42,11 +45,13 @@ class SupabaseAuthRepository implements AuthRepository {
     required String email,
     required String password,
     String? displayName,
+    String? captchaToken,
   }) async {
     try {
       final sb.AuthResponse res = await _client.auth.signUp(
         email: email.trim(),
         password: password,
+        captchaToken: captchaToken,
         data: displayName != null && displayName.trim().isNotEmpty
             ? <String, dynamic>{'display_name': displayName.trim()}
             : null,
@@ -73,9 +78,11 @@ class SupabaseAuthRepository implements AuthRepository {
   Future<void> signOut() => _client.auth.signOut();
 
   @override
-  Future<void> sendPasswordReset({required String email}) async {
+  Future<void> sendPasswordReset(
+      {required String email, String? captchaToken}) async {
     try {
-      await _client.auth.resetPasswordForEmail(email.trim());
+      await _client.auth
+          .resetPasswordForEmail(email.trim(), captchaToken: captchaToken);
     } on sb.AuthException catch (e) {
       throw _failure(e);
     } catch (e) {
@@ -139,6 +146,9 @@ class SupabaseAuthRepository implements AuthRepository {
 
   AuthFailure _failure(sb.AuthException e) {
     final String msg = e.message.toLowerCase();
+    if (msg.contains('captcha')) {
+      return AuthFailure(AuthFailureKind.captchaFailed, e.message);
+    }
     if (msg.contains('already registered') || msg.contains('already in use')) {
       return AuthFailure(AuthFailureKind.emailAlreadyInUse, e.message);
     }

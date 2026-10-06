@@ -10,6 +10,9 @@ enum AuthFailureKind {
   invalidCode,
   emailNotConfirmed,
   network,
+
+  /// The human check (Turnstile) wasn't passed.
+  captchaFailed,
   unknown,
 }
 

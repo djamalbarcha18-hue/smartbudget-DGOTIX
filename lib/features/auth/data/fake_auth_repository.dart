@@ -62,6 +62,7 @@ class FakeAuthRepository implements AuthRepository {
   Future<AuthUser> signIn({
     required String email,
     required String password,
+    String? captchaToken,
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 350));
     _validate(email, password);
@@ -75,6 +76,7 @@ class FakeAuthRepository implements AuthRepository {
     required String email,
     required String password,
     String? displayName,
+    String? captchaToken,
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 400));
     _validate(email, password);
@@ -105,7 +107,8 @@ class FakeAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> sendPasswordReset({required String email}) async {
+  Future<void> sendPasswordReset(
+      {required String email, String? captchaToken}) async {
     await Future<void>.delayed(const Duration(milliseconds: 350));
     if (!_isEmail(email)) {
       throw const AuthFailure(AuthFailureKind.userNotFound);
