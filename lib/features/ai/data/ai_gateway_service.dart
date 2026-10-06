@@ -80,6 +80,10 @@ class AiGatewayService {
   AiFailure _mapFunctionError(int? status, Object? details) {
     final String code =
         details is Map ? (details['error']?.toString() ?? '') : '';
+    // Too many questions in a short time (per-account rate limit): wait.
+    if (code == 'rate_limited') {
+      return const AiFailure(AiErrorKind.rateLimited);
+    }
     if (code == 'quota_exceeded' || status == 429) {
       return const AiFailure(AiErrorKind.quotaExceeded);
     }

@@ -11,9 +11,9 @@
 // Body:    { "task": "chat", "prompt": "…", "context": "…",
 //            "history": [{ "role": "user"|"assistant", "text": "…" }] }
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
-import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
+import { HttpError, requireAccount, serviceClient } from "../_shared/auth.ts";
 import { capText, readJsonBody } from "../_shared/body.ts";
-import { releaseUsage, reserveUsage } from "../_shared/usage.ts";
+import { rateLimited, releaseUsage, reserveUsage } from "../_shared/usage.ts";
 import {
   candidates,
   classify,
@@ -30,8 +30,11 @@ import {
 import {
   AI_MONTHLY_COST_CEILING_USD,
   AI_QUOTA,
+  allowanceFor,
+  DAILY_LIMIT,
   effectivePlan,
   normalizePlan,
+  trustOf,
 } from "../_shared/quota.ts";
 
 const VALID_TASKS = new Set<string>([
@@ -60,7 +63,12 @@ Deno.serve(async (req: Request) => {
   // Gives back the request counted below if no answer comes of it.
   let giveBack: (() => Promise<void>) | null = null;
   try {
-    const userId = await requireUserId(req);
+    const account = await requireAccount(req);
+    const userId = account.id;
+    const db = serviceClient();
+    if (await rateLimited(db, userId, "ai")) {
+      return jsonResponse({ error: "rate_limited" }, 429, cors);
+    }
     const body = await readJsonBody(req, MAX_BODY_BYTES);
     const task = (VALID_TASKS.has(body?.task) ? body.task : "chat") as TaskType;
     const prompt = capText(String(body?.prompt ?? "").trim(), MAX_PROMPT_CHARS);
@@ -68,19 +76,22 @@ Deno.serve(async (req: Request) => {
     const history = sanitizeHistory(body?.history);
     if (!prompt) return jsonResponse({ error: "empty_prompt" }, 400, cors);
 
-    const db = serviceClient();
     const month = monthKey();
 
     // ---- Entitlement + quota (plan-driven; server is the source of truth) ----
     const { data: ent } = await db.from("ai_entitlements")
       .select("plan, trial_plan, trial_expires_at")
       .eq("user_id", userId).maybeSingle();
+    const paidPlan = normalizePlan(ent?.plan);
     const plan = effectivePlan(
-      normalizePlan(ent?.plan),
+      paidPlan,
       ent?.trial_plan ? normalizePlan(ent.trial_plan) : null,
       (ent?.trial_expires_at as string | null) ?? null,
     );
-    const allow = AI_QUOTA[plan];
+    // A new or unconfirmed account doesn't get the plan's full allowance
+    // (beta gives everyone PRO): see supabase/abuse_limits.sql.
+    const trust = trustOf(paidPlan, account);
+    const allow = allowanceFor(AI_QUOTA[plan], "ai", trust);
     const costCeiling = AI_MONTHLY_COST_CEILING_USD[plan];
 
     // Monthly cost is always the secondary guard; the request count is checked
@@ -103,16 +114,26 @@ Deno.serve(async (req: Request) => {
     }
     // Count the request now, atomically, so parallel requests can't all pass
     // the check above (null: database not updated yet, counted on success).
-    const reservation = await reserveUsage(db, userId, "ai", month, allow);
+    const reservation = await reserveUsage(db, userId, "ai", month, {
+      allow,
+      daily: DAILY_LIMIT[trust].ai,
+      trust,
+    });
     if (reservation === "quota") {
       return jsonResponse({ error: "quota_exceeded" }, 429, cors);
     }
-    if (reservation === "global") {
-      await log(db, userId, task, null, null, false, 0, 0, 0, 0, "global_limit");
+    if (reservation === "daily") {
+      return jsonResponse({ error: "quota_exceeded", scope: "daily" }, 429, cors);
+    }
+    if (reservation === "global" || reservation === "pool") {
+      await log(db, userId, task, null, null, false, 0, 0, 0, 0, reservation + "_limit");
+      return jsonResponse({ error: "ai_unavailable" }, 503, cors);
+    }
+    if (reservation === "error") {
       return jsonResponse({ error: "ai_unavailable" }, 503, cors);
     }
     const reserved = reservation === "ok";
-    if (reserved) giveBack = () => releaseUsage(db, userId, "ai", month);
+    if (reserved) giveBack = () => releaseUsage(db, userId, "ai", month, trust);
 
     // ---- Route + failover ----
     const cfg = await loadConfig(db);

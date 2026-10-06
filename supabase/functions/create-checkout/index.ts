@@ -14,6 +14,7 @@
 // Common:  CHECKOUT_SUCCESS_URL, CHECKOUT_CANCEL_URL
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
+import { rateLimited } from "../_shared/usage.ts";
 import { planToPrice } from "../_shared/billing.ts";
 import {
   createPaypalSubscription,
@@ -40,6 +41,9 @@ Deno.serve(async (req: Request) => {
     }
 
     const db = serviceClient();
+    if (await rateLimited(db, userId, "checkout")) {
+      return jsonResponse({ error: "rate_limited" }, 429, cors);
+    }
     // One subscription at a time: a second one would be billed alongside the
     // first. Someone already subscribed changes or cancels from Manage; a new
     // plan can be bought once the current one is set to end.

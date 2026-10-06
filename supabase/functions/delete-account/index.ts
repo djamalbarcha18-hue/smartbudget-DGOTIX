@@ -15,6 +15,7 @@
 // Deploy:  supabase functions deploy delete-account
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
+import { rateLimited } from "../_shared/usage.ts";
 
 Deno.serve(async (req: Request) => {
   const cors = corsHeaders();
@@ -26,6 +27,9 @@ Deno.serve(async (req: Request) => {
   try {
     const userId = await requireUserId(req);
     const db = serviceClient();
+    if (await rateLimited(db, userId, "delete")) {
+      return jsonResponse({ error: "rate_limited" }, 429, cors);
+    }
 
     const { data: sub } = await db.from("subscriptions")
       .select("plan, status")

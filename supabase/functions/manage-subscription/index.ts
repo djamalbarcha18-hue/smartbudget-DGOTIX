@@ -9,6 +9,7 @@
 // Deploy:  supabase functions deploy manage-subscription
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
+import { rateLimited } from "../_shared/usage.ts";
 
 Deno.serve(async (req: Request) => {
   const cors = corsHeaders();
@@ -20,6 +21,9 @@ Deno.serve(async (req: Request) => {
   try {
     const userId = await requireUserId(req);
     const db = serviceClient();
+    if (await rateLimited(db, userId, "manage")) {
+      return jsonResponse({ error: "rate_limited" }, 429, cors);
+    }
     const { data: sub } = await db.from("subscriptions")
       .select("provider, provider_subscription_id, plan, status")
       .eq("user_id", userId).maybeSingle();

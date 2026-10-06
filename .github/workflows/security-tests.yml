@@ -51,6 +51,11 @@ jobs:
       - name: Subscription lifecycle (webhooks + database)
         run: deno run -A --import-map supabase/tests/import_map.json supabase/tests/subscription_lifecycle_test.ts
 
+      # New and unconfirmed accounts' limits, daily caps, shares of the
+      # monthly capacity and per-account rate limits, on the real SQL.
+      - name: Limits against mass sign-ups (functions + database)
+        run: deno run -A --import-map supabase/tests/import_map.json supabase/tests/usage_limits_test.ts
+
   functions:
     name: Payments and usage limits (Edge Functions)
     runs-on: ubuntu-latest

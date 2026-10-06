@@ -93,3 +93,58 @@ export function effectivePlan(
   }
   return plan;
 }
+
+// ---- Limits against mass sign-ups (supabase/abuse_limits.sql) ----
+// Signing up is free, so the limits below depend on what an account has shown
+// rather than on IP addresses: paying is the strongest signal; a confirmed
+// account older than NEW_ACCOUNT_DAYS comes next. Beta's PRO limits apply in
+// full only to established and paying accounts.
+
+export type UsageKind = "ai" | "ocr";
+
+/** paid: a plan bought through checkout; new: young or unconfirmed account. */
+export type Trust = "paid" | "established" | "new";
+
+/** Accounts younger than this many days count as new (secret NEW_ACCOUNT_DAYS). */
+export function newAccountDays(): number {
+  try {
+    const raw = (Deno.env.get("NEW_ACCOUNT_DAYS") ?? "").trim();
+    const n = Number(raw);
+    return raw && Number.isFinite(n) && n >= 0 ? n : 7;
+  } catch {
+    return 7;
+  }
+}
+
+export function trustOf(
+  paidPlan: Plan,
+  account: { createdAt: string | null; emailConfirmed: boolean },
+  now: Date = new Date(),
+): Trust {
+  if (paidPlan !== "free") return "paid";
+  const created = account.createdAt ? Date.parse(account.createdAt) : NaN;
+  const ageDays = (now.getTime() - created) / 86_400_000;
+  if (!account.emailConfirmed || !(ageDays >= newAccountDays())) return "new";
+  return "established";
+}
+
+/** The most a new account may use in its plan's period, whatever the plan. */
+export const NEW_ACCOUNT_QUOTA: Record<UsageKind, number> = { ai: 10, ocr: 5 };
+
+/** Per-account daily caps, on top of the monthly or lifetime allowance. */
+export const DAILY_LIMIT: Record<Trust, Record<UsageKind, number>> = {
+  paid: { ai: 60, ocr: 40 },
+  established: { ai: 30, ocr: 15 },
+  new: { ai: 5, ocr: 3 },
+};
+
+/** The plan's allowance, reduced for a new account. */
+export function allowanceFor(
+  base: Allowance,
+  kind: UsageKind,
+  trust: Trust,
+): Allowance {
+  return trust === "new"
+    ? { limit: Math.min(base.limit, NEW_ACCOUNT_QUOTA[kind]), window: base.window }
+    : base;
+}

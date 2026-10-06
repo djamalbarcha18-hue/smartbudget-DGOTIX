@@ -28,14 +28,18 @@
 // Deploy:  supabase functions deploy receipt-scan
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { mergeReadings, type Reading } from "../_shared/invoice_merge.ts";
-import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
+import { HttpError, requireAccount, serviceClient } from "../_shared/auth.ts";
 import { readJsonBody } from "../_shared/body.ts";
-import { releaseUsage, reserveUsage } from "../_shared/usage.ts";
+import { rateLimited, releaseUsage, reserveUsage } from "../_shared/usage.ts";
 import {
+  type Allowance,
+  allowanceFor,
+  DAILY_LIMIT,
   effectivePlan,
   normalizePlan,
   OCR_QUOTA,
   type Plan,
+  trustOf,
 } from "../_shared/quota.ts";
 
 // `gemini-flash-latest` is a stable alias that always tracks the newest Flash,
@@ -194,7 +198,13 @@ Deno.serve(async (req: Request) => {
   const usage: ScanUsage = { reserved: false, counted: false };
   let giveBack: (() => Promise<void>) | null = null;
   try {
-    const userId = await requireUserId(req);
+    const account = await requireAccount(req);
+    const userId = account.id;
+    const db = serviceClient();
+    // Before reading a body of up to 12 MB.
+    if (await rateLimited(db, userId, "ocr")) {
+      return jsonResponse({ error: "rate_limited" }, 429, cors);
+    }
     const body = await readJsonBody(req, MAX_BODY_BYTES);
     const imageBase64 = String(body?.imageBase64 ?? "");
     const requestedType = String(body?.mimeType ?? "").toLowerCase();
@@ -220,24 +230,37 @@ Deno.serve(async (req: Request) => {
     if (!apiKey) return jsonResponse({ error: "ocr_unavailable" }, 503, cors);
 
     // Every cloud scan is metered per plan (docs/PRICING.md §3).
-    const db = serviceClient();
     const month = monthKey();
-    const plan = await resolvePlan(db, userId);
-    if (await ocrQuotaExceeded(db, userId, month, plan)) {
+    const { plan, paidPlan } = await resolvePlan(db, userId);
+    // A new or unconfirmed account doesn't get the plan's full allowance
+    // (beta gives everyone PRO): see supabase/abuse_limits.sql.
+    const trust = trustOf(paidPlan, account);
+    const allow = allowanceFor(OCR_QUOTA[plan], "ocr", trust);
+    if (await ocrQuotaExceeded(db, userId, month, allow)) {
       return jsonResponse({ error: "quota_exceeded" }, 429, cors);
     }
     // Count the scan now, atomically, so parallel scans can't all pass the
     // check above (null: database not updated yet, counted on success).
-    const reservation = await reserveUsage(db, userId, "ocr", month, OCR_QUOTA[plan]);
+    const reservation = await reserveUsage(db, userId, "ocr", month, {
+      allow,
+      daily: DAILY_LIMIT[trust].ocr,
+      trust,
+    });
     if (reservation === "quota") {
       return jsonResponse({ error: "quota_exceeded" }, 429, cors);
     }
-    if (reservation === "global") {
+    if (reservation === "daily") {
+      return jsonResponse({ error: "quota_exceeded", scope: "daily" }, 429, cors);
+    }
+    if (
+      reservation === "global" || reservation === "pool" ||
+      reservation === "error"
+    ) {
       // The app reads the receipt on the device instead.
       return jsonResponse({ error: "ocr_unavailable" }, 503, cors);
     }
     usage.reserved = reservation === "ok";
-    giveBack = () => releaseUsage(db, userId, "ocr", month);
+    giveBack = () => releaseUsage(db, userId, "ocr", month, trust);
 
     if (Number(body?.v) === 2) {
       return await scanV2(
@@ -516,28 +539,32 @@ function monthKey(): string {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 }
 
+/** The plan in force, and the plan actually paid for (Free if none). */
 async function resolvePlan(
   db: ReturnType<typeof serviceClient>,
   userId: string,
-): Promise<Plan> {
+): Promise<{ plan: Plan; paidPlan: Plan }> {
   const { data: ent } = await db.from("ai_entitlements")
     .select("plan, trial_plan, trial_expires_at")
     .eq("user_id", userId).maybeSingle();
-  return effectivePlan(
-    normalizePlan(ent?.plan),
-    ent?.trial_plan ? normalizePlan(ent.trial_plan) : null,
-    (ent?.trial_expires_at as string | null) ?? null,
-  );
+  const paidPlan = normalizePlan(ent?.plan);
+  return {
+    paidPlan,
+    plan: effectivePlan(
+      paidPlan,
+      ent?.trial_plan ? normalizePlan(ent.trial_plan) : null,
+      (ent?.trial_expires_at as string | null) ?? null,
+    ),
+  };
 }
 
-/** True when the server-served cloud OCR allowance for the plan is spent. */
+/** True when the server-served cloud OCR allowance is spent. */
 async function ocrQuotaExceeded(
   db: ReturnType<typeof serviceClient>,
   userId: string,
   month: string,
-  plan: Plan,
+  allow: Allowance,
 ): Promise<boolean> {
-  const allow = OCR_QUOTA[plan];
   let used: number;
   if (allow.window === "lifetime") {
     const { data } = await db.from("ocr_usage_lifetime")

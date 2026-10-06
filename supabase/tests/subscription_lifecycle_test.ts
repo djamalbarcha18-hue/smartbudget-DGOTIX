@@ -4,7 +4,6 @@
 // .github/workflows/security-tests.yml). Needs PGHOST/PGUSER/PGPASSWORD.
 //   deno run -A --import-map supabase/tests/import_map.json supabase/tests/subscription_lifecycle_test.ts
 // Exits non-zero when a scenario fails.
-// deno-lint-ignore-file no-explicit-any
 import { check, db, finish, load, paddle, paddleSub, paypal, paypalSales, paypalSub, PRICES, sql } from "./harness.ts";
 
 if (!Deno.env.get("PGHOST")) throw new Error("set PGHOST (and PGUSER/PGPASSWORD) to a database with setup_all.sql");

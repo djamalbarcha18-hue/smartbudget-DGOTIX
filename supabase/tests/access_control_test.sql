@@ -13,6 +13,9 @@ insert into transactions (user_id, txn_date, type, amount_minor, currency) value
   ('bbbbbbbb-0000-0000-0000-000000000002', '2026-10-01', 'expense', 5000, 'USD');
 insert into user_backups (user_id, data) values
   ('bbbbbbbb-0000-0000-0000-000000000002', '{"secret":"B"}');
+-- B signed up a month ago; A just now.
+update auth.users set created_at = now() - interval '30 days'
+  where id = 'bbbbbbbb-0000-0000-0000-000000000002';
 insert into subscriptions (user_id, plan, status) values
   ('bbbbbbbb-0000-0000-0000-000000000002', 'pro', 'active');
 insert into ai_entitlements (user_id, plan) values
@@ -74,6 +77,18 @@ select pg_temp.attempt('A reads reports', 'select * from ai_reports', 'rows=0');
 select pg_temp.attempt('A reads payment subscriptions', 'select * from billing_subscriptions', 'denied');
 select pg_temp.attempt('A writes a payment subscription', $q$insert into billing_subscriptions (provider, provider_subscription_id, user_id, plan, status) values ('paddle', 'sub_x', auth.uid(), 'pro', 'active')$q$, 'denied');
 select pg_temp.attempt('A applies a payment event directly', $q$select apply_subscription_event('paddle', 'sub_x', auth.uid(), 'pro', 'monthly', 'active', null, null, false, now())$q$, 'denied');
+select pg_temp.attempt('A reads usage counters', 'select * from usage_daily', 'denied');
+select pg_temp.attempt('A resets the shared usage', 'delete from usage_pools', 'denied');
+select pg_temp.attempt('A clears own rate limits', 'delete from rate_limits', 'denied');
+select pg_temp.attempt('A calls the rate limiter directly', $q$select rate_limit_hit(auth.uid(), 'ai', 60, 1000)$q$, 'denied');
+select pg_temp.attempt('A files 20 reports in a day', $q$insert into ai_reports (reason, answer) select 'other', 'x' from generate_series(1, 20)$q$, 'rows=20');
+select pg_temp.attempt('A files a 21st report the same day', $q$insert into ai_reports (reason, answer) values ('other', 'x')$q$, 'denied');
+select pg_temp.attempt('A (new account) writes a 3 MB backup', $q$update user_backups set data = jsonb_build_object('x', (select string_agg(md5(i::text), '') from generate_series(1, 100000) i)) where user_id = auth.uid()$q$, 'denied');
+select pg_temp.attempt('A (new account) writes a 1 MB backup', $q$update user_backups set data = jsonb_build_object('x', (select string_agg(md5(i::text), '') from generate_series(1, 30000) i)) where user_id = auth.uid()$q$, 'rows=1');
+
+-- Signed in as B (an older account).
+select set_config('request.jwt.claim.sub', 'bbbbbbbb-0000-0000-0000-000000000002', false);
+select pg_temp.attempt('B (month-old account) writes a 3 MB backup', $q$update user_backups set data = jsonb_build_object('x', (select string_agg(md5(i::text), '') from generate_series(1, 100000) i)) where user_id = auth.uid()$q$, 'rows=1');
 
 -- Signed out (anon key only).
 reset role;

@@ -100,14 +100,41 @@ async function applySubscriptionEvent(a: any): Promise<any> {
   }
 }
 
+// On the real Postgres when there is one, the usage limits are the real SQL.
+const PG_FUNCTIONS = new Set(["reserve_usage", "release_usage", "rate_limit_hit"]);
+async function onPostgres(fn: string, a: any): Promise<any> {
+  const args = Object.entries(a).map(([k, v]) => `${k} => ${lit(v)}`).join(", ");
+  try {
+    const out = await g.__pg(`select ${fn}(${args})`);
+    return { data: out === "t" ? true : out === "f" ? false : out, error: null };
+  } catch (e) {
+    return { data: null, error: { code: "P0001", message: String(e) } };
+  }
+}
+
+/** "Bearer user-<id>": that user. On Postgres, the account as stored in
+ * auth.users; otherwise an old, confirmed account (ids starting "new": made
+ * just now). */
+async function getUser(tok: string): Promise<any> {
+  const id = tok.replace("user-", "");
+  if (g.__pg && /^[0-9a-f-]{36}$/.test(id)) {
+    const row = await g.__pg(`select json_build_object('created_at', created_at, 'email_confirmed_at', email_confirmed_at) from auth.users where id = '${id}'`);
+    if (!row) return { data: { user: null }, error: { message: "no such user" } };
+    return { data: { user: { id, ...JSON.parse(row) } }, error: null };
+  }
+  const old = "2025-01-01T00:00:00Z";
+  return { data: { user: { id, created_at: id.startsWith("new") ? new Date().toISOString() : old, email_confirmed_at: old } }, error: null };
+}
+
 export function createClient(..._args: unknown[]): any {
   return {
-    auth: { getUser: (tok: string) => Promise.resolve({ data: { user: { id: tok.replace("user-", "") } }, error: null }) },
+    auth: { getUser, admin: { deleteUser: () => Promise.resolve({ data: null, error: null }) } },
     from: (n: string) => new Q(n),
     rpc: async (fn: string, a: any) => {
       if (Deno.env.get("NO_RPC")) return { data: null, error: { code: "PGRST202", message: "not found" } };
       if (db.failRpc === fn) return { data: null, error: { code: "XX000", message: "failed" } };
       if (fn === "apply_subscription_event") return await applySubscriptionEvent(a);
+      if (g.__pg && PG_FUNCTIONS.has(fn)) return await onPostgres(fn, a);
       if (fn === "reserve_usage") return { data: reserve(a), error: null };
       if (fn === "release_usage") {
         const k = a.p_kind === "ai" ? "requests" : "scans";

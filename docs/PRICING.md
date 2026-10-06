@@ -97,6 +97,33 @@ gateway therefore also governs **tokens**:
 These live server-side and are logged (`ai_request_log`) without ever storing
 prompt content or keys.
 
+### Limits against mass sign-ups
+
+Sign-up is free, so the limits also depend on the account, not on IP addresses
+(`supabase/abuse_limits.sql`, numbers in `supabase/functions/_shared/quota.ts`):
+
+| Account | AI answers | Cloud scans |
+|---|---|---|
+| **New** (under 7 days, or email not confirmed), unpaid | plan allowance, at most 10, and 5 a day | plan allowance, at most 5, and 3 a day |
+| **Established**, unpaid (incl. beta) | plan allowance, 30 a day | plan allowance, 15 a day |
+| **Paying** | plan allowance, 60 a day | plan allowance, 40 a day |
+
+- **Shares of the monthly capacity** (`AI_GLOBAL_MONTHLY_REQUESTS`,
+  `OCR_GLOBAL_MONTHLY_SCANS`):
+  - Unpaid accounts together use at most 70% of it (`UNPAID_SHARE_PERCENT`).
+  - New accounts use at most 20% (`NEW_SHARE_PERCENT`).
+  - A crowd of fake accounts can only exhaust its share. Paying users keep the
+    rest.
+- **Per-account rate limits:**
+  - AI: 10 a minute.
+  - Scans: 6 a minute.
+  - Checkout: 10 an hour.
+  - Manage subscription: 30 an hour.
+  - Account deletion: 5 an hour.
+- **Other per-account caps:** AI-answer reports are limited to 20 a day, and
+  cloud backups of new accounts to 2 MB.
+- **Configuration:** `NEW_ACCOUNT_DAYS` changes the 7 days.
+
 ---
 
 ## 5. Feature gating (FREE vs paid)

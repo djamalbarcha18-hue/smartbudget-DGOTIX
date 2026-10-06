@@ -42,8 +42,16 @@ export function serviceClient(): SupabaseClient {
   return createClient(url, key, { auth: { persistSession: false } });
 }
 
-/** Resolves the caller's JWT to a verified user id, or throws HttpError(401). */
-export async function requireUserId(req: Request): Promise<string> {
+/** The verified caller, with what the usage limits need to know. */
+export interface Account {
+  id: string;
+  /** When the account was created (null: unknown, treated as new). */
+  createdAt: string | null;
+  emailConfirmed: boolean;
+}
+
+/** Resolves the caller's JWT to a verified account, or throws HttpError(401). */
+export async function requireAccount(req: Request): Promise<Account> {
   const header = req.headers.get("Authorization") ?? "";
   const token = header.replace(/^Bearer\s+/i, "").trim();
   if (!token) throw new HttpError(401, "missing_token");
@@ -58,5 +66,15 @@ export async function requireUserId(req: Request): Promise<string> {
   });
   const { data, error } = await client.auth.getUser(token);
   if (error || !data.user) throw new HttpError(401, "invalid_token");
-  return data.user.id;
+  const u = data.user;
+  return {
+    id: u.id,
+    createdAt: u.created_at ?? null,
+    emailConfirmed: Boolean(u.email_confirmed_at ?? u.confirmed_at),
+  };
+}
+
+/** Resolves the caller's JWT to a verified user id, or throws HttpError(401). */
+export async function requireUserId(req: Request): Promise<string> {
+  return (await requireAccount(req)).id;
 }
