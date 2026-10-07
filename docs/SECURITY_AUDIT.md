@@ -208,8 +208,11 @@ Supabase Auth supports TOTP MFA without a rebuild:
    receipts and AI questions are processed by Google Gemini.
 5. **Supabase Auth settings:** done: email OTP expiry is 15 minutes, the
    minimum password is 8 characters (letters and digits), and secure email
-   change is on. Keep the default rate limits, and consider a CAPTCHA
-   (Cloudflare Turnstile) on sign-up and reset if abuse appears.
+   change is on. Done: Auth rate limits lowered (emails 10/hour, OTP checks
+   10 and sign-ups/sign-ins 20 per 5 minutes per IP), and Cloudflare
+   Turnstile CAPTCHA is on for sign-up, sign-in and password reset (site key
+   in the build settings, secret key in Supabase only). Android needs a build
+   made after the site key was added.
 6. **Android:** create the upload/release key, and store it in GitHub
    secrets.
 7. **GitHub Pages:** done: `dgotix.com` is verified for the account.
