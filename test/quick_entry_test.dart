@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:smartbudget/features/quick_entry/domain/quick_entry_parser.dart';
+import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
@@ -214,6 +215,44 @@ void main() {
       final QuickEntry eur = q('كتاب 20 يورو');
       expect(eur.currency, 'EUR');
       expect(eur.walletId, isNull);
+    });
+
+    test('every supported currency, by name, code and symbol', () {
+      String? cur(String s, String held) => QuickEntryParser.parse(s,
+              today: today,
+              wallets: <Wallet>[Wallet.general(held)],
+              defaultWalletId: Wallet.generalId)!
+          .currency;
+      for (final Currency c in <Currency>[Currencies.usd, ...Currencies.all]) {
+        expect(cur('هدية 50 ${c.nameAr}', c.code), c.code, reason: c.nameAr);
+        expect(cur('gift 50 ${c.nameEn}', c.code), c.code, reason: c.nameEn);
+        expect(cur('gift 50 ${c.code}', c.code), c.code, reason: c.code);
+        if (c.symbol.length > 1 || !RegExp(r'^\p{L}$', unicode: true)
+            .hasMatch(c.symbol)) {
+          expect(cur('gift 50 ${c.symbol}', c.code), c.code, reason: c.symbol);
+        }
+      }
+    });
+
+    test('Arabic forms with and without the article', () {
+      expect(q('غداء 40 الريال السعودي').currency, 'SAR');
+      expect(q('غداء 40 الريال السعودي').description, 'غداء');
+      expect(q('عطر 100 درهم إماراتي').currency, 'AED');
+      expect(q('هدية 20 ليرة تركية').currency, 'TRY');
+      expect(q('هدية 20 ليرات').currency, 'LBP');
+      expect(q('سفر 5000 ين ياباني').currency, 'JPY');
+      expect(q('كتاب 30 دولار كندي').currency, 'CAD');
+      expect(q('book 30 C\$').currency, 'CAD');
+      expect(q('book 30 \$').currency, 'USD');
+      expect(q('hotel 30 euros').currency, 'EUR');
+    });
+
+    test('everyday words are not read as currencies', () {
+      expect(q('تقسيم بين صديقين 200').currency, isNull);
+      expect(q('try 50').currency, isNull);
+      expect(q('real estate 50').currency, isNull);
+      expect(q('won 50').currency, isNull);
+      expect(q('قهوة 15').currency, isNull);
     });
 
     test('several entries at once', () {

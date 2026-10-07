@@ -1,3 +1,4 @@
+import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
 
@@ -99,15 +100,15 @@ abstract final class QuickEntryParser {
     // words (the longest wins, so «ريال قطري» beats «ريال»). A word shared by
     // several currencies («ريال», «دينار») is settled against the wallets.
     List<String> named = const <String>[];
-    for (final (RegExp re, String code) in _currencySymbols) {
+    for (final (RegExp re, List<String> codes) in _currencySymbols) {
       if (re.hasMatch(rest)) {
-        named = <String>[code];
+        named = codes;
         rest = rest.replaceFirst(re, ' ');
         break;
       }
     }
     if (named.isEmpty) {
-      final String n = _normalize(rest);
+      final String n = _withoutArticles(_normalize(rest));
       String? word;
       for (final (String w, List<String> codes) in _currencyWords) {
         if ((word == null || w.length > word.length) && _containsWord(n, w)) {
@@ -299,6 +300,11 @@ abstract final class QuickEntryParser {
     return ' ${b.toString().replaceAll(RegExp(r'[^\p{L}\p{N}]+', unicode: true), ' ').trim()} ';
   }
 
+  /// Drops the Arabic article from every word («الريال السعودي» → «ريال
+  /// سعودي») of a normalized string.
+  static String _withoutArticles(String normalized) =>
+      normalized.replaceAll(RegExp(r'(?<= )ال(?=\S\S)'), '');
+
   static const List<String> _arPrefixes = <String>[
     '', 'ال', 'وال', 'بال', 'فال', 'كال', 'لل', 'و', 'ب', 'ف', 'ل', 'ك',
   ];
@@ -328,7 +334,7 @@ abstract final class QuickEntryParser {
         final String t = norm[i + j];
         ok = j == 0
             ? _arPrefixes.any((String p) => t == '$p${want[j]}')
-            : t == want[j];
+            : t == want[j] || t == 'ال${want[j]}';
       }
       if (ok) {
         tokens.removeRange(i, i + want.length);
@@ -352,85 +358,101 @@ abstract final class QuickEntryParser {
     ('aujourd hui', 0),
   ];
 
-  /// Symbols and Arabic abbreviations, matched on the raw text.
-  static final List<(RegExp, String)> _currencySymbols = <(RegExp, String)>[
-    for (final (String s, String code) in <(String, String)>[
-      (r'\$', 'USD'),
-      ('€', 'EUR'),
-      ('£', 'GBP'),
-      (r'ر\s*\.\s*س', 'SAR'),
-      (r'ر\s*\.\s*ق', 'QAR'),
-      (r'ر\s*\.\s*ع', 'OMR'),
-      (r'د\s*\.\s*[إا]', 'AED'),
-      (r'د\s*\.\s*ك', 'KWD'),
-      (r'د\s*\.\s*ب', 'BHD'),
-      (r'د\s*\.\s*ج', 'DZD'),
-      (r'ج\s*\.\s*م', 'EGP'),
-    ])
-      (RegExp('(?<![\\p{L}])$s(?![\\p{L}])', unicode: true), code),
+  /// Every currency the app supports, the US dollar first so a bare «دولار»
+  /// means it unless the user's wallets say otherwise.
+  static final List<Currency> _currencies = <Currency>[
+    Currencies.usd,
+    ...Currencies.all.where((Currency c) => c.code != Currencies.usd.code),
   ];
 
-  /// Currency words (normalized, whole words) → the currencies they can mean,
-  /// most likely first.
-  static const List<(String, List<String>)> _currencyWords =
-      <(String, List<String>)>[
-    ('دولار', <String>['USD']),
-    ('دولارات', <String>['USD']),
-    ('دولارين', <String>['USD']),
-    ('usd', <String>['USD']),
-    ('dollar', <String>['USD']),
-    ('dollars', <String>['USD']),
-    ('يورو', <String>['EUR']),
-    ('اورو', <String>['EUR']),
-    ('eur', <String>['EUR']),
-    ('euro', <String>['EUR']),
-    ('euros', <String>['EUR']),
-    ('استرليني', <String>['GBP']),
-    ('جنيه استرليني', <String>['GBP']),
-    ('gbp', <String>['GBP']),
-    ('ريال', <String>['SAR', 'QAR', 'OMR', 'YER']),
-    ('ريالات', <String>['SAR', 'QAR', 'OMR', 'YER']),
-    ('ريالين', <String>['SAR', 'QAR', 'OMR', 'YER']),
-    ('riyal', <String>['SAR', 'QAR', 'OMR', 'YER']),
-    ('riyals', <String>['SAR', 'QAR', 'OMR', 'YER']),
-    ('rial', <String>['SAR', 'QAR', 'OMR', 'YER']),
-    ('ريال سعودي', <String>['SAR']),
-    ('sar', <String>['SAR']),
-    ('ريال قطري', <String>['QAR']),
-    ('qar', <String>['QAR']),
-    ('ريال عماني', <String>['OMR']),
-    ('omr', <String>['OMR']),
-    ('درهم', <String>['AED', 'MAD']),
-    ('دراهم', <String>['AED', 'MAD']),
-    ('dirham', <String>['AED', 'MAD']),
-    ('dirhams', <String>['AED', 'MAD']),
-    ('درهم اماراتي', <String>['AED']),
-    ('aed', <String>['AED']),
-    ('درهم مغربي', <String>['MAD']),
-    ('دينار', <String>['DZD', 'KWD', 'BHD', 'JOD', 'TND', 'LYD', 'IQD']),
-    ('دنانير', <String>['DZD', 'KWD', 'BHD', 'JOD', 'TND', 'LYD', 'IQD']),
-    ('dinar', <String>['DZD', 'KWD', 'BHD', 'JOD', 'TND', 'LYD', 'IQD']),
-    ('dinars', <String>['DZD', 'KWD', 'BHD', 'JOD', 'TND', 'LYD', 'IQD']),
-    ('دينار جزائري', <String>['DZD']),
-    ('دج', <String>['DZD']),
-    ('da', <String>['DZD']),
-    ('dzd', <String>['DZD']),
-    ('دينار كويتي', <String>['KWD']),
-    ('kwd', <String>['KWD']),
-    ('دينار بحريني', <String>['BHD']),
-    ('bhd', <String>['BHD']),
-    ('دينار اردني', <String>['JOD']),
-    ('jod', <String>['JOD']),
-    ('دينار تونسي', <String>['TND']),
-    ('tnd', <String>['TND']),
-    ('جنيه', <String>['EGP', 'SDG', 'GBP']),
-    ('جنيهات', <String>['EGP', 'SDG', 'GBP']),
-    ('جنيه مصري', <String>['EGP']),
-    ('egp', <String>['EGP']),
-    ('ليره', <String>['TRY', 'LBP', 'SYP']),
-    ('ليرات', <String>['TRY', 'LBP', 'SYP']),
-    ('ليره تركيه', <String>['TRY']),
-    ('ليره لبنانيه', <String>['LBP']),
+  /// Words that are also everyday words ("try", "won", «بين» = ب + ين): never
+  /// read as a currency on their own.
+  static const Set<String> _riskyWords = <String>{
+    'try', 'mad', 'rub', 'won', 'real', 'ين',
+  };
+
+  /// Symbols, Arabic abbreviations and upper-case ISO codes, matched on the
+  /// raw text (longest first, so "C$" is not read as "$").
+  static final List<(RegExp, List<String>)> _currencySymbols = () {
+    final Map<String, List<String>> bySymbol = <String, List<String>>{};
+    for (final Currency c in _currencies) {
+      for (final String sym in <String>[c.symbol, c.code]) {
+        if (sym.length < 2 && RegExp(r'^\p{L}$', unicode: true).hasMatch(sym)) {
+          continue; // a lone letter ("R") is too ambiguous
+        }
+        final List<String> codes = bySymbol.putIfAbsent(sym, () => <String>[]);
+        if (!codes.contains(c.code)) codes.add(c.code);
+      }
+    }
+    final List<String> symbols = bySymbol.keys.toList()
+      ..sort((String x, String y) => y.length.compareTo(x.length));
+    return <(RegExp, List<String>)>[
+      for (final String sym in symbols)
+        (
+          RegExp(
+              '(?<![\\p{L}])'
+              '${RegExp.escape(sym).replaceAll(r'\.', r'\s*\.\s*')}'
+              '(?![\\p{L}])',
+              unicode: true),
+          bySymbol[sym]!,
+        ),
+    ];
+  }();
+
+  /// Currency words (normalized, without «ال») → the currencies they can mean,
+  /// most likely first: each currency's Arabic and English name, its bare
+  /// noun («ريال», "dinar", "dollars") and its lower-case code, plus
+  /// colloquial forms.
+  static final List<(String, List<String>)> _currencyWords = () {
+    final Map<String, List<String>> m = <String, List<String>>{};
+    String key(String w) => _withoutArticles(_normalize(w)).trim();
+    void add(String word, String code) {
+      final String w = key(word);
+      if (w.isEmpty || _riskyWords.contains(w)) return;
+      final List<String> codes = m.putIfAbsent(w, () => <String>[]);
+      if (!codes.contains(code)) codes.add(code);
+    }
+
+    for (final Currency c in _currencies) {
+      add(c.nameAr, c.code); // «ريال سعودي»
+      add(c.nameEn, c.code); // "saudi riyal"
+      add(key(c.nameAr).split(' ').first, c.code); // «ريال»
+      final String noun = c.nameEn.toLowerCase().split(' ').last;
+      if (!_riskyWords.contains(noun)) {
+        add(noun, c.code); // "riyal"
+        add('${noun}s', c.code); // "riyals"
+      }
+      add(c.code.toLowerCase(), c.code); // "usd"
+    }
+    for (final (String alias, String word) in _currencyAliases) {
+      for (final String code in m[key(word)] ?? <String>[word]) {
+        add(alias, code);
+      }
+    }
+    return <(String, List<String>)>[
+      for (final MapEntry<String, List<String>> e in m.entries) (e.key, e.value),
+    ];
+  }();
+
+  /// Colloquial forms → the word (or ISO code) they stand for.
+  static const List<(String, String)> _currencyAliases = <(String, String)>[
+    ('دولارات', 'دولار'),
+    ('دولارين', 'دولار'),
+    ('ريالات', 'ريال'),
+    ('ريالين', 'ريال'),
+    ('دنانير', 'دينار'),
+    ('دينارين', 'دينار'),
+    ('دراهم', 'درهم'),
+    ('درهمين', 'درهم'),
+    ('جنيهات', 'جنيه'),
+    ('جنيهين', 'جنيه'),
+    ('ليرات', 'ليره'),
+    ('اورو', 'يورو'),
+    ('استرليني', 'GBP'),
+    ('pound', 'GBP'),
+    ('pounds', 'GBP'),
+    ('دج', 'DZD'),
+    ('da', 'DZD'),
   ];
 
   static const List<String> _cashWords = <String>[
