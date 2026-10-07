@@ -3,6 +3,13 @@ import 'dart:typed_data';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+/// Drops invisible direction marks (LRM, RLM, embeddings, isolates). The app's
+/// money strings start with an LRM so the symbol stays in front on screen, but
+/// the PDF fonts have no glyph for it and it printed as a box; the PDF lays
+/// out direction itself.
+String pdfSafe(String s) =>
+    s.replaceAll(RegExp('[\u200E\u200F\u202A-\u202E\u2066-\u2069]'), '');
+
 /// A single label/value line in the report.
 class ReportRow {
   const ReportRow(this.label, this.value);
@@ -97,7 +104,7 @@ abstract final class ReportPdfBuilder {
                         fontSize: 15,
                         letterSpacing: 1.5)),
                 pw.SizedBox(height: 2),
-                pw.Text(d.title,
+                pw.Text(pdfSafe(d.title),
                     style: pw.TextStyle(
                         color: _ink, fontWeight: pw.FontWeight.bold, fontSize: 19)),
               ],
@@ -107,10 +114,10 @@ abstract final class ReportPdfBuilder {
                   ? pw.CrossAxisAlignment.start
                   : pw.CrossAxisAlignment.end,
               children: <pw.Widget>[
-                pw.Text(d.subtitle,
+                pw.Text(pdfSafe(d.subtitle),
                     style: const pw.TextStyle(color: _muted, fontSize: 10)),
                 pw.SizedBox(height: 2),
-                pw.Text(d.generatedLabel,
+                pw.Text(pdfSafe(d.generatedLabel),
                     style: const pw.TextStyle(color: _muted, fontSize: 9)),
               ],
             ),
@@ -129,7 +136,7 @@ abstract final class ReportPdfBuilder {
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: <pw.Widget>[
-          pw.Text(d.footer,
+          pw.Text(pdfSafe(d.footer),
               style: const pw.TextStyle(color: _muted, fontSize: 8)),
           pw.Text('${ctx.pageNumber} / ${ctx.pagesCount}',
               style: const pw.TextStyle(color: _muted, fontSize: 8)),
@@ -159,10 +166,10 @@ abstract final class ReportPdfBuilder {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: <pw.Widget>[
-          pw.Text(r.label,
+          pw.Text(pdfSafe(r.label),
               style: const pw.TextStyle(color: _muted, fontSize: 8)),
           pw.SizedBox(height: 4),
-          pw.Text(r.value,
+          pw.Text(pdfSafe(r.value),
               style: pw.TextStyle(
                   color: _ink, fontWeight: pw.FontWeight.bold, fontSize: 12)),
         ],
@@ -174,12 +181,12 @@ abstract final class ReportPdfBuilder {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
       children: <pw.Widget>[
-        pw.Text(title,
+        pw.Text(pdfSafe(title),
             style: pw.TextStyle(
                 color: _ink, fontWeight: pw.FontWeight.bold, fontSize: 13)),
         pw.SizedBox(height: 6),
         if (rows.isEmpty)
-          pw.Text(empty, style: const pw.TextStyle(color: _muted, fontSize: 10))
+          pw.Text(pdfSafe(empty), style: const pw.TextStyle(color: _muted, fontSize: 10))
         else
           for (final ReportRow r in rows)
             pw.Container(
@@ -190,11 +197,11 @@ abstract final class ReportPdfBuilder {
               child: pw.Row(
                 children: <pw.Widget>[
                   pw.Expanded(
-                    child: pw.Text(r.label,
+                    child: pw.Text(pdfSafe(r.label),
                         style: const pw.TextStyle(color: _ink, fontSize: 10)),
                   ),
                   pw.SizedBox(width: 10),
-                  pw.Text(r.value,
+                  pw.Text(pdfSafe(r.value),
                       style: pw.TextStyle(
                           color: _ink,
                           fontWeight: pw.FontWeight.bold,
