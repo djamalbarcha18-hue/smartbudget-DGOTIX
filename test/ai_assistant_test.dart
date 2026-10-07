@@ -81,9 +81,14 @@ void main() {
           .allMatches(decl)
           .map((RegExpMatch m) => m.group(1)!)
           .join();
-      // Expert depth, but honest about being an AI.
+      // Expert depth and an expert's confidence: no disclaimers or referrals.
       expect(server, contains('doctoral-level knowledge in financial management'));
-      expect(server, contains('not a licensed advisor'));
+      expect(server, contains('Do not add disclaimers'));
+      expect(server, contains('advice to consult an expert'));
+      expect(server, isNot(contains('licensed advisor')));
+      expect(server, isNot(contains('suggest confirming')));
+      // Still honest about figures and returns.
+      expect(server, contains('never promise guaranteed returns'));
       // Only these topics; anything else is declined.
       expect(server, contains('Stay within these topics only'));
       expect(server, contains('decline in one short, friendly sentence'));
