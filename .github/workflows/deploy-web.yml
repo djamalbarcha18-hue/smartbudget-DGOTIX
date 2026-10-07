@@ -52,9 +52,12 @@ jobs:
           # them. Never put the secret / service_role key here.
           SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://fconhnyognxcpvmwobus.supabase.co' }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'sb_publishable_5xtM1xBGuJJldtP_87Tzpg_XDB3Euff' }}
-          # Cloudflare Turnstile site key (public): turns on the human check
-          # before sign-in, sign-up and password reset. Empty: no check.
-          TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY }}
+          # Cloudflare Turnstile site key (public by design, like the
+          # publishable key): turns on the human check before sign-in,
+          # sign-up and password reset. A repository secret of the same name
+          # overrides it. Never put the Turnstile SECRET key here: it belongs
+          # in Supabase (Authentication > Attack Protection) only.
+          TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY || '0x4AAAAAAFQb5tnXUE643C_f' }}
         run: |
           DEFINES=""
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
