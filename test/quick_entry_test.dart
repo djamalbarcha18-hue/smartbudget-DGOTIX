@@ -57,6 +57,10 @@ void main() {
       expect(p('taxi 300').category, 'النقل');
       expect(p('فاتورة سونلغاز 4200').category, 'الفواتير');
       expect(p('netflix 1200').category, 'الاشتراكات');
+      expect(p('كتاب 30').category, 'التعليم');
+      expect(p('الكتاب 30').category, 'التعليم');
+      expect(p('كورس 49').category, 'التعليم');
+      expect(p('دورة تدريبية 300').category, 'التعليم');
     });
 
     test('whole words only (no false matches inside other words)', () {

@@ -519,7 +519,7 @@ abstract final class QuickEntryParser {
       'dentiste',
     ]),
     _Rule.expense('التعليم', <String>[
-      'مدرسه', 'جامعه', 'دروس', 'كتب', 'كراريس', 'ادوات مدرسيه', 'تسجيل',
+      'مدرسه', 'جامعه', 'دروس', 'كتب', 'كتاب', 'كورس', 'دوره تدريبيه', 'كراريس', 'ادوات مدرسيه', 'تسجيل',
       'ecole', 'cours', 'livres', 'fournitures', 'school', 'tuition', 'books',
       'course',
     ]),
