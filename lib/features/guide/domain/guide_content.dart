@@ -218,7 +218,8 @@ abstract final class GuideContent {
         'Language, theme and base currency are under Appearance and Region.',
         'Manage your own income and expense categories.',
         'Under Data & backup, export a full backup at any time; when signed '
-            'in, you can also back up to the cloud.',
+            'in, your data syncs between your devices automatically (also '
+            'after working offline), and you can turn that off.',
       ],
     ),
   ];
@@ -384,7 +385,8 @@ abstract final class GuideContent {
         'اللغة والسمة والعملة الأساسية تجدها في المظهر والمنطقة.',
         'أدِر فئات المداخيل والمصاريف الخاصة بك.',
         'في البيانات والنسخ الاحتياطي صدّر نسخة كاملة في أي وقت؛ وعند تسجيل '
-            'الدخول يمكنك النسخ إلى السحابة أيضاً.',
+            'الدخول تُزامَن بياناتك بين أجهزتك تلقائياً (حتى بعد العمل دون '
+            'إنترنت)، ويمكنك إيقاف ذلك.',
       ],
     ),
   ];

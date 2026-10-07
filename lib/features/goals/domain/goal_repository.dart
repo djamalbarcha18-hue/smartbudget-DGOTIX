@@ -12,6 +12,10 @@ abstract interface class GoalRepository {
   /// number actually added.
   Future<int> importMany(List<Goal> goals);
 
+  /// Makes the stored list exactly [items] (cloud sync applies a merged
+  /// state with it).
+  Future<void> replaceAll(List<Goal> items);
+
   /// Removes every goal whose id is in [ids]. Returns the count removed.
   Future<int> deleteMany(Iterable<String> ids);
 

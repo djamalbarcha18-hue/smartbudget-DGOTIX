@@ -78,6 +78,16 @@ class LocalListStore<T> {
   }
 
   /// Merge-imports [items], skipping ids that already exist.
+  /// Makes the stored list exactly [items] (cloud sync applies a merged
+  /// state with it).
+  Future<void> replaceAll(List<T> items) async {
+    await _load();
+    _items
+      ..clear()
+      ..addAll(items);
+    await _commit();
+  }
+
   Future<int> importMany(List<T> items) async {
     await _load();
     final Set<String> ids = _items.map(idOf).toSet();

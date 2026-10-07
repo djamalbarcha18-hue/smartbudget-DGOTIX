@@ -11,5 +11,9 @@ abstract interface class ProjectRepository {
   /// Restores [projects] from a backup. Non-destructive: rows whose id already
   /// exists are kept as they are. Returns how many were added.
   Future<int> importMany(List<Project> projects);
+
+  /// Makes the stored list exactly [items] (cloud sync applies a merged
+  /// state with it).
+  Future<void> replaceAll(List<Project> items);
   void dispose();
 }

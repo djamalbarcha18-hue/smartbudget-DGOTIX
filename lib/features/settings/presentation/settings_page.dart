@@ -17,13 +17,11 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/backup/application/backup_controller.dart';
-import 'package:smartbudget/features/backup/application/cloud_backup_controller.dart';
 import 'package:smartbudget/features/backup/application/backup_export.dart';
 import 'package:smartbudget/features/backup/application/backup_status_controller.dart';
 import 'package:smartbudget/features/backup/domain/backup_reminder.dart';
-import 'package:smartbudget/features/backup/data/cloud_backup_service.dart';
 import 'package:smartbudget/features/backup/data/file_io.dart';
-import 'package:smartbudget/features/backup/domain/backup_model.dart';
+import 'package:smartbudget/features/sync/application/sync_controller.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
 import 'package:smartbudget/features/billing/domain/entitlement.dart';
@@ -196,12 +194,12 @@ class SettingsPage extends ConsumerWidget {
               ),
               const SizedBox(height: DsSpacing.lg),
 
-              // Cloud backup (sync) — only with a real backend.
+              // Sync across devices — only with a real backend.
               if (AppEnv.hasSupabase) ...<Widget>[
                 _SettingsSection(
                   icon: Icons.cloud_sync_outlined,
-                  title: l.cloudBackupTitle,
-                  child: const _CloudBackupSection(),
+                  title: l.syncTitle,
+                  child: const _SyncSection(),
                 ),
                 const SizedBox(height: DsSpacing.lg),
               ],
@@ -678,137 +676,73 @@ class _LastBackupLine extends StatelessWidget {
 
 /// Sync a full backup to the signed-in user's account and restore it on any
 /// device. Storage is guarded by Supabase RLS (each user sees only their row).
-class _CloudBackupSection extends ConsumerStatefulWidget {
-  const _CloudBackupSection();
+/// Automatic sync with the account (see SyncController): an on/off switch,
+/// where it stands, and "Sync now".
+class _SyncSection extends ConsumerWidget {
+  const _SyncSection();
 
-  @override
-  ConsumerState<_CloudBackupSection> createState() =>
-      _CloudBackupSectionState();
-}
-
-class _CloudBackupSectionState extends ConsumerState<_CloudBackupSection> {
-  bool _busy = false;
-
-  Future<void> _backUp() async {
-    final AppLocalizations l = AppLocalizations.of(context);
-    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    setState(() => _busy = true);
-    try {
-      final Map<String, dynamic> data =
-          (await ref.read(backupServiceProvider).snapshot()).toJson();
-      await ref
-          .read(cloudBackupServiceProvider)
-          .push(data, BackupData.schemaVersion);
-      ref.invalidate(cloudBackupMetaProvider);
-      await ref.read(backupStatusProvider.notifier).markBackedUp();
-      messenger.showSnackBar(SnackBar(content: Text(l.cloudBackedUp)));
-    } on CloudBackupException catch (e) {
-      messenger.showSnackBar(SnackBar(
-        content: Text(e.kind == CloudBackupErrorKind.notSignedIn
-            ? l.cloudBackupSignIn
-            : l.cloudFailed),
-      ));
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  Future<void> _restore() async {
-    final AppLocalizations l = AppLocalizations.of(context);
-    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    setState(() => _busy = true);
-    try {
-      final Map<String, dynamic>? data =
-          await ref.read(cloudBackupServiceProvider).pull();
-      if (data == null) {
-        messenger.showSnackBar(SnackBar(content: Text(l.cloudNoBackup)));
-        return;
-      }
-      final ImportResult res = await ref
-          .read(backupServiceProvider)
-          .importData(BackupData.fromJson(data));
-      messenger.showSnackBar(SnackBar(
-        content: Text(res.isEmpty
-            ? l.importEmpty
-            : l.importDoneAll(res.transactionsAdded, res.budgetsAdded,
-                res.plansAdded)),
-      ));
-    } on CloudBackupException {
-      messenger.showSnackBar(SnackBar(content: Text(l.cloudFailed)));
-    } catch (_) {
-      messenger.showSnackBar(SnackBar(content: Text(l.importFailed)));
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  String _fmt(DateTime d) {
+  static String _fmt(DateTime d) {
     final DateTime x = d.toLocal();
     String two(int n) => n.toString().padLeft(2, '0');
     return '${x.year}-${two(x.month)}-${two(x.day)} ${two(x.hour)}:${two(x.minute)}';
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
-    final bool signedIn = ref.watch(authControllerProvider).isAuthenticated;
-
-    if (!signedIn) {
-      return Text(l.cloudBackupSignIn,
-          style: Theme.of(context).textTheme.bodySmall);
+    final TextTheme t = Theme.of(context).textTheme;
+    if (!ref.watch(authControllerProvider).isAuthenticated) {
+      return Text(l.cloudBackupSignIn, style: t.bodySmall);
     }
-
-    final AsyncValue<CloudBackupMeta?> meta =
-        ref.watch(cloudBackupMetaProvider);
-
+    final bool enabled = ref.watch(syncEnabledProvider);
+    final SyncStatus status = ref.watch(syncControllerProvider);
+    final DateTime? last = status.lastSyncedAt;
+    final (IconData icon, Color color, String text) = switch (status.phase) {
+      SyncPhase.off => (Icons.cloud_off_outlined, c.textMuted, l.syncOffNote),
+      SyncPhase.syncing => (Icons.sync_rounded, c.brand, l.cloudSyncing),
+      SyncPhase.offline =>
+        (Icons.cloud_off_outlined, c.textMuted, l.syncOfflineNote),
+      SyncPhase.error => (Icons.sync_problem_outlined, c.expense, l.syncErrorNote),
+      SyncPhase.idle => (
+          Icons.cloud_done_outlined,
+          last == null ? c.textMuted : c.income,
+          last == null ? l.cloudNeverSynced : l.cloudLastSynced(_fmt(last)),
+        ),
+    };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Text(l.cloudBackupHint, style: Theme.of(context).textTheme.bodySmall),
-        const SizedBox(height: DsSpacing.md),
+        Text(l.syncHint, style: t.bodySmall),
+        const SizedBox(height: DsSpacing.sm),
+        SwitchListTile.adaptive(
+          contentPadding: EdgeInsets.zero,
+          title: Text(l.syncAuto, style: t.titleSmall),
+          value: enabled,
+          onChanged: (bool v) =>
+              ref.read(syncEnabledProvider.notifier).set(v),
+        ),
         Row(
           children: <Widget>[
-            Icon(
-              meta.valueOrNull != null
-                  ? Icons.cloud_done_outlined
-                  : Icons.cloud_off_outlined,
-              size: 16,
-              color: meta.valueOrNull != null ? c.income : c.textMuted,
-            ),
+            Icon(icon, size: 16, color: color),
             const SizedBox(width: DsSpacing.sm),
-            Expanded(
-              child: Text(
-                switch (meta) {
-                  AsyncData<CloudBackupMeta?>(value: final CloudBackupMeta? m) =>
-                    m == null
-                        ? l.cloudNeverSynced
-                        : l.cloudLastSynced(_fmt(m.updatedAt)),
-                  AsyncError<CloudBackupMeta?>() => l.cloudFailed,
-                  _ => l.cloudSyncing,
-                },
-                style: Theme.of(context).textTheme.labelMedium,
+            Expanded(child: Text(text, style: t.labelMedium)),
+          ],
+        ),
+        if (enabled) ...<Widget>[
+          const SizedBox(height: DsSpacing.lg),
+          Wrap(
+            children: <Widget>[
+              _ActionButton(
+                icon: Icons.sync_rounded,
+                label: l.syncNow,
+                onTap: status.phase == SyncPhase.syncing
+                    ? null
+                    : () => ref.read(syncControllerProvider.notifier).syncNow(),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: DsSpacing.lg),
-        Wrap(
-          spacing: DsSpacing.sm,
-          runSpacing: DsSpacing.sm,
-          children: <Widget>[
-            _ActionButton(
-              icon: Icons.cloud_upload_outlined,
-              label: l.cloudBackUp,
-              onTap: _busy ? null : _backUp,
-            ),
-            _ActionButton(
-              icon: Icons.cloud_download_outlined,
-              label: l.cloudRestore,
-              onTap: _busy ? null : _restore,
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ],
     );
   }

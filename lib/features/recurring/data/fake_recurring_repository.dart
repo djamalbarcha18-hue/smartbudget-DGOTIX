@@ -90,6 +90,17 @@ class FakeRecurringRepository implements RecurringRepository {
   }
 
   @override
+  Future<void> replaceAll(List<RecurringRule> items) async {
+    await _load();
+    _items
+      ..clear()
+      ..addAll(items);
+    _sort();
+    await _persist();
+    _emit();
+  }
+
+  @override
   Future<int> importMany(List<RecurringRule> rules) async {
     await _load();
     final Set<String> existing = _items.map((RecurringRule r) => r.id).toSet();

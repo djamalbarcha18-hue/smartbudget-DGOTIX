@@ -10,6 +10,7 @@ import 'package:smartbudget/core/time/clock_sync_controller.dart';
 import 'package:smartbudget/design_system/theme/ds_theme.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_gate.dart';
 import 'package:smartbudget/features/shell/offline_banner.dart';
+import 'package:smartbudget/features/sync/application/sync_controller.dart';
 import 'package:smartbudget/features/shell/update_banner.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -32,6 +33,8 @@ class SmartBudgetApp extends ConsumerWidget {
     ref.listen(clockSyncProvider, (_, __) {});
     // Gives older foreign-currency transactions their base-currency value.
     ref.listen(baseValueBackfillProvider, (_, __) {});
+    // Keeps this device and the account's cloud copy in step.
+    ref.listen(syncControllerProvider, (_, __) {});
 
     return MaterialApp.router(
       title: '${AppConfig.appName} — by ${AppConfig.parentBrand}',

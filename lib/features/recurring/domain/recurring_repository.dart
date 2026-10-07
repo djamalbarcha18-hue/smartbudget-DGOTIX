@@ -15,5 +15,9 @@ abstract interface class RecurringRepository {
   /// number actually added.
   Future<int> importMany(List<RecurringRule> rules);
 
+  /// Makes the stored list exactly [items] (cloud sync applies a merged
+  /// state with it).
+  Future<void> replaceAll(List<RecurringRule> items);
+
   void dispose();
 }

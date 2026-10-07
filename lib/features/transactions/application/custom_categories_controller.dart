@@ -89,6 +89,15 @@ class CustomCategoriesController extends Notifier<CustomCategories> {
 
   /// Merge-imports custom categories (used by backup restore). Skips names that
   /// duplicate an existing custom entry or a built-in [Catalog] category.
+  /// Makes the lists exactly these (cloud sync applies a merged state).
+  Future<void> replaceAll({
+    required List<String> income,
+    required List<String> expense,
+  }) {
+    state = CustomCategories(income: income, expense: expense);
+    return _save();
+  }
+
   Future<void> importMany({
     List<String> income = const <String>[],
     List<String> expense = const <String>[],

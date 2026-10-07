@@ -21,6 +21,10 @@ abstract interface class BudgetRepository {
   /// (year, month, category). Returns the number actually added.
   Future<int> importMany(List<BudgetTarget> targets);
 
+  /// Makes the stored list exactly [items] (cloud sync applies a merged
+  /// state with it).
+  Future<void> replaceAll(List<BudgetTarget> items);
+
   /// Removes every target whose id is in [ids]. Returns the count removed.
   Future<int> deleteMany(Iterable<String> ids);
 

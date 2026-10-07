@@ -65,10 +65,11 @@ abstract final class LegalContent {
           'Where your data lives',
           'By default everything is saved locally on your device (in the app, '
               'or in your browser for the web version) — no account is required and no financial data leaves your '
-              'device. If cloud sync is enabled and you sign in and choose to '
-              'back up, a copy of your data is stored in the operator\'s '
+              'device. If you sign in, your data is synced automatically '
+              'between your devices: a copy is stored in the operator\'s '
               'Supabase database, tied to your account and protected by '
-              'row-level security so that only you can read it.',
+              'row-level security so that only you can read it. You can turn '
+              'sync off in Settings; your data then stays on this device only.',
         ),
         const LegalSection(
           'Accounts and authentication',
@@ -112,8 +113,8 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Third-party services',
-          'Depending on the features you use: Supabase (sign-in, cloud backup, '
-              'and the server functions); Paddle and PayPal (payments); Google, '
+          'Depending on the features you use: Supabase (sign-in, sync across '
+              'devices and the server functions); Paddle and PayPal (payments); Google, '
               'OpenAI and Anthropic (the AI assistant and cloud receipt '
               'scanning); and public market-data sources for live figures — '
               'currency rates (open.er-api.com) and crypto prices (CoinGecko), '
@@ -130,8 +131,8 @@ abstract final class LegalContent {
           'Your controls',
           'You can export a full backup at any time, remove your data by '
               'deleting your account (see below), uninstalling the app or '
-              'clearing this site\'s storage in your browser, and — when cloud '
-              'sync is enabled — sign out or overwrite your cloud backup. You can '
+              'clearing this site\'s storage in your browser, and turn '
+              'automatic sync off in Settings or sign out. You can '
               'cancel a paid subscription at any time (see the Terms).',
         ),
         const LegalSection(
@@ -176,10 +177,11 @@ abstract final class LegalContent {
           'أين تُحفظ بياناتك',
           'افتراضياً يُحفظ كل شيء محلياً على جهازك (في التطبيق، أو في متصفحك '
               'لنسخة الويب) — لا حاجة لحساب '
-              'ولا تغادر أي بيانات مالية جهازك. وإذا فُعّلت المزامنة السحابية '
-              'وسجّلت الدخول واخترت النسخ الاحتياطي، تُخزَّن نسخة من بياناتك في '
+              'ولا تغادر أي بيانات مالية جهازك. وإذا سجّلت الدخول، تُزامَن بياناتك '
+              'تلقائياً بين أجهزتك: تُخزَّن نسخة منها في '
               'قاعدة بيانات Supabase الخاصة بالمشغّل، مرتبطة بحسابك ومحميّة بأمان '
-              'على مستوى الصفوف بحيث لا يقرؤها سواك.',
+              'على مستوى الصفوف بحيث لا يقرؤها سواك. ويمكنك إيقاف المزامنة من '
+              'الإعدادات فتبقى بياناتك على هذا الجهاز فقط.',
         ),
         const LegalSection(
           'الحسابات وتسجيل الدخول',
@@ -216,8 +218,8 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'خدمات الأطراف الخارجية',
-          'حسب الميزات التي تستخدمها: Supabase (تسجيل الدخول والنسخ الاحتياطي '
-              'السحابي ودوال الخادم)؛ وPaddle وPayPal (المدفوعات)؛ وGoogle '
+          'حسب الميزات التي تستخدمها: Supabase (تسجيل الدخول والمزامنة بين '
+              'الأجهزة ودوال الخادم)؛ وPaddle وPayPal (المدفوعات)؛ وGoogle '
               'وOpenAI وAnthropic (المساعد الذكي ومسح الإيصالات السحابي)؛ ومصادر '
               'بيانات سوق عامة للقيم الحيّة — أسعار العملات (open.er-api.com) '
               'وأسعار العملات الرقمية (CoinGecko)، وطلباتها تحتوي على رموز '
@@ -233,8 +235,8 @@ abstract final class LegalContent {
           'خياراتك وتحكّمك',
           'يمكنك تصدير نسخة احتياطية كاملة في أي وقت، وإزالة بياناتك بحذف حسابك '
               '(انظر أدناه) أو إلغاء تثبيت التطبيق أو مسح تخزين هذا الموقع من '
-              'متصفحك، و— عند تفعيل المزامنة السحابية — تسجيل '
-              'الخروج أو استبدال نسختك السحابية. ويمكنك إلغاء الاشتراك المدفوع في '
+              'متصفحك، وإيقاف المزامنة التلقائية من الإعدادات أو تسجيل '
+              'الخروج. ويمكنك إلغاء الاشتراك المدفوع في '
               'أي وقت (انظر الشروط).',
         ),
         const LegalSection(

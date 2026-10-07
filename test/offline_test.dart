@@ -12,11 +12,11 @@ Widget host(bool online) => ProviderScope(
       overrides: <Override>[
         onlineProvider.overrideWith((_) => Stream<bool>.value(online)),
       ],
-      child: MaterialApp(
-        locale: const Locale('en'),
+      child: const MaterialApp(
+        locale: Locale('en'),
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
-        home: const OfflineBanner(child: Scaffold(body: Text('content'))),
+        home: OfflineBanner(child: Scaffold(body: Text('content'))),
       ),
     );
 
@@ -25,7 +25,7 @@ void main() {
       (WidgetTester tester) async {
     await tester.pumpWidget(host(false));
     await tester.pump();
-    expect(find.text('Offline · your data is saved on this device'),
+    expect(find.text('Offline · saved on this device, syncs when back online'),
         findsOneWidget);
     expect(find.text('content'), findsOneWidget);
   });

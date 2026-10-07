@@ -100,6 +100,16 @@ class FakeBudgetRepository implements BudgetRepository {
   }
 
   @override
+  Future<void> replaceAll(List<BudgetTarget> items) async {
+    await _load();
+    _items
+      ..clear()
+      ..addAll(items);
+    await _persist();
+    _emit();
+  }
+
+  @override
   Future<int> importMany(List<BudgetTarget> targets) async {
     await _load();
     bool collides(BudgetTarget t) => _items.any((BudgetTarget e) =>

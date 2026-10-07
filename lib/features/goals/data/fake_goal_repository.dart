@@ -79,6 +79,17 @@ class FakeGoalRepository implements GoalRepository {
   }
 
   @override
+  Future<void> replaceAll(List<Goal> items) async {
+    await _load();
+    _items
+      ..clear()
+      ..addAll(items);
+    _sort();
+    await _persist();
+    _emit();
+  }
+
+  @override
   Future<int> importMany(List<Goal> goals) async {
     await _load();
     final Set<String> existing = _items.map((Goal g) => g.id).toSet();

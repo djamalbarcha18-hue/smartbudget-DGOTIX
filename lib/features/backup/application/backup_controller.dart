@@ -101,6 +101,30 @@ class BackupService {
   Future<ImportResult> importJson(String raw) =>
       importData(BackupCodec.decodeJson(raw));
 
+  /// Makes the device hold exactly [data] (cloud sync applies a merged state
+  /// with it). The base currency is set only when [setBaseCurrency].
+  Future<void> replaceAll(BackupData data, {bool setBaseCurrency = true}) async {
+    await _ref.read(financeRepositoryProvider).replaceAll(data.transactions);
+    await _ref.read(budgetRepositoryProvider).replaceAll(data.budgets);
+    await _ref.read(goalRepositoryProvider).replaceAll(data.goals);
+    await _ref.read(debtRepositoryProvider).replaceAll(data.debts);
+    await _ref.read(projectRepositoryProvider).replaceAll(data.projects);
+    await _ref.read(recurringRepositoryProvider).replaceAll(data.recurring);
+    await _ref.read(customCategoriesProvider.notifier).replaceAll(
+          income: data.customIncome,
+          expense: data.customExpense,
+        );
+    await _ref.read(seasonStoreProvider).replaceAll(data.seasons);
+    await _ref.read(daretStoreProvider).replaceAll(data.darets);
+    await _ref.read(challengeStoreProvider).replaceAll(data.challenges);
+    await _ref.read(walletStoreProvider).replaceAll(data.wallets);
+    await _ref.read(walletMoveStoreProvider).replaceAll(data.walletMoves);
+    if (setBaseCurrency &&
+        data.baseCurrency != _ref.read(baseCurrencyProvider)) {
+      await _ref.read(baseCurrencyProvider.notifier).set(data.baseCurrency);
+    }
+  }
+
   /// Restores from an already-parsed [BackupData] (shared by file import and
   /// cloud restore). Non-destructive: only new rows are merged in.
   Future<ImportResult> importData(BackupData data) async {

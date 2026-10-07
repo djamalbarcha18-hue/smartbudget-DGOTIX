@@ -85,6 +85,17 @@ class FakeDebtRepository implements DebtRepository {
   }
 
   @override
+  Future<void> replaceAll(List<Debt> items) async {
+    await _load();
+    _items
+      ..clear()
+      ..addAll(items);
+    _sort();
+    await _persist();
+    _emit();
+  }
+
+  @override
   Future<int> importMany(List<Debt> debts) async {
     await _load();
     final Set<String> existing = _items.map((Debt x) => x.id).toSet();

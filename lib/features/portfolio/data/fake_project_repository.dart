@@ -85,6 +85,17 @@ class FakeProjectRepository implements ProjectRepository {
   }
 
   @override
+  Future<void> replaceAll(List<Project> items) async {
+    await _load();
+    _items
+      ..clear()
+      ..addAll(items);
+    _sort();
+    await _persist();
+    _emit();
+  }
+
+  @override
   Future<int> importMany(List<Project> projects) async {
     await _load();
     final Set<String> existing = _items.map((Project x) => x.id).toSet();
