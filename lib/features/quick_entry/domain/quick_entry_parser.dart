@@ -11,6 +11,7 @@ class QuickEntry {
     required this.date,
     this.recognized = true,
     this.walletId,
+    this.currency,
   });
 
   final TransactionType type;
@@ -24,13 +25,19 @@ class QuickEntry {
   /// False when no keyword matched and the category fell back to "Other".
   final bool recognized;
 
-  /// A wallet named in the text ("… CCP", "… نقد"); null = use the default.
+  /// A wallet named in the text ("… CCP", "… نقد"), or the one holding the
+  /// [currency] named; null = use the default.
   final String? walletId;
+
+  /// The currency named in the text ("12 دولار", "$12", "50 ر.س") as an ISO
+  /// code; null when none was named and the wallet's currency applies.
+  final String? currency;
 }
 
 /// Turns short free text into transactions, entirely on the device: Arabic
 /// (including Algerian darija), French and English keywords map to the
-/// catalog categories; income is detected from income words or a leading "+".
+/// catalog categories; income is detected from income words or a leading "+";
+/// a named currency ("12 دولار") picks the wallet that holds it.
 abstract final class QuickEntryParser {
   static const String other = 'أخرى';
 
@@ -44,6 +51,7 @@ abstract final class QuickEntryParser {
     List<String> customIncome = const <String>[],
     List<String> customExpense = const <String>[],
     List<Wallet> wallets = const <Wallet>[],
+    String? defaultWalletId,
   }) =>
       input
           .split(_split)
@@ -51,7 +59,8 @@ abstract final class QuickEntryParser {
               today: today,
               customIncome: customIncome,
               customExpense: customExpense,
-              wallets: wallets))
+              wallets: wallets,
+              defaultWalletId: defaultWalletId))
           .whereType<QuickEntry>()
           .toList();
 
@@ -61,6 +70,7 @@ abstract final class QuickEntryParser {
     List<String> customIncome = const <String>[],
     List<String> customExpense = const <String>[],
     List<Wallet> wallets = const <Wallet>[],
+    String? defaultWalletId,
   }) {
     String text = _latinDigits(input).trim();
     if (text.isEmpty) return null;
@@ -85,11 +95,28 @@ abstract final class QuickEntryParser {
     if (base == null || base <= 0) return null;
     final double amount = m[2] == null ? base : base * 1000;
     String rest = '${text.substring(0, m.start)} ${text.substring(m.end)}';
-    // Currency words carry no meaning here.
-    rest = rest.replaceAll(
-        RegExp(r'(?<![\p{L}])(دج|دينار|da|dzd|dz|€|\$|eur|usd)(?![\p{L}])',
-            unicode: true, caseSensitive: false),
-        ' ');
+    // A currency named in the text: a symbol or abbreviation first, then
+    // words (the longest wins, so «ريال قطري» beats «ريال»). A word shared by
+    // several currencies («ريال», «دينار») is settled against the wallets.
+    List<String> named = const <String>[];
+    for (final (RegExp re, String code) in _currencySymbols) {
+      if (re.hasMatch(rest)) {
+        named = <String>[code];
+        rest = rest.replaceFirst(re, ' ');
+        break;
+      }
+    }
+    if (named.isEmpty) {
+      final String n = _normalize(rest);
+      String? word;
+      for (final (String w, List<String> codes) in _currencyWords) {
+        if ((word == null || w.length > word.length) && _containsWord(n, w)) {
+          word = w;
+          named = codes;
+        }
+      }
+      if (word != null) rest = _removeWord(rest, word);
+    }
 
     // Date words.
     DateTime date = DateTime(today.year, today.month, today.day);
@@ -131,6 +158,30 @@ abstract final class QuickEntryParser {
             }
           }
         }
+      }
+    }
+
+    // The named currency decides the wallet unless one was named: the default
+    // wallet when it holds that currency, else the first wallet that does.
+    String? currency;
+    if (named.isNotEmpty) {
+      String? currencyOf(String? id) =>
+          wallets.where((Wallet w) => w.id == id).firstOrNull?.currency;
+      final List<String?> prefer = <String?>[
+        currencyOf(walletId),
+        currencyOf(defaultWalletId),
+        ...wallets.map((Wallet w) => w.currency),
+      ];
+      currency = prefer.whereType<String>().firstWhere(named.contains,
+          orElse: () => named.first);
+      if (walletId == null && currencyOf(defaultWalletId) != currency) {
+        final Wallet? holder = wallets
+                .where((Wallet w) => !w.isGeneral && w.currency == currency)
+                .firstOrNull ??
+            wallets
+                .where((Wallet w) => w.isGeneral && w.currency == currency)
+                .firstOrNull;
+        walletId = holder?.id;
       }
     }
 
@@ -192,6 +243,7 @@ abstract final class QuickEntryParser {
       date: date,
       recognized: fits,
       walletId: walletId,
+      currency: currency,
     );
   }
 
@@ -298,6 +350,87 @@ abstract final class QuickEntryParser {
     ('اليوم', 0),
     ('today', 0),
     ('aujourd hui', 0),
+  ];
+
+  /// Symbols and Arabic abbreviations, matched on the raw text.
+  static final List<(RegExp, String)> _currencySymbols = <(RegExp, String)>[
+    for (final (String s, String code) in <(String, String)>[
+      (r'\$', 'USD'),
+      ('€', 'EUR'),
+      ('£', 'GBP'),
+      (r'ر\s*\.\s*س', 'SAR'),
+      (r'ر\s*\.\s*ق', 'QAR'),
+      (r'ر\s*\.\s*ع', 'OMR'),
+      (r'د\s*\.\s*[إا]', 'AED'),
+      (r'د\s*\.\s*ك', 'KWD'),
+      (r'د\s*\.\s*ب', 'BHD'),
+      (r'د\s*\.\s*ج', 'DZD'),
+      (r'ج\s*\.\s*م', 'EGP'),
+    ])
+      (RegExp('(?<![\\p{L}])$s(?![\\p{L}])', unicode: true), code),
+  ];
+
+  /// Currency words (normalized, whole words) → the currencies they can mean,
+  /// most likely first.
+  static const List<(String, List<String>)> _currencyWords =
+      <(String, List<String>)>[
+    ('دولار', <String>['USD']),
+    ('دولارات', <String>['USD']),
+    ('دولارين', <String>['USD']),
+    ('usd', <String>['USD']),
+    ('dollar', <String>['USD']),
+    ('dollars', <String>['USD']),
+    ('يورو', <String>['EUR']),
+    ('اورو', <String>['EUR']),
+    ('eur', <String>['EUR']),
+    ('euro', <String>['EUR']),
+    ('euros', <String>['EUR']),
+    ('استرليني', <String>['GBP']),
+    ('جنيه استرليني', <String>['GBP']),
+    ('gbp', <String>['GBP']),
+    ('ريال', <String>['SAR', 'QAR', 'OMR', 'YER']),
+    ('ريالات', <String>['SAR', 'QAR', 'OMR', 'YER']),
+    ('ريالين', <String>['SAR', 'QAR', 'OMR', 'YER']),
+    ('riyal', <String>['SAR', 'QAR', 'OMR', 'YER']),
+    ('riyals', <String>['SAR', 'QAR', 'OMR', 'YER']),
+    ('rial', <String>['SAR', 'QAR', 'OMR', 'YER']),
+    ('ريال سعودي', <String>['SAR']),
+    ('sar', <String>['SAR']),
+    ('ريال قطري', <String>['QAR']),
+    ('qar', <String>['QAR']),
+    ('ريال عماني', <String>['OMR']),
+    ('omr', <String>['OMR']),
+    ('درهم', <String>['AED', 'MAD']),
+    ('دراهم', <String>['AED', 'MAD']),
+    ('dirham', <String>['AED', 'MAD']),
+    ('dirhams', <String>['AED', 'MAD']),
+    ('درهم اماراتي', <String>['AED']),
+    ('aed', <String>['AED']),
+    ('درهم مغربي', <String>['MAD']),
+    ('دينار', <String>['DZD', 'KWD', 'BHD', 'JOD', 'TND', 'LYD', 'IQD']),
+    ('دنانير', <String>['DZD', 'KWD', 'BHD', 'JOD', 'TND', 'LYD', 'IQD']),
+    ('dinar', <String>['DZD', 'KWD', 'BHD', 'JOD', 'TND', 'LYD', 'IQD']),
+    ('dinars', <String>['DZD', 'KWD', 'BHD', 'JOD', 'TND', 'LYD', 'IQD']),
+    ('دينار جزائري', <String>['DZD']),
+    ('دج', <String>['DZD']),
+    ('da', <String>['DZD']),
+    ('dzd', <String>['DZD']),
+    ('دينار كويتي', <String>['KWD']),
+    ('kwd', <String>['KWD']),
+    ('دينار بحريني', <String>['BHD']),
+    ('bhd', <String>['BHD']),
+    ('دينار اردني', <String>['JOD']),
+    ('jod', <String>['JOD']),
+    ('دينار تونسي', <String>['TND']),
+    ('tnd', <String>['TND']),
+    ('جنيه', <String>['EGP', 'SDG', 'GBP']),
+    ('جنيهات', <String>['EGP', 'SDG', 'GBP']),
+    ('جنيه مصري', <String>['EGP']),
+    ('egp', <String>['EGP']),
+    ('ليره', <String>['TRY', 'LBP', 'SYP']),
+    ('ليرات', <String>['TRY', 'LBP', 'SYP']),
+    ('ليره تركيه', <String>['TRY']),
+    ('ليره لبنانيه', <String>['LBP']),
   ];
 
   static const List<String> _cashWords = <String>[

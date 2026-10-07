@@ -37,10 +37,12 @@ void main() {
       expect(QuickEntryParser.parse('   ', today: today), isNull);
     });
 
-    test('currency words are ignored', () {
+    test('currency words are taken out of the description', () {
       final QuickEntry e = p('بنزين 2000 دج');
       expect(e.amount, 2000);
       expect(e.description, 'بنزين');
+      expect(e.currency, 'DZD');
+      expect(p('قهوة 200').currency, isNull);
     });
   });
 
@@ -147,6 +149,81 @@ void main() {
 
     test('no wallet mentioned → null (the default is used)', () {
       expect(q('قهوة 200').walletId, isNull);
+    });
+  });
+
+  group('currencies', () {
+    // Samer: riyal base, a riyal bank account (default), cash and a dollar
+    // savings wallet.
+    final List<Wallet> wallets = <Wallet>[
+      Wallet.general('SAR'),
+      Wallet(id: 'w-sar', name: 'الراجحي', type: WalletType.bank,
+          opening: const Money(0, 'SAR'), createdAt: DateTime(2026)),
+      Wallet(id: 'w-cash', name: 'كاش', type: WalletType.cash,
+          opening: const Money(0, 'SAR'), createdAt: DateTime(2026)),
+      Wallet(id: 'w-usd', name: 'ادخار', type: WalletType.savings,
+          opening: const Money(0, 'USD'), createdAt: DateTime(2026)),
+    ];
+    QuickEntry q(String s) => QuickEntryParser.parse(s,
+        today: today, wallets: wallets, defaultWalletId: 'w-sar')!;
+
+    test('a dollar amount goes to the dollar wallet', () {
+      for (final String s in <String>[
+        'اشتراك 12 دولار',
+        'اشتراك 12 بالدولار',
+        'اشتراك \$12',
+        'اشتراك 12\$',
+        'subscription 12 usd',
+        'subscription 12 dollars',
+      ]) {
+        final QuickEntry e = q(s);
+        expect(e.currency, 'USD', reason: s);
+        expect(e.walletId, 'w-usd', reason: s);
+        expect(e.amount, 12, reason: s);
+        expect(e.category, 'الاشتراكات', reason: s);
+      }
+      expect(q('اشتراك 12 دولار').description, 'اشتراك');
+    });
+
+    test('the default wallet keeps entries in its own currency', () {
+      final QuickEntry e = q('قهوة 15 ريال');
+      expect(e.currency, 'SAR');
+      expect(e.walletId, isNull);
+      expect(q('قهوة 15 ر.س').currency, 'SAR');
+      expect(q('قهوة 15 ر.س').description, 'قهوة');
+    });
+
+    test('a shared word is settled by the wallets held', () {
+      // «ريال» is the Saudi riyal here; «ريال قطري» stays Qatari.
+      expect(q('غداء 40 ريالات').currency, 'SAR');
+      expect(q('غداء 40 ريال قطري').currency, 'QAR');
+      // With only dinar wallets, «دينار» is the dinar they hold.
+      final QuickEntry kw = QuickEntryParser.parse('غداء 3 دينار',
+          today: today,
+          wallets: <Wallet>[Wallet.general('KWD')],
+          defaultWalletId: Wallet.generalId)!;
+      expect(kw.currency, 'KWD');
+    });
+
+    test('a named wallet wins; a currency no wallet holds is reported', () {
+      // Cash is in riyals: the entry is flagged by the sheet, not moved.
+      final QuickEntry cash = q('قهوة 5 دولار كاش');
+      expect(cash.walletId, 'w-cash');
+      expect(cash.currency, 'USD');
+      // No euro wallet: no wallet is picked for it.
+      final QuickEntry eur = q('كتاب 20 يورو');
+      expect(eur.currency, 'EUR');
+      expect(eur.walletId, isNull);
+    });
+
+    test('several entries at once', () {
+      final List<QuickEntry> all = QuickEntryParser.parseAll(
+          'اشتراك 12 دولار، قهوة 15',
+          today: today,
+          wallets: wallets,
+          defaultWalletId: 'w-sar');
+      expect(all.map((QuickEntry e) => e.walletId), <String?>['w-usd', null]);
+      expect(all.map((QuickEntry e) => e.currency), <String?>['USD', null]);
     });
   });
 }

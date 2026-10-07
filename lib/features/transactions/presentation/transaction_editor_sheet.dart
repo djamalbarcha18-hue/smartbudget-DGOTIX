@@ -32,6 +32,7 @@ class TransactionDraft {
     this.date,
     this.description,
     this.notes,
+    this.walletId,
   });
 
   final double? amount;
@@ -39,6 +40,9 @@ class TransactionDraft {
   final DateTime? date;
   final String? description;
   final String? notes;
+
+  /// The wallet to start on; null = the default wallet.
+  final String? walletId;
 }
 
 /// Quick-add / edit sheet for a single transaction (income or expense).
@@ -122,7 +126,7 @@ class _TransactionEditorSheetState
     _repeat = e == null ? widget.initialRepeat : null;
     _walletId = e != null
         ? e.walletId ?? Wallet.generalId
-        : ref.read(effectiveDefaultWalletProvider);
+        : p?.walletId ?? ref.read(effectiveDefaultWalletProvider);
     _initialWallet = _walletId;
   }
 

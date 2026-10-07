@@ -58,11 +58,20 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
         today: AppClock.now(),
         customIncome: cc.income,
         customExpense: cc.expense,
-        wallets: ref.read(walletsProvider)));
+        wallets: ref.read(walletsProvider),
+        defaultWalletId: ref.read(effectiveDefaultWalletProvider)));
   }
 
+  /// A currency was named but the entry's wallet holds another one (no wallet
+  /// in that currency): it can't be saved as typed.
+  bool _noWallet(QuickEntry e) =>
+      e.currency != null &&
+      ref.read(walletCurrencyProvider(
+              e.walletId ?? ref.read(effectiveDefaultWalletProvider))) !=
+          e.currency;
+
   Future<void> _save(AppLocalizations l) async {
-    if (_entries.isEmpty) return;
+    if (_entries.isEmpty || _entries.any(_noWallet)) return;
     final TransactionActions actions = ref.read(transactionActionsProvider);
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     final List<String> ids = <String>[];
@@ -113,6 +122,7 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
         category: e.recognized ? e.category : null,
         date: e.date,
         description: e.description,
+        walletId: _noWallet(e) ? null : e.walletId,
       ),
     );
   }
@@ -131,6 +141,7 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
     Wallet walletOf(String? id) => wallets.firstWhere(
         (Wallet w) => w.id == (id ?? defaultWallet),
         orElse: () => wallets.first);
+    final bool blocked = _entries.any(_noWallet);
 
     String dayLabel(DateTime d) {
       final int diff = DateTime(today.year, today.month, today.day)
@@ -237,8 +248,8 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
                         ),
                       ),
                       Text(
-                        MoneyFormatter.format(Money.fromDouble(
-                            e.amount, walletOf(e.walletId).currency)),
+                        MoneyFormatter.format(Money.fromDouble(e.amount,
+                            e.currency ?? walletOf(e.walletId).currency)),
                         style: t.titleSmall?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: e.type == TransactionType.income
@@ -247,6 +258,15 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
                       ),
                     ],
                   ),
+                ),
+              for (final String code in <String>{
+                for (final QuickEntry e in _entries)
+                  if (_noWallet(e)) e.currency!,
+              })
+                Padding(
+                  padding: const EdgeInsets.only(bottom: DsSpacing.sm),
+                  child: Text(l.quickNoWalletFor(code),
+                      style: t.labelSmall?.copyWith(color: c.expense)),
                 ),
               if (_entries.any((QuickEntry e) => !e.recognized))
                 Padding(
@@ -263,7 +283,9 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
                           ? l.quickSaveN(_entries.length)
                           : l.save,
                       icon: Icons.check_rounded,
-                      onPressed: _entries.isEmpty ? null : () => _save(l),
+                      onPressed: _entries.isEmpty || blocked
+                          ? null
+                          : () => _save(l),
                     ),
                   ),
                   if (_entries.length == 1) ...<Widget>[
