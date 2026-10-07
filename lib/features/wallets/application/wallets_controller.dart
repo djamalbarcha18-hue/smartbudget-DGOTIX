@@ -225,27 +225,26 @@ class WalletActions {
 }
 
 
-/// Foreign-currency transactions saved before base values were recorded get
-/// one, once real rates are known (live or entered by hand — never from the
-/// rough built-in defaults). Runs whenever rates or transactions change and
+/// Foreign-currency transactions with no value in the current base currency
+/// get one, once its rate can be trusted (USD, a USD peg, live or entered by
+/// hand — never the rough built-in defaults). That covers transactions saved
+/// before base values were recorded and those valued in a previous base
+/// currency. Runs whenever rates, transactions or the base currency change and
 /// only touches transactions still missing a value.
 final baseValueBackfillProvider = Provider<void>((ref) {
+  final String base = ref.watch(baseCurrencyProvider);
+  // The base currency is USD until the saved one is read: valuing anything
+  // in it before then would rewrite records against the wrong currency.
+  if (!ref.watch(baseCurrencyLoadedProvider)) return;
   final FxStatus fx = ref.watch(fxStatusProvider);
   final List<Transaction> txns =
       ref.watch(transactionsProvider).valueOrNull ?? const <Transaction>[];
-  final String base = ref.watch(baseCurrencyProvider);
   final Map<String, double> rates = ref.watch(ratesProvider);
-  // A rate is trusted when it is USD (the reference), typed by the user, or
-  // from the live feed.
-  bool known(String c) =>
-      c == 'USD' ||
-      fx.manualCodes.contains(c) ||
-      (fx.live && fx.liveCodes.contains(c));
   final List<Transaction> fixes = <Transaction>[];
   for (final Transaction t in txns) {
     final String cur = t.amount.currencyCode;
-    if (cur == base || t.baseAmount != null) continue;
-    if (!known(cur) || !known(base)) continue;
+    if (t.inCurrency(base) != null) continue;
+    if (!fx.trusts(cur) || !fx.trusts(base)) continue;
     final Money? v = WalletMath.baseValue(t.amount, base, rates);
     if (v != null) fixes.add(t.copyWith(baseAmount: v));
   }

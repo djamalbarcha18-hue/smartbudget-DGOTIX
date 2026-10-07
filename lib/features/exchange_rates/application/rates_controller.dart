@@ -31,6 +31,27 @@ class FxStatus {
   final Set<String> liveCodes;
   final Set<String> manualCodes;
 
+  /// Currencies officially pegged to the US dollar. Their seed value is the
+  /// peg itself, so it is exact without the network (the Kuwaiti dinar follows
+  /// a basket and is not here).
+  static const Set<String> usdPegs = <String>{
+    'SAR',
+    'AED',
+    'QAR',
+    'BHD',
+    'OMR',
+    'JOD',
+  };
+
+  /// Whether amounts in [code] can be valued from the current rates: USD (the
+  /// reference), a USD peg, a rate typed by the user, or one from the live
+  /// feed — never a rough indicative default.
+  bool trusts(String code) =>
+      code == 'USD' ||
+      usdPegs.contains(code) ||
+      manualCodes.contains(code) ||
+      (live && liveCodes.contains(code));
+
   FxStatus copyWith({
     bool? loading,
     bool? live,

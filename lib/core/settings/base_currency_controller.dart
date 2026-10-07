@@ -5,11 +5,16 @@ import 'package:smartbudget/core/money/currency.dart';
 
 /// The user's single base/display currency.
 ///
-/// P3 keeps ONE currency per user (no cross-currency mixing) because summing
-/// different currencies requires conversion via exchange rates — a later phase.
-/// This is a display/settings preference, persisted per viewer.
+/// Totals and reports are in this currency; a transaction in another currency
+/// counts through the base value recorded with it (`Transaction.baseAmount`).
+/// Persisted on the device and synced.
 final baseCurrencyProvider =
     NotifierProvider<BaseCurrencyController, String>(BaseCurrencyController.new);
+
+/// True once the saved base currency has been read. Until then
+/// [baseCurrencyProvider] holds the USD default, so anything that writes
+/// values in the base currency waits for this.
+final baseCurrencyLoadedProvider = StateProvider<bool>((ref) => false);
 
 class BaseCurrencyController extends Notifier<String> {
   static const String _key = 'sb_base_currency';
@@ -27,6 +32,11 @@ class BaseCurrencyController extends Notifier<String> {
       if (code != null && code.isNotEmpty) state = code;
     } catch (_) {
       // Keep default.
+    }
+    try {
+      ref.read(baseCurrencyLoadedProvider.notifier).state = true;
+    } catch (_) {
+      // Disposed before the read finished: nothing left to tell.
     }
   }
 

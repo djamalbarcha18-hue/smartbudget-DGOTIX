@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
-/// Aggregated totals for a set of transactions (one currency).
+/// Aggregated totals for a set of transactions, in the base currency.
 @immutable
 class FinanceSummary {
   const FinanceSummary({
@@ -51,9 +51,9 @@ class MonthPoint {
 /// Pure financial calculators — a faithful re-implementation of the SmartBudget
 /// V1 formulas. No I/O, no framework, fully unit-testable.
 ///
-/// All inputs are assumed to share [baseCurrency]; transactions in any other
-/// currency are ignored (cross-currency conversion is a later phase, never
-/// invented here).
+/// Totals are in [baseCurrency]. A transaction in another currency counts
+/// through the base value recorded with it (`Transaction.baseAmount`); one
+/// with no value in the base currency yet is left out, never guessed.
 abstract final class FinanceCalculator {
   static Iterable<Transaction> _inCurrency(
     List<Transaction> txns,

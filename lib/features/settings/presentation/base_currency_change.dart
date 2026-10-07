@@ -8,6 +8,7 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/daret/application/daret_controller.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
 import 'package:smartbudget/features/seasons/application/seasons_controller.dart';
@@ -44,6 +45,7 @@ Future<bool> changeBaseCurrency(
     projects: await all(projectsProvider),
     seasons: await all(seasonPlansProvider),
     darets: await all(daretsProvider),
+    convertible: ref.read(fxStatusProvider).trusts,
   );
   if (!context.mounted) return false;
 

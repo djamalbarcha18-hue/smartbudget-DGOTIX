@@ -8,8 +8,8 @@ enum TransactionType { income, expense }
 
 /// A single financial transaction (domain entity).
 ///
-/// `amount` carries its own currency; in P3 all of a user's transactions share
-/// the base currency (cross-currency comes with the exchange-rate phase).
+/// `amount` carries its own currency; an amount in another currency than the
+/// base one also carries its base value ([baseAmount]) for totals.
 @immutable
 class Transaction {
   const Transaction({
