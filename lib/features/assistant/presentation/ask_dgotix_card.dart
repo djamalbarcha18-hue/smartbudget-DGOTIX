@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/core/network/connectivity.dart';
 import 'package:smartbudget/design_system/components/markdown_text.dart';
 import 'package:smartbudget/features/assistant/domain/ai_conversation.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -54,6 +55,11 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     final ChatMessagesController chat = ref.read(chatMessagesProvider.notifier);
     final AiUsageController usage = ref.read(aiUsageProvider.notifier);
 
+    // The assistant runs on DGOTIX's server: say so, and keep the question.
+    if (ref.read(isOfflineProvider)) {
+      setState(() => _error = l.askAiOffline);
+      return;
+    }
     _ctrl.clear();
     chat.add(ChatMessage(fromUser: true, text: q));
     // Memory: the recent turns before this question, trimmed and alternating.

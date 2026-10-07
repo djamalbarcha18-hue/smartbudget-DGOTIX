@@ -42,3 +42,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 The OFL permits bundling and embedding the font in documents and applications.
 Copyright (c) 2017 Boutros International. All rights reserved.
 
+
+## Fonts for offline display (`assets/google_fonts/`)
+
+The app's other Tajawal weights (ExtraLight, Light, Medium, ExtraBold, Black)
+and Inter (Regular, Medium, SemiBold, used by the brand lockup) are bundled so
+text looks the same with no internet; `google_fonts` loads them from the app
+before trying to download. Files are the exact Google Fonts files (SHA-256
+checked against the `google_fonts` package). Both are under the SIL Open Font
+License 1.1: `assets/google_fonts/OFL-Tajawal.txt`, `OFL-Inter.txt` (also shown
+in the app's licenses page).

@@ -78,6 +78,8 @@ dependencies:
   # in a WebView); on the web the same page is framed through package:web.
   webview_flutter: ^4.13.0
   web: ^1.1.0
+  # Online/offline state: the offline banner, and syncing on reconnect.
+  connectivity_plus: ^7.3.2
 
 dev_dependencies:
   flutter_test:
@@ -111,6 +113,10 @@ flutter:
     # Bundled Arabic font for offline PDF export (Tajawal, OFL — matches the
     # app's Arabic typography). See docs/THIRD_PARTY_LICENSES.md.
     - assets/fonts/
+    # The app's other font weights (Tajawal, and Inter for the brand lockup),
+    # so text renders the same with no internet. google_fonts finds them by
+    # file name before trying to download. OFL; see the OFL-*.txt files.
+    - assets/google_fonts/
 
   # SmartBudget's own icons (money box instead of the pig-shaped "savings").
   fonts:

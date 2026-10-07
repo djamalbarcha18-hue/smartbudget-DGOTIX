@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -48,6 +50,14 @@ Future<void> _start() async {
   // Financial data lives in the browser's storage: ask the browser not to
   // evict it under storage pressure. Fire-and-forget — never blocks startup.
   requestPersistentStorage().ignore();
+
+  // Licenses of the fonts bundled for offline use (assets/google_fonts).
+  LicenseRegistry.addLicense(() async* {
+    for (final String f in <String>['Tajawal', 'Inter']) {
+      yield LicenseEntryWithLineBreaks(<String>[f],
+          await rootBundle.loadString('assets/google_fonts/OFL-$f.txt'));
+    }
+  });
 
   // Erase personal AI keys saved by earlier versions (no longer supported).
   removeRetiredLocalData().ignore();
