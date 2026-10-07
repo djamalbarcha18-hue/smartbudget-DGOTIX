@@ -40,13 +40,13 @@ export const PROVIDER_ENV: Record<ProviderId, string> = {
 const MM: Capability[] = ["text", "image", "structured", "streaming"];
 const TXT: Capability[] = ["text", "structured", "streaming"];
 
-// Verified active models (Sept 2026). Retired Gemini 1.5/2.0 are intentionally
-// absent. Aliases track the newest Flash → deprecation-proof.
+// Active models (Oct 2026): only the aliases, which track the newest Flash and
+// Flash-Lite (AI Studio usage shows them serving Gemini 3.8 Flash and 3.5
+// Flash Lite). Pinned 1.5/2.0/2.5 ids are gone: Google answers 404 for
+// retired ones, which used to end a fallback that would have worked.
 export const DEFAULT_MODELS: ModelDef[] = [
   { provider: "google", id: "gemini-flash-latest", caps: MM, inputPerM: 0.75, outputPerM: 3.75, priority: 1, active: true },
   { provider: "google", id: "gemini-flash-lite-latest", caps: MM, inputPerM: 0.10, outputPerM: 0.40, priority: 4, active: true },
-  { provider: "google", id: "gemini-2.5-flash", caps: MM, inputPerM: 0.30, outputPerM: 2.50, priority: 3, active: true },
-  { provider: "google", id: "gemini-2.5-flash-lite", caps: MM, inputPerM: 0.10, outputPerM: 0.40, priority: 5, active: true },
   { provider: "openai", id: "gpt-4o-mini", caps: MM, inputPerM: 0.15, outputPerM: 0.60, priority: 1, active: true },
   { provider: "anthropic", id: "claude-3-5-haiku-latest", caps: TXT, inputPerM: 0.80, outputPerM: 4.0, priority: 1, active: true },
 ];
@@ -151,7 +151,8 @@ export function classify(status: number, message = ""): Classified {
     return { code: m.includes("quota") ? "quota_exceeded" : "rate_limited", retryable: true };
   }
   if (status === 400) return { code: "invalid_request", retryable: false };
-  if (status === 404) return { code: "unsupported", retryable: false };
+  // This model is retired or unavailable to the key: another model may work.
+  if (status === 404) return { code: "model_not_found", retryable: true };
   if (status === 408 || status === 504) return { code: "timeout", retryable: true };
   if (status === 503) return { code: "provider_unavailable", retryable: true };
   if (status >= 500) return { code: "server_error", retryable: true };

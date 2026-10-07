@@ -86,4 +86,16 @@ model.calls = 0;
 const ai = await Promise.all(Array.from({ length: 12 }, () => ask("u8").then((x) => x.status)));
 check("AI: 12 parallel questions on a 5-answer allowance: 5 answered", ai.filter((c) => c === 200).length === 5 && model.calls === 5, ai.join(",") + " calls=" + model.calls);
 
+// A busy model (503) falls back to the next one; a retired model (404) no
+// longer ends the fallback.
+model.fail = { "gemini-flash-lite-latest": 503 };
+model.asked = [];
+let fb = await ask("u9");
+check("AI: a busy model falls back to the other one", fb.status === 200 && model.asked.join(",") === "gemini-flash-lite-latest,gemini-flash-latest", fb.status + " " + model.asked.join(","));
+model.fail = { "gemini-flash-lite-latest": 404 };
+model.asked = [];
+fb = await ask("u10");
+check("AI: a retired model (404) falls back too", fb.status === 200 && model.asked.length === 2, fb.status + " " + model.asked.join(","));
+model.fail = {};
+
 finish();

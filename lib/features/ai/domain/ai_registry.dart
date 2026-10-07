@@ -131,7 +131,7 @@ abstract final class ModelRegistry {
       outputPer1M: 0.40,
       priority: 4,
     ),
-    // Pinned current GA models (Sept 2026).
+    // Pinned current GA model (Oct 2026).
     AiModel(
       provider: AiProviderId.google,
       id: 'gemini-3.8-flash',
@@ -145,22 +145,24 @@ abstract final class ModelRegistry {
     AiModel(
       provider: AiProviderId.google,
       id: 'gemini-2.5-flash',
-      displayName: 'Gemini 2.5 Flash',
-      status: AiModelStatus.stable,
+      displayName: 'Gemini 2.5 Flash (retired)',
+      status: AiModelStatus.shutdown,
       capabilities: _multimodal,
-      inputPer1M: 0.30, // approximate
-      outputPer1M: 2.50, // approximate
-      priority: 3,
+      inputPer1M: 0.30,
+      outputPer1M: 2.50,
+      shutdownAt: '2026-10',
+      replacementId: 'gemini-flash-latest',
     ),
     AiModel(
       provider: AiProviderId.google,
       id: 'gemini-2.5-flash-lite',
-      displayName: 'Gemini 2.5 Flash-Lite',
-      status: AiModelStatus.stable,
+      displayName: 'Gemini 2.5 Flash-Lite (retired)',
+      status: AiModelStatus.shutdown,
       capabilities: _multimodal,
       inputPer1M: 0.10,
       outputPer1M: 0.40,
-      priority: 5,
+      shutdownAt: '2026-10',
+      replacementId: 'gemini-flash-lite-latest',
     ),
     // Retired — kept only so migration can map stored ids to a replacement.
     AiModel(

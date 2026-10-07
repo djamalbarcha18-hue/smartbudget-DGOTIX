@@ -35,8 +35,16 @@ void main() {
           'gemini-flash-lite-latest');
       // A still-usable id is kept as-is.
       expect(
+          ModelRegistry.resolveUsableId(AiProviderId.google, 'gemini-3.8-flash'),
+          'gemini-3.8-flash');
+      // Gemini 2.5 answers 404 now: mapped to the aliases.
+      expect(
           ModelRegistry.resolveUsableId(AiProviderId.google, 'gemini-2.5-flash'),
-          'gemini-2.5-flash');
+          'gemini-flash-latest');
+      expect(
+          ModelRegistry.resolveUsableId(
+              AiProviderId.google, 'gemini-2.5-flash-lite'),
+          'gemini-flash-lite-latest');
       // Null / unknown → provider default.
       expect(ModelRegistry.resolveUsableId(AiProviderId.google, null),
           'gemini-flash-latest');

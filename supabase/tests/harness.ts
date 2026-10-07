@@ -31,7 +31,14 @@ const handlers: Record<string, (r: Request) => Promise<Response>> = {};
 let current = "";
 (Deno as any).serve = (h: any) => { handlers[current] = h; return { finished: Promise.resolve() }; };
 
-export const model = { reply: "ok", calls: 0 };
+export const model = {
+  reply: "ok",
+  calls: 0,
+  /** Model ids that answer with this HTTP status instead (e.g. 503, 404). */
+  fail: {} as Record<string, number>,
+  /** The model ids asked, in order. */
+  asked: [] as string[],
+};
 /** PayPal sales by id, as the sale lookup returns them. */
 export const paypalSales: Record<string, any> = {};
 
@@ -39,6 +46,11 @@ globalThis.fetch = (async (input: any, init?: any) => {
   const url = String(input instanceof Request ? input.url : input);
   if (url.includes("generativelanguage")) {
     model.calls++;
+    const id = url.match(/models\/([^:]+):/)?.[1] ?? "";
+    model.asked.push(id);
+    if (model.fail[id]) {
+      return new Response(JSON.stringify({ error: { message: "stub " + model.fail[id] } }), { status: model.fail[id] });
+    }
     const h = new Headers(init?.headers);
     if (url.includes("key=") || h.get("x-goog-api-key") !== "k") throw new Error("Gemini key not sent as a header");
     await new Promise((r) => setTimeout(r, 20));

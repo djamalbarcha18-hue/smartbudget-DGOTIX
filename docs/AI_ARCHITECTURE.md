@@ -38,15 +38,17 @@ Client and server read the same **source-of-truth model registry** so there is n
 model id in widgets: client `lib/features/ai/domain/ai_registry.dart`, server
 `supabase/functions/_shared/ai/gateway.ts` (`DEFAULT_MODELS`).
 
-## Verified models (Sept 2026)
+## Verified models (Oct 2026)
 
-Active: `gemini-flash-latest`, `gemini-flash-lite-latest`, `gemini-2.5-flash`,
-`gemini-2.5-flash-lite` (+ `gemini-3.8-flash` on the client list). The
-`-latest` aliases auto-track the newest Flash (Google gives 2 weeks' notice
-before breaking changes), so they are the default → deprecation-proof.
+Active: `gemini-flash-latest` and `gemini-flash-lite-latest` (serving Gemini
+3.8 Flash and 3.5 Flash Lite per AI Studio usage), plus `gemini-3.8-flash` on
+the client list. The `-latest` aliases auto-track the newest Flash (Google
+gives 2 weeks' notice before breaking changes), so they are the default →
+deprecation-proof.
 
-**Shut down / 404** (kept only for migration mapping): all Gemini 1.5 and 2.0
-(Flash & Flash-Lite). Stored dead ids are migrated to a live replacement on
+**Shut down / 404** (kept only for migration mapping): all Gemini 1.5, 2.0 and
+2.5 (Flash & Flash-Lite). A 404 from a model makes the gateway try the next
+one instead of giving up. Stored dead ids are migrated to a live replacement on
 load. OpenAI / Anthropic ids were not re-verified in this pass.
 
 ## Failover policy
