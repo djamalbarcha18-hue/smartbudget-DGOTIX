@@ -30,7 +30,17 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
   String _to = 'SAR';
 
   @override
+  void initState() {
+    super.initState();
+    // Recompute while the amount is typed, not only when it is submitted.
+    _amount.addListener(_onAmountChanged);
+  }
+
+  void _onAmountChanged() => setState(() {});
+
+  @override
   void dispose() {
+    _amount.removeListener(_onAmountChanged);
     _amount.dispose();
     super.dispose();
   }
@@ -115,7 +125,6 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
                   prefixIcon: Icons.tag_rounded,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
-                  onSubmitted: (_) => setState(() {}),
                 ),
                 const SizedBox(height: DsSpacing.md),
                 Row(
