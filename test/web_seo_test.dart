@@ -8,10 +8,12 @@ void main() {
   const String site = 'https://smartbudget.dgotix.com/';
   final String html = File('web/index.html').readAsStringSync();
 
-  test('the page is Arabic and describes the app', () {
+  test('the page is Arabic and describes the app in Arabic and English', () {
     expect(html, contains('<html lang="ar">'));
     expect(html, contains('<meta name="description" content="سمارت بدجت'));
     expect(html, contains('<link rel="canonical" href="$site">'));
+    // English searchers find it too.
+    expect(html, contains('SmartBudget: budget planner and expense tracker'));
   });
 
   test('link previews have a title, description and an image that exists', () {
