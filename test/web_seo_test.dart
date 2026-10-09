@@ -14,6 +14,10 @@ void main() {
     expect(html, contains('<link rel="canonical" href="$site">'));
     // English searchers find it too.
     expect(html, contains('SmartBudget: budget planner and expense tracker'));
+    for (final String k in <String>['حاسبة الزكاة', 'محوّل العملات', 'الأعياد',
+        'zakat calculator', 'currency converter', 'Eid']) {
+      expect(html, contains(k));
+    }
   });
 
   test('link previews have a title, description and an image that exists', () {
