@@ -9,10 +9,13 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
-        android:fullBackupContent="false">
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules">
         <!-- No automatic Android backup: it would copy the financial data
              and the app lock settings to the Google account, outside the
-             app's control. People back up from inside the app instead. -->
+             app's control. People back up from inside the app instead.
+             dataExtractionRules also stops the copy to a new phone
+             (Android 12+), which allowBackup alone doesn't. -->
         <activity
             android:name=".MainActivity"
             android:exported="true"

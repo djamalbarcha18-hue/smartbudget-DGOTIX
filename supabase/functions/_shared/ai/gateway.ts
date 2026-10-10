@@ -8,7 +8,7 @@
 // Config is read from DB tables (ai_provider_flags / ai_model_flags) so an
 // owner can disable a provider/model or change priority WITHOUT a new app
 // release or client change.
-import { type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.117.2";
+import { type SupabaseClient } from "npm:@supabase/supabase-js@2.117.2";
 
 export type ProviderId = "google" | "openai" | "anthropic";
 export type Capability = "text" | "image" | "structured" | "streaming";

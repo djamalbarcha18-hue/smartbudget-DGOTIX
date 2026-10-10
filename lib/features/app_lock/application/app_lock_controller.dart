@@ -10,6 +10,11 @@ import 'package:smartbudget/features/app_lock/domain/lock_config.dart';
 final initialLockConfigProvider =
     Provider<LockConfig>((ref) => const LockConfig());
 
+/// Wrong attempts saved before the app was closed (overridden in main), so a
+/// restart doesn't reset the lock-out.
+final initialLockAttemptsProvider =
+    Provider<LockAttempts>((ref) => const LockAttempts());
+
 final deviceAuthAvailableProvider =
     FutureProvider<bool>((ref) => deviceAuthAvailable());
 
@@ -52,7 +57,13 @@ class AppLockController extends Notifier<AppLockState> {
   @override
   AppLockState build() {
     final LockConfig c = ref.watch(initialLockConfigProvider);
-    return AppLockState(config: c, locked: c.enabled);
+    final LockAttempts a = ref.watch(initialLockAttemptsProvider);
+    return AppLockState(
+      config: c,
+      locked: c.enabled,
+      failures: c.enabled ? a.failures : 0,
+      retryAt: c.enabled ? a.retryAt : null,
+    );
   }
 
   Duration get waitRemaining {
@@ -66,6 +77,7 @@ class AppLockController extends Notifier<AppLockState> {
     if (waitRemaining > Duration.zero) return PinResult.waiting;
     if (state.config.matches(pin)) {
       state = state.copyWith(locked: false, failures: 0, clearRetry: true);
+      _persistAttempts();
       return PinResult.ok;
     }
     _fail();
@@ -78,6 +90,7 @@ class AppLockController extends Notifier<AppLockState> {
     if (waitRemaining > Duration.zero) return PinResult.waiting;
     if (state.config.matchesRecovery(code)) {
       state = state.copyWith(failures: 0, clearRetry: true);
+      _persistAttempts();
       return PinResult.ok;
     }
     _fail();
@@ -105,7 +118,11 @@ class AppLockController extends Notifier<AppLockState> {
       retryAt: wait == Duration.zero ? null : AppClock.now().add(wait),
       clearRetry: wait == Duration.zero,
     );
+    _persistAttempts();
   }
+
+  void _persistAttempts() => LockStore.saveAttempts(
+      LockAttempts(failures: state.failures, retryAt: state.retryAt));
 
   Future<bool> unlockWithDevice() async {
     final String? id = state.config.credentialId;
@@ -113,6 +130,7 @@ class AppLockController extends Notifier<AppLockState> {
     final bool ok = await verifyDeviceAuth(id);
     if (ok) {
       state = state.copyWith(locked: false, failures: 0, clearRetry: true);
+      _persistAttempts();
     }
     return ok;
   }

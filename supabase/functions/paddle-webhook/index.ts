@@ -27,6 +27,7 @@ import {
   paddleStatus,
   userIdOrNull,
 } from "../_shared/subscriptions.ts";
+import { MAX_WEBHOOK_BYTES, readTextBody } from "../_shared/body.ts";
 
 function ok(body: unknown = { ok: true }): Response {
   return new Response(JSON.stringify(body), {
@@ -44,13 +45,17 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const raw = await req.text();
+    // Cheap checks first: no signature header, nothing is read.
+    const signature = req.headers.get("Paddle-Signature");
+    if (!signature) {
+      return new Response(JSON.stringify({ error: "bad_signature" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    const raw = await readTextBody(req, MAX_WEBHOOK_BYTES);
     const secret = (Deno.env.get("PADDLE_WEBHOOK_SECRET") ?? "").trim();
-    const valid = await verifyPaddleSignature(
-      raw,
-      req.headers.get("Paddle-Signature"),
-      secret,
-    );
+    const valid = await verifyPaddleSignature(raw, signature, secret);
     if (!valid) {
       return new Response(JSON.stringify({ error: "bad_signature" }), {
         status: 401,

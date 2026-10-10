@@ -2,7 +2,7 @@
 // one database call checks the user's allowance and the platform-wide monthly
 // limit and counts the request atomically, so parallel requests can't all slip
 // past the check. A request that then fails gives its reservation back.
-import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.117.2";
+import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.2";
 import type { Allowance, Trust, UsageKind } from "./quota.ts";
 
 export type { UsageKind };

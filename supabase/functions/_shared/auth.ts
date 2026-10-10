@@ -7,7 +7,7 @@
 import {
   createClient,
   type SupabaseClient,
-} from "https://esm.sh/@supabase/supabase-js@2.117.2";
+} from "npm:@supabase/supabase-js@2.117.2";
 
 export class HttpError extends Error {
   constructor(public status: number, public code: string) {

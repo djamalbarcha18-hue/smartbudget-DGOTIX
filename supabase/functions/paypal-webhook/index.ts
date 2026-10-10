@@ -31,6 +31,7 @@ import {
   type SubStatus,
   userIdOrNull,
 } from "../_shared/subscriptions.ts";
+import { MAX_WEBHOOK_BYTES, readTextBody } from "../_shared/body.ts";
 
 function ok(body: unknown = { ok: true }): Response {
   return new Response(JSON.stringify(body), {
@@ -48,6 +49,15 @@ const TYPE_STATUS: Record<string, SubStatus> = {
   "BILLING.SUBSCRIPTION.EXPIRED": "canceled",
 };
 
+/** Headers PayPal signs every webhook with (all needed to verify it). */
+const PAYPAL_SIGNATURE_HEADERS = [
+  "paypal-auth-algo",
+  "paypal-cert-url",
+  "paypal-transmission-id",
+  "paypal-transmission-sig",
+  "paypal-transmission-time",
+];
+
 Deno.serve(async (req: Request) => {
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "method_not_allowed" }), {
@@ -57,9 +67,18 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const raw = await req.text();
-    const event = JSON.parse(raw);
+    // Cheap checks first: a request without PayPal's signature headers (or
+    // before the webhook is configured) never reaches PayPal's API.
     const webhookId = (Deno.env.get("PAYPAL_WEBHOOK_ID") ?? "").trim();
+    const signed = PAYPAL_SIGNATURE_HEADERS.every((h) => !!req.headers.get(h));
+    if (!webhookId || !signed) {
+      return new Response(JSON.stringify({ error: "bad_signature" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    const raw = await readTextBody(req, MAX_WEBHOOK_BYTES);
+    const event = JSON.parse(raw);
 
     // Verify with PayPal before trusting anything in the body.
     const token = await paypalAccessToken();

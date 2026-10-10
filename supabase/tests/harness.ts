@@ -42,7 +42,11 @@ export const model = {
 /** PayPal sales by id, as the sale lookup returns them. */
 export const paypalSales: Record<string, any> = {};
 
+/** Every outside URL the functions called, in order. */
+export const outbound: string[] = [];
+
 globalThis.fetch = (async (input: any, init?: any) => {
+  outbound.push(String(input?.url ?? input));
   const url = String(input instanceof Request ? input.url : input);
   if (url.includes("generativelanguage")) {
     model.calls++;
@@ -99,14 +103,23 @@ export async function sign(body: string, ts = Math.floor(Date.now() / 1000)) {
 
 /** Sends a Paddle event (correctly signed unless [sig] is given). */
 export async function paddle(evt: any, sig?: string) {
-  const body = JSON.stringify(evt);
+  const body = typeof evt === "string" ? evt : JSON.stringify(evt);
   const res = await handlers["paddle-webhook"](new Request("http://x/", { method: "POST", body, headers: { "Paddle-Signature": sig ?? await sign(body) } }));
   return { status: res.status, body: await res.json() };
 }
 
+/** The headers PayPal signs a webhook with (the verify API stub accepts them). */
+export const paypalHeaders = {
+  "paypal-auth-algo": "SHA256withRSA",
+  "paypal-cert-url": "https://api.paypal.com/v1/notifications/certs/CERT",
+  "paypal-transmission-id": "t-1",
+  "paypal-transmission-sig": "sig",
+  "paypal-transmission-time": "2026-10-01T10:00:00Z",
+};
+
 /** Sends a PayPal event (the verify API stub accepts it). */
-export async function paypal(evt: any) {
-  const res = await handlers["paypal-webhook"](new Request("http://x/", { method: "POST", body: JSON.stringify(evt) }));
+export async function paypal(evt: any, headers: Record<string, string> = paypalHeaders) {
+  const res = await handlers["paypal-webhook"](new Request("http://x/", { method: "POST", body: JSON.stringify(evt), headers }));
   return { status: res.status, body: await res.json() };
 }
 

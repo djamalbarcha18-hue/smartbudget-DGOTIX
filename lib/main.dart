@@ -64,12 +64,14 @@ Future<void> _start() async {
 
   // Read before the first frame so a locked app never shows its content.
   final LockConfig lock = await LockStore.load();
+  final LockAttempts lockAttempts = await LockStore.loadAttempts();
 
   runApp(
     ProviderScope(
       key: UniqueKey(),
       overrides: <Override>[
         initialLockConfigProvider.overrideWithValue(lock),
+        initialLockAttemptsProvider.overrideWithValue(lockAttempts),
       ],
       child: const SmartBudgetApp(),
     ),

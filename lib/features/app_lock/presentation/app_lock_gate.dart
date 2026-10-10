@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/features/app_lock/application/app_lock_controller.dart';
 import 'package:smartbudget/features/app_lock/presentation/lock_screen.dart';
+import 'package:smartbudget/features/app_lock/data/secure_screen.dart';
 
 /// Covers the whole app with the lock screen while locked, and re-locks after
 /// the app has spent the chosen time in the background.
@@ -24,6 +25,7 @@ class _AppLockGateState extends ConsumerState<AppLockGate> {
   void initState() {
     super.initState();
     _lifecycle;
+    SecureScreen.set(ref.read(appLockProvider).config.enabled);
   }
 
   @override
@@ -34,6 +36,9 @@ class _AppLockGateState extends ConsumerState<AppLockGate> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<bool>(
+        appLockProvider.select((AppLockState s) => s.config.enabled),
+        (bool? _, bool on) => SecureScreen.set(on));
     final bool locked = ref.watch(appLockProvider.select((AppLockState s) => s.locked));
     return Stack(
       children: <Widget>[

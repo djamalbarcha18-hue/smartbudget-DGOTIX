@@ -22,6 +22,7 @@ import {
   paypalConfigured,
 } from "../_shared/paypal.ts";
 import { normalizePlan, type Plan } from "../_shared/quota.ts";
+import { MAX_SMALL_BODY_BYTES, readJsonBody } from "../_shared/body.ts";
 
 Deno.serve(async (req: Request) => {
   const cors = corsHeaders();
@@ -32,7 +33,7 @@ Deno.serve(async (req: Request) => {
 
   try {
     const userId = await requireUserId(req);
-    const body = await req.json().catch(() => ({}));
+    const body = await readJsonBody(req, MAX_SMALL_BODY_BYTES);
     const plan: Plan = normalizePlan(body?.plan);
     const period = body?.period === "yearly" ? "yearly" : "monthly";
     const provider = body?.provider === "paypal" ? "paypal" : "paddle";

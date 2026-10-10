@@ -65,6 +65,36 @@ void main() {
       return pc;
     }
 
+    test('closing and reopening the app keeps the lock-out', () async {
+      final LockConfig c = const LockConfig().withPin('1234');
+      await LockStore.save(c);
+      final ProviderContainer first = containerWith(c);
+      for (int i = 0; i < 5; i++) {
+        first.read(appLockProvider.notifier).unlockWithPin('0000');
+      }
+      expect(first.read(appLockProvider.notifier).unlockWithPin('1234'),
+          PinResult.waiting);
+      await pumpEventQueue();
+
+      // "Restart": a new container fed what the device kept.
+      final LockAttempts kept = await LockStore.loadAttempts();
+      expect(kept.failures, 5);
+      final ProviderContainer second = ProviderContainer(overrides: <Override>[
+        initialLockConfigProvider.overrideWithValue(c),
+        initialLockAttemptsProvider.overrideWithValue(kept),
+      ]);
+      addTearDown(second.dispose);
+      expect(second.read(appLockProvider.notifier).unlockWithPin('1234'),
+          PinResult.waiting);
+
+      // Once the wait is over, the right PIN clears the count for good.
+      AppClock.applyOffset(const Duration(minutes: 1));
+      expect(second.read(appLockProvider.notifier).unlockWithPin('1234'),
+          PinResult.ok);
+      await pumpEventQueue();
+      expect((await LockStore.loadAttempts()).failures, 0);
+    });
+
     test('starts locked when a PIN is set, unlocked otherwise', () {
       expect(containerWith(const LockConfig()).read(appLockProvider).locked,
           isFalse);

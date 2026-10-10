@@ -5,7 +5,7 @@
 //   deno run -A --import-map supabase/tests/import_map.json supabase/tests/functions_test.ts
 // Exits non-zero when a scenario fails.
 // deno-lint-ignore-file no-explicit-any
-import { check, db, finish, load, model, paddle, paddleSub, paypal, paypalSub, PRICES, sign } from "./harness.ts";
+import { check, db, finish, load, model, outbound, paddle, paddleSub, paypal, paypalSub, PRICES, sign } from "./harness.ts";
 
 const handlers = await load("paddle-webhook", "paypal-webhook", "create-checkout", "receipt-scan", "ai-gateway");
 db.tables.billing_prices = PRICES;
@@ -44,6 +44,17 @@ check("PayPal: a paid subscription is applied with our plan", last().p_provider 
 n = calls();
 r = await paypal(paypalSub("p2", "BILLING.SUBSCRIPTION.ACTIVATED", U1, "I-1", "P-UNKNOWN", "ACTIVE", "2026-10-02T10:00:00Z"));
 check("PayPal: an unknown plan neither grants nor removes", r.body.ignored === "unknown_plan" && calls() === n, JSON.stringify(r));
+
+// ---- Webhooks: refused cheaply before any work ----
+n = calls();
+const outboundBefore = outbound.length;
+r = await paypal(paypalSub("p3", "BILLING.SUBSCRIPTION.ACTIVATED", U1, "I-1", "P-PRO", "ACTIVE", "2026-10-03T10:00:00Z"), {});
+check("PayPal: no signature headers is refused without calling PayPal", r.status === 401 && outbound.length === outboundBefore && calls() === n, JSON.stringify(r));
+const huge = JSON.stringify({ event_id: "big", event_type: "subscription.activated", pad: "x".repeat(300 * 1024) });
+r = await paddle(huge);
+check("Paddle: an oversized delivery is refused", r.status === 413 && calls() === n, JSON.stringify(r));
+r = await paddle(paddleSub("e11", "subscription.activated", U1, "sub_6", "pri_pro", "active", "2026-10-01T10:00:00Z"), "");
+check("Paddle: no signature header is refused", r.status === 401 && calls() === n, JSON.stringify(r));
 
 // ---- Checkout: one subscription at a time ----
 const checkout = async (u: string) => {

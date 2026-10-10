@@ -6,7 +6,7 @@
 // That function keeps every subscription separately and sets the user's plan
 // to the best one still active, under a per-user lock, so an event about an
 // old subscription can't undo a newer one.
-import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.117.2";
+import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.2";
 import { HttpError } from "./auth.ts";
 import type { Plan } from "./quota.ts";
 

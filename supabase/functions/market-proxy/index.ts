@@ -139,6 +139,10 @@ const ADAPTERS: Record<string, Adapter> = {
   // Add more owner-chosen adapters here (e.g. twelvedata, tradingeconomics…).
 };
 
+/** Quotes per category, kept for [CACHE_TTL_MS] (one entry per category). */
+const CACHE_TTL_MS = 10 * 60 * 1000;
+const CACHE = new Map<string, { at: number; quotes: Quote[] }>();
+
 function cors(): HeadersInit {
   return {
     "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
@@ -161,7 +165,19 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  const adapter = ADAPTERS[PROVIDER] ?? ADAPTERS.none;
-  const quotes = await adapter(category, specs);
-  return new Response(JSON.stringify({ category, quotes }), { headers: cors() });
+  // Served from a short cache: anonymous calls can't drain a paid data
+  // plan, and browsers / CDNs may reuse the answer for a few minutes.
+  const now = Date.now();
+  const hit = CACHE.get(category);
+  let quotes: Quote[];
+  if (hit && now - hit.at < CACHE_TTL_MS) {
+    quotes = hit.quotes;
+  } else {
+    const adapter = ADAPTERS[PROVIDER] ?? ADAPTERS.none;
+    quotes = await adapter(category, specs);
+    CACHE.set(category, { at: now, quotes });
+  }
+  return new Response(JSON.stringify({ category, quotes }), {
+    headers: { ...cors(), "Cache-Control": "public, max-age=300" },
+  });
 });

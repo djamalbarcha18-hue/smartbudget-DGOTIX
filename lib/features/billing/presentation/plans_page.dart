@@ -19,6 +19,7 @@ import 'package:smartbudget/features/billing/domain/coupon.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/billing/domain/user_subscription.dart';
+import 'package:smartbudget/features/billing/domain/payment_links.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -214,8 +215,9 @@ class _ManageButtonState extends ConsumerState<_ManageButton> {
         await ref.read(subscriptionServiceProvider).manageUrl();
     if (!mounted) return;
     setState(() => _busy = false);
-    if (url != null) {
-      await launchUrl(Uri.parse(url),
+    final Uri? link = PaymentLinks.trusted(url);
+    if (link != null) {
+      await launchUrl(link,
           mode: LaunchMode.externalApplication, webOnlyWindowName: '_blank');
     } else {
       messenger.showSnackBar(
@@ -683,8 +685,12 @@ class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
     if (!mounted) return;
     setState(() => _busy = false);
 
-    if (r.ok) {
-      await launchUrl(Uri.parse(r.url!),
+    final Uri? link = r.ok ? PaymentLinks.trusted(r.url) : null;
+    if (r.ok && link == null) {
+      // Never open a link that isn't the payment provider's or ours.
+      messenger.showSnackBar(SnackBar(content: Text(l.checkoutError)));
+    } else if (r.ok) {
+      await launchUrl(link!,
           mode: LaunchMode.externalApplication,
           webOnlyWindowName: '_blank');
       // When they return, re-fetch so the new plan shows without a restart.

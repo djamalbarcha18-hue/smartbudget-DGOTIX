@@ -3,7 +3,7 @@
 // Price map, webhook idempotency and Paddle signatures. The webhooks apply
 // subscription changes through subscriptions.ts. Nothing here talks to a
 // specific provider except verifyPaddleSignature (clearly named).
-import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.117.2";
+import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.2";
 import { HttpError } from "./auth.ts";
 import { normalizePlan, type Plan } from "./quota.ts";
 

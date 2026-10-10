@@ -123,6 +123,26 @@ code), **Accepted** (documented risk).
 - **manage-subscription:** acts only on the caller's own subscription.
 - **Card numbers read from receipts:** masked server-side.
 
+### Second pass (10 October 2026)
+
+Scope: everything added since the first pass (sync across devices, wallets,
+the Free / Basic / Pro limits, markets, dgotix.com), plus a fresh check of
+the whole project: secrets in the full history (185 commits, none found),
+RLS on all 32 tables, every Edge Function, the app, Android, CI and the site.
+
+| # | Sev. | Component | Finding | Status |
+|---|---|---|---|---|
+| 24 | Medium | App lock | The count of wrong PINs lived in memory: closing and reopening the app reset the lock-out, so a 4-digit PIN could be tried without waiting. | Fixed: attempts and the wait are saved on the device and read before the first frame (test: lock-out survives a restart) |
+| 25 | Medium | paddle-webhook, paypal-webhook | Public endpoints read bodies of any size, and every forged PayPal delivery made the function call PayPal's API. | Fixed: 256 KB cap; a request without the signature headers (or before the webhook id is set) is refused before reading or calling anything (3 new scenario tests) |
+| 26 | Low | create-checkout, coupon-validate | No body size limit. | Fixed: 8 KB |
+| 27 | Low (latent) | market-proxy | Once a paid data source is set, anonymous calls could drain its quota. | Fixed: 10-minute cache per category, `Cache-Control` on both proxies |
+| 28 | Low | App, payments | Checkout and manage links from the server were opened as given. | Fixed: only https links of Paddle, PayPal or dgotix.com (`PaymentLinks`, tested) |
+| 29 | Low | Android | Screens showed in the recent-apps preview; Android 12+ device-to-device transfer copied app data despite `allowBackup=false`. | Fixed: FLAG_SECURE while the app lock is on; `dataExtractionRules` exclude everything |
+| 30 | Low | CI | Supabase CLI ran as `latest`. | Fixed: pinned 2.120.0 |
+| 31 | Low | Edge Functions | supabase-js came from the esm.sh build service. | Fixed: `npm:@supabase/supabase-js@2.117.2` (immutable npm release). Its own dependencies still resolve by semver ranges: a `deno.lock` is the next step |
+| 32 | Info | dgotix.com | No Content-Security-Policy. | Fixed: CSP (scripts from the site only, moved to `site.js`) and a referrer policy; checked in Chromium |
+| 33 | Info | Plan limits | The Free limits (counts, sync, reports…) are checked on the device; a modified client can pass them. Costly features (AI, cloud OCR) stay enforced by the server. | Accepted. Later: check the plan server-side before accepting sync writes |
+
 ## 5. Verification
 
 | What | How | Result |
@@ -177,7 +197,7 @@ Supabase Auth supports TOTP MFA without a rebuild:
 | Web | 72 |
 | Infrastructure | 72 |
 | Monitoring | 45 |
-| **Overall** | **74 / 100** |
+| **Overall** | **74 / 100** (first pass); **≈ 80 / 100** after the second pass |
 
 **What would raise it:**
 - MFA for users.

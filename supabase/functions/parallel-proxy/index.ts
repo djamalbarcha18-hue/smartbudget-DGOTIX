@@ -101,5 +101,7 @@ Deno.serve(async (req: Request) => {
   // Drop any malformed/empty quote defensively.
   quotes = quotes.filter((q) => num(q.buy) !== undefined || num(q.sell) !== undefined);
 
-  return new Response(JSON.stringify({ country, quotes }), { headers: cors() });
+  return new Response(JSON.stringify({ country, quotes }), {
+    headers: { ...cors(), "Cache-Control": "public, max-age=300" },
+  });
 });

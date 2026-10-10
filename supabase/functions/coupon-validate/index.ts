@@ -23,6 +23,7 @@
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
 import { normalizePlan, type Plan, PLAN_PRICE_USD } from "../_shared/quota.ts";
+import { MAX_SMALL_BODY_BYTES, readJsonBody } from "../_shared/body.ts";
 
 type Period = "monthly" | "yearly";
 
@@ -42,7 +43,7 @@ Deno.serve(async (req: Request) => {
 
   try {
     const userId = await requireUserId(req);
-    const body = await req.json().catch(() => ({}));
+    const body = await readJsonBody(req, MAX_SMALL_BODY_BYTES);
     const code = String(body?.code ?? "").trim().toUpperCase();
     // Probe mode when no paid plan is supplied (pre-checkout preview).
     const probe = body?.plan !== "basic" && body?.plan !== "pro";
