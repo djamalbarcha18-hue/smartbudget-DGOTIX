@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/config/app_config.dart';
-import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// Compact, brand-consistent footer. RTL/LTR + dark/light aware. Kept low so it
-/// never steals space from the dashboard.
+/// Compact, brand-consistent footer for wide screens (phones don't show it).
+/// RTL/LTR + dark/light aware. Kept low so it never steals space from the
+/// dashboard.
 class AppFooter extends StatelessWidget {
   const AppFooter({super.key});
 
@@ -43,26 +43,6 @@ class AppFooter extends StatelessWidget {
             color: c.textFaint,
           ),
     );
-
-    // Phones: one slim line that scrolls sideways, so the footer doesn't eat
-    // the small screen.
-    if (context.isMobile) {
-      return Container(
-        decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: c.border)),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: DsSpacing.xs),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: DsSpacing.sm),
-          child: Row(children: <Widget>[
-            ...links,
-            const SizedBox(width: DsSpacing.md),
-            rights,
-          ]),
-        ),
-      );
-    }
 
     return Container(
       decoration: BoxDecoration(

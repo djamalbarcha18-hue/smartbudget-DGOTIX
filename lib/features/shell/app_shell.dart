@@ -43,7 +43,9 @@ class AppShell extends StatelessWidget {
           ),
         ),
         Expanded(child: child),
-        const AppFooter(),
+        // Phones keep the whole screen for the page; the legal and help
+        // links are in Support, in the menu.
+        if (!isMobile) const AppFooter(),
       ],
     );
 
