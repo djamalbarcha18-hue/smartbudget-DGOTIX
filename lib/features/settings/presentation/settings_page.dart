@@ -43,6 +43,9 @@ import 'package:smartbudget/features/transactions/application/custom_categories_
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
 /// Settings — appearance (theme), language, base currency, and About.
 ///
@@ -694,6 +697,9 @@ class _SyncSection extends ConsumerWidget {
     final TextTheme t = Theme.of(context).textTheme;
     if (!ref.watch(authControllerProvider).isAuthenticated) {
       return Text(l.cloudBackupSignIn, style: t.bodySmall);
+    }
+    if (!ref.watch(featureGateProvider(Feature.cloudSyncFull)).allowed) {
+      return const LockedFeatureCard(feature: Feature.cloudSyncFull);
     }
     final bool enabled = ref.watch(syncEnabledProvider);
     final SyncStatus status = ref.watch(syncControllerProvider);

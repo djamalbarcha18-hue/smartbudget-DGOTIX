@@ -288,6 +288,8 @@ Deno.serve(async (req: Request) => {
         responseMimeType: "application/json",
         responseSchema: RESPONSE_SCHEMA,
         temperature: 0,
+        // A receipt reading fits easily; the cap bounds the cost of one scan.
+        maxOutputTokens: 2048,
       },
     };
 
@@ -481,7 +483,9 @@ async function readOne(
             responseMimeType: "application/json",
             responseSchema: SCHEMA_V2,
             temperature: 0,
-            maxOutputTokens: 8192,
+            // About 150 lines of items per part (up to 3 parts a scan); the
+            // cap bounds the cost of an unusually long receipt.
+            maxOutputTokens: 4096,
             // Reading a receipt needs no reasoning: skipping the model's
             // "thinking" step is the biggest saving in waiting time.
             ...(noThinking ? { thinkingConfig: { thinkingBudget: 0 } } : {}),

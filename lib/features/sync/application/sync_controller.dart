@@ -27,6 +27,8 @@ import 'package:smartbudget/features/sync/domain/sync_merge.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 
 enum SyncPhase { off, idle, syncing, offline, error }
 
@@ -112,7 +114,13 @@ class SyncController extends Notifier<SyncStatus> {
     final String? account = ref.watch(currentAccountIdProvider);
     final bool enabled = ref.watch(syncEnabledProvider);
     ref.onDispose(_stop);
-    if (!ref.watch(syncAvailableProvider) || account == null || !enabled) {
+    // Automatic sync across devices is part of the paid plans.
+    final bool included =
+        ref.watch(featureGateProvider(Feature.cloudSyncFull)).allowed;
+    if (!ref.watch(syncAvailableProvider) ||
+        account == null ||
+        !enabled ||
+        !included) {
       return const SyncStatus(SyncPhase.off);
     }
     _account = account;

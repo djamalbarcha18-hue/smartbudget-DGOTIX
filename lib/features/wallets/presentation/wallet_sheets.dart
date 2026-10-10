@@ -13,6 +13,8 @@ import 'package:smartbudget/design_system/components/latin_digits_formatter.dart
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
@@ -94,8 +96,14 @@ class WalletEditorSheet extends ConsumerStatefulWidget {
   const WalletEditorSheet({super.key, this.existing});
   final Wallet? existing;
 
-  static Future<void> show(BuildContext context, {Wallet? existing}) =>
-      _sheet(context, WalletEditorSheet(existing: existing));
+  static Future<void> show(BuildContext context, {Wallet? existing}) async {
+    if (existing == null &&
+        !PlanLimits.allowAdd(context, Feature.wallets,
+            (ProviderContainer c) => c.read(walletsProvider).length)) {
+      return;
+    }
+    return _sheet(context, WalletEditorSheet(existing: existing));
+  }
 
   @override
   ConsumerState<WalletEditorSheet> createState() => _WalletEditorSheetState();
@@ -210,6 +218,8 @@ class _WalletEditorSheetState extends ConsumerState<WalletEditorSheet> {
           ),
           const SizedBox(height: DsSpacing.md),
           DropdownButtonFormField<String>(
+            // Rebuilt when the choice is put back to the base currency.
+            key: ValueKey<String>(currency),
             initialValue: currency,
             isExpanded: true,
             decoration: InputDecoration(
@@ -234,7 +244,17 @@ class _WalletEditorSheetState extends ConsumerState<WalletEditorSheet> {
             ],
             onChanged: widget.existing != null
                 ? null
-                : (String? v) => setState(() => _currency = v),
+                : (String? v) {
+                    // Another currency than the base one is a paid feature;
+                    // the field goes back to the base currency.
+                    if (v != null &&
+                        v != base &&
+                        !PlanLimits.allow(context, Feature.multiCurrency)) {
+                      setState(() => _currency = base);
+                      return;
+                    }
+                    setState(() => _currency = v);
+                  },
           ),
           const SizedBox(height: DsSpacing.md),
         ],

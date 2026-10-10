@@ -37,7 +37,7 @@ extension PlanX on Plan {
   /// Non-localized label for diagnostics. UI uses l10n, not this.
   String get label => switch (this) {
         Plan.free => 'FREE',
-        Plan.basic => 'BASIC',
+        Plan.basic => 'PLUS',
         Plan.pro => 'PRO',
       };
 
@@ -46,9 +46,9 @@ extension PlanX on Plan {
   /// display only — the billing provider is authoritative at checkout.
   double? priceUsd(BillingPeriod period) => switch ((this, period)) {
         (Plan.free, _) => 0.0,
-        (Plan.basic, BillingPeriod.monthly) => 7.99,
-        (Plan.basic, BillingPeriod.yearly) => 50.0,
-        (Plan.pro, BillingPeriod.monthly) => 14.99,
-        (Plan.pro, BillingPeriod.yearly) => 119.0,
+        (Plan.basic, BillingPeriod.monthly) => 4.99,
+        (Plan.basic, BillingPeriod.yearly) => 39.99,
+        (Plan.pro, BillingPeriod.monthly) => 8.99,
+        (Plan.pro, BillingPeriod.yearly) => 69.99,
       };
 }

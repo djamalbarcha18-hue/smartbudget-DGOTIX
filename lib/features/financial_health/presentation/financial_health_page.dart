@@ -13,6 +13,9 @@ import 'package:smartbudget/features/financial_health/domain/health_engine.dart'
 import 'package:smartbudget/features/share/domain/share_highlight.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
 class FinancialHealthPage extends ConsumerWidget {
   const FinancialHealthPage({super.key});
@@ -55,6 +58,8 @@ class _HealthBody extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final HealthReport r = ref.watch(healthReportProvider);
     final Color scoreColor = _scoreColor(context, r.score);
+    final bool details =
+        ref.watch(featureGateProvider(Feature.healthDetails)).allowed;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -141,6 +146,17 @@ class _HealthBody extends ConsumerWidget {
           _RisksCard(risks: r.risks),
         ],
 
+        // ---- Emergency fund / resilience input ----
+        const SizedBox(height: DsSpacing.lg),
+        _EmergencyCard(coverage: r.emergencyMonths),
+
+        // The breakdown below is part of the paid plans; the score, the
+        // risks and the emergency fund stay free.
+        if (!details) ...<Widget>[
+          const SizedBox(height: DsSpacing.lg),
+          const LockedFeatureCard(feature: Feature.healthDetails),
+        ] else ...<Widget>[
+
         // ---- Strengths & needs-improvement ----
         if (r.strengths.isNotEmpty || r.weaknesses.isNotEmpty) ...<Widget>[
           const SizedBox(height: DsSpacing.lg),
@@ -149,10 +165,6 @@ class _HealthBody extends ConsumerWidget {
             weaknesses: r.weaknesses,
           ),
         ],
-
-        // ---- Emergency fund / resilience input ----
-        const SizedBox(height: DsSpacing.lg),
-        _EmergencyCard(coverage: r.emergencyMonths),
 
         // ---- Dimensions (pillars) ----
         const SizedBox(height: DsSpacing.xxl),
@@ -169,6 +181,7 @@ class _HealthBody extends ConsumerWidget {
         if (_recs(r).isNotEmpty) ...<Widget>[
           const SizedBox(height: DsSpacing.md),
           _RecommendationsCard(keys: _recs(r)),
+        ],
         ],
       ],
     );

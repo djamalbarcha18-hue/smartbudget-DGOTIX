@@ -20,6 +20,8 @@ import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
 /// Lists the user's recurring transactions with their next date and lets them
 /// pause, resume, edit or stop each one.
@@ -39,16 +41,12 @@ class RecurringPage extends ConsumerWidget {
         label: l.addIncome,
         icon: Icons.south_west_rounded,
         variant: DsButtonVariant.secondary,
-        onPressed: () => TransactionEditorSheet.show(context,
-            type: TransactionType.income,
-            initialRepeat: RecurrenceFrequency.monthly),
+        onPressed: () => _addRecurring(context, TransactionType.income),
       ),
       DsButton(
         label: l.addExpense,
         icon: Icons.north_east_rounded,
-        onPressed: () => TransactionEditorSheet.show(context,
-            type: TransactionType.expense,
-            initialRepeat: RecurrenceFrequency.monthly),
+        onPressed: () => _addRecurring(context, TransactionType.expense),
       ),
     ];
 
@@ -370,4 +368,17 @@ class _RuleEditDialogState extends ConsumerState<_RuleEditDialog> {
       ],
     );
   }
+}
+
+/// Opens the editor for a new recurring item, if the plan allows one more.
+void _addRecurring(BuildContext context, TransactionType type) {
+  if (!PlanLimits.allowAdd(
+      context,
+      Feature.recurringRules,
+      (ProviderContainer c) =>
+          c.read(recurringRulesProvider).valueOrNull?.length ?? 0)) {
+    return;
+  }
+  TransactionEditorSheet.show(context,
+      type: type, initialRepeat: RecurrenceFrequency.monthly);
 }

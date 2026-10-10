@@ -23,6 +23,8 @@ import 'package:smartbudget/features/wallets/application/wallets_controller.dart
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
 import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
 /// Initial values for a NEW transaction, e.g. extracted from a scanned receipt.
 class TransactionDraft {
@@ -314,8 +316,14 @@ class _TransactionEditorSheetState
                     const SizedBox(height: DsSpacing.lg),
                     _RepeatDropdown(
                       value: _repeat,
-                      onChanged: (RecurrenceFrequency? v) =>
-                          setState(() => _repeat = v),
+                      onChanged: (RecurrenceFrequency? v) {
+                        if (v != null &&
+                            _repeat == null &&
+                            !_canAddRecurring(context)) {
+                          return;
+                        }
+                        setState(() => _repeat = v);
+                      },
                     ),
                   ],
                   const SizedBox(height: DsSpacing.lg),
@@ -411,6 +419,14 @@ class _DateField extends StatelessWidget {
 }
 
 /// Label for a repeat choice (null = doesn't repeat).
+/// Whether one more recurring rule may be made; shows the upgrade sheet when
+/// the plan's limit is reached.
+bool _canAddRecurring(BuildContext context) => PlanLimits.allowAdd(
+    context,
+    Feature.recurringRules,
+    (ProviderContainer c) =>
+        c.read(recurringRulesProvider).valueOrNull?.length ?? 0);
+
 String repeatLabel(AppLocalizations l, RecurrenceFrequency? f) => switch (f) {
       null => l.repeatNone,
       RecurrenceFrequency.weekly => l.repeatWeekly,

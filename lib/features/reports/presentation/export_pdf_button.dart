@@ -17,6 +17,8 @@ import 'package:smartbudget/features/transactions/application/transactions_contr
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
 /// Exports the current report as a branded DGOTIX PDF (print / save-as-PDF).
 class ExportPdfButton extends ConsumerStatefulWidget {
@@ -32,14 +34,21 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
+    final bool full = ref.watch(reportsFullProvider);
     return TextButton.icon(
-      onPressed: _busy ? null : _export,
+      onPressed: _busy
+          ? null
+          : full
+              ? _export
+              : () => PlanLimits.allow(context, Feature.advancedReports),
       icon: _busy
           ? const SizedBox(
               width: 14,
               height: 14,
               child: CircularProgressIndicator(strokeWidth: 2))
-          : const Icon(Icons.picture_as_pdf_outlined, size: 16),
+          : Icon(
+              full ? Icons.picture_as_pdf_outlined : Icons.lock_outline_rounded,
+              size: 16),
       label: Text(l.reportExportPdf),
     );
   }
@@ -52,8 +61,8 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
     setState(() => _busy = true);
     try {
       final ReportResult report = ref.read(reportResultProvider);
-      final ReportPeriod period = ref.read(selectedReportPeriodProvider);
-      final int sub = ref.read(selectedReportSubProvider);
+      final ReportPeriod period = ref.read(effectiveReportPeriodProvider);
+      final int sub = ref.read(effectiveReportSubProvider);
       final int year = ref.read(selectedYearProvider);
       final FinanceSummary s = report.summary;
 

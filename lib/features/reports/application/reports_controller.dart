@@ -7,6 +7,8 @@ import 'package:smartbudget/features/reports/domain/report_period.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 
 /// Aggregated report for the selected period.
 @immutable
@@ -28,11 +30,37 @@ final selectedReportPeriodProvider =
 final selectedReportSubProvider = StateProvider<int>(
     (ref) => ReportPeriods.defaultSub(ReportPeriod.yearly, AppClock.now()));
 
+/// Whether every report period (and the PDF export) is open on this plan.
+final reportsFullProvider = Provider<bool>(
+    (ref) => ref.watch(featureGateProvider(Feature.advancedReports)).allowed);
+
+/// The months a plan without full reports can open: this month and the one
+/// before it, within the current year.
+List<int> freeReportMonths(DateTime now) =>
+    <int>[if (now.month > 1) now.month - 1, now.month];
+
+/// The period actually shown: monthly when the plan has no full reports.
+final effectiveReportPeriodProvider = Provider<ReportPeriod>((ref) =>
+    ref.watch(reportsFullProvider)
+        ? ref.watch(selectedReportPeriodProvider)
+        : ReportPeriod.monthly);
+
+/// The sub-period actually shown: without full reports, the chosen month when
+/// it is this month or the one before, otherwise this month.
+final effectiveReportSubProvider = Provider<int>((ref) {
+  final int sub = ref.watch(selectedReportSubProvider);
+  if (ref.watch(reportsFullProvider)) return sub;
+  final DateTime now = AppClock.now();
+  final bool monthly =
+      ref.watch(selectedReportPeriodProvider) == ReportPeriod.monthly;
+  return monthly && freeReportMonths(now).contains(sub) ? sub : now.month;
+});
+
 /// Transactions for the selected year filtered to the selected period's months.
 final reportTransactionsProvider = Provider<List<Transaction>>((ref) {
   final List<Transaction> yearTxns = ref.watch(yearTransactionsProvider);
-  final ReportPeriod period = ref.watch(selectedReportPeriodProvider);
-  final int sub = ref.watch(selectedReportSubProvider);
+  final ReportPeriod period = ref.watch(effectiveReportPeriodProvider);
+  final int sub = ref.watch(effectiveReportSubProvider);
   final Set<int> months = ReportPeriods.monthsIn(period, sub).toSet();
   return yearTxns
       .where((Transaction t) => months.contains(t.date.month))

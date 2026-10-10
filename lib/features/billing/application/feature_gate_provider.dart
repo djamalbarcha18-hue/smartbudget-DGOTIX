@@ -23,6 +23,16 @@ int _usedFor(Ref ref, Feature f) {
     case Feature.prioritySupport:
     case Feature.salarySplit:
     case Feature.smartAlerts:
+    // Counted features are checked where an item is added (PlanLimits).
+    case Feature.wallets:
+    case Feature.multiCurrency:
+    case Feature.categoryBudgets:
+    case Feature.goals:
+    case Feature.debts:
+    case Feature.darets:
+    case Feature.seasons:
+    case Feature.recurringRules:
+    case Feature.healthDetails:
       return 0;
   }
 }

@@ -22,6 +22,9 @@ import 'package:smartbudget/features/transactions/domain/finance_calculator.dart
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/transactions_list.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
+import 'package:smartbudget/features/budget/domain/budget_target.dart';
 
 /// Monthly Budget: one screen with year + month selectors — not 12 pages.
 class MonthlyBudgetPage extends ConsumerWidget {
@@ -244,13 +247,27 @@ class _BudgetRow extends ConsumerWidget {
     WidgetRef ref,
     AppLocalizations l,
   ) async {
+    final int year = ref.read(selectedYearProvider);
+    final int month = ref.read(selectedMonthProvider);
+    // A budget for one more category counts toward the plan's limit.
+    if (plannedMinor == 0 &&
+        !PlanLimits.allowAdd(
+            context,
+            Feature.categoryBudgets,
+            (ProviderContainer c) =>
+                (c.read(budgetsProvider).valueOrNull ?? const <BudgetTarget>[])
+                    .where((BudgetTarget b) =>
+                        b.year == year &&
+                        b.month == month &&
+                        b.planned.minorUnits > 0)
+                    .length)) {
+      return;
+    }
     final TextEditingController ctrl = TextEditingController(
       text: plannedMinor == 0
           ? ''
           : Money(plannedMinor, currency).asDouble.toString(),
     );
-    final int year = ref.read(selectedYearProvider);
-    final int month = ref.read(selectedMonthProvider);
     final bool? ok = await showDialog<bool>(
       context: context,
       builder: (BuildContext ctx) => AlertDialog(

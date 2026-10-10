@@ -18,6 +18,8 @@ import 'package:smartbudget/features/seasons/presentation/season_text.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
 /// Create or edit a season plan. A new plan targets the next occurrence of the
 /// chosen season; its budget can start from last season's actual spending.
@@ -31,7 +33,18 @@ class SeasonEditorSheet extends ConsumerStatefulWidget {
   final SeasonWindow? window;
 
   static Future<void> show(BuildContext context,
-      {SeasonPlan? existing, SeasonKind? kind, SeasonWindow? window}) {
+      {SeasonPlan? existing, SeasonKind? kind, SeasonWindow? window}) async {
+    // Only plans still ahead or running count toward the limit.
+    if (existing == null &&
+        !PlanLimits.allowAdd(context, Feature.seasons, (ProviderContainer c) {
+          final DateTime now = AppClock.now();
+          final DateTime today = DateTime(now.year, now.month, now.day);
+          return (c.read(seasonPlansProvider).valueOrNull ?? const <SeasonPlan>[])
+              .where((SeasonPlan p) => !p.end.isBefore(today))
+              .length;
+        })) {
+      return;
+    }
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,

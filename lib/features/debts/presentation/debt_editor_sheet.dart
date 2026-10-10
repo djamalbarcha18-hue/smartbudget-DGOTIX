@@ -14,12 +14,19 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
 class DebtEditorSheet extends ConsumerStatefulWidget {
   const DebtEditorSheet({super.key, this.existing});
   final Debt? existing;
 
-  static Future<void> show(BuildContext context, {Debt? existing}) {
+  static Future<void> show(BuildContext context, {Debt? existing}) async {
+    if (existing == null &&
+        !PlanLimits.allowAdd(context, Feature.debts,
+            (ProviderContainer c) => c.read(debtsProvider).valueOrNull?.length ?? 0)) {
+      return;
+    }
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,

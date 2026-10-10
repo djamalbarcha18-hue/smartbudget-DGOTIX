@@ -15,12 +15,19 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/daret/application/daret_controller.dart';
 import 'package:smartbudget/features/daret/domain/daret.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
 class DaretEditorSheet extends ConsumerStatefulWidget {
   const DaretEditorSheet({super.key, this.existing});
   final Daret? existing;
 
-  static Future<void> show(BuildContext context, {Daret? existing}) {
+  static Future<void> show(BuildContext context, {Daret? existing}) async {
+    if (existing == null &&
+        !PlanLimits.allowAdd(context, Feature.darets,
+            (ProviderContainer c) => c.read(daretsProvider).valueOrNull?.length ?? 0)) {
+      return;
+    }
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,

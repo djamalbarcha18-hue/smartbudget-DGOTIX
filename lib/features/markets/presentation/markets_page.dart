@@ -17,6 +17,9 @@ import 'package:smartbudget/features/markets/domain/market_models.dart';
 import 'package:smartbudget/features/markets/presentation/commodity_sections.dart';
 import 'package:smartbudget/features/markets/presentation/sparkline.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
 /// "Exchange Rates & Markets" — official + parallel FIAT markets and a crypto
 /// section. Every number is fetched live from a keyless public source; when a
@@ -73,13 +76,18 @@ class MarketsPage extends ConsumerWidget {
   }
 }
 
-/// Renders the content for the selected Markets tab.
-class _CategoryContent extends StatelessWidget {
+/// Renders the content for the selected Markets tab. Without the advanced
+/// markets, every tab but the exchange rates shows the upgrade card.
+class _CategoryContent extends ConsumerWidget {
   const _CategoryContent({required this.category});
   final MarketCategory category;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (category != MarketCategory.exchangeRates &&
+        !ref.watch(featureGateProvider(Feature.portfolioFull)).allowed) {
+      return const LockedFeatureCard(feature: Feature.portfolioFull);
+    }
     switch (category) {
       case MarketCategory.exchangeRates:
         return Column(
@@ -116,7 +124,10 @@ class _RateTypeCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
-    final MarketType selected = ref.watch(rateTypeProvider);
+    final bool full = ref.watch(featureGateProvider(Feature.portfolioFull)).allowed;
+    // Without the advanced markets only the official rate is shown.
+    final MarketType selected =
+        full ? ref.watch(rateTypeProvider) : MarketType.official;
 
     String label(MarketType t) => switch (t) {
           MarketType.official => l.rateTypeOfficial,
@@ -141,7 +152,14 @@ class _RateTypeCard extends ConsumerWidget {
                 _Pill(
                   label: label(t),
                   selected: t == selected,
-                  onTap: () => ref.read(rateTypeProvider.notifier).set(t),
+                  onTap: () {
+                    if (!full &&
+                        t != MarketType.official &&
+                        !PlanLimits.allow(context, Feature.portfolioFull)) {
+                      return;
+                    }
+                    ref.read(rateTypeProvider.notifier).set(t);
+                  },
                   colors: c,
                 ),
             ],
@@ -214,10 +232,14 @@ class _CountrySection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bool ar = Localizations.localeOf(context).languageCode == 'ar';
     final AsyncValue<FxSnapshot> fx = ref.watch(fxSnapshotProvider);
-    final AsyncValue<List<FxQuote>> parallel =
-        ref.watch(parallelQuotesProvider(country.country));
+    // Parallel rates are part of the advanced markets: not even fetched
+    // without them.
+    final bool full = ref.watch(featureGateProvider(Feature.portfolioFull)).allowed;
+    final AsyncValue<List<FxQuote>> parallel = full
+        ? ref.watch(parallelQuotesProvider(country.country))
+        : const AsyncValue<List<FxQuote>>.data(<FxQuote>[]);
     final Map<String, ManualParallel> manual =
-        ref.watch(manualParallelProvider);
+        full ? ref.watch(manualParallelProvider) : const <String, ManualParallel>{};
 
     return GlassCard(
       child: Column(
@@ -242,8 +264,10 @@ class _CountrySection extends ConsumerWidget {
               parallel: parallel.whenOrNull(
                   data: (List<FxQuote> qs) => _firstOrNull(qs, pair)),
               manual: manual[manualParallelKey(country.country, pair)],
-              onEditManual: () =>
-                  _editManual(context, ref, country.country, pair),
+              parallelLocked: !full,
+              onEditManual: full
+                  ? () => _editManual(context, ref, country.country, pair)
+                  : null,
             ),
           const SizedBox(height: DsSpacing.sm),
           _SourceLine(
@@ -350,6 +374,7 @@ class _PairRow extends StatelessWidget {
     required this.officialLoading,
     required this.parallel,
     this.manual,
+    this.parallelLocked = false,
     this.onEditManual,
   });
 
@@ -359,6 +384,9 @@ class _PairRow extends StatelessWidget {
   final bool officialLoading;
   final FxQuote? parallel;
   final ManualParallel? manual;
+
+  /// The plan doesn't include parallel rates: a lock stands in their place.
+  final bool parallelLocked;
   final VoidCallback? onEditManual;
 
   @override
@@ -412,14 +440,34 @@ class _PairRow extends StatelessWidget {
                       ? '…'
                       : _fmtOrNull(official, l),
                   color: c.textPrimary),
-              _Stat(
-                  label: l.marketParallelBuy,
-                  value: _fmtOrNull(buy, l),
-                  color: c.income),
-              _Stat(
-                  label: l.marketParallelSell,
-                  value: _fmtOrNull(sell, l),
-                  color: c.expense),
+              if (parallelLocked)
+                InkWell(
+                  onTap: () => PlanLimits.allow(context, Feature.portfolioFull),
+                  borderRadius: BorderRadius.circular(999),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(Icons.lock_outline_rounded,
+                          size: 14, color: c.textMuted),
+                      const SizedBox(width: 4),
+                      Text(l.rateTypeParallel,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium
+                              ?.copyWith(color: c.textMuted)),
+                    ],
+                  ),
+                )
+              else ...<Widget>[
+                _Stat(
+                    label: l.marketParallelBuy,
+                    value: _fmtOrNull(buy, l),
+                    color: c.income),
+                _Stat(
+                    label: l.marketParallelSell,
+                    value: _fmtOrNull(sell, l),
+                    color: c.expense),
+              ],
             ],
           ),
         ],

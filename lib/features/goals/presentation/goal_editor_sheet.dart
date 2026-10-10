@@ -14,12 +14,19 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
 class GoalEditorSheet extends ConsumerStatefulWidget {
   const GoalEditorSheet({super.key, this.existing});
   final Goal? existing;
 
-  static Future<void> show(BuildContext context, {Goal? existing}) {
+  static Future<void> show(BuildContext context, {Goal? existing}) async {
+    if (existing == null &&
+        !PlanLimits.allowAdd(context, Feature.goals,
+            (ProviderContainer c) => c.read(goalsProvider).valueOrNull?.length ?? 0)) {
+      return;
+    }
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,

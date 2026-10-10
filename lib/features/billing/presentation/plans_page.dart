@@ -405,6 +405,9 @@ class _PlanCard extends StatelessWidget {
       case Plan.free:
         return <String>[
           l.planFeatEngine,
+          l.planFeatFreeLimits(
+              _limit(Feature.wallets), _limit(Feature.categoryBudgets)),
+          l.planFeatZakatFree,
           l.planFeatAiLifetime(_limit(Feature.dgotixAi)),
           l.planFeatOcrLifetime(_limit(Feature.cloudOcr)),
           l.planFeatOnDeviceOcr,
@@ -412,20 +415,22 @@ class _PlanCard extends StatelessWidget {
       case Plan.basic:
         return <String>[
           l.planFeatEverythingIn(l.planFree),
+          l.planFeatUnlimited,
+          l.planFeatMultiCurrency,
+          l.planFeatAdvancedReports,
+          l.planFeatCloudSync,
+          l.planFeatMarkets,
+          l.planFeatHealthDetails,
           l.planFeatSalarySplit,
           l.planFeatSmartAlerts,
           l.planFeatAiMonthly(_limit(Feature.dgotixAi)),
           l.planFeatOcrMonthly(_limit(Feature.cloudOcr)),
-          l.planFeatAdvancedReports,
-          l.planFeatCloudSync,
         ];
       case Plan.pro:
         return <String>[
           l.planFeatEverythingIn(l.planBasic),
           l.planFeatAiMonthly(_limit(Feature.dgotixAi)),
           l.planFeatOcrMonthly(_limit(Feature.cloudOcr)),
-          l.planFeatAdvancedReports,
-          l.planFeatCloudSync,
           l.planFeatPriority,
         ];
     }

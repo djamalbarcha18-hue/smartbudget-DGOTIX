@@ -17,6 +17,8 @@ import 'package:smartbudget/features/transactions/application/transactions_contr
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
 class ReportsPage extends ConsumerWidget {
   const ReportsPage({super.key});
@@ -25,9 +27,15 @@ class ReportsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
-    final ReportPeriod period = ref.watch(selectedReportPeriodProvider);
-    final int sub = ref.watch(selectedReportSubProvider);
+    final ReportPeriod period = ref.watch(effectiveReportPeriodProvider);
+    final int sub = ref.watch(effectiveReportSubProvider);
     final int year = ref.watch(selectedYearProvider);
+    // Without full reports: monthly only, this month and the one before.
+    final bool full = ref.watch(reportsFullProvider);
+    final DateTime now = AppClock.now();
+    final List<int> freeMonths = freeReportMonths(now);
+    bool open(ReportPeriod p, int s) =>
+        full || (p == ReportPeriod.monthly && freeMonths.contains(s));
     final ReportResult report = ref.watch(reportResultProvider);
     final bool hasData = report.summary.count > 0;
 
@@ -54,10 +62,17 @@ class ReportsPage extends ConsumerWidget {
                   items: <DropdownMenuItem<ReportPeriod>>[
                     for (final ReportPeriod p in ReportPeriod.values)
                       DropdownMenuItem<ReportPeriod>(
-                          value: p, child: Text(_periodLabel(p, l))),
+                          value: p,
+                          child: _Lockable(
+                              locked: !full && p != ReportPeriod.monthly,
+                              child: Text(_periodLabel(p, l)))),
                   ],
                   onChanged: (ReportPeriod? p) {
                     if (p == null) return;
+                    if (!full && p != ReportPeriod.monthly) {
+                      PlanLimits.allow(context, Feature.advancedReports);
+                      return;
+                    }
                     ref.read(selectedReportPeriodProvider.notifier).state = p;
                     ref.read(selectedReportSubProvider.notifier).state =
                         ReportPeriods.defaultSub(p, AppClock.now());
@@ -73,11 +88,19 @@ class ReportsPage extends ConsumerWidget {
                     items: <DropdownMenuItem<int>>[
                       for (int s = 1; s <= ReportPeriods.subCount(period); s++)
                         DropdownMenuItem<int>(
-                            value: s, child: Text(_subLabel(context, period, s, l))),
+                            value: s,
+                            child: _Lockable(
+                                locked: !open(period, s),
+                                child: Text(_subLabel(context, period, s, l)))),
                     ],
-                    onChanged: (int? s) => s == null
-                        ? null
-                        : ref.read(selectedReportSubProvider.notifier).state = s,
+                    onChanged: (int? s) {
+                      if (s == null) return;
+                      if (!open(period, s)) {
+                        PlanLimits.allow(context, Feature.advancedReports);
+                        return;
+                      }
+                      ref.read(selectedReportSubProvider.notifier).state = s;
+                    },
                   ),
                 ),
               _Box(
@@ -87,19 +110,34 @@ class ReportsPage extends ConsumerWidget {
                   dropdownColor: c.bgElevated,
                   items: <DropdownMenuItem<int>>[
                     // Current year and the next nine (e.g. 2026–2035).
-                    for (int y = AppClock.now().year;
-                        y <= AppClock.now().year + 9;
-                        y++)
-                      DropdownMenuItem<int>(value: y, child: Text('$y')),
+                    for (int y = now.year; y <= now.year + 9; y++)
+                      DropdownMenuItem<int>(
+                          value: y,
+                          child: _Lockable(
+                              locked: !full && y != now.year,
+                              child: Text('$y'))),
                   ],
-                  onChanged: (int? y) => y == null
-                      ? null
-                      : ref.read(selectedYearProvider.notifier).state = y,
+                  onChanged: (int? y) {
+                    if (y == null) return;
+                    if (!full && y != now.year) {
+                      PlanLimits.allow(context, Feature.advancedReports);
+                      return;
+                    }
+                    ref.read(selectedYearProvider.notifier).state = y;
+                  },
                 ),
               ),
               const ExportPdfButton(),
             ],
           ),
+          if (!full) ...<Widget>[
+            const SizedBox(height: DsSpacing.sm),
+            Text(l.reportsFreeHint,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: c.textMuted)),
+          ],
           const SizedBox(height: DsSpacing.xl),
 
           Wrap(
@@ -114,7 +152,10 @@ class ReportsPage extends ConsumerWidget {
           ),
           const SizedBox(height: DsSpacing.xxl),
 
-          _MonthlyTrendCard(points: ref.watch(reportMonthlyTrendProvider)),
+          if (full)
+            _MonthlyTrendCard(points: ref.watch(reportMonthlyTrendProvider))
+          else
+            const LockedFeatureCard(feature: Feature.advancedReports),
           const SizedBox(height: DsSpacing.lg),
 
           _CategoryCard(
@@ -434,6 +475,27 @@ class _Box extends StatelessWidget {
         border: Border.all(color: c.border),
       ),
       child: child,
+    );
+  }
+}
+
+/// A dropdown entry with a small lock when the plan doesn't include it.
+class _Lockable extends StatelessWidget {
+  const _Lockable({required this.locked, required this.child});
+  final bool locked;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!locked) return child;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Opacity(opacity: 0.55, child: child),
+        const SizedBox(width: 6),
+        Icon(Icons.lock_outline_rounded,
+            size: 14, color: context.dsColors.textMuted),
+      ],
     );
   }
 }

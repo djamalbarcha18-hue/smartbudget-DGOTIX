@@ -18,14 +18,47 @@ enum Feature {
   /// entry here — it is always free and unlimited.
   cloudOcr,
 
-  /// Advanced reports & analytics (deep breakdowns, longer history).
+  /// Every report period (quarters, halves, years, any month) and the PDF
+  /// export. FREE sees the current and the previous month.
   advancedReports,
 
-  /// Full cloud sync & backup (FREE gets basic backup, paid gets full sync).
+  /// Automatic sync across devices. FREE keeps its data on the device (and
+  /// can export a backup file).
   cloudSyncFull,
 
-  /// Full portfolio & markets (FREE can view; paid unlocks the rest).
+  /// Markets beyond the official exchange rates: parallel / P2P / custom
+  /// rates, crypto, metals and commodities. FREE keeps the official rates and
+  /// the converter.
   portfolioFull,
+
+  /// Wallets, counted. FREE: the general wallet and one more.
+  wallets,
+
+  /// Wallets in a currency other than the base currency.
+  multiCurrency,
+
+  /// Category budgets in a month, counted.
+  categoryBudgets,
+
+  /// Savings goals, counted.
+  goals,
+
+  /// Debts, counted.
+  debts,
+
+  /// Daret / jam'iya circles, counted.
+  darets,
+
+  /// Season plans (Ramadan, Eid, school…), counted.
+  seasons,
+
+  /// Recurring income / expense rules, counted.
+  recurringRules,
+
+  /// The financial-health breakdown: strengths and weaknesses, the pillars
+  /// and the recommendations. FREE sees the score, the risks and the
+  /// emergency fund.
+  healthDetails,
 
   /// Priority support.
   prioritySupport,
@@ -35,7 +68,7 @@ enum Feature {
   salarySplit,
 
   /// Smart alerts: budget forecasts, unusual spending and weekly/monthly
-  /// summaries in the notifications bell. Reserved for YEARLY subscribers.
+  /// summaries in the notifications bell.
   smartAlerts,
 }
 
@@ -46,6 +79,10 @@ enum QuotaWindow {
 
   /// Refills at the start of each calendar month.
   monthly,
+
+  /// How many items may exist at once (wallets, goals…). Usage is the
+  /// current count; deleting one frees a place.
+  items,
 }
 
 /// A metered allowance for one (feature, plan). [limit] < 0 means unlimited.
@@ -83,15 +120,15 @@ class FeatureRule {
 
 /// The catalog. Read via [ruleFor] / [quotaFor]; do not duplicate these numbers.
 abstract final class FeatureCatalog {
-  /// Locked quotas per docs/PRICING.md §2–§3.
+  /// Locked quotas per docs/PRICING.md §2–§3 and §5.
   static const Map<Feature, FeatureRule> _rules = <Feature, FeatureRule>{
     Feature.dgotixAi: FeatureRule(
       feature: Feature.dgotixAi,
       minTier: Plan.free,
       quotas: <Plan, Quota>{
         Plan.free: Quota(5, QuotaWindow.lifetime),
-        Plan.basic: Quota(30, QuotaWindow.monthly),
-        Plan.pro: Quota(150, QuotaWindow.monthly),
+        Plan.basic: Quota(25, QuotaWindow.monthly),
+        Plan.pro: Quota(100, QuotaWindow.monthly),
       },
     ),
     Feature.cloudOcr: FeatureRule(
@@ -100,7 +137,7 @@ abstract final class FeatureCatalog {
       quotas: <Plan, Quota>{
         Plan.free: Quota(3, QuotaWindow.lifetime),
         Plan.basic: Quota(15, QuotaWindow.monthly),
-        Plan.pro: Quota(100, QuotaWindow.monthly),
+        Plan.pro: Quota(50, QuotaWindow.monthly),
       },
     ),
     Feature.advancedReports: FeatureRule(
@@ -115,6 +152,49 @@ abstract final class FeatureCatalog {
       feature: Feature.portfolioFull,
       minTier: Plan.basic,
     ),
+    Feature.wallets: FeatureRule(
+      feature: Feature.wallets,
+      minTier: Plan.free,
+      quotas: _freeItems2,
+    ),
+    Feature.multiCurrency: FeatureRule(
+      feature: Feature.multiCurrency,
+      minTier: Plan.basic,
+    ),
+    Feature.categoryBudgets: FeatureRule(
+      feature: Feature.categoryBudgets,
+      minTier: Plan.free,
+      quotas: _freeItems5,
+    ),
+    Feature.goals: FeatureRule(
+      feature: Feature.goals,
+      minTier: Plan.free,
+      quotas: _freeItems1,
+    ),
+    Feature.debts: FeatureRule(
+      feature: Feature.debts,
+      minTier: Plan.free,
+      quotas: _freeItems2,
+    ),
+    Feature.darets: FeatureRule(
+      feature: Feature.darets,
+      minTier: Plan.free,
+      quotas: _freeItems1,
+    ),
+    Feature.seasons: FeatureRule(
+      feature: Feature.seasons,
+      minTier: Plan.free,
+      quotas: _freeItems1,
+    ),
+    Feature.recurringRules: FeatureRule(
+      feature: Feature.recurringRules,
+      minTier: Plan.free,
+      quotas: _freeItems5,
+    ),
+    Feature.healthDetails: FeatureRule(
+      feature: Feature.healthDetails,
+      minTier: Plan.basic,
+    ),
     Feature.prioritySupport: FeatureRule(
       feature: Feature.prioritySupport,
       minTier: Plan.pro,
@@ -126,9 +206,26 @@ abstract final class FeatureCatalog {
     Feature.smartAlerts: FeatureRule(
       feature: Feature.smartAlerts,
       minTier: Plan.basic,
-      yearlyOnly: true,
     ),
   };
+
+  // Counted features: FREE gets a few, the paid plans as many as they like.
+  static const Map<Plan, Quota> _freeItems1 = <Plan, Quota>{
+    Plan.free: Quota(1, QuotaWindow.items),
+    Plan.basic: _unlimitedItems,
+    Plan.pro: _unlimitedItems,
+  };
+  static const Map<Plan, Quota> _freeItems2 = <Plan, Quota>{
+    Plan.free: Quota(2, QuotaWindow.items),
+    Plan.basic: _unlimitedItems,
+    Plan.pro: _unlimitedItems,
+  };
+  static const Map<Plan, Quota> _freeItems5 = <Plan, Quota>{
+    Plan.free: Quota(5, QuotaWindow.items),
+    Plan.basic: _unlimitedItems,
+    Plan.pro: _unlimitedItems,
+  };
+  static const Quota _unlimitedItems = Quota(-1, QuotaWindow.items);
 
   static FeatureRule ruleFor(Feature f) => _rules[f]!;
 

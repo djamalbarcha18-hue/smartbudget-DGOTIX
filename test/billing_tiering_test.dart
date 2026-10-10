@@ -28,27 +28,27 @@ void main() {
 
     test('locked display prices match docs/PRICING.md', () {
       expect(Plan.free.priceUsd(BillingPeriod.monthly), 0);
-      expect(Plan.basic.priceUsd(BillingPeriod.monthly), 7.99);
-      expect(Plan.basic.priceUsd(BillingPeriod.yearly), 50);
-      expect(Plan.pro.priceUsd(BillingPeriod.monthly), 14.99);
-      expect(Plan.pro.priceUsd(BillingPeriod.yearly), 119);
+      expect(Plan.basic.priceUsd(BillingPeriod.monthly), 4.99);
+      expect(Plan.basic.priceUsd(BillingPeriod.yearly), 39.99);
+      expect(Plan.pro.priceUsd(BillingPeriod.monthly), 8.99);
+      expect(Plan.pro.priceUsd(BillingPeriod.yearly), 69.99);
       expect(Plan.free.priceUsd(BillingPeriod.yearly), 0);
     });
   });
 
   group('FeatureCatalog quotas (locked)', () {
-    test('DGOTIX AI: 5 lifetime / 30 / 150', () {
+    test('DGOTIX AI: 5 lifetime / 25 / 100', () {
       expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.free)!.limit, 5);
       expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.free)!.window,
           QuotaWindow.lifetime);
-      expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.basic)!.limit, 30);
-      expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.pro)!.limit, 150);
+      expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.basic)!.limit, 25);
+      expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.pro)!.limit, 100);
     });
 
-    test('Cloud OCR: 3 lifetime / 15 / 100', () {
+    test('Cloud OCR: 3 lifetime / 15 / 50', () {
       expect(FeatureCatalog.quotaFor(Feature.cloudOcr, Plan.free)!.limit, 3);
       expect(FeatureCatalog.quotaFor(Feature.cloudOcr, Plan.basic)!.limit, 15);
-      expect(FeatureCatalog.quotaFor(Feature.cloudOcr, Plan.pro)!.limit, 100);
+      expect(FeatureCatalog.quotaFor(Feature.cloudOcr, Plan.pro)!.limit, 50);
     });
 
     test('boolean gates have no quota and a min tier', () {
@@ -84,42 +84,80 @@ void main() {
     });
   });
 
-  group('Smart alerts are for yearly subscribers', () {
+  group('Smart alerts come with the paid plans', () {
     test('FREE must upgrade first', () {
       final GateDecision d =
           FeatureGate.evaluate(Feature.smartAlerts, plan: Plan.free);
       expect(d.allowed, isFalse);
       expect(d.reason, GateReason.needsUpgrade);
+      expect(d.suggestedTier, Plan.basic);
     });
 
-    test('monthly Basic or Pro is asked to switch to yearly', () {
+    test('Plus and Pro get it, billed monthly or yearly', () {
       for (final Plan p in <Plan>[Plan.basic, Plan.pro]) {
-        final GateDecision d = FeatureGate.evaluate(Feature.smartAlerts,
-            plan: p, period: BillingPeriod.monthly);
-        expect(d.allowed, isFalse);
-        expect(d.reason, GateReason.needsYearly);
+        for (final BillingPeriod? period in <BillingPeriod?>[
+          null,
+          BillingPeriod.monthly,
+          BillingPeriod.yearly,
+        ]) {
+          expect(
+              FeatureGate.evaluate(Feature.smartAlerts,
+                      plan: p, period: period)
+                  .allowed,
+              isTrue);
+        }
       }
-      expect(
-          FeatureGate.evaluate(Feature.smartAlerts, plan: Plan.pro).reason,
-          GateReason.needsYearly);
     });
+  });
 
-    test('yearly Basic and Pro get it', () {
-      for (final Plan p in <Plan>[Plan.basic, Plan.pro]) {
+  group('Counted features (FREE limits)', () {
+    test('FREE has a few, then is asked to upgrade to Plus', () {
+      const Map<Feature, int> freeLimits = <Feature, int>{
+        Feature.wallets: 2,
+        Feature.categoryBudgets: 5,
+        Feature.goals: 1,
+        Feature.debts: 2,
+        Feature.darets: 1,
+        Feature.seasons: 1,
+        Feature.recurringRules: 5,
+      };
+      freeLimits.forEach((Feature f, int limit) {
         expect(
-            FeatureGate.evaluate(Feature.smartAlerts,
-                    plan: p, period: BillingPeriod.yearly)
-                .allowed,
-            isTrue);
+            FeatureGate.evaluate(f, plan: Plan.free, used: limit - 1).allowed,
+            isTrue,
+            reason: '$f below the limit');
+        final GateDecision d =
+            FeatureGate.evaluate(f, plan: Plan.free, used: limit);
+        expect(d.allowed, isFalse, reason: '$f at the limit');
+        expect(d.reason, GateReason.quotaReached);
+        expect(d.window, QuotaWindow.items);
+        expect(d.suggestedTier, Plan.basic);
+      });
+    });
+
+    test('Plus and Pro have no limit', () {
+      for (final Plan p in <Plan>[Plan.basic, Plan.pro]) {
+        for (final Feature f in <Feature>[
+          Feature.wallets,
+          Feature.goals,
+          Feature.recurringRules,
+        ]) {
+          expect(FeatureGate.evaluate(f, plan: p, used: 500).allowed, isTrue);
+        }
       }
     });
 
-    test('other features ignore the billing period', () {
-      expect(
-          FeatureGate.evaluate(Feature.salarySplit,
-                  plan: Plan.basic, period: BillingPeriod.monthly)
-              .allowed,
-          isTrue);
+    test('paid-only switches need Plus', () {
+      for (final Feature f in <Feature>[
+        Feature.multiCurrency,
+        Feature.advancedReports,
+        Feature.cloudSyncFull,
+        Feature.portfolioFull,
+        Feature.healthDetails,
+      ]) {
+        expect(FeatureGate.evaluate(f, plan: Plan.free).allowed, isFalse);
+        expect(FeatureGate.evaluate(f, plan: Plan.basic).allowed, isTrue);
+      }
     });
   });
 
@@ -146,8 +184,8 @@ void main() {
       final GateDecision d = FeatureGate.evaluate(Feature.dgotixAi,
           plan: Plan.basic, used: 10);
       expect(d.allowed, isTrue);
-      expect(d.limit, 30);
-      expect(d.remaining, 20);
+      expect(d.limit, 25);
+      expect(d.remaining, 15);
       expect(d.isMetered, isTrue);
     });
 
@@ -162,7 +200,7 @@ void main() {
 
     test('usedFraction drives the 80/90/100 nudges', () {
       final GateDecision d = FeatureGate.evaluate(Feature.dgotixAi,
-          plan: Plan.basic, used: 24);
+          plan: Plan.basic, used: 20);
       expect(d.usedFraction, closeTo(0.8, 1e-9));
     });
 

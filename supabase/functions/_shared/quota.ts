@@ -15,15 +15,15 @@ export interface Allowance {
 /** DGOTIX AI answers per period (docs/PRICING.md §2). */
 export const AI_QUOTA: Record<Plan, Allowance> = {
   free: { limit: 5, window: "lifetime" },
-  basic: { limit: 30, window: "monthly" },
-  pro: { limit: 150, window: "monthly" },
+  basic: { limit: 25, window: "monthly" },
+  pro: { limit: 100, window: "monthly" },
 };
 
 /** Cloud receipt OCR scans per period (docs/PRICING.md §3). */
 export const OCR_QUOTA: Record<Plan, Allowance> = {
   free: { limit: 3, window: "lifetime" },
   basic: { limit: 15, window: "monthly" },
-  pro: { limit: 100, window: "monthly" },
+  pro: { limit: 50, window: "monthly" },
 };
 
 /**
@@ -34,8 +34,8 @@ export const OCR_QUOTA: Record<Plan, Allowance> = {
  */
 export const AI_MONTHLY_COST_CEILING_USD: Record<Plan, number> = {
   free: 0.25,
-  basic: 2.0,
-  pro: 10.0,
+  basic: 1.0,
+  pro: 2.0,
 };
 
 /**
@@ -49,8 +49,8 @@ export const PLAN_PRICE_USD: Record<
   { monthly: number; yearly: number | null }
 > = {
   free: { monthly: 0, yearly: null },
-  basic: { monthly: 7.99, yearly: 50 },
-  pro: { monthly: 14.99, yearly: 119 },
+  basic: { monthly: 4.99, yearly: 39.99 },
+  pro: { monthly: 8.99, yearly: 69.99 },
 };
 
 const RANK: Record<Plan, number> = { free: 0, basic: 1, pro: 2 };
