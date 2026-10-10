@@ -24,10 +24,10 @@ fits selling worldwide from MENA.
 
 1. **Create the products & prices** in the Paddle dashboard (Catalog → Products):
    one product per plan, with a **monthly** and a **yearly** price each, matching
-   `docs/PRICING.md` (PLUS $4.99 / $39.99, PRO $8.99 / $69.99; PLUS is the
-   `basic` plan in code). Copy each price id (`pri_...`).
+   `docs/PRICING.md` (BASIC $4.99 / $39.99, PRO $8.99 / $69.99). Copy each
+   price id (`pri_...`).
    On each price, add **country price overrides** for the regional prices
-   (PRICING.md §1): PLUS $2.99 / $24.99 and PRO $5.49 / $44.99 in the Arab
+   (PRICING.md §1): BASIC $2.99 / $24.99 and PRO $5.49 / $44.99 in the Arab
    countries outside the Gulf. Paddle then shows each buyer their own price
    and currency; nothing changes in the app or `billing_prices`.
 

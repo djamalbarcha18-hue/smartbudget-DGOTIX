@@ -418,17 +418,21 @@ class _PlanCard extends StatelessWidget {
           l.planFeatUnlimited,
           l.planFeatMultiCurrency,
           l.planFeatAdvancedReports,
+          l.planFeatParallel,
           l.planFeatCloudSync,
-          l.planFeatMarkets,
           l.planFeatHealthDetails,
           l.planFeatSalarySplit,
-          l.planFeatSmartAlerts,
           l.planFeatAiMonthly(_limit(Feature.dgotixAi)),
           l.planFeatOcrMonthly(_limit(Feature.cloudOcr)),
         ];
       case Plan.pro:
         return <String>[
           l.planFeatEverythingIn(l.planBasic),
+          l.planFeatPdf,
+          l.planFeatTrends,
+          l.planFeatSmartAlerts,
+          l.planFeatMarkets,
+          l.planFeatProjects,
           l.planFeatAiMonthly(_limit(Feature.dgotixAi)),
           l.planFeatOcrMonthly(_limit(Feature.cloudOcr)),
           l.planFeatPriority,

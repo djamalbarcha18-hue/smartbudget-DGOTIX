@@ -33,6 +33,10 @@ int _usedFor(Ref ref, Feature f) {
     case Feature.seasons:
     case Feature.recurringRules:
     case Feature.healthDetails:
+    case Feature.parallelRates:
+    case Feature.reportPdf:
+    case Feature.reportTrends:
+    case Feature.projects:
       return 0;
   }
 }

@@ -20,19 +20,16 @@ Status: **design locked** · Prices in **USD** · Last reviewed **2026-10**.
 
 ## 1. Plans at a glance
 
-The code keeps the middle tier's id as `basic` (storage, server, Paddle
-mapping); it is shown to users as **Plus**.
-
-| | **FREE** | **PLUS** (`basic`) | **PRO** |
+| | **FREE** | **BASIC** | **PRO** |
 |---|---|---|---|
 | Monthly | **$0** | **$4.99 / mo** | **$8.99 / mo** |
 | Yearly | — | **$39.99 / yr** (≈ $3.33/mo) | **$69.99 / yr** (≈ $5.83/mo) |
 | Yearly saving vs monthly | — | ~33% | ~35% |
-| Positioning | Build the habit | Everyday budgeter, expats | Heavy AI and receipt scanning |
+| Positioning | Build the habit | Everyday budgeter, expats | Multiple incomes, investing, heavy AI |
 
 **Regional prices** (set in Paddle as country price overrides on the same
 prices, so no code changes): Arab countries outside the Gulf (Egypt, the
-Maghreb, the Levant, Iraq, Sudan, …) pay PLUS **$2.99 / $24.99** and PRO
+Maghreb, the Levant, Iraq, Sudan, …) pay BASIC **$2.99 / $24.99** and PRO
 **$5.49 / $44.99**. The app shows the USD list price; the checkout shows the
 buyer's own price and currency.
 
@@ -52,7 +49,7 @@ at worst-case cost:
 
 | | net / month (yearly, cheapest region, after Paddle) | typical cost | worst case |
 |---|---|---|---|
-| PLUS | ≈ $1.95 | ≈ $0.15 | ≈ $0.70 |
+| BASIC | ≈ $1.95 | ≈ $0.15 | ≈ $0.70 |
 | PRO | ≈ $3.50 | ≈ $0.50 | ≈ $2.40 |
 
 So every plan stays profitable in every region even at the worst case. Paddle
@@ -65,7 +62,7 @@ takes about 5% + $0.50 per payment, which is why yearly billing is pushed.
 Quota is enforced **server-side** in the `ai-gateway` Edge Function. The number
 below is the count of **successful** assistant answers per period.
 
-| | FREE | PLUS | PRO |
+| | FREE | BASIC | PRO |
 |---|---|---|---|
 | DGOTIX AI answers | **5 total** (one-time) | **25 / month** | **100 / month** |
 | Reset | never (lifetime intro) | monthly (calendar) | monthly (calendar) |
@@ -90,7 +87,7 @@ runs locally, costs us nothing, and must never be gated.
 Cloud OCR (`GeminiOnlineEngine` via the `receipt-scan` function) has real cost
 and is metered **server-side**:
 
-| | FREE | PLUS | PRO |
+| | FREE | BASIC | PRO |
 |---|---|---|---|
 | Cloud OCR scans | **3 total** (one-time) | **15 / month** | **50 / month** |
 | On-device OCR | ∞ | ∞ | ∞ |
@@ -154,21 +151,26 @@ Sign-up is free, so the limits also depend on the account, not on IP addresses
 
 The catalog is the source of truth; this is the intended shape:
 
-| Capability | FREE | PLUS | PRO |
+| Capability | FREE | BASIC | PRO |
 |---|---|---|---|
 | Transactions, categories, dashboard, quick entry | ✅ unlimited | ✅ | ✅ |
 | Zakat calculator, app lock, challenges and badges | ✅ | ✅ | ✅ |
-| Financial health | score, risks, emergency fund | + strengths, pillars, recommendations | ✅ |
+| On-device receipt OCR | ✅ unlimited | ✅ | ✅ |
 | Wallets | 2 (incl. General), base currency only | unlimited, any currency | ✅ |
 | Category budgets (per month) | 5 | unlimited | ✅ |
 | Goals / debts / darets | 1 / 2 / 1 | unlimited | ✅ |
 | Season plans (still ahead or running) | 1 | unlimited | ✅ |
 | Recurring rules | 5 | unlimited | ✅ |
-| Reports | monthly: this month and the previous one | every period, any year, the trend chart, PDF export | ✅ |
-| Markets | official rates + converter | + parallel / P2P / custom rates, crypto, metals, commodities | ✅ |
+| Reports | monthly: this month and the previous one | every period, any year | ✅ |
+| Exchange rates | official rates + converter | + parallel / P2P / custom | ✅ |
+| Financial health | score, risks, emergency fund | + strengths, pillars, recommendations | ✅ |
 | Automatic sync across devices | — (backup file export only) | ✅ | ✅ |
-| Smart salary split, smart alerts | — | ✅ | ✅ |
-| On-device receipt OCR | ✅ unlimited | ✅ | ✅ |
+| Smart salary split | — | ✅ | ✅ |
+| PDF report export | — | — | ✅ |
+| Yearly trend chart (months compared) | — | — | ✅ |
+| Smart alerts (forecasts, unusual spending, summaries) | — | — | ✅ |
+| Markets: crypto, metals, commodities | — | — | ✅ |
+| Projects and investment portfolio | — | — | ✅ |
 | Cloud receipt OCR | 3 lifetime | 15 / mo | 50 / mo |
 | DGOTIX AI assistant | 5 lifetime | 25 / mo | 100 / mo |
 | Priority support | — | — | ✅ |
@@ -178,8 +180,10 @@ The catalog is the source of truth; this is the intended shape:
   everything they already have; only adding more is blocked. These counts
   live on the device (the data is local-first), so they are a client-side
   gate; the costly features (AI, cloud OCR) are enforced by the server.
-- **Smart alerts** are included in PLUS and PRO whether billed monthly or
-  yearly. The basic alerts (over/near budget, negative cash flow, goals,
+- **PRO has its own features** (PDF, trend chart, smart alerts, the wider
+  markets, the projects portfolio), so there is a reason to go from BASIC to
+  PRO, not just bigger allowances. **Smart alerts** come with PRO whether
+  billed monthly or yearly. The basic alerts (over/near budget, negative cash flow, goals,
   upcoming recurring items, backup reminder) stay free for everyone.
 - Zakat stays free on purpose: gating a religious duty would hurt the brand.
 
@@ -233,7 +237,7 @@ deploy coupon-validate`.
 
 Benchmarks (annual, list): YNAB ~$109/yr, Monarch ~$99.99/yr, Copilot ~$95/yr.
 SmartBudget is priced for Arab users, who compare it with what they already
-pay monthly (music, video, a coffee): PLUS at **$4.99** reads as "a coffee a
+pay monthly (music, video, a coffee): BASIC at **$4.99** reads as "a coffee a
 month" and **$39.99/yr** as a clear deal; PRO stays under **$9** so it
 doesn't feel like a Netflix-sized decision. The product sells what others
 don't: Arab currencies and parallel rates, zakat, seasons and darets, and the

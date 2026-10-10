@@ -37,7 +37,7 @@ extension PlanX on Plan {
   /// Non-localized label for diagnostics. UI uses l10n, not this.
   String get label => switch (this) {
         Plan.free => 'FREE',
-        Plan.basic => 'PLUS',
+        Plan.basic => 'BASIC',
         Plan.pro => 'PRO',
       };
 

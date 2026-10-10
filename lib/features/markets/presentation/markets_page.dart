@@ -124,7 +124,7 @@ class _RateTypeCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
-    final bool full = ref.watch(featureGateProvider(Feature.portfolioFull)).allowed;
+    final bool full = ref.watch(featureGateProvider(Feature.parallelRates)).allowed;
     // Without the advanced markets only the official rate is shown.
     final MarketType selected =
         full ? ref.watch(rateTypeProvider) : MarketType.official;
@@ -155,7 +155,7 @@ class _RateTypeCard extends ConsumerWidget {
                   onTap: () {
                     if (!full &&
                         t != MarketType.official &&
-                        !PlanLimits.allow(context, Feature.portfolioFull)) {
+                        !PlanLimits.allow(context, Feature.parallelRates)) {
                       return;
                     }
                     ref.read(rateTypeProvider.notifier).set(t);
@@ -234,7 +234,7 @@ class _CountrySection extends ConsumerWidget {
     final AsyncValue<FxSnapshot> fx = ref.watch(fxSnapshotProvider);
     // Parallel rates are part of the advanced markets: not even fetched
     // without them.
-    final bool full = ref.watch(featureGateProvider(Feature.portfolioFull)).allowed;
+    final bool full = ref.watch(featureGateProvider(Feature.parallelRates)).allowed;
     final AsyncValue<List<FxQuote>> parallel = full
         ? ref.watch(parallelQuotesProvider(country.country))
         : const AsyncValue<List<FxQuote>>.data(<FxQuote>[]);
@@ -442,7 +442,7 @@ class _PairRow extends StatelessWidget {
                   color: c.textPrimary),
               if (parallelLocked)
                 InkWell(
-                  onTap: () => PlanLimits.allow(context, Feature.portfolioFull),
+                  onTap: () => PlanLimits.allow(context, Feature.parallelRates),
                   borderRadius: BorderRadius.circular(999),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

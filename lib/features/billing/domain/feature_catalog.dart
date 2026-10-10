@@ -18,18 +18,29 @@ enum Feature {
   /// entry here — it is always free and unlimited.
   cloudOcr,
 
-  /// Every report period (quarters, halves, years, any month) and the PDF
-  /// export. FREE sees the current and the previous month.
+  /// Every report period (quarters, halves, years, any month). FREE sees
+  /// the current and the previous month.
   advancedReports,
+
+  /// The report as a PDF (for an accountant, a bank…). PRO.
+  reportPdf,
+
+  /// The year's trend chart that compares the months. PRO.
+  reportTrends,
 
   /// Automatic sync across devices. FREE keeps its data on the device (and
   /// can export a backup file).
   cloudSyncFull,
 
-  /// Markets beyond the official exchange rates: parallel / P2P / custom
-  /// rates, crypto, metals and commodities. FREE keeps the official rates and
-  /// the converter.
+  /// Markets beyond exchange rates: crypto, metals and commodities. PRO.
   portfolioFull,
+
+  /// Parallel / P2P / custom exchange rates next to the official ones. FREE
+  /// keeps the official rates and the converter.
+  parallelRates,
+
+  /// The projects and investment portfolio planner. PRO.
+  projects,
 
   /// Wallets, counted. FREE: the general wallet and one more.
   wallets,
@@ -150,7 +161,23 @@ abstract final class FeatureCatalog {
     ),
     Feature.portfolioFull: FeatureRule(
       feature: Feature.portfolioFull,
+      minTier: Plan.pro,
+    ),
+    Feature.parallelRates: FeatureRule(
+      feature: Feature.parallelRates,
       minTier: Plan.basic,
+    ),
+    Feature.reportPdf: FeatureRule(
+      feature: Feature.reportPdf,
+      minTier: Plan.pro,
+    ),
+    Feature.reportTrends: FeatureRule(
+      feature: Feature.reportTrends,
+      minTier: Plan.pro,
+    ),
+    Feature.projects: FeatureRule(
+      feature: Feature.projects,
+      minTier: Plan.pro,
     ),
     Feature.wallets: FeatureRule(
       feature: Feature.wallets,
@@ -205,7 +232,7 @@ abstract final class FeatureCatalog {
     ),
     Feature.smartAlerts: FeatureRule(
       feature: Feature.smartAlerts,
-      minTier: Plan.basic,
+      minTier: Plan.pro,
     ),
   };
 

@@ -17,6 +17,7 @@ import 'package:smartbudget/features/transactions/application/transactions_contr
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
@@ -34,13 +35,14 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
-    final bool full = ref.watch(reportsFullProvider);
+    final bool full =
+        ref.watch(featureGateProvider(Feature.reportPdf)).allowed;
     return TextButton.icon(
       onPressed: _busy
           ? null
           : full
               ? _export
-              : () => PlanLimits.allow(context, Feature.advancedReports),
+              : () => PlanLimits.allow(context, Feature.reportPdf),
       icon: _busy
           ? const SizedBox(
               width: 14,

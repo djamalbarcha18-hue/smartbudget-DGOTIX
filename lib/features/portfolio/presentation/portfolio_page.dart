@@ -17,6 +17,9 @@ import 'package:smartbudget/features/portfolio/domain/project.dart';
 import 'package:smartbudget/features/portfolio/presentation/horizon_labels.dart';
 import 'package:smartbudget/features/portfolio/presentation/project_editor_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
 /// Smart Projects Portfolio — near / mid / long-term compartments with a
 /// waterfall funding engine (see [PortfolioPlanner]).
@@ -29,6 +32,25 @@ class PortfolioPage extends ConsumerWidget {
     final List<Project> projects =
         ref.watch(projectsProvider).valueOrNull ?? const <Project>[];
     final PortfolioPlan plan = ref.watch(portfolioPlanProvider);
+
+    // The projects portfolio is part of Pro; projects already saved stay.
+    if (!ref.watch(featureGateProvider(Feature.projects)).allowed) {
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(DsSpacing.pageGutter),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(l.navPortfolio,
+                style: Theme.of(context).textTheme.headlineSmall),
+            const SizedBox(height: DsSpacing.xs),
+            Text(l.portfolioSubtitle,
+                style: Theme.of(context).textTheme.bodySmall),
+            const SizedBox(height: DsSpacing.xl),
+            const LockedFeatureCard(feature: Feature.projects),
+          ],
+        ),
+      );
+    }
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(DsSpacing.pageGutter),

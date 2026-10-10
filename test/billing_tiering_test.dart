@@ -84,34 +84,34 @@ void main() {
     });
   });
 
-  group('Smart alerts come with the paid plans', () {
-    test('FREE must upgrade first', () {
-      final GateDecision d =
-          FeatureGate.evaluate(Feature.smartAlerts, plan: Plan.free);
-      expect(d.allowed, isFalse);
-      expect(d.reason, GateReason.needsUpgrade);
-      expect(d.suggestedTier, Plan.basic);
+  group('Smart alerts are a Pro feature', () {
+    test('FREE and Basic are asked to upgrade to Pro', () {
+      for (final Plan p in <Plan>[Plan.free, Plan.basic]) {
+        final GateDecision d =
+            FeatureGate.evaluate(Feature.smartAlerts, plan: p);
+        expect(d.allowed, isFalse);
+        expect(d.reason, GateReason.needsUpgrade);
+        expect(d.suggestedTier, Plan.pro);
+      }
     });
 
-    test('Plus and Pro get it, billed monthly or yearly', () {
-      for (final Plan p in <Plan>[Plan.basic, Plan.pro]) {
-        for (final BillingPeriod? period in <BillingPeriod?>[
-          null,
-          BillingPeriod.monthly,
-          BillingPeriod.yearly,
-        ]) {
-          expect(
-              FeatureGate.evaluate(Feature.smartAlerts,
-                      plan: p, period: period)
-                  .allowed,
-              isTrue);
-        }
+    test('Pro gets it, billed monthly or yearly', () {
+      for (final BillingPeriod? period in <BillingPeriod?>[
+        null,
+        BillingPeriod.monthly,
+        BillingPeriod.yearly,
+      ]) {
+        expect(
+            FeatureGate.evaluate(Feature.smartAlerts,
+                    plan: Plan.pro, period: period)
+                .allowed,
+            isTrue);
       }
     });
   });
 
   group('Counted features (FREE limits)', () {
-    test('FREE has a few, then is asked to upgrade to Plus', () {
+    test('FREE has a few, then is asked to upgrade to Basic', () {
       const Map<Feature, int> freeLimits = <Feature, int>{
         Feature.wallets: 2,
         Feature.categoryBudgets: 5,
@@ -135,7 +135,7 @@ void main() {
       });
     });
 
-    test('Plus and Pro have no limit', () {
+    test('Basic and Pro have no limit', () {
       for (final Plan p in <Plan>[Plan.basic, Plan.pro]) {
         for (final Feature f in <Feature>[
           Feature.wallets,
@@ -147,16 +147,33 @@ void main() {
       }
     });
 
-    test('paid-only switches need Plus', () {
+    test('Basic switches', () {
       for (final Feature f in <Feature>[
         Feature.multiCurrency,
         Feature.advancedReports,
+        Feature.parallelRates,
         Feature.cloudSyncFull,
-        Feature.portfolioFull,
         Feature.healthDetails,
+        Feature.salarySplit,
       ]) {
         expect(FeatureGate.evaluate(f, plan: Plan.free).allowed, isFalse);
         expect(FeatureGate.evaluate(f, plan: Plan.basic).allowed, isTrue);
+      }
+    });
+
+    test('Pro-only features: Basic is asked to go Pro', () {
+      for (final Feature f in <Feature>[
+        Feature.reportPdf,
+        Feature.reportTrends,
+        Feature.smartAlerts,
+        Feature.portfolioFull,
+        Feature.projects,
+        Feature.prioritySupport,
+      ]) {
+        final GateDecision d = FeatureGate.evaluate(f, plan: Plan.basic);
+        expect(d.allowed, isFalse, reason: '$f');
+        expect(d.suggestedTier, Plan.pro, reason: '$f');
+        expect(FeatureGate.evaluate(f, plan: Plan.pro).allowed, isTrue);
       }
     });
   });

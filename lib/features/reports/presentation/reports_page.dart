@@ -17,6 +17,7 @@ import 'package:smartbudget/features/transactions/application/transactions_contr
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 
@@ -152,10 +153,10 @@ class ReportsPage extends ConsumerWidget {
           ),
           const SizedBox(height: DsSpacing.xxl),
 
-          if (full)
+          if (ref.watch(featureGateProvider(Feature.reportTrends)).allowed)
             _MonthlyTrendCard(points: ref.watch(reportMonthlyTrendProvider))
           else
-            const LockedFeatureCard(feature: Feature.advancedReports),
+            const LockedFeatureCard(feature: Feature.reportTrends),
           const SizedBox(height: DsSpacing.lg),
 
           _CategoryCard(

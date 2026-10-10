@@ -31,7 +31,7 @@ void main() {
 
   for (final (Plan plan, String label) in <(Plan, String)>[
     (Plan.free, 'FREE'),
-    (Plan.basic, 'PLUS'),
+    (Plan.basic, 'BASIC'),
     (Plan.pro, 'PRO'),
   ]) {
     testWidgets('a $label user sees the $label badge', (WidgetTester tester) async {
@@ -50,7 +50,7 @@ void main() {
 
   testWidgets('signed out (no plan known): no badge', (WidgetTester tester) async {
     await tester.pumpWidget(host(const DgotixBrandLockup(logoHeight: 56)));
-    for (final String label in <String>['FREE', 'PLUS', 'PRO']) {
+    for (final String label in <String>['FREE', 'BASIC', 'PRO']) {
       expect(find.text(label), findsNothing);
     }
   });
@@ -58,7 +58,7 @@ void main() {
   testWidgets('dark mode renders without errors', (WidgetTester tester) async {
     await tester.pumpWidget(host(const PlanBrandLockup(logoHeight: 56),
         plan: Plan.basic, brightness: Brightness.dark));
-    expect(find.text('PLUS'), findsOneWidget);
+    expect(find.text('BASIC'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }
