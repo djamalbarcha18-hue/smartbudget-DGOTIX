@@ -10,7 +10,9 @@ secrets; the frontend just opens a checkout URL.
 Plans screen ──▶ create-checkout (Edge Fn, PADDLE_API_KEY)
                     └─ maps (plan,period) → Paddle price via billing_prices
                     └─ creates a Paddle transaction (custom_data.user_id)
-                    └─ returns checkout.url ──▶ browser opens it
+                    └─ returns checkout.url ──▶ web/pay.html?_ptxn=…&token=…
+                                                (Paddle.js opens the checkout,
+                                                 then back to #/plans)
 Paddle ──(subscription.*/transaction.*)──▶ paddle-webhook (verify signature)
                     └─ sets ai_entitlements.plan  + subscriptions snapshot
 Client ──▶ remoteEntitlementProvider re-fetches ▶ plan reflects the purchase
@@ -60,14 +62,21 @@ fits selling worldwide from MENA.
    supabase secrets set PADDLE_API_KEY=...          # server-side API key
    supabase secrets set PADDLE_API_URL=https://sandbox-api.paddle.com   # or https://api.paddle.com
    supabase secrets set PADDLE_WEBHOOK_SECRET=...   # from the notification destination
+   supabase secrets set PADDLE_CLIENT_TOKEN=test_... # client-side token (public; test_ = sandbox)
    supabase secrets set CHECKOUT_SUCCESS_URL=https://smartbudget.dgotix.com/#/plans
    ```
 
 5. **Webhook**: in Paddle → Developer tools → Notifications, add a destination
-   pointing at the `paddle-webhook` function URL, subscribed to
-   `subscription.activated`, `subscription.created`, `subscription.updated`,
-   `subscription.canceled`, and `transaction.completed`. Put its secret in
-   `PADDLE_WEBHOOK_SECRET`.
+   pointing at the `paddle-webhook` function URL, subscribed to every
+   `subscription.*` event, `transaction.completed`, `adjustment.created` and
+   `adjustment.updated`. Put its secret in `PADDLE_WEBHOOK_SECRET`.
+
+6. **Checkout page**: in Paddle → Checkout → Checkout settings, set the
+   **default payment link** to `https://smartbudget.dgotix.com/pay.html` (the
+   domain must be approved under Website approval). `create-checkout` sends
+   every transaction there (`PADDLE_CHECKOUT_PAGE` overrides it); `web/pay.html`
+   starts Paddle.js with `PADDLE_CLIENT_TOKEN`, which opens the checkout from
+   the `_ptxn` id and returns the buyer to the Plans page.
 
 ## How entitlement changes
 

@@ -8,7 +8,7 @@ for (const [k, v] of Object.entries({
   BETA_ALL_ACCESS: "false", PADDLE_WEBHOOK_SECRET: "whsec_test", PAYPAL_CLIENT_ID: "c",
   PAYPAL_SECRET: "s", PAYPAL_WEBHOOK_ID: "w", PAYPAL_API_URL: "https://api-m.sandbox.paypal.com",
   GEMINI_API_KEY: "k", SUPABASE_URL: "http://x", SUPABASE_ANON_KEY: "a", SUPABASE_SERVICE_ROLE_KEY: "s",
-  PADDLE_API_KEY: "pk",
+  PADDLE_API_KEY: "pk", PADDLE_CLIENT_TOKEN: "test_clienttoken",
 })) Deno.env.set(k, v);
 
 const g = globalThis as any;
@@ -69,7 +69,9 @@ globalThis.fetch = (async (input: any, init?: any) => {
     return s ? new Response(JSON.stringify(s)) : new Response("{}", { status: 404 });
   }
   if (url.includes("/transactions")) {
-    return new Response(JSON.stringify({ data: { checkout: { url: "https://pay.example/checkout" } } }));
+    // Paddle answers with the requested checkout page plus the transaction id.
+    const page = JSON.parse(String(init?.body ?? "{}"))?.checkout?.url ?? "https://pay.example/";
+    return new Response(JSON.stringify({ data: { checkout: { url: page + "?_ptxn=txn_test" } } }));
   }
   throw new Error("unexpected fetch " + url);
 }) as typeof fetch;

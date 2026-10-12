@@ -52,6 +52,26 @@ void main() {
         contains('postMessage(msg, location.origin)'));
   });
 
+  test('the payment page runs only its own script and Paddle\'s', () {
+    final String page = File('web/pay.html').readAsStringSync();
+    final RegExpMatch? p =
+        RegExp(r'Content-Security-Policy" content="([^"]*)"').firstMatch(page);
+    final Map<String, List<String>> d = <String, List<String>>{
+      for (final String x in (p?.group(1) ?? '').split(';'))
+        if (x.trim().isNotEmpty)
+          x.trim().split(RegExp(r'\s+')).first:
+              x.trim().split(RegExp(r'\s+')).skip(1).toList(),
+    };
+    expect(d['default-src'], <String>["'none'"]);
+    expect(d['script-src'], <String>["'self'", 'https://cdn.paddle.com']);
+    expect(d['frame-src'], <String>['https://*.paddle.com']);
+    // No inline script: the logic is in pay.js.
+    expect(RegExp(r'<script>').hasMatch(page), isFalse);
+    // The buyer only ever goes back to this same site.
+    expect(File('web/pay.js').readAsStringSync(),
+        contains("new URL('./#/plans', location.href)"));
+  });
+
   test('a picked photo can be read (receipt scanner on the web)', () {
     // image_picker hands the photo over as a blob: URL read by XHR.
     expect(connect, contains('blob:'));

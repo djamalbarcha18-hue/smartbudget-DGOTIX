@@ -77,6 +77,11 @@ r = await checkout("c4");
 check("Checkout: allowed after a cancelled subscription", r.status === 200 && !!r.body.url, JSON.stringify(r));
 r = await checkout("c5");
 check("Checkout: allowed with no subscription", r.status === 200 && !!r.body.url, JSON.stringify(r));
+check(
+  "Checkout: Paddle opens on the app's payment page with the public token",
+  String(r.body.url).startsWith("https://smartbudget.dgotix.com/pay.html?_ptxn=txn_test&token=test_clienttoken"),
+  JSON.stringify(r),
+);
 
 // ---- Usage limits (BETA off: FREE = 3 lifetime scans, 5 lifetime AI answers) ----
 const scan = () => handlers["receipt-scan"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-u7" }, body: JSON.stringify({ imageBase64: "AAAA", mimeType: "image/jpeg", v: 2 }) }));

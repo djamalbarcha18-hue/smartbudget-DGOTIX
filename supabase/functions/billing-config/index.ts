@@ -20,7 +20,9 @@ Deno.serve(async (req: Request) => {
   try {
     await requireUserId(req);
     const providers: string[] = [];
-    if ((Deno.env.get("PADDLE_API_KEY") ?? "").trim()) providers.push("paddle");
+    const paddleReady = ["PADDLE_API_KEY", "PADDLE_CLIENT_TOKEN"]
+      .every((k) => (Deno.env.get(k) ?? "").trim());
+    if (paddleReady) providers.push("paddle");
     if (paypalConfigured()) providers.push("paypal");
     // Paddle with no API URL set is live.
     const sandbox = allSandbox(providers, {

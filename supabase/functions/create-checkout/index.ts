@@ -9,7 +9,9 @@
 //   | { error: "not_configured" | "unknown_price" | "already_subscribed" | ... }
 //
 // Deploy:  supabase functions deploy create-checkout
-// Secrets (Paddle): PADDLE_API_KEY, PADDLE_API_URL
+// Secrets (Paddle): PADDLE_API_KEY, PADDLE_API_URL, PADDLE_CLIENT_TOKEN (the
+//   public client-side token web/pay.html starts Paddle.js with), and
+//   optionally PADDLE_CHECKOUT_PAGE (default: the app's own pay.html)
 // Secrets (PayPal): PAYPAL_CLIENT_ID, PAYPAL_SECRET, PAYPAL_API_URL
 // Common:  CHECKOUT_SUCCESS_URL, CHECKOUT_CANCEL_URL
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
@@ -64,7 +66,7 @@ Deno.serve(async (req: Request) => {
 
     const url = provider === "paypal"
       ? await paypalCheckout(db, userId, plan, period, successUrl, cancelUrl)
-      : await paddleCheckout(db, userId, plan, period, successUrl);
+      : await paddleCheckout(db, userId, plan, period);
 
     if (typeof url !== "string") return url; // an error Response
     return jsonResponse({ url }, 200, cors);
@@ -83,18 +85,22 @@ async function paddleCheckout(
   userId: string,
   plan: Plan,
   period: "monthly" | "yearly",
-  successUrl?: string,
 ): Promise<string | Response> {
   const cors = corsHeaders();
   const apiKey = (Deno.env.get("PADDLE_API_KEY") ?? "").trim();
+  const clientToken = (Deno.env.get("PADDLE_CLIENT_TOKEN") ?? "").trim();
   const apiUrl = (Deno.env.get("PADDLE_API_URL") ?? "https://api.paddle.com")
     .replace(/\/+$/, "");
-  if (!apiKey) return jsonResponse({ error: "not_configured" }, 503, cors);
+  if (!apiKey || !clientToken) {
+    return jsonResponse({ error: "not_configured" }, 503, cors);
+  }
 
   const priceId = await planToPrice(db, plan, period, "paddle");
   if (!priceId) return jsonResponse({ error: "unknown_price" }, 400, cors);
 
-  // Paddle Billing: create a transaction; its checkout.url is the hosted page.
+  // Paddle Billing: create a transaction. Its checkout.url is our payment page
+  // (an approved domain) with the transaction id (_ptxn); Paddle.js there opens
+  // the checkout and sends the buyer back to the app.
   const res = await fetch(`${apiUrl}/transactions`, {
     method: "POST",
     headers: {
@@ -104,14 +110,22 @@ async function paddleCheckout(
     body: JSON.stringify({
       items: [{ price_id: priceId, quantity: 1 }],
       custom_data: { user_id: userId, plan, period },
-      ...(successUrl ? { checkout: { url: successUrl } } : {}),
+      checkout: { url: paddleCheckoutPage() },
     }),
   });
   if (!res.ok) return jsonResponse({ error: "provider_error" }, 502, cors);
   const data = await res.json().catch(() => ({}));
   const url: string | undefined = data?.data?.checkout?.url;
   if (!url) return jsonResponse({ error: "no_checkout_url" }, 502, cors);
-  return url;
+  const page = new URL(url);
+  page.searchParams.set("token", clientToken);
+  return page.toString();
+}
+
+/** The page that opens Paddle's checkout (web/pay.html on the app's site). */
+function paddleCheckoutPage(): string {
+  return (Deno.env.get("PADDLE_CHECKOUT_PAGE") ?? "").trim() ||
+    "https://smartbudget.dgotix.com/pay.html";
 }
 
 async function paypalCheckout(

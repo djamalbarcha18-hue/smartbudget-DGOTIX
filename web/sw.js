@@ -112,15 +112,20 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(staleWhileRevalidate(req, RUNTIME));
 });
 
-// The page: network first (a few seconds), else the stored copy.
+// The page: network first (a few seconds), else the stored copy. Only the app
+// itself is stored as the offline page; the site's other pages (the sign-in
+// check, the payment page) just come from the network.
 async function page(req) {
   const shell = await caches.open(SHELL);
+  const path = new URL(req.url).pathname;
+  const scope = new URL(self.registration.scope).pathname;
+  const isApp = path === scope || path === scope + 'index.html';
   try {
     const res = await withTimeout(fetch(req), 4000);
-    if (res.ok) shell.put('./', res.clone());
+    if (res.ok && isApp) shell.put('./', res.clone());
     return res;
   } catch (_) {
-    return (await shell.match('./')) ||
+    return (isApp && await shell.match('./')) ||
       (await caches.match(req)) ||
       new Response('Offline', { status: 503 });
   }
