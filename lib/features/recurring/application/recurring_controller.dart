@@ -26,6 +26,13 @@ final recurringRulesProvider = StreamProvider<List<RecurringRule>>((ref) {
   return ref.watch(recurringRepositoryProvider).watchAll();
 });
 
+/// Variable-amount occurrences waiting for the real amount (oldest first).
+final pendingRecurringProvider = Provider<List<PendingOccurrence>>((ref) {
+  final List<RecurringRule> rules =
+      ref.watch(recurringRulesProvider).valueOrNull ?? const <RecurringRule>[];
+  return RecurrenceEngine.awaitingAmount(rules, AppClock.now());
+});
+
 final recurringActionsProvider =
     Provider<RecurringActions>(RecurringActions.new);
 
@@ -44,8 +51,13 @@ class RecurringActions {
 
   /// Saves [txn] as the first occurrence of a new rule repeating at
   /// [frequency], then posts anything already due (a start date in the past
-  /// catches up to today).
-  Future<void> startFrom(Transaction txn, RecurrenceFrequency frequency) async {
+  /// catches up to today). With [variableAmount], later occurrences wait for
+  /// the user to confirm the real amount instead of being posted.
+  Future<void> startFrom(
+    Transaction txn,
+    RecurrenceFrequency frequency, {
+    bool variableAmount = false,
+  }) async {
     final String ruleId = newId();
     final DateTime start = RecurrenceEngine.dateOnly(txn.date);
     final RecurringRule rule = RecurringRule(
@@ -60,6 +72,7 @@ class RecurringActions {
       frequency: frequency,
       startDate: start,
       lastPosted: start,
+      variableAmount: variableAmount,
       createdAt: AppClock.now(),
     );
     final Transaction first = Transaction(
@@ -97,6 +110,40 @@ class RecurringActions {
   }) =>
       _rules.update(rule.copyWith(amount: amount, description: description));
 
+  /// Records the occurrence of a variable-amount [rule] on [date] with the
+  /// [amount] actually received or paid; that amount becomes the estimate for
+  /// the next one.
+  Future<void> confirmAmount(
+    RecurringRule rule,
+    DateTime date,
+    Money amount,
+  ) async {
+    final DateTime day = RecurrenceEngine.dateOnly(date);
+    Transaction txn = RecurrenceEngine.materialize(
+      rule.copyWith(amount: amount),
+      day,
+      createdAt: AppClock.now(),
+    );
+    final String base = _ref.read(baseCurrencyProvider);
+    if (amount.currencyCode != base) {
+      txn = txn.copyWith(
+        baseAmount:
+            WalletMath.baseValue(amount, base, _ref.read(ratesProvider)),
+      );
+    }
+    await _ref.read(financeRepositoryProvider).importMany(<Transaction>[txn]);
+    await _rules.update(_movedTo(rule, day).copyWith(amount: amount));
+  }
+
+  /// Marks the occurrence of [rule] on [date] as not received or not paid
+  /// this time: nothing is recorded and the next one is awaited.
+  Future<void> skipOccurrence(RecurringRule rule, DateTime date) =>
+      _rules.update(_movedTo(rule, RecurrenceEngine.dateOnly(date)));
+
+  /// [rule] with `lastPosted` moved forward to [day] (never backwards).
+  RecurringRule _movedTo(RecurringRule rule, DateTime day) =>
+      day.isAfter(rule.lastPosted) ? rule.copyWith(lastPosted: day) : rule;
+
   /// Stops the rule for good. Transactions already posted are kept.
   Future<void> stop(RecurringRule rule) => _rules.delete(rule.id);
 
@@ -104,8 +151,7 @@ class RecurringActions {
   /// added. Safe to call repeatedly: occurrence ids are stable, so a repeated
   /// run never duplicates.
   Future<int> postDue({DateTime? now}) {
-    final Future<int> run =
-        _queue.then((_) => _post(now ?? AppClock.now()));
+    final Future<int> run = _queue.then((_) => _post(now ?? AppClock.now()));
     _queue = run.then((_) {}, onError: (Object _) {});
     return run;
   }
@@ -122,7 +168,8 @@ class RecurringActions {
       for (final Transaction t in plan.transactions)
         t.amount.currencyCode == base
             ? t
-            : t.copyWith(baseAmount: WalletMath.baseValue(t.amount, base, rates)),
+            : t.copyWith(
+                baseAmount: WalletMath.baseValue(t.amount, base, rates)),
     ];
     final int added =
         await _ref.read(financeRepositoryProvider).importMany(txns);

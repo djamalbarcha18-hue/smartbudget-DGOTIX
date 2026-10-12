@@ -68,6 +68,7 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     AlertKind.goalOverdue => l.alertTitleGoalOverdue,
     AlertKind.goalUrgent => l.alertTitleGoalUrgent,
     AlertKind.recurringUpcoming => l.alertTitleRecurringUpcoming,
+    AlertKind.recurringConfirm => l.alertTitleRecurringConfirm,
     AlertKind.backupDue => l.alertTitleBackupDue,
     AlertKind.budgetForecast => l.alertTitleBudgetForecast,
     AlertKind.unusualExpense => l.alertTitleUnusualExpense,
@@ -88,6 +89,7 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     AlertKind.recurringUpcoming => tomorrow
         ? l.alertRecurringTomorrow(subject, amount)
         : l.alertRecurringUpcoming(subject, amount, date),
+    AlertKind.recurringConfirm => l.alertRecurringConfirm(subject, date),
     AlertKind.backupDue => l.alertBackupDue,
     AlertKind.budgetForecast => l.alertBudgetForecast(subject, amount),
     AlertKind.unusualExpense =>
@@ -95,8 +97,8 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     AlertKind.categorySpike => l.alertCategorySpike(subject, amount, typical),
     AlertKind.weeklyDigest => (a.compareAmount == null
             ? l.alertWeeklyDigestFirst(amount)
-            : l.alertWeeklyDigest(
-                amount, _change(a.amount.minorUnits, a.compareAmount!.minorUnits))) +
+            : l.alertWeeklyDigest(amount,
+                _change(a.amount.minorUnits, a.compareAmount!.minorUnits))) +
         top,
     AlertKind.monthlyDigest => l.alertMonthlyDigest(
             when == null ? '' : DateFormat('yyyy-MM').format(when),
@@ -105,9 +107,7 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
             a.ratio == null ? '—' : '${(a.ratio! * 100).round()}%') +
         top,
     AlertKind.seasonApproaching => l.alertSeason(
-        subject,
-        a.date == null ? 0 : _daysFrom(now, a.date!),
-        amount),
+        subject, a.date == null ? 0 : _daysFrom(now, a.date!), amount),
     AlertKind.daretPayment => tomorrow
         ? l.alertDaretPaymentTomorrow(amount, subject)
         : l.alertDaretPayment(amount, subject, date),

@@ -5,7 +5,7 @@ import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
 /// How often a recurring transaction repeats.
-enum RecurrenceFrequency { weekly, monthly, yearly }
+enum RecurrenceFrequency { weekly, monthly, quarterly, halfYearly, yearly }
 
 /// A transaction that repeats on a schedule (salary, rent, a subscription…).
 ///
@@ -29,6 +29,7 @@ class RecurringRule {
     required this.startDate,
     required this.lastPosted,
     this.active = true,
+    this.variableAmount = false,
     required this.createdAt,
   });
 
@@ -53,6 +54,12 @@ class RecurringRule {
 
   /// Paused rules post nothing.
   final bool active;
+
+  /// The amount changes each time (a performance bonus, a commission…): an
+  /// occurrence is never posted on its own. When it falls due the user is
+  /// asked for the real amount, and [amount] keeps the latest one as the
+  /// estimate for the next.
+  final bool variableAmount;
   final DateTime createdAt;
 
   bool get isIncome => type == TransactionType.income;
@@ -63,6 +70,7 @@ class RecurringRule {
     String? description,
     DateTime? lastPosted,
     bool? active,
+    bool? variableAmount,
   }) {
     return RecurringRule(
       id: id,
@@ -77,6 +85,7 @@ class RecurringRule {
       startDate: startDate,
       lastPosted: lastPosted ?? this.lastPosted,
       active: active ?? this.active,
+      variableAmount: variableAmount ?? this.variableAmount,
       createdAt: createdAt,
     );
   }
@@ -95,6 +104,7 @@ class RecurringRule {
         'startDate': startDate.toIso8601String(),
         'lastPosted': lastPosted.toIso8601String(),
         'active': active,
+        if (variableAmount) 'variableAmount': true,
         'createdAt': createdAt.toIso8601String(),
       };
 
@@ -125,6 +135,7 @@ class RecurringRule {
       lastPosted:
           DateTime.tryParse((json['lastPosted'] as String?) ?? '') ?? start,
       active: (json['active'] as bool?) ?? true,
+      variableAmount: (json['variableAmount'] as bool?) ?? false,
       createdAt: DateTime.tryParse((json['createdAt'] as String?) ?? '') ??
           AppClock.now(),
     );

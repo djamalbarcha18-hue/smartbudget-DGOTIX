@@ -33,8 +33,9 @@ abstract final class NotificationFeed {
   static String idFor(AppAlert a, DateTime now) {
     switch (a.kind) {
       case AlertKind.recurringUpcoming:
+      case AlertKind.recurringConfirm:
         final DateTime d = a.date ?? now;
-        return 'recurringUpcoming:${a.focusKey}@${_dayKey(d)}';
+        return '${a.kind.name}:${a.focusKey}@${_dayKey(d)}';
       case AlertKind.backupDue:
         return 'backupDue@${periodKey(now)}';
       case AlertKind.unusualExpense:
@@ -68,11 +69,17 @@ abstract final class NotificationFeed {
     DateTime now,
   ) {
     final DateTime today = RecurrenceEngine.dateOnly(now);
-    final DateTime limit = DateTime(today.year, today.month, today.day + upcomingDays);
+    final DateTime limit =
+        DateTime(today.year, today.month, today.day + upcomingDays);
     final List<AppAlert> out = <AppAlert>[];
     for (final RecurringRule r in rules) {
       if (!r.active) continue;
       final DateTime last = RecurrenceEngine.dateOnly(r.lastPosted);
+      // A variable amount still waiting is announced by [awaitingAmount].
+      if (r.variableAmount &&
+          !RecurrenceEngine.nextOccurrence(r).isAfter(today)) {
+        continue;
+      }
       final DateTime next =
           RecurrenceEngine.nextAfter(r, last.isAfter(today) ? last : today);
       if (next.isAfter(limit)) continue;
@@ -89,6 +96,28 @@ abstract final class NotificationFeed {
     out.sort((AppAlert a, AppAlert b) => a.date!.compareTo(b.date!));
     return out;
   }
+
+  /// Variable-amount occurrences (a bonus, a commission…) that fell due and
+  /// wait for the real amount.
+  static List<AppAlert> awaitingAmount(
+    List<RecurringRule> rules,
+    DateTime now,
+  ) =>
+      <AppAlert>[
+        for (final PendingOccurrence p
+            in RecurrenceEngine.awaitingAmount(rules, now))
+          AppAlert(
+            kind: AlertKind.recurringConfirm,
+            severity: AlertSeverity.medium,
+            subject: p.rule.description.isEmpty
+                ? p.rule.category
+                : p.rule.description,
+            amount: p.rule.amount,
+            route: '/recurring',
+            focusKey: p.rule.id,
+            date: p.date,
+          ),
+      ];
 
   /// The backup reminder as a notification.
   static AppAlert backupAlert(String currency) => AppAlert(
@@ -132,8 +161,7 @@ abstract final class NotificationFeed {
   }
 
   /// Ids in [items] the user hasn't seen yet.
-  static Set<String> unread(List<FeedItem> items, Set<String> seen) =>
-      <String>{
+  static Set<String> unread(List<FeedItem> items, Set<String> seen) => <String>{
         for (final FeedItem f in items)
           if (!seen.contains(f.id)) f.id,
       };

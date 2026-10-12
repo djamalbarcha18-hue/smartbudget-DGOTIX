@@ -87,6 +87,11 @@ class RecurringPage extends ConsumerWidget {
               ),
             )
           else ...<Widget>[
+            for (final PendingOccurrence p
+                in ref.watch(pendingRecurringProvider)) ...<Widget>[
+              _PendingCard(pending: p),
+              const SizedBox(height: DsSpacing.md),
+            ],
             _Totals(rules: rules),
             const SizedBox(height: DsSpacing.lg),
             for (final RecurringRule r in rules) ...<Widget>[
@@ -114,6 +119,9 @@ class _Totals extends ConsumerWidget {
         RecurrenceEngine.monthlyTotal(rules, TransactionType.income, currency);
     final Money expense =
         RecurrenceEngine.monthlyTotal(rules, TransactionType.expense, currency);
+    final Money expected = RecurrenceEngine.monthlyTotal(
+        rules, TransactionType.income, currency,
+        variable: true);
 
     Widget tile(String label, Money m, Color color) => Expanded(
           child: GlassCard(
@@ -125,8 +133,8 @@ class _Totals extends ConsumerWidget {
                 Text(label, style: t.labelMedium?.copyWith(color: c.textMuted)),
                 const SizedBox(height: DsSpacing.xs),
                 Text(MoneyFormatter.format(m),
-                    style: t.titleLarge?.copyWith(
-                        color: color, fontWeight: FontWeight.w700)),
+                    style: t.titleLarge
+                        ?.copyWith(color: color, fontWeight: FontWeight.w700)),
               ],
             ),
           ),
@@ -142,6 +150,11 @@ class _Totals extends ConsumerWidget {
             tile(l.recurringMonthlyExpense, expense, c.expense),
           ],
         ),
+        if (expected.minorUnits > 0) ...<Widget>[
+          const SizedBox(height: DsSpacing.sm),
+          Text(l.recurringExpectedIncome(MoneyFormatter.format(expected)),
+              style: t.labelMedium?.copyWith(color: c.income)),
+        ],
         const SizedBox(height: DsSpacing.sm),
         Text(l.recurringMonthlyNote,
             style: t.labelSmall?.copyWith(color: c.textFaint)),
@@ -162,8 +175,7 @@ class _RuleCard extends ConsumerWidget {
     final bool ar = Localizations.localeOf(context).languageCode == 'ar';
     final Color accent = rule.isIncome ? c.income : c.expense;
     final String category = Catalog.label(rule.category, ar: ar);
-    final String title =
-        rule.description.isEmpty ? category : rule.description;
+    final String title = rule.description.isEmpty ? category : rule.description;
     final String next = isoDate(RecurrenceEngine.nextOccurrence(rule));
     final RecurringActions actions = ref.read(recurringActionsProvider);
 
@@ -202,15 +214,28 @@ class _RuleCard extends ConsumerWidget {
                       style: t.labelSmall?.copyWith(color: c.textMuted))
                 else
                   DsBadge(label: l.recurringPaused, tone: DsBadgeTone.warning),
+                if (rule.variableAmount) ...<Widget>[
+                  const SizedBox(height: 4),
+                  DsBadge(
+                      label: l.recurringVariableBadge, tone: DsBadgeTone.brand),
+                ],
               ],
             ),
           ),
           const SizedBox(width: DsSpacing.sm),
-          Text(
-            '${rule.isIncome ? '+' : '−'} ${MoneyFormatter.format(rule.amount)}',
-            style: t.titleSmall?.copyWith(
-              color: rule.active ? accent : c.textFaint,
-              fontWeight: FontWeight.w700,
+          // Shrinks a long amount instead of overflowing on narrow screens.
+          Flexible(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                '${rule.isIncome ? '+' : '−'} '
+                '${rule.variableAmount ? '≈ ' : ''}'
+                '${MoneyFormatter.format(rule.amount)}',
+                style: t.titleSmall?.copyWith(
+                  color: rule.active ? accent : c.textFaint,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
           ),
           PopupMenuButton<String>(
@@ -238,7 +263,8 @@ class _RuleCard extends ConsumerWidget {
               else
                 PopupMenuItem<String>(
                     value: 'resume', child: Text(l.recurringResume)),
-              PopupMenuItem<String>(value: 'stop', child: Text(l.recurringStop)),
+              PopupMenuItem<String>(
+                  value: 'stop', child: Text(l.recurringStop)),
             ],
           ),
         ],
@@ -265,6 +291,176 @@ class _RuleCard extends ConsumerWidget {
       ),
     );
     return ok == true;
+  }
+}
+
+/// A variable-amount occurrence that fell due: enter what was actually
+/// received or paid, or mark it as not paid this time.
+class _PendingCard extends ConsumerWidget {
+  const _PendingCard({required this.pending});
+  final PendingOccurrence pending;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final RecurringRule rule = pending.rule;
+    final String category = Catalog.label(rule.category, ar: ar);
+    final String title = rule.description.isEmpty ? category : rule.description;
+    return GlassCard(
+      accent: c.warning,
+      tintBorder: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Icon(Icons.edit_calendar_outlined, size: 20, color: c.warning),
+              const SizedBox(width: DsSpacing.sm),
+              Expanded(
+                child: Text(l.recurringAwaitTitle,
+                    style: t.labelMedium?.copyWith(color: c.warning)),
+              ),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.sm),
+          Text(title, style: t.titleSmall),
+          const SizedBox(height: 2),
+          Text(
+            '${l.recurringAwaitDue(isoDate(pending.date))} · '
+            '${l.recurringLastAmount(MoneyFormatter.format(rule.amount))}',
+            style: t.labelSmall?.copyWith(color: c.textMuted),
+          ),
+          if (pending.more > 0) ...<Widget>[
+            const SizedBox(height: 2),
+            Text(l.recurringAwaitMore(pending.more),
+                style: t.labelSmall?.copyWith(color: c.textFaint)),
+          ],
+          const SizedBox(height: DsSpacing.md),
+          Wrap(
+            spacing: DsSpacing.sm,
+            runSpacing: DsSpacing.sm,
+            children: <Widget>[
+              DsButton(
+                label: l.recurringConfirm,
+                icon: rule.isIncome
+                    ? Icons.south_west_rounded
+                    : Icons.north_east_rounded,
+                onPressed: () => _ConfirmAmountDialog.show(context, pending),
+              ),
+              DsButton(
+                label: l.recurringSkip,
+                variant: DsButtonVariant.secondary,
+                onPressed: () => ref
+                    .read(recurringActionsProvider)
+                    .skipOccurrence(rule, pending.date),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Asks for the real amount of a variable-amount occurrence, prefilled with
+/// the latest one.
+class _ConfirmAmountDialog extends ConsumerStatefulWidget {
+  const _ConfirmAmountDialog({required this.pending});
+  final PendingOccurrence pending;
+
+  static Future<void> show(BuildContext context, PendingOccurrence pending) =>
+      showDialog<void>(
+        context: context,
+        builder: (_) => _ConfirmAmountDialog(pending: pending),
+      );
+
+  @override
+  ConsumerState<_ConfirmAmountDialog> createState() =>
+      _ConfirmAmountDialogState();
+}
+
+class _ConfirmAmountDialogState extends ConsumerState<_ConfirmAmountDialog> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final TextEditingController _amount = TextEditingController(
+      text: widget.pending.rule.amount.asDouble.toString());
+  bool _saving = false;
+
+  @override
+  void dispose() {
+    _amount.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _saving = true);
+    final AppLocalizations l = AppLocalizations.of(context);
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final RecurringRule rule = widget.pending.rule;
+    final double amount =
+        double.tryParse(_amount.text.trim().replaceAll(',', '.')) ?? 0;
+    await ref.read(recurringActionsProvider).confirmAmount(
+          rule,
+          widget.pending.date,
+          Money.fromDouble(amount, rule.amount.currencyCode),
+        );
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    messenger.showSnackBar(SnackBar(content: Text(l.recurringConfirmed)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    return AlertDialog(
+      title: Text(l.recurringConfirmTitle),
+      content: SizedBox(
+        width: 380,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              DsTextField(
+                label: l.fieldAmount,
+                suffixText: widget.pending.rule.amount.currencyCode,
+                controller: _amount,
+                prefixIcon: Icons.tag_rounded,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                validator: (String? v) {
+                  final double n =
+                      double.tryParse((v ?? '').trim().replaceAll(',', '.')) ??
+                          0;
+                  return n > 0 ? null : l.valAmountInvalid;
+                },
+              ),
+              const SizedBox(height: DsSpacing.md),
+              Text(l.recurringConfirmHint(isoDate(widget.pending.date)),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(color: c.textFaint)),
+            ],
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l.cancel),
+        ),
+        TextButton(
+          onPressed: _saving ? null : _save,
+          child: Text(l.save),
+        ),
+      ],
+    );
   }
 }
 
@@ -305,8 +501,7 @@ class _RuleEditDialogState extends ConsumerState<_RuleEditDialog> {
         double.tryParse(_amount.text.trim().replaceAll(',', '.')) ?? 0;
     await ref.read(recurringActionsProvider).editTemplate(
           widget.rule,
-          amount:
-              Money.fromDouble(amount, widget.rule.amount.currencyCode),
+          amount: Money.fromDouble(amount, widget.rule.amount.currencyCode),
           description: _description.text.trim(),
         );
     if (mounted) Navigator.of(context).pop();
@@ -334,9 +529,9 @@ class _RuleEditDialogState extends ConsumerState<_RuleEditDialog> {
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
                 validator: (String? v) {
-                  final double n = double.tryParse(
-                          (v ?? '').trim().replaceAll(',', '.')) ??
-                      0;
+                  final double n =
+                      double.tryParse((v ?? '').trim().replaceAll(',', '.')) ??
+                          0;
                   return n > 0 ? null : l.valAmountInvalid;
                 },
               ),

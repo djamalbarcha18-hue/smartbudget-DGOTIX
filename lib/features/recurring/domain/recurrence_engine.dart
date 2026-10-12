@@ -13,6 +13,21 @@ class PostingPlan {
   bool get isEmpty => transactions.isEmpty && updatedRules.isEmpty;
 }
 
+/// An occurrence of a variable-amount rule that fell due and waits for the
+/// user to enter what was actually received or paid.
+class PendingOccurrence {
+  const PendingOccurrence(
+      {required this.rule, required this.date, this.more = 0});
+
+  final RecurringRule rule;
+
+  /// The oldest occurrence still waiting.
+  final DateTime date;
+
+  /// How many later occurrences of the same rule are also waiting.
+  final int more;
+}
+
 /// Pure schedule math for [RecurringRule]s (no Flutter, no IO).
 ///
 /// Every date here is a calendar date (local midnight). The n-th occurrence is
@@ -26,7 +41,8 @@ abstract final class RecurrenceEngine {
 
   static DateTime dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
 
-  static int daysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;
+  static int daysInMonth(int year, int month) =>
+      DateTime(year, month + 1, 0).day;
 
   /// The [n]-th occurrence of [rule]; `n == 0` is the start date.
   static DateTime occurrence(RecurringRule rule, int n) {
@@ -35,16 +51,25 @@ abstract final class RecurrenceEngine {
       case RecurrenceFrequency.weekly:
         return DateTime(s.year, s.month, s.day + 7 * n);
       case RecurrenceFrequency.monthly:
-        final int m = s.month - 1 + n;
-        final int year = s.year + m ~/ 12;
-        final int month = m % 12 + 1;
-        final int dim = daysInMonth(year, month);
-        return DateTime(year, month, s.day > dim ? dim : s.day);
+        return _monthsAfter(s, n);
+      case RecurrenceFrequency.quarterly:
+        return _monthsAfter(s, 3 * n);
+      case RecurrenceFrequency.halfYearly:
+        return _monthsAfter(s, 6 * n);
       case RecurrenceFrequency.yearly:
         final int year = s.year + n;
         final int dim = daysInMonth(year, s.month);
         return DateTime(year, s.month, s.day > dim ? dim : s.day);
     }
+  }
+
+  /// [s] moved [months] months later, on the same day or the month's last.
+  static DateTime _monthsAfter(DateTime s, int months) {
+    final int m = s.month - 1 + months;
+    final int year = s.year + m ~/ 12;
+    final int month = m % 12 + 1;
+    final int dim = daysInMonth(year, month);
+    return DateTime(year, month, s.day > dim ? dim : s.day);
   }
 
   /// Occurrences that are due now: strictly after `lastPosted`, on or before
@@ -132,11 +157,13 @@ abstract final class RecurrenceEngine {
     );
   }
 
-  /// Everything that is due across [rules] at [now].
+  /// Everything that is due across [rules] at [now]. Variable-amount rules
+  /// are left out: they wait for the user ([awaitingAmount]).
   static PostingPlan plan(List<RecurringRule> rules, DateTime now) {
     final List<Transaction> txns = <Transaction>[];
     final List<RecurringRule> updated = <RecurringRule>[];
     for (final RecurringRule r in rules) {
+      if (r.variableAmount) continue;
       final List<DateTime> due = dueDates(r, now);
       if (due.isEmpty) continue;
       for (final DateTime d in due) {
@@ -147,13 +174,34 @@ abstract final class RecurrenceEngine {
     return PostingPlan(transactions: txns, updatedRules: updated);
   }
 
-  /// A rule's amount expressed per month (weekly × 52 / 12, yearly / 12),
-  /// rounded to the currency's minor unit.
+  /// Variable-amount occurrences that are due and wait for the real amount:
+  /// the oldest one per active rule (they are confirmed in order), oldest
+  /// first.
+  static List<PendingOccurrence> awaitingAmount(
+    List<RecurringRule> rules,
+    DateTime now,
+  ) {
+    final List<PendingOccurrence> out = <PendingOccurrence>[
+      for (final RecurringRule r in rules)
+        if (r.variableAmount)
+          if (dueDates(r, now) case final List<DateTime> due
+              when due.isNotEmpty)
+            PendingOccurrence(rule: r, date: due.first, more: due.length - 1),
+    ];
+    out.sort(
+        (PendingOccurrence a, PendingOccurrence b) => a.date.compareTo(b.date));
+    return out;
+  }
+
+  /// A rule's amount expressed per month (weekly × 52 / 12, quarterly / 3,
+  /// half-yearly / 6, yearly / 12), rounded to the currency's minor unit.
   static Money monthlyEquivalent(RecurringRule rule) {
     final int minor = rule.amount.minorUnits;
     final int perMonth = switch (rule.frequency) {
       RecurrenceFrequency.weekly => (minor * 52 / 12).round(),
       RecurrenceFrequency.monthly => minor,
+      RecurrenceFrequency.quarterly => (minor / 3).round(),
+      RecurrenceFrequency.halfYearly => (minor / 6).round(),
       RecurrenceFrequency.yearly => (minor / 12).round(),
     };
     return Money(perMonth, rule.amount.currencyCode);
@@ -161,14 +209,17 @@ abstract final class RecurrenceEngine {
 
   /// Monthly total of the active rules of [type] in [currency] (rules in other
   /// currencies are left out rather than converted with a guessed rate).
+  /// Fixed-amount rules by default; with [variable], only the variable-amount
+  /// ones, at their latest amount (an estimate).
   static Money monthlyTotal(
     List<RecurringRule> rules,
     TransactionType type,
-    String currency,
-  ) {
+    String currency, {
+    bool variable = false,
+  }) {
     int sum = 0;
     for (final RecurringRule r in rules) {
-      if (!r.active || r.type != type) continue;
+      if (!r.active || r.type != type || r.variableAmount != variable) continue;
       if (r.amount.currencyCode != currency) continue;
       sum += monthlyEquivalent(r).minorUnits;
     }

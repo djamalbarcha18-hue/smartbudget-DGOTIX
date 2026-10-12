@@ -87,7 +87,10 @@ final notificationsProvider = Provider<List<FeedItem>>((ref) {
   return NotificationFeed.build(
     finance: finance,
     smart: smart,
-    upcoming: NotificationFeed.upcomingRecurring(rules, now),
+    upcoming: <AppAlert>[
+      ...NotificationFeed.awaitingAmount(rules, now),
+      ...NotificationFeed.upcomingRecurring(rules, now),
+    ],
     planning: <AppAlert>[
       ...SeasonAlerts.build(
           ref.watch(seasonPlansProvider).valueOrNull ?? const <SeasonPlan>[],
@@ -112,8 +115,7 @@ class SeenNotificationsController extends Notifier<Set<String>?> {
 
   @override
   Set<String>? build() {
-    final String userId =
-        ref.watch(authControllerProvider).user?.id ?? 'guest';
+    final String userId = ref.watch(authControllerProvider).user?.id ?? 'guest';
     _key = 'sb_notif_seen_$userId';
     _load();
     return null;

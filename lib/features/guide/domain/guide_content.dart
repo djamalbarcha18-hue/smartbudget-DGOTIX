@@ -82,8 +82,11 @@ abstract final class GuideContent {
       summary: 'Salary, rent and subscriptions added automatically on their '
           'date.',
       steps: <String>[
-        'When adding income or an expense, set "Repeat" to every week, month '
-            'or year.',
+        'When adding income or an expense, set "Repeat" to every week, '
+            'month, 3 months, 6 months or year.',
+        'For a bonus or a commission whose amount changes, turn on "The '
+            'amount changes each time": on each date the app asks for the real '
+            'amount instead of adding a guess.',
         'Each time it falls due, the app adds it as a normal transaction — '
             'even if you were away, it catches up when you next open the app.',
         'On the Recurring screen, pause, resume, change the amount or stop '
@@ -255,7 +258,11 @@ abstract final class GuideContent {
       title: 'المعاملات المتكرّرة',
       summary: 'الراتب والإيجار والاشتراكات تُضاف تلقائياً في موعدها.',
       steps: <String>[
-        'عند إضافة دخل أو مصروف، اختر «التكرار»: كل أسبوع أو كل شهر أو كل سنة.',
+        'عند إضافة دخل أو مصروف، اختر «التكرار»: كل أسبوع أو كل شهر أو كل 3 '
+            'أشهر أو كل 6 أشهر أو كل سنة.',
+        'للمردودية أو العمولات التي يتغيّر مبلغها، فعّل «المبلغ يتغيّر في كل '
+            'مرة»: في كل موعد يطلب منك التطبيق المبلغ الحقيقي بدل أن يضيف '
+            'مبلغاً تقديرياً.',
         'في كل موعد يضيفها التطبيق كمعاملة عادية — وإن غبت، يستدركها عند فتحك '
             'التطبيق في المرة القادمة.',
         'من صفحة المعاملات المتكرّرة يمكنك الإيقاف المؤقت أو الاستئناف أو '

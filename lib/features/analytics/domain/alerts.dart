@@ -18,6 +18,10 @@ enum AlertKind {
   /// A recurring transaction falls due within the next few days.
   recurringUpcoming,
 
+  /// A variable-amount recurring item (a bonus…) fell due and waits for the
+  /// real amount.
+  recurringConfirm,
+
   /// It's time to download a backup file.
   backupDue,
 

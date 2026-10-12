@@ -103,6 +103,9 @@ class _TransactionEditorSheetState
   String? _category;
   String? _paymentMethod;
   RecurrenceFrequency? _repeat;
+
+  /// A repeating item whose amount changes each time (a bonus…).
+  bool _variable = false;
   String? _walletId;
   String? _initialWallet;
   bool _saving = false;
@@ -186,14 +189,15 @@ class _TransactionEditorSheetState
       description: _description.text.trim(),
       paymentMethod: _paymentMethod,
       notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
-      walletId: _walletId == null || _walletId == Wallet.generalId
-          ? null
-          : _walletId,
+      walletId:
+          _walletId == null || _walletId == Wallet.generalId ? null : _walletId,
       createdAt: widget.existing?.createdAt ?? AppClock.now(),
     );
     final TransactionActions actions = ref.read(transactionActionsProvider);
     if (widget.existing == null && _repeat != null) {
-      await ref.read(recurringActionsProvider).startFrom(txn, _repeat!);
+      await ref
+          .read(recurringActionsProvider)
+          .startFrom(txn, _repeat!, variableAmount: _variable);
     } else if (widget.existing == null) {
       await actions.add(txn);
     } else {
@@ -272,9 +276,9 @@ class _TransactionEditorSheetState
                       decimal: true,
                     ),
                     validator: (String? v) {
-                      final double n =
-                          double.tryParse((v ?? '').trim().replaceAll(',', '.')) ??
-                              0;
+                      final double n = double.tryParse(
+                              (v ?? '').trim().replaceAll(',', '.')) ??
+                          0;
                       return n > 0 ? null : l.valAmountInvalid;
                     },
                   ),
@@ -294,8 +298,11 @@ class _TransactionEditorSheetState
                           eq == null
                               ? l.walletForeignNoRate(cur.code)
                               : l.walletForeignNote(MoneyFormatter.format(eq)),
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: eq == null ? c.warning : c.textMuted),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall
+                              ?.copyWith(
+                                  color: eq == null ? c.warning : c.textMuted),
                         );
                       },
                     ),
@@ -316,6 +323,7 @@ class _TransactionEditorSheetState
                     const SizedBox(height: DsSpacing.lg),
                     _RepeatDropdown(
                       value: _repeat,
+                      showHint: !_variable,
                       onChanged: (RecurrenceFrequency? v) {
                         if (v != null &&
                             _repeat == null &&
@@ -325,6 +333,11 @@ class _TransactionEditorSheetState
                         setState(() => _repeat = v);
                       },
                     ),
+                    if (_repeat != null)
+                      _VariableAmountSwitch(
+                        value: _variable,
+                        onChanged: (bool v) => setState(() => _variable = v),
+                      ),
                   ],
                   const SizedBox(height: DsSpacing.lg),
                   DsTextField(
@@ -348,7 +361,6 @@ class _TransactionEditorSheetState
                       value: _walletId,
                       onChanged: (String? v) => setState(() => _walletId = v),
                     ),
-
                     const SizedBox(height: DsSpacing.lg),
                   ],
                   _CategoryDropdown(
@@ -377,7 +389,8 @@ class _TransactionEditorSheetState
 }
 
 class _DateField extends StatelessWidget {
-  const _DateField({required this.label, required this.date, required this.onTap});
+  const _DateField(
+      {required this.label, required this.date, required this.onTap});
   final String label;
   final DateTime date;
   final VoidCallback onTap;
@@ -403,7 +416,8 @@ class _DateField extends StatelessWidget {
             ),
             child: Row(
               children: <Widget>[
-                Icon(Icons.calendar_today_outlined, size: 18, color: c.textMuted),
+                Icon(Icons.calendar_today_outlined,
+                    size: 18, color: c.textMuted),
                 const SizedBox(width: DsSpacing.md),
                 Text(
                   DateFormat('yyyy-MM-dd').format(date),
@@ -431,14 +445,50 @@ String repeatLabel(AppLocalizations l, RecurrenceFrequency? f) => switch (f) {
       null => l.repeatNone,
       RecurrenceFrequency.weekly => l.repeatWeekly,
       RecurrenceFrequency.monthly => l.repeatMonthly,
+      RecurrenceFrequency.quarterly => l.repeatQuarterly,
+      RecurrenceFrequency.halfYearly => l.repeatHalfYearly,
       RecurrenceFrequency.yearly => l.repeatYearly,
     };
 
+/// "The amount changes each time": later occurrences wait for the real
+/// amount instead of being added on their own.
+class _VariableAmountSwitch extends StatelessWidget {
+  const _VariableAmountSwitch({required this.value, required this.onChanged});
+
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(top: DsSpacing.sm),
+      child: SwitchListTile.adaptive(
+        value: value,
+        onChanged: onChanged,
+        contentPadding: EdgeInsets.zero,
+        title: Text(l.repeatVariable, style: t.bodyMedium),
+        subtitle: Text(l.repeatVariableHint,
+            style: t.labelSmall?.copyWith(color: c.textFaint)),
+      ),
+    );
+  }
+}
+
 class _RepeatDropdown extends StatelessWidget {
-  const _RepeatDropdown({required this.value, required this.onChanged});
+  const _RepeatDropdown({
+    required this.value,
+    required this.onChanged,
+    this.showHint = true,
+  });
 
   final RecurrenceFrequency? value;
   final ValueChanged<RecurrenceFrequency?> onChanged;
+
+  /// The "added automatically" note (off for a variable amount).
+  final bool showHint;
 
   @override
   Widget build(BuildContext context) {
@@ -458,8 +508,8 @@ class _RepeatDropdown extends StatelessWidget {
           decoration: InputDecoration(
             filled: true,
             fillColor: c.surfaceMuted,
-            prefixIcon: Icon(Icons.event_repeat_outlined,
-                size: 18, color: c.textMuted),
+            prefixIcon:
+                Icon(Icons.event_repeat_outlined, size: 18, color: c.textMuted),
             enabledBorder: OutlineInputBorder(
               borderRadius: DsRadius.brMd,
               borderSide: BorderSide(color: c.border),
@@ -478,10 +528,9 @@ class _RepeatDropdown extends StatelessWidget {
               .toList(),
           onChanged: onChanged,
         ),
-        if (value != null) ...<Widget>[
+        if (value != null && showHint) ...<Widget>[
           const SizedBox(height: 6),
-          Text(l.repeatHint,
-              style: t.labelSmall?.copyWith(color: c.textFaint)),
+          Text(l.repeatHint, style: t.labelSmall?.copyWith(color: c.textFaint)),
         ],
       ],
     );
@@ -546,7 +595,6 @@ class _CategoryDropdown extends StatelessWidget {
     );
   }
 }
-
 
 class _WalletDropdown extends ConsumerWidget {
   const _WalletDropdown({required this.value, required this.onChanged});
