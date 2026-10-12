@@ -125,13 +125,30 @@ instead of) Paddle:
 5. **Webhook**: in the PayPal developer dashboard, add a webhook pointing at the
    `paypal-webhook` function URL, subscribed to `BILLING.SUBSCRIPTION.ACTIVATED`,
    `BILLING.SUBSCRIPTION.UPDATED`, `BILLING.SUBSCRIPTION.CANCELLED`,
-   `BILLING.SUBSCRIPTION.EXPIRED`, and `BILLING.SUBSCRIPTION.SUSPENDED`. Put its
-   id in `PAYPAL_WEBHOOK_ID`.
+   `BILLING.SUBSCRIPTION.EXPIRED`, `BILLING.SUBSCRIPTION.SUSPENDED`,
+   `BILLING.SUBSCRIPTION.RE-ACTIVATED`, `BILLING.SUBSCRIPTION.UPDATED`,
+   `BILLING.SUBSCRIPTION.PAYMENT.FAILED`, `PAYMENT.SALE.COMPLETED`,
+   `PAYMENT.SALE.REFUNDED` and `PAYMENT.SALE.REVERSED`. Put its id in
+   `PAYPAL_WEBHOOK_ID`.
 
 `billing-config` reports which providers have their secrets set, so the Plans
 screen only offers the payment methods that actually work. Grant/revoke is
 identical to Paddle: an active subscription sets the paid plan, a
 cancelled/expired/suspended one returns to `free`, every event deduped by id.
+
+## Payment test mode (during the beta)
+
+While `BETA_ALL_ACCESS` is on, nothing is sold and the Plans screen shows no
+checkout. To try a purchase end to end anyway, open the web app with
+`?paytest=1` (e.g. `https://smartbudget.dgotix.com/?paytest=1#/plans`). The
+upgrade buttons then appear — but only while `billing-config` reports
+`sandbox: true`, i.e. every configured provider points at its sandbox
+(`PAYPAL_API_URL=https://api-m.sandbox.paypal.com`, Paddle's
+`PADDLE_API_URL=https://sandbox-api.paddle.com`). With any live provider the
+flag does nothing, so it can never take real money. The store build ignores it.
+
+After paying with a sandbox buyer, the "You're on …" card shows the plan and
+`billing_subscriptions` holds the row; Manage cancels it.
 
 > **Algeria note:** PayPal must be able to *receive* payments on your account.
 > Confirm this with PayPal before relying on it in production.

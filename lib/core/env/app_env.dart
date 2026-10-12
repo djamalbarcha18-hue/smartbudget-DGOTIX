@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 /// Compile-time environment configuration.
 ///
 /// Secrets are NEVER hardcoded or committed. They are injected at build time via
@@ -79,4 +81,11 @@ abstract final class AppEnv {
   /// no outside payment, no developer tools.
   static const bool storeBuild =
       bool.fromEnvironment('STORE_BUILD', defaultValue: false);
+
+  /// The web app was opened with `?paytest=1`: during the beta it then offers
+  /// checkout so payments can be tried end to end — but only while the server
+  /// reports that every payment method is a sandbox (see
+  /// `paymentTestModeProvider`), so it can never take real money.
+  static bool get payTestRequested =>
+      kIsWeb && !storeBuild && Uri.base.queryParameters['paytest'] == '1';
 }

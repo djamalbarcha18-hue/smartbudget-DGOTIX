@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 
 /// A payment method / gateway the checkout can use.
@@ -103,5 +104,20 @@ final enabledProvidersProvider = FutureProvider<List<PayProvider>>((ref) async {
         .toList();
   } catch (_) {
     return const <PayProvider>[];
+  }
+});
+
+/// Payment test mode: during the beta nothing is sold, but the web app opened
+/// with `?paytest=1` offers checkout so payments can be tried end to end. Only
+/// while the server says every payment method is a sandbox account.
+final paymentTestModeProvider = FutureProvider<bool>((ref) async {
+  if (!AppEnv.betaAllAccess || !AppEnv.payTestRequested) return false;
+  try {
+    final FunctionResponse res =
+        await Supabase.instance.client.functions.invoke('billing-config');
+    final Object? data = res.data;
+    return data is Map && data['sandbox'] == true;
+  } catch (_) {
+    return false;
   }
 });

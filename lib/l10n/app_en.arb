@@ -308,6 +308,8 @@
   "betaTitle": "Beta",
   "betaAllUnlocked": "Every feature is unlocked for free during the beta.",
   "betaPlansNote": "Paid plans will start after the beta. Until then, enjoy everything with no payment.",
+  "payTestTitle": "Payment test mode",
+  "payTestBody": "Payments here go to test (sandbox) accounts: no real money is charged.",
 
   "emptyDashboardTitle": "No data to display yet",
   "emptyDashboardMessage": "Connect your SmartBudget data to see your live financial overview here.",

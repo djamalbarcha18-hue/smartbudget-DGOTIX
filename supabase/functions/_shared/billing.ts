@@ -135,3 +135,23 @@ function timingSafeEqual(a: string, b: string): boolean {
   for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
 }
+
+/** Whether a provider API URL is its sandbox (api-m.sandbox.paypal.com,
+ * sandbox-api.paddle.com). Anything unparsable counts as live. */
+export function isSandboxUrl(url: string): boolean {
+  try {
+    return /(^|\.)sandbox[-.]/.test(new URL(url).hostname);
+  } catch {
+    return false;
+  }
+}
+
+/** True when providers are set and each one's API URL ([urls], by provider)
+ * is its sandbox, so no checkout can take real money. */
+export function allSandbox(
+  providers: string[],
+  urls: Record<string, string>,
+): boolean {
+  return providers.length > 0 &&
+    providers.every((p) => isSandboxUrl(urls[p] ?? ""));
+}

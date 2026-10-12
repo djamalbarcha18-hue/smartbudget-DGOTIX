@@ -35,12 +35,18 @@ class PlansPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
-    final Plan current = ref.watch(effectivePlanProvider);
+    // Payment test mode (beta, sandbox only): plans are offered from FREE up.
+    final bool payTest = ref.watch(paymentTestModeProvider).valueOrNull ?? false;
+    final Plan current = payTest ? Plan.free : ref.watch(effectivePlanProvider);
     final bool wide = MediaQuery.of(context).size.width >= 900;
 
     final List<Widget> cards = <Widget>[
       for (final Plan p in Plan.values)
-        _PlanCard(plan: p, current: current, highlight: p == Plan.basic),
+        _PlanCard(
+            plan: p,
+            current: current,
+            highlight: p == Plan.basic,
+            payTest: payTest),
     ];
 
     return SingleChildScrollView(
@@ -64,6 +70,7 @@ class PlansPage extends ConsumerWidget {
               Text(l.plansSubtitle,
                   style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: DsSpacing.xl),
+              if (payTest) const _PayTestBanner(),
               if (AppEnv.betaAllAccess) const _BetaBanner(),
               const _CurrentPlanCard(),
               if (wide)
@@ -121,6 +128,44 @@ class _BetaBanner extends StatelessWidget {
                           ?.copyWith(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 2),
                   Text(l.betaPlansNote,
+                      style: t.labelSmall?.copyWith(color: c.textMuted)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Payment test mode notice: checkout goes to sandbox accounts, so nothing is
+/// really charged.
+class _PayTestBanner extends StatelessWidget {
+  const _PayTestBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: DsSpacing.md),
+      child: GlassCard(
+        accent: c.warning,
+        child: Row(
+          children: <Widget>[
+            Icon(Icons.bug_report_outlined, size: 20, color: c.warning),
+            const SizedBox(width: DsSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(l.payTestTitle,
+                      style: t.titleSmall
+                          ?.copyWith(fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 2),
+                  Text(l.payTestBody,
                       style: t.labelSmall?.copyWith(color: c.textMuted)),
                 ],
               ),
@@ -394,11 +439,15 @@ class _PlanCard extends StatelessWidget {
     required this.plan,
     required this.current,
     required this.highlight,
+    this.payTest = false,
   });
 
   final Plan plan;
   final Plan current;
   final bool highlight;
+
+  /// Payment test mode: checkout is offered even during the beta.
+  final bool payTest;
 
   int _limit(Feature f) => FeatureCatalog.quotaFor(f, plan)?.limit ?? 0;
 
@@ -457,8 +506,10 @@ class _PlanCard extends StatelessWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    // During the beta everything is unlocked, so no card is "current".
-    final bool isCurrent = !AppEnv.betaAllAccess && plan == current;
+    // During the beta everything is unlocked, so no card is "current" (in
+    // payment test mode the account is treated as FREE).
+    final bool isCurrent =
+        (!AppEnv.betaAllAccess || payTest) && plan == current;
 
     final double? monthly = plan.priceUsd(BillingPeriod.monthly);
     final double? yearly = plan.priceUsd(BillingPeriod.yearly);
@@ -517,8 +568,8 @@ class _PlanCard extends StatelessWidget {
 
   Widget _cta(
       BuildContext context, AppLocalizations l, DsColors c, bool isCurrent) {
-    // Beta: nothing to buy yet.
-    if (AppEnv.betaAllAccess) return const SizedBox.shrink();
+    // Beta: nothing to buy yet (except in payment test mode).
+    if (AppEnv.betaAllAccess && !payTest) return const SizedBox.shrink();
     if (isCurrent) {
       return DsButton(
         label: l.planCurrent,
