@@ -19,7 +19,7 @@ class LegalSection {
 /// have it reviewed for their jurisdiction before relying on it.
 abstract final class LegalContent {
   /// Bump when the wording changes materially (shown as "last updated").
-  static const String lastUpdated = '2026-09-28';
+  static const String lastUpdated = '2026-10-12';
 
   static String get _app => AppConfig.appName;
   static String get _brand => AppConfig.parentBrand;
@@ -291,20 +291,27 @@ abstract final class LegalContent {
           'The core app is free. Paid plans (such as Basic and Pro) unlock '
               'higher limits and extra features at the prices shown in the app. '
               'A paid plan renews automatically each billing period (monthly or '
-              'yearly) until you cancel. Payments are processed by our payment '
-              'provider (Paddle or PayPal); applicable taxes may be added and '
-              'are handled by that provider where it acts as merchant of record. '
+              'yearly) until you cancel. Payments are processed by our online '
+              'reseller Paddle; applicable taxes may be added and are handled '
+              'by Paddle as the merchant of record. '
               'You can cancel at any time and keep access until the end of the '
               'period you already paid for. Prices and plan features may change; '
               'we will show the current terms in the app before you subscribe.',
         ),
         const LegalSection(
-          'Refunds',
+          'Our reseller: Paddle',
+          'Our order process is conducted by our online reseller Paddle.com. '
+              'Paddle.com is the Merchant of Record for all our orders. Paddle '
+              'provides all customer service inquiries and handles returns.',
+        ),
+        LegalSection(
+          'Refund policy',
           'Except where required by law, payments are generally non-refundable '
               'once a billing period has started, since you keep access until '
-              'its end. Refund requests are handled according to the payment '
-              'provider\'s policy and applicable consumer law — contact us as '
-              'described at the end of these terms and we will help.',
+              'its end. You can cancel at any time to stop future renewals. '
+              'Refund requests are handled by Paddle under its buyer terms and '
+              'applicable consumer law (you can reach Paddle at paddle.net); '
+              'you can also contact us $_reachEn and we will help.',
         ),
         const LegalSection(
           'Promotional codes',
@@ -378,18 +385,26 @@ abstract final class LegalContent {
           'التطبيق الأساسي مجاني. تفتح الباقات المدفوعة (مثل Basic وPro) حدوداً '
               'أعلى وميزات إضافية بالأسعار المعروضة في التطبيق. تتجدّد الباقة '
               'المدفوعة تلقائياً في كل فترة فوترة (شهرياً أو سنوياً) حتى تُلغيها. '
-              'تُعالَج المدفوعات عبر مزوّد الدفع لدينا (Paddle أو PayPal)؛ وقد '
-              'تُضاف ضرائب مطبّقة يتولّاها ذلك المزوّد حيث يكون البائع المسجَّل. '
+              'تُعالَج المدفوعات عبر موزّعنا المعتمد عبر الإنترنت Paddle؛ وقد '
+              'تُضاف ضرائب مطبّقة يتولّاها Paddle بصفته البائع المسجَّل. '
               'يمكنك الإلغاء في أي وقت مع الاحتفاظ بالوصول حتى نهاية الفترة '
               'المدفوعة. وقد تتغيّر الأسعار وميزات الباقات؛ وسنعرض الشروط الحالية '
               'في التطبيق قبل اشتراكك.',
         ),
         const LegalSection(
-          'الاستردادات',
+          'موزّعنا المعتمد: Paddle',
+          'تتم عملية الطلب لدينا عبر موزّعنا المعتمد عبر الإنترنت Paddle.com. '
+              'وPaddle.com هو البائع المسجَّل (Merchant of Record) لجميع طلباتنا، '
+              'ويتولّى Paddle جميع استفسارات خدمة العملاء ويعالج طلبات الاسترجاع.',
+        ),
+        LegalSection(
+          'سياسة الاسترجاع',
           'باستثناء ما يوجبه القانون، تكون المدفوعات عادةً غير قابلة للاسترداد '
-              'بعد بدء فترة الفوترة، لأنك تحتفظ بالوصول حتى نهايتها. تُعالَج طلبات '
-              'الاسترداد وفق سياسة مزوّد الدفع وقانون حماية المستهلك المطبّق — '
-              'تواصل معنا كما هو موضّح في آخر هذه الشروط وسنساعدك.',
+              'بعد بدء فترة الفوترة، لأنك تحتفظ بالوصول حتى نهايتها. ويمكنك '
+              'الإلغاء في أي وقت لإيقاف التجديدات القادمة. يتولّى Paddle طلبات '
+              'الاسترداد وفق شروط المشتري لديه وقانون حماية المستهلك المطبّق '
+              '(يمكنك التواصل مع Paddle عبر paddle.net)؛ ويمكنك أيضاً التواصل '
+              'معنا $_reachAr وسنساعدك.',
         ),
         const LegalSection(
           'الأكواد الترويجية',
