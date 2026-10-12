@@ -1,0 +1,94 @@
+name: Database backup
+
+# A daily, encrypted copy of the Supabase database (the free plan keeps no
+# backups of its own). The dump is encrypted with a passphrase only the owner
+# knows BEFORE it leaves the runner, because artifacts of a public repository
+# can be downloaded by anyone signed in to GitHub. See docs/BACKUP.md to
+# restore one.
+#
+# Needs two repository secrets (Settings > Secrets and variables > Actions):
+#   SUPABASE_DB_URL     the "Session pooler" connection string from the
+#                       Supabase dashboard (Connect), with the database password
+#   BACKUP_PASSPHRASE   a long passphrase; keep a copy somewhere safe — without
+#                       it no backup can be opened
+on:
+  schedule:
+    - cron: "23 2 * * *" # every day at 02:23 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    name: Back up the database
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the secrets are set
+        id: check
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$DB_URL" ] || [ -z "$PASSPHRASE" ]; then
+            echo "::error::Set SUPABASE_DB_URL and BACKUP_PASSPHRASE in the repository secrets to turn backups on (docs/BACKUP.md)."
+            exit 1
+          fi
+          if [ "${#PASSPHRASE}" -lt 16 ]; then
+            echo "::error::BACKUP_PASSPHRASE is too short: use at least 16 characters."
+            exit 1
+          fi
+
+      - name: Dump the database
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          # pg_dump from the official Postgres image (a newer pg_dump reads
+          # older servers). Our own tables (public) in full; from auth, only
+          # the accounts themselves — not sessions, tokens or logs.
+          dump() {
+            docker run --rm -e DB_URL -v "$PWD/out:/out" \
+              public.ecr.aws/docker/library/postgres:17 \
+              sh -c "pg_dump \"\$DB_URL\" --no-owner --no-privileges $*"
+          }
+          dump --schema=public --schema-only -f /out/schema.sql
+          dump --schema=public --data-only -f /out/public-data.sql
+          dump --data-only --table=auth.users --table=auth.identities \
+            -f /out/auth-users.sql
+          # A dump that came back empty is a failed backup, not a success.
+          grep -q "CREATE TABLE public.transactions" out/schema.sql
+          grep -q "COPY public\." out/public-data.sql
+          grep -q "COPY auth.users" out/auth-users.sql
+          ls -l out
+
+      - name: Encrypt
+        env:
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          STAMP=$(date -u +%Y-%m-%d)
+          echo "STAMP=$STAMP" >> "$GITHUB_ENV"
+          tar -C out -czf "smartbudget-db-$STAMP.tar.gz" .
+          printf '%s' "$PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback \
+            --passphrase-fd 0 --symmetric --cipher-algo AES256 \
+            -o "smartbudget-db-$STAMP.tar.gz.gpg" "smartbudget-db-$STAMP.tar.gz"
+          # Only the encrypted file may leave the runner.
+          rm -rf out "smartbudget-db-$STAMP.tar.gz"
+          # Prove it opens with the passphrase before keeping it.
+          printf '%s' "$PASSPHRASE" | gpg --batch --pinentry-mode loopback \
+            --passphrase-fd 0 -d "smartbudget-db-$STAMP.tar.gz.gpg" | tar -tzf - >/dev/null
+          ls -l "smartbudget-db-$STAMP.tar.gz.gpg"
+
+      - name: Keep the encrypted backup (30 days)
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartbudget-db-${{ env.STAMP }}
+          path: smartbudget-db-${{ env.STAMP }}.tar.gz.gpg
+          if-no-files-found: error
+          retention-days: 30
