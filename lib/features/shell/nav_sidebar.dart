@@ -239,7 +239,7 @@ class _UpgradeCard extends StatelessWidget {
             children: <Widget>[
               Icon(
                   AppEnv.betaAllAccess
-                      ? Icons.science_outlined
+                      ? Icons.celebration_outlined
                       : Icons.workspace_premium_outlined,
                   size: 18,
                   color: c.brand),

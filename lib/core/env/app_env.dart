@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 
 /// Compile-time environment configuration.
 ///
@@ -88,4 +88,11 @@ abstract final class AppEnv {
   /// `paymentTestModeProvider`), so it can never take real money.
   static bool get payTestRequested =>
       kIsWeb && !storeBuild && Uri.base.queryParameters['paytest'] == '1';
+
+  /// The settings' developer tools (sample data, plan preview): in debug
+  /// builds, or on the web app opened with `?dev=1` — never shown to users
+  /// otherwise, and never in the store app.
+  static bool get devToolsEnabled =>
+      kDebugMode ||
+      (kIsWeb && !storeBuild && Uri.base.queryParameters['dev'] == '1');
 }

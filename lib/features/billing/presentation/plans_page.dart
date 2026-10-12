@@ -102,7 +102,7 @@ class PlansPage extends ConsumerWidget {
   }
 }
 
-/// Beta notice: every feature is free until paid plans launch.
+/// Launch offer: every feature is free until paid plans start.
 class _BetaBanner extends StatelessWidget {
   const _BetaBanner();
 
@@ -117,7 +117,7 @@ class _BetaBanner extends StatelessWidget {
         accent: c.brand,
         child: Row(
           children: <Widget>[
-            Icon(Icons.science_outlined, size: 20, color: c.brand),
+            Icon(Icons.celebration_outlined, size: 20, color: c.brand),
             const SizedBox(width: DsSpacing.md),
             Expanded(
               child: Column(

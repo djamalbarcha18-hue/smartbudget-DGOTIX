@@ -53,7 +53,7 @@ class AssistantPage extends ConsumerWidget {
                   style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: DsSpacing.xl),
               // DGOTIX AI answers through our servers within the plan quota;
-              // until that service is live, a clear "coming soon" card.
+              // signed out, a card invites the user to sign in.
               if (ref.watch(assistantReadyProvider)) ...<Widget>[
                 const AskDgotixCard(),
                 const SizedBox(height: DsSpacing.md),
@@ -163,8 +163,8 @@ class _DisclaimerNote extends StatelessWidget {
   }
 }
 
-/// Shown while the chat service isn't available yet: it is coming to every
-/// plan, with answers included according to the subscription.
+/// Shown while the chat can't run here (signed out): it invites the user to
+/// sign in, with answers included according to the plan.
 class _AssistantLockedCard extends StatelessWidget {
   const _AssistantLockedCard();
 
@@ -198,13 +198,13 @@ class _AssistantLockedCard extends StatelessWidget {
                 const SizedBox(height: DsSpacing.xs),
                 Text(l.aiLockedBody,
                     style: t.bodySmall?.copyWith(color: c.textMuted)),
-                if (!AppEnv.betaAllAccess) ...<Widget>[
+                if (AppEnv.hasSupabase) ...<Widget>[
                   const SizedBox(height: DsSpacing.md),
                   DsButton(
                     label: l.aiLockedCta,
-                    icon: Icons.workspace_premium_outlined,
+                    icon: Icons.login_rounded,
                     variant: DsButtonVariant.secondary,
-                    onPressed: () => context.go('/plans'),
+                    onPressed: () => context.go('/login'),
                   ),
                 ],
               ],

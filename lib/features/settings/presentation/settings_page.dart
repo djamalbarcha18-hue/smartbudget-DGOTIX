@@ -207,9 +207,9 @@ class SettingsPage extends ConsumerWidget {
                 const SizedBox(height: DsSpacing.lg),
               ],
 
-              // Developer — sample data for testing the template (never in
-              // the store app).
-              if (!AppEnv.storeBuild) ...<Widget>[
+              // Developer — sample data for demos and testing: only in debug
+              // builds or with ?dev=1 on the web (never in the store app).
+              if (AppEnv.devToolsEnabled) ...<Widget>[
                 _SettingsSection(
                   icon: Icons.science_outlined,
                   title: l.settingsDeveloper,
