@@ -6,6 +6,7 @@ import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
+import 'package:smartbudget/design_system/components/kpi_grid.dart';
 import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -143,9 +144,7 @@ class ReportsPage extends ConsumerWidget {
           ],
           const SizedBox(height: DsSpacing.xl),
 
-          Wrap(
-            spacing: DsSpacing.gridGap,
-            runSpacing: DsSpacing.gridGap,
+          KpiGrid(
             children: <Widget>[
               _kpi(l.kpiTotalIncome, hasData ? MoneyFormatter.format(report.summary.income) : null, c.income, Icons.south_west_outlined),
               _kpi(l.kpiTotalExpenses, hasData ? MoneyFormatter.format(report.summary.expense) : null, c.expense, Icons.north_east_outlined),
@@ -179,15 +178,12 @@ class ReportsPage extends ConsumerWidget {
 
   Widget _kpi(String label, String? value, Color accent, IconData? icon,
           {Widget? iconChild}) =>
-      SizedBox(
-        width: 220,
-        child: KpiCard(
-            label: label,
-            value: value,
-            accent: accent,
-            icon: icon,
-            iconChild: iconChild),
-      );
+      KpiCard(
+          label: label,
+          value: value,
+          accent: accent,
+          icon: icon,
+          iconChild: iconChild);
 
   String _periodLabel(ReportPeriod p, AppLocalizations l) => switch (p) {
         ReportPeriod.monthly => l.periodMonthly,

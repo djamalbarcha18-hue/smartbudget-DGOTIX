@@ -167,11 +167,14 @@ class _StepRow extends StatelessWidget {
                     style: t.labelSmall?.copyWith(color: c.textMuted)),
               ),
             const SizedBox(width: DsSpacing.sm),
-            Text(
-              label,
-              style: t.bodySmall?.copyWith(
-                color: step.done ? c.textMuted : c.textPrimary,
-                decoration: step.done ? TextDecoration.lineThrough : null,
+            // Long labels (Malay, Urdu…) wrap inside the pill.
+            Flexible(
+              child: Text(
+                label,
+                style: t.bodySmall?.copyWith(
+                  color: step.done ? c.textMuted : c.textPrimary,
+                  decoration: step.done ? TextDecoration.lineThrough : null,
+                ),
               ),
             ),
           ],

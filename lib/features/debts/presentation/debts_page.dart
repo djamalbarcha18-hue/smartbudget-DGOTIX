@@ -6,6 +6,7 @@ import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
+import 'package:smartbudget/design_system/components/kpi_grid.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -52,36 +53,25 @@ class DebtsPage extends ConsumerWidget {
               ],
             ),
           const SizedBox(height: DsSpacing.lg),
-          Wrap(
-            spacing: DsSpacing.gridGap,
-            runSpacing: DsSpacing.gridGap,
+          KpiGrid(
             children: <Widget>[
-              SizedBox(
-                width: 220,
-                child: KpiCard(
-                  label: l.debtOwedToMe,
-                  value: MoneyFormatter.format(summary.owedToMe),
-                  icon: Icons.call_received_rounded,
-                  accent: c.income,
-                ),
+              KpiCard(
+                label: l.debtOwedToMe,
+                value: MoneyFormatter.format(summary.owedToMe),
+                icon: Icons.call_received_rounded,
+                accent: c.income,
               ),
-              SizedBox(
-                width: 220,
-                child: KpiCard(
-                  label: l.debtOwedByMe,
-                  value: MoneyFormatter.format(summary.owedByMe),
-                  icon: Icons.call_made_rounded,
-                  accent: c.expense,
-                ),
+              KpiCard(
+                label: l.debtOwedByMe,
+                value: MoneyFormatter.format(summary.owedByMe),
+                icon: Icons.call_made_rounded,
+                accent: c.expense,
               ),
-              SizedBox(
-                width: 220,
-                child: KpiCard(
-                  label: l.debtNet,
-                  value: MoneyFormatter.format(summary.net),
-                  icon: Icons.balance_rounded,
-                  accent: c.net,
-                ),
+              KpiCard(
+                label: l.debtNet,
+                value: MoneyFormatter.format(summary.net),
+                icon: Icons.balance_rounded,
+                accent: c.net,
               ),
             ],
           ),

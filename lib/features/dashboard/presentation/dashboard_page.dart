@@ -15,6 +15,7 @@ import 'package:smartbudget/design_system/tokens/ds_chart_palette.dart';
 import 'package:smartbudget/design_system/components/ds_section_header.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
+import 'package:smartbudget/design_system/components/kpi_grid.dart';
 import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -134,8 +135,9 @@ class DashboardPage extends ConsumerWidget {
           const BackupReminderCard(),
           const InstallBanner(),
 
-          // ① The four headline figures, one uniform row.
-          _ResponsiveGrid(minTileWidth: 220, children: kpis),
+          // ① The four headline figures: one row on wide screens, two pairs
+          //    on a phone.
+          KpiGrid(children: kpis),
           const SizedBox(height: gap),
 
           // ② Month pulse: budget used · health score · what's due soon.
@@ -826,40 +828,6 @@ class _TableRow extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-/// Overflow-safe responsive grid (columns computed from available width).
-class _ResponsiveGrid extends StatelessWidget {
-  const _ResponsiveGrid({
-    required this.children,
-    required this.minTileWidth,
-  });
-
-  final List<Widget> children;
-  final double minTileWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        const double gap = DsSpacing.gridGap;
-        final double maxW = constraints.maxWidth;
-        int cols = (maxW / (minTileWidth + gap)).floor().clamp(1, 4).toInt();
-        if (context.isMobile) cols = 1;
-        final double tileW = (maxW - gap * (cols - 1)) / cols;
-
-        return Wrap(
-          spacing: gap,
-          runSpacing: gap,
-          children: children
-              .map(
-                (Widget child) => SizedBox(width: tileW, child: child),
-              )
-              .toList(growable: false),
-        );
-      },
     );
   }
 }

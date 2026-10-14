@@ -68,8 +68,16 @@ class KpiCard extends StatelessWidget {
   /// Optional chart widget rendered under the value (wired in later phases).
   final Widget? sparkline;
 
+  /// Below this width (two cards side by side on a phone) the card tightens
+  /// its padding, icon and figure.
+  static const double compactWidth = 220;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints box) =>
+          _build(context, box.maxWidth < compactWidth));
+
+  Widget _build(BuildContext context, bool compact) {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     // Universal financial colors, decided in one place for every KPI in the
@@ -82,8 +90,11 @@ class KpiCard extends StatelessWidget {
     return GlassCard(
       accent: accentColor,
       tintBorder: true,
-      padding: const EdgeInsets.fromLTRB(
-          DsSpacing.lg, DsSpacing.lg, DsSpacing.lg, DsSpacing.md),
+      padding: compact
+          ? const EdgeInsets.fromLTRB(
+              DsSpacing.md, DsSpacing.md, DsSpacing.md, DsSpacing.md)
+          : const EdgeInsets.fromLTRB(
+              DsSpacing.lg, DsSpacing.lg, DsSpacing.lg, DsSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -91,20 +102,27 @@ class KpiCard extends StatelessWidget {
           Row(
             children: <Widget>[
               if (icon != null || iconChild != null) ...<Widget>[
-                _IconChip(icon: icon, iconChild: iconChild, color: accentColor),
-                const SizedBox(width: DsSpacing.md),
+                _IconChip(
+                    icon: icon,
+                    iconChild: iconChild,
+                    color: accentColor,
+                    size: compact ? 32 : 40),
+                SizedBox(width: compact ? DsSpacing.sm : DsSpacing.md),
               ],
               Expanded(
                 child: Text(
                   label,
                   style: t.titleSmall?.copyWith(
-                      color: c.textMuted, fontWeight: FontWeight.w700),
+                      color: c.textMuted,
+                      fontWeight: FontWeight.w700,
+                      fontSize: compact ? 12.5 : null),
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: DsSpacing.md),
+          SizedBox(height: compact ? DsSpacing.sm : DsSpacing.md),
           // The figure is the hero: large, tabular, never clipped (it scales
           // down instead on narrow tiles).
           FittedBox(
@@ -116,13 +134,25 @@ class KpiCard extends StatelessWidget {
               style: DsTypography.mono(
                 t.headlineMedium ?? const TextStyle(),
               ).copyWith(
-                fontSize: 28,
+                fontSize: compact ? 22 : 28,
                 fontWeight: FontWeight.w800,
                 color: value == null ? c.textFaint : c.textPrimary,
               ),
             ),
           ),
-          if (delta != null || caption != null) ...<Widget>[
+          // Side by side there's no room for both: the comparison goes under
+          // the change.
+          if (compact && (delta != null || caption != null)) ...<Widget>[
+            const SizedBox(height: DsSpacing.sm),
+            if (delta != null) _TrendPill(delta: delta!),
+            if (caption != null) ...<Widget>[
+              const SizedBox(height: 4),
+              Text(caption!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: t.labelSmall?.copyWith(color: c.textFaint)),
+            ],
+          ] else if (delta != null || caption != null) ...<Widget>[
             const SizedBox(height: DsSpacing.sm),
             Row(
               children: <Widget>[
@@ -151,19 +181,21 @@ class KpiCard extends StatelessWidget {
 }
 
 class _IconChip extends StatelessWidget {
-  const _IconChip({this.icon, this.iconChild, required this.color});
+  const _IconChip(
+      {this.icon, this.iconChild, required this.color, this.size = 40});
   final IconData? icon;
   final Widget? iconChild;
   final Color color;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 40,
-      height: 40,
+      width: size,
+      height: size,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(size * 0.3),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -179,10 +211,10 @@ class _IconChip extends StatelessWidget {
       ),
       child: iconChild != null
           ? IconTheme.merge(
-              data: IconThemeData(color: color, size: 20),
+              data: IconThemeData(color: color, size: size / 2),
               child: iconChild!,
             )
-          : Icon(icon, size: 20, color: color),
+          : Icon(icon, size: size / 2, color: color),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/currency_suffix.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
+import 'package:smartbudget/design_system/components/kpi_grid.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -47,9 +48,7 @@ class MonthlyBudgetPage extends ConsumerWidget {
           Text(l.pageMonthlyBudget,
               style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: DsSpacing.xl),
-          Wrap(
-            spacing: DsSpacing.gridGap,
-            runSpacing: DsSpacing.gridGap,
+          KpiGrid(
             children: <Widget>[
               _kpi(l.kpiTotalIncome, hasData ? MoneyFormatter.format(summary.income) : null, c.income, Icons.south_west_outlined),
               _kpi(l.kpiTotalExpenses, hasData ? MoneyFormatter.format(summary.expense) : null, c.expense, Icons.north_east_outlined),
@@ -89,15 +88,12 @@ class MonthlyBudgetPage extends ConsumerWidget {
 
   Widget _kpi(String label, String? value, Color accent, IconData? icon,
           {Widget? iconChild}) =>
-      SizedBox(
-        width: 220,
-        child: KpiCard(
-            label: label,
-            value: value,
-            accent: accent,
-            icon: icon,
-            iconChild: iconChild),
-      );
+      KpiCard(
+          label: label,
+          value: value,
+          accent: accent,
+          icon: icon,
+          iconChild: iconChild);
 }
 
 /// Planned (budget) vs actual per expense category for the selected month.

@@ -1,3 +1,5 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +20,8 @@ abstract final class SupportedLocales {
 /// Controls the active [Locale] and persists the choice per viewer.
 ///
 /// Switching flips RTL/LTR automatically (via [Localizations]/[Directionality])
-/// with no reload. Default is Arabic.
+/// with no reload. Until one is chosen: the device language when the app
+/// has it, else Arabic.
 final localeProvider =
     NotifierProvider<LocaleController, Locale>(LocaleController.new);
 
@@ -35,10 +38,10 @@ class LocaleController extends Notifier<Locale> {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? code = prefs.getString(_key);
-      if (code != null &&
-          SupportedLocales.all.any((Locale l) => l.languageCode == code)) {
-        state = Locale(code);
-      }
+      final String device = PlatformDispatcher.instance.locale.languageCode;
+      final AppLang? lang = AppLang.tryCode(code) ??
+          (code == null ? AppLang.tryCode(device) : null);
+      if (lang != null) state = Locale(lang.code);
     } catch (_) {
       // Keep default.
     }

@@ -228,10 +228,18 @@ class SyncController extends Notifier<SyncStatus> {
     final String ledgerKey = AccountKeys.of(_ledgerBase, account);
     final int now = AppClock.now().millisecondsSinceEpoch;
 
-    // 1. Notice this device's changes (works offline).
+    // 1. Notice this device's changes (works offline). A base currency that
+    //    is still only the language's suggestion isn't the user's choice: it
+    //    must not replace the account's own.
+    //    (Once this device has synced one, it stays, so it is never sent as
+    //    a deletion.)
     Records records = await _records(backup);
-    Entries local =
-        SyncMerge.detect(_ledger(prefs.getString(ledgerKey)), records, now);
+    final Entries ledger = _ledger(prefs.getString(ledgerKey));
+    if (!ref.read(baseCurrencyProvider.notifier).isChosen &&
+        ledger['settings']?['baseCurrency'] == null) {
+      records['settings']?.remove('baseCurrency');
+    }
+    Entries local = SyncMerge.detect(ledger, records, now);
     await prefs.setString(ledgerKey, jsonEncode(SyncMerge.ledgerToJson(local)));
 
     if (ref.read(isOfflineProvider)) {

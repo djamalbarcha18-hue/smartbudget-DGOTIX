@@ -1,0 +1,50 @@
+import 'package:smartbudget/core/l10n/app_lang.dart';
+import 'package:smartbudget/core/money/currency.dart';
+
+/// The currency a new user most likely counts in, before they choose one:
+/// their country's own (from the device region) when the app has it, else the
+/// most common one for the app language.
+abstract final class CurrencyDefaults {
+  /// Euro-area countries (ISO 3166-1 alpha-2, lower case).
+  static const Set<String> _euroArea = <String>{
+    'at', 'be', 'cy', 'de', 'ee', 'es', 'fi', 'fr', 'gr', 'hr', 'ie', 'it', //
+    'lt', 'lu', 'lv', 'mt', 'nl', 'pt', 'si', 'sk',
+  };
+
+  /// With no usable region: the language's largest market, or the dollar
+  /// where no single country stands for the language.
+  static const Map<AppLang, String> _byLanguage = <AppLang, String>{
+    AppLang.ar: 'SAR',
+    AppLang.en: 'USD',
+    AppLang.fr: 'EUR',
+    AppLang.id: 'IDR',
+    AppLang.es: 'EUR',
+    AppLang.tr: 'TRY',
+    AppLang.ms: 'MYR',
+    AppLang.ur: 'PKR',
+  };
+
+  /// The currency of [country] (ISO 3166-1 alpha-2), or null when the app
+  /// has none for it.
+  static String? forCountry(String? country) {
+    final String c = (country ?? '').toLowerCase();
+    if (c.isEmpty) return null;
+    if (_euroArea.contains(c)) return 'EUR';
+    for (final Currency cur in Currencies.all) {
+      if (cur.country == c) return cur.code;
+    }
+    return null;
+  }
+
+  /// The currency for someone using the app in [lang]. The device's
+  /// [country] wins only when the device is set to that same language
+  /// ([deviceLanguage]), so a phone set to Mexican Spanish gets pesos while
+  /// someone who picks Turkish in the app gets lira.
+  static String suggest(AppLang lang, {String? country, String? deviceLanguage}) {
+    if (deviceLanguage == null || deviceLanguage == lang.code) {
+      final String? local = forCountry(country);
+      if (local != null) return local;
+    }
+    return _byLanguage[lang] ?? Currencies.usd.code;
+  }
+}

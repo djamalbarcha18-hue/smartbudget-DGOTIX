@@ -96,7 +96,8 @@ class AppTopBar extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: <Widget>[
-                const _MonthChip(),
+                // Short month names, so the currency stays in view.
+                const _MonthChip(short: true),
                 const SizedBox(width: DsSpacing.xs),
                 const _YearChip(),
                 const SizedBox(width: DsSpacing.xs),
@@ -201,7 +202,10 @@ class _ChipBox extends StatelessWidget {
 
 /// Global month selector — shared with Monthly Budget via [selectedMonthProvider].
 class _MonthChip extends ConsumerWidget {
-  const _MonthChip();
+  const _MonthChip({this.short = false});
+
+  /// Abbreviated name on the chip (the menu keeps full names).
+  final bool short;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -222,7 +226,10 @@ class _MonthChip extends ConsumerWidget {
           PopupMenuItem<int>(value: m, child: Text(names[m - 1])),
       ],
       child: _ChipBox(
-          icon: Icons.event_note_outlined, label: names[value - 1]),
+          icon: Icons.event_note_outlined,
+          label: short
+              ? MonthNames.short(lang: lang)[value - 1]
+              : names[value - 1]),
     );
   }
 }
