@@ -1,3 +1,5 @@
+import 'package:smartbudget/core/l10n/app_lang.dart';
+
 /// Pure Hijri (Islamic) calendar conversion using the tabular "Kuwaiti"
 /// algorithm — deterministic, dependency-free and unit-tested. Used for the
 /// zakat hawl (a full lunar year), which is the sharia basis rather than the
@@ -15,21 +17,58 @@ class HijriDate {
   final int day;
 
   static const List<String> monthsAr = <String>[
-    'محرّم', 'صفر', 'ربيع الأول', 'ربيع الآخر', 'جمادى الأولى', 'جمادى الآخرة',
-    'رجب', 'شعبان', 'رمضان', 'شوّال', 'ذو القعدة', 'ذو الحِجّة',
+    'محرّم',
+    'صفر',
+    'ربيع الأول',
+    'ربيع الآخر',
+    'جمادى الأولى',
+    'جمادى الآخرة',
+    'رجب',
+    'شعبان',
+    'رمضان',
+    'شوّال',
+    'ذو القعدة',
+    'ذو الحِجّة',
   ];
   static const List<String> monthsEn = <String>[
-    'Muharram', 'Safar', 'Rabiʻ I', 'Rabiʻ II', 'Jumada I', 'Jumada II',
-    'Rajab', 'Shaʻban', 'Ramadan', 'Shawwal', 'Dhuʻl-Qiʻdah', 'Dhuʻl-Hijjah',
+    'Muharram',
+    'Safar',
+    'Rabiʻ I',
+    'Rabiʻ II',
+    'Jumada I',
+    'Jumada II',
+    'Rajab',
+    'Shaʻban',
+    'Ramadan',
+    'Shawwal',
+    'Dhuʻl-Qiʻdah',
+    'Dhuʻl-Hijjah',
   ];
 
-  String monthName({required bool ar}) =>
-      (month >= 1 && month <= 12) ? (ar ? monthsAr : monthsEn)[month - 1] : '';
+  static const List<String> monthsFr = <String>[
+    'Mouharram',
+    'Safar',
+    'Rabiʻ al-awwal',
+    'Rabiʻ ath-thani',
+    'Joumada al-oula',
+    'Joumada ath-thania',
+    'Rajab',
+    'Chaʻbane',
+    'Ramadan',
+    'Chawwal',
+    'Dhou al-qiʻda',
+    'Dhou al-hijja',
+  ];
+
+  String monthName({required AppLang lang}) => (month >= 1 && month <= 12)
+      ? lang.pick(monthsAr, monthsEn, monthsFr)[month - 1]
+      : '';
 
   /// Formats as `day month year هـ`, e.g. "12 رمضان 1446 هـ".
-  String format({required bool ar}) =>
-      ar ? '$day ${monthName(ar: true)} $year هـ'
-         : '$day ${monthName(ar: false)} $year AH';
+  String format({required AppLang lang}) => lang.pick(
+      '$day ${monthName(lang: lang)} $year هـ',
+      '$day ${monthName(lang: lang)} $year AH',
+      '$day ${monthName(lang: lang)} $year H');
 
   /// Julian Day Number for this Hijri date (tabular civil calendar).
   int toJdn() =>

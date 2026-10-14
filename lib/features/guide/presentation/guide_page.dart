@@ -10,6 +10,7 @@ import 'package:smartbudget/features/guide/domain/guide_content.dart';
 import 'package:smartbudget/features/onboarding/application/onboarding_controller.dart';
 import 'package:smartbudget/features/onboarding/domain/onboarding.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// User guide — "how do I use this?" in one place: a short getting-started
 /// path, then one expandable card per feature with steps and a button that
@@ -22,9 +23,9 @@ class GuidePage extends StatelessWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
-    final List<String> start = GuideContent.gettingStarted(ar: ar);
-    final List<GuideTopic> topics = GuideContent.topics(ar: ar);
+    final AppLang lang = appLangOf(context);
+    final List<String> start = GuideContent.gettingStarted(lang: lang);
+    final List<GuideTopic> topics = GuideContent.topics(lang: lang);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(DsSpacing.pageGutter),

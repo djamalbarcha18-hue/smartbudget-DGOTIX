@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Supported locales. Ordered ar-first (the product is Arabic-first); French is
-/// intentionally easy to add later — append a [Locale] and an ARB file, nothing
-/// else changes.
+/// Supported locales. Ordered ar-first (the product is Arabic-first).
 abstract final class SupportedLocales {
   static const Locale arabic = Locale('ar');
   static const Locale english = Locale('en');
+  static const Locale french = Locale('fr');
 
-  static const List<Locale> all = <Locale>[arabic, english];
+  static const List<Locale> all = <Locale>[arabic, english, french];
 }
 
 /// Controls the active [Locale] and persists the choice per viewer.
@@ -32,18 +31,21 @@ class LocaleController extends Notifier<Locale> {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? code = prefs.getString(_key);
-      if (code != null) state = Locale(code);
+      if (code != null &&
+          SupportedLocales.all.any((Locale l) => l.languageCode == code)) {
+        state = Locale(code);
+      }
     } catch (_) {
       // Keep default.
     }
   }
 
-  /// Toggles between the first two supported locales (ar <-> en).
-  Future<void> toggle() => set(
-        state.languageCode == 'ar'
-            ? SupportedLocales.english
-            : SupportedLocales.arabic,
-      );
+  /// Moves to the next supported locale (ar → en → fr → ar).
+  Future<void> toggle() {
+    final int i = SupportedLocales.all
+        .indexWhere((Locale l) => l.languageCode == state.languageCode);
+    return set(SupportedLocales.all[(i + 1) % SupportedLocales.all.length]);
+  }
 
   Future<void> set(Locale locale) async {
     state = locale;

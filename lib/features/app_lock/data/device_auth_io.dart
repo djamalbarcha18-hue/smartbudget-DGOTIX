@@ -10,9 +10,11 @@ const String _marker = 'device';
 
 final LocalAuthentication _auth = LocalAuthentication();
 
-String get _reason => PlatformDispatcher.instance.locale.languageCode == 'ar'
-    ? 'افتح SmartBudget'
-    : 'Unlock SmartBudget';
+String get _reason => switch (PlatformDispatcher.instance.locale.languageCode) {
+      'ar' => 'افتح SmartBudget',
+      'fr' => 'Déverrouiller SmartBudget',
+      _ => 'Unlock SmartBudget',
+    };
 
 Future<bool> deviceAuthAvailable() async {
   try {

@@ -20,6 +20,7 @@ import 'package:smartbudget/features/wallets/domain/wallet.dart';
 import 'package:smartbudget/features/wallets/presentation/wallet_sheets.dart';
 import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 String _ymd(DateTime d) =>
     '\u2066${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}\u2069';
@@ -420,7 +421,7 @@ class _WalletDetails extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     final Set<String> known = <String>{
       for (final Wallet w in ref.watch(walletsProvider)) w.id,
     };
@@ -488,13 +489,13 @@ class _WalletDetails extends ConsumerWidget {
                               children: <Widget>[
                                 Text(
                                     x.description.isEmpty
-                                        ? Catalog.label(x.category, ar: ar)
+                                        ? Catalog.label(x.category, lang: lang)
                                         : x.description,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: t.bodyMedium),
                                 Text(
-                                    '${Catalog.label(x.category, ar: ar)} · ${_ymd(x.date)}',
+                                    '${Catalog.label(x.category, lang: lang)} · ${_ymd(x.date)}',
                                     style: t.labelSmall
                                         ?.copyWith(color: c.textMuted)),
                               ],

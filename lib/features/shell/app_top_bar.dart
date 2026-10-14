@@ -29,6 +29,7 @@ import 'package:smartbudget/features/search/app_search.dart';
 import 'package:smartbudget/features/shell/brand_controls.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// Top application bar: menu (mobile) + search + actions (language, theme,
 /// notifications, profile). Purely presentational in P1 — no fabricated data.
@@ -205,8 +206,8 @@ class _MonthChip extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final DsColors c = context.dsColors;
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
-    final List<String> names = MonthNames.full(ar: ar);
+    final AppLang lang = appLangOf(context);
+    final List<String> names = MonthNames.full(lang: lang);
     final int month = ref.watch(selectedMonthProvider);
     final int value = (month >= 1 && month <= 12) ? month : AppClock.now().month;
 

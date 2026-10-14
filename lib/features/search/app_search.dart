@@ -13,6 +13,7 @@ import 'package:smartbudget/features/transactions/application/transactions_contr
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// One search hit: an icon, a title, an optional subtitle and the route to open.
 class _Hit {
@@ -59,7 +60,7 @@ class _AppSearchDialogState extends ConsumerState<AppSearchDialog> {
     context.go(hit.route);
   }
 
-  List<(String, List<_Hit>)> _groups(AppLocalizations l, bool ar) {
+  List<(String, List<_Hit>)> _groups(AppLocalizations l, AppLang lang) {
     final String q = _q.trim().toLowerCase();
     final List<(String, List<_Hit>)> out = <(String, List<_Hit>)>[];
 
@@ -77,7 +78,7 @@ class _AppSearchDialogState extends ConsumerState<AppSearchDialog> {
           ref.read(transactionsProvider).valueOrNull ?? const <Transaction>[];
       final List<_Hit> txHits = <_Hit>[];
       for (final Transaction t in txns) {
-        final String cat = Catalog.label(t.category, ar: ar);
+        final String cat = Catalog.label(t.category, lang: lang);
         final bool match = t.description.toLowerCase().contains(q) ||
             cat.toLowerCase().contains(q);
         if (match) {
@@ -115,8 +116,8 @@ class _AppSearchDialogState extends ConsumerState<AppSearchDialog> {
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
-    final List<(String, List<_Hit>)> groups = _groups(l, ar);
+    final AppLang lang = appLangOf(context);
+    final List<(String, List<_Hit>)> groups = _groups(l, lang);
 
     return SafeArea(
       child: Align(

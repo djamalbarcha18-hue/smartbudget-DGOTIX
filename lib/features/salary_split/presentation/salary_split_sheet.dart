@@ -13,6 +13,7 @@ import 'package:smartbudget/features/salary_split/application/salary_split_contr
 import 'package:smartbudget/features/salary_split/domain/salary_split.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// Preview of a suggested salary split for the month selected on the budget
 /// screen. The user can change the income; nothing is saved until "Apply".
@@ -72,7 +73,7 @@ class _SalarySplitSheetState extends ConsumerState<SalarySplitSheet> {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     final SalarySplit split = _inputs.splitFor(_incomeMoney);
     final String monthLabel =
         '${_inputs.year}-${_inputs.month.toString().padLeft(2, '0')}';
@@ -191,7 +192,7 @@ class _SalarySplitSheetState extends ConsumerState<SalarySplitSheet> {
                       for (final SplitLine line
                           in split.lines.where((SplitLine x) => x.bucket == b))
                         _LineRow(
-                          label: Catalog.label(line.category, ar: ar),
+                          label: Catalog.label(line.category, lang: lang),
                           line: line,
                           averageLabel: line.average.minorUnits > 0
                               ? l.splitAverage(

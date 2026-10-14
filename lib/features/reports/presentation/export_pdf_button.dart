@@ -20,6 +20,8 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/core/l10n/month_names.dart';
 
 /// Exports the current report as a branded DGOTIX PDF (print / save-as-PDF).
 class ExportPdfButton extends ConsumerStatefulWidget {
@@ -58,7 +60,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
   Future<void> _export() async {
     final AppLocalizations l = AppLocalizations.of(context);
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
 
     setState(() => _busy = true);
     try {
@@ -70,7 +72,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
 
       final String periodText = period == ReportPeriod.yearly
           ? '${_periodLabel(period, l)} · $year'
-          : '${_periodLabel(period, l)} — ${_subLabel(period, sub, l, ar)} · $year';
+          : '${_periodLabel(period, l)} — ${_subLabel(period, sub, l, lang)} · $year';
 
       final ReportPdfData data = ReportPdfData(
         title: l.navReports,
@@ -84,12 +86,12 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
           ReportRow(l.kpiSavingsRate, MoneyFormatter.percent(s.savingsRate)),
         ],
         incomeTitle: l.reportIncomeByCategory,
-        income: _rows(report.incomeCategories, ar),
+        income: _rows(report.incomeCategories, lang),
         expenseTitle: l.reportExpenseByCategory,
-        expenses: _rows(report.expenseCategories, ar),
+        expenses: _rows(report.expenseCategories, lang),
         emptyLabel: l.emptyTransactionsMessage,
         footer: 'DGOTIX Analytics · SmartBudget',
-        isRtl: ar,
+        isRtl: lang.isAr,
       );
 
       final pw.Font base = pw.Font.ttf(
@@ -109,9 +111,9 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
     }
   }
 
-  List<ReportRow> _rows(List<CategoryTotal> totals, bool ar) => totals
+  List<ReportRow> _rows(List<CategoryTotal> totals, AppLang lang) => totals
       .map((CategoryTotal t) =>
-          ReportRow(Catalog.label(t.category, ar: ar), MoneyFormatter.format(t.amount)))
+          ReportRow(Catalog.label(t.category, lang: lang), MoneyFormatter.format(t.amount)))
       .toList();
 
   String _periodLabel(ReportPeriod p, AppLocalizations l) => switch (p) {
@@ -121,20 +123,12 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
         ReportPeriod.yearly => l.periodYearly,
       };
 
-  String _subLabel(ReportPeriod p, int s, AppLocalizations l, bool ar) {
+  String _subLabel(ReportPeriod p, int s, AppLocalizations l, AppLang lang) {
     switch (p) {
       case ReportPeriod.monthly:
-        const List<String> arM = <String>[
-          'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-          'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
-        ];
-        const List<String> enM = <String>[
-          'January', 'February', 'March', 'April', 'May', 'June',
-          'July', 'August', 'September', 'October', 'November', 'December',
-        ];
-        return (ar ? arM : enM)[(s - 1).clamp(0, 11)];
+        return MonthNames.full(lang: lang)[(s - 1).clamp(0, 11)];
       case ReportPeriod.quarterly:
-        return ar ? 'الربع $s' : 'Q$s';
+        return lang.pick('الربع $s', 'Q$s', 'T$s');
       case ReportPeriod.halfYearly:
         return s == 2 ? l.half2 : l.half1;
       case ReportPeriod.yearly:

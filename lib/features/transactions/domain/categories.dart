@@ -1,3 +1,4 @@
+import 'package:smartbudget/core/l10n/app_lang.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
 /// Default categories and payment methods (product data, not financial rules).
@@ -156,7 +157,76 @@ abstract final class Catalog {
     'أخرى': 'Other',
   };
 
+  /// French display labels, keyed like [_en].
+  static const Map<String, String> _fr = <String, String>{
+    // Income
+    'راتب أساسي': 'Salaire de base',
+    'مكافآت وحوافز': 'Primes et bonus',
+    'مكافأة نهاية الخدمة': 'Indemnité de fin de service',
+    'معاش تقاعدي': 'Retraite',
+    'عمل حر': 'Freelance',
+    'عمولات': 'Commissions',
+    'أرباح تجارية': 'Bénéfices commerciaux',
+    'دخل استثماري': "Revenus d'investissement",
+    'أرباح أسهم وتوزيعات': 'Dividendes',
+    'أرباح العملات الرقمية': 'Gains en cryptomonnaies',
+    'إيجارات': 'Revenus locatifs',
+    'تأجير قصير الأمد': 'Location courte durée',
+    'تجارة إلكترونية': 'E-commerce',
+    'بيع أصول أو ممتلكات': "Vente d'actifs ou de biens",
+    'محتوى رقمي وإبداعي': 'Contenu numérique et créatif',
+    'استرجاع نقدي ومكافآت': 'Cashback et récompenses',
+    'منحة أو إعانة': 'Bourse ou aide',
+    'ميراث': 'Héritage',
+    'استرداد أو تعويض': 'Remboursement ou indemnisation',
+    'هدايا': 'Cadeaux',
+    'زكاة أو صدقة مستلمة': 'Zakat ou aumône reçue',
+    // Expenses
+    'الطعام': 'Courses alimentaires',
+    'المطاعم': 'Restaurants',
+    'النقل': 'Transport',
+    'السكن': 'Logement',
+    'الفواتير': 'Factures et charges',
+    'الاتصالات والإنترنت': 'Téléphone et internet',
+    'الصحة': 'Santé',
+    'التعليم': 'Éducation',
+    'الأطفال والعائلة': 'Enfants et famille',
+    'التسوق': 'Shopping',
+    'الملابس': 'Vêtements',
+    'الترفيه': 'Loisirs',
+    'الرياضة واللياقة': 'Sport et forme',
+    'الاشتراكات': 'Abonnements',
+    'السفر': 'Voyages',
+    'الأقساط والقروض': 'Crédits et mensualités',
+    'التأمين': 'Assurances',
+    'الضرائب والرسوم': 'Impôts et taxes',
+    'الصيانة والإصلاح': 'Entretien et réparations',
+    'الأثاث والمنزل': 'Maison et ameublement',
+    'الوقود': 'Carburant',
+    'الخدمات المهنية والقانونية': 'Services professionnels et juridiques',
+    'البرمجيات والأدوات الرقمية': 'Logiciels et outils numériques',
+    'الحج والعمرة': 'Hajj et Omra',
+    'صدقة وتبرّعات': 'Aumônes et dons',
+    'زكاة': 'Zakat',
+    'الادخار والاستثمار': 'Épargne et investissement',
+    'الطوارئ': 'Imprévus',
+    // Payment methods
+    'نقداً': 'Espèces',
+    'بطاقة بنكية': 'Carte bancaire',
+    'بطاقة ائتمان': 'Carte de crédit',
+    'محفظة إلكترونية': 'Portefeuille électronique',
+    'تحويل الكتروني': 'Virement',
+    'تحويل بنكي فوري': 'Virement instantané',
+    'الدفع عند الاستلام': 'Paiement à la livraison',
+    'محفظة عملات رقمية': 'Portefeuille crypto',
+    'أموال عبر الهاتف': 'Paiement mobile',
+    'شيك': 'Chèque',
+    'بطاقة هدايا أو قسيمة': 'Carte cadeau / bon',
+    // Shared
+    'أخرى': 'Autre',
+  };
+
   /// Localized display label for a stored category/payment value.
-  static String label(String value, {required bool ar}) =>
-      ar ? value : (_en[value] ?? value);
+  static String label(String value, {required AppLang lang}) =>
+      lang.pick(value, _en[value] ?? value, _fr[value] ?? _en[value] ?? value);
 }

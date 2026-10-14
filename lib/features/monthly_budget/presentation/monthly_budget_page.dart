@@ -25,6 +25,7 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// Monthly Budget: one screen with year + month selectors — not 12 pages.
 class MonthlyBudgetPage extends ConsumerWidget {
@@ -166,7 +167,7 @@ class _BudgetRow extends ConsumerWidget {
     final double fraction =
         plannedMinor == 0 ? 0 : actualMinor / plannedMinor;
     final String catLabel = Catalog.label(category,
-        ar: Localizations.localeOf(context).languageCode == 'ar');
+        lang: appLangOf(context));
 
     return Padding(
       padding: const EdgeInsets.only(bottom: DsSpacing.md),
@@ -271,7 +272,7 @@ class _BudgetRow extends ConsumerWidget {
     final bool? ok = await showDialog<bool>(
       context: context,
       builder: (BuildContext ctx) => AlertDialog(
-        title: Text('${l.setBudget} · ${Catalog.label(category, ar: Localizations.localeOf(context).languageCode == 'ar')}'),
+        title: Text('${l.setBudget} · ${Catalog.label(category, lang: appLangOf(context))}'),
         content: TextField(
           inputFormatters: LatinDigitsFormatter.only,
           controller: ctrl,

@@ -6,6 +6,7 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/features/assistant/domain/insight_engine.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// The presentation view of an [Insight]: its icon, tone colour and the
 /// localized sentence. Shared by the Assistant page and the dashboard card so
@@ -25,7 +26,7 @@ class InsightView {
 InsightView describeInsight(BuildContext context, Insight i) {
   final DsColors c = context.dsColors;
   final AppLocalizations l = AppLocalizations.of(context);
-  final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+  final AppLang lang = appLangOf(context);
 
   final Color color = switch (i.tone) {
     InsightTone.positive => c.income,
@@ -50,7 +51,7 @@ InsightView describeInsight(BuildContext context, Insight i) {
     InsightKey.savingsRate =>
       l.insightSavingsRate(iso(MoneyFormatter.percent(i.rate ?? 0))),
     InsightKey.topExpenseCategory => l.insightTopExpense(
-        Catalog.label(i.category ?? '', ar: ar), money(i.amountMinor)),
+        Catalog.label(i.category ?? '', lang: lang), money(i.amountMinor)),
     InsightKey.healthExcellent => l.insightHealthExcellent,
     InsightKey.healthVeryGood => l.insightHealthVeryGood,
     InsightKey.healthGood => l.insightHealthGood,

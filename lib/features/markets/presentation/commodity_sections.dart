@@ -14,6 +14,7 @@ import 'package:smartbudget/features/markets/domain/market_category.dart';
 import 'package:smartbudget/features/markets/domain/market_models.dart';
 import 'package:smartbudget/features/markets/domain/metals_calculator.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 String marketCategoryLabel(AppLocalizations l, MarketCategory c) => switch (c) {
       MarketCategory.exchangeRates => l.tabExchangeRates,
@@ -138,7 +139,7 @@ class _MetalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     final bool local = usdToBase != null;
     final String cur = local ? base : 'USD';
     double conv(double usd) => local ? usd * usdToBase! : usd;
@@ -155,7 +156,7 @@ class _MetalCard extends StatelessWidget {
           Row(
             children: <Widget>[
               Expanded(
-                child: Text('${ar ? quote.nameAr : quote.nameEn} · ${quote.code}',
+                child: Text('${lang.isAr ? quote.nameAr : quote.nameEn} · ${quote.code}',
                     style: Theme.of(context).textTheme.titleMedium),
               ),
               QualityBadge(quality: quote.quality),
@@ -289,7 +290,7 @@ class _CommodityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     final ImpactNote? impact = BusinessImpact.forCode(quote.code);
     final bool local = usdToBase != null;
 
@@ -300,7 +301,7 @@ class _CommodityCard extends StatelessWidget {
           Row(
             children: <Widget>[
               Expanded(
-                child: Text('${ar ? quote.nameAr : quote.nameEn} · ${quote.code}',
+                child: Text('${lang.isAr ? quote.nameAr : quote.nameEn} · ${quote.code}',
                     style: Theme.of(context).textTheme.titleSmall),
               ),
               QualityBadge(quality: quote.quality),
@@ -348,7 +349,7 @@ class _CommodityCard extends StatelessWidget {
               spacing: DsSpacing.sm,
               runSpacing: DsSpacing.xs,
               children: <Widget>[
-                for (final String s in (ar ? impact.sectorsAr : impact.sectorsEn))
+                for (final String s in (lang.isAr ? impact.sectorsAr : impact.sectorsEn))
                   Text('• $s', style: Theme.of(context).textTheme.labelSmall),
               ],
             ),

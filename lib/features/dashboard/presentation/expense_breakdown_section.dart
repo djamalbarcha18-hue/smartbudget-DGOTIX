@@ -15,6 +15,7 @@ import 'package:smartbudget/features/dashboard/application/dashboard_controller.
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// Expense breakdown with a donut and a category bar chart that share ONE
 /// selection state ([_selected]). Clean by default — no numbers are printed on
@@ -38,7 +39,7 @@ class _ExpenseBreakdownSectionState
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     final List<CategoryTotal> totals =
         ref.watch(scopedExpenseCategoryTotalsProvider);
 
@@ -53,7 +54,7 @@ class _ExpenseBreakdownSectionState
       final String currency = totals.first.amount.currencyCode;
       for (int i = 0; i < top.length; i++) {
         segments.add(DonutSegment(
-          label: Catalog.label(top[i].category, ar: ar),
+          label: Catalog.label(top[i].category, lang: lang),
           value: top[i].amount.minorUnits.toDouble(),
           color: DsChartPalette.at(i),
           valueLabel: MoneyFormatter.format(top[i].amount),

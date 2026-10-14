@@ -9,6 +9,7 @@ import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/seasons/presentation/season_text.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// The display-ready form of an [AppAlert] (localized + formatted). Shared by
 /// the dashboard alerts section and the top-bar notifications bell so the
@@ -35,7 +36,7 @@ class AlertView {
 AlertView describeAlert(BuildContext context, AppAlert a) {
   final DsColors c = context.dsColors;
   final AppLocalizations l = AppLocalizations.of(context);
-  final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+  final AppLang lang = appLangOf(context);
 
   final (Color color, IconData icon) = switch (a.severity) {
     AlertSeverity.high => (c.expense, Icons.error_outline_rounded),
@@ -48,7 +49,7 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
       ? ''
       : a.subject.startsWith('season:')
           ? seasonName(l, seasonKindFromKey(a.subject), '')
-          : Catalog.label(a.subject, ar: ar);
+          : Catalog.label(a.subject, lang: lang);
   final String amount = MoneyFormatter.format(a.amount);
   final DateTime now = AppClock.now();
   final DateTime? when = a.date;

@@ -20,6 +20,7 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// "Exchange Rates & Markets" — official + parallel FIAT markets and a crypto
 /// section. Every number is fetched live from a keyless public source; when a
@@ -230,7 +231,7 @@ class _CountrySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     final AsyncValue<FxSnapshot> fx = ref.watch(fxSnapshotProvider);
     // Parallel rates are part of the advanced markets: not even fetched
     // without them.
@@ -249,7 +250,7 @@ class _CountrySection extends ConsumerWidget {
             children: <Widget>[
               CurrencyFlag.country(country.country, width: 26),
               const SizedBox(width: DsSpacing.sm),
-              Text(ar ? country.nameAr : country.nameEn,
+              Text(lang.isAr ? country.nameAr : country.nameEn,
                   style: Theme.of(context).textTheme.titleMedium),
             ],
           ),

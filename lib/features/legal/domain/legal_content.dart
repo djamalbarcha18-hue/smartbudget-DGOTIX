@@ -1,4 +1,5 @@
 import 'package:smartbudget/core/config/app_config.dart';
+import 'package:smartbudget/core/l10n/app_lang.dart';
 
 /// Which legal document to render.
 enum LegalDoc { privacy, terms }
@@ -34,10 +35,14 @@ abstract final class LegalContent {
       ? 'على ${AppConfig.supportEmail}'
       : 'عبر صفحة المساعدة والدعم في التطبيق';
 
-  static List<LegalSection> sections(LegalDoc doc, {required bool ar}) =>
+  static String get _reachFr => AppConfig.hasSupportEmail
+      ? 'à ${AppConfig.supportEmail}'
+      : 'via la page Aide et assistance de l\'application';
+
+  static List<LegalSection> sections(LegalDoc doc, {required AppLang lang}) =>
       switch (doc) {
-        LegalDoc.privacy => ar ? _privacyAr : _privacyEn,
-        LegalDoc.terms => ar ? _termsAr : _termsEn,
+        LegalDoc.privacy => lang.pick(_privacyAr, _privacyEn, _privacyFr),
+        LegalDoc.terms => lang.pick(_termsAr, _termsEn, _termsFr),
       };
 
   // ---- Privacy (English) ----
@@ -538,6 +543,309 @@ abstract final class LegalContent {
           'قد نحدّث هذه الشروط ونعرض تاريخ أحدث نسخة منها؛ ويعني استمرارك في '
               'الاستخدام بعد التحديث قبولك للشروط المعدّلة. ولأي استفسار تواصل '
               'معنا $_reachAr.',
+        ),
+      ];
+
+  // ---- Privacy (French) ----
+  static List<LegalSection> get _privacyFr => <LegalSection>[
+        LegalSection(
+          'Vue d\'ensemble',
+          'Cette politique explique ce que $_app stocke, où ces données sont '
+              'stockées et les choix dont vous disposez. En bref : vos données '
+              'financières vous appartiennent, elles sont d\'abord enregistrées '
+              'sur votre appareil, et nous ne les vendons jamais, ne vous '
+              'montrons aucune publicité et ne vous pistons pas. Quelques '
+              'fonctionnalités facultatives (connexion et synchronisation, DGOTIX'
+              ' AI, scan des tickets dans le cloud et formules payantes) envoient'
+              ' des données précises à un service uniquement lorsque vous les '
+              'utilisez, comme décrit ci-dessous.',
+        ),
+        const LegalSection(
+          'Ce que nous stockons',
+          'Les informations que vous saisissez vous-même : revenus, dépenses,'
+              ' budgets, objectifs, dettes, portefeuilles, catégories '
+              'personnalisées et vos préférences d\'affichage (thème, langue, '
+              'devise de base). Si vous créez un compte, nous conservons aussi '
+              'votre adresse e-mail, votre formule et l\'état de votre '
+              'abonnement, ainsi que des compteurs d\'utilisation par période '
+              'pour DGOTIX AI et le scan des tickets dans le cloud, utilisés '
+              'uniquement pour appliquer les limites de votre formule. Nous ne '
+              'stockons ni vos questions à DGOTIX AI ni les images de vos '
+              'tickets ; si vous signalez une réponse de l\'IA, nous conservons '
+              'cette réponse et votre note facultative afin de l\'examiner.',
+        ),
+        const LegalSection(
+          'Où se trouvent vos données',
+          'Tout est d\'abord enregistré sur votre appareil (dans '
+              'l\'application, ou dans votre navigateur pour la version web), de '
+              'sorte que l\'application fonctionne même sans compte ni connexion.'
+              ' Si vous vous connectez, vos données se synchronisent aussi '
+              'automatiquement entre vos appareils : une copie est stockée dans '
+              'notre base de données (hébergée par Supabase), liée à votre compte'
+              ' et isolée afin que vous seul puissiez la lire. Vous pouvez '
+              'désactiver la synchronisation dans Paramètres ; vos données '
+              'restent alors uniquement sur cet appareil.',
+        ),
+        const LegalSection(
+          'Votre compte et les e-mails',
+          'Votre adresse e-mail sert à vous connecter et à vous envoyer les '
+              'e-mails liés au compte, comme la confirmation de l\'adresse et la '
+              'réinitialisation du mot de passe (envoyés via Brevo). Elle n\'est '
+              'jamais utilisée à des fins publicitaires ni partagée à des fins '
+              'marketing. Lors de l\'inscription ou de la connexion, une '
+              'vérification humaine rapide (Cloudflare Turnstile) écarte les abus'
+              ' automatisés.',
+        ),
+        const LegalSection(
+          'DGOTIX AI',
+          'DGOTIX AI est facultatif. Lorsque vous posez une question, le '
+              'texte de cette question et un résumé de vos chiffres (totaux par '
+              'mois et par catégorie sur 12 mois au plus, budgets, soldes des '
+              'portefeuilles, objectifs, transactions récurrentes, budgets '
+              'saisonniers et tontines : uniquement des montants et des dates, '
+              'jamais les descriptions, les notes ni les noms que vous donnez) '
+              'sont envoyés via notre serveur sécurisé à un fournisseur d\'IA '
+              '(Google Gemini, OpenAI ou Anthropic) pour générer la réponse. '
+              'Notre serveur utilise nos propres clés de fournisseur et '
+              'n\'enregistre que des métadonnées d\'utilisation, jamais votre '
+              'question ni vos chiffres. Nous n\'utilisons pas vos données pour '
+              'entraîner un modèle. Les réponses sont générées automatiquement : '
+              'vérifiez les chiffres importants avant d\'agir.',
+        ),
+        const LegalSection(
+          'Scan des tickets',
+          'Sur Android, les tickets peuvent être lus entièrement sur votre '
+              'appareil. Le scan dans le cloud envoie l\'image du ticket via '
+              'notre serveur sécurisé à un fournisseur d\'IA uniquement pour lire'
+              ' le commerçant, la date, le montant, les articles et la '
+              'catégorie ; l\'image n\'est pas conservée.',
+        ),
+        const LegalSection(
+          'Paiements et abonnements',
+          'Les formules payantes sont facultatives. Les commandes sont '
+              'traitées par Paddle.com, notre revendeur en ligne et marchand '
+              'officiel (Merchant of Record), qui vous permet de payer par carte,'
+              ' PayPal, Apple Pay ou Google Pay. Paddle collecte les informations'
+              ' de facturation dont il a besoin (comme votre nom, votre e-mail, '
+              'votre pays et votre moyen de paiement) selon sa propre politique '
+              'de confidentialité ; nous ne voyons ni ne conservons jamais les '
+              'détails complets de votre carte. Nous conservons votre formule, '
+              'l\'état de votre abonnement, sa date de renouvellement et les '
+              'identifiants d\'abonnement de Paddle pour vous donner le bon '
+              'accès, ainsi qu\'une trace des codes promo que vous utilisez.',
+        ),
+        const LegalSection(
+          'Prestataires de services',
+          'Selon les fonctionnalités que vous utilisez : Supabase (comptes, '
+              'synchronisation et fonctions de notre serveur) ; Paddle '
+              '(paiements) ; Brevo (e-mails liés au compte) ; Cloudflare '
+              'Turnstile (la vérification humaine à la connexion) ; GitHub Pages '
+              '(hébergement de notre site et de l\'application web) ; Google, '
+              'OpenAI et Anthropic (DGOTIX AI et scan des tickets dans le '
+              'cloud) ; et des sources publiques de données de marché pour les '
+              'chiffres en direct : taux de change (open.er-api.com) et cours des'
+              ' cryptomonnaies (CoinGecko), dont les requêtes ne contiennent que '
+              'des symboles de devises ou d\'actifs, jamais vos données '
+              'personnelles ou financières. Chaque prestataire ne traite les '
+              'données que pour fournir sa part du service.',
+        ),
+        const LegalSection(
+          'Sécurité',
+          'Les connexions à nos services sont chiffrées (HTTPS). Dans notre '
+              'base de données, les enregistrements de chaque utilisateur sont '
+              'isolés afin qu\'un compte ne puisse jamais lire ceux d\'un autre. '
+              'Les clés du serveur n\'atteignent jamais l\'application, les '
+              'notifications de paiement sont vérifiées avant de modifier quoi '
+              'que ce soit, et vous pouvez ajouter un verrouillage de '
+              'l\'application (code PIN ou empreinte) sur votre appareil.',
+        ),
+        const LegalSection(
+          'Ce que nous ne faisons pas',
+          'Nous ne vendons ni ne louons vos données, n\'affichons aucune '
+              'publicité et ne pratiquons aucun pistage comportemental ni aucune '
+              'analyse de votre activité financière.',
+        ),
+        const LegalSection(
+          'Durée de conservation',
+          'Les données sur votre appareil y restent jusqu\'à ce que vous les '
+              'supprimiez ou désinstalliez l\'application. Votre compte, vos '
+              'données synchronisées, vos compteurs d\'utilisation et les '
+              'métadonnées des requêtes sont conservés tant que votre compte '
+              'existe, uniquement pour faire fonctionner le service et appliquer '
+              'les limites de votre formule, et sont définitivement effacés '
+              'lorsque vous le supprimez. Paddle conserve les justificatifs de '
+              'facturation qu\'il est légalement tenu de conserver.',
+        ),
+        LegalSection(
+          'Vos droits et vos choix',
+          'Vous pouvez à tout moment consulter et corriger vos données dans '
+              'l\'application, exporter une sauvegarde complète, désactiver la '
+              'synchronisation, vous déconnecter et supprimer votre compte avec '
+              'toutes ses données (voir ci-dessous). Vous pouvez résilier un '
+              'abonnement payant à tout moment (voir les Conditions). Pour toute '
+              'autre demande concernant vos données personnelles, notamment '
+              'l\'accès, la rectification, l\'effacement ou l\'opposition, '
+              'contactez-nous $_reachFr et nous vous répondrons rapidement.',
+        ),
+        const LegalSection(
+          'Supprimer votre compte et vos données',
+          'Dans l\'application ou la version web, sur n\'importe quel '
+              'appareil, ouvrez Paramètres, puis Compte, puis « Supprimer mon '
+              'compte ». Cela supprime définitivement votre compte et tout ce qui'
+              ' est stocké pour lui sur nos serveurs (profil, données '
+              'synchronisées, enregistrement d\'abonnement et compteurs '
+              'd\'utilisation), et efface vos données sur cet appareil. Résiliez '
+              'd\'abord tout abonnement payant. La suppression est irréversible :'
+              ' exportez une sauvegarde avant si vous pourriez avoir besoin de '
+              'vos données plus tard.',
+        ),
+        LegalSection(
+          'Âge',
+          '$_app est destiné aux personnes âgées de 16 ans et plus. Nous ne '
+              'collectons pas sciemment de données concernant des enfants plus '
+              'jeunes ; si vous pensez qu\'un enfant a créé un compte, contactez-'
+              'nous $_reachFr et nous le supprimerons.',
+        ),
+        LegalSection(
+          'Modifications et contact',
+          'Nous pouvons mettre à jour cette politique ; la date indiquée ci-'
+              'dessus correspond à la dernière version. Pour toute question sur '
+              'la confidentialité, contactez-nous $_reachFr.',
+        ),
+      ];
+
+  // ---- Terms (French) ----
+  static List<LegalSection> get _termsFr => <LegalSection>[
+        LegalSection(
+          'Acceptation',
+          'En utilisant $_app, vous acceptez les présentes conditions. Si '
+              'vous ne les acceptez pas, veuillez ne pas utiliser l\'application.',
+        ),
+        LegalSection(
+          'Qui peut l\'utiliser',
+          'Vous devez avoir au moins 16 ans pour utiliser $_app. Si vous '
+              'créez un compte, gardez vos identifiants en sécurité ; vous êtes '
+              'responsable de l\'activité de votre compte.',
+        ),
+        const LegalSection(
+          'Nature du service',
+          'Un outil personnel de budget et de planification pour suivre les '
+              'revenus, les dépenses, les budgets, les objectifs et les analyses '
+              'associées, avec en option une aide par IA, le scan des tickets, la'
+              ' synchronisation entre appareils et des formules payantes.',
+        ),
+        const LegalSection(
+          'Des outils de planification, pas un conseil professionnel',
+          'Les budgets, les projections, le calcul de la zakat et les '
+              'réponses de DGOTIX AI sont des outils de planification pour vous '
+              'aider à décider. Ils ne constituent pas un conseil professionnel '
+              'financier, fiscal ou religieux. Pour les obligations religieuses '
+              'comme la zakat, confirmez auprès d\'un savant qualifié ; pour les '
+              'décisions financières importantes, consultez un conseiller '
+              'qualifié.',
+        ),
+        const LegalSection(
+          'Fonctionnalités d\'IA',
+          'DGOTIX AI et le scan des tickets dans le cloud produisent des '
+              'résultats automatisés pour vous faire gagner du temps ; vérifiez '
+              'les chiffres importants avant d\'agir. Ces fonctionnalités sont '
+              'incluses dans des limites d\'usage raisonnable qui dépendent de '
+              'votre formule, et peuvent être ajustées pour que le service reste '
+              'rapide et fiable pour tous.',
+        ),
+        const LegalSection(
+          'Abonnements, facturation et renouvellements',
+          'L\'application de base est gratuite. Les formules payantes (Basic '
+              'et Pro) débloquent des limites plus élevées et des fonctionnalités'
+              ' supplémentaires aux prix affichés dans l\'application. Une '
+              'formule payante se renouvelle automatiquement à chaque période de '
+              'facturation (mensuelle ou annuelle) jusqu\'à sa résiliation. Les '
+              'paiements sont traités par notre revendeur en ligne Paddle ; les '
+              'taxes applicables peuvent s\'ajouter et sont gérées par Paddle en '
+              'tant que marchand officiel. Vous pouvez résilier à tout moment et '
+              'conserver l\'accès jusqu\'à la fin de la période déjà payée. Si '
+              'les prix ou les fonctionnalités changent, les conditions en '
+              'vigueur sont toujours affichées avant votre abonnement.',
+        ),
+        const LegalSection(
+          'Notre revendeur : Paddle',
+          'Notre processus de commande est assuré par notre revendeur en '
+              'ligne Paddle.com. Paddle.com est le marchand officiel (Merchant of'
+              ' Record) de toutes nos commandes. Paddle traite toutes les '
+              'demandes du service client et gère les retours.',
+        ),
+        LegalSection(
+          'Politique de remboursement',
+          'Sauf lorsque la loi l\'exige, les paiements ne sont en général pas'
+              ' remboursables une fois qu\'une période de facturation a commencé,'
+              ' puisque vous conservez l\'accès jusqu\'à sa fin. Vous pouvez '
+              'résilier à tout moment pour arrêter les renouvellements futurs. '
+              'Les demandes de remboursement sont traitées par Paddle selon ses '
+              'conditions d\'achat et le droit de la consommation applicable '
+              '(vous pouvez joindre Paddle sur paddle.net) ; vous pouvez aussi '
+              'nous contacter $_reachFr et nous vous aiderons.',
+        ),
+        const LegalSection(
+          'Codes promo',
+          'Les coupons et codes de réduction sont facultatifs et ne modifient'
+              ' que le prix d\'un paiement (ou offrent un essai). Chaque code a '
+              'ses propres conditions (durée de validité, limites d\'utilisation,'
+              ' un par client) et peut être retiré ou expirer. Ils n\'ont aucune '
+              'valeur monétaire et ne sont pas cumulables, sauf mention '
+              'contraire.',
+        ),
+        const LegalSection(
+          'Vos données et sauvegardes',
+          'Vous êtes responsable de l\'exactitude des données que vous '
+              'saisissez. Pour protéger vos données d\'un appareil à l\'autre, '
+              'connectez-vous pour les synchroniser, ou exportez régulièrement '
+              'une sauvegarde depuis Paramètres.',
+        ),
+        LegalSection(
+          'Disponibilité',
+          'Nous faisons en sorte que $_app reste disponible et fiable. Dans '
+              'la mesure permise par la loi, l\'application est fournie « en '
+              'l\'état », sans garantie d\'aucune sorte. Les données de marché en'
+              ' direct, l\'IA et les paiements reposent sur des services tiers et'
+              ' peuvent parfois être retardés ou indisponibles ; une telle '
+              'interruption ne vous empêche jamais d\'utiliser les outils de '
+              'budget essentiels, qui fonctionnent aussi hors ligne. Les '
+              'fonctionnalités peuvent évoluer avec le temps.',
+        ),
+        const LegalSection(
+          'Limitation de responsabilité',
+          'Dans la mesure permise par la loi, nous ne sommes pas responsables'
+              ' des pertes indirectes ou consécutives, ni des décisions que vous '
+              'prenez sur la base des chiffres de l\'application. Rien dans les '
+              'présentes conditions ne limite les droits dont vous disposez en '
+              'vertu du droit de la consommation et auxquels il ne peut être '
+              'renoncé.',
+        ),
+        const LegalSection(
+          'Utilisation acceptable',
+          'N\'utilisez pas le service de manière abusive, ne tentez pas de '
+              'contourner sa sécurité ou les limites des formules, et ne '
+              'l\'utilisez à aucune fin illégale.',
+        ),
+        LegalSection(
+          'Fin de l\'utilisation',
+          'Vous pouvez cesser d\'utiliser $_app et supprimer votre compte à '
+              'tout moment. Nous pouvons suspendre un compte qui enfreint les '
+              'présentes conditions ou met en danger le service ou d\'autres '
+              'utilisateurs.',
+        ),
+        LegalSection(
+          'Marque et propriété',
+          'Le nom $_app, la marque $_brand, ainsi que le design et le code de'
+              ' l\'application restent la propriété de leur titulaire. Vos '
+              'données restent les vôtres.',
+        ),
+        LegalSection(
+          'Modifications et contact',
+          'Nous pouvons mettre à jour ces conditions et indiquer la date de '
+              'la dernière version ; continuer à utiliser l\'application après '
+              'une mise à jour vaut acceptation des conditions révisées. Pour '
+              'toute question, contactez-nous $_reachFr.',
         ),
       ];
 }

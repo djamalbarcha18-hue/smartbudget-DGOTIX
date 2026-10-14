@@ -39,6 +39,7 @@ import 'package:smartbudget/features/quick_entry/presentation/quick_entry_sheet.
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/features/transactions/presentation/transactions_list.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// Live dashboard: KPIs and breakdowns computed from the user's transactions
 /// via [FinanceCalculator] (the SmartBudget rules). With no data, tiles show a
@@ -375,7 +376,7 @@ class _MonthlyComparisonCard extends ConsumerWidget {
     final bool hasData = points.any((MonthPoint p) =>
         p.income.minorUnits > 0 || p.expense.minorUnits > 0);
 
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     final Widget legend = Wrap(
       spacing: DsSpacing.lg,
       runSpacing: DsSpacing.xs,
@@ -426,7 +427,7 @@ class _MonthlyComparisonCard extends ConsumerWidget {
                       axis: c.textFaint,
                       grid: c.border,
                       height: cons.maxHeight,
-                      monthLabels: MonthNames.short(ar: ar),
+                      monthLabels: MonthNames.short(lang: lang),
                     ),
                   ),
           ),
@@ -480,7 +481,7 @@ class _DistributionBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     final int totalMinor =
         totals.fold<int>(0, (int s, CategoryTotal t) => s + t.amount.minorUnits);
 
@@ -493,7 +494,7 @@ class _DistributionBody extends StatelessWidget {
       final String currency = totals.first.amount.currencyCode;
       for (int i = 0; i < top.length; i++) {
         segments.add(DonutSegment(
-          label: Catalog.label(top[i].category, ar: ar),
+          label: Catalog.label(top[i].category, lang: lang),
           value: top[i].amount.minorUnits.toDouble(),
           color: DsChartPalette.at(i),
           valueLabel: MoneyFormatter.compact(top[i].amount),
@@ -728,10 +729,10 @@ class _TableRow extends StatelessWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     final bool rtl = Directionality.of(context) == TextDirection.rtl;
     final Color tone = txn.isIncome ? c.income : c.expense;
-    final String category = Catalog.label(txn.category, ar: ar);
+    final String category = Catalog.label(txn.category, lang: lang);
 
     return InkWell(
       borderRadius: DsRadius.brMd,

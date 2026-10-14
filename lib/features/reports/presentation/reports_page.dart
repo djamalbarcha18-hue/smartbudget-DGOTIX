@@ -20,6 +20,8 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/core/l10n/month_names.dart';
 
 class ReportsPage extends ConsumerWidget {
   const ReportsPage({super.key});
@@ -196,20 +198,12 @@ class ReportsPage extends ConsumerWidget {
 
   String _subLabel(
       BuildContext context, ReportPeriod p, int s, AppLocalizations l) {
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     switch (p) {
       case ReportPeriod.monthly:
-        const List<String> arM = <String>[
-          'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-          'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
-        ];
-        const List<String> enM = <String>[
-          'January', 'February', 'March', 'April', 'May', 'June',
-          'July', 'August', 'September', 'October', 'November', 'December',
-        ];
-        return (ar ? arM : enM)[s - 1];
+        return MonthNames.full(lang: lang)[s - 1];
       case ReportPeriod.quarterly:
-        return ar ? 'الربع $s' : 'Q$s';
+        return lang.pick('الربع $s', 'Q$s', 'T$s');
       case ReportPeriod.halfYearly:
         return s == 2 ? l.half2 : l.half1;
       case ReportPeriod.yearly:
@@ -256,9 +250,7 @@ class _CategoryCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                               Catalog.label(t.category,
-                                  ar: Localizations.localeOf(context)
-                                          .languageCode ==
-                                      'ar'),
+                                  lang: appLangOf(context)),
                               style: Theme.of(context).textTheme.bodySmall,
                               overflow: TextOverflow.ellipsis),
                         ),

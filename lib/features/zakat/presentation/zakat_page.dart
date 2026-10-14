@@ -13,6 +13,7 @@ import 'package:smartbudget/features/zakat/application/zakat_controller.dart';
 import 'package:smartbudget/features/zakat/domain/hawl.dart';
 import 'package:smartbudget/features/zakat/domain/zakat_calculator.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 class ZakatPage extends ConsumerStatefulWidget {
   const ZakatPage({super.key});
@@ -292,7 +293,7 @@ class _HawlCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     final DateTime? start = ref.watch(zakatInputsProvider).hawlStart;
     final HawlStatus? hawl = ref.watch(zakatHawlProvider);
 
@@ -320,9 +321,9 @@ class _HawlCard extends ConsumerWidget {
               ),
             )
           else ...<Widget>[
-            _kv(context, l.zakatHawlStart, hawl.startHijri.format(ar: ar)),
+            _kv(context, l.zakatHawlStart, hawl.startHijri.format(lang: lang)),
             _kv(context, l.zakatHawlDue,
-                '${hawl.dueHijri.format(ar: ar)} · ${_greg(hawl.due)}'),
+                '${hawl.dueHijri.format(lang: lang)} · ${_greg(hawl.due)}'),
             const SizedBox(height: DsSpacing.sm),
             Container(
               width: double.infinity,

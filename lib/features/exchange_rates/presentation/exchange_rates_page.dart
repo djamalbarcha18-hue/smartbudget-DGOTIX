@@ -16,6 +16,7 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/exchange_rates/domain/exchange_rate_calculator.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 class ExchangeRatesPage extends ConsumerStatefulWidget {
   const ExchangeRatesPage({super.key});
@@ -342,7 +343,7 @@ class _RateRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: DsSpacing.sm),
       child: Row(
@@ -358,7 +359,7 @@ class _RateRow extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Flexible(
-                  child: Text(ar ? currency.nameAr : currency.nameEn,
+                  child: Text(lang.isAr ? currency.nameAr : currency.nameEn,
                       style: Theme.of(context).textTheme.bodySmall,
                       overflow: TextOverflow.ellipsis),
                 ),

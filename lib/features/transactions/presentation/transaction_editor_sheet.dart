@@ -25,6 +25,7 @@ import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// Initial values for a NEW transaction, e.g. extracted from a scanned receipt.
 class TransactionDraft {
@@ -558,7 +559,7 @@ class _CategoryDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -587,7 +588,7 @@ class _CategoryDropdown extends StatelessWidget {
           ),
           items: items
               .map((String e) => DropdownMenuItem<String>(
-                  value: e, child: Text(Catalog.label(e, ar: ar))))
+                  value: e, child: Text(Catalog.label(e, lang: lang))))
               .toList(),
           onChanged: onChanged,
         ),

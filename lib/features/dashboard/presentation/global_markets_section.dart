@@ -14,6 +14,7 @@ import 'package:smartbudget/features/markets/domain/market_category.dart';
 import 'package:smartbudget/features/markets/domain/market_models.dart';
 import 'package:smartbudget/features/markets/presentation/sparkline.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// One global-market indicator tile (label + value + change/sub), data-backed.
 class _Indicator {
@@ -40,7 +41,7 @@ class GlobalMarketsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
 
     final AsyncValue<FxSnapshot> fx = ref.watch(fxSnapshotProvider);
     final AsyncValue<List<CryptoQuote>> crypto = ref.watch(cryptoQuotesProvider);
@@ -48,8 +49,8 @@ class GlobalMarketsSection extends ConsumerWidget {
         ref.watch(commodityQuotesProvider(MarketCategory.preciousMetals));
 
     final List<_Indicator> tiles = <_Indicator>[
-      _metal(metals, 'XAU', ar),
-      _metal(metals, 'XAG', ar),
+      _metal(metals, 'XAU', lang),
+      _metal(metals, 'XAG', lang),
       _crypto(crypto, 'BTC'),
       _crypto(crypto, 'ETH'),
       _fx(fx, 'EUR', l),
@@ -94,7 +95,7 @@ class GlobalMarketsSection extends ConsumerWidget {
   }
 
   _Indicator _metal(
-      AsyncValue<List<CommodityQuote>> async, String code, bool ar) {
+      AsyncValue<List<CommodityQuote>> async, String code, AppLang lang) {
     final CommodityQuote? q = async.whenOrNull(
         data: (List<CommodityQuote> list) {
       for (final CommodityQuote c in list) {
@@ -102,7 +103,7 @@ class GlobalMarketsSection extends ConsumerWidget {
       }
       return null;
     });
-    final String label = q == null ? code : (ar ? q.nameAr : q.nameEn);
+    final String label = q == null ? code : (lang.isAr ? q.nameAr : q.nameEn);
     return _Indicator(
       label: label,
       value: q?.priceUsd == null ? '—' : _fmtNum(q!.priceUsd!),

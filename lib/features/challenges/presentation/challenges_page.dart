@@ -28,6 +28,7 @@ import 'package:smartbudget/features/transactions/application/transactions_contr
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 (IconData, String, String) _badge(AppLocalizations l, BadgeKind b) => switch (b) {
       BadgeKind.firstEntry =>
@@ -53,7 +54,7 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
     };
 
 String _catLabel(BuildContext context, String c) => Catalog.label(c,
-    ar: Localizations.localeOf(context).languageCode == 'ar');
+    lang: appLangOf(context));
 
 class ChallengesPage extends ConsumerWidget {
   const ChallengesPage({super.key});

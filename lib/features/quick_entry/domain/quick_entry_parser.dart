@@ -485,12 +485,12 @@ abstract final class QuickEntryParser {
       'خضر', 'خضره', 'خضار', 'فواكه', 'فاكهه', 'لحم', 'دجاج', 'حوت', 'سمك',
       'خبز', 'حليب', 'بيض', 'سكر', 'زيت', 'بقاله', 'سوبرماركت', 'سوق',
       'مواد غذائيه', 'قضيان', 'courses', 'marche', 'epicerie', 'pain', 'lait',
-      'supermarche', 'groceries', 'grocery', 'supermarket', 'bread', 'milk',
+      'supermarche', 'boulangerie', 'groceries', 'grocery', 'supermarket', 'bread', 'milk',
     ]),
     _Rule.expense('المطاعم', <String>[
       'مطعم', 'قهوه', 'كافيه', 'كافي', 'بيتزا', 'شاورما', 'كرانتيكا',
       'سندويش', 'سندويتش', 'غداء', 'عشاء', 'فطور', 'restaurant', 'cafe',
-      'coffee', 'pizza', 'lunch', 'dinner', 'breakfast', 'fast food', 'snack',
+      'coffee', 'pizza', 'dejeuner', 'diner', 'resto', 'lunch', 'dinner', 'breakfast', 'fast food', 'snack',
       'burger', 'tacos',
     ]),
     _Rule.expense('النقل', <String>[
@@ -505,16 +505,16 @@ abstract final class QuickEntryParser {
     _Rule.expense('السكن', <String>['كراء', 'ايجار', 'loyer', 'rent']),
     _Rule.expense('الفواتير', <String>[
       'فاتوره', 'كهرباء', 'ضو', 'ماء', 'غاز', 'سونلغاز', 'سيال', 'facture',
-      'electricite', 'sonelgaz', 'seaal', 'electricity', 'water bill', 'bill',
+      'electricite', 'eau', 'gaz', 'sonelgaz', 'seaal', 'electricity', 'water bill', 'bill',
     ]),
     _Rule.expense('الاتصالات والإنترنت', <String>[
       'انترنت', 'فليكسي', 'رصيد', 'هاتف', 'موبيليس', 'جيزي', 'اوريدو',
       'اتصالات الجزائر', 'idoom', 'flexy', 'internet', 'wifi', 'phone',
-      'mobile', 'recharge', 'mobilis', 'djezzy', 'ooredoo', 'forfait',
+      'mobile', 'telephone', 'recharge', 'mobilis', 'djezzy', 'ooredoo', 'forfait',
     ]),
     _Rule.expense('الصحة', <String>[
       'صيدليه', 'دواء', 'ادويه', 'طبيب', 'دكتور', 'مستشفى', 'عياده',
-      'تحاليل', 'اشعه', 'pharmacie', 'medecin', 'docteur', 'medicament',
+      'تحاليل', 'اشعه', 'pharmacie', 'medecin', 'docteur', 'medicament', 'medicaments',
       'clinique', 'pharmacy', 'doctor', 'medicine', 'clinic', 'dentist',
       'dentiste',
     ]),

@@ -17,6 +17,7 @@ import 'package:smartbudget/features/wallets/application/wallets_controller.dart
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
 import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// A searchable, filterable list of transactions. When [type] is null it shows
 /// income + expense with filter chips; otherwise it is locked to one kind.
@@ -185,7 +186,7 @@ class TransactionTile extends ConsumerWidget {
     final Color accent = txn.isIncome ? c.income : c.expense;
     final String sign = txn.isIncome ? '+' : '−';
     final String category = Catalog.label(txn.category,
-        ar: Localizations.localeOf(context).languageCode == 'ar');
+        lang: appLangOf(context));
 
     return Material(
       color: c.surface,

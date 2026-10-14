@@ -20,6 +20,7 @@ import 'package:smartbudget/features/wallets/application/wallets_controller.dart
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
 import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// "Quick entry": type "قهوة 200" (or several, separated by «،») and save.
 class QuickEntrySheet extends ConsumerStatefulWidget {
@@ -132,7 +133,7 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     ref.watch(baseCurrencyProvider);
     final DateTime today = AppClock.now();
     final List<Wallet> wallets = ref.watch(walletsProvider);
@@ -228,7 +229,7 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              Catalog.label(e.category, ar: ar),
+                              Catalog.label(e.category, lang: lang),
                               style: t.titleSmall?.copyWith(
                                   color: e.recognized ? null : c.warning),
                             ),

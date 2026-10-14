@@ -22,6 +22,7 @@ import 'package:smartbudget/features/transactions/presentation/transaction_edito
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// Lists the user's recurring transactions with their next date and lets them
 /// pause, resume, edit or stop each one.
@@ -172,9 +173,9 @@ class _RuleCard extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     final Color accent = rule.isIncome ? c.income : c.expense;
-    final String category = Catalog.label(rule.category, ar: ar);
+    final String category = Catalog.label(rule.category, lang: lang);
     final String title = rule.description.isEmpty ? category : rule.description;
     final String next = isoDate(RecurrenceEngine.nextOccurrence(rule));
     final RecurringActions actions = ref.read(recurringActionsProvider);
@@ -305,9 +306,9 @@ class _PendingCard extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     final RecurringRule rule = pending.rule;
-    final String category = Catalog.label(rule.category, ar: ar);
+    final String category = Catalog.label(rule.category, lang: lang);
     final String title = rule.description.isEmpty ? category : rule.description;
     return GlassCard(
       accent: c.warning,

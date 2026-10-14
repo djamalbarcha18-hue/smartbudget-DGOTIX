@@ -32,6 +32,7 @@ import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/zakat/application/zakat_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 // ---------------------------------------------------------------------------
 // "Month pulse" — three equal cards answering: am I within budget, how healthy
@@ -474,7 +475,7 @@ class UpcomingPulseCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
-    final bool ar = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLang lang = appLangOf(context);
     final List<RecurringRule> rules =
         ref.watch(recurringRulesProvider).valueOrNull ?? const <RecurringRule>[];
     final DateTime today = RecurrenceEngine.dateOnly(AppClock.now());
@@ -496,7 +497,7 @@ class UpcomingPulseCard extends ConsumerWidget {
       final RecurringRule r = due.first.$1;
       final String name = r.description.isNotEmpty
           ? r.description
-          : Catalog.label(r.category, ar: ar);
+          : Catalog.label(r.category, lang: lang);
       caption = l.upcomingNext(
           name, isoDate(due.first.$2));
     }
