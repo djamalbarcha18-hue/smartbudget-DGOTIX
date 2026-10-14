@@ -92,6 +92,9 @@ jobs:
           fi
           flutter build appbundle --release $DEFINES
           flutter build apk --release $DEFINES
+          # A small APK for today's phones (64-bit ARM), to test on a phone.
+          flutter build apk --release --split-per-abi --target-platform android-arm64 $DEFINES
+          cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk SmartBudget-phone.apk
 
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -100,6 +103,13 @@ jobs:
           path: |
             build/app/outputs/bundle/release/app-release.aab
             build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+
+      - name: Upload phone APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: SmartBudget-phone-apk
+          path: SmartBudget-phone.apk
           if-no-files-found: error
 
       - name: Remove signing files
