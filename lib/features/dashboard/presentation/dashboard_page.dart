@@ -79,18 +79,9 @@ class DashboardPage extends ConsumerWidget {
     final String greeting =
         name == null ? l.welcomeGreeting : '${l.welcomeGreeting}، $name';
 
-    // KPI cards, highest priority first ("what's left" leads — it's the
-    // question users open a budgeting app to answer).
+    // KPI cards: income and expenses side by side first, then what's left
+    // (net) and the savings rate under them (two pairs on a phone).
     final List<Widget> kpis = <Widget>[
-      KpiCard(
-        label: l.kpiNetProfit,
-        value: hasData ? MoneyFormatter.format(summary.net) : null,
-        iconChild: const Icon(SbIcons.moneyBox),
-        delta: hasData
-            ? _pctDelta(context, netChange, positiveWhenUp: true)
-            : null,
-        caption: hasData ? vsPrev : null,
-      ),
       KpiCard(
         label: l.kpiTotalIncome,
         value: hasData ? MoneyFormatter.format(summary.income) : null,
@@ -108,6 +99,15 @@ class DashboardPage extends ConsumerWidget {
         accent: c.expense,
         delta: hasData
             ? _pctDelta(context, expenseChange, positiveWhenUp: false)
+            : null,
+        caption: hasData ? vsPrev : null,
+      ),
+      KpiCard(
+        label: l.kpiNetProfit,
+        value: hasData ? MoneyFormatter.format(summary.net) : null,
+        iconChild: const Icon(SbIcons.moneyBox),
+        delta: hasData
+            ? _pctDelta(context, netChange, positiveWhenUp: true)
             : null,
         caption: hasData ? vsPrev : null,
       ),
