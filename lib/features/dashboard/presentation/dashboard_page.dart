@@ -336,11 +336,17 @@ class _Header extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        // A small, quiet brand mark (same in every language and theme); the
-        // app's own name is on its icon and in the menu.
-        BrandedTitle(
-          'DGOTIX',
-          style: t.labelSmall?.copyWith(letterSpacing: 1.2),
+        // A small, quiet brand mark (same in every language and theme).
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: BrandedTitle(
+            'DGOTIX · SmartBudget',
+            style: t.labelSmall?.copyWith(
+              color: c.textFaint,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.6,
+            ),
+          ),
         ),
         const SizedBox(height: 2),
         Text(greeting, style: t.headlineSmall),
