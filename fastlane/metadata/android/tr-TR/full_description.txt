@@ -1,0 +1,23 @@
+SmartBudget paranın nereye gittiğini gösterir ve planında kalmana yardım eder; internet olmadan da çalışan sade bir uygulama.
+
+NELER YAPABİLİRSİN
+• Gelir ve giderlerini saniyeler içinde kaydet ya da söyler gibi yaz: "kahve 85; taksi 250 dün; maaş 45000".
+• Fiş tara: uygulama işletmeyi, tarihi, tutarı ve kalemleri okur, kaydetmeden önce kontrol edersin.
+• Her kategori için aylık bütçe belirle ve kalanı takip et.
+• Nakit, banka hesapları ve dijital cüzdanlar için her para biriminde cüzdanlar; transfer ve bakiye kontrolü.
+• Birikim hedefleri, borçlar ve krediler, tarihinde otomatik eklenen faturalar ve maaşlar.
+• Sezon bütçeleri: Ramazan, bayram, okula dönüş ve tatil.
+• Altın günü ve para günleri: kim ne zaman alıyor, ne ödedin, ne gecikti.
+• Neyin yardımcı olduğunu ve neyin zarar verdiğini açıklayan finansal sağlık puanı.
+• Aylık, üç aylık ve yıllık raporlar, PDF olarak dışa aktarma.
+• Havl geri sayımlı zekât hesaplayıcı.
+• Canlı döviz kurları, altın ve kripto fiyatları.
+• DGOTIX AI: harcamalarını sade bir dille sor.
+
+VERİLERİN SANA AİT
+Her şey önce telefonuna kaydedilir. Telefon ve bilgisayar arasında senkronize etmek için giriş yap ya da yalnızca bu cihazda tut. Reklam yok, veri satışı yok. Uygulamayı PIN veya parmak iziyle kilitle, istediğin zaman tam yedek al.
+
+KENDİ DİLİNDE VE PARA BİRİMİNDE
+Arapça, İngilizce, Fransızca, Endonezce, İspanyolca, Türkçe, Malayca ve Urduca; 40'tan fazla para birimi. Koyu ve açık tema.
+
+İletişim: support@dgotix.com

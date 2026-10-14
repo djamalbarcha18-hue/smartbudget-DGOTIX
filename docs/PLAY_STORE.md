@@ -53,15 +53,25 @@ Each upload to Google Play needs a higher version code: bump `version` in
 3. **Closed testing first.** New personal developer accounts must run a closed
    test with at least 12 testers for 14 days before production. Create the
    closed track, add testers' emails (or a Google Group), upload the `.aab`.
-4. Store listing:
+4. Store listing, ready in eight languages under
+   `fastlane/metadata/android/<language>/` (Arabic `ar`, English `en-US`,
+   French `fr-FR`, Indonesian `id`, Spanish `es-419`, Turkish `tr-TR`, Malay
+   `ms-MY`, Urdu `ur`; add each language in Play Console → Main store listing
+   → Manage translations, then paste its texts and upload its images):
+   - `title.txt` (≤ 30 characters), `short_description.txt` (≤ 80),
+     `full_description.txt` (≤ 4000)
+   - `images/phoneScreenshots/`: 8 captioned phone screenshots, 1080×1920,
+     from the real app with a fictional demo person, in that language and a
+     local currency
    - app icon 512×512: `assets/launcher/play_store_icon_512.png`
    - feature graphic 1024×500: `assets/launcher/play_feature_graphic.png`
-   - at least 2 phone screenshots (Arabic and English)
-   - short and full description, **support e-mail**: `support@dgotix.com`
+   - **support e-mail**: `support@dgotix.com`
      (forwarded to the owner's Gmail by Namecheap)
+   The texts describe only what the store build does (no plans or prices) and
+   avoid rankings and superlatives, which Google Play doesn't allow.
 5. Policy pages (public, no sign-in needed):
-   - Privacy policy: `https://smartbudget.dgotix.com/#/privacy`
-     (`?lang=en` for English)
+   - Privacy policy: `https://dgotix.com/privacy.html` (all eight languages on
+     one page)
    - Account deletion: the same page, section "Deleting your account and
      data" (in-app: Settings → Account → Delete my account; on the web, sign in
      and do the same).
