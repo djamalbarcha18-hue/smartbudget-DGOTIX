@@ -1410,5 +1410,7 @@
   "featParallelRates": "السعر الموازي لأسعار الصرف",
   "featReportPdf": "تصدير التقارير PDF",
   "featReportTrends": "الرسم السنوي ومقارنة الأشهر",
-  "featProjects": "محفظة المشاريع والاستثمار"
+  "featProjects": "محفظة المشاريع والاستثمار",
+  "dashSummaryMonth": "ملخّص {month} {year}",
+  "dashSummaryYear": "ملخّص سنة {year}"
 }

@@ -1422,5 +1422,9 @@
   "featParallelRates": "Parallel exchange rates",
   "featReportPdf": "PDF report export",
   "featReportTrends": "The yearly trend chart",
-  "featProjects": "The projects and investment portfolio"
+  "featProjects": "The projects and investment portfolio",
+  "dashSummaryMonth": "{month} {year} summary",
+  "dashSummaryYear": "{year} summary",
+  "@dashSummaryMonth": { "placeholders": { "month": { "type": "String" }, "year": { "type": "String" } } },
+  "@dashSummaryYear": { "placeholders": { "year": { "type": "String" } } }
 }

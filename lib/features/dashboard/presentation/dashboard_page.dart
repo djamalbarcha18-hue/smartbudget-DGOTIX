@@ -290,15 +290,24 @@ KpiTone _toneOf(KpiSentiment s) => switch (s) {
       KpiSentiment.neutral => KpiTone.neutral,
     };
 
-class _Header extends StatelessWidget {
+class _Header extends ConsumerWidget {
   const _Header({required this.greeting, required this.scope});
   final String greeting;
   final DashboardScope scope;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final bool isMobile = context.isMobile;
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final String year = '${ref.watch(selectedYearProvider)}';
+    final int month = ref.watch(selectedMonthProvider).clamp(1, 12);
+    // Which period the figures below cover.
+    final String period = scope == DashboardScope.month
+        ? l.dashSummaryMonth(
+            MonthNames.full(lang: appLangOf(context))[month - 1], year)
+        : l.dashSummaryYear(year);
 
     final List<Widget> actions = <Widget>[
       _ScopeToggle(scope: scope),
@@ -327,15 +336,27 @@ class _Header extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
+        // A small, quiet brand mark (same in every language and theme); the
+        // app's own name is on its icon and in the menu.
         BrandedTitle(
-          l.brandInsights,
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: context.dsColors.textMuted,
-                letterSpacing: 0.8,
-              ),
+          'DGOTIX',
+          style: t.labelSmall?.copyWith(letterSpacing: 1.2),
         ),
         const SizedBox(height: 2),
-        Text(greeting, style: Theme.of(context).textTheme.headlineSmall),
+        Text(greeting, style: t.headlineSmall),
+        const SizedBox(height: 4),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Icon(Icons.calendar_month_outlined, size: 15, color: c.brand),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(period,
+                  style: t.bodyMedium?.copyWith(
+                      color: c.textMuted, fontWeight: FontWeight.w600)),
+            ),
+          ],
+        ),
       ],
     );
 

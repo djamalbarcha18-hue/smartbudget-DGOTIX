@@ -1209,5 +1209,7 @@
   "featParallelRates": "Kadar pertukaran selari",
   "featReportPdf": "Eksport laporan PDF",
   "featReportTrends": "Carta trend tahunan",
-  "featProjects": "Projek dan portfolio pelaburan"
+  "featProjects": "Projek dan portfolio pelaburan",
+  "dashSummaryMonth": "Ringkasan {month} {year}",
+  "dashSummaryYear": "Ringkasan tahun {year}"
 }

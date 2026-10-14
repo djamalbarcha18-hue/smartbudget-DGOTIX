@@ -1209,5 +1209,7 @@
   "featParallelRates": "Paralel döviz kurları",
   "featReportPdf": "PDF rapor dışa aktarma",
   "featReportTrends": "Yıllık eğilim grafiği",
-  "featProjects": "Projeler ve yatırım portföyü"
+  "featProjects": "Projeler ve yatırım portföyü",
+  "dashSummaryMonth": "{month} {year} özeti",
+  "dashSummaryYear": "{year} yılı özeti"
 }

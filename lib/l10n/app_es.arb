@@ -1209,5 +1209,7 @@
   "featParallelRates": "Los tipos de cambio paralelos",
   "featReportPdf": "La exportación de informes en PDF",
   "featReportTrends": "El gráfico de evolución anual",
-  "featProjects": "Los proyectos y la cartera de inversión"
+  "featProjects": "Los proyectos y la cartera de inversión",
+  "dashSummaryMonth": "Resumen de {month} de {year}",
+  "dashSummaryYear": "Resumen del año {year}"
 }

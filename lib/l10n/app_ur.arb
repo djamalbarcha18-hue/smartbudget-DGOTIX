@@ -1209,5 +1209,7 @@
   "featParallelRates": "متوازی ایکسچینج ریٹس",
   "featReportPdf": "PDF رپورٹ ایکسپورٹ",
   "featReportTrends": "سالانہ رجحان چارٹ",
-  "featProjects": "پروجیکٹس اور سرمایہ کاری پورٹ فولیو"
+  "featProjects": "پروجیکٹس اور سرمایہ کاری پورٹ فولیو",
+  "dashSummaryMonth": "{month} {year} کا خلاصہ",
+  "dashSummaryYear": "سال {year} کا خلاصہ"
 }

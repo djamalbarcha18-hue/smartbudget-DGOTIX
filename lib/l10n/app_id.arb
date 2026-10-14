@@ -1209,5 +1209,7 @@
   "featParallelRates": "Kurs paralel",
   "featReportPdf": "Ekspor laporan PDF",
   "featReportTrends": "Grafik tren tahunan",
-  "featProjects": "Proyek dan portofolio investasi"
+  "featProjects": "Proyek dan portofolio investasi",
+  "dashSummaryMonth": "Ringkasan {month} {year}",
+  "dashSummaryYear": "Ringkasan tahun {year}"
 }
