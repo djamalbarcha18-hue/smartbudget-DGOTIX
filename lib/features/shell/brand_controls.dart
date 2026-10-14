@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/l10n/app_lang.dart';
 import 'package:smartbudget/core/localization/locale_controller.dart';
 import 'package:smartbudget/core/theme/theme_controller.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -29,19 +30,12 @@ class ThemeToggleButton extends ConsumerWidget {
   }
 }
 
-/// Language picker (العربية / English / Français / Indonesia / Español):
-/// switches the locale (and
-/// RTL/LTR) instantly and persists. Shows the current language's own name.
+/// Language picker, listing every [AppLang]: switches the locale (and RTL/LTR)
+/// instantly and persists. Shows the current language's own name.
 class LanguageToggleButton extends ConsumerWidget {
   const LanguageToggleButton({super.key});
 
-  static String nativeName(String code) => switch (code) {
-        'ar' => 'العربية',
-        'fr' => 'Français',
-        'id' => 'Bahasa Indonesia',
-        'es' => 'Español',
-        _ => 'English',
-      };
+  static String nativeName(String code) => AppLang.fromCode(code).nativeName;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -54,10 +48,10 @@ class LanguageToggleButton extends ConsumerWidget {
       onSelected: (String code) =>
           ref.read(localeProvider.notifier).set(Locale(code)),
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        for (final Locale loc in SupportedLocales.all)
+        for (final AppLang lang in AppLang.values)
           PopupMenuItem<String>(
-            value: loc.languageCode,
-            child: Text(nativeName(loc.languageCode)),
+            value: lang.code,
+            child: Text(lang.nativeName),
           ),
       ],
       child: Padding(

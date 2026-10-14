@@ -86,7 +86,7 @@ class LegalPage extends StatelessWidget {
 
 /// The policy on its own public page (`/#/privacy`, `/#/terms`), readable
 /// without an account: the address given to Google Play and the App Store.
-/// `?lang=en`, `?lang=fr` or `?lang=ar` picks the language.
+/// `?lang=<code>` (any [AppLang], e.g. `?lang=en`) picks the language.
 class PublicLegalPage extends StatelessWidget {
   const PublicLegalPage({super.key, required this.doc, this.lang});
 
@@ -99,12 +99,13 @@ class PublicLegalPage extends StatelessWidget {
       backgroundColor: context.dsColors.bgPage,
       body: SafeArea(child: LegalPage(doc: doc, showBack: false)),
     );
-    if (lang != 'ar' && lang != 'en' && lang != 'fr') return page;
+    final AppLang? picked = AppLang.tryCode(lang);
+    if (picked == null) return page;
     return Localizations.override(
       context: context,
-      locale: Locale(lang!),
+      locale: Locale(picked.code),
       child: Directionality(
-        textDirection: lang == 'ar' ? TextDirection.rtl : TextDirection.ltr,
+        textDirection: picked.rtl ? TextDirection.rtl : TextDirection.ltr,
         child: page,
       ),
     );

@@ -322,7 +322,6 @@
   "viewAll": "View all",
 
   "themeToggleTooltip": "Toggle light / dark",
-  "languageToggleTooltip": "العربية",
 
   "authTagline": "Your intelligent financial companion",
   "authSignInTitle": "Welcome back",
@@ -621,11 +620,6 @@
   "themeLight": "Light",
   "themeSystem": "System",
   "settingsLanguage": "Language",
-  "langArabic": "العربية",
-  "langEnglish": "English",
-  "langFrench": "Français",
-  "langIndonesian": "Bahasa Indonesia",
-  "langSpanish": "Español",
   "settingsRegion": "Region & currency",
   "settingsTime": "Time & world clock",
   "settingsLock": "App lock",

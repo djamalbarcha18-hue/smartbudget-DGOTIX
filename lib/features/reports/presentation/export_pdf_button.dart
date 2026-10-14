@@ -91,7 +91,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
         expenses: _rows(report.expenseCategories, lang),
         emptyLabel: l.emptyTransactionsMessage,
         footer: 'DGOTIX Analytics · SmartBudget',
-        isRtl: lang.isAr,
+        isRtl: lang.rtl,
       );
 
       final pw.Font base = pw.Font.ttf(

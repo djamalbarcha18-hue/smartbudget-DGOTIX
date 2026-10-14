@@ -322,7 +322,6 @@
   "viewAll": "عرض الكل",
 
   "themeToggleTooltip": "تبديل الوضع الفاتح / الداكن",
-  "languageToggleTooltip": "English",
 
   "authTagline": "رفيقك المالي الذكي",
   "authSignInTitle": "مرحباً بعودتك",
@@ -620,11 +619,6 @@
   "themeLight": "فاتح",
   "themeSystem": "النظام",
   "settingsLanguage": "اللغة",
-  "langArabic": "العربية",
-  "langEnglish": "English",
-  "langFrench": "Français",
-  "langIndonesian": "Bahasa Indonesia",
-  "langSpanish": "Español",
   "settingsRegion": "المنطقة والعملة",
   "settingsTime": "الوقت والتوقيت العالمي",
   "settingsLock": "قفل التطبيق",

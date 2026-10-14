@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/l10n/app_lang.dart';
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/localization/locale_controller.dart';
@@ -101,11 +102,8 @@ class SettingsPage extends ConsumerWidget {
                 child: _SegmentedRow<String>(
                   value: locale.languageCode,
                   options: <_Segment<String>>[
-                    _Segment<String>('ar', l.langArabic, null),
-                    _Segment<String>('en', l.langEnglish, null),
-                    _Segment<String>('fr', l.langFrench, null),
-                    _Segment<String>('id', l.langIndonesian, null),
-                    _Segment<String>('es', l.langSpanish, null),
+                    for (final AppLang lang in AppLang.values)
+                      _Segment<String>(lang.code, lang.nativeName, null),
                   ],
                   onChanged: (String code) => ref
                       .read(localeProvider.notifier)

@@ -2,20 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Supported locales. Ordered ar-first (the product is Arabic-first).
+import 'package:smartbudget/core/l10n/app_lang.dart';
+
+/// Supported locales, from [AppLang] (Arabic first: the product is
+/// Arabic-first).
 abstract final class SupportedLocales {
   static const Locale arabic = Locale('ar');
   static const Locale english = Locale('en');
-  static const Locale french = Locale('fr');
-  static const Locale indonesian = Locale('id');
-  static const Locale spanish = Locale('es');
 
-  static const List<Locale> all = <Locale>[
-    arabic,
-    english,
-    french,
-    indonesian,
-    spanish,
+  static final List<Locale> all = <Locale>[
+    for (final AppLang l in AppLang.values) Locale(l.code),
   ];
 }
 
@@ -48,7 +44,7 @@ class LocaleController extends Notifier<Locale> {
     }
   }
 
-  /// Moves to the next supported locale (ar → en → fr → id → es → ar).
+  /// Moves to the next supported locale (in [AppLang] order, back to the first).
   Future<void> toggle() {
     final int i = SupportedLocales.all
         .indexWhere((Locale l) => l.languageCode == state.languageCode);

@@ -74,7 +74,12 @@ insert into currencies (code, name_ar, name_en, symbol, decimals) values
   ('SGD', 'الدولار السنغافوري', 'Singapore Dollar', 'S$', 2),
   ('KRW', 'الوون الكوري الجنوبي', 'South Korean Won', '₩', 0),
   ('SEK', 'الكرونة السويدية', 'Swedish Krona', 'kr', 2),
-  ('MXN', 'البيزو المكسيكي', 'Mexican Peso', 'Mex$', 2)
+  ('MXN', 'البيزو المكسيكي', 'Mexican Peso', 'Mex$', 2),
+  ('IDR', 'الروبية الإندونيسية', 'Indonesian Rupiah', 'Rp', 0),
+  ('ARS', 'البيزو الأرجنتيني', 'Argentine Peso', 'AR$', 2),
+  ('COP', 'البيزو الكولومبي', 'Colombian Peso', 'COL$', 2),
+  ('CLP', 'البيزو التشيلي', 'Chilean Peso', 'CLP$', 0),
+  ('PEN', 'السول البيروفي', 'Peruvian Sol', 'S/', 2)
 on conflict (code) do update set
   name_ar = excluded.name_ar, name_en = excluded.name_en,
   symbol = excluded.symbol, decimals = excluded.decimals;
