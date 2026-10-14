@@ -25,10 +25,11 @@ class GuideTopic {
 
 abstract final class GuideContent {
   static List<String> gettingStarted({required AppLang lang}) =>
-      lang.pick(_startAr, _startEn, fr: _startFr, id: _startId);
+      lang.pick(_startAr, _startEn, fr: _startFr, id: _startId, es: _startEs);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
-      lang.pick(_topicsAr, _topicsEn, fr: _topicsFr, id: _topicsId);
+      lang.pick(_topicsAr, _topicsEn,
+          fr: _topicsFr, id: _topicsId, es: _topicsEs);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -813,6 +814,206 @@ abstract final class GuideContent {
         'Di Data & cadangan, ekspor cadangan lengkap kapan saja; saat masuk, '
             'data Anda tersinkron otomatis antarperangkat (juga setelah bekerja '
             'offline), dan Anda bisa mematikannya.',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Spanish) ----
+  static const List<String> _startEs = <String>[
+    'Abre Ajustes y elige tu idioma, tu tema y tu moneda base: todos los '
+        'totales de la app se muestran en esa moneda.',
+    'Añade tus ingresos y gastos (o escanea un ticket): todo lo demás se '
+        'calcula a partir de ellos.',
+    'Fija un presupuesto mensual para que la app te diga cuánto te queda '
+        'por gastar.',
+    'Mira el Panel y la Salud financiera para ver dónde estás, y añade metas '
+        'y deudas sobre la marcha.',
+  ];
+
+  // ---- Topics (Spanish) ----
+  static const List<GuideTopic> _topicsEs = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'Panel',
+      summary: 'Tu mes de un vistazo: ingresos, gastos, ahorro y a dónde fue '
+          'el dinero.',
+      steps: <String>[
+        'Las tarjetas muestran los totales del mes en tu moneda base.',
+        'Toca una porción del desglose de gastos para resaltar esa categoría.',
+        'Las alertas te señalan lo que necesita atención, como una categoría '
+            'por encima del presupuesto o una meta urgente.',
+        'Sin datos, las tarjetas muestran "—": nunca se inventa nada.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'Ingresos y gastos',
+      summary: 'Registra cada movimiento de dinero: es la base de todos los '
+          'cálculos de la app.',
+      steps: <String>[
+        'Usa el botón de añadir rápido para registrar un ingreso o un gasto '
+            'con importe, categoría, fecha y nota.',
+        'Ingresos y Gastos tienen su propia pantalla; Movimientos muestra '
+            'ambos juntos.',
+        'Busca en la lista para encontrar cualquier registro y tócalo para '
+            'editarlo o eliminarlo.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'Movimientos recurrentes',
+      summary: 'Sueldo, alquiler y suscripciones que se añaden solos en su '
+          'fecha.',
+      steps: <String>[
+        'Al añadir un ingreso o un gasto, pon "Repetir" en cada semana, mes, '
+            '3 meses, 6 meses o año.',
+        'Para un bono o una comisión cuyo importe cambia, activa "El importe '
+            'cambia cada vez": en cada fecha la app te pide el importe real '
+            'en lugar de añadir una estimación.',
+        'Cada vez que vence, la app lo añade como un movimiento normal: '
+            'aunque no hayas abierto la app, se pone al día la próxima vez.',
+        'En la pantalla Recurrentes, pausa, reanuda, cambia el importe o deja '
+            'de repetir. Los movimientos ya añadidos nunca se modifican.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'Escanear un ticket',
+      summary: 'Convierte la foto de un ticket en un gasto listo para guardar.',
+      steps: <String>[
+        'En la pantalla Gastos, toca "Escanear ticket" y haz o elige una foto.',
+        'La app rellena el comercio, la fecha, el importe y la categoría: '
+            'revísalos antes de guardar.',
+        'El escaneo en la nube depende de tu plan; si un ticket no se puede '
+            'leer, introduce el gasto a mano.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'Presupuesto mensual',
+      summary: 'Planifica cuánto quieres gastar por categoría, mes a mes.',
+      steps: <String>[
+        'Elige el año y el mes arriba: una sola pantalla cubre todos los '
+            'meses.',
+        'Fija un límite para cada categoría que quieras controlar.',
+        'Las barras de progreso se llenan a medida que gastas; una categoría '
+            'que supera su límite queda señalada.',
+        'Con un plan de pago, "Sugerir un reparto" divide tus ingresos entre '
+            'categorías según tu gasto reciente: revísalo y aplícalo.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'Metas y ahorro',
+      summary: 'Ahorra para algo concreto y mira cuánto te falta.',
+      steps: <String>[
+        'Crea una meta con un importe objetivo y, si quieres, una fecha '
+            'límite.',
+        'Registra tus aportes a medida que ahorras; el progreso se actualiza '
+            'solo.',
+        'Las metas cercanas a su fecha se destacan en el Panel.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'Deudas y préstamos',
+      summary: 'Lleva la cuenta de lo que debes y de lo que te deben.',
+      steps: <String>[
+        'Añade cada deuda o préstamo con su importe y la persona o entidad.',
+        'Actualiza lo pagado hasta ahora para ver el saldo pendiente.',
+        'Las deudas cuentan en tu puntuación de Salud financiera.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'Cartera de proyectos',
+      summary: 'Planifica proyectos grandes a corto, medio y largo plazo.',
+      steps: <String>[
+        'Añade proyectos y coloca cada uno en un horizonte de tiempo.',
+        'El motor de financiación llena los horizontes en orden, así ves qué '
+            'proyectos puede cubrir antes tu ahorro.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'Salud financiera',
+      summary: 'Una puntuación que resume lo sanas que están tus finanzas, y '
+          'por qué.',
+      steps: <String>[
+        'La puntuación se calcula en tu dispositivo con tus propios datos.',
+        'Los factores clave muestran qué la mejora o la empeora: empieza por '
+            'ellos.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'Informes y análisis',
+      summary: 'Ve la evolución del año y a dónde va tu dinero.',
+      steps: <String>[
+        'Elige un año para comparar ingresos y gastos mes a mes.',
+        'Usa los desgloses para detectar categorías que crecen con el tiempo.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'Zakat',
+      summary: 'Estima la zakat de tu patrimonio y sigue el hawl.',
+      steps: <String>[
+        'Introduce los bienes sujetos a zakat para obtener una estimación.',
+        'Indica la fecha en que tu patrimonio alcanzó el nisab para seguir la '
+            'cuenta atrás del año lunar, en calendario de la hégira.',
+        'Es una ayuda para planificar: confirma tu obligación con un erudito '
+            'cualificado.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'Tipos de cambio y mercados',
+      summary: 'Tipos de cambio y precios cripto en directo de fuentes '
+          'públicas.',
+      steps: <String>[
+        'Los tipos se obtienen en directo; cada fila indica su origen.',
+        'Cuando un mercado no tiene una fuente fiable, pone "no disponible": '
+            'nunca un número inventado.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'Asistente DGOTIX AI',
+      summary: 'Pregunta por tus finanzas con tus propias palabras.',
+      steps: <String>[
+        'Escribe una pregunta o toca una sugerencia; el asistente responde '
+            'con un breve resumen de tus cifras.',
+        'El número de respuestas depende de tu plan; verás un aviso cuando te '
+            'acerques al límite.',
+        'Las respuestas se generan automáticamente: revisa las decisiones '
+            'importantes. Los análisis por reglas bajo el chat funcionan '
+            'siempre, incluso sin IA.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'Planes y suscripción',
+      summary: 'Compara Gratis, Basic y Pro, y gestiona tu suscripción.',
+      steps: <String>[
+        'Las herramientas básicas de presupuesto son gratis para siempre.',
+        'Los planes de pago suben los límites de IA y de escaneo en la nube y '
+            'añaden funciones.',
+        'Si te suscribes, tu plan actual y su fecha de renovación aparecen '
+            'arriba, con un botón para gestionarlo o cancelarlo.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'Ajustes, datos y copia de seguridad',
+      summary: 'Haz tuya la app y mantén tus datos a salvo.',
+      steps: <String>[
+        'Idioma, tema y moneda base están en Apariencia y Región.',
+        'Gestiona tus propias categorías de ingresos y gastos.',
+        'En Datos y copia de seguridad, exporta una copia completa cuando '
+            'quieras; con la sesión iniciada, tus datos se sincronizan solos '
+            'entre tus dispositivos (también tras trabajar sin conexión), y '
+            'puedes desactivarlo.',
       ],
     ),
   ];

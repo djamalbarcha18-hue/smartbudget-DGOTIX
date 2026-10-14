@@ -98,6 +98,10 @@ abstract final class Currencies {
     Currency(code: 'KRW', symbol: '₩', nameEn: 'South Korean Won', nameAr: 'الوون الكوري الجنوبي', country: 'kr', decimals: 0),
     Currency(code: 'SEK', symbol: 'kr', nameEn: 'Swedish Krona', nameAr: 'الكرونة السويدية', country: 'se'),
     Currency(code: 'MXN', symbol: 'Mex\$', nameEn: 'Mexican Peso', nameAr: 'البيزو المكسيكي', country: 'mx'),
+    Currency(code: 'ARS', symbol: 'AR\$', nameEn: 'Argentine Peso', nameAr: 'البيزو الأرجنتيني', country: 'ar'),
+    Currency(code: 'COP', symbol: 'COL\$', nameEn: 'Colombian Peso', nameAr: 'البيزو الكولومبي', country: 'co'),
+    Currency(code: 'CLP', symbol: 'CLP\$', nameEn: 'Chilean Peso', nameAr: 'البيزو التشيلي', country: 'cl', decimals: 0),
+    Currency(code: 'PEN', symbol: 'S/', nameEn: 'Peruvian Sol', nameAr: 'السول البيروفي', country: 'pe'),
   ];
 
   static Currency byCode(String code) =>

@@ -3,7 +3,7 @@
 
   Paste into: Supabase Dashboard → Authentication → Email Templates →
   "Reset Password". Suggested subject:
-      Your SmartBudget verification code / رمز التحقّق الخاص بك / Votre code de vérification SmartBudget / Kode verifikasi SmartBudget Anda
+      Your SmartBudget verification code / رمز التحقّق الخاص بك / Votre code de vérification SmartBudget / Kode verifikasi SmartBudget Anda / Tu código de verificación de SmartBudget
   {{ .Token }} is the one-time recovery code the app asks for.
   Keep it short and self-contained: many mail clients strip <style> blocks.
 -->
@@ -46,6 +46,17 @@
     <p style="margin:0;color:#6b7280;font-size:13px">
       Kode segera kedaluwarsa dan hanya bisa dipakai sekali. Jika Anda tidak
       meminta pengaturan ulang kata sandi, abaikan email ini — akun Anda tidak berubah.
+    </p>
+  </div>
+
+  <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0">
+
+  <div lang="es">
+    <p style="margin:0 0 16px">Usa este código para restablecer tu contraseña:</p>
+    <p style="font-size:32px;font-weight:bold;letter-spacing:8px;margin:0 0 16px;text-align:center">{{ .Token }}</p>
+    <p style="margin:0;color:#6b7280;font-size:13px">
+      El código caduca pronto y solo se puede usar una vez. Si no pediste
+      restablecer la contraseña, ignora este correo: tu cuenta no ha cambiado.
     </p>
   </div>
 </div>

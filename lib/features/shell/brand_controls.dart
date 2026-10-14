@@ -29,7 +29,8 @@ class ThemeToggleButton extends ConsumerWidget {
   }
 }
 
-/// Language picker (العربية / English / Français / Indonesia): switches the locale (and
+/// Language picker (العربية / English / Français / Indonesia / Español):
+/// switches the locale (and
 /// RTL/LTR) instantly and persists. Shows the current language's own name.
 class LanguageToggleButton extends ConsumerWidget {
   const LanguageToggleButton({super.key});
@@ -38,6 +39,7 @@ class LanguageToggleButton extends ConsumerWidget {
         'ar' => 'العربية',
         'fr' => 'Français',
         'id' => 'Bahasa Indonesia',
+        'es' => 'Español',
         _ => 'English',
       };
 

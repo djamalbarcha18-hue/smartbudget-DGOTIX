@@ -9,14 +9,14 @@
   var status = document.getElementById('status');
 
   // The app's own language choice (saved by the app on this site), else the
-  // browser's: Paddle shows the checkout in Arabic, French or English.
+  // browser's: Paddle shows the checkout in Arabic, French, Spanish or English.
   function lang() {
     var code = '';
     try {
       code = JSON.parse(localStorage.getItem('flutter.sb_locale') || '""');
     } catch (_) {}
     if (!code) code = (navigator.language || '').slice(0, 2).toLowerCase();
-    return code === 'ar' || code === 'fr' ? code : 'en';
+    return code === 'ar' || code === 'fr' || code === 'es' ? code : 'en';
   }
 
   function fail() {

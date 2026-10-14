@@ -66,8 +66,14 @@ class HijriDate {
     'Zulhijah',
   ];
 
+  static const List<String> monthsEs = <String>[
+    'Muharram', 'Safar', 'Rabi al-Awal', 'Rabi al-Zani', 'Yumada al-Ula',
+    'Yumada al-Zania', 'Rayab', 'Shaabán', 'Ramadán', 'Shawwal',
+    'Du al-Qada', 'Du al-Hiya',
+  ];
+
   String monthName({required AppLang lang}) => (month >= 1 && month <= 12)
-      ? lang.pick(monthsAr, monthsEn, fr: monthsFr, id: monthsId)[month - 1]
+      ? lang.pick(monthsAr, monthsEn, fr: monthsFr, id: monthsId, es: monthsEs)[month - 1]
       : '';
 
   /// Formats as `day month year هـ`, e.g. "12 رمضان 1446 هـ".
@@ -75,7 +81,8 @@ class HijriDate {
       '$day ${monthName(lang: lang)} $year هـ',
       '$day ${monthName(lang: lang)} $year AH',
       fr: '$day ${monthName(lang: lang)} $year H',
-      id: '$day ${monthName(lang: lang)} $year H');
+      id: '$day ${monthName(lang: lang)} $year H',
+      es: '$day ${monthName(lang: lang)} $year H');
 
   /// Julian Day Number for this Hijri date (tabular civil calendar).
   int toJdn() =>

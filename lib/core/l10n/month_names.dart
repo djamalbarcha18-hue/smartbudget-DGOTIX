@@ -29,11 +29,20 @@ abstract final class MonthNames {
     'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des',
   ];
 
+  static const List<String> _es = <String>[
+    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', //
+    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
+  ];
+  static const List<String> _esShort = <String>[
+    'ene', 'feb', 'mar', 'abr', 'may', 'jun', //
+    'jul', 'ago', 'sept', 'oct', 'nov', 'dic',
+  ];
+
   /// Full names, January first.
-  static List<String> full({required AppLang lang}) => lang.pick(_ar, _en, fr: _fr, id: _id);
+  static List<String> full({required AppLang lang}) => lang.pick(_ar, _en, fr: _fr, id: _id, es: _es);
 
   /// Short names for tight axes (Arabic names are already short).
   static List<String> short({required AppLang lang}) => lang.pick(
       _ar, <String>[for (final String m in _en) m.substring(0, 3)],
-      fr: _frShort, id: _idShort);
+      fr: _frShort, id: _idShort, es: _esShort);
 }

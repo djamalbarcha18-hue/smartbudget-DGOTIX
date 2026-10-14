@@ -5,13 +5,15 @@ enum AppLang {
   ar,
   en,
   fr,
-  id;
+  id,
+  es;
 
   /// The language for a locale code; anything unknown reads as English.
   static AppLang fromCode(String code) => switch (code) {
         'ar' => AppLang.ar,
         'fr' => AppLang.fr,
         'id' => AppLang.id,
+        'es' => AppLang.es,
         _ => AppLang.en,
       };
 
@@ -19,10 +21,11 @@ enum AppLang {
 
   /// The text for this language. A language without its own version falls
   /// back to English (names of currencies, markets…).
-  T pick<T>(T ar, T en, {T? fr, T? id}) => switch (this) {
+  T pick<T>(T ar, T en, {T? fr, T? id, T? es}) => switch (this) {
         AppLang.ar => ar,
         AppLang.en => en,
         AppLang.fr => fr ?? en,
         AppLang.id => id ?? en,
+        AppLang.es => es ?? en,
       };
 }
