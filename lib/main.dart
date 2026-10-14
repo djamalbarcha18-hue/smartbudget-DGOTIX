@@ -21,6 +21,12 @@ Future<void> main() async {
   // Every date (including the Arabic date picker) uses Latin digits 0-9.
   LatinDigits.enforce();
 
+  // Draw under the status and navigation bars on every Android version, as
+  // Android 15 does anyway; the shell keeps the content clear of them.
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge).ignore();
+  }
+
   // Production backend is initialized ONLY when configured. With no credentials
   // the app runs entirely on the local dev backend (fake), so the free web demo
   // works with zero setup.

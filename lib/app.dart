@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -67,9 +68,30 @@ class SmartBudgetApp extends ConsumerWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       routerConfig: router,
-      builder: (BuildContext context, Widget? child) => AppLockGate(
-          child: OfflineBanner(
-              child: UpdateBanner(child: child ?? const SizedBox.shrink()))),
+      builder: (BuildContext context, Widget? child) =>
+          AnnotatedRegion<SystemUiOverlayStyle>(
+        value: _systemBars(Theme.of(context).brightness),
+        child: AppLockGate(
+            child: OfflineBanner(
+                child:
+                    UpdateBanner(child: child ?? const SizedBox.shrink()))),
+      ),
+    );
+  }
+
+  /// Clear status and navigation bars over the app's own background (Android
+  /// draws apps edge to edge), with icons that read on the current theme.
+  static SystemUiOverlayStyle _systemBars(Brightness theme) {
+    final Brightness icons =
+        theme == Brightness.dark ? Brightness.light : Brightness.dark;
+    return SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: icons,
+      statusBarBrightness: theme, // iOS
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarIconBrightness: icons,
+      systemNavigationBarContrastEnforced: false,
     );
   }
 }

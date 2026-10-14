@@ -74,7 +74,8 @@ class NavSidebar extends StatelessWidget {
         color: c.bgElevated,
         border: BorderDirectional(end: BorderSide(color: c.border)),
       ),
-      child: body,
+      // In the drawer the surface runs under the status bar; the items don't.
+      child: SafeArea(child: body),
     );
   }
 

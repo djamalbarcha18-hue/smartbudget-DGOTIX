@@ -66,7 +66,9 @@ class AppShell extends StatelessWidget {
             backgroundColor: c.bgElevated,
             child: NavSidebar(currentRoute: route, onSelect: go, width: 288),
           ),
-          body: content,
+          // Android draws the app under the status and navigation bars
+          // (edge to edge); the backdrop fills them, the content stays clear.
+          body: SafeArea(child: content),
         )),
       );
     }
