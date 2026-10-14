@@ -52,7 +52,12 @@ If the language opens a new market, add its currency to
 
 ## Notes
 
-- Right-to-left scripts other than Arabic (e.g. Urdu) also need a font that
-  covers the script; check `lib/design_system/tokens/ds_typography.dart`.
+- Fonts: Tajawal covers Arabic and most Latin languages. Check the new
+  language's letters against `assets/fonts/Tajawal-Regular.ttf`. Missing
+  Latin letters fall back to Inter (`SbInter`, as for Turkish ğ ş İ); a
+  script Tajawal lacks needs its own family, chosen per language in
+  `DsTypography.textTheme` and in the PDF export (as Urdu uses Noto Naskh
+  Arabic, `SbNaskh`).
+- Upper-case labels go through `AppLang.upper` (Turkish i → İ).
 - French uses a narrow no-break space (U+202F) before `; : ! ? »`.
 - Do not run `dart format` on whole files; it rewrites unrelated lines.

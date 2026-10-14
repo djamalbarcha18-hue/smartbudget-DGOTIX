@@ -25,11 +25,14 @@ class GuideTopic {
 
 abstract final class GuideContent {
   static List<String> gettingStarted({required AppLang lang}) =>
-      lang.pick(_startAr, _startEn, fr: _startFr, id: _startId, es: _startEs);
+      lang.pick(_startAr, _startEn,
+          fr: _startFr, id: _startId, es: _startEs,
+          tr: _startTr, ms: _startMs, ur: _startUr);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
       lang.pick(_topicsAr, _topicsEn,
-          fr: _topicsFr, id: _topicsId, es: _topicsEs);
+          fr: _topicsFr, id: _topicsId, es: _topicsEs,
+          tr: _topicsTr, ms: _topicsMs, ur: _topicsUr);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -1014,6 +1017,612 @@ abstract final class GuideContent {
             'quieras; con la sesión iniciada, tus datos se sincronizan solos '
             'entre tus dispositivos (también tras trabajar sin conexión), y '
             'puedes desactivarlo.',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Turkish) ----
+  static const List<String> _startTr = <String>[
+    'Ayarlar\'ı aç ve dilini, temanı ve ana para birimini seç — uygulamadaki '
+        'her toplam o para biriminde gösterilir.',
+    'Gelir ve giderlerini ekle (veya bir fiş tara) — geri kalan her şey '
+        'bunlardan hesaplanır.',
+    'Uygulamanın sana ne kadar harcayabileceğini söyleyebilmesi için aylık '
+        'bir bütçe belirle.',
+    'Nerede olduğunu görmek için Panel\'e ve Finansal sağlık\'a bak, sonra '
+        'zamanla hedef ve borç ekle.',
+  ];
+
+  // ---- Topics (Turkish) ----
+  static const List<GuideTopic> _topicsTr = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'Panel',
+      summary: 'Ayına bir bakışta: gelir, harcama, birikim ve paranın nereye '
+          'gittiği.',
+      steps: <String>[
+        'Kutucuklar bu ayın toplamlarını ana para biriminde gösterir.',
+        'O kategoriyi öne çıkarmak için harcama dağılımında bir dilime dokun.',
+        'Uyarılar, bütçeyi aşan bir kategori veya acil bir hedef gibi dikkat '
+            'gerektiren her şeyi gösterir.',
+        'Henüz veri yoksa kutucuklarda "—" görünür — hiçbir şey uydurulmaz.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'Gelir ve giderler',
+      summary: 'Her para hareketini kaydet — uygulamadaki her hesabın temeli.',
+      steps: <String>[
+        'Tutar, kategori, tarih ve notla bir gelir veya gider kaydetmek için '
+            'hızlı ekle düğmesini kullan.',
+        'Gelir ve Giderler\'in kendi ekranları var; İşlemler ikisini birlikte '
+            'gösterir.',
+        'Herhangi bir kaydı bulmak için listede ara; düzenlemek veya silmek '
+            'için birine dokun.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'Tekrarlayan işlemler',
+      summary: 'Maaş, kira ve abonelikler tarihlerinde otomatik eklenir.',
+      steps: <String>[
+        'Gelir veya gider eklerken "Tekrarla"yı her hafta, ay, 3 ay, 6 ay '
+            'veya yıl olarak ayarla.',
+        'Tutarı değişen bir prim veya komisyon için "Tutar her seferinde '
+            'değişir"i aç: her tarihte uygulama tahmin eklemek yerine gerçek '
+            'tutarı sorar.',
+        'Her vadesi geldiğinde uygulama onu normal bir işlem olarak ekler — '
+            'uzakta olsan bile, uygulamayı bir sonraki açışında eksikleri '
+            'tamamlar.',
+        'Tekrarlayanlar ekranında duraklat, devam ettir, tutarı değiştir veya '
+            'tekrarı durdur. Zaten eklenen işlemler asla değişmez.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'Fiş tara',
+      summary: 'Bir fiş fotoğrafını kaydetmeye hazır bir gidere dönüştür.',
+      steps: <String>[
+        'Giderler ekranında "Fiş tara"ya dokun ve bir fotoğraf çek veya seç.',
+        'Uygulama işletmeyi, tarihi, tutarı ve kategoriyi doldurur — '
+            'kaydetmeden önce gözden geçir.',
+        'Bulutta tarama planına bağlıdır; bir tarama okunamazsa gideri elle '
+            'gir.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'Aylık bütçe',
+      summary: 'Kategori başına ne kadar harcamak istediğini ay ay planla.',
+      steps: <String>[
+        'Üstten yılı ve ayı seç — tek ekran her ayı kapsar.',
+        'Kontrol etmek istediğin her kategori için bir sınır belirle.',
+        'Harcadıkça ilerleme çubukları dolar; sınırını aşan kategori '
+            'işaretlenir.',
+        'Ücretli bir planda "Paylaştırma öner", gelirini kendi son '
+            'harcamalarına göre kategorilere böler — gözden geçir, sonra '
+            'uygula.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'Hedefler ve birikim',
+      summary: 'Belirli bir şey için biriktir ve ne kadar yaklaştığını gör.',
+      steps: <String>[
+        'Hedef tutarı ve isteğe bağlı bir son tarihi olan bir hedef oluştur.',
+        'Biriktirdikçe katkıları kaydet; ilerleme otomatik güncellenir.',
+        'Son tarihi yaklaşan hedefler Panel\'de vurgulanır.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'Borçlar ve krediler',
+      summary: 'Borçlu olduklarını ve başkalarının sana borçlarını takip et.',
+      steps: <String>[
+        'Her borcu veya krediyi tutarı ve kişi ya da taraf ile ekle.',
+        'Kalan bakiyeyi görmek için şimdiye kadar ödenen tutarı güncelle.',
+        'Borçlar Finansal sağlık puanına katkıda bulunur.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'Proje portföyü',
+      summary: 'Büyük projeleri kısa, orta ve uzun vadeli bölmelerde planla.',
+      steps: <String>[
+        'Projeler ekle ve her birini bir vadeye yerleştir.',
+        'Fonlama motoru bölmeleri sırayla doldurur; böylece birikimlerinin '
+            'önce hangi projeleri karşılayabileceğini görürsün.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'Finansal sağlık',
+      summary: 'Finanslarının ne kadar sağlıklı olduğunu ve nedenini '
+          'özetleyen bir puan.',
+      steps: <String>[
+        'Puan, kendi verilerinden cihazında hesaplanır.',
+        'Ana etkenler neyin yardımcı olduğunu veya zarar verdiğini gösterir — '
+            'önce onları iyileştir.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'Raporlar ve analizler',
+      summary: 'Yıl boyunca eğilimleri ve paranın nereye gittiğini gör.',
+      steps: <String>[
+        'Gelir ve giderleri ay ay karşılaştırmak için bir yıl seç.',
+        'Zamanla büyüyen kategorileri fark etmek için dökümleri kullan.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'Zekât',
+      summary: 'Servetine düşen zekâtı tahmin et ve havlı takip et.',
+      steps: <String>[
+        'Tahmin almak için zekâta tabi varlıkları gir.',
+        'Hicrî olarak gösterilen kamerî yıl geri sayımını izlemek için '
+            'servetinin nisaba ulaştığı tarihi belirle.',
+        'Bu bir planlama yardımıdır — yükümlülüğünü yetkin bir âlimle teyit '
+            'et.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'Döviz kurları ve piyasalar',
+      summary: 'Herkese açık kaynaklardan canlı döviz kurları ve kripto '
+          'fiyatları.',
+      steps: <String>[
+        'Kurlar canlı olarak alınır; her satır kaynağını gösterir.',
+        'Bir piyasanın güvenilir kaynağı yoksa "veri yok" yazar — asla '
+            'uydurma bir sayı değil.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'DGOTIX AI asistanı',
+      summary: 'Finansların hakkında sade bir dille soru sor.',
+      steps: <String>[
+        'Bir soru yaz veya bir öneriye dokun; asistan rakamlarının kısa bir '
+            'özetini kullanarak yanıtlar.',
+        'Yanıt sayısı planına bağlıdır; sınıra yaklaştığında bir not görürsün.',
+        'Yanıtlar otomatik üretilir — önemli kararları iki kez kontrol et. '
+            'Sohbetin altındaki kurala dayalı içgörüler yapay zekâ olmadan da '
+            'her zaman çalışır.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'Planlar ve abonelik',
+      summary: 'Free, Basic ve Pro\'yu karşılaştır ve aboneliğini yönet.',
+      steps: <String>[
+        'Temel bütçe araçları sonsuza dek ücretsiz.',
+        'Ücretli planlar yapay zekâ ve bulut tarama sınırlarını yükseltir ve '
+            'ek özellikler ekler.',
+        'Abone olursan mevcut planın ve yenileme tarihin en üstte, yönetme '
+            'veya iptal etme düğmesiyle görünür.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'Ayarlar, veriler ve yedekleme',
+      summary: 'Uygulamayı kendine göre ayarla ve verilerini güvende tut.',
+      steps: <String>[
+        'Dil, tema ve ana para birimi Görünüm ve Bölge altında.',
+        'Kendi gelir ve gider kategorilerini yönet.',
+        'Veriler ve yedekleme altında istediğin zaman tam bir yedek dışa '
+            'aktar; giriş yaptığında verilerin cihazların arasında otomatik '
+            'senkronize olur (çevrimdışı çalıştıktan sonra da) ve bunu '
+            'kapatabilirsin.',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Malay) ----
+  static const List<String> _startMs = <String>[
+    'Buka Tetapan dan pilih bahasa, tema dan mata wang asas anda — setiap '
+        'jumlah dalam aplikasi dipaparkan dalam mata wang itu.',
+    'Tambah pendapatan dan perbelanjaan anda (atau imbas resit) — semua yang '
+        'lain dikira daripadanya.',
+    'Tetapkan bajet bulanan supaya aplikasi boleh memberitahu berapa baki '
+        'yang boleh dibelanjakan.',
+    'Semak Papan pemuka dan Kesihatan kewangan untuk melihat kedudukan anda, '
+        'kemudian tambah matlamat dan hutang dari semasa ke semasa.',
+  ];
+
+  // ---- Topics (Malay) ----
+  static const List<GuideTopic> _topicsMs = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'Papan pemuka',
+      summary: 'Bulan anda sepintas lalu: pendapatan, perbelanjaan, simpanan '
+          'dan ke mana wang pergi.',
+      steps: <String>[
+        'Jubin menunjukkan jumlah bulan ini dalam mata wang asas anda.',
+        'Ketik satu hirisan dalam pecahan perbelanjaan untuk menyerlahkan '
+            'kategori itu.',
+        'Amaran menunjukkan apa sahaja yang perlu perhatian, seperti kategori '
+            'yang melebihi bajet atau matlamat yang mendesak.',
+        'Tanpa data, jubin menunjukkan "—" — tiada yang direka.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'Pendapatan & perbelanjaan',
+      summary: 'Rekod setiap pergerakan wang — asas setiap pengiraan dalam '
+          'aplikasi.',
+      steps: <String>[
+        'Gunakan butang tambah pantas untuk merekod pendapatan atau '
+            'perbelanjaan dengan jumlah, kategori, tarikh dan nota.',
+        'Pendapatan dan Perbelanjaan masing-masing ada skrin sendiri; '
+            'Transaksi menunjukkan kedua-duanya bersama.',
+        'Cari dalam senarai untuk menemui sebarang catatan, dan ketik satu '
+            'untuk menyunting atau memadamnya.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'Transaksi berulang',
+      summary: 'Gaji, sewa dan langganan ditambah secara automatik pada '
+          'tarikhnya.',
+      steps: <String>[
+        'Semasa menambah pendapatan atau perbelanjaan, tetapkan "Ulang" '
+            'kepada setiap minggu, bulan, 3 bulan, 6 bulan atau tahun.',
+        'Untuk bonus atau komisen yang jumlahnya berubah, hidupkan "Jumlah '
+            'berubah setiap kali": pada setiap tarikh aplikasi meminta jumlah '
+            'sebenar dan bukannya menambah anggaran.',
+        'Setiap kali tiba tarikhnya, aplikasi menambahnya sebagai transaksi '
+            'biasa — walaupun anda tiada, ia dikemas kini apabila anda '
+            'membuka aplikasi kemudian.',
+        'Pada skrin Berulang, jeda, sambung semula, tukar jumlah atau '
+            'hentikan ulangan. Transaksi yang sudah ditambah tidak pernah '
+            'diubah.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'Imbas resit',
+      summary: 'Tukar foto resit menjadi perbelanjaan yang sedia untuk '
+          'disimpan.',
+      steps: <String>[
+        'Pada skrin Perbelanjaan, ketik "Imbas resit" dan ambil atau pilih '
+            'foto.',
+        'Aplikasi mengisi peniaga, tarikh, jumlah dan kategori — semaknya '
+            'sebelum menyimpan.',
+        'Imbasan awan bergantung pada pelan anda; jika imbasan tidak dapat '
+            'dibaca, masukkan perbelanjaan secara manual.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'Bajet bulanan',
+      summary: 'Rancang berapa banyak anda mahu belanja bagi setiap kategori, '
+          'bulan demi bulan.',
+      steps: <String>[
+        'Pilih tahun dan bulan di bahagian atas — satu skrin merangkumi '
+            'setiap bulan.',
+        'Tetapkan had untuk setiap kategori yang ingin anda kawal.',
+        'Bar kemajuan terisi semasa anda berbelanja; kategori yang melebihi '
+            'had ditandakan.',
+        'Pada pelan berbayar, "Cadangkan pembahagian" membahagikan pendapatan '
+            'anda kepada kategori berdasarkan perbelanjaan terkini anda — '
+            'semak, kemudian gunakan.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'Matlamat & simpanan',
+      summary: 'Simpan untuk sesuatu yang khusus dan lihat sejauh mana anda '
+          'hampir.',
+      steps: <String>[
+        'Cipta matlamat dengan jumlah sasaran dan, secara pilihan, tarikh '
+            'akhir.',
+        'Rekod caruman semasa anda menyimpan; kemajuan dikemas kini secara '
+            'automatik.',
+        'Matlamat yang hampir tarikh akhir diserlahkan di Papan pemuka.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'Hutang & pinjaman',
+      summary: 'Jejak apa yang anda hutang dan apa yang orang lain hutang '
+          'kepada anda.',
+      steps: <String>[
+        'Tambah setiap hutang atau pinjaman dengan jumlahnya dan orang atau '
+            'pihak berkenaan.',
+        'Kemas kini jumlah yang dibayar setakat ini untuk melihat baki.',
+        'Hutang menyumbang kepada skor Kesihatan kewangan anda.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'Portfolio projek',
+      summary: 'Rancang projek besar dalam petak jangka pendek, sederhana dan '
+          'panjang.',
+      steps: <String>[
+        'Tambah projek dan letakkan setiap satu dalam jangka masa.',
+        'Enjin pembiayaan mengisi petak mengikut urutan, jadi anda nampak '
+            'projek mana yang boleh ditampung oleh simpanan anda dahulu.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'Kesihatan kewangan',
+      summary: 'Skor yang merumuskan sejauh mana sihat kewangan anda, dan '
+          'sebabnya.',
+      steps: <String>[
+        'Skor dikira pada peranti anda daripada data anda sendiri.',
+        'Faktor utama menunjukkan apa yang membantu atau menjejaskannya — '
+            'perbaiki itu dahulu.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'Laporan & analisis',
+      summary: 'Lihat trend sepanjang tahun dan ke mana wang anda pergi.',
+      steps: <String>[
+        'Pilih tahun untuk membandingkan pendapatan dan perbelanjaan bulan '
+            'demi bulan.',
+        'Gunakan pecahan untuk mengesan kategori yang meningkat dari masa ke '
+            'masa.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'Zakat',
+      summary: 'Anggarkan zakat yang perlu dibayar atas harta anda dan jejak '
+          'haul.',
+      steps: <String>[
+        'Masukkan aset yang dikenakan zakat untuk mendapat anggaran.',
+        'Tetapkan tarikh harta anda mencapai nisab untuk mengikuti kiraan '
+            'detik tahun qamariah, dipaparkan dalam Hijrah.',
+        'Ini alat bantu perancangan — sahkan kewajipan anda dengan ilmuwan '
+            'yang bertauliah.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'Kadar pertukaran & pasaran',
+      summary: 'Kadar mata wang dan harga kripto langsung daripada sumber '
+          'awam.',
+      steps: <String>[
+        'Kadar diambil secara langsung; setiap baris menunjukkan sumbernya.',
+        'Apabila pasaran tiada sumber yang boleh dipercayai, ia tertulis '
+            '"tidak tersedia" — bukan nombor rekaan.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'Pembantu DGOTIX AI',
+      summary: 'Tanya soalan tentang kewangan anda dalam bahasa mudah.',
+      steps: <String>[
+        'Taip soalan atau ketik cadangan; pembantu menjawab menggunakan '
+            'ringkasan pendek angka anda.',
+        'Bilangan jawapan bergantung pada pelan anda; anda akan nampak nota '
+            'apabila hampir mencapai had.',
+        'Jawapan dijana secara automatik — semak semula keputusan penting. '
+            'Wawasan berasaskan peraturan di bawah sembang sentiasa '
+            'berfungsi, walaupun tanpa AI.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'Pelan & langganan',
+      summary: 'Bandingkan Free, Basic dan Pro, dan urus langganan anda.',
+      steps: <String>[
+        'Alat bajet teras percuma selama-lamanya.',
+        'Pelan berbayar menaikkan had AI dan imbasan awan serta menambah ciri '
+            'tambahan.',
+        'Jika anda melanggan, pelan semasa dan tarikh pembaharuan muncul di '
+            'bahagian atas, dengan butang untuk mengurus atau membatalkan.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'Tetapan, data & sandaran',
+      summary: 'Jadikan aplikasi milik anda dan pastikan data anda selamat.',
+      steps: <String>[
+        'Bahasa, tema dan mata wang asas berada di bawah Penampilan dan '
+            'Wilayah.',
+        'Urus kategori pendapatan dan perbelanjaan anda sendiri.',
+        'Di bawah Data & sandaran, eksport sandaran penuh pada bila-bila '
+            'masa; apabila log masuk, data anda diselaraskan antara peranti '
+            'secara automatik (juga selepas bekerja di luar talian), dan anda '
+            'boleh mematikannya.',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Urdu) ----
+  static const List<String> _startUr = <String>[
+    'سیٹنگز کھولیں اور اپنی زبان، تھیم اور بنیادی کرنسی چنیں — ایپ کا ہر '
+        'مجموعہ اسی کرنسی میں دکھایا جاتا ہے۔',
+    'اپنی آمدنی اور اخراجات شامل کریں (یا رسید اسکین کریں) — باقی سب کچھ انہی '
+        'سے حساب ہوتا ہے۔',
+    'ماہانہ بجٹ مقرر کریں تاکہ ایپ بتا سکے کہ خرچ کے لیے کتنا باقی ہے۔',
+    'اپنی صورتحال جاننے کے لیے ڈیش بورڈ اور مالی صحت دیکھیں، پھر وقت کے ساتھ '
+        'اہداف اور قرض شامل کریں۔',
+  ];
+
+  // ---- Topics (Urdu) ----
+  static const List<GuideTopic> _topicsUr = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'ڈیش بورڈ',
+      summary: 'آپ کا مہینہ ایک نظر میں: آمدنی، خرچ، بچت اور پیسہ کہاں گیا۔',
+      steps: <String>[
+        'ٹائلز اس مہینے کے مجموعے آپ کی بنیادی کرنسی میں دکھاتی ہیں۔',
+        'کسی کیٹیگری کو نمایاں کرنے کے لیے خرچ کی تقسیم میں اس کے حصے پر ٹیپ '
+            'کریں۔',
+        'الرٹس ہر اس چیز کی طرف اشارہ کرتے ہیں جس پر توجہ درکار ہو، جیسے بجٹ '
+            'سے بڑھی ہوئی کیٹیگری یا فوری ہدف۔',
+        'ڈیٹا نہ ہونے پر ٹائلز "—" دکھاتی ہیں — کچھ بھی گھڑا نہیں جاتا۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'آمدنی اور اخراجات',
+      summary: 'پیسے کی ہر نقل و حرکت درج کریں — ایپ کے ہر حساب کی بنیاد۔',
+      steps: <String>[
+        'رقم، کیٹیگری، تاریخ اور نوٹ کے ساتھ آمدنی یا خرچ درج کرنے کے لیے '
+            'فوری اندراج کا بٹن استعمال کریں۔',
+        'آمدنی اور اخراجات کی اپنی اپنی اسکرین ہے؛ ٹرانزیکشنز دونوں کو ساتھ '
+            'دکھاتی ہے۔',
+        'کوئی بھی اندراج تلاش کرنے کے لیے فہرست میں تلاش کریں، اور ترمیم یا '
+            'حذف کے لیے اس پر ٹیپ کریں۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'بار بار ہونے والی ٹرانزیکشنز',
+      summary: 'تنخواہ، کرایہ اور سبسکرپشنز اپنی تاریخ پر خود بخود شامل۔',
+      steps: <String>[
+        'آمدنی یا خرچ شامل کرتے وقت "دہرائیں" کو ہر ہفتے، مہینے، 3 مہینے، 6 '
+            'مہینے یا سال پر سیٹ کریں۔',
+        'بدلتی رقم والے بونس یا کمیشن کے لیے "رقم ہر بار بدلتی ہے" آن کریں: '
+            'ہر تاریخ پر ایپ اندازہ شامل کرنے کی بجائے اصل رقم پوچھتی ہے۔',
+        'ہر بار تاریخ آنے پر ایپ اسے عام ٹرانزیکشن کے طور پر شامل کرتی ہے — '
+            'اگر آپ موجود نہ بھی ہوں تو اگلی بار ایپ کھولنے پر کمی پوری کر '
+            'دیتی ہے۔',
+        'بار بار ہونے والے کی اسکرین پر روکیں، دوبارہ شروع کریں، رقم بدلیں یا '
+            'دہرانا بند کریں۔ پہلے سے شامل ٹرانزیکشنز کبھی نہیں بدلتیں۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'رسید اسکین کریں',
+      summary: 'رسید کی تصویر کو محفوظ کرنے کے لیے تیار خرچ میں بدلیں۔',
+      steps: <String>[
+        'اخراجات کی اسکرین پر "رسید اسکین کریں" پر ٹیپ کریں اور تصویر لیں یا '
+            'چنیں۔',
+        'ایپ دکان، تاریخ، رقم اور کیٹیگری بھر دیتی ہے — محفوظ کرنے سے پہلے '
+            'انہیں دیکھ لیں۔',
+        'کلاؤڈ اسکیننگ آپ کے پلان پر منحصر ہے؛ اگر اسکین پڑھا نہ جا سکے تو '
+            'خرچ خود درج کریں۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'ماہانہ بجٹ',
+      summary: 'ہر کیٹیگری میں کتنا خرچ کرنا ہے، مہینہ بہ مہینہ منصوبہ بنائیں۔',
+      steps: <String>[
+        'اوپر سے سال اور مہینہ چنیں — ایک ہی اسکرین ہر مہینے کا احاطہ کرتی ہے۔',
+        'ہر اس کیٹیگری کی حد مقرر کریں جسے آپ قابو میں رکھنا چاہتے ہیں۔',
+        'خرچ کے ساتھ پیش رفت کی بارز بھرتی ہیں؛ حد سے بڑھی ہوئی کیٹیگری نشان '
+            'زد ہوتی ہے۔',
+        'ادا شدہ پلان پر "تقسیم تجویز کریں" آپ کے حالیہ خرچ کی بنیاد پر آمدنی '
+            'کو کیٹیگریز میں بانٹتا ہے — جائزہ لیں، پھر لاگو کریں۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'اہداف اور بچت',
+      summary: 'کسی خاص چیز کے لیے بچت کریں اور دیکھیں کہ آپ کتنے قریب ہیں۔',
+      steps: <String>[
+        'ہدف کی رقم اور، چاہیں تو، آخری تاریخ کے ساتھ ہدف بنائیں۔',
+        'بچت کے ساتھ رقم شامل کرتے جائیں؛ پیش رفت خود بخود اپ ڈیٹ ہوتی ہے۔',
+        'آخری تاریخ کے قریب اہداف ڈیش بورڈ پر نمایاں ہوتے ہیں۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'قرض اور ادھار',
+      summary: 'جو آپ کو دینا ہے اور جو دوسروں کو آپ کو دینا ہے، اس کا حساب '
+          'رکھیں۔',
+      steps: <String>[
+        'ہر قرض یا ادھار اس کی رقم اور شخص یا فریق کے ساتھ شامل کریں۔',
+        'باقی رقم دیکھنے کے لیے اب تک ادا شدہ رقم اپ ڈیٹ کریں۔',
+        'قرض آپ کے مالی صحت کے اسکور میں شامل ہوتے ہیں۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'پروجیکٹس پورٹ فولیو',
+      summary: 'بڑے پروجیکٹس کو قلیل، درمیانی اور طویل مدتی خانوں میں منصوبہ '
+          'بند کریں۔',
+      steps: <String>[
+        'پروجیکٹس شامل کریں اور ہر ایک کو کسی مدت میں رکھیں۔',
+        'فنڈنگ انجن خانوں کو ترتیب سے بھرتا ہے، تاکہ آپ دیکھ سکیں کہ آپ کی '
+            'بچت پہلے کون سے پروجیکٹس پورے کر سکتی ہے۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'مالی صحت',
+      summary: 'ایک اسکور جو بتاتا ہے کہ آپ کے مالی معاملات کتنے صحت مند ہیں، '
+          'اور کیوں۔',
+      steps: <String>[
+        'اسکور آپ کے اپنے ڈیٹا سے آپ کی ڈیوائس پر تیار ہوتا ہے۔',
+        'اہم عوامل دکھاتے ہیں کہ کیا مدد کر رہا ہے یا نقصان پہنچا رہا ہے — '
+            'پہلے انہیں بہتر کریں۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'رپورٹس اور تجزیہ',
+      summary: 'سال بھر کے رجحانات اور آپ کا پیسہ کہاں جاتا ہے، دیکھیں۔',
+      steps: <String>[
+        'آمدنی اور اخراجات کا مہینہ بہ مہینہ موازنہ کرنے کے لیے سال چنیں۔',
+        'وقت کے ساتھ بڑھنے والی کیٹیگریز پہچاننے کے لیے تفصیلات استعمال کریں۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'زکوٰۃ',
+      summary: 'اپنے مال پر واجب زکوٰۃ کا اندازہ لگائیں اور حول کا حساب رکھیں۔',
+      steps: <String>[
+        'اندازہ حاصل کرنے کے لیے قابلِ زکوٰۃ اثاثے درج کریں۔',
+        'ہجری میں دکھائی جانے والی قمری سال کی الٹی گنتی کے لیے وہ تاریخ مقرر '
+            'کریں جب آپ کا مال نصاب تک پہنچا۔',
+        'یہ منصوبہ بندی میں مدد ہے — اپنی ذمہ داری کی تصدیق کسی مستند عالم سے '
+            'کریں۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'ایکسچینج ریٹس اور مارکیٹیں',
+      summary: 'عوامی ذرائع سے لائیو کرنسی ریٹس اور کرپٹو قیمتیں۔',
+      steps: <String>[
+        'ریٹس لائیو حاصل کیے جاتے ہیں؛ ہر قطار اپنا ذریعہ دکھاتی ہے۔',
+        'جب کسی مارکیٹ کا قابلِ اعتماد ذریعہ نہ ہو تو "دستیاب نہیں" لکھا آتا '
+            'ہے — کبھی گھڑا ہوا عدد نہیں۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'DGOTIX AI اسسٹنٹ',
+      summary: 'اپنے مالی معاملات کے بارے میں آسان زبان میں سوال پوچھیں۔',
+      steps: <String>[
+        'سوال لکھیں یا کسی تجویز پر ٹیپ کریں؛ اسسٹنٹ آپ کے اعداد کے مختصر '
+            'خلاصے سے جواب دیتا ہے۔',
+        'جوابات کی تعداد آپ کے پلان پر منحصر ہے؛ حد کے قریب پہنچنے پر آپ کو '
+            'نوٹ نظر آئے گا۔',
+        'جوابات خود بخود تیار ہوتے ہیں — اہم فیصلوں کی دوبارہ جانچ کریں۔ چیٹ '
+            'کے نیچے قواعد پر مبنی جائزے AI کے بغیر بھی ہمیشہ کام کرتے ہیں۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'پلانز اور سبسکرپشن',
+      summary: 'Free، Basic اور Pro کا موازنہ کریں اور اپنی سبسکرپشن کا '
+          'انتظام کریں۔',
+      steps: <String>[
+        'بجٹ کے بنیادی ٹولز ہمیشہ کے لیے مفت ہیں۔',
+        'ادا شدہ پلانز AI اور کلاؤڈ اسکین کی حدیں بڑھاتے ہیں اور اضافی فیچرز '
+            'شامل کرتے ہیں۔',
+        'اگر آپ سبسکرائب کریں تو آپ کا موجودہ پلان اور تجدید کی تاریخ سب سے '
+            'اوپر نظر آتی ہے، ساتھ ہی انتظام یا منسوخی کا بٹن۔',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'سیٹنگز، ڈیٹا اور بیک اپ',
+      summary: 'ایپ کو اپنے مطابق بنائیں اور اپنا ڈیٹا محفوظ رکھیں۔',
+      steps: <String>[
+        'زبان، تھیم اور بنیادی کرنسی ظاہری شکل اور علاقہ کے تحت ہیں۔',
+        'آمدنی اور خرچ کی اپنی کیٹیگریز کا انتظام کریں۔',
+        'ڈیٹا اور بیک اپ کے تحت کسی بھی وقت مکمل بیک اپ ایکسپورٹ کریں؛ سائن '
+            'ان ہونے پر آپ کا ڈیٹا آپ کی ڈیوائسز میں خود بخود ہم آہنگ ہوتا ہے '
+            '(آف لائن کام کے بعد بھی)، اور آپ اسے بند کر سکتے ہیں۔',
       ],
     ),
   ];

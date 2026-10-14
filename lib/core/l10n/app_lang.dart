@@ -9,7 +9,10 @@ enum AppLang {
   en('en', 'English'),
   fr('fr', 'Français'),
   id('id', 'Bahasa Indonesia'),
-  es('es', 'Español');
+  es('es', 'Español'),
+  tr('tr', 'Türkçe'),
+  ms('ms', 'Bahasa Melayu'),
+  ur('ur', 'اردو', rtl: true);
 
   const AppLang(this.code, this.nativeName, {this.rtl = false});
 
@@ -19,7 +22,7 @@ enum AppLang {
   /// The language's name in that language, for the language menus.
   final String nativeName;
 
-  /// Written right to left (Arabic; later Urdu or Persian).
+  /// Written right to left (Arabic, Urdu).
   final bool rtl;
 
   /// The language for a locale code, or null if the app doesn't have it.
@@ -35,14 +38,23 @@ enum AppLang {
 
   bool get isAr => this == AppLang.ar;
 
+  /// Upper case with this language's rules: Turkish i becomes İ, not I.
+  String upper(String s) =>
+      (this == AppLang.tr ? s.replaceAll('i', 'İ') : s).toUpperCase();
+
   /// The text for this language. A language without its own version falls
   /// back to English (names of currencies, markets…), so a new language can
   /// ship before every long text is translated.
-  T pick<T>(T ar, T en, {T? fr, T? id, T? es}) => switch (this) {
+  T pick<T>(T ar, T en,
+          {T? fr, T? id, T? es, T? tr, T? ms, T? ur}) =>
+      switch (this) {
         AppLang.ar => ar,
         AppLang.en => en,
         AppLang.fr => fr ?? en,
         AppLang.id => id ?? en,
         AppLang.es => es ?? en,
+        AppLang.tr => tr ?? en,
+        AppLang.ms => ms ?? en,
+        AppLang.ur => ur ?? en,
       };
 }

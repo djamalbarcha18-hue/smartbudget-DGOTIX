@@ -3,7 +3,7 @@
 
   Paste into: Supabase Dashboard → Authentication → Email Templates →
   "Reset Password". Suggested subject:
-      Your SmartBudget verification code / رمز التحقّق الخاص بك / Votre code de vérification SmartBudget / Kode verifikasi SmartBudget Anda / Tu código de verificación de SmartBudget
+      Your SmartBudget verification code / رمز التحقّق الخاص بك / Votre code de vérification SmartBudget / Kode verifikasi SmartBudget Anda / Tu código de verificación de SmartBudget / SmartBudget doğrulama kodunuz / Kod pengesahan SmartBudget anda / آپ کا SmartBudget تصدیقی کوڈ
   {{ .Token }} is the one-time recovery code the app asks for.
   Keep it short and self-contained: many mail clients strip <style> blocks.
 -->
@@ -57,6 +57,37 @@
     <p style="margin:0;color:#6b7280;font-size:13px">
       El código caduca pronto y solo se puede usar una vez. Si no pediste
       restablecer la contraseña, ignora este correo: tu cuenta no ha cambiado.
+    </p>
+  </div>
+
+  <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0">
+
+  <!-- Turkish, Malay and Urdu point to the code at the top, to keep the email short. -->
+  <div lang="tr">
+    <p style="margin:0 0 8px">Şifreni sıfırlamak için yukarıdaki kodu kullan: <b dir="ltr">{{ .Token }}</b></p>
+    <p style="margin:0;color:#6b7280;font-size:13px">
+      Kodun süresi yakında dolar ve yalnızca bir kez kullanılabilir. Şifre
+      sıfırlama istemediysen bu e-postayı yok say — hesabın değişmedi.
+    </p>
+  </div>
+
+  <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0">
+
+  <div lang="ms">
+    <p style="margin:0 0 8px">Gunakan kod di atas untuk menetapkan semula kata laluan anda: <b dir="ltr">{{ .Token }}</b></p>
+    <p style="margin:0;color:#6b7280;font-size:13px">
+      Kod akan tamat tempoh tidak lama lagi dan hanya boleh digunakan sekali. Jika
+      anda tidak meminta set semula kata laluan, abaikan e-mel ini — akaun anda tidak berubah.
+    </p>
+  </div>
+
+  <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0">
+
+  <div lang="ur" dir="rtl" style="text-align:right">
+    <p style="margin:0 0 8px">پاس ورڈ ری سیٹ کرنے کے لیے اوپر دیا گیا کوڈ استعمال کریں: <b dir="ltr">{{ .Token }}</b></p>
+    <p style="margin:0;color:#6b7280;font-size:13px">
+      کوڈ جلد ختم ہو جائے گا اور صرف ایک بار استعمال ہو سکتا ہے۔ اگر آپ نے پاس ورڈ
+      ری سیٹ کی درخواست نہیں کی تو یہ ای میل نظر انداز کریں — آپ کا اکاؤنٹ تبدیل نہیں ہوا۔
     </p>
   </div>
 </div>

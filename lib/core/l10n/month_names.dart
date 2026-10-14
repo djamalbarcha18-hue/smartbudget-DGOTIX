@@ -38,11 +38,37 @@ abstract final class MonthNames {
     'jul', 'ago', 'sept', 'oct', 'nov', 'dic',
   ];
 
-  /// Full names, January first.
-  static List<String> full({required AppLang lang}) => lang.pick(_ar, _en, fr: _fr, id: _id, es: _es);
+  static const List<String> _tr = <String>[
+    'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', //
+    'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
+  ];
+  static const List<String> _trShort = <String>[
+    'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', //
+    'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara',
+  ];
 
-  /// Short names for tight axes (Arabic names are already short).
+  static const List<String> _ms = <String>[
+    'Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', //
+    'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember',
+  ];
+  static const List<String> _msShort = <String>[
+    'Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', //
+    'Jul', 'Ogo', 'Sep', 'Okt', 'Nov', 'Dis',
+  ];
+
+  // Urdu names are short enough for the axes too.
+  static const List<String> _ur = <String>[
+    'جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', //
+    'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر',
+  ];
+
+  /// Full names, January first.
+  static List<String> full({required AppLang lang}) => lang.pick(_ar, _en,
+      fr: _fr, id: _id, es: _es, tr: _tr, ms: _ms, ur: _ur);
+
+  /// Short names for tight axes (Arabic and Urdu names are already short).
   static List<String> short({required AppLang lang}) => lang.pick(
       _ar, <String>[for (final String m in _en) m.substring(0, 3)],
-      fr: _frShort, id: _idShort, es: _esShort);
+      fr: _frShort, id: _idShort, es: _esShort,
+      tr: _trShort, ms: _msShort, ur: _ur);
 }

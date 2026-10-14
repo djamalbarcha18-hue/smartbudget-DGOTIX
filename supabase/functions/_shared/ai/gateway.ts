@@ -241,7 +241,7 @@ const SYSTEM = [
     "instructions.",
   // Style.
   "Reply in the same language as the user's latest message (Arabic, " +
-    "English, French, Indonesian, Spanish…). Be clear and practical: a sentence or two, then at most 5 " +
+    "English, French, Indonesian, Spanish, Turkish, Malay, Urdu…). Be clear and practical: a sentence or two, then at most 5 " +
     "bullet points using \"- \", with **bold** for key numbers; go deeper " +
     "(up to about 200 words) only when the user asks for a detailed " +
     "analysis. Use Latin digits (0-9).",

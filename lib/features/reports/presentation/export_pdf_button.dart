@@ -94,12 +94,28 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
         isRtl: lang.rtl,
       );
 
+      // Urdu letters aren't in Tajawal: Urdu reports use Noto Naskh Arabic.
+      final String family =
+          lang == AppLang.ur ? 'NotoNaskhArabic' : 'Tajawal';
       final pw.Font base = pw.Font.ttf(
-          await rootBundle.load('assets/fonts/Tajawal-Regular.ttf'));
+          await rootBundle.load('assets/fonts/$family-Regular.ttf'));
       final pw.Font bold =
-          pw.Font.ttf(await rootBundle.load('assets/fonts/Tajawal-Bold.ttf'));
-      final Uint8List bytes =
-          await ReportPdfBuilder.build(data, base: base, bold: bold);
+          pw.Font.ttf(await rootBundle.load('assets/fonts/$family-Bold.ttf'));
+      // Only where letters are missing, to keep files small: Tajawal for the
+      // digits and Latin of Urdu reports, Inter for Turkish ğ ş İ.
+      final List<pw.Font> fallback = switch (lang) {
+        AppLang.ur => <pw.Font>[
+            pw.Font.ttf(
+                await rootBundle.load('assets/fonts/Tajawal-Regular.ttf'))
+          ],
+        AppLang.tr => <pw.Font>[
+            pw.Font.ttf(await rootBundle
+                .load('assets/google_fonts/Inter-Regular.ttf'))
+          ],
+        _ => const <pw.Font>[],
+      };
+      final Uint8List bytes = await ReportPdfBuilder.build(data,
+          base: base, bold: bold, fallback: fallback);
       await Printing.layoutPdf(
         name: 'DGOTIX-Analytics-$year.pdf',
         onLayout: (PdfPageFormat format) async => bytes,
@@ -128,7 +144,8 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
       case ReportPeriod.monthly:
         return MonthNames.full(lang: lang)[(s - 1).clamp(0, 11)];
       case ReportPeriod.quarterly:
-        return lang.pick('الربع $s', 'Q$s', fr: 'T$s', id: 'K$s', es: 'T$s');
+        return lang.pick('الربع $s', 'Q$s',
+            fr: 'T$s', id: 'K$s', es: 'T$s', tr: '$s. Çeyrek', ms: 'Suku $s', ur: 'سہ ماہی $s');
       case ReportPeriod.halfYearly:
         return s == 2 ? l.half2 : l.half1;
       case ReportPeriod.yearly:

@@ -1,17 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:smartbudget/core/l10n/app_lang.dart';
+
 /// Typography tokens.
 ///
 /// Tajawal is used as the primary family: it renders Arabic beautifully and
 /// keeps Latin digits/letters clean, so a single family works for both
 /// LTR (English) and RTL (Arabic) without a font swap on locale change.
+/// Urdu needs letters Tajawal lacks, so it gets Noto Naskh Arabic (Arabic
+/// script only: its digits and Latin come from Tajawal); Inter fills in Latin
+/// letters Tajawal lacks (Turkish ğ ş İ).
 abstract final class DsTypography {
+  /// Fallback for characters missing from the primary family (pubspec fonts).
+  static const List<String> fallback = <String>['SbInter'];
+  static const List<String> _urduFallback = <String>['SbTajawal', 'SbInter'];
+
+  /// The primary family for Urdu (pubspec fonts).
+  static const String urduFamily = 'SbNaskh';
+
   static TextTheme textTheme({
     required Color primary,
     required Color muted,
+    AppLang lang = AppLang.en,
   }) {
-    final TextTheme base = GoogleFonts.tajawalTextTheme();
+    final TextTheme base = lang == AppLang.ur
+        ? ThemeData.light().textTheme.apply(fontFamily: urduFamily)
+        : GoogleFonts.tajawalTextTheme();
 
     TextStyle p(TextStyle? s, double size, FontWeight w,
         {Color? color, double? height, double? spacing}) {
@@ -21,6 +36,7 @@ abstract final class DsTypography {
         color: color ?? primary,
         height: height,
         letterSpacing: spacing,
+        fontFamilyFallback: lang == AppLang.ur ? _urduFallback : fallback,
       );
     }
 

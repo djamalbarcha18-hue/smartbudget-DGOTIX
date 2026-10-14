@@ -47,12 +47,26 @@ abstract final class LegalContent {
       ? 'en ${AppConfig.supportEmail}'
       : 'desde la página Ayuda y soporte de la app';
 
+  static String get _reachTr => AppConfig.hasSupportEmail
+      ? '${AppConfig.supportEmail} adresinden'
+      : 'uygulamadaki Yardım ve destek sayfasından';
+
+  static String get _reachMs => AppConfig.hasSupportEmail
+      ? 'di ${AppConfig.supportEmail}'
+      : 'melalui halaman Bantuan & sokongan dalam aplikasi';
+
+  static String get _reachUr => AppConfig.hasSupportEmail
+      ? '${AppConfig.supportEmail} پر'
+      : 'ایپ میں مدد اور سپورٹ کے صفحے کے ذریعے';
+
   static List<LegalSection> sections(LegalDoc doc, {required AppLang lang}) =>
       switch (doc) {
         LegalDoc.privacy => lang.pick(_privacyAr, _privacyEn,
-            fr: _privacyFr, id: _privacyId, es: _privacyEs),
+            fr: _privacyFr, id: _privacyId, es: _privacyEs,
+            tr: _privacyTr, ms: _privacyMs, ur: _privacyUr),
         LegalDoc.terms => lang.pick(_termsAr, _termsEn,
-            fr: _termsFr, id: _termsId, es: _termsEs),
+            fr: _termsFr, id: _termsId, es: _termsEs,
+            tr: _termsTr, ms: _termsMs, ur: _termsUr),
       };
 
   // ---- Privacy (English) ----
@@ -1408,6 +1422,828 @@ abstract final class LegalContent {
               'versión; seguir usando la app tras una actualización supone '
               'aceptar los términos revisados. Para cualquier duda, escríbenos '
               '$_reachEs.',
+        ),
+      ];
+
+  // ---- Privacy (Turkish) ----
+  static List<LegalSection> get _privacyTr => <LegalSection>[
+        LegalSection(
+          'Genel bakış',
+          'Bu politika $_app uygulamasının neyi sakladığını, nerede '
+              'sakladığını ve hangi seçeneklere sahip olduğunu açıklar. Kısacası:'
+              ' finansal verilerin sana aittir, önce cihazına kaydedilir ve '
+              'onları asla satmayız, sana reklam göstermeyiz ve seni izlemeyiz. '
+              'Bazı isteğe bağlı özellikler (giriş ve senkronizasyon, DGOTIX AI, '
+              'bulutta fiş tarama ve ücretli planlar) yalnızca onları '
+              'kullandığında, aşağıda açıklandığı gibi belirli verileri bir '
+              'hizmete gönderir.',
+        ),
+        const LegalSection(
+          'Neleri saklıyoruz',
+          'Kendin girdiğin bilgiler: gelir, giderler, bütçeler, hedefler, '
+              'borçlar, cüzdanlar, özel kategoriler ve görüntüleme tercihlerin '
+              '(tema, dil, ana para birimi). Bir hesap oluşturursan e-posta '
+              'adresini, planını ve abonelik durumunu, ayrıca DGOTIX AI ve '
+              'bulutta fiş tarama için dönem başına kullanım sayılarını da '
+              'tutarız — yalnızca planının sınırlarını uygulamak için. DGOTIX '
+              'AI\'a sorduğun soruları veya fiş görüntülerini saklamayız; bir '
+              'yapay zekâ yanıtını bildirirsen, inceleyebilmek için o yanıtı ve '
+              'isteğe bağlı notunu tutarız.',
+        ),
+        const LegalSection(
+          'Verilerin nerede',
+          'Her şey önce cihazına kaydedilir (uygulamada veya web sürümünde '
+              'tarayıcında); böylece uygulama hesap veya bağlantı olmadan da '
+              'çalışır. Giriş yaparsan verilerin cihazların arasında otomatik '
+              'olarak da senkronize edilir: bir kopyası veritabanımızda '
+              '(Supabase\'te barındırılan) saklanır, hesabına bağlıdır ve '
+              'yalnızca senin okuyabileceğin şekilde yalıtılmıştır. '
+              'Senkronizasyonu Ayarlar\'dan kapatabilirsin; o zaman verilerin '
+              'yalnızca bu cihazda kalır.',
+        ),
+        const LegalSection(
+          'Hesabın ve e-postalar',
+          'E-posta adresin, giriş yapman ve adres onayı ile şifre sıfırlama '
+              'gibi hesap e-postalarının gönderilmesi için kullanılır (Brevo '
+              'üzerinden iletilir). Asla reklam için kullanılmaz veya pazarlama '
+              'amacıyla paylaşılmaz. Kaydolurken veya giriş yaparken hızlı bir '
+              'insan doğrulaması (Cloudflare Turnstile) otomatik kötüye kullanımı'
+              ' engeller.',
+        ),
+        const LegalSection(
+          'DGOTIX AI',
+          'DGOTIX AI isteğe bağlıdır. Bir soru sorduğunda, o sorunun metni ve'
+              ' rakamlarının bir özeti (12 aya kadar ay ve kategoriye göre '
+              'toplamlar, bütçeler, cüzdan bakiyeleri, hedefler, tekrarlayan '
+              'işlemler, sezon bütçeleri ve gün grupları — yalnızca tutarlar ve '
+              'tarihler, asla açıklamalar, notlar veya verdiğin isimler değil) '
+              'yanıtı üretmek için güvenli sunucumuz üzerinden bir yapay zekâ '
+              'sağlayıcısına (Google Gemini, OpenAI veya Anthropic) gönderilir. '
+              'Sunucumuz kendi sağlayıcı anahtarlarımızı kullanır ve yalnızca '
+              'kullanım üst verilerini kaydeder, asla sorunu veya rakamlarını '
+              'değil. Verilerini hiçbir modeli eğitmek için kullanmayız. Yanıtlar'
+              ' otomatik üretilir; bu yüzden harekete geçmeden önce önemli '
+              'rakamları gözden geçir.',
+        ),
+        const LegalSection(
+          'Fiş tarama',
+          'Android\'de fişler tamamen cihazında okunabilir. Bulutta tarama, '
+              'fiş görüntüsünü yalnızca işletmeyi, tarihi, tutarı, kalemleri ve '
+              'kategoriyi okumak için güvenli sunucumuz üzerinden bir yapay zekâ '
+              'sağlayıcısına gönderir; görüntü saklanmaz.',
+        ),
+        const LegalSection(
+          'Ödemeler ve abonelikler',
+          'Ücretli planlar isteğe bağlıdır. Siparişler, çevrimiçi satıcımız '
+              've Merchant of Record olan Paddle.com tarafından işlenir; kart, '
+              'PayPal, Apple Pay veya Google Pay ile ödemeni sağlar. Paddle '
+              'ihtiyaç duyduğu fatura bilgilerini (adın, e-postan, ülken ve ödeme'
+              ' yöntemin gibi) kendi gizlilik politikası kapsamında toplar; tam '
+              'kart bilgilerini asla görmeyiz veya saklamayız. Sana doğru erişimi'
+              ' verebilmek için planını, abonelik durumunu, yenileme tarihini ve '
+              'Paddle\'ın abonelik kimliklerini, ayrıca kullandığın promosyon '
+              'kodlarının kaydını tutarız.',
+        ),
+        const LegalSection(
+          'Hizmet sağlayıcılar',
+          'Kullandığın özelliklere bağlı olarak: Supabase (hesaplar, '
+              'senkronizasyon ve sunucu işlevlerimiz); Paddle (ödemeler); Brevo '
+              '(hesap e-postaları); Cloudflare Turnstile (girişteki insan '
+              'doğrulaması); GitHub Pages (web sitemizin ve web uygulamamızın '
+              'barındırılması); Google, OpenAI ve Anthropic (DGOTIX AI ve bulutta'
+              ' fiş tarama); ve canlı rakamlar için herkese açık piyasa verisi '
+              'kaynakları — döviz kurları (open.er-api.com) ve kripto fiyatları '
+              '(CoinGecko) — bunlara giden istekler yalnızca para birimi veya '
+              'varlık sembolleri içerir, asla kişisel veya finansal verilerini '
+              'değil. Her sağlayıcı verileri yalnızca hizmetin kendi payına düşen'
+              ' kısmını sunmak için işler.',
+        ),
+        const LegalSection(
+          'Güvenlik',
+          'Hizmetlerimize olan bağlantılar şifrelenir (HTTPS). '
+              'Veritabanımızda her kullanıcının kayıtları, bir hesabın '
+              'diğerininkini asla okuyamayacağı şekilde yalıtılmıştır. Sunucu '
+              'anahtarları uygulamaya asla ulaşmaz, ödeme bildirimleri bir şeyi '
+              'değiştirmeden önce doğrulanır ve cihazına bir uygulama kilidi (PIN'
+              ' veya parmak izi) ekleyebilirsin.',
+        ),
+        const LegalSection(
+          'Yapmadıklarımız',
+          'Verilerini satmayız veya kiralamayız, reklam göstermeyiz, finansal'
+              ' etkinliğin üzerinde davranışsal izleme veya analiz yapmayız.',
+        ),
+        const LegalSection(
+          'Verileri ne kadar tutuyoruz',
+          'Cihazındaki veriler sen silene veya uygulamayı kaldırana kadar '
+              'kalır. Hesabın, senkronize verilerin, kullanım sayıların ve istek '
+              'üst verilerin hesabın var olduğu sürece tutulur — yalnızca hizmeti'
+              ' çalıştırmak ve planının sınırlarını uygulamak için — ve hesabını '
+              'sildiğinde kalıcı olarak silinir. Paddle, yasal olarak tutması '
+              'gereken fatura kayıtlarını saklar.',
+        ),
+        LegalSection(
+          'Hakların ve denetimlerin',
+          'Verilerini uygulamada istediğin zaman görebilir ve düzeltebilir, '
+              'tam bir yedek dışa aktarabilir, senkronizasyonu kapatabilir, çıkış'
+              ' yapabilir ve hesabını tüm verileriyle birlikte silebilirsin '
+              '(aşağıya bak). Ücretli bir aboneliği istediğin zaman iptal '
+              'edebilirsin (Koşullar\'a bak). Kişisel verilerinle ilgili diğer '
+              'her talep için — erişim, düzeltme, silme veya itiraz dahil — bize '
+              '$_reachTr ulaş, hemen yanıt verelim.',
+        ),
+        const LegalSection(
+          'Hesabını ve verilerini silme',
+          'Uygulamada veya web sürümünde, herhangi bir cihazda Ayarlar\'ı, '
+              'ardından Hesap\'ı, ardından "Hesabımı sil"i aç. Bu, hesabını ve '
+              'sunucularımızda onun için saklanan her şeyi (profil, senkronize '
+              'veriler, abonelik kaydı ve kullanım sayıları) kalıcı olarak siler '
+              've o cihazdaki verilerini temizler. Önce ücretli aboneliğini iptal'
+              ' et. Silme geri alınamaz; verilerini daha sonra isteyebileceksen '
+              'önceden bir yedek dışa aktar.',
+        ),
+        LegalSection(
+          'Yaş',
+          '$_app 16 yaş ve üzeri kişiler için tasarlanmıştır. Daha küçük '
+              'çocuklardan bilerek veri toplamayız; bir çocuğun hesap '
+              'oluşturduğunu düşünüyorsan bize $_reachTr ulaş, hesabı silelim.',
+        ),
+        LegalSection(
+          'Değişiklikler ve iletişim',
+          'Bu politikayı güncelleyebiliriz; yukarıda gösterilen tarih en son '
+              'sürümü yansıtır. Gizlilik soruların için bize $_reachTr ulaş.',
+        ),
+      ];
+
+  // ---- Terms (Turkish) ----
+  static List<LegalSection> get _termsTr => <LegalSection>[
+        LegalSection(
+          'Kabul',
+          '$_app uygulamasını kullanarak bu koşulları kabul etmiş olursun. '
+              'Kabul etmiyorsan lütfen uygulamayı kullanma.',
+        ),
+        LegalSection(
+          'Kimler kullanabilir',
+          '$_app uygulamasını kullanmak için en az 16 yaşında olmalısın. Bir '
+              'hesap oluşturursan giriş bilgilerini güvende tut; hesabındaki '
+              'etkinlikten sen sorumlusun.',
+        ),
+        const LegalSection(
+          'Hizmet nedir',
+          'Gelir, gider, bütçe, hedef ve ilgili içgörüleri takip etmek için '
+              'kişisel bir bütçe ve planlama aracı; isteğe bağlı yapay zekâ '
+              'yardımı, fiş tarama, cihazlar arası senkronizasyon ve ücretli '
+              'planlarla.',
+        ),
+        const LegalSection(
+          'Planlama araçları, profesyonel tavsiye değil',
+          'Bütçeler, projeksiyonlar, zekât hesabı ve DGOTIX AI yanıtları '
+              'karar vermene yardımcı olan planlama araçlarıdır. Profesyonel '
+              'finansal, vergi veya dinî tavsiye değildir. Zekât gibi dinî '
+              'yükümlülükler için yetkin bir âlimle teyit et; büyük finansal '
+              'kararlar için yetkin bir danışmana başvur.',
+        ),
+        const LegalSection(
+          'Yapay zekâ özellikleri',
+          'DGOTIX AI ve bulutta fiş tarama, sana zaman kazandırmak için '
+              'otomatik sonuçlar üretir; harekete geçmeden önce önemli rakamları '
+              'gözden geçir. Bu özellikler planına bağlı adil kullanım sınırları '
+              'içinde sunulur ve hizmeti herkes için hızlı ve güvenilir tutmak '
+              'amacıyla ayarlanabilir.',
+        ),
+        const LegalSection(
+          'Abonelikler, faturalandırma ve yenilemeler',
+          'Temel uygulama ücretsizdir. Ücretli planlar (Basic ve Pro), '
+              'uygulamada gösterilen fiyatlarla daha yüksek sınırların ve ek '
+              'özelliklerin kilidini açar. Ücretli bir plan, iptal edene kadar '
+              'her faturalandırma döneminde (aylık veya yıllık) otomatik olarak '
+              'yenilenir. Ödemeler çevrimiçi satıcımız Paddle tarafından işlenir;'
+              ' geçerli vergiler eklenebilir ve Merchant of Record olarak Paddle '
+              'tarafından yönetilir. İstediğin zaman iptal edebilir ve ödediğin '
+              'dönemin sonuna kadar erişimini koruyabilirsin. Fiyatlar veya plan '
+              'özellikleri değişirse, güncel koşullar abone olmadan önce her '
+              'zaman gösterilir.',
+        ),
+        const LegalSection(
+          'Satıcımız: Paddle',
+          'Sipariş sürecimiz çevrimiçi satıcımız Paddle.com tarafından '
+              'yürütülür. Paddle.com tüm siparişlerimiz için Merchant of '
+              'Record\'dur. Tüm müşteri hizmetleri taleplerini Paddle karşılar ve'
+              ' iadeleri yönetir.',
+        ),
+        LegalSection(
+          'İade politikası',
+          'Yasanın gerektirdiği durumlar dışında, bir faturalandırma dönemi '
+              'başladıktan sonra ödemeler genellikle iade edilmez, çünkü dönemin '
+              'sonuna kadar erişimin devam eder. Gelecekteki yenilemeleri '
+              'durdurmak için istediğin zaman iptal edebilirsin. İade talepleri '
+              'Paddle tarafından kendi alıcı koşulları ve geçerli tüketici hukuku'
+              ' kapsamında ele alınır (Paddle\'a paddle.net üzerinden '
+              'ulaşabilirsin); ayrıca bize $_reachTr ulaşabilirsin, yardımcı '
+              'oluruz.',
+        ),
+        const LegalSection(
+          'Promosyon kodları',
+          'Kuponlar ve indirim kodları isteğe bağlıdır ve yalnızca bir '
+              'ödemenin fiyatını değiştirir (veya deneme süresi verir). Her kodun'
+              ' kendi koşulları vardır (geçerlilik süresi, kullanım sınırları, '
+              'müşteri başına bir) ve geri çekilebilir veya süresi dolabilir. '
+              'Nakit değeri yoktur ve belirtilmedikçe birleştirilemez.',
+        ),
+        const LegalSection(
+          'Verilerin ve yedeklerin',
+          'Girdiğin verilerin doğruluğundan sen sorumlusun. Verilerini '
+              'cihazlar arasında güvende tutmak için senkronize etmek üzere giriş'
+              ' yap veya Ayarlar\'dan düzenli olarak yedek dışa aktar.',
+        ),
+        LegalSection(
+          'Erişilebilirlik',
+          '$_app uygulamasını erişilebilir ve güvenilir tutmak için '
+              'çalışıyoruz. Yasanın izin verdiği ölçüde uygulama, hiçbir türde '
+              'garanti olmaksızın "olduğu gibi" sunulur. Canlı piyasa verileri, '
+              'yapay zekâ ve ödemeler üçüncü taraf hizmetlere dayanır ve zaman '
+              'zaman gecikebilir veya kullanılamayabilir; böyle bir kesinti, '
+              'çevrimdışı da çalışan temel bütçe araçlarını kullanmanı asla '
+              'engellemez. Özellikler zamanla gelişebilir.',
+        ),
+        const LegalSection(
+          'Sorumluluğun sınırlandırılması',
+          'Yasanın izin verdiği ölçüde, dolaylı veya sonuç olarak ortaya '
+              'çıkan kayıplardan ya da uygulamanın rakamlarına dayanarak verdiğin'
+              ' kararlardan sorumlu değiliz. Bu koşullardaki hiçbir şey, tüketici'
+              ' hukuku kapsamında feragat edilemeyen haklarını sınırlamaz.',
+        ),
+        const LegalSection(
+          'Kabul edilebilir kullanım',
+          'Hizmeti kötüye kullanma, güvenliğini veya plan sınırlarını kırmaya'
+              ' ya da aşmaya çalışma veya hukuka aykırı herhangi bir amaçla '
+              'kullanma.',
+        ),
+        LegalSection(
+          'Kullanımı sonlandırma',
+          '$_app uygulamasını kullanmayı istediğin zaman bırakabilir ve '
+              'hesabını silebilirsin. Bu koşulları ihlal eden veya hizmeti ya da '
+              'diğer kullanıcıları riske atan bir hesabı askıya alabiliriz.',
+        ),
+        LegalSection(
+          'Marka ve mülkiyet',
+          '$_app adı, $_brand markası ve uygulamanın tasarımı ile kodu '
+              'sahibinin mülkiyetinde kalır. Verilerin sana ait kalır.',
+        ),
+        LegalSection(
+          'Değişiklikler ve iletişim',
+          'Bu koşulları güncelleyebilir ve en son sürümün tarihini '
+              'gösterebiliriz; bir güncellemeden sonra kullanmaya devam etmek, '
+              'revize edilmiş koşulları kabul ettiğin anlamına gelir. Soruların '
+              'için bize $_reachTr ulaş.',
+        ),
+      ];
+
+  // ---- Privacy (Malay) ----
+  static List<LegalSection> get _privacyMs => <LegalSection>[
+        LegalSection(
+          'Gambaran keseluruhan',
+          'Dasar ini menerangkan apa yang disimpan oleh $_app, di mana ia '
+              'disimpan, dan pilihan yang anda ada. Ringkasnya: data kewangan '
+              'anda milik anda, ia disimpan pada peranti anda dahulu, dan kami '
+              'tidak pernah menjualnya, menunjukkan iklan kepada anda atau '
+              'menjejak anda. Beberapa ciri pilihan (log masuk dan penyelarasan, '
+              'DGOTIX AI, imbasan resit awan dan pelan berbayar) menghantar data '
+              'tertentu kepada sesuatu perkhidmatan hanya apabila anda '
+              'menggunakannya, seperti yang diterangkan di bawah.',
+        ),
+        const LegalSection(
+          'Apa yang kami simpan',
+          'Maklumat yang anda masukkan sendiri: pendapatan, perbelanjaan, '
+              'bajet, matlamat, hutang, dompet, kategori tersuai dan pilihan '
+              'paparan anda (tema, bahasa, mata wang asas). Jika anda mencipta '
+              'akaun, kami juga menyimpan alamat e-mel anda, pelan dan status '
+              'langganan anda, serta kiraan penggunaan setiap tempoh untuk DGOTIX'
+              ' AI dan imbasan resit awan — hanya untuk menguatkuasakan had pelan'
+              ' anda. Kami tidak menyimpan soalan anda kepada DGOTIX AI atau imej'
+              ' resit anda; jika anda melaporkan jawapan AI, kami menyimpan '
+              'jawapan itu dan nota pilihan anda supaya kami boleh menyemaknya.',
+        ),
+        const LegalSection(
+          'Di mana data anda berada',
+          'Semuanya disimpan pada peranti anda dahulu (dalam aplikasi, atau '
+              'dalam pelayar anda untuk versi web), jadi aplikasi berfungsi '
+              'walaupun tanpa akaun atau sambungan. Jika anda log masuk, data '
+              'anda juga diselaraskan secara automatik antara peranti anda: satu '
+              'salinan disimpan dalam pangkalan data kami (dihoskan oleh '
+              'Supabase), terikat pada akaun anda dan diasingkan supaya hanya '
+              'anda boleh membacanya. Anda boleh mematikan penyelarasan dalam '
+              'Tetapan; data anda kemudian kekal pada peranti ini sahaja.',
+        ),
+        const LegalSection(
+          'Akaun dan e-mel anda',
+          'Alamat e-mel anda digunakan untuk log masuk dan menghantar e-mel '
+              'akaun, seperti pengesahan alamat dan set semula kata laluan '
+              '(dihantar melalui Brevo). Ia tidak pernah digunakan untuk '
+              'pengiklanan atau dikongsi untuk pemasaran. Semasa mendaftar atau '
+              'log masuk, semakan manusia yang pantas (Cloudflare Turnstile) '
+              'menghalang penyalahgunaan automatik.',
+        ),
+        const LegalSection(
+          'DGOTIX AI',
+          'DGOTIX AI adalah pilihan. Apabila anda bertanya soalan, teks '
+              'soalan itu dan ringkasan angka anda (jumlah mengikut bulan dan '
+              'kategori sehingga 12 bulan, bajet, baki dompet, matlamat, '
+              'transaksi berulang, bajet bermusim dan kumpulan kutu — jumlah dan '
+              'tarikh sahaja, tidak pernah keterangan, nota atau nama yang anda '
+              'berikan) dihantar melalui pelayan selamat kami kepada penyedia AI '
+              '(Google Gemini, OpenAI atau Anthropic) untuk menjana jawapan. '
+              'Pelayan kami menggunakan kunci penyedia kami sendiri dan hanya '
+              'merekod metadata penggunaan, tidak pernah soalan atau angka anda. '
+              'Kami tidak menggunakan data anda untuk melatih mana-mana model. '
+              'Jawapan dijana secara automatik, jadi semak angka penting sebelum '
+              'bertindak.',
+        ),
+        const LegalSection(
+          'Imbasan resit',
+          'Pada Android, resit boleh dibaca sepenuhnya pada peranti anda. '
+              'Imbasan awan menghantar imej resit melalui pelayan selamat kami '
+              'kepada penyedia AI hanya untuk membaca peniaga, tarikh, jumlah, '
+              'item dan kategori; imej tidak disimpan.',
+        ),
+        const LegalSection(
+          'Bayaran dan langganan',
+          'Pelan berbayar adalah pilihan. Pesanan diproses oleh Paddle.com, '
+              'penjual semula dalam talian dan Merchant of Record kami, yang '
+              'membolehkan anda membayar dengan kad, PayPal, Apple Pay atau '
+              'Google Pay. Paddle mengumpul butiran pengebilan yang diperlukannya'
+              ' (seperti nama, e-mel, negara dan kaedah bayaran anda) di bawah '
+              'dasar privasinya sendiri; kami tidak pernah melihat atau menyimpan'
+              ' butiran penuh kad anda. Kami menyimpan pelan, status langganan, '
+              'tarikh pembaharuan dan pengecam langganan Paddle anda supaya kami '
+              'boleh memberi akses yang betul, serta rekod mana-mana kod promosi '
+              'yang anda tebus.',
+        ),
+        const LegalSection(
+          'Penyedia perkhidmatan',
+          'Bergantung pada ciri yang anda gunakan: Supabase (akaun, '
+              'penyelarasan dan fungsi pelayan kami); Paddle (bayaran); Brevo '
+              '(e-mel akaun); Cloudflare Turnstile (semakan manusia semasa log '
+              'masuk); GitHub Pages (pengehosan laman web dan aplikasi web kami);'
+              ' Google, OpenAI dan Anthropic (DGOTIX AI dan imbasan resit awan); '
+              'dan sumber data pasaran awam untuk angka langsung — kadar mata '
+              'wang (open.er-api.com) dan harga kripto (CoinGecko) — yang '
+              'permintaannya hanya mengandungi simbol mata wang atau aset, tidak '
+              'pernah data peribadi atau kewangan anda. Setiap penyedia memproses'
+              ' data hanya untuk menyampaikan bahagian perkhidmatannya.',
+        ),
+        const LegalSection(
+          'Keselamatan',
+          'Sambungan ke perkhidmatan kami disulitkan (HTTPS). Dalam pangkalan'
+              ' data kami, rekod setiap pengguna diasingkan supaya satu akaun '
+              'tidak pernah boleh membaca akaun lain. Kunci pelayan tidak pernah '
+              'sampai ke aplikasi, pemberitahuan bayaran disahkan sebelum '
+              'mengubah apa-apa, dan anda boleh menambah kunci aplikasi (PIN atau'
+              ' cap jari) pada peranti anda.',
+        ),
+        const LegalSection(
+          'Apa yang kami tidak lakukan',
+          'Kami tidak menjual atau menyewakan data anda, menunjukkan iklan, '
+              'atau menjalankan penjejakan tingkah laku atau analitik ke atas '
+              'aktiviti kewangan anda.',
+        ),
+        const LegalSection(
+          'Berapa lama kami menyimpan data',
+          'Data pada peranti anda kekal sehingga anda memadamnya atau '
+              'membuang aplikasi. Akaun, data yang diselaraskan, kiraan '
+              'penggunaan dan metadata permintaan anda disimpan selagi akaun anda'
+              ' wujud — hanya untuk menjalankan perkhidmatan dan menguatkuasakan '
+              'had pelan anda — dan dipadam secara kekal apabila anda memadamnya.'
+              ' Paddle menyimpan rekod pengebilan yang diwajibkan oleh undang-'
+              'undang.',
+        ),
+        LegalSection(
+          'Hak dan kawalan anda',
+          'Anda boleh melihat dan membetulkan data anda dalam aplikasi pada '
+              'bila-bila masa, mengeksport sandaran penuh, mematikan '
+              'penyelarasan, log keluar, dan memadam akaun anda bersama semua '
+              'datanya (lihat di bawah). Anda boleh membatalkan langganan '
+              'berbayar pada bila-bila masa (lihat Terma). Untuk sebarang '
+              'permintaan lain tentang data peribadi anda — termasuk akses, '
+              'pembetulan, pemadaman atau bantahan — hubungi kami $_reachMs dan '
+              'kami akan menjawab dengan segera.',
+        ),
+        const LegalSection(
+          'Memadam akaun dan data anda',
+          'Dalam aplikasi atau versi web, pada mana-mana peranti, buka '
+              'Tetapan, kemudian Akaun, kemudian "Padam akaun saya". Ini memadam '
+              'akaun anda secara kekal bersama semua yang disimpan untuknya di '
+              'pelayan kami (profil, data yang diselaraskan, rekod langganan dan '
+              'kiraan penggunaan), dan memadam data anda pada peranti itu. '
+              'Batalkan langganan berbayar dahulu. Pemadaman tidak boleh dibuat '
+              'asal, jadi eksport sandaran terlebih dahulu jika anda mungkin '
+              'mahukan data anda kemudian.',
+        ),
+        LegalSection(
+          'Umur',
+          '$_app ditujukan untuk mereka yang berumur 16 tahun ke atas. Kami '
+              'tidak dengan sengaja mengumpul data daripada kanak-kanak yang '
+              'lebih muda; jika anda percaya seorang kanak-kanak telah mencipta '
+              'akaun, hubungi kami $_reachMs dan kami akan memadamnya.',
+        ),
+        LegalSection(
+          'Perubahan dan hubungan',
+          'Kami mungkin mengemas kini dasar ini; tarikh yang ditunjukkan di '
+              'atas mencerminkan versi terkini. Untuk soalan privasi, hubungi '
+              'kami $_reachMs.',
+        ),
+      ];
+
+  // ---- Terms (Malay) ----
+  static List<LegalSection> get _termsMs => <LegalSection>[
+        LegalSection(
+          'Penerimaan',
+          'Dengan menggunakan $_app anda bersetuju dengan terma ini. Jika '
+              'anda tidak bersetuju, sila jangan gunakan aplikasi ini.',
+        ),
+        LegalSection(
+          'Siapa boleh menggunakannya',
+          'Anda mesti berumur sekurang-kurangnya 16 tahun untuk menggunakan '
+              '$_app. Jika anda mencipta akaun, pastikan butiran log masuk anda '
+              'selamat; anda bertanggungjawab atas aktiviti pada akaun anda.',
+        ),
+        const LegalSection(
+          'Apakah perkhidmatan ini',
+          'Alat bajet dan perancangan peribadi untuk menjejak pendapatan, '
+              'perbelanjaan, bajet, matlamat dan wawasan berkaitan, dengan '
+              'bantuan AI pilihan, imbasan resit, penyelarasan merentas peranti '
+              'dan pelan berbayar.',
+        ),
+        const LegalSection(
+          'Alat perancangan, bukan nasihat profesional',
+          'Bajet, unjuran, pengiraan zakat dan jawapan DGOTIX AI ialah alat '
+              'perancangan untuk membantu anda membuat keputusan. Ia bukan '
+              'nasihat kewangan, cukai atau agama profesional. Untuk kewajipan '
+              'agama seperti zakat, sahkan dengan ilmuwan yang bertauliah; untuk '
+              'keputusan kewangan besar, rujuk penasihat yang bertauliah.',
+        ),
+        const LegalSection(
+          'Ciri AI',
+          'DGOTIX AI dan imbasan resit awan menghasilkan keputusan automatik '
+              'untuk menjimatkan masa anda; semak angka penting sebelum '
+              'bertindak. Ciri ini disediakan dalam had penggunaan saksama yang '
+              'bergantung pada pelan anda, dan mungkin dilaraskan untuk '
+              'memastikan perkhidmatan pantas dan boleh dipercayai untuk semua.',
+        ),
+        const LegalSection(
+          'Langganan, pengebilan dan pembaharuan',
+          'Aplikasi teras adalah percuma. Pelan berbayar (Basic dan Pro) '
+              'membuka had yang lebih tinggi dan ciri tambahan pada harga yang '
+              'ditunjukkan dalam aplikasi. Pelan berbayar diperbaharui secara '
+              'automatik setiap tempoh pengebilan (bulanan atau tahunan) sehingga'
+              ' anda membatalkannya. Bayaran diproses oleh penjual semula dalam '
+              'talian kami, Paddle; cukai yang berkenaan mungkin ditambah dan '
+              'diuruskan oleh Paddle sebagai Merchant of Record. Anda boleh '
+              'membatalkan pada bila-bila masa dan mengekalkan akses sehingga '
+              'akhir tempoh yang telah anda bayar. Jika harga atau ciri pelan '
+              'berubah, terma semasa sentiasa ditunjukkan sebelum anda melanggan.',
+        ),
+        const LegalSection(
+          'Penjual semula kami: Paddle',
+          'Proses pesanan kami dijalankan oleh penjual semula dalam talian '
+              'kami, Paddle.com. Paddle.com ialah Merchant of Record bagi semua '
+              'pesanan kami. Paddle mengendalikan semua pertanyaan khidmat '
+              'pelanggan dan menguruskan pemulangan.',
+        ),
+        LegalSection(
+          'Dasar bayaran balik',
+          'Kecuali jika dikehendaki oleh undang-undang, bayaran secara amnya '
+              'tidak boleh dikembalikan sebaik sahaja tempoh pengebilan bermula, '
+              'kerana anda mengekalkan akses sehingga akhir tempoh itu. Anda '
+              'boleh membatalkan pada bila-bila masa untuk menghentikan '
+              'pembaharuan akan datang. Permintaan bayaran balik dikendalikan '
+              'oleh Paddle di bawah terma pembelinya dan undang-undang pengguna '
+              'yang berkenaan (anda boleh menghubungi Paddle di paddle.net); anda'
+              ' juga boleh menghubungi kami $_reachMs dan kami akan membantu.',
+        ),
+        const LegalSection(
+          'Kod promosi',
+          'Kupon dan kod diskaun adalah pilihan dan hanya mengubah harga '
+              'pembayaran (atau memberi tempoh percubaan). Setiap kod mempunyai '
+              'syaratnya sendiri (tempoh sah, had penggunaan, satu bagi setiap '
+              'pelanggan) dan mungkin ditarik balik atau tamat tempoh. Ia tidak '
+              'mempunyai nilai tunai dan tidak boleh digabungkan melainkan '
+              'dinyatakan.',
+        ),
+        const LegalSection(
+          'Data dan sandaran anda',
+          'Anda bertanggungjawab atas ketepatan data yang anda masukkan. '
+              'Untuk memastikan data anda selamat merentas peranti, log masuk '
+              'untuk menyelaraskannya, atau eksport sandaran secara berkala dari '
+              'Tetapan.',
+        ),
+        LegalSection(
+          'Ketersediaan',
+          'Kami berusaha memastikan $_app tersedia dan boleh dipercayai. '
+              'Setakat yang dibenarkan oleh undang-undang, aplikasi disediakan '
+              '"seadanya", tanpa sebarang jaminan. Data pasaran langsung, AI dan '
+              'bayaran bergantung pada perkhidmatan pihak ketiga dan kadangkala '
+              'mungkin tertunda atau tidak tersedia; gangguan sedemikian tidak '
+              'pernah menghalang anda daripada menggunakan alat bajet teras, yang'
+              ' juga berfungsi di luar talian. Ciri mungkin berkembang dari '
+              'semasa ke semasa.',
+        ),
+        const LegalSection(
+          'Had liabiliti',
+          'Setakat yang dibenarkan oleh undang-undang, kami tidak '
+              'bertanggungjawab atas kerugian tidak langsung atau berbangkit, '
+              'atau atas keputusan yang anda buat berdasarkan angka aplikasi. '
+              'Tiada apa-apa dalam terma ini mengehadkan hak anda di bawah '
+              'undang-undang pengguna yang tidak boleh diketepikan.',
+        ),
+        const LegalSection(
+          'Penggunaan yang dibenarkan',
+          'Jangan menyalahgunakan perkhidmatan, cuba memecahkan atau memintas'
+              ' keselamatan atau had pelannya, atau menggunakannya untuk sebarang'
+              ' tujuan yang menyalahi undang-undang.',
+        ),
+        LegalSection(
+          'Menamatkan penggunaan',
+          'Anda boleh berhenti menggunakan $_app dan memadam akaun anda pada '
+              'bila-bila masa. Kami mungkin menggantung akaun yang melanggar '
+              'terma ini atau membahayakan perkhidmatan atau pengguna lain.',
+        ),
+        LegalSection(
+          'Jenama dan pemilikan',
+          'Nama $_app, jenama $_brand, serta reka bentuk dan kod aplikasi '
+              'kekal menjadi hak milik pemiliknya. Data anda kekal milik anda.',
+        ),
+        LegalSection(
+          'Perubahan dan hubungan',
+          'Kami mungkin mengemas kini terma ini dan menunjukkan tarikh versi '
+              'terkini; penggunaan berterusan selepas kemas kini bermakna anda '
+              'menerima terma yang disemak. Untuk soalan, hubungi kami $_reachMs.',
+        ),
+      ];
+
+  // ---- Privacy (Urdu) ----
+  static List<LegalSection> get _privacyUr => <LegalSection>[
+        LegalSection(
+          'جائزہ',
+          'یہ پالیسی بتاتی ہے کہ $_app کیا محفوظ کرتی ہے، کہاں محفوظ کرتی ہے،'
+              ' اور آپ کے پاس کیا اختیارات ہیں۔ مختصراً: آپ کا مالی ڈیٹا آپ کا '
+              'ہے، یہ پہلے آپ کی ڈیوائس پر محفوظ ہوتا ہے، اور ہم اسے کبھی نہیں '
+              'بیچتے، نہ آپ کو اشتہارات دکھاتے ہیں اور نہ آپ کو ٹریک کرتے ہیں۔ '
+              'چند اختیاری فیچرز (سائن ان اور ہم آہنگی، DGOTIX AI، کلاؤڈ رسید '
+              'اسکیننگ اور ادا شدہ پلانز) مخصوص ڈیٹا کسی سروس کو صرف تب بھیجتے '
+              'ہیں جب آپ انہیں استعمال کریں، جیسا کہ نیچے بیان کیا گیا ہے۔',
+        ),
+        const LegalSection(
+          'ہم کیا محفوظ کرتے ہیں',
+          'وہ معلومات جو آپ خود درج کرتے ہیں: آمدنی، اخراجات، بجٹ، اہداف، '
+              'قرض، والیٹس، ذاتی کیٹیگریز اور آپ کی ڈسپلے ترجیحات (تھیم، زبان، '
+              'بنیادی کرنسی)۔ اگر آپ اکاؤنٹ بنائیں تو ہم آپ کا ای میل ایڈریس، آپ '
+              'کا پلان اور سبسکرپشن کی حیثیت، اور DGOTIX AI اور کلاؤڈ رسید '
+              'اسکیننگ کے لیے ہر مدت کے استعمال کی گنتی بھی رکھتے ہیں — صرف آپ کے'
+              ' پلان کی حدیں لاگو کرنے کے لیے۔ ہم DGOTIX AI سے آپ کے سوالات یا آپ'
+              ' کی رسیدوں کی تصاویر محفوظ نہیں کرتے؛ اگر آپ کسی AI جواب کی رپورٹ '
+              'کریں تو ہم جائزے کے لیے وہ جواب اور آپ کا اختیاری نوٹ رکھتے ہیں۔',
+        ),
+        const LegalSection(
+          'آپ کا ڈیٹا کہاں رہتا ہے',
+          'سب کچھ پہلے آپ کی ڈیوائس پر محفوظ ہوتا ہے (ایپ میں، یا ویب ورژن کے'
+              ' لیے آپ کے براؤزر میں)، اس لیے ایپ اکاؤنٹ یا کنکشن کے بغیر بھی '
+              'چلتی ہے۔ اگر آپ سائن ان کریں تو آپ کا ڈیٹا آپ کی ڈیوائسز کے درمیان'
+              ' خود بخود ہم آہنگ بھی ہوتا ہے: ایک کاپی ہمارے ڈیٹا بیس (Supabase '
+              'پر ہوسٹڈ) میں محفوظ ہوتی ہے، آپ کے اکاؤنٹ سے منسلک اور اس طرح الگ '
+              'کہ صرف آپ اسے پڑھ سکیں۔ آپ سیٹنگز میں ہم آہنگی بند کر سکتے ہیں؛ '
+              'پھر آپ کا ڈیٹا صرف اسی ڈیوائس پر رہتا ہے۔',
+        ),
+        const LegalSection(
+          'آپ کا اکاؤنٹ اور ای میلز',
+          'آپ کا ای میل ایڈریس سائن ان کرنے اور اکاؤنٹ کی ای میلز بھیجنے کے '
+              'لیے استعمال ہوتا ہے، جیسے ایڈریس کی تصدیق اور پاس ورڈ ری سیٹ '
+              '(Brevo کے ذریعے بھیجی جاتی ہیں)۔ یہ کبھی اشتہارات کے لیے استعمال '
+              'یا مارکیٹنگ کے لیے شیئر نہیں ہوتا۔ سائن اپ یا سائن ان کرتے وقت ایک'
+              ' فوری انسانی جانچ (Cloudflare Turnstile) خودکار غلط استعمال کو '
+              'روکتی ہے۔',
+        ),
+        const LegalSection(
+          'DGOTIX AI',
+          'DGOTIX AI اختیاری ہے۔ جب آپ کوئی سوال پوچھتے ہیں تو اس سوال کا متن'
+              ' اور آپ کے اعداد کا خلاصہ (12 مہینوں تک مہینے اور کیٹیگری کے لحاظ '
+              'سے مجموعے، بجٹ، والیٹ بیلنس، اہداف، بار بار کی ٹرانزیکشنز، موسمی '
+              'بجٹ اور کمیٹی گروپس — صرف رقوم اور تاریخیں، کبھی تفصیلات، نوٹس یا '
+              'آپ کے دیے ہوئے نام نہیں) جواب تیار کرنے کے لیے ہمارے محفوظ سرور کے'
+              ' ذریعے کسی AI فراہم کنندہ (Google Gemini، OpenAI یا Anthropic) کو '
+              'بھیجا جاتا ہے۔ ہمارا سرور ہماری اپنی فراہم کنندہ کلیدیں استعمال '
+              'کرتا ہے اور صرف استعمال کا میٹا ڈیٹا ریکارڈ کرتا ہے، کبھی آپ کا '
+              'سوال یا آپ کے اعداد نہیں۔ ہم آپ کا ڈیٹا کسی ماڈل کی تربیت کے لیے '
+              'استعمال نہیں کرتے۔ جوابات خود بخود تیار ہوتے ہیں، اس لیے عمل سے '
+              'پہلے اہم اعداد کا جائزہ لیں۔',
+        ),
+        const LegalSection(
+          'رسید اسکیننگ',
+          'اینڈرائیڈ پر رسیدیں مکمل طور پر آپ کی ڈیوائس پر پڑھی جا سکتی ہیں۔ '
+              'کلاؤڈ اسکیننگ رسید کی تصویر ہمارے محفوظ سرور کے ذریعے کسی AI فراہم'
+              ' کنندہ کو صرف دکان، تاریخ، رقم، اشیاء اور کیٹیگری پڑھنے کے لیے '
+              'بھیجتی ہے؛ تصویر محفوظ نہیں کی جاتی۔',
+        ),
+        const LegalSection(
+          'ادائیگیاں اور سبسکرپشنز',
+          'ادا شدہ پلانز اختیاری ہیں۔ آرڈرز Paddle.com کے ذریعے پروسیس ہوتے '
+              'ہیں، جو ہمارا آن لائن ری سیلر اور Merchant of Record ہے، اور آپ کو'
+              ' کارڈ، PayPal، Apple Pay یا Google Pay سے ادائیگی کی سہولت دیتا '
+              'ہے۔ Paddle اپنی پرائیویسی پالیسی کے تحت ضروری بلنگ تفصیلات (جیسے '
+              'آپ کا نام، ای میل، ملک اور ادائیگی کا طریقہ) جمع کرتا ہے؛ ہم کبھی '
+              'آپ کے کارڈ کی مکمل تفصیلات نہیں دیکھتے یا محفوظ کرتے۔ آپ کو درست '
+              'رسائی دینے کے لیے ہم آپ کا پلان، سبسکرپشن کی حیثیت، تجدید کی تاریخ'
+              ' اور Paddle کے سبسکرپشن شناخت کنندگان رکھتے ہیں، نیز کسی بھی '
+              'پروموشنل کوڈ کا ریکارڈ جو آپ استعمال کریں۔',
+        ),
+        const LegalSection(
+          'سروس فراہم کنندگان',
+          'آپ کے استعمال کردہ فیچرز کے لحاظ سے: Supabase (اکاؤنٹس، ہم آہنگی '
+              'اور ہمارے سرور فنکشنز)؛ Paddle (ادائیگیاں)؛ Brevo (اکاؤنٹ ای '
+              'میلز)؛ Cloudflare Turnstile (سائن ان پر انسانی جانچ)؛ GitHub Pages'
+              ' (ہماری ویب سائٹ اور ویب ایپ کی ہوسٹنگ)؛ Google، OpenAI اور '
+              'Anthropic (DGOTIX AI اور کلاؤڈ رسید اسکیننگ)؛ اور لائیو اعداد کے '
+              'لیے عوامی مارکیٹ ڈیٹا کے ذرائع — کرنسی ریٹس (open.er-api.com) اور '
+              'کرپٹو قیمتیں (CoinGecko) — جن کی درخواستوں میں صرف کرنسی یا اثاثے '
+              'کی علامتیں ہوتی ہیں، کبھی آپ کا ذاتی یا مالی ڈیٹا نہیں۔ ہر فراہم '
+              'کنندہ ڈیٹا کو صرف سروس میں اپنا حصہ فراہم کرنے کے لیے پروسیس کرتا '
+              'ہے۔',
+        ),
+        const LegalSection(
+          'سیکیورٹی',
+          'ہماری سروسز سے کنکشن خفیہ کاری شدہ (HTTPS) ہوتے ہیں۔ ہمارے ڈیٹا '
+              'بیس میں ہر صارف کے ریکارڈ اس طرح الگ ہیں کہ ایک اکاؤنٹ کبھی دوسرے '
+              'کا ریکارڈ نہیں پڑھ سکتا۔ سرور کلیدیں کبھی ایپ تک نہیں پہنچتیں، '
+              'ادائیگی کی اطلاعات کچھ بدلنے سے پہلے تصدیق کی جاتی ہیں، اور آپ '
+              'اپنی ڈیوائس پر ایپ لاک (PIN یا فنگر پرنٹ) لگا سکتے ہیں۔',
+        ),
+        const LegalSection(
+          'ہم کیا نہیں کرتے',
+          'ہم آپ کا ڈیٹا نہ بیچتے ہیں نہ کرائے پر دیتے ہیں، نہ اشتہارات '
+              'دکھاتے ہیں، اور نہ آپ کی مالی سرگرمی پر رویے کی ٹریکنگ یا تجزیات '
+              'چلاتے ہیں۔',
+        ),
+        const LegalSection(
+          'ہم ڈیٹا کب تک رکھتے ہیں',
+          'آپ کی ڈیوائس پر ڈیٹا تب تک رہتا ہے جب تک آپ اسے حذف نہ کریں یا ایپ'
+              ' نہ ہٹائیں۔ آپ کا اکاؤنٹ، ہم آہنگ ڈیٹا، استعمال کی گنتی اور '
+              'درخواستوں کا میٹا ڈیٹا اس وقت تک رکھا جاتا ہے جب تک آپ کا اکاؤنٹ '
+              'موجود ہو — صرف سروس چلانے اور آپ کے پلان کی حدیں لاگو کرنے کے لیے '
+              '— اور اکاؤنٹ حذف کرنے پر مستقل طور پر مٹا دیا جاتا ہے۔ Paddle وہ '
+              'بلنگ ریکارڈ رکھتا ہے جو قانوناً رکھنا ضروری ہیں۔',
+        ),
+        LegalSection(
+          'آپ کے حقوق اور اختیارات',
+          'آپ کسی بھی وقت ایپ میں اپنا ڈیٹا دیکھ اور درست کر سکتے ہیں، مکمل '
+              'بیک اپ ایکسپورٹ کر سکتے ہیں، ہم آہنگی بند کر سکتے ہیں، سائن آؤٹ کر'
+              ' سکتے ہیں، اور اپنا اکاؤنٹ اس کے تمام ڈیٹا سمیت حذف کر سکتے ہیں '
+              '(نیچے دیکھیں)۔ آپ کسی بھی وقت ادا شدہ سبسکرپشن منسوخ کر سکتے ہیں '
+              '(شرائط دیکھیں)۔ اپنے ذاتی ڈیٹا کے بارے میں کسی بھی دوسری درخواست '
+              'کے لیے — بشمول رسائی، درستی، حذف یا اعتراض — ہم سے $_reachUr رابطہ'
+              ' کریں اور ہم فوراً جواب دیں گے۔',
+        ),
+        const LegalSection(
+          'اپنا اکاؤنٹ اور ڈیٹا حذف کرنا',
+          'ایپ یا ویب ورژن میں، کسی بھی ڈیوائس پر، سیٹنگز کھولیں، پھر اکاؤنٹ،'
+              ' پھر "میرا اکاؤنٹ حذف کریں"۔ یہ آپ کا اکاؤنٹ اور ہمارے سرورز پر اس'
+              ' کے لیے محفوظ ہر چیز (پروفائل، ہم آہنگ ڈیٹا، سبسکرپشن ریکارڈ اور '
+              'استعمال کی گنتی) مستقل طور پر حذف کرتا ہے، اور اس ڈیوائس پر آپ کا '
+              'ڈیٹا مٹا دیتا ہے۔ پہلے کوئی بھی ادا شدہ سبسکرپشن منسوخ کریں۔ حذف '
+              'کرنا واپس نہیں ہو سکتا، اس لیے اگر بعد میں ڈیٹا کی ضرورت پڑ سکتی '
+              'ہے تو پہلے بیک اپ ایکسپورٹ کر لیں۔',
+        ),
+        LegalSection(
+          'عمر',
+          '$_app 16 سال اور اس سے زیادہ عمر کے افراد کے لیے ہے۔ ہم جان بوجھ '
+              'کر کم عمر بچوں سے ڈیٹا جمع نہیں کرتے؛ اگر آپ کو لگتا ہے کہ کسی بچے'
+              ' نے اکاؤنٹ بنایا ہے تو ہم سے $_reachUr رابطہ کریں اور ہم اسے حذف '
+              'کر دیں گے۔',
+        ),
+        LegalSection(
+          'تبدیلیاں اور رابطہ',
+          'ہم اس پالیسی کو اپ ڈیٹ کر سکتے ہیں؛ اوپر دکھائی گئی تاریخ تازہ '
+              'ترین ورژن کی عکاسی کرتی ہے۔ پرائیویسی کے سوالات کے لیے ہم سے '
+              '$_reachUr رابطہ کریں۔',
+        ),
+      ];
+
+  // ---- Terms (Urdu) ----
+  static List<LegalSection> get _termsUr => <LegalSection>[
+        LegalSection(
+          'قبولیت',
+          '$_app استعمال کر کے آپ ان شرائط سے اتفاق کرتے ہیں۔ اگر آپ متفق '
+              'نہیں تو براہ کرم ایپ استعمال نہ کریں۔',
+        ),
+        LegalSection(
+          'کون استعمال کر سکتا ہے',
+          '$_app استعمال کرنے کے لیے آپ کی عمر کم از کم 16 سال ہونی چاہیے۔ '
+              'اگر آپ اکاؤنٹ بنائیں تو اپنی سائن ان تفصیلات محفوظ رکھیں؛ آپ اپنے '
+              'اکاؤنٹ کی سرگرمی کے ذمہ دار ہیں۔',
+        ),
+        const LegalSection(
+          'یہ سروس کیا ہے',
+          'آمدنی، اخراجات، بجٹ، اہداف اور متعلقہ جائزوں کا حساب رکھنے کے لیے '
+              'ایک ذاتی بجٹ اور منصوبہ بندی کا ٹول، اختیاری AI مدد، رسید اسکیننگ،'
+              ' ڈیوائسز کے درمیان ہم آہنگی اور ادا شدہ پلانز کے ساتھ۔',
+        ),
+        const LegalSection(
+          'منصوبہ بندی کے ٹولز، پیشہ ورانہ مشورہ نہیں',
+          'بجٹ، تخمینے، زکوٰۃ کا حساب اور DGOTIX AI کے جوابات فیصلہ کرنے میں '
+              'مدد کے لیے منصوبہ بندی کے ٹولز ہیں۔ یہ پیشہ ورانہ مالی، ٹیکس یا '
+              'مذہبی مشورہ نہیں۔ زکوٰۃ جیسی مذہبی ذمہ داریوں کے لیے کسی مستند '
+              'عالم سے تصدیق کریں؛ بڑے مالی فیصلوں کے لیے کسی مستند مشیر سے رجوع '
+              'کریں۔',
+        ),
+        const LegalSection(
+          'AI فیچرز',
+          'DGOTIX AI اور کلاؤڈ رسید اسکیننگ آپ کا وقت بچانے کے لیے خودکار '
+              'نتائج دیتے ہیں؛ عمل سے پہلے اہم اعداد کا جائزہ لیں۔ یہ فیچرز آپ کے'
+              ' پلان پر منحصر منصفانہ استعمال کی حدوں میں شامل ہیں، اور سب کے لیے'
+              ' سروس کو تیز اور قابلِ اعتماد رکھنے کے لیے ان میں تبدیلی ہو سکتی '
+              'ہے۔',
+        ),
+        const LegalSection(
+          'سبسکرپشنز، بلنگ اور تجدید',
+          'بنیادی ایپ مفت ہے۔ ادا شدہ پلانز (Basic اور Pro) ایپ میں دکھائی '
+              'گئی قیمتوں پر زیادہ حدیں اور اضافی فیچرز کھولتے ہیں۔ ادا شدہ پلان '
+              'ہر بلنگ مدت (ماہانہ یا سالانہ) پر خود بخود تجدید ہوتا ہے جب تک آپ '
+              'منسوخ نہ کریں۔ ادائیگیاں ہمارے آن لائن ری سیلر Paddle کے ذریعے '
+              'پروسیس ہوتی ہیں؛ قابلِ اطلاق ٹیکس شامل ہو سکتے ہیں اور Merchant of'
+              ' Record کے طور پر Paddle انہیں سنبھالتا ہے۔ آپ کسی بھی وقت منسوخ '
+              'کر سکتے ہیں اور ادا شدہ مدت کے اختتام تک رسائی برقرار رکھ سکتے '
+              'ہیں۔ اگر قیمتیں یا پلان کے فیچرز بدلیں تو موجودہ شرائط ہمیشہ '
+              'سبسکرائب کرنے سے پہلے دکھائی جاتی ہیں۔',
+        ),
+        const LegalSection(
+          'ہمارا ری سیلر: Paddle',
+          'ہمارا آرڈر کا عمل ہمارے آن لائن ری سیلر Paddle.com کے ذریعے انجام '
+              'پاتا ہے۔ Paddle.com ہمارے تمام آرڈرز کا Merchant of Record ہے۔ '
+              'Paddle تمام کسٹمر سروس سوالات کا جواب دیتا ہے اور واپسیوں کو '
+              'سنبھالتا ہے۔',
+        ),
+        LegalSection(
+          'رقم کی واپسی کی پالیسی',
+          'سوائے اس کے کہ قانون تقاضا کرے، بلنگ مدت شروع ہونے کے بعد '
+              'ادائیگیاں عموماً ناقابلِ واپسی ہیں، کیونکہ اس کے اختتام تک آپ کی '
+              'رسائی برقرار رہتی ہے۔ آئندہ تجدید روکنے کے لیے آپ کسی بھی وقت '
+              'منسوخ کر سکتے ہیں۔ رقم کی واپسی کی درخواستیں Paddle اپنی خریدار '
+              'شرائط اور قابلِ اطلاق صارف قانون کے تحت سنبھالتا ہے (آپ Paddle سے '
+              'paddle.net پر رابطہ کر سکتے ہیں)؛ آپ ہم سے بھی $_reachUr رابطہ کر '
+              'سکتے ہیں اور ہم مدد کریں گے۔',
+        ),
+        const LegalSection(
+          'پروموشنل کوڈز',
+          'کوپن اور رعایتی کوڈز اختیاری ہیں اور صرف ادائیگی کی قیمت بدلتے ہیں'
+              ' (یا آزمائشی مدت دیتے ہیں)۔ ہر کوڈ کی اپنی شرائط ہیں (مدتِ اعتبار،'
+              ' استعمال کی حدیں، فی صارف ایک) اور اسے واپس لیا جا سکتا ہے یا اس '
+              'کی میعاد ختم ہو سکتی ہے۔ ان کی کوئی نقد قیمت نہیں اور بیان کیے '
+              'بغیر انہیں ملایا نہیں جا سکتا۔',
+        ),
+        const LegalSection(
+          'آپ کا ڈیٹا اور بیک اپ',
+          'آپ اپنے درج کردہ ڈیٹا کی درستی کے ذمہ دار ہیں۔ ڈیوائسز میں اپنا '
+              'ڈیٹا محفوظ رکھنے کے لیے اسے ہم آہنگ کرنے کے لیے سائن ان کریں، یا '
+              'سیٹنگز سے باقاعدگی سے بیک اپ ایکسپورٹ کریں۔',
+        ),
+        LegalSection(
+          'دستیابی',
+          'ہم $_app کو دستیاب اور قابلِ اعتماد رکھنے کے لیے کام کرتے ہیں۔ '
+              'قانون کی اجازت کی حد تک ایپ کسی بھی قسم کی ضمانت کے بغیر "جیسی ہے"'
+              ' کی بنیاد پر فراہم کی جاتی ہے۔ لائیو مارکیٹ ڈیٹا، AI اور ادائیگیاں'
+              ' تیسرے فریق کی سروسز پر منحصر ہیں اور کبھی کبھار تاخیر یا عدم '
+              'دستیابی ہو سکتی ہے؛ ایسی رکاوٹ آپ کو بجٹ کے بنیادی ٹولز استعمال '
+              'کرنے سے کبھی نہیں روکتی، جو آف لائن بھی کام کرتے ہیں۔ فیچرز وقت کے'
+              ' ساتھ بدل سکتے ہیں۔',
+        ),
+        const LegalSection(
+          'ذمہ داری کی حد',
+          'قانون کی اجازت کی حد تک ہم بالواسطہ یا نتیجتاً ہونے والے نقصانات، '
+              'یا ایپ کے اعداد کی بنیاد پر آپ کے فیصلوں کے ذمہ دار نہیں۔ ان شرائط'
+              ' میں کچھ بھی صارف قانون کے تحت آپ کے ان حقوق کو محدود نہیں کرتا جن'
+              ' سے دستبردار نہیں ہوا جا سکتا۔',
+        ),
+        const LegalSection(
+          'قابلِ قبول استعمال',
+          'سروس کا غلط استعمال نہ کریں، اس کی سیکیورٹی یا پلان کی حدوں کو '
+              'توڑنے یا ان سے بچنے کی کوشش نہ کریں، اور اسے کسی غیر قانونی مقصد '
+              'کے لیے استعمال نہ کریں۔',
+        ),
+        LegalSection(
+          'استعمال ختم کرنا',
+          'آپ کسی بھی وقت $_app کا استعمال بند کر کے اپنا اکاؤنٹ حذف کر سکتے '
+              'ہیں۔ ہم ایسا اکاؤنٹ معطل کر سکتے ہیں جو ان شرائط کی خلاف ورزی کرے '
+              'یا سروس یا دوسرے صارفین کو خطرے میں ڈالے۔',
+        ),
+        LegalSection(
+          'برانڈ اور ملکیت',
+          '$_app کا نام، $_brand برانڈ، اور ایپ کا ڈیزائن اور کوڈ اپنے مالک '
+              'کی ملکیت رہتے ہیں۔ آپ کا ڈیٹا آپ کا رہتا ہے۔',
+        ),
+        LegalSection(
+          'تبدیلیاں اور رابطہ',
+          'ہم ان شرائط کو اپ ڈیٹ کر سکتے ہیں اور تازہ ترین ورژن کی تاریخ دکھا'
+              ' سکتے ہیں؛ اپ ڈیٹ کے بعد استعمال جاری رکھنے کا مطلب ہے کہ آپ '
+              'نظرثانی شدہ شرائط قبول کرتے ہیں۔ سوالات کے لیے ہم سے $_reachUr '
+              'رابطہ کریں۔',
         ),
       ];
 }

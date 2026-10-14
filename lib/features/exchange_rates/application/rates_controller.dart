@@ -163,6 +163,8 @@ class RatesController extends Notifier<Map<String, double>> {
     'COP': 4000.0,
     'CLP': 950.0,
     'PEN': 3.75,
+    'MYR': 4.2,
+    'PKR': 281.0,
   };
 
   @override

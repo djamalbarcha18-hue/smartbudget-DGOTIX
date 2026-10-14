@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -123,7 +124,7 @@ class _GroupHeader extends StatelessWidget {
         DsSpacing.xs,
       ),
       child: Text(
-        text.toUpperCase(),
+        appLangOf(context).upper(text),
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: c.textFaint,
               letterSpacing: 0.8,

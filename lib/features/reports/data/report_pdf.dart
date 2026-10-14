@@ -57,14 +57,17 @@ abstract final class ReportPdfBuilder {
   static const PdfColor _line = PdfColor(0.88627, 0.90980, 0.94118);
 
   /// [base]/[bold] are Arabic-capable fonts supplied by the caller (bundled
-  /// TTFs), so export works fully offline.
+  /// TTFs), so export works fully offline. [fallback] covers letters they
+  /// lack (Turkish ğ ş İ in Tajawal).
   static Future<Uint8List> build(
     ReportPdfData data, {
     required pw.Font base,
     required pw.Font bold,
+    List<pw.Font> fallback = const <pw.Font>[],
   }) async {
     final pw.Document doc = pw.Document(
-      theme: pw.ThemeData.withFont(base: base, bold: bold),
+      theme: pw.ThemeData.withFont(
+          base: base, bold: bold, fontFallback: fallback),
     );
 
     doc.addPage(

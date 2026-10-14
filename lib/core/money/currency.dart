@@ -102,6 +102,9 @@ abstract final class Currencies {
     Currency(code: 'COP', symbol: 'COL\$', nameEn: 'Colombian Peso', nameAr: 'البيزو الكولومبي', country: 'co'),
     Currency(code: 'CLP', symbol: 'CLP\$', nameEn: 'Chilean Peso', nameAr: 'البيزو التشيلي', country: 'cl', decimals: 0),
     Currency(code: 'PEN', symbol: 'S/', nameEn: 'Peruvian Sol', nameAr: 'السول البيروفي', country: 'pe'),
+    Currency(code: 'MYR', symbol: 'RM', nameEn: 'Malaysian Ringgit', nameAr: 'الرينغيت الماليزي', country: 'my'),
+    // Like the rupiah: ISO lists 2 minor units, but prices are whole rupees.
+    Currency(code: 'PKR', symbol: 'Rs', nameEn: 'Pakistani Rupee', nameAr: 'الروبية الباكستانية', country: 'pk', decimals: 0),
   ];
 
   static Currency byCode(String code) =>

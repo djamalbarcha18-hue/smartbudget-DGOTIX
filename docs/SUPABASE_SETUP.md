@@ -60,8 +60,9 @@ The app calls `resetPasswordForEmail` → `verifyOTP(type: recovery)` →
 2. **Recovery email template — must contain the code.** The default "Reset
    Password" email only has a link. Under *Authentication → Emails → Templates →
    Reset Password*, paste `supabase/templates/recovery.html` (English, Arabic,
-   French, Indonesian and Spanish; it renders `{{ .Token }}`). Suggested subject:
-   `Your SmartBudget verification code / رمز التحقّق الخاص بك / Votre code de vérification SmartBudget / Kode verifikasi SmartBudget Anda / Tu código de verificación de SmartBudget`.
+   French, Indonesian, Spanish, Turkish, Malay and Urdu; it renders
+   `{{ .Token }}`). Suggested subject:
+   `Your SmartBudget verification code / رمز التحقّق الخاص بك / Votre code de vérification SmartBudget / Kode verifikasi SmartBudget Anda / Tu código de verificación de SmartBudget / SmartBudget doğrulama kodunuz / Kod pengesahan SmartBudget anda / آپ کا SmartBudget تصدیقی کوڈ`.
 
 3. **Password rules (server side).** Under *Authentication → Providers → Email*:
    - **Minimum password length: 8**

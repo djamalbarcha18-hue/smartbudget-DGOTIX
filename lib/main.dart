@@ -53,7 +53,7 @@ Future<void> _start() async {
 
   // Licenses of the fonts bundled for offline use (assets/google_fonts).
   LicenseRegistry.addLicense(() async* {
-    for (final String f in <String>['Tajawal', 'Inter']) {
+    for (final String f in <String>['Tajawal', 'Inter', 'NotoNaskhArabic']) {
       yield LicenseEntryWithLineBreaks(<String>[f],
           await rootBundle.loadString('assets/google_fonts/OFL-$f.txt'));
     }

@@ -208,7 +208,7 @@ class _AppSearchDialogState extends ConsumerState<AppSearchDialog> {
                                         DsSpacing.lg,
                                         DsSpacing.xs),
                                     child: Text(
-                                      g.$1.toUpperCase(),
+                                      appLangOf(context).upper(g.$1),
                                       style: Theme.of(context)
                                           .textTheme
                                           .labelSmall

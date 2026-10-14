@@ -52,3 +52,14 @@ before trying to download. Files are the exact Google Fonts files (SHA-256
 checked against the `google_fonts` package). Both are under the SIL Open Font
 License 1.1: `assets/google_fonts/OFL-Tajawal.txt`, `OFL-Inter.txt` (also shown
 in the app's licenses page).
+
+## Urdu font (`assets/fonts/NotoNaskhArabic-*.ttf`)
+
+**Noto Naskh Arabic** by the Noto Project, used for Urdu text in the app and
+in exported PDFs (Tajawal has no Urdu letters). Regular and Bold instances of
+the Google Fonts variable font, subset to the Arabic script (Arabic and Urdu).
+
+- Source: https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic
+- License: SIL Open Font License 1.1: `assets/google_fonts/OFL-NotoNaskhArabic.txt`
+  (also shown in the app's licenses page).
+Copyright 2022 The Noto Project Authors (https://github.com/notofonts/arabic)

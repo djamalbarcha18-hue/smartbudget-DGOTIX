@@ -123,3 +123,30 @@ flutter:
     - family: SbIcons
       fonts:
         - asset: assets/fonts/icons/SbIcons.ttf
+    # Urdu: Tajawal lacks Urdu letters (ٹ ڈ ڑ ں ے …), so Urdu text uses
+    # Noto Naskh Arabic, subset to the Arabic script; digits and Latin fall
+    # back to Tajawal (SbTajawal) to match the rest of the app.
+    - family: SbNaskh
+      fonts:
+        - asset: assets/fonts/NotoNaskhArabic-Regular.ttf
+        - asset: assets/fonts/NotoNaskhArabic-Bold.ttf
+          weight: 700
+    # The same Tajawal files, under a name usable as a fallback.
+    - family: SbTajawal
+      fonts:
+        - asset: assets/fonts/Tajawal-Regular.ttf
+        - asset: assets/google_fonts/Tajawal-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Tajawal-Bold.ttf
+          weight: 700
+        - asset: assets/google_fonts/Tajawal-ExtraBold.ttf
+          weight: 800
+    # Fallback for Latin letters Tajawal lacks (Turkish ğ ş İ …). The same
+    # Inter files google_fonts already bundles.
+    - family: SbInter
+      fonts:
+        - asset: assets/google_fonts/Inter-Regular.ttf
+        - asset: assets/google_fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/google_fonts/Inter-SemiBold.ttf
+          weight: 600

@@ -79,7 +79,7 @@ void main() {
         expect(LegalContent.sections(doc, lang: l).length,
             LegalContent.sections(doc, lang: AppLang.en).length);
       }
-      if (l.isAr) continue;
+      if (l.rtl) continue; // Arabic and Urdu use the Arabic script
       for (final TransactionType t in TransactionType.values) {
         for (final String c in Catalog.categoriesFor(t)) {
           expect(_arabicLetters.hasMatch(Catalog.label(c, lang: l)), isFalse,

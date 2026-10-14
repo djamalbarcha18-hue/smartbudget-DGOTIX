@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/config/app_config.dart';
+import 'package:smartbudget/core/l10n/app_lang.dart';
 import 'package:smartbudget/core/localization/locale_controller.dart';
 import 'package:smartbudget/core/router/app_router.dart';
 import 'package:smartbudget/core/theme/theme_controller.dart';
@@ -18,7 +19,7 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 /// Single router instance for the app lifetime (auth-guarded).
 final _routerProvider = Provider<GoRouter>((ref) => buildRouter(ref));
 
-/// Root widget. Wires theme (dark/light, no reload), locale (ar/en, RTL/LTR
+/// Root widget. Wires theme (dark/light, no reload), locale (RTL/LTR
 /// flips automatically), and routing. Business logic lives in features, never
 /// here.
 class SmartBudgetApp extends ConsumerWidget {
@@ -28,6 +29,7 @@ class SmartBudgetApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ThemeMode themeMode = ref.watch(themeModeProvider);
     final Locale locale = ref.watch(localeProvider);
+    final AppLang lang = AppLang.fromCode(locale.languageCode);
     final GoRouter router = ref.watch(_routerProvider);
     // Keeps the periodic world-time sync running for the app's lifetime.
     ref.listen(clockSyncProvider, (_, __) {});
@@ -39,8 +41,10 @@ class SmartBudgetApp extends ConsumerWidget {
     return MaterialApp.router(
       title: '${AppConfig.appName} — by ${AppConfig.parentBrand}',
       debugShowCheckedModeBanner: false,
-      theme: DsTheme.light(),
-      darkTheme: DsTheme.dark(),
+      // Urdu swaps the font family (DsTypography), so the theme follows the
+      // language.
+      theme: DsTheme.light(lang: lang),
+      darkTheme: DsTheme.dark(lang: lang),
       themeMode: themeMode,
       locale: locale,
       supportedLocales: AppLocalizations.supportedLocales,
