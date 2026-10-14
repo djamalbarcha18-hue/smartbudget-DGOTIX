@@ -13,6 +13,7 @@ final LocalAuthentication _auth = LocalAuthentication();
 String get _reason => switch (PlatformDispatcher.instance.locale.languageCode) {
       'ar' => 'افتح SmartBudget',
       'fr' => 'Déverrouiller SmartBudget',
+      'id' => 'Buka SmartBudget',
       _ => 'Unlock SmartBudget',
     };
 

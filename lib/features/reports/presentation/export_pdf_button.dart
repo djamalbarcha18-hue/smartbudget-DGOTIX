@@ -128,7 +128,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
       case ReportPeriod.monthly:
         return MonthNames.full(lang: lang)[(s - 1).clamp(0, 11)];
       case ReportPeriod.quarterly:
-        return lang.pick('الربع $s', 'Q$s', 'T$s');
+        return lang.pick('الربع $s', 'Q$s', fr: 'T$s', id: 'K$s');
       case ReportPeriod.halfYearly:
         return s == 2 ? l.half2 : l.half1;
       case ReportPeriod.yearly:

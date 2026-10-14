@@ -86,15 +86,18 @@ abstract final class QuickEntryParser {
       text = text.substring(1).trim();
     }
 
-    // Amount: the first number, with an optional k / ألف multiplier.
+    // Amount: the first number, with an optional thousand (k, ألف, rb) or
+    // million (jt, juta) multiplier.
     final RegExpMatch? m = RegExp(
-      r'(\d[\d\s.,]*\d|\d)\s*(k|K|ك|الف|ألف|آلاف|الاف|الآف|alf)?(?![\p{L}\d])',
+      r'(\d[\d\s.,]*\d|\d)\s*(k|K|ك|الف|ألف|آلاف|الاف|الآف|alf|rb|ribu|jt|juta)?(?![\p{L}\d])',
       unicode: true,
     ).firstMatch(text);
     if (m == null) return null;
     final double? base = _number(m[1]!);
     if (base == null || base <= 0) return null;
-    final double amount = m[2] == null ? base : base * 1000;
+    final double amount = m[2] == null
+        ? base
+        : base * (m[2] == 'jt' || m[2] == 'juta' ? 1000000 : 1000);
     String rest = '${text.substring(0, m.start)} ${text.substring(m.end)}';
     // A currency named in the text: a symbol or abbreviation first, then
     // words (the longest wins, so «ريال قطري» beats «ريال»). A word shared by
@@ -356,6 +359,9 @@ abstract final class QuickEntryParser {
     ('اليوم', 0),
     ('today', 0),
     ('aujourd hui', 0),
+    ('kemarin lusa', 2),
+    ('kemarin', 1),
+    ('hari ini', 0),
   ];
 
   /// Every currency the app supports, the US dollar first so a bare «دولار»
@@ -456,25 +462,25 @@ abstract final class QuickEntryParser {
   ];
 
   static const List<String> _cashWords = <String>[
-    'نقدا', 'نقد', 'كاش', 'cash', 'especes', 'espece', 'liquide',
+    'نقدا', 'نقد', 'كاش', 'cash', 'especes', 'espece', 'liquide', 'tunai',
   ];
 
   static const List<String> _incomeMarkers = <String>[
     'دخل', 'استلمت', 'قبضت', 'وصلني', 'ربحت', 'received', 'income', 'earned',
-    'recu', 'encaisse',
+    'recu', 'encaisse', 'terima', 'diterima', 'gajian',
   ];
 
   static const List<_Rule> _rules = <_Rule>[
     // ---- Income
     _Rule.income('راتب أساسي', <String>[
       'راتب', 'الشهريه', 'شهريه', 'معاش شهري', 'salaire', 'salary', 'paie',
-      'paycheck', 'payroll',
+      'paycheck', 'payroll', 'gaji', 'gajian',
     ]),
-    _Rule.income('مكافآت وحوافز', <String>['مكافاه', 'حوافز', 'بريم', 'prime', 'bonus']),
+    _Rule.income('مكافآت وحوافز', <String>['مكافاه', 'حوافز', 'بريم', 'prime', 'bonus', 'thr', 'insentif']),
     _Rule.income('معاش تقاعدي', <String>['تقاعد', 'retraite', 'pension']),
     _Rule.income('عمل حر', <String>['فريلانس', 'عمل حر', 'freelance', 'client']),
     _Rule.income('عمولات', <String>['عموله', 'commission']),
-    _Rule.income('بيع أصول أو ممتلكات', <String>['بعت', 'بيع', 'vente', 'vendu', 'sold']),
+    _Rule.income('بيع أصول أو ممتلكات', <String>['بعت', 'بيع', 'vente', 'vendu', 'sold', 'jual', 'terjual']),
     _Rule.income('استرداد أو تعويض', <String>[
       'استرجاع', 'تعويض', 'استرداد', 'remboursement', 'refund',
     ]),
@@ -485,67 +491,75 @@ abstract final class QuickEntryParser {
       'خضر', 'خضره', 'خضار', 'فواكه', 'فاكهه', 'لحم', 'دجاج', 'حوت', 'سمك',
       'خبز', 'حليب', 'بيض', 'سكر', 'زيت', 'بقاله', 'سوبرماركت', 'سوق',
       'مواد غذائيه', 'قضيان', 'courses', 'marche', 'epicerie', 'pain', 'lait',
-      'supermarche', 'boulangerie', 'groceries', 'grocery', 'supermarket', 'bread', 'milk',
+      'supermarche', 'boulangerie', 'groceries', 'sayur', 'buah', 'daging',
+      'ayam', 'ikan', 'beras', 'telur', 'roti', 'susu', 'belanja dapur',
+      'pasar', 'indomaret', 'alfamart', 'grocery', 'supermarket', 'bread', 'milk',
     ]),
     _Rule.expense('المطاعم', <String>[
       'مطعم', 'قهوه', 'كافيه', 'كافي', 'بيتزا', 'شاورما', 'كرانتيكا',
       'سندويش', 'سندويتش', 'غداء', 'عشاء', 'فطور', 'restaurant', 'cafe',
-      'coffee', 'pizza', 'dejeuner', 'diner', 'resto', 'lunch', 'dinner', 'breakfast', 'fast food', 'snack',
+      'coffee', 'pizza', 'dejeuner', 'diner', 'resto', 'makan', 'kopi',
+      'warung', 'bakso', 'nasi', 'jajan', 'sarapan', 'gofood', 'grabfood',
+      'lunch', 'dinner', 'breakfast', 'fast food', 'snack',
       'burger', 'tacos',
     ]),
     _Rule.expense('النقل', <String>[
       'تاكسي', 'طاكسي', 'حافله', 'باص', 'ترامواي', 'ميترو', 'مترو', 'قطار',
       'نقل', 'كورسا', 'taxi', 'bus', 'tram', 'metro', 'train', 'uber', 'yassir',
-      'heetch', 'transport',
+      'heetch', 'transport', 'ojek', 'gojek', 'grab', 'angkot', 'krl',
+      'kereta', 'parkir', 'tol',
     ]),
     _Rule.expense('الوقود', <String>[
       'بنزين', 'وقود', 'مازوت', 'ليصانص', 'essence', 'carburant', 'gasoil',
-      'diesel', 'fuel', 'petrol', 'gasoline',
+      'diesel', 'fuel', 'petrol', 'gasoline', 'bensin', 'pertalite',
+      'pertamax',
     ]),
-    _Rule.expense('السكن', <String>['كراء', 'ايجار', 'loyer', 'rent']),
+    _Rule.expense('السكن', <String>['كراء', 'ايجار', 'loyer', 'rent', 'kos', 'kost', 'kontrakan', 'sewa rumah']),
     _Rule.expense('الفواتير', <String>[
       'فاتوره', 'كهرباء', 'ضو', 'ماء', 'غاز', 'سونلغاز', 'سيال', 'facture',
-      'electricite', 'eau', 'gaz', 'sonelgaz', 'seaal', 'electricity', 'water bill', 'bill',
+      'electricite', 'eau', 'gaz', 'listrik', 'pln', 'pdam', 'token listrik',
+      'sonelgaz', 'seaal', 'electricity', 'water bill', 'bill',
     ]),
     _Rule.expense('الاتصالات والإنترنت', <String>[
       'انترنت', 'فليكسي', 'رصيد', 'هاتف', 'موبيليس', 'جيزي', 'اوريدو',
       'اتصالات الجزائر', 'idoom', 'flexy', 'internet', 'wifi', 'phone',
-      'mobile', 'telephone', 'recharge', 'mobilis', 'djezzy', 'ooredoo', 'forfait',
+      'mobile', 'telephone', 'recharge', 'pulsa', 'kuota', 'paket data',
+      'indihome', 'mobilis', 'djezzy', 'ooredoo', 'forfait',
     ]),
     _Rule.expense('الصحة', <String>[
       'صيدليه', 'دواء', 'ادويه', 'طبيب', 'دكتور', 'مستشفى', 'عياده',
       'تحاليل', 'اشعه', 'pharmacie', 'medecin', 'docteur', 'medicament', 'medicaments',
       'clinique', 'pharmacy', 'doctor', 'medicine', 'clinic', 'dentist',
-      'dentiste',
+      'dentiste', 'obat', 'apotek', 'dokter', 'rumah sakit', 'bpjs',
     ]),
     _Rule.expense('التعليم', <String>[
       'مدرسه', 'جامعه', 'دروس', 'كتب', 'كتاب', 'كورس', 'دوره تدريبيه', 'كراريس', 'ادوات مدرسيه', 'تسجيل',
       'ecole', 'cours', 'livres', 'fournitures', 'school', 'tuition', 'books',
-      'course',
+      'course', 'sekolah', 'spp', 'kuliah', 'buku', 'les',
     ]),
     _Rule.expense('الأطفال والعائلة', <String>[
       'حفاظات', 'حليب اطفال', 'روضه', 'حضانه', 'creche', 'couches', 'diapers',
-      'kids', 'baby',
+      'kids', 'baby', 'popok',
     ]),
     _Rule.expense('الملابس', <String>[
       'ملابس', 'حذاء', 'صباط', 'سروال', 'قميص', 'جاكيت', 'vetements',
-      'chaussures', 'clothes', 'shoes', 'jacket',
+      'chaussures', 'clothes', 'shoes', 'jacket', 'baju', 'sepatu', 'celana',
     ]),
-    _Rule.expense('التسوق', <String>['تسوق', 'مشتريات', 'jumia', 'amazon', 'shopping', 'aliexpress']),
-    _Rule.expense('الترفيه', <String>['سينما', 'ترفيه', 'نزهه', 'cinema', 'sortie', 'games', 'concert']),
+    _Rule.expense('التسوق', <String>['تسوق', 'مشتريات', 'jumia', 'amazon', 'shopping', 'aliexpress', 'shopee', 'tokopedia', 'lazada', 'belanja online']),
+    _Rule.expense('الترفيه', <String>['سينما', 'ترفيه', 'نزهه', 'cinema', 'sortie', 'games', 'concert', 'bioskop', 'nonton']),
     _Rule.expense('الاشتراكات', <String>[
       'اشتراك', 'netflix', 'spotify', 'youtube', 'abonnement', 'subscription',
-      'shahid', 'شاهد',
+      'shahid', 'شاهد', 'langganan',
     ]),
     _Rule.expense('الرياضة واللياقة', <String>['جيم', 'نادي رياضي', 'رياضه', 'gym', 'salle de sport', 'fitness']),
-    _Rule.expense('السفر', <String>['سفر', 'فندق', 'طياره', 'طيران', 'hotel', 'flight', 'voyage', 'travel', 'billet avion']),
-    _Rule.expense('الصيانة والإصلاح', <String>['تصليح', 'صيانه', 'ميكانيكي', 'بلومبي', 'reparation', 'repair', 'mecanicien', 'plombier']),
+    _Rule.expense('السفر', <String>['سفر', 'فندق', 'طياره', 'طيران', 'hotel', 'flight', 'voyage', 'travel', 'billet avion', 'tiket pesawat', 'liburan']),
+    _Rule.expense('الصيانة والإصلاح', <String>['تصليح', 'صيانه', 'ميكانيكي', 'بلومبي', 'reparation', 'repair', 'mecanicien', 'plombier', 'servis', 'bengkel']),
     _Rule.expense('الأثاث والمنزل', <String>['اثاث', 'مفروشات', 'تجهيزات منزليه', 'meubles', 'furniture']),
-    _Rule.expense('صدقة وتبرّعات', <String>['صدقه', 'تبرع', 'don', 'charity', 'donation', 'sadaqa']),
+    _Rule.expense('صدقة وتبرّعات', <String>['صدقه', 'تبرع', 'don', 'charity', 'donation', 'sadaqa', 'sedekah', 'infak', 'donasi']),
     _Rule.expense('زكاة', <String>['زكاه', 'zakat']),
-    _Rule.expense('التأمين', <String>['تامين', 'assurance', 'insurance']),
-    _Rule.expense('الضرائب والرسوم', <String>['ضريبه', 'رسوم', 'طابع', 'impot', 'taxe', 'tax', 'fees', 'timbre']),
-    _Rule.expense('الأقساط والقروض', <String>['قسط', 'قرض', 'loan', 'installment', 'mensualite']),
+    _Rule.expense('التأمين', <String>['تامين', 'assurance', 'insurance', 'asuransi']),
+    _Rule.expense('الضرائب والرسوم', <String>['ضريبه', 'رسوم', 'طابع', 'impot', 'taxe', 'tax', 'fees', 'timbre', 'pajak']),
+    _Rule.expense('الأقساط والقروض', <String>['قسط', 'قرض', 'loan', 'installment', 'mensualite', 'cicilan', 'kredit', 'paylater']),
   ];
 }
 

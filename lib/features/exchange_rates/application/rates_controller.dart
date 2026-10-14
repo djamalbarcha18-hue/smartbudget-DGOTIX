@@ -150,6 +150,7 @@ class RatesController extends Notifier<Map<String, double>> {
     'CAD': 1.36,
     'AUD': 1.52,
     'INR': 83.3,
+    'IDR': 16200.0,
     'TRY': 34.0,
     'RUB': 92.0,
     'BRL': 5.4,

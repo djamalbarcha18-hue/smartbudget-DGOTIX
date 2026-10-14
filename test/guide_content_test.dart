@@ -6,7 +6,7 @@ import 'package:smartbudget/features/guide/domain/guide_content.dart';
 void main() {
   test('every language covers the same features in the same order', () {
     final List<GuideTopic> en = GuideContent.topics(lang: AppLang.en);
-    for (final AppLang lang in <AppLang>[AppLang.ar, AppLang.fr]) {
+    for (final AppLang lang in AppLang.values) {
       final List<GuideTopic> other = GuideContent.topics(lang: lang);
       expect(other.map((GuideTopic t) => t.route).toList(),
           en.map((GuideTopic t) => t.route).toList(),

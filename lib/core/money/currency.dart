@@ -88,6 +88,8 @@ abstract final class Currencies {
     Currency(code: 'CAD', symbol: 'C\$', nameEn: 'Canadian Dollar', nameAr: 'الدولار الكندي', country: 'ca'),
     Currency(code: 'AUD', symbol: 'A\$', nameEn: 'Australian Dollar', nameAr: 'الدولار الأسترالي', country: 'au'),
     Currency(code: 'INR', symbol: '₹', nameEn: 'Indian Rupee', nameAr: 'الروبية الهندية', country: 'in'),
+    // ISO 4217 lists 2 minor units, but rupiah prices never use them in practice.
+    Currency(code: 'IDR', symbol: 'Rp', nameEn: 'Indonesian Rupiah', nameAr: 'الروبية الإندونيسية', country: 'id', decimals: 0),
     Currency(code: 'TRY', symbol: '₺', nameEn: 'Turkish Lira', nameAr: 'الليرة التركية', country: 'tr'),
     Currency(code: 'RUB', symbol: '₽', nameEn: 'Russian Ruble', nameAr: 'الروبل الروسي', country: 'ru'),
     Currency(code: 'BRL', symbol: 'R\$', nameEn: 'Brazilian Real', nameAr: 'الريال البرازيلي', country: 'br'),

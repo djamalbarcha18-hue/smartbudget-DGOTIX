@@ -226,7 +226,78 @@ abstract final class Catalog {
     'أخرى': 'Autre',
   };
 
+  /// Indonesian display labels, keyed like [_en].
+  static const Map<String, String> _id = <String, String>{
+    // Income
+    'راتب أساسي': 'Gaji pokok',
+    'مكافآت وحوافز': 'Bonus & insentif',
+    'مكافأة نهاية الخدمة': 'Pesangon',
+    'معاش تقاعدي': 'Pensiun',
+    'عمل حر': 'Freelance',
+    'عمولات': 'Komisi',
+    'أرباح تجارية': 'Laba usaha',
+    'دخل استثماري': 'Hasil investasi',
+    'أرباح أسهم وتوزيعات': 'Dividen',
+    'أرباح العملات الرقمية': 'Keuntungan kripto',
+    'إيجارات': 'Pendapatan sewa',
+    'تأجير قصير الأمد': 'Sewa jangka pendek',
+    'تجارة إلكترونية': 'Jualan online',
+    'بيع أصول أو ممتلكات': 'Penjualan aset',
+    'محتوى رقمي وإبداعي': 'Konten digital & kreator',
+    'استرجاع نقدي ومكافآت': 'Cashback & reward',
+    'منحة أو إعانة': 'Beasiswa / bantuan',
+    'ميراث': 'Warisan',
+    'استرداد أو تعويض': 'Pengembalian dana / ganti rugi',
+    'هدايا': 'Hadiah',
+    'زكاة أو صدقة مستلمة': 'Zakat / sedekah diterima',
+    // Expenses
+    'الطعام': 'Belanja dapur',
+    'المطاعم': 'Makan di luar',
+    'النقل': 'Transportasi',
+    'السكن': 'Tempat tinggal',
+    'الفواتير': 'Tagihan & utilitas',
+    'الاتصالات والإنترنت': 'Pulsa & internet',
+    'الصحة': 'Kesehatan',
+    'التعليم': 'Pendidikan',
+    'الأطفال والعائلة': 'Anak & keluarga',
+    'التسوق': 'Belanja',
+    'الملابس': 'Pakaian',
+    'الترفيه': 'Hiburan',
+    'الرياضة واللياقة': 'Olahraga & kebugaran',
+    'الاشتراكات': 'Langganan',
+    'السفر': 'Perjalanan',
+    'الأقساط والقروض': 'Cicilan & pinjaman',
+    'التأمين': 'Asuransi',
+    'الضرائب والرسوم': 'Pajak & biaya',
+    'الصيانة والإصلاح': 'Perawatan & perbaikan',
+    'الأثاث والمنزل': 'Rumah & perabot',
+    'الوقود': 'Bensin',
+    'الخدمات المهنية والقانونية': 'Jasa profesional & hukum',
+    'البرمجيات والأدوات الرقمية': 'Software & alat digital',
+    'الحج والعمرة': 'Haji & umrah',
+    'صدقة وتبرّعات': 'Sedekah & donasi',
+    'زكاة': 'Zakat',
+    'الادخار والاستثمار': 'Tabungan & investasi',
+    'الطوارئ': 'Darurat',
+    // Payment methods
+    'نقداً': 'Tunai',
+    'بطاقة بنكية': 'Kartu debit',
+    'بطاقة ائتمان': 'Kartu kredit',
+    'محفظة إلكترونية': 'Dompet digital',
+    'تحويل الكتروني': 'Transfer bank',
+    'تحويل بنكي فوري': 'Transfer instan',
+    'الدفع عند الاستلام': 'Bayar di tempat (COD)',
+    'محفظة عملات رقمية': 'Dompet kripto',
+    'أموال عبر الهاتف': 'Uang elektronik',
+    'شيك': 'Cek',
+    'بطاقة هدايا أو قسيمة': 'Kartu hadiah / voucher',
+    // Shared
+    'أخرى': 'Lainnya',
+  };
+
   /// Localized display label for a stored category/payment value.
   static String label(String value, {required AppLang lang}) =>
-      lang.pick(value, _en[value] ?? value, _fr[value] ?? _en[value] ?? value);
+      lang.pick(value, _en[value] ?? value,
+          fr: _fr[value] ?? _en[value] ?? value,
+          id: _id[value] ?? _en[value] ?? value);
 }

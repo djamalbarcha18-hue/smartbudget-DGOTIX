@@ -43,7 +43,7 @@ CI runs the same `analyze` + `test` on every push touching `app/**`
   typography tokens as `ThemeExtension`s, `GlassCard`, `KpiCard`, buttons,
   badges, states, and the theme-aware DGOTIX brand lockup.
 - **Theme** (dark-first + light), toggled instantly and persisted.
-- **Localization** Arabic, English and French (RTL/LTR flips with no reload).
+- **Localization** Arabic, English, French and Indonesian (RTL/LTR flips with no reload).
 - **Navigation** shell: responsive sidebar (drawer on mobile), top bar, compact
   footer.
 - **Dashboard scaffold**: real SmartBudget KPI structure as empty states.

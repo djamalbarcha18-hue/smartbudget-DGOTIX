@@ -25,10 +25,10 @@ class GuideTopic {
 
 abstract final class GuideContent {
   static List<String> gettingStarted({required AppLang lang}) =>
-      lang.pick(_startAr, _startEn, _startFr);
+      lang.pick(_startAr, _startEn, fr: _startFr, id: _startId);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
-      lang.pick(_topicsAr, _topicsEn, _topicsFr);
+      lang.pick(_topicsAr, _topicsEn, fr: _topicsFr, id: _topicsId);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -612,6 +612,207 @@ abstract final class GuideContent {
             'moment ; une fois connecté, vos données se synchronisent '
             'automatiquement entre vos appareils (y compris après un travail '
             'hors ligne), et vous pouvez désactiver cette option.',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Indonesian) ----
+  static const List<String> _startId = <String>[
+    'Buka Pengaturan dan pilih bahasa, tema, dan mata uang dasar — semua '
+        'total di aplikasi ditampilkan dalam mata uang itu.',
+    'Tambahkan pemasukan dan pengeluaran Anda (atau pindai struk) — semua '
+        'hal lain dihitung dari situ.',
+    'Atur anggaran bulanan agar aplikasi bisa memberi tahu berapa yang masih '
+        'bisa dibelanjakan.',
+    'Cek Dasbor dan Kesehatan Keuangan untuk melihat posisi Anda, lalu '
+        'tambahkan target dan utang seiring waktu.',
+  ];
+
+  // ---- Topics (Indonesian) ----
+  static const List<GuideTopic> _topicsId = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'Dasbor',
+      summary: 'Bulan Anda dalam sekali lihat: pemasukan, pengeluaran, '
+          'tabungan, dan ke mana uangnya pergi.',
+      steps: <String>[
+        'Kotak-kotak menampilkan total bulan ini dalam mata uang dasar Anda.',
+        'Ketuk bagian di rincian pengeluaran untuk menyorot kategori itu.',
+        'Peringatan menunjukkan apa pun yang perlu perhatian, seperti kategori '
+            'yang melebihi anggaran atau target yang mendesak.',
+        'Jika belum ada data, kotak menampilkan "—" — tidak ada yang dikarang.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'Pemasukan & pengeluaran',
+      summary: 'Catat setiap pergerakan uang — dasar semua perhitungan di '
+          'aplikasi.',
+      steps: <String>[
+        'Gunakan tombol tambah cepat untuk mencatat pemasukan atau pengeluaran '
+            'dengan jumlah, kategori, tanggal, dan catatan.',
+        'Pemasukan dan Pengeluaran punya layar masing-masing; Transaksi '
+            'menampilkan keduanya.',
+        'Cari di daftar untuk menemukan catatan apa pun, dan ketuk untuk '
+            'mengubah atau menghapusnya.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'Transaksi berulang',
+      summary: 'Gaji, sewa, dan langganan ditambahkan otomatis pada '
+          'tanggalnya.',
+      steps: <String>[
+        'Saat menambah pemasukan atau pengeluaran, atur "Ulangi" ke setiap '
+            'minggu, bulan, 3 bulan, 6 bulan, atau tahun.',
+        'Untuk bonus atau komisi yang jumlahnya berubah, aktifkan "Jumlahnya '
+            'berubah-ubah": setiap jatuh tempo aplikasi menanyakan jumlah '
+            'sebenarnya, bukan menebak.',
+        'Setiap jatuh tempo, aplikasi menambahkannya sebagai transaksi biasa — '
+            'meski Anda sedang tidak membuka aplikasi, semuanya disusulkan saat '
+            'Anda membukanya lagi.',
+        'Di layar Berulang, jeda, lanjutkan, ubah jumlah, atau hentikan '
+            'pengulangan. Transaksi yang sudah ditambahkan tidak pernah diubah.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'Pindai struk',
+      summary: 'Ubah foto struk menjadi pengeluaran yang siap disimpan.',
+      steps: <String>[
+        'Di layar Pengeluaran, ketuk "Pindai struk" lalu ambil atau pilih foto.',
+        'Aplikasi mengisi nama toko, tanggal, jumlah, dan kategori — periksa '
+            'sebelum menyimpan.',
+        'Pemindaian cloud tergantung paket Anda; jika struk tidak terbaca, '
+            'catat pengeluarannya secara manual.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'Anggaran bulanan',
+      summary: 'Rencanakan berapa yang ingin Anda belanjakan per kategori, '
+          'bulan demi bulan.',
+      steps: <String>[
+        'Pilih tahun dan bulan di bagian atas — satu layar untuk semua bulan.',
+        'Tetapkan batas untuk setiap kategori yang ingin Anda kendalikan.',
+        'Bilah kemajuan terisi seiring pengeluaran; kategori yang melewati '
+            'batas akan ditandai.',
+        'Di paket berbayar, "Sarankan pembagian" membagi pemasukan Anda ke '
+            'kategori berdasarkan pengeluaran Anda belakangan ini — periksa, '
+            'lalu terapkan.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'Target & tabungan',
+      summary: 'Menabung untuk sesuatu yang spesifik dan lihat seberapa dekat '
+          'Anda.',
+      steps: <String>[
+        'Buat target dengan jumlah tujuan dan, bila perlu, tenggat.',
+        'Catat setoran setiap kali menabung; kemajuan diperbarui otomatis.',
+        'Target yang mendekati tenggat disorot di Dasbor.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'Utang & pinjaman',
+      summary: 'Pantau apa yang Anda utangkan dan apa yang orang lain utangkan '
+          'kepada Anda.',
+      steps: <String>[
+        'Tambahkan setiap utang atau pinjaman dengan jumlah dan orang atau '
+            'pihaknya.',
+        'Perbarui jumlah yang sudah dibayar untuk melihat sisa saldo.',
+        'Utang ikut dihitung dalam skor Kesehatan Keuangan Anda.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'Portofolio proyek',
+      summary: 'Rencanakan proyek besar dalam kelompok jangka pendek, menengah, '
+          'dan panjang.',
+      steps: <String>[
+        'Tambahkan proyek dan tempatkan masing-masing dalam jangka waktunya.',
+        'Mesin pendanaan mengisi kelompok secara berurutan, sehingga Anda '
+            'melihat proyek mana yang bisa ditutup tabungan lebih dulu.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'Kesehatan keuangan',
+      summary: 'Skor yang merangkum seberapa sehat keuangan Anda, dan '
+          'alasannya.',
+      steps: <String>[
+        'Skor dihitung di perangkat Anda dari data Anda sendiri.',
+        'Faktor utama menunjukkan apa yang membantu atau merugikan — perbaiki '
+            'itu lebih dulu.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'Laporan & analisis',
+      summary: 'Lihat tren sepanjang tahun dan ke mana uang Anda pergi.',
+      steps: <String>[
+        'Pilih tahun untuk membandingkan pemasukan dan pengeluaran per bulan.',
+        'Gunakan rincian untuk menemukan kategori yang terus naik.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'Zakat',
+      summary: 'Perkirakan zakat atas harta Anda dan pantau haulnya.',
+      steps: <String>[
+        'Masukkan harta yang wajib dizakati untuk mendapat perkiraan.',
+        'Tetapkan tanggal harta Anda mencapai nisab untuk memantau hitung '
+            'mundur tahun hijriah, ditampilkan dalam kalender Hijriah.',
+        'Ini alat bantu perencanaan — pastikan kewajiban Anda kepada ulama '
+            'yang berkompeten.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'Kurs & pasar',
+      summary: 'Kurs mata uang dan harga kripto langsung dari sumber publik.',
+      steps: <String>[
+        'Kurs diambil langsung; setiap baris menunjukkan sumbernya.',
+        'Jika suatu pasar tidak punya sumber tepercaya, tertulis "tidak '
+            'tersedia" — tidak pernah angka karangan.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'Asisten DGOTIX AI',
+      summary: 'Tanyakan tentang keuangan Anda dengan bahasa sehari-hari.',
+      steps: <String>[
+        'Ketik pertanyaan atau ketuk saran; asisten menjawab memakai ringkasan '
+            'singkat angka-angka Anda.',
+        'Jumlah jawaban tergantung paket Anda; ada pemberitahuan saat Anda '
+            'mendekati batas.',
+        'Jawaban dibuat otomatis — periksa kembali keputusan penting. Wawasan '
+            'berbasis aturan di bawah obrolan selalu jalan, bahkan tanpa AI.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'Paket & langganan',
+      summary: 'Bandingkan Gratis, Basic, dan Pro, lalu kelola langganan Anda.',
+      steps: <String>[
+        'Fitur anggaran inti gratis selamanya.',
+        'Paket berbayar menaikkan batas AI dan pemindaian cloud serta menambah '
+            'fitur.',
+        'Jika berlangganan, paket dan tanggal perpanjangan tampil di atas, '
+            'dengan tombol untuk mengelola atau membatalkan.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'Pengaturan, data & cadangan',
+      summary: 'Sesuaikan aplikasi dan jaga data Anda tetap aman.',
+      steps: <String>[
+        'Bahasa, tema, dan mata uang dasar ada di Tampilan dan Wilayah.',
+        'Kelola kategori pemasukan dan pengeluaran Anda sendiri.',
+        'Di Data & cadangan, ekspor cadangan lengkap kapan saja; saat masuk, '
+            'data Anda tersinkron otomatis antarperangkat (juga setelah bekerja '
+            'offline), dan Anda bisa mematikannya.',
       ],
     ),
   ];

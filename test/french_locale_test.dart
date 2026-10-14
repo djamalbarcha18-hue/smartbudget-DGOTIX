@@ -26,7 +26,7 @@ void main() {
     expect(AppLocalizations.supportedLocales.map((l) => l.languageCode),
         containsAll(<String>['ar', 'en', 'fr']));
     expect(SupportedLocales.all.map((l) => l.languageCode),
-        <String>['ar', 'en', 'fr']);
+        containsAll(<String>['ar', 'en', 'fr']));
   });
 
   test('every string exists in French, with the same placeholders', () {
@@ -80,6 +80,6 @@ void main() {
     expect(AppLang.fromCode('fr'), AppLang.fr);
     expect(AppLang.fromCode('de'), AppLang.en);
     expect(AppLang.fr.pick('ع', 'en'), 'en');
-    expect(AppLang.fr.pick('ع', 'en', 'fr'), 'fr');
+    expect(AppLang.fr.pick('ع', 'en', fr: 'fr'), 'fr');
   });
 }

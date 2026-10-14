@@ -104,6 +104,7 @@ class SettingsPage extends ConsumerWidget {
                     _Segment<String>('ar', l.langArabic, null),
                     _Segment<String>('en', l.langEnglish, null),
                     _Segment<String>('fr', l.langFrench, null),
+                    _Segment<String>('id', l.langIndonesian, null),
                   ],
                   onChanged: (String code) => ref
                       .read(localeProvider.notifier)

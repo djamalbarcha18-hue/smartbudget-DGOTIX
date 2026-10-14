@@ -39,10 +39,14 @@ abstract final class LegalContent {
       ? 'à ${AppConfig.supportEmail}'
       : 'via la page Aide et assistance de l\'application';
 
+  static String get _reachId => AppConfig.hasSupportEmail
+      ? 'di ${AppConfig.supportEmail}'
+      : 'melalui halaman Bantuan & Dukungan di aplikasi';
+
   static List<LegalSection> sections(LegalDoc doc, {required AppLang lang}) =>
       switch (doc) {
-        LegalDoc.privacy => lang.pick(_privacyAr, _privacyEn, _privacyFr),
-        LegalDoc.terms => lang.pick(_termsAr, _termsEn, _termsFr),
+        LegalDoc.privacy => lang.pick(_privacyAr, _privacyEn, fr: _privacyFr, id: _privacyId),
+        LegalDoc.terms => lang.pick(_termsAr, _termsEn, fr: _termsFr, id: _termsId),
       };
 
   // ---- Privacy (English) ----
@@ -846,6 +850,279 @@ abstract final class LegalContent {
               'la dernière version ; continuer à utiliser l\'application après '
               'une mise à jour vaut acceptation des conditions révisées. Pour '
               'toute question, contactez-nous $_reachFr.',
+        ),
+      ];
+
+  // ---- Privacy (Indonesian) ----
+  static List<LegalSection> get _privacyId => <LegalSection>[
+        LegalSection(
+          'Ringkasan',
+          'Kebijakan ini menjelaskan apa yang disimpan $_app, di mana '
+              'disimpan, dan pilihan yang Anda miliki. Singkatnya: data keuangan '
+              'Anda milik Anda, disimpan lebih dulu di perangkat Anda, dan kami '
+              'tidak pernah menjualnya, menampilkan iklan, atau melacak Anda. '
+              'Beberapa fitur opsional (masuk dan sinkron, DGOTIX AI, pemindaian '
+              'struk cloud, dan paket berbayar) mengirim data tertentu ke suatu '
+              'layanan hanya saat Anda memakainya, seperti dijelaskan di bawah.',
+        ),
+        const LegalSection(
+          'Apa yang kami simpan',
+          'Informasi yang Anda masukkan sendiri: pemasukan, pengeluaran, '
+              'anggaran, target, utang, dompet, kategori kustom, dan preferensi '
+              'tampilan (tema, bahasa, mata uang dasar). Jika Anda membuat akun, '
+              'kami juga menyimpan alamat email, paket dan status langganan, '
+              'serta hitungan pemakaian per periode untuk DGOTIX AI dan '
+              'pemindaian struk cloud — hanya untuk menerapkan batas paket Anda. '
+              'Kami tidak menyimpan pertanyaan Anda ke DGOTIX AI atau gambar '
+              'struk Anda; jika Anda melaporkan jawaban AI, kami menyimpan '
+              'jawaban itu dan catatan opsional Anda agar dapat ditinjau.',
+        ),
+        const LegalSection(
+          'Tempat data Anda berada',
+          'Semuanya disimpan lebih dulu di perangkat Anda (di aplikasi, atau '
+              'di browser untuk versi web), sehingga aplikasi tetap berjalan '
+              'tanpa akun atau koneksi. Jika Anda masuk, data juga otomatis '
+              'tersinkron antarperangkat: salinannya disimpan di basis data kami '
+              '(di-hosting oleh Supabase), terikat ke akun Anda dan terisolasi '
+              'sehingga hanya Anda yang bisa membacanya. Anda bisa mematikan '
+              'sinkron di Pengaturan; data Anda lalu hanya ada di perangkat ini.',
+        ),
+        const LegalSection(
+          'Akun dan email Anda',
+          'Alamat email dipakai untuk masuk dan mengirim email akun, seperti '
+              'konfirmasi alamat dan pengaturan ulang kata sandi (dikirim melalui'
+              ' Brevo). Email tidak pernah dipakai untuk iklan atau dibagikan '
+              'untuk pemasaran. Saat mendaftar atau masuk, pemeriksaan manusia '
+              'singkat (Cloudflare Turnstile) mencegah penyalahgunaan otomatis.',
+        ),
+        const LegalSection(
+          'DGOTIX AI',
+          'DGOTIX AI bersifat opsional. Saat Anda bertanya, teks pertanyaan '
+              'dan ringkasan angka Anda (total per bulan dan kategori hingga 12 '
+              'bulan, anggaran, saldo dompet, target, transaksi berulang, '
+              'anggaran musiman, dan arisan — hanya jumlah dan tanggal, tidak '
+              'pernah keterangan, catatan, atau nama yang Anda berikan) dikirim '
+              'melalui server aman kami ke penyedia AI (Google Gemini, OpenAI, '
+              'atau Anthropic) untuk membuat jawaban. Server kami memakai kunci '
+              'penyedia milik kami dan hanya mencatat metadata pemakaian, tidak '
+              'pernah pertanyaan atau angka Anda. Kami tidak memakai data Anda '
+              'untuk melatih model apa pun. Jawaban dibuat otomatis, jadi periksa'
+              ' angka penting sebelum bertindak.',
+        ),
+        const LegalSection(
+          'Pemindaian struk',
+          'Di Android, struk dapat dibaca sepenuhnya di perangkat Anda. '
+              'Pemindaian cloud mengirim gambar struk melalui server aman kami ke'
+              ' penyedia AI hanya untuk membaca nama toko, tanggal, jumlah, '
+              'barang, dan kategori; gambarnya tidak disimpan.',
+        ),
+        const LegalSection(
+          'Pembayaran dan langganan',
+          'Paket berbayar bersifat opsional. Pesanan diproses oleh '
+              'Paddle.com, reseller online kami dan Merchant of Record, yang '
+              'memungkinkan Anda membayar dengan kartu, PayPal, Apple Pay, atau '
+              'Google Pay. Paddle mengumpulkan data penagihan yang diperlukannya '
+              '(seperti nama, email, negara, dan metode pembayaran) berdasarkan '
+              'kebijakan privasinya sendiri; kami tidak pernah melihat atau '
+              'menyimpan detail lengkap kartu Anda. Kami menyimpan paket, status '
+              'langganan, tanggal perpanjangan, dan pengenal langganan dari '
+              'Paddle agar Anda mendapat akses yang tepat, serta catatan kode '
+              'promo yang Anda tukarkan.',
+        ),
+        const LegalSection(
+          'Penyedia layanan',
+          'Tergantung fitur yang Anda pakai: Supabase (akun, sinkron, dan '
+              'fungsi server kami); Paddle (pembayaran); Brevo (email akun); '
+              'Cloudflare Turnstile (pemeriksaan manusia saat masuk); GitHub '
+              'Pages (hosting situs dan aplikasi web kami); Google, OpenAI, dan '
+              'Anthropic (DGOTIX AI dan pemindaian struk cloud); serta sumber '
+              'data pasar publik untuk angka langsung — kurs mata uang (open.er-'
+              'api.com) dan harga kripto (CoinGecko) — yang permintaannya hanya '
+              'berisi simbol mata uang atau aset, tidak pernah data pribadi atau '
+              'keuangan Anda. Setiap penyedia hanya memproses data untuk '
+              'menjalankan bagian layanannya.',
+        ),
+        const LegalSection(
+          'Keamanan',
+          'Koneksi ke layanan kami dienkripsi (HTTPS). Di basis data kami, '
+              'catatan setiap pengguna terisolasi sehingga satu akun tidak pernah'
+              ' bisa membaca milik akun lain. Kunci server tidak pernah sampai ke'
+              ' aplikasi, notifikasi pembayaran diverifikasi sebelum mengubah apa'
+              ' pun, dan Anda bisa menambahkan kunci aplikasi (PIN atau sidik '
+              'jari) di perangkat Anda.',
+        ),
+        const LegalSection(
+          'Apa yang tidak kami lakukan',
+          'Kami tidak menjual atau menyewakan data Anda, tidak menampilkan '
+              'iklan, dan tidak melakukan pelacakan perilaku atau analitik atas '
+              'aktivitas keuangan Anda.',
+        ),
+        const LegalSection(
+          'Berapa lama data disimpan',
+          'Data di perangkat Anda tetap ada sampai Anda menghapusnya atau '
+              'menghapus aplikasi. Akun, data tersinkron, hitungan pemakaian, dan'
+              ' metadata permintaan disimpan selama akun Anda ada — hanya untuk '
+              'menjalankan layanan dan menerapkan batas paket — dan dihapus '
+              'permanen saat Anda menghapus akun. Paddle menyimpan catatan '
+              'penagihan yang diwajibkan hukum.',
+        ),
+        LegalSection(
+          'Hak dan kendali Anda',
+          'Anda dapat melihat dan memperbaiki data di aplikasi kapan saja, '
+              'mengekspor cadangan lengkap, mematikan sinkron, keluar, dan '
+              'menghapus akun beserta semua datanya (lihat di bawah). Anda dapat '
+              'membatalkan langganan berbayar kapan saja (lihat Ketentuan). Untuk'
+              ' permintaan lain tentang data pribadi Anda — termasuk akses, '
+              'perbaikan, penghapusan, atau keberatan — hubungi kami $_reachId '
+              'dan kami akan segera menjawab.',
+        ),
+        const LegalSection(
+          'Menghapus akun dan data Anda',
+          'Di aplikasi atau versi web, di perangkat mana pun, buka '
+              'Pengaturan, lalu Akun, lalu "Hapus akun saya". Ini menghapus '
+              'permanen akun Anda dan semua yang tersimpan untuknya di server '
+              'kami (profil, data tersinkron, catatan langganan, dan hitungan '
+              'pemakaian), serta menghapus data Anda di perangkat itu. Batalkan '
+              'dulu langganan berbayar. Penghapusan tidak dapat dibatalkan, jadi '
+              'ekspor cadangan lebih dulu jika mungkin masih butuh data Anda.',
+        ),
+        LegalSection(
+          'Usia',
+          '$_app ditujukan untuk orang berusia 16 tahun ke atas. Kami tidak '
+              'dengan sengaja mengumpulkan data anak di bawah usia itu; jika Anda'
+              ' yakin seorang anak telah membuat akun, hubungi kami $_reachId dan'
+              ' kami akan menghapusnya.',
+        ),
+        LegalSection(
+          'Perubahan dan kontak',
+          'Kami dapat memperbarui kebijakan ini; tanggal di atas menunjukkan '
+              'versi terbaru. Untuk pertanyaan privasi, hubungi kami $_reachId.',
+        ),
+      ];
+
+  // ---- Terms (Indonesian) ----
+  static List<LegalSection> get _termsId => <LegalSection>[
+        LegalSection(
+          'Persetujuan',
+          'Dengan memakai $_app, Anda menyetujui ketentuan ini. Jika tidak '
+              'setuju, mohon tidak memakai aplikasi.',
+        ),
+        LegalSection(
+          'Siapa yang boleh memakai',
+          'Anda harus berusia minimal 16 tahun untuk memakai $_app. Jika Anda'
+              ' membuat akun, jaga keamanan data masuk Anda; Anda bertanggung '
+              'jawab atas aktivitas di akun Anda.',
+        ),
+        const LegalSection(
+          'Apa layanan ini',
+          'Alat anggaran dan perencanaan pribadi untuk mencatat pemasukan, '
+              'pengeluaran, anggaran, target, dan wawasan terkait, dengan bantuan'
+              ' AI opsional, pemindaian struk, sinkron antarperangkat, dan paket '
+              'berbayar.',
+        ),
+        const LegalSection(
+          'Alat perencanaan, bukan nasihat profesional',
+          'Anggaran, proyeksi, perhitungan zakat, dan jawaban DGOTIX AI '
+              'adalah alat perencanaan untuk membantu Anda memutuskan. Itu bukan '
+              'nasihat profesional di bidang keuangan, pajak, atau agama. Untuk '
+              'kewajiban agama seperti zakat, pastikan kepada ulama yang '
+              'berkompeten; untuk keputusan keuangan besar, konsultasikan dengan '
+              'penasihat yang berkompeten.',
+        ),
+        const LegalSection(
+          'Fitur AI',
+          'DGOTIX AI dan pemindaian struk cloud memberi hasil otomatis untuk '
+              'menghemat waktu Anda; periksa angka penting sebelum bertindak. '
+              'Fitur ini disertakan dalam batas pemakaian wajar sesuai paket '
+              'Anda, dan dapat disesuaikan agar layanan tetap cepat dan andal '
+              'untuk semua.',
+        ),
+        const LegalSection(
+          'Langganan, penagihan, dan perpanjangan',
+          'Aplikasi inti gratis. Paket berbayar (Basic dan Pro) membuka batas'
+              ' lebih tinggi dan fitur tambahan dengan harga yang tertera di '
+              'aplikasi. Paket berbayar diperpanjang otomatis setiap periode '
+              'penagihan (bulanan atau tahunan) sampai Anda membatalkannya. '
+              'Pembayaran diproses oleh reseller online kami, Paddle; pajak yang '
+              'berlaku dapat ditambahkan dan ditangani oleh Paddle sebagai '
+              'merchant of record. Anda bisa membatalkan kapan saja dan tetap '
+              'punya akses sampai akhir periode yang sudah dibayar. Jika harga '
+              'atau fitur paket berubah, ketentuan terbaru selalu ditampilkan '
+              'sebelum Anda berlangganan.',
+        ),
+        const LegalSection(
+          'Reseller kami: Paddle',
+          'Proses pemesanan kami dijalankan oleh reseller online kami, '
+              'Paddle.com. Paddle.com adalah Merchant of Record untuk semua '
+              'pesanan kami. Paddle menangani semua pertanyaan layanan pelanggan '
+              'dan pengembalian.',
+        ),
+        LegalSection(
+          'Kebijakan pengembalian dana',
+          'Kecuali diwajibkan hukum, pembayaran umumnya tidak dapat '
+              'dikembalikan setelah periode penagihan dimulai, karena Anda tetap '
+              'punya akses sampai periode itu berakhir. Anda bisa membatalkan '
+              'kapan saja untuk menghentikan perpanjangan berikutnya. Permintaan '
+              'pengembalian dana ditangani Paddle sesuai ketentuan pembelinya dan'
+              ' hukum perlindungan konsumen yang berlaku (Paddle dapat dihubungi '
+              'di paddle.net); Anda juga bisa menghubungi kami $_reachId dan kami'
+              ' akan membantu.',
+        ),
+        const LegalSection(
+          'Kode promo',
+          'Kupon dan kode diskon bersifat opsional dan hanya mengubah harga '
+              'pembayaran (atau memberi masa uji coba). Setiap kode punya '
+              'syaratnya sendiri (masa berlaku, batas pemakaian, satu per '
+              'pelanggan) dan dapat ditarik atau kedaluwarsa. Kode tidak bernilai'
+              ' tunai dan tidak dapat digabung kecuali disebutkan.',
+        ),
+        const LegalSection(
+          'Data dan cadangan Anda',
+          'Anda bertanggung jawab atas ketepatan data yang Anda masukkan. '
+              'Agar data aman antarperangkat, masuk untuk menyinkronkannya, atau '
+              'ekspor cadangan secara rutin dari Pengaturan.',
+        ),
+        LegalSection(
+          'Ketersediaan',
+          'Kami berupaya menjaga $_app tetap tersedia dan andal. Sejauh '
+              'diizinkan hukum, aplikasi disediakan "sebagaimana adanya", tanpa '
+              'jaminan apa pun. Data pasar langsung, AI, dan pembayaran '
+              'bergantung pada layanan pihak ketiga dan sesekali bisa tertunda '
+              'atau tidak tersedia; gangguan itu tidak pernah menghalangi Anda '
+              'memakai fitur anggaran inti, yang juga berjalan offline. Fitur '
+              'dapat berkembang dari waktu ke waktu.',
+        ),
+        const LegalSection(
+          'Batasan tanggung jawab',
+          'Sejauh diizinkan hukum, kami tidak bertanggung jawab atas kerugian'
+              ' tidak langsung atau konsekuensial, atau atas keputusan yang Anda '
+              'ambil berdasarkan angka di aplikasi. Tidak ada dalam ketentuan ini'
+              ' yang membatasi hak Anda berdasarkan hukum perlindungan konsumen '
+              'yang tidak dapat dikesampingkan.',
+        ),
+        const LegalSection(
+          'Penggunaan yang wajar',
+          'Jangan menyalahgunakan layanan, mencoba membobol atau mengakali '
+              'keamanannya atau batas paket, atau memakainya untuk tujuan yang '
+              'melanggar hukum.',
+        ),
+        LegalSection(
+          'Mengakhiri penggunaan',
+          'Anda bisa berhenti memakai $_app dan menghapus akun kapan saja. '
+              'Kami dapat menangguhkan akun yang melanggar ketentuan ini atau '
+              'membahayakan layanan atau pengguna lain.',
+        ),
+        LegalSection(
+          'Merek dan kepemilikan',
+          'Nama $_app, merek $_brand, serta desain dan kode aplikasi tetap '
+              'menjadi milik pemiliknya. Data Anda tetap milik Anda.',
+        ),
+        LegalSection(
+          'Perubahan dan kontak',
+          'Kami dapat memperbarui ketentuan ini dan menampilkan tanggal versi'
+              ' terbarunya; terus memakai aplikasi setelah pembaruan berarti Anda'
+              ' menerima ketentuan yang direvisi. Untuk pertanyaan, hubungi kami '
+              '$_reachId.',
         ),
       ];
 }

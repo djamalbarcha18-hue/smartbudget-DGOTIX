@@ -7,8 +7,14 @@ abstract final class SupportedLocales {
   static const Locale arabic = Locale('ar');
   static const Locale english = Locale('en');
   static const Locale french = Locale('fr');
+  static const Locale indonesian = Locale('id');
 
-  static const List<Locale> all = <Locale>[arabic, english, french];
+  static const List<Locale> all = <Locale>[
+    arabic,
+    english,
+    french,
+    indonesian,
+  ];
 }
 
 /// Controls the active [Locale] and persists the choice per viewer.
@@ -40,7 +46,7 @@ class LocaleController extends Notifier<Locale> {
     }
   }
 
-  /// Moves to the next supported locale (ar → en → fr → ar).
+  /// Moves to the next supported locale (ar → en → fr → id → ar).
   Future<void> toggle() {
     final int i = SupportedLocales.all
         .indexWhere((Locale l) => l.languageCode == state.languageCode);
