@@ -28,9 +28,6 @@ verify_jwt = false
 [functions.market-proxy]
 verify_jwt = false
 
-[functions.paddle-webhook]
-verify_jwt = false
-
 [functions.parallel-proxy]
 verify_jwt = false
 
@@ -38,4 +35,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.receipt-scan]
+verify_jwt = false
+
+[functions.whop-webhook]
 verify_jwt = false

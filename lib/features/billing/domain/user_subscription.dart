@@ -15,7 +15,7 @@ class UserSubscription {
   });
 
   final Plan plan;
-  final String? provider; // 'paddle' | 'paypal'
+  final String? provider; // 'whop' | 'paypal'
   final String? period; // 'monthly' | 'yearly'
   final String? status; // 'active' | 'trialing' | 'canceled' | ...
   final DateTime? currentPeriodEnd;

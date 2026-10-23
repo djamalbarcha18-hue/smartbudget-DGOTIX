@@ -66,4 +66,8 @@ jobs:
           supabase secrets set --project-ref "$PROJECT_REF" \
             ALLOWED_ORIGIN=https://smartbudget.dgotix.com
           supabase functions deploy --project-ref "$PROJECT_REF"
+          # Functions of a removed provider (Paddle → Whop) stop answering.
+          for retired in paddle-webhook; do
+            supabase functions delete "$retired" --project-ref "$PROJECT_REF" || true
+          done
           supabase functions list --project-ref "$PROJECT_REF"

@@ -8,10 +8,9 @@ library;
 abstract final class PaymentLinks {
   /// Hosts allowed as is, or as the parent domain of the link's host.
   static const List<String> trustedDomains = <String>[
-    'paddle.com', // checkout, customer portal (and their sandbox hosts)
-    'paddle.io', // hosted checkout
+    'whop.com', // checkout and the buyer's billing page (and sandbox hosts)
     'paypal.com', // approve and manage (www and sandbox)
-    'dgotix.com', // Paddle's default payment link is on our own site
+    'dgotix.com', // our own site (back from a checkout)
   ];
 
   /// The link as a [Uri] when it is safe to open, otherwise null.
@@ -19,7 +18,7 @@ abstract final class PaymentLinks {
     if (url == null) return null;
     final Uri? u = Uri.tryParse(url.trim());
     if (u == null || u.scheme != 'https' || u.host.isEmpty) return null;
-    if (u.userInfo.isNotEmpty) return null; // https://paddle.com@evil.example
+    if (u.userInfo.isNotEmpty) return null; // https://whop.com@evil.example
     final String host = u.host.toLowerCase();
     for (final String d in trustedDomains) {
       if (host == d || host.endsWith('.$d')) return u;

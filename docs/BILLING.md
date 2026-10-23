@@ -1,105 +1,117 @@
-# SmartBudget — Billing (subscriptions via Paddle)
+# SmartBudget — Billing (subscriptions via Whop)
 
-Provider-agnostic by design: the app never talks to Paddle directly. A checkout
-is created **server-side** (`create-checkout`) and Paddle's **webhook**
-(`paddle-webhook`) is the only thing that grants or revokes a paid plan — the
-server stays the source of truth. Paddle API keys live **only** in Edge Function
-secrets; the frontend just opens a checkout URL.
+Provider-agnostic by design: the app never talks to Whop directly. A checkout
+is created **server-side** (`create-checkout`) and Whop's **webhook**
+(`whop-webhook`) is the only thing that grants or revokes a paid plan — the
+server stays the source of truth. The Whop API key lives **only** in Edge
+Function secrets; the frontend just opens a checkout URL.
 
 ```
-Plans screen ──▶ create-checkout (Edge Fn, PADDLE_API_KEY)
-                    └─ maps (plan,period) → Paddle price via billing_prices
-                    └─ creates a Paddle transaction (custom_data.user_id)
-                    └─ returns checkout.url ──▶ web/pay.html?_ptxn=…&token=…
-                                                (Paddle.js opens the checkout,
-                                                 then back to #/plans)
-Paddle ──(subscription.*/transaction.*)──▶ paddle-webhook (verify signature)
-                    └─ sets ai_entitlements.plan  + subscriptions snapshot
+Plans screen ──▶ create-checkout (Edge Fn, WHOP_API_KEY)
+                    └─ maps (plan,period) → Whop plan via billing_prices
+                    └─ POST /checkout_configurations (metadata.user_id)
+                    └─ returns purchase_url ──▶ Whop's hosted checkout
+                                                (then back to #/plans)
+Whop ──(membership.* / payment.* / refund.* / dispute.*)──▶ whop-webhook
+                    └─ verify signature (Standard Webhooks), dedupe
+                    └─ GET /memberships/{id}: Whop's current state
+                    └─ sets ai_entitlements.plan + subscriptions snapshot
 Client ──▶ remoteEntitlementProvider re-fetches ▶ plan reflects the purchase
 ```
 
-Why Paddle: it is a **Merchant of Record** — it handles VAT/sales tax globally
-and settles in regions where card acquirers like Stripe can't pay out, which
-fits selling worldwide from MENA.
+Why Whop: it pays out to sellers in Algeria (bank, mobile wallet or crypto)
+and runs the checkout (cards, Apple Pay, Google Pay…). Unlike Paddle (the
+previous provider, removed) it is **not** the merchant of record for taxes by
+default: turn on **Whop Collects and Remits** in Whop's tax settings so Whop
+calculates, collects and remits VAT / sales tax; otherwise that stays
+DGOTIX's job. API shapes follow Whop's API v1 (`https://api.whop.com/api/v1`),
+as in the official `@whop/sdk`.
 
 ## One-time setup (owner)
 
-1. **Create the products & prices** in the Paddle dashboard (Catalog → Products):
-   one product per plan, with a **monthly** and a **yearly** price each, matching
-   `docs/PRICING.md` (BASIC $4.99 / $39.99, PRO $8.99 / $69.99). Copy each
-   price id (`pri_...`).
-   On each price, add **country price overrides** for the regional prices
-   (PRICING.md §1): BASIC $2.99 / $24.99 and PRO $5.49 / $44.99 in the Arab
-   countries outside the Gulf. Paddle then shows each buyer their own price
-   and currency; nothing changes in the app or `billing_prices`.
+1. **Create the product & plans** in the Whop dashboard: one product
+   (SmartBudget) with four **renewing** plans matching `docs/PRICING.md` —
+   BASIC $4.99 / month and $39.99 / year, PRO $8.99 / month and $69.99 /
+   year. Copy each plan id (`plan_...`).
 
-2. **Apply the schema** and record the price ids:
+2. **Apply the schema** and record the plan ids:
 
    ```bash
-   supabase db execute -f supabase/ai_gateway.sql   # if not already applied
    supabase db execute -f supabase/billing.sql
+   supabase db execute -f supabase/subscription_lifecycle.sql
    ```
    ```sql
-   insert into billing_prices (price_id, plan, period) values
-     ('pri_basic_monthly', 'basic', 'monthly'),
-     ('pri_basic_yearly',  'basic', 'yearly'),
-     ('pri_pro_monthly',   'pro',   'monthly'),
-     ('pri_pro_yearly',    'pro',   'yearly')
-   on conflict (price_id) do update set plan = excluded.plan, period = excluded.period;
+   insert into billing_prices (price_id, provider, plan, period) values
+     ('plan_xxx_basic_monthly', 'whop', 'basic', 'monthly'),
+     ('plan_xxx_basic_yearly',  'whop', 'basic', 'yearly'),
+     ('plan_xxx_pro_monthly',   'whop', 'pro',   'monthly'),
+     ('plan_xxx_pro_yearly',    'whop', 'pro',   'yearly')
+   on conflict (price_id) do update set provider = excluded.provider,
+     plan = excluded.plan, period = excluded.period, active = true;
    ```
 
-3. **Deploy the functions**:
+3. **Deploy the functions** (the GitHub workflow does this on every push to
+   `main`; by hand):
 
    ```bash
    supabase functions deploy create-checkout
-   supabase functions deploy paddle-webhook --no-verify-jwt   # Paddle can't send a user JWT
-   supabase functions deploy manage-subscription              # in-app manage/cancel link
+   supabase functions deploy whop-webhook --no-verify-jwt   # Whop can't send a user JWT
+   supabase functions deploy manage-subscription billing-config
+   supabase functions delete paddle-webhook                 # the removed provider
    ```
 
-4. **Secrets**:
+4. **Secrets** (and remove the old Paddle ones):
 
    ```bash
-   supabase secrets set PADDLE_API_KEY=...          # server-side API key
-   supabase secrets set PADDLE_API_URL=https://sandbox-api.paddle.com   # or https://api.paddle.com
-   supabase secrets set PADDLE_WEBHOOK_SECRET=...   # from the notification destination
-   supabase secrets set PADDLE_CLIENT_TOKEN=test_... # client-side token (public; test_ = sandbox)
+   supabase secrets set WHOP_API_KEY=...                 # company API key
+   supabase secrets set WHOP_WEBHOOK_SECRET=ws_...       # from the webhook, as shown
+   supabase secrets set WHOP_COMPANY_ID=biz_...          # optional: the account to sell from
+   supabase secrets set WHOP_API_URL=https://sandbox-api.whop.com/api/v1   # sandbox only
    supabase secrets set CHECKOUT_SUCCESS_URL=https://smartbudget.dgotix.com/#/plans
+   supabase secrets unset PADDLE_API_KEY PADDLE_API_URL PADDLE_WEBHOOK_SECRET PADDLE_CLIENT_TOKEN PADDLE_CHECKOUT_PAGE
    ```
 
-5. **Webhook**: in Paddle → Developer tools → Notifications, add a destination
-   pointing at the `paddle-webhook` function URL, subscribed to every
-   `subscription.*` event, `transaction.completed`, `adjustment.created` and
-   `adjustment.updated`. Put its secret in `PADDLE_WEBHOOK_SECRET`.
+   The API key needs to create checkout configurations and read memberships
+   (including `member:manage`, for the buyer's billing page link).
 
-6. **Checkout page**: in Paddle → Checkout → Checkout settings, set the
-   **default payment link** to `https://smartbudget.dgotix.com/pay.html` (the
-   domain must be approved under Website approval). `create-checkout` sends
-   every transaction there (`PADDLE_CHECKOUT_PAGE` overrides it); `web/pay.html`
-   starts Paddle.js with `PADDLE_CLIENT_TOKEN`, which opens the checkout from
-   the `_ptxn` id and returns the buyer to the Plans page.
+5. **Webhook**: in Whop → Developer → Webhooks, add one with API version
+   **v1** pointing at the `whop-webhook` function URL, subscribed to
+   `membership.activated`, `membership.updated`, `membership.deactivated`,
+   `payment.succeeded`, `payment.failed`, `refund.created`, `refund.updated`,
+   `dispute.created` and `dispute.updated`. Put its secret in
+   `WHOP_WEBHOOK_SECRET` exactly as shown (`ws_...`, prefix included).
 
 ## How entitlement changes
 
-- **Active / trialing** subscription → `ai_entitlements.plan` is set to the paid
-  plan (limits follow automatically via `_shared/quota.ts`).
-- **Canceled** (Paddle sends the event when the cancellation takes effect at
-  period end) → plan is set back to `free`; the user keeps all their own data.
-- Every event is deduped by `event_id` (`billing_events`) so replays are safe.
-- Plan is granted **only** from a price id present in `billing_prices`, so an
-  unknown/foreign price can never unlock a tier.
+Each event only says *which* membership changed; the webhook reads that
+membership back from Whop and applies its current state, so deliveries in any
+order end in Whop's latest state:
+
+- `active` / `trialing` → the plan of its `plan_id` (only from
+  `billing_prices`, so an unknown plan never unlocks a tier).
+- `canceling` (cancelled, paid until the period ends) → still the plan, with
+  "ends on" shown.
+- `past_due` / `unresolved` (failed payment, open dispute) → no paid access;
+  Manage stays available to fix the card.
+- `canceled` / `expired` / `completed` → back to `free`; the user keeps all
+  their own data. A refund or chargeback acts through the state Whop gives the
+  membership after it.
+- Every delivery is deduped by its `webhook-id` (`billing_events`) and signed
+  deliveries older than 5 minutes are refused.
 
 ## Testing (sandbox)
 
-Use `PADDLE_API_URL=https://sandbox-api.paddle.com`, a sandbox API key, and
-Paddle's test cards. Buy each plan, confirm `ai_entitlements.plan` flips and the
-app reflects it after a refresh, then cancel and confirm it returns to `free`.
+Use `WHOP_API_URL=https://sandbox-api.whop.com/api/v1` with a sandbox API key
+and webhook. Buy each plan, confirm `ai_entitlements.plan` flips and the app
+reflects it after a refresh, then cancel from Manage and confirm it returns to
+`free` when the period ends.
 
 ## Adding PayPal (second provider)
 
 The billing spine is provider-agnostic — `billing_prices.provider` and
 `subscriptions.provider` keep each provider's ids side by side, and
 `create-checkout` branches on a `provider` field. To enable PayPal alongside (or
-instead of) Paddle:
+instead of) Whop:
 
 1. **Create subscription billing plans** in PayPal (one per plan+period),
    matching `docs/PRICING.md`. Copy each **plan id** (`P-...`).
@@ -142,7 +154,7 @@ instead of) Paddle:
 
 `billing-config` reports which providers have their secrets set, so the Plans
 screen only offers the payment methods that actually work. Grant/revoke is
-identical to Paddle: an active subscription sets the paid plan, a
+identical to Whop: an active subscription sets the paid plan, a
 cancelled/expired/suspended one returns to `free`, every event deduped by id.
 
 ## Payment test mode (during the beta)
@@ -152,8 +164,8 @@ checkout. To try a purchase end to end anyway, open the web app with
 `?paytest=1` (e.g. `https://smartbudget.dgotix.com/?paytest=1#/plans`). The
 upgrade buttons then appear — but only while `billing-config` reports
 `sandbox: true`, i.e. every configured provider points at its sandbox
-(`PAYPAL_API_URL=https://api-m.sandbox.paypal.com`, Paddle's
-`PADDLE_API_URL=https://sandbox-api.paddle.com`). With any live provider the
+(`PAYPAL_API_URL=https://api-m.sandbox.paypal.com`, Whop's
+`WHOP_API_URL=https://sandbox-api.whop.com/api/v1`). With any live provider the
 flag does nothing, so it can never take real money. The store build ignores it.
 
 After paying with a sandbox buyer, the "You're on …" card shows the plan and
@@ -164,14 +176,14 @@ After paying with a sandbox buyer, the "You're on …" card shows the plan and
 
 ## Not yet wired
 
-- **Coupon → Paddle discount**: our `coupons` preview is separate from Paddle's
-  own discounts. Passing a validated coupon as a Paddle `discount_id` at checkout
-  (and recording redemption on `transaction.completed`, already stubbed) is the
-  next step.
+- **Coupon → Whop promo code**: our `coupons` preview is separate from Whop's
+  own promo codes. Creating the matching Whop promo code and recording the
+  redemption from the webhook is the next step.
 - **Proration/upgrade mid-cycle** beyond what the provider handles by default.
 
 ## Done since
 
 - **Manage/cancel from inside the app**: the Plans screen shows the active plan
   and renewal date with a "Manage subscription" button (`manage-subscription`
-  returns the Paddle hosted management URL, or the PayPal autopay page).
+  returns the membership's Whop billing page (`manage_url`), or the PayPal
+  autopay page).

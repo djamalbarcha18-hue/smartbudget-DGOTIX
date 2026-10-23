@@ -1,9 +1,9 @@
 -- ============================================================================
--- SmartBudget — Billing (subscriptions via a provider, default: Paddle)
+-- SmartBudget — Billing (subscriptions via a provider, default: Whop)
 -- ----------------------------------------------------------------------------
 -- Provider-agnostic: the app never talks to the provider directly. A checkout
 -- is created server-side (create-checkout) and the provider's webhook
--- (paddle-webhook) is the ONLY thing that grants/revokes entitlement — the
+-- (whop-webhook, paypal-webhook) is the ONLY thing that grants/revokes entitlement — the
 -- server stays the source of truth. Provider API keys live ONLY in Edge
 -- Function secrets, never in the DB or the frontend.
 --
@@ -16,8 +16,8 @@
 -- ids here (no app release needed). This is the single mapping both checkout
 -- and the webhook use, so a plan can never be granted from an unknown price.
 create table if not exists billing_prices (
-  price_id   text primary key,          -- provider price id (e.g. Paddle 'pri_...')
-  provider   text not null default 'paddle',
+  price_id   text primary key,          -- provider price id (e.g. Whop 'plan_...')
+  provider   text not null default 'whop',
   plan       text not null,             -- 'basic' | 'pro'
   period     text not null,             -- 'monthly' | 'yearly'
   active     boolean not null default true,
@@ -27,7 +27,7 @@ create table if not exists billing_prices (
 -- ---- One current subscription per user -----------------------------------
 create table if not exists subscriptions (
   user_id                 uuid primary key references auth.users(id) on delete cascade,
-  provider                text not null default 'paddle',
+  provider                text not null default 'whop',
   provider_customer_id    text,
   provider_subscription_id text,
   plan                    text not null default 'free',
@@ -41,10 +41,17 @@ create table if not exists subscriptions (
 -- ---- Webhook idempotency + audit -----------------------------------------
 create table if not exists billing_events (
   event_id    text primary key,          -- provider event id
-  provider    text not null default 'paddle',
+  provider    text not null default 'whop',
   type        text,
   received_at timestamptz not null default now()
 );
+
+-- Paddle was the first provider: databases set up before keep its default.
+alter table billing_prices alter column provider set default 'whop';
+alter table subscriptions  alter column provider set default 'whop';
+alter table billing_events alter column provider set default 'whop';
+-- Its price ids no longer sell anything.
+update billing_prices set active = false where provider = 'paddle';
 
 -- ---- RLS ------------------------------------------------------------------
 alter table billing_prices  enable row level security;
@@ -61,13 +68,13 @@ create policy subscriptions_own on subscriptions
   for select using (auth.uid() = user_id);
 
 -- ---- Example seed (commented; the owner fills real provider ids) ---------
--- Paddle uses price ids (pri_...); PayPal uses billing PLAN ids (P-...). The
+-- Whop uses plan ids (plan_...); PayPal uses billing PLAN ids (P-...). The
 -- provider column keeps both sets side by side, so the app can offer either.
 -- insert into billing_prices (price_id, provider, plan, period) values
---   ('pri_basic_monthly', 'paddle', 'basic', 'monthly'),
---   ('pri_basic_yearly',  'paddle', 'basic', 'yearly'),
---   ('pri_pro_monthly',   'paddle', 'pro',   'monthly'),
---   ('pri_pro_yearly',    'paddle', 'pro',   'yearly'),
+--   ('plan_basic_monthly', 'whop',  'basic', 'monthly'),
+--   ('plan_basic_yearly',  'whop',  'basic', 'yearly'),
+--   ('plan_pro_monthly',   'whop',  'pro',   'monthly'),
+--   ('plan_pro_yearly',    'whop',  'pro',   'yearly'),
 --   ('P-BASIC-MONTHLY',   'paypal', 'basic', 'monthly'),
 --   ('P-BASIC-YEARLY',    'paypal', 'basic', 'yearly'),
 --   ('P-PRO-MONTHLY',     'paypal', 'pro',   'monthly'),

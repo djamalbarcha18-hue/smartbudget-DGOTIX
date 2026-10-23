@@ -45,7 +45,7 @@ jobs:
         with:
           deno-version: v2.x
 
-      # The real webhook handlers applying Paddle and PayPal events through the
+      # The real webhook handlers applying Whop and PayPal events through the
       # real SQL (upgrades, downgrades, cancellations, renewals, failed
       # payments, refunds, duplicates, out-of-order delivery).
       - name: Subscription lifecycle (webhooks + database)

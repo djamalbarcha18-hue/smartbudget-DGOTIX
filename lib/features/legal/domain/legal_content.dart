@@ -133,27 +133,27 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Payments and subscriptions',
-          'Paid plans are optional. Orders are processed by Paddle.com, our '
-              'online reseller and Merchant of Record, which lets you pay by '
-              'card, PayPal, Apple Pay or Google Pay. Paddle collects the billing'
-              ' details it needs (such as your name, email, country and payment '
-              'method) under its own privacy policy; we never see or store your '
-              'full card details. We keep your plan, subscription status, renewal'
-              ' date and Paddle\'s subscription identifiers so we can give you '
-              'the right access, plus a record of any promotional code you '
-              'redeem.',
+          'Paid plans are optional. You pay on the secure checkout of Whop '
+              '(whop.com), our payment provider, or with PayPal if you choose '
+              'it. They collect the billing details they need (such as your '
+              'name, email, country and payment method) under their own privacy '
+              'policies; we never see or store your full card details. We keep '
+              'your plan, subscription status, renewal date and the payment '
+              'provider\'s subscription identifiers so we can give you the '
+              'right access, plus a record of any promotional code you redeem.',
         ),
         const LegalSection(
           'Service providers',
           'Depending on the features you use: Supabase (accounts, sync and '
-              'our server functions); Paddle (payments); Brevo (account emails); '
-              'Cloudflare Turnstile (the human check at sign-in); GitHub Pages '
-              '(hosting of our website and web app); Google, OpenAI and Anthropic'
-              ' (DGOTIX AI and cloud receipt scanning); and public market-data '
-              'sources for live figures — currency rates (open.er-api.com) and '
-              'crypto prices (CoinGecko) — whose requests contain only currency '
-              'or asset symbols, never your personal or financial data. Each '
-              'provider processes data only to deliver its part of the service.',
+              'our server functions); Whop and PayPal (payments); Brevo '
+              '(account emails); Cloudflare Turnstile (the human check at '
+              'sign-in); GitHub Pages (hosting of our website and web app); '
+              'Google, OpenAI and Anthropic (DGOTIX AI and cloud receipt '
+              'scanning); and public market-data sources for live figures — '
+              'currency rates (open.er-api.com) and crypto prices (CoinGecko) — '
+              'whose requests contain only currency or asset symbols, never '
+              'your personal or financial data. Each provider processes data '
+              'only to deliver its part of the service.',
         ),
         const LegalSection(
           'Security',
@@ -172,10 +172,10 @@ abstract final class LegalContent {
           'How long we keep data',
           'Data on your device stays until you delete it or remove the app. '
               'Your account, synced data, usage counts and request metadata are '
-              'kept while your account exists — only to run the service and apply'
-              ' your plan\'s limits — and are permanently erased when you delete '
-              'it. Paddle keeps the billing records it is legally required to '
-              'keep.',
+              'kept while your account exists — only to run the service and '
+              'apply your plan\'s limits — and are permanently erased when you '
+              'delete it. Whop and PayPal keep the billing records they are '
+              'legally required to keep.',
         ),
         LegalSection(
           'Your rights and controls',
@@ -268,26 +268,25 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'المدفوعات والاشتراكات',
-          'الباقات المدفوعة اختيارية. تُعالَج الطلبات عبر Paddle.com، موزّعنا'
-              ' المعتمد عبر الإنترنت والبائع المسجَّل (Merchant of Record)، الذي '
-              'يتيح الدفع بالبطاقة أو PayPal أو Apple Pay أو Google Pay. ويجمع '
-              'Paddle بيانات الفوترة التي يحتاجها (مثل اسمك وبريدك وبلدك ووسيلة '
-              'الدفع) وفق سياسة خصوصيته؛ ولا نرى ولا نخزّن بيانات بطاقتك الكاملة.'
-              ' ونحتفظ بباقتك وحالة اشتراكك وتاريخ التجديد ومعرّفات الاشتراك لدى '
-              'Paddle لنمنحك الوصول الصحيح، إضافةً إلى سجلّ بأي كود ترويجي '
-              'تستخدمه.',
+          'الباقات المدفوعة اختيارية. تدفع عبر صفحة الدفع الآمنة لدى Whop '
+              '(whop.com)، مزوّد الدفع لدينا، أو عبر PayPal إن اخترته. ويجمع '
+              'كلٌّ منهما بيانات الفوترة التي يحتاجها (مثل اسمك وبريدك وبلدك '
+              'ووسيلة الدفع) وفق سياسة خصوصيته؛ ولا نرى ولا نخزّن بيانات بطاقتك '
+              'الكاملة. ونحتفظ بباقتك وحالة اشتراكك وتاريخ التجديد ومعرّفات '
+              'الاشتراك لدى مزوّد الدفع لنمنحك الوصول الصحيح، إضافةً إلى سجلّ '
+              'بأي كود ترويجي تستخدمه.',
         ),
         const LegalSection(
           'مزوّدو الخدمات',
           'حسب الميزات التي تستخدمها: Supabase (الحسابات والمزامنة ودوال '
-              'خادمنا)؛ وPaddle (المدفوعات)؛ وBrevo (رسائل الحساب)؛ وCloudflare '
-              'Turnstile (التحقّق البشري عند الدخول)؛ وGitHub Pages (استضافة '
-              'موقعنا وتطبيق الويب)؛ وGoogle وOpenAI وAnthropic (DGOTIX AI ومسح '
-              'الإيصالات السحابي)؛ ومصادر بيانات سوق عامة للقيم الحيّة — أسعار '
-              'العملات (open.er-api.com) وأسعار العملات الرقمية (CoinGecko) — '
-              'وطلباتها تحتوي على رموز العملات أو الأصول فقط، لا أي بيانات شخصية '
-              'أو مالية. ويعالج كل مزوّد البيانات فقط لتقديم الجزء الخاص به من '
-              'الخدمة.',
+              'خادمنا)؛ وWhop وPayPal (المدفوعات)؛ وBrevo (رسائل الحساب)؛ '
+              'وCloudflare Turnstile (التحقّق البشري عند الدخول)؛ وGitHub Pages '
+              '(استضافة موقعنا وتطبيق الويب)؛ وGoogle وOpenAI وAnthropic '
+              '(DGOTIX AI ومسح الإيصالات السحابي)؛ ومصادر بيانات سوق عامة للقيم '
+              'الحيّة — أسعار العملات (open.er-api.com) وأسعار العملات الرقمية '
+              '(CoinGecko) — وطلباتها تحتوي على رموز العملات أو الأصول فقط، لا '
+              'أي بيانات شخصية أو مالية. ويعالج كل مزوّد البيانات فقط لتقديم '
+              'الجزء الخاص به من الخدمة.',
         ),
         const LegalSection(
           'الأمان',
@@ -305,9 +304,9 @@ abstract final class LegalContent {
           'مدة الاحتفاظ بالبيانات',
           'تبقى البيانات على جهازك حتى تحذفها أو تُزيل التطبيق. ويُحتفظ '
               'بحسابك وبياناتك المتزامنة وعدّادات الاستخدام والبيانات الوصفية '
-              'للطلبات ما دام حسابك قائماً — لتشغيل الخدمة وتطبيق حدود باقتك فقط '
-              '— وتُمحى نهائياً عند حذفه. ويحتفظ Paddle بسجلّات الفوترة التي '
-              'يُلزمه القانون بالاحتفاظ بها.',
+              'للطلبات ما دام حسابك قائماً — لتشغيل الخدمة وتطبيق حدود باقتك '
+              'فقط — وتُمحى نهائياً عند حذفه. ويحتفظ Whop وPayPal بسجلّات '
+              'الفوترة التي يُلزمهما القانون بالاحتفاظ بها.',
         ),
         LegalSection(
           'حقوقك وتحكّمك',
@@ -379,28 +378,31 @@ abstract final class LegalContent {
           'Subscriptions, billing and renewals',
           'The core app is free. Paid plans (Basic and Pro) unlock higher '
               'limits and extra features at the prices shown in the app. A paid '
-              'plan renews automatically each billing period (monthly or yearly) '
-              'until you cancel. Payments are processed by our online reseller '
-              'Paddle; applicable taxes may be added and are handled by Paddle as'
-              ' the merchant of record. You can cancel at any time and keep '
-              'access until the end of the period you already paid for. If prices'
-              ' or plan features change, the current terms are always shown '
-              'before you subscribe.',
+              'plan renews automatically each billing period (monthly or '
+              'yearly) until you cancel. Payments are processed by Whop, our '
+              'payment provider (or by PayPal if you choose it); applicable '
+              'taxes may be added and are always shown at checkout before you '
+              'pay. You can cancel at any time and keep access until the end of '
+              'the period you already paid for. If prices or plan features '
+              'change, the current terms are always shown before you subscribe.',
         ),
         const LegalSection(
-          'Our reseller: Paddle',
-          'Our order process is conducted by our online reseller Paddle.com. '
-              'Paddle.com is the Merchant of Record for all our orders. Paddle '
-              'provides all customer service inquiries and handles returns.',
+          'Our payment provider: Whop',
+          'SmartBudget is sold by DGOTIX. Checkout and billing are handled '
+              'by Whop (whop.com), which processes the payment on its secure '
+              'checkout, shows the full price including any taxes before you '
+              'pay, and sends your receipt. You can manage or cancel your '
+              'subscription from the app (Plans → Manage).',
         ),
         LegalSection(
           'Refund policy',
-          'Except where required by law, payments are generally non-'
-              'refundable once a billing period has started, since you keep '
+          'Except where required by law, payments are generally '
+              'non-refundable once a billing period has started, since you keep '
               'access until its end. You can cancel at any time to stop future '
-              'renewals. Refund requests are handled by Paddle under its buyer '
-              'terms and applicable consumer law (you can reach Paddle at '
-              'paddle.net); you can also contact us $_reachEn and we will help.',
+              'renewals. For a refund request or any question about a charge, '
+              'contact us $_reachEn: we review each request under applicable '
+              'consumer law and issue approved refunds through Whop (or '
+              'PayPal).',
         ),
         const LegalSection(
           'Promotional codes',
@@ -494,28 +496,29 @@ abstract final class LegalContent {
           'الاشتراكات والفوترة والتجديد',
           'التطبيق الأساسي مجاني. وتفتح الباقات المدفوعة (الأساسية '
               'والاحترافية) حدوداً أعلى وميزات إضافية بالأسعار المعروضة في '
-              'التطبيق. وتتجدّد الباقة المدفوعة تلقائياً في كل فترة فوترة (شهرياً'
-              ' أو سنوياً) حتى تُلغيها. تُعالَج المدفوعات عبر موزّعنا المعتمد عبر'
-              ' الإنترنت Paddle؛ وقد تُضاف ضرائب مطبّقة يتولّاها Paddle بصفته '
-              'البائع المسجَّل. ويمكنك الإلغاء في أي وقت مع الاحتفاظ بالوصول حتى '
-              'نهاية الفترة المدفوعة. وإذا تغيّرت الأسعار أو ميزات الباقات '
-              'فستُعرض الشروط الحالية دائماً قبل اشتراكك.',
+              'التطبيق. وتتجدّد الباقة المدفوعة تلقائياً في كل فترة فوترة '
+              '(شهرياً أو سنوياً) حتى تُلغيها. تُعالَج المدفوعات عبر Whop، '
+              'مزوّد الدفع لدينا (أو عبر PayPal إن اخترته)؛ وقد تُضاف ضرائب '
+              'مطبّقة تُعرض دائماً في صفحة الدفع قبل أن تدفع. ويمكنك الإلغاء في '
+              'أي وقت مع الاحتفاظ بالوصول حتى نهاية الفترة المدفوعة. وإذا '
+              'تغيّرت الأسعار أو ميزات الباقات فستُعرض الشروط الحالية دائماً '
+              'قبل اشتراكك.',
         ),
         const LegalSection(
-          'موزّعنا المعتمد: Paddle',
-          'تتم عملية الطلب لدينا عبر موزّعنا المعتمد عبر الإنترنت Paddle.com.'
-              ' وPaddle.com هو البائع المسجَّل (Merchant of Record) لجميع '
-              'طلباتنا، ويتولّى Paddle جميع استفسارات خدمة العملاء ويعالج طلبات '
-              'الاسترجاع.',
+          'مزوّد الدفع لدينا: Whop',
+          'تبيع DGOTIX تطبيق SmartBudget. ويتولّى Whop (whop.com) الدفع '
+              'والفوترة: يعالج الدفع عبر صفحته الآمنة، ويعرض السعر الكامل '
+              'شاملاً أي ضرائب قبل أن تدفع، ويرسل إليك الإيصال. ويمكنك إدارة '
+              'اشتراكك أو إلغاؤه من التطبيق (الباقات ← إدارة).',
         ),
         LegalSection(
           'سياسة الاسترجاع',
           'باستثناء ما يوجبه القانون، تكون المدفوعات عادةً غير قابلة '
               'للاسترداد بعد بدء فترة الفوترة، لأنك تحتفظ بالوصول حتى نهايتها. '
-              'ويمكنك الإلغاء في أي وقت لإيقاف التجديدات القادمة. يتولّى Paddle '
-              'طلبات الاسترداد وفق شروط المشتري لديه وقانون حماية المستهلك '
-              'المطبّق (يمكنك التواصل مع Paddle عبر paddle.net)؛ ويمكنك أيضاً '
-              'التواصل معنا $_reachAr وسنساعدك.',
+              'ويمكنك الإلغاء في أي وقت لإيقاف التجديدات القادمة. لطلب استرداد '
+              'أو لأي سؤال عن عملية دفع، تواصل معنا $_reachAr: ندرس كل طلب وفق '
+              'قانون حماية المستهلك المطبّق، ونُعيد المبالغ الموافَق عليها عبر '
+              'Whop (أو PayPal).',
         ),
         const LegalSection(
           'الأكواد الترويجية',
@@ -646,32 +649,32 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Paiements et abonnements',
-          'Les formules payantes sont facultatives. Les commandes sont '
-              'traitées par Paddle.com, notre revendeur en ligne et marchand '
-              'officiel (Merchant of Record), qui vous permet de payer par carte,'
-              ' PayPal, Apple Pay ou Google Pay. Paddle collecte les informations'
-              ' de facturation dont il a besoin (comme votre nom, votre e-mail, '
-              'votre pays et votre moyen de paiement) selon sa propre politique '
-              'de confidentialité ; nous ne voyons ni ne conservons jamais les '
-              'détails complets de votre carte. Nous conservons votre formule, '
-              'l\'état de votre abonnement, sa date de renouvellement et les '
-              'identifiants d\'abonnement de Paddle pour vous donner le bon '
-              'accès, ainsi qu\'une trace des codes promo que vous utilisez.',
+          'Les formules payantes sont facultatives. Vous payez sur la page '
+              'de paiement sécurisée de Whop (whop.com), notre prestataire de '
+              'paiement, ou avec PayPal si vous le choisissez. Ils collectent '
+              'les informations de facturation dont ils ont besoin (comme votre '
+              'nom, votre e-mail, votre pays et votre moyen de paiement) selon '
+              'leur propre politique de confidentialité ; nous ne voyons ni ne '
+              'conservons jamais les détails complets de votre carte. Nous '
+              'conservons votre formule, l\'état de votre abonnement, sa date '
+              'de renouvellement et les identifiants d\'abonnement du '
+              'prestataire de paiement pour vous donner le bon accès, ainsi '
+              'qu\'une trace des codes promo que vous utilisez.',
         ),
         const LegalSection(
           'Prestataires de services',
           'Selon les fonctionnalités que vous utilisez : Supabase (comptes, '
-              'synchronisation et fonctions de notre serveur) ; Paddle '
+              'synchronisation et fonctions de notre serveur) ; Whop et PayPal '
               '(paiements) ; Brevo (e-mails liés au compte) ; Cloudflare '
-              'Turnstile (la vérification humaine à la connexion) ; GitHub Pages '
-              '(hébergement de notre site et de l\'application web) ; Google, '
-              'OpenAI et Anthropic (DGOTIX AI et scan des tickets dans le '
-              'cloud) ; et des sources publiques de données de marché pour les '
-              'chiffres en direct : taux de change (open.er-api.com) et cours des'
-              ' cryptomonnaies (CoinGecko), dont les requêtes ne contiennent que '
-              'des symboles de devises ou d\'actifs, jamais vos données '
-              'personnelles ou financières. Chaque prestataire ne traite les '
-              'données que pour fournir sa part du service.',
+              'Turnstile (la vérification humaine à la connexion) ; GitHub '
+              'Pages (hébergement de notre site et de l\'application web) ; '
+              'Google, OpenAI et Anthropic (DGOTIX AI et scan des tickets dans '
+              'le cloud) ; et des sources publiques de données de marché pour '
+              'les chiffres en direct : taux de change (open.er-api.com) et '
+              'cours des cryptomonnaies (CoinGecko), dont les requêtes ne '
+              'contiennent que des symboles de devises ou d\'actifs, jamais vos '
+              'données personnelles ou financières. Chaque prestataire ne '
+              'traite les données que pour fournir sa part du service.',
         ),
         const LegalSection(
           'Sécurité',
@@ -691,14 +694,15 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Durée de conservation',
-          'Les données sur votre appareil y restent jusqu\'à ce que vous les '
-              'supprimiez ou désinstalliez l\'application. Votre compte, vos '
-              'données synchronisées, vos compteurs d\'utilisation et les '
+          'Les données sur votre appareil y restent jusqu\'à ce que vous '
+              'les supprimiez ou désinstalliez l\'application. Votre compte, '
+              'vos données synchronisées, vos compteurs d\'utilisation et les '
               'métadonnées des requêtes sont conservés tant que votre compte '
-              'existe, uniquement pour faire fonctionner le service et appliquer '
-              'les limites de votre formule, et sont définitivement effacés '
-              'lorsque vous le supprimez. Paddle conserve les justificatifs de '
-              'facturation qu\'il est légalement tenu de conserver.',
+              'existe, uniquement pour faire fonctionner le service et '
+              'appliquer les limites de votre formule, et sont définitivement '
+              'effacés lorsque vous le supprimez. Whop et PayPal conservent les '
+              'justificatifs de facturation qu\'ils sont légalement tenus de '
+              'conserver.',
         ),
         LegalSection(
           'Vos droits et vos choix',
@@ -779,35 +783,39 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Abonnements, facturation et renouvellements',
-          'L\'application de base est gratuite. Les formules payantes (Basic '
-              'et Pro) débloquent des limites plus élevées et des fonctionnalités'
-              ' supplémentaires aux prix affichés dans l\'application. Une '
-              'formule payante se renouvelle automatiquement à chaque période de '
-              'facturation (mensuelle ou annuelle) jusqu\'à sa résiliation. Les '
-              'paiements sont traités par notre revendeur en ligne Paddle ; les '
-              'taxes applicables peuvent s\'ajouter et sont gérées par Paddle en '
-              'tant que marchand officiel. Vous pouvez résilier à tout moment et '
-              'conserver l\'accès jusqu\'à la fin de la période déjà payée. Si '
-              'les prix ou les fonctionnalités changent, les conditions en '
-              'vigueur sont toujours affichées avant votre abonnement.',
+          'L\'application de base est gratuite. Les formules payantes '
+              '(Basic et Pro) débloquent des limites plus élevées et des '
+              'fonctionnalités supplémentaires aux prix affichés dans '
+              'l\'application. Une formule payante se renouvelle '
+              'automatiquement à chaque période de facturation (mensuelle ou '
+              'annuelle) jusqu\'à sa résiliation. Les paiements sont traités '
+              'par Whop, notre prestataire de paiement (ou par PayPal si vous '
+              'le choisissez) ; les taxes applicables peuvent s\'ajouter et '
+              'sont toujours affichées avant le paiement. Vous pouvez résilier '
+              'à tout moment et conserver l\'accès jusqu\'à la fin de la '
+              'période déjà payée. Si les prix ou les fonctionnalités changent, '
+              'les conditions en vigueur sont toujours affichées avant votre '
+              'abonnement.',
         ),
         const LegalSection(
-          'Notre revendeur : Paddle',
-          'Notre processus de commande est assuré par notre revendeur en '
-              'ligne Paddle.com. Paddle.com est le marchand officiel (Merchant of'
-              ' Record) de toutes nos commandes. Paddle traite toutes les '
-              'demandes du service client et gère les retours.',
+          'Notre prestataire de paiement : Whop',
+          'SmartBudget est vendu par DGOTIX. Le paiement et la facturation '
+              'sont assurés par Whop (whop.com), qui traite le paiement sur sa '
+              'page sécurisée, affiche le prix complet, taxes comprises, avant '
+              'que vous payiez, et vous envoie le reçu. Vous pouvez gérer ou '
+              'résilier votre abonnement depuis l\'application (Formules → '
+              'Gérer).',
         ),
         LegalSection(
           'Politique de remboursement',
-          'Sauf lorsque la loi l\'exige, les paiements ne sont en général pas'
-              ' remboursables une fois qu\'une période de facturation a commencé,'
-              ' puisque vous conservez l\'accès jusqu\'à sa fin. Vous pouvez '
-              'résilier à tout moment pour arrêter les renouvellements futurs. '
-              'Les demandes de remboursement sont traitées par Paddle selon ses '
-              'conditions d\'achat et le droit de la consommation applicable '
-              '(vous pouvez joindre Paddle sur paddle.net) ; vous pouvez aussi '
-              'nous contacter $_reachFr et nous vous aiderons.',
+          'Sauf lorsque la loi l\'exige, les paiements ne sont en général '
+              'pas remboursables une fois qu\'une période de facturation a '
+              'commencé, puisque vous conservez l\'accès jusqu\'à sa fin. Vous '
+              'pouvez résilier à tout moment pour arrêter les renouvellements '
+              'futurs. Pour une demande de remboursement ou toute question sur '
+              'un paiement, contactez-nous $_reachFr : nous examinons chaque '
+              'demande selon le droit de la consommation applicable et '
+              'effectuons les remboursements accordés via Whop (ou PayPal).',
         ),
         const LegalSection(
           'Codes promo',
@@ -938,29 +946,29 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Pembayaran dan langganan',
-          'Paket berbayar bersifat opsional. Pesanan diproses oleh '
-              'Paddle.com, reseller online kami dan Merchant of Record, yang '
-              'memungkinkan Anda membayar dengan kartu, PayPal, Apple Pay, atau '
-              'Google Pay. Paddle mengumpulkan data penagihan yang diperlukannya '
-              '(seperti nama, email, negara, dan metode pembayaran) berdasarkan '
-              'kebijakan privasinya sendiri; kami tidak pernah melihat atau '
-              'menyimpan detail lengkap kartu Anda. Kami menyimpan paket, status '
-              'langganan, tanggal perpanjangan, dan pengenal langganan dari '
-              'Paddle agar Anda mendapat akses yang tepat, serta catatan kode '
-              'promo yang Anda tukarkan.',
+          'Paket berbayar bersifat opsional. Anda membayar di halaman '
+              'pembayaran aman Whop (whop.com), penyedia pembayaran kami, atau '
+              'dengan PayPal jika Anda memilihnya. Mereka mengumpulkan data '
+              'penagihan yang diperlukan (seperti nama, email, negara, dan '
+              'metode pembayaran) berdasarkan kebijakan privasi masing-masing; '
+              'kami tidak pernah melihat atau menyimpan detail lengkap kartu '
+              'Anda. Kami menyimpan paket, status langganan, tanggal '
+              'perpanjangan, dan pengenal langganan dari penyedia pembayaran '
+              'agar Anda mendapat akses yang tepat, serta catatan kode promo '
+              'yang Anda tukarkan.',
         ),
         const LegalSection(
           'Penyedia layanan',
           'Tergantung fitur yang Anda pakai: Supabase (akun, sinkron, dan '
-              'fungsi server kami); Paddle (pembayaran); Brevo (email akun); '
-              'Cloudflare Turnstile (pemeriksaan manusia saat masuk); GitHub '
-              'Pages (hosting situs dan aplikasi web kami); Google, OpenAI, dan '
-              'Anthropic (DGOTIX AI dan pemindaian struk cloud); serta sumber '
-              'data pasar publik untuk angka langsung — kurs mata uang (open.er-'
-              'api.com) dan harga kripto (CoinGecko) — yang permintaannya hanya '
-              'berisi simbol mata uang atau aset, tidak pernah data pribadi atau '
-              'keuangan Anda. Setiap penyedia hanya memproses data untuk '
-              'menjalankan bagian layanannya.',
+              'fungsi server kami); Whop dan PayPal (pembayaran); Brevo (email '
+              'akun); Cloudflare Turnstile (pemeriksaan manusia saat masuk); '
+              'GitHub Pages (hosting situs dan aplikasi web kami); Google, '
+              'OpenAI, dan Anthropic (DGOTIX AI dan pemindaian struk cloud); '
+              'serta sumber data pasar publik untuk angka langsung — kurs mata '
+              'uang (open.er-api.com) dan harga kripto (CoinGecko) — yang '
+              'permintaannya hanya berisi simbol mata uang atau aset, tidak '
+              'pernah data pribadi atau keuangan Anda. Setiap penyedia hanya '
+              'memproses data untuk menjalankan bagian layanannya.',
         ),
         const LegalSection(
           'Keamanan',
@@ -980,11 +988,11 @@ abstract final class LegalContent {
         const LegalSection(
           'Berapa lama data disimpan',
           'Data di perangkat Anda tetap ada sampai Anda menghapusnya atau '
-              'menghapus aplikasi. Akun, data tersinkron, hitungan pemakaian, dan'
-              ' metadata permintaan disimpan selama akun Anda ada — hanya untuk '
-              'menjalankan layanan dan menerapkan batas paket — dan dihapus '
-              'permanen saat Anda menghapus akun. Paddle menyimpan catatan '
-              'penagihan yang diwajibkan hukum.',
+              'menghapus aplikasi. Akun, data tersinkron, hitungan pemakaian, '
+              'dan metadata permintaan disimpan selama akun Anda ada — hanya '
+              'untuk menjalankan layanan dan menerapkan batas paket — dan '
+              'dihapus permanen saat Anda menghapus akun. Whop dan PayPal '
+              'menyimpan catatan penagihan yang diwajibkan hukum.',
         ),
         LegalSection(
           'Hak dan kendali Anda',
@@ -1059,34 +1067,36 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Langganan, penagihan, dan perpanjangan',
-          'Aplikasi inti gratis. Paket berbayar (Basic dan Pro) membuka batas'
-              ' lebih tinggi dan fitur tambahan dengan harga yang tertera di '
-              'aplikasi. Paket berbayar diperpanjang otomatis setiap periode '
+          'Aplikasi inti gratis. Paket berbayar (Basic dan Pro) membuka '
+              'batas lebih tinggi dan fitur tambahan dengan harga yang tertera '
+              'di aplikasi. Paket berbayar diperpanjang otomatis setiap periode '
               'penagihan (bulanan atau tahunan) sampai Anda membatalkannya. '
-              'Pembayaran diproses oleh reseller online kami, Paddle; pajak yang '
-              'berlaku dapat ditambahkan dan ditangani oleh Paddle sebagai '
-              'merchant of record. Anda bisa membatalkan kapan saja dan tetap '
-              'punya akses sampai akhir periode yang sudah dibayar. Jika harga '
-              'atau fitur paket berubah, ketentuan terbaru selalu ditampilkan '
-              'sebelum Anda berlangganan.',
+              'Pembayaran diproses oleh Whop, penyedia pembayaran kami (atau '
+              'oleh PayPal jika Anda memilihnya); pajak yang berlaku dapat '
+              'ditambahkan dan selalu ditampilkan sebelum Anda membayar. Anda '
+              'bisa membatalkan kapan saja dan tetap punya akses sampai akhir '
+              'periode yang sudah dibayar. Jika harga atau fitur paket berubah, '
+              'ketentuan terbaru selalu ditampilkan sebelum Anda berlangganan.',
         ),
         const LegalSection(
-          'Reseller kami: Paddle',
-          'Proses pemesanan kami dijalankan oleh reseller online kami, '
-              'Paddle.com. Paddle.com adalah Merchant of Record untuk semua '
-              'pesanan kami. Paddle menangani semua pertanyaan layanan pelanggan '
-              'dan pengembalian.',
+          'Penyedia pembayaran kami: Whop',
+          'SmartBudget dijual oleh DGOTIX. Pembayaran dan penagihan '
+              'ditangani oleh Whop (whop.com), yang memproses pembayaran di '
+              'halaman amannya, menampilkan harga lengkap termasuk pajak '
+              'sebelum Anda membayar, dan mengirimkan tanda terima. Anda dapat '
+              'mengelola atau membatalkan langganan dari aplikasi (Paket → '
+              'Kelola).',
         ),
         LegalSection(
           'Kebijakan pengembalian dana',
           'Kecuali diwajibkan hukum, pembayaran umumnya tidak dapat '
-              'dikembalikan setelah periode penagihan dimulai, karena Anda tetap '
-              'punya akses sampai periode itu berakhir. Anda bisa membatalkan '
-              'kapan saja untuk menghentikan perpanjangan berikutnya. Permintaan '
-              'pengembalian dana ditangani Paddle sesuai ketentuan pembelinya dan'
-              ' hukum perlindungan konsumen yang berlaku (Paddle dapat dihubungi '
-              'di paddle.net); Anda juga bisa menghubungi kami $_reachId dan kami'
-              ' akan membantu.',
+              'dikembalikan setelah periode penagihan dimulai, karena Anda '
+              'tetap punya akses sampai periode itu berakhir. Anda bisa '
+              'membatalkan kapan saja untuk menghentikan perpanjangan '
+              'berikutnya. Untuk permintaan pengembalian dana atau pertanyaan '
+              'tentang tagihan, hubungi kami $_reachId: kami meninjau setiap '
+              'permintaan sesuai hukum perlindungan konsumen yang berlaku dan '
+              'mengembalikan dana yang disetujui melalui Whop (atau PayPal).',
         ),
         const LegalSection(
           'Kode promo',
@@ -1215,29 +1225,30 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Pagos y suscripciones',
-          'Los planes de pago son opcionales. Los pedidos los procesa '
-              'Paddle.com, nuestro revendedor en línea y Merchant of Record '
-              '(vendedor registrado), que te permite pagar con tarjeta, PayPal, '
-              'Apple Pay o Google Pay. Paddle recoge los datos de facturación que'
-              ' necesita (como tu nombre, correo, país y método de pago) según su'
-              ' propia política de privacidad; nunca vemos ni guardamos los datos'
-              ' completos de tu tarjeta. Guardamos tu plan, el estado de tu '
-              'suscripción, la fecha de renovación y los identificadores de '
-              'suscripción de Paddle para darte el acceso correcto, además de un '
-              'registro de los códigos promocionales que canjees.',
+          'Los planes de pago son opcionales. Pagas en la página de pago '
+              'segura de Whop (whop.com), nuestro proveedor de pagos, o con '
+              'PayPal si lo eliges. Ellos recogen los datos de facturación que '
+              'necesitan (como tu nombre, correo, país y método de pago) según '
+              'su propia política de privacidad; nunca vemos ni guardamos los '
+              'datos completos de tu tarjeta. Guardamos tu plan, el estado de '
+              'tu suscripción, la fecha de renovación y los identificadores de '
+              'suscripción del proveedor de pagos para darte el acceso '
+              'correcto, además de un registro de los códigos promocionales que '
+              'canjees.',
         ),
         const LegalSection(
           'Proveedores de servicios',
-          'Según las funciones que uses: Supabase (cuentas, sincronización y '
-              'funciones de nuestro servidor); Paddle (pagos); Brevo (correos de '
-              'la cuenta); Cloudflare Turnstile (la verificación humana al '
-              'iniciar sesión); GitHub Pages (alojamiento de nuestra web y de la '
-              'app web); Google, OpenAI y Anthropic (DGOTIX AI y escaneo en la '
-              'nube); y fuentes públicas de datos de mercado para las cifras en '
-              'directo, como tipos de cambio (open.er-api.com) y precios cripto '
-              '(CoinGecko), cuyas solicitudes solo contienen símbolos de monedas '
-              'o activos, nunca tus datos personales o financieros. Cada '
-              'proveedor trata los datos solo para prestar su parte del servicio.',
+          'Según las funciones que uses: Supabase (cuentas, sincronización '
+              'y funciones de nuestro servidor); Whop y PayPal (pagos); Brevo '
+              '(correos de la cuenta); Cloudflare Turnstile (la verificación '
+              'humana al iniciar sesión); GitHub Pages (alojamiento de nuestra '
+              'web y de la app web); Google, OpenAI y Anthropic (DGOTIX AI y '
+              'escaneo en la nube); y fuentes públicas de datos de mercado para '
+              'las cifras en directo, como tipos de cambio (open.er-api.com) y '
+              'precios cripto (CoinGecko), cuyas solicitudes solo contienen '
+              'símbolos de monedas o activos, nunca tus datos personales o '
+              'financieros. Cada proveedor trata los datos solo para prestar su '
+              'parte del servicio.',
         ),
         const LegalSection(
           'Seguridad',
@@ -1259,10 +1270,10 @@ abstract final class LegalContent {
           'Los datos de tu dispositivo se quedan ahí hasta que los borres o '
               'desinstales la app. Tu cuenta, tus datos sincronizados, los '
               'contadores de uso y los metadatos de las solicitudes se guardan '
-              'mientras exista tu cuenta, solo para prestar el servicio y aplicar'
-              ' los límites de tu plan, y se borran para siempre cuando la '
-              'eliminas. Paddle conserva los registros de facturación que la ley '
-              'le obliga a conservar.',
+              'mientras exista tu cuenta, solo para prestar el servicio y '
+              'aplicar los límites de tu plan, y se borran para siempre cuando '
+              'la eliminas. Whop y PayPal conservan los registros de '
+              'facturación que la ley les obliga a conservar.',
         ),
         LegalSection(
           'Tus derechos y opciones',
@@ -1339,31 +1350,32 @@ abstract final class LegalContent {
           'Suscripciones, facturación y renovaciones',
           'La app básica es gratis. Los planes de pago (Basic y Pro) '
               'desbloquean límites mayores y funciones extra a los precios que '
-              'muestra la app. Un plan de pago se renueva automáticamente en cada'
-              ' periodo de facturación (mensual o anual) hasta que lo canceles. '
-              'Los pagos los procesa nuestro revendedor en línea Paddle; pueden '
-              'añadirse los impuestos aplicables, que gestiona Paddle como '
-              'vendedor registrado. Puedes cancelar cuando quieras y conservar el'
-              ' acceso hasta el final del periodo ya pagado. Si cambian los '
-              'precios o las funciones, los términos vigentes siempre se muestran'
-              ' antes de suscribirte.',
+              'muestra la app. Un plan de pago se renueva automáticamente en '
+              'cada periodo de facturación (mensual o anual) hasta que lo '
+              'canceles. Los pagos los procesa Whop, nuestro proveedor de pagos '
+              '(o PayPal si lo eliges); pueden añadirse los impuestos '
+              'aplicables, que siempre se muestran antes de pagar. Puedes '
+              'cancelar cuando quieras y conservar el acceso hasta el final del '
+              'periodo ya pagado. Si cambian los precios o las funciones, los '
+              'términos vigentes siempre se muestran antes de suscribirte.',
         ),
         const LegalSection(
-          'Nuestro revendedor: Paddle',
-          'Nuestro proceso de pedidos lo lleva a cabo nuestro revendedor en '
-              'línea Paddle.com. Paddle.com es el Merchant of Record (vendedor '
-              'registrado) de todos nuestros pedidos. Paddle atiende todas las '
-              'consultas de atención al cliente y gestiona las devoluciones.',
+          'Nuestro proveedor de pagos: Whop',
+          'SmartBudget lo vende DGOTIX. El pago y la facturación los '
+              'gestiona Whop (whop.com), que procesa el pago en su página '
+              'segura, muestra el precio completo con los impuestos antes de '
+              'que pagues y te envía el recibo. Puedes gestionar o cancelar tu '
+              'suscripción desde la app (Planes → Gestionar).',
         ),
         LegalSection(
           'Política de reembolso',
           'Salvo que la ley lo exija, los pagos en general no son '
               'reembolsables una vez iniciado un periodo de facturación, ya que '
-              'conservas el acceso hasta su final. Puedes cancelar cuando quieras'
-              ' para evitar futuras renovaciones. Las solicitudes de reembolso '
-              'las gestiona Paddle según sus condiciones de compra y la normativa'
-              ' de consumo aplicable (puedes contactar con Paddle en paddle.net);'
-              ' también puedes escribirnos $_reachEs y te ayudaremos.',
+              'conservas el acceso hasta su final. Puedes cancelar cuando '
+              'quieras para evitar futuras renovaciones. Para pedir un '
+              'reembolso o preguntar por un cobro, escríbenos $_reachEs: '
+              'revisamos cada solicitud según la normativa de consumo aplicable '
+              'y devolvemos los importes aprobados a través de Whop (o PayPal).',
         ),
         const LegalSection(
           'Códigos promocionales',
@@ -1494,29 +1506,30 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Ödemeler ve abonelikler',
-          'Ücretli planlar isteğe bağlıdır. Siparişler, çevrimiçi satıcımız '
-              've Merchant of Record olan Paddle.com tarafından işlenir; kart, '
-              'PayPal, Apple Pay veya Google Pay ile ödemeni sağlar. Paddle '
-              'ihtiyaç duyduğu fatura bilgilerini (adın, e-postan, ülken ve ödeme'
-              ' yöntemin gibi) kendi gizlilik politikası kapsamında toplar; tam '
-              'kart bilgilerini asla görmeyiz veya saklamayız. Sana doğru erişimi'
-              ' verebilmek için planını, abonelik durumunu, yenileme tarihini ve '
-              'Paddle\'ın abonelik kimliklerini, ayrıca kullandığın promosyon '
-              'kodlarının kaydını tutarız.',
+          'Ücretli planlar isteğe bağlıdır. Ödemeyi ödeme sağlayıcımız '
+              'Whop\'un (whop.com) güvenli ödeme sayfasında ya da seçersen '
+              'PayPal ile yaparsın. Bu sağlayıcılar ihtiyaç duydukları fatura '
+              'bilgilerini (adın, e-postan, ülken ve ödeme yöntemin gibi) kendi '
+              'gizlilik politikaları kapsamında toplar; tam kart bilgilerini '
+              'asla görmeyiz veya saklamayız. Sana doğru erişimi verebilmek '
+              'için planını, abonelik durumunu, yenileme tarihini ve ödeme '
+              'sağlayıcısının abonelik kimliklerini, ayrıca kullandığın '
+              'promosyon kodlarının kaydını tutarız.',
         ),
         const LegalSection(
           'Hizmet sağlayıcılar',
           'Kullandığın özelliklere bağlı olarak: Supabase (hesaplar, '
-              'senkronizasyon ve sunucu işlevlerimiz); Paddle (ödemeler); Brevo '
-              '(hesap e-postaları); Cloudflare Turnstile (girişteki insan '
-              'doğrulaması); GitHub Pages (web sitemizin ve web uygulamamızın '
-              'barındırılması); Google, OpenAI ve Anthropic (DGOTIX AI ve bulutta'
-              ' fiş tarama); ve canlı rakamlar için herkese açık piyasa verisi '
-              'kaynakları — döviz kurları (open.er-api.com) ve kripto fiyatları '
-              '(CoinGecko) — bunlara giden istekler yalnızca para birimi veya '
-              'varlık sembolleri içerir, asla kişisel veya finansal verilerini '
-              'değil. Her sağlayıcı verileri yalnızca hizmetin kendi payına düşen'
-              ' kısmını sunmak için işler.',
+              'senkronizasyon ve sunucu işlevlerimiz); Whop ve PayPal '
+              '(ödemeler); Brevo (hesap e-postaları); Cloudflare Turnstile '
+              '(girişteki insan doğrulaması); GitHub Pages (web sitemizin ve '
+              'web uygulamamızın barındırılması); Google, OpenAI ve Anthropic '
+              '(DGOTIX AI ve bulutta fiş tarama); ve canlı rakamlar için '
+              'herkese açık piyasa verisi kaynakları — döviz kurları '
+              '(open.er-api.com) ve kripto fiyatları (CoinGecko) — bunlara '
+              'giden istekler yalnızca para birimi veya varlık sembolleri '
+              'içerir, asla kişisel veya finansal verilerini değil. Her '
+              'sağlayıcı verileri yalnızca hizmetin kendi payına düşen kısmını '
+              'sunmak için işler.',
         ),
         const LegalSection(
           'Güvenlik',
@@ -1535,11 +1548,11 @@ abstract final class LegalContent {
         const LegalSection(
           'Verileri ne kadar tutuyoruz',
           'Cihazındaki veriler sen silene veya uygulamayı kaldırana kadar '
-              'kalır. Hesabın, senkronize verilerin, kullanım sayıların ve istek '
-              'üst verilerin hesabın var olduğu sürece tutulur — yalnızca hizmeti'
-              ' çalıştırmak ve planının sınırlarını uygulamak için — ve hesabını '
-              'sildiğinde kalıcı olarak silinir. Paddle, yasal olarak tutması '
-              'gereken fatura kayıtlarını saklar.',
+              'kalır. Hesabın, senkronize verilerin, kullanım sayıların ve '
+              'istek üst verilerin hesabın var olduğu sürece tutulur — yalnızca '
+              'hizmeti çalıştırmak ve planının sınırlarını uygulamak için — ve '
+              'hesabını sildiğinde kalıcı olarak silinir. Whop ve PayPal, yasal '
+              'olarak tutmaları gereken fatura kayıtlarını saklar.',
         ),
         LegalSection(
           'Hakların ve denetimlerin',
@@ -1616,30 +1629,30 @@ abstract final class LegalContent {
               'uygulamada gösterilen fiyatlarla daha yüksek sınırların ve ek '
               'özelliklerin kilidini açar. Ücretli bir plan, iptal edene kadar '
               'her faturalandırma döneminde (aylık veya yıllık) otomatik olarak '
-              'yenilenir. Ödemeler çevrimiçi satıcımız Paddle tarafından işlenir;'
-              ' geçerli vergiler eklenebilir ve Merchant of Record olarak Paddle '
-              'tarafından yönetilir. İstediğin zaman iptal edebilir ve ödediğin '
-              'dönemin sonuna kadar erişimini koruyabilirsin. Fiyatlar veya plan '
-              'özellikleri değişirse, güncel koşullar abone olmadan önce her '
-              'zaman gösterilir.',
+              'yenilenir. Ödemeler ödeme sağlayıcımız Whop (ya da seçersen '
+              'PayPal) tarafından işlenir; geçerli vergiler eklenebilir ve '
+              'ödemeden önce her zaman gösterilir. İstediğin zaman iptal '
+              'edebilir ve ödediğin dönemin sonuna kadar erişimini '
+              'koruyabilirsin. Fiyatlar veya plan özellikleri değişirse, güncel '
+              'koşullar abone olmadan önce her zaman gösterilir.',
         ),
         const LegalSection(
-          'Satıcımız: Paddle',
-          'Sipariş sürecimiz çevrimiçi satıcımız Paddle.com tarafından '
-              'yürütülür. Paddle.com tüm siparişlerimiz için Merchant of '
-              'Record\'dur. Tüm müşteri hizmetleri taleplerini Paddle karşılar ve'
-              ' iadeleri yönetir.',
+          'Ödeme sağlayıcımız: Whop',
+          'SmartBudget\'ı DGOTIX satar. Ödeme ve faturalandırmayı Whop '
+              '(whop.com) yürütür: ödemeyi güvenli sayfasında işler, ödemeden '
+              'önce vergiler dahil tam fiyatı gösterir ve makbuzunu gönderir. '
+              'Aboneliğini uygulamadan yönetebilir veya iptal edebilirsin '
+              '(Planlar → Yönet).',
         ),
         LegalSection(
           'İade politikası',
           'Yasanın gerektirdiği durumlar dışında, bir faturalandırma dönemi '
-              'başladıktan sonra ödemeler genellikle iade edilmez, çünkü dönemin '
-              'sonuna kadar erişimin devam eder. Gelecekteki yenilemeleri '
-              'durdurmak için istediğin zaman iptal edebilirsin. İade talepleri '
-              'Paddle tarafından kendi alıcı koşulları ve geçerli tüketici hukuku'
-              ' kapsamında ele alınır (Paddle\'a paddle.net üzerinden '
-              'ulaşabilirsin); ayrıca bize $_reachTr ulaşabilirsin, yardımcı '
-              'oluruz.',
+              'başladıktan sonra ödemeler genellikle iade edilmez, çünkü '
+              'dönemin sonuna kadar erişimin devam eder. Gelecekteki '
+              'yenilemeleri durdurmak için istediğin zaman iptal edebilirsin. '
+              'İade talebi veya bir ödemeyle ilgili soru için bize $_reachTr '
+              'ulaş: her talebi geçerli tüketici hukukuna göre inceler, '
+              'onaylanan iadeleri Whop (ya da PayPal) üzerinden yaparız.',
         ),
         const LegalSection(
           'Promosyon kodları',
@@ -1767,29 +1780,30 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Bayaran dan langganan',
-          'Pelan berbayar adalah pilihan. Pesanan diproses oleh Paddle.com, '
-              'penjual semula dalam talian dan Merchant of Record kami, yang '
-              'membolehkan anda membayar dengan kad, PayPal, Apple Pay atau '
-              'Google Pay. Paddle mengumpul butiran pengebilan yang diperlukannya'
-              ' (seperti nama, e-mel, negara dan kaedah bayaran anda) di bawah '
-              'dasar privasinya sendiri; kami tidak pernah melihat atau menyimpan'
-              ' butiran penuh kad anda. Kami menyimpan pelan, status langganan, '
-              'tarikh pembaharuan dan pengecam langganan Paddle anda supaya kami '
-              'boleh memberi akses yang betul, serta rekod mana-mana kod promosi '
-              'yang anda tebus.',
+          'Pelan berbayar adalah pilihan. Anda membayar di halaman '
+              'pembayaran selamat Whop (whop.com), penyedia pembayaran kami, '
+              'atau dengan PayPal jika anda memilihnya. Mereka mengumpul '
+              'butiran pengebilan yang diperlukan (seperti nama, e-mel, negara '
+              'dan kaedah bayaran anda) di bawah dasar privasi masing-masing; '
+              'kami tidak pernah melihat atau menyimpan butiran penuh kad anda. '
+              'Kami menyimpan pelan, status langganan, tarikh pembaharuan dan '
+              'pengecam langganan penyedia pembayaran anda supaya kami boleh '
+              'memberi akses yang betul, serta rekod mana-mana kod promosi yang '
+              'anda tebus.',
         ),
         const LegalSection(
           'Penyedia perkhidmatan',
           'Bergantung pada ciri yang anda gunakan: Supabase (akaun, '
-              'penyelarasan dan fungsi pelayan kami); Paddle (bayaran); Brevo '
-              '(e-mel akaun); Cloudflare Turnstile (semakan manusia semasa log '
-              'masuk); GitHub Pages (pengehosan laman web dan aplikasi web kami);'
-              ' Google, OpenAI dan Anthropic (DGOTIX AI dan imbasan resit awan); '
-              'dan sumber data pasaran awam untuk angka langsung — kadar mata '
-              'wang (open.er-api.com) dan harga kripto (CoinGecko) — yang '
-              'permintaannya hanya mengandungi simbol mata wang atau aset, tidak '
-              'pernah data peribadi atau kewangan anda. Setiap penyedia memproses'
-              ' data hanya untuk menyampaikan bahagian perkhidmatannya.',
+              'penyelarasan dan fungsi pelayan kami); Whop dan PayPal '
+              '(bayaran); Brevo (e-mel akaun); Cloudflare Turnstile (semakan '
+              'manusia semasa log masuk); GitHub Pages (pengehosan laman web '
+              'dan aplikasi web kami); Google, OpenAI dan Anthropic (DGOTIX AI '
+              'dan imbasan resit awan); dan sumber data pasaran awam untuk '
+              'angka langsung — kadar mata wang (open.er-api.com) dan harga '
+              'kripto (CoinGecko) — yang permintaannya hanya mengandungi simbol '
+              'mata wang atau aset, tidak pernah data peribadi atau kewangan '
+              'anda. Setiap penyedia memproses data hanya untuk menyampaikan '
+              'bahagian perkhidmatannya.',
         ),
         const LegalSection(
           'Keselamatan',
@@ -1810,11 +1824,11 @@ abstract final class LegalContent {
           'Berapa lama kami menyimpan data',
           'Data pada peranti anda kekal sehingga anda memadamnya atau '
               'membuang aplikasi. Akaun, data yang diselaraskan, kiraan '
-              'penggunaan dan metadata permintaan anda disimpan selagi akaun anda'
-              ' wujud — hanya untuk menjalankan perkhidmatan dan menguatkuasakan '
-              'had pelan anda — dan dipadam secara kekal apabila anda memadamnya.'
-              ' Paddle menyimpan rekod pengebilan yang diwajibkan oleh undang-'
-              'undang.',
+              'penggunaan dan metadata permintaan anda disimpan selagi akaun '
+              'anda wujud — hanya untuk menjalankan perkhidmatan dan '
+              'menguatkuasakan had pelan anda — dan dipadam secara kekal '
+              'apabila anda memadamnya. Whop dan PayPal menyimpan rekod '
+              'pengebilan yang diwajibkan oleh undang-undang.',
         ),
         LegalSection(
           'Hak dan kawalan anda',
@@ -1894,31 +1908,35 @@ abstract final class LegalContent {
           'Aplikasi teras adalah percuma. Pelan berbayar (Basic dan Pro) '
               'membuka had yang lebih tinggi dan ciri tambahan pada harga yang '
               'ditunjukkan dalam aplikasi. Pelan berbayar diperbaharui secara '
-              'automatik setiap tempoh pengebilan (bulanan atau tahunan) sehingga'
-              ' anda membatalkannya. Bayaran diproses oleh penjual semula dalam '
-              'talian kami, Paddle; cukai yang berkenaan mungkin ditambah dan '
-              'diuruskan oleh Paddle sebagai Merchant of Record. Anda boleh '
-              'membatalkan pada bila-bila masa dan mengekalkan akses sehingga '
-              'akhir tempoh yang telah anda bayar. Jika harga atau ciri pelan '
-              'berubah, terma semasa sentiasa ditunjukkan sebelum anda melanggan.',
+              'automatik setiap tempoh pengebilan (bulanan atau tahunan) '
+              'sehingga anda membatalkannya. Bayaran diproses oleh Whop, '
+              'penyedia pembayaran kami (atau oleh PayPal jika anda '
+              'memilihnya); cukai yang berkenaan mungkin ditambah dan sentiasa '
+              'ditunjukkan sebelum anda membayar. Anda boleh membatalkan pada '
+              'bila-bila masa dan mengekalkan akses sehingga akhir tempoh yang '
+              'telah anda bayar. Jika harga atau ciri pelan berubah, terma '
+              'semasa sentiasa ditunjukkan sebelum anda melanggan.',
         ),
         const LegalSection(
-          'Penjual semula kami: Paddle',
-          'Proses pesanan kami dijalankan oleh penjual semula dalam talian '
-              'kami, Paddle.com. Paddle.com ialah Merchant of Record bagi semua '
-              'pesanan kami. Paddle mengendalikan semua pertanyaan khidmat '
-              'pelanggan dan menguruskan pemulangan.',
+          'Penyedia pembayaran kami: Whop',
+          'SmartBudget dijual oleh DGOTIX. Pembayaran dan pengebilan '
+              'dikendalikan oleh Whop (whop.com), yang memproses bayaran di '
+              'halaman selamatnya, menunjukkan harga penuh termasuk cukai '
+              'sebelum anda membayar, dan menghantar resit anda. Anda boleh '
+              'mengurus atau membatalkan langganan dari aplikasi (Pelan → '
+              'Urus).',
         ),
         LegalSection(
           'Dasar bayaran balik',
-          'Kecuali jika dikehendaki oleh undang-undang, bayaran secara amnya '
-              'tidak boleh dikembalikan sebaik sahaja tempoh pengebilan bermula, '
-              'kerana anda mengekalkan akses sehingga akhir tempoh itu. Anda '
-              'boleh membatalkan pada bila-bila masa untuk menghentikan '
-              'pembaharuan akan datang. Permintaan bayaran balik dikendalikan '
-              'oleh Paddle di bawah terma pembelinya dan undang-undang pengguna '
-              'yang berkenaan (anda boleh menghubungi Paddle di paddle.net); anda'
-              ' juga boleh menghubungi kami $_reachMs dan kami akan membantu.',
+          'Kecuali jika dikehendaki oleh undang-undang, bayaran secara '
+              'amnya tidak boleh dikembalikan sebaik sahaja tempoh pengebilan '
+              'bermula, kerana anda mengekalkan akses sehingga akhir tempoh '
+              'itu. Anda boleh membatalkan pada bila-bila masa untuk '
+              'menghentikan pembaharuan akan datang. Untuk permintaan bayaran '
+              'balik atau soalan tentang caj, hubungi kami $_reachMs: kami '
+              'menyemak setiap permintaan di bawah undang-undang pengguna yang '
+              'berkenaan dan membuat bayaran balik yang diluluskan melalui Whop '
+              '(atau PayPal).',
         ),
         const LegalSection(
           'Kod promosi',
@@ -2045,28 +2063,28 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'ادائیگیاں اور سبسکرپشنز',
-          'ادا شدہ پلانز اختیاری ہیں۔ آرڈرز Paddle.com کے ذریعے پروسیس ہوتے '
-              'ہیں، جو ہمارا آن لائن ری سیلر اور Merchant of Record ہے، اور آپ کو'
-              ' کارڈ، PayPal، Apple Pay یا Google Pay سے ادائیگی کی سہولت دیتا '
-              'ہے۔ Paddle اپنی پرائیویسی پالیسی کے تحت ضروری بلنگ تفصیلات (جیسے '
-              'آپ کا نام، ای میل، ملک اور ادائیگی کا طریقہ) جمع کرتا ہے؛ ہم کبھی '
-              'آپ کے کارڈ کی مکمل تفصیلات نہیں دیکھتے یا محفوظ کرتے۔ آپ کو درست '
-              'رسائی دینے کے لیے ہم آپ کا پلان، سبسکرپشن کی حیثیت، تجدید کی تاریخ'
-              ' اور Paddle کے سبسکرپشن شناخت کنندگان رکھتے ہیں، نیز کسی بھی '
-              'پروموشنل کوڈ کا ریکارڈ جو آپ استعمال کریں۔',
+          'ادا شدہ پلانز اختیاری ہیں۔ آپ ہمارے ادائیگی فراہم کنندہ Whop '
+              '(whop.com) کے محفوظ ادائیگی صفحے پر، یا چاہیں تو PayPal سے '
+              'ادائیگی کرتے ہیں۔ یہ اپنی اپنی پرائیویسی پالیسی کے تحت ضروری '
+              'بلنگ تفصیلات (جیسے آپ کا نام، ای میل، ملک اور ادائیگی کا طریقہ) '
+              'جمع کرتے ہیں؛ ہم کبھی آپ کے کارڈ کی مکمل تفصیلات نہیں دیکھتے یا '
+              'محفوظ کرتے۔ آپ کو درست رسائی دینے کے لیے ہم آپ کا پلان، سبسکرپشن '
+              'کی حیثیت، تجدید کی تاریخ اور ادائیگی فراہم کنندہ کے سبسکرپشن '
+              'شناخت کنندگان رکھتے ہیں، نیز کسی بھی پروموشنل کوڈ کا ریکارڈ جو '
+              'آپ استعمال کریں۔',
         ),
         const LegalSection(
           'سروس فراہم کنندگان',
           'آپ کے استعمال کردہ فیچرز کے لحاظ سے: Supabase (اکاؤنٹس، ہم آہنگی '
-              'اور ہمارے سرور فنکشنز)؛ Paddle (ادائیگیاں)؛ Brevo (اکاؤنٹ ای '
-              'میلز)؛ Cloudflare Turnstile (سائن ان پر انسانی جانچ)؛ GitHub Pages'
-              ' (ہماری ویب سائٹ اور ویب ایپ کی ہوسٹنگ)؛ Google، OpenAI اور '
-              'Anthropic (DGOTIX AI اور کلاؤڈ رسید اسکیننگ)؛ اور لائیو اعداد کے '
-              'لیے عوامی مارکیٹ ڈیٹا کے ذرائع — کرنسی ریٹس (open.er-api.com) اور '
-              'کرپٹو قیمتیں (CoinGecko) — جن کی درخواستوں میں صرف کرنسی یا اثاثے '
-              'کی علامتیں ہوتی ہیں، کبھی آپ کا ذاتی یا مالی ڈیٹا نہیں۔ ہر فراہم '
-              'کنندہ ڈیٹا کو صرف سروس میں اپنا حصہ فراہم کرنے کے لیے پروسیس کرتا '
-              'ہے۔',
+              'اور ہمارے سرور فنکشنز)؛ Whop اور PayPal (ادائیگیاں)؛ Brevo '
+              '(اکاؤنٹ ای میلز)؛ Cloudflare Turnstile (سائن ان پر انسانی جانچ)؛ '
+              'GitHub Pages (ہماری ویب سائٹ اور ویب ایپ کی ہوسٹنگ)؛ Google، '
+              'OpenAI اور Anthropic (DGOTIX AI اور کلاؤڈ رسید اسکیننگ)؛ اور '
+              'لائیو اعداد کے لیے عوامی مارکیٹ ڈیٹا کے ذرائع — کرنسی ریٹس '
+              '(open.er-api.com) اور کرپٹو قیمتیں (CoinGecko) — جن کی درخواستوں '
+              'میں صرف کرنسی یا اثاثے کی علامتیں ہوتی ہیں، کبھی آپ کا ذاتی یا '
+              'مالی ڈیٹا نہیں۔ ہر فراہم کنندہ ڈیٹا کو صرف سروس میں اپنا حصہ '
+              'فراہم کرنے کے لیے پروسیس کرتا ہے۔',
         ),
         const LegalSection(
           'سیکیورٹی',
@@ -2084,12 +2102,12 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'ہم ڈیٹا کب تک رکھتے ہیں',
-          'آپ کی ڈیوائس پر ڈیٹا تب تک رہتا ہے جب تک آپ اسے حذف نہ کریں یا ایپ'
-              ' نہ ہٹائیں۔ آپ کا اکاؤنٹ، ہم آہنگ ڈیٹا، استعمال کی گنتی اور '
+          'آپ کی ڈیوائس پر ڈیٹا تب تک رہتا ہے جب تک آپ اسے حذف نہ کریں یا '
+              'ایپ نہ ہٹائیں۔ آپ کا اکاؤنٹ، ہم آہنگ ڈیٹا، استعمال کی گنتی اور '
               'درخواستوں کا میٹا ڈیٹا اس وقت تک رکھا جاتا ہے جب تک آپ کا اکاؤنٹ '
-              'موجود ہو — صرف سروس چلانے اور آپ کے پلان کی حدیں لاگو کرنے کے لیے '
-              '— اور اکاؤنٹ حذف کرنے پر مستقل طور پر مٹا دیا جاتا ہے۔ Paddle وہ '
-              'بلنگ ریکارڈ رکھتا ہے جو قانوناً رکھنا ضروری ہیں۔',
+              'موجود ہو — صرف سروس چلانے اور آپ کے پلان کی حدیں لاگو کرنے کے '
+              'لیے — اور اکاؤنٹ حذف کرنے پر مستقل طور پر مٹا دیا جاتا ہے۔ Whop '
+              'اور PayPal وہ بلنگ ریکارڈ رکھتے ہیں جو قانوناً رکھنا ضروری ہیں۔',
         ),
         LegalSection(
           'آپ کے حقوق اور اختیارات',
@@ -2164,31 +2182,32 @@ abstract final class LegalContent {
         const LegalSection(
           'سبسکرپشنز، بلنگ اور تجدید',
           'بنیادی ایپ مفت ہے۔ ادا شدہ پلانز (Basic اور Pro) ایپ میں دکھائی '
-              'گئی قیمتوں پر زیادہ حدیں اور اضافی فیچرز کھولتے ہیں۔ ادا شدہ پلان '
-              'ہر بلنگ مدت (ماہانہ یا سالانہ) پر خود بخود تجدید ہوتا ہے جب تک آپ '
-              'منسوخ نہ کریں۔ ادائیگیاں ہمارے آن لائن ری سیلر Paddle کے ذریعے '
-              'پروسیس ہوتی ہیں؛ قابلِ اطلاق ٹیکس شامل ہو سکتے ہیں اور Merchant of'
-              ' Record کے طور پر Paddle انہیں سنبھالتا ہے۔ آپ کسی بھی وقت منسوخ '
-              'کر سکتے ہیں اور ادا شدہ مدت کے اختتام تک رسائی برقرار رکھ سکتے '
-              'ہیں۔ اگر قیمتیں یا پلان کے فیچرز بدلیں تو موجودہ شرائط ہمیشہ '
-              'سبسکرائب کرنے سے پہلے دکھائی جاتی ہیں۔',
+              'گئی قیمتوں پر زیادہ حدیں اور اضافی فیچرز کھولتے ہیں۔ ادا شدہ '
+              'پلان ہر بلنگ مدت (ماہانہ یا سالانہ) پر خود بخود تجدید ہوتا ہے جب '
+              'تک آپ منسوخ نہ کریں۔ ادائیگیاں ہمارے ادائیگی فراہم کنندہ Whop '
+              '(یا آپ کی پسند پر PayPal) کے ذریعے پروسیس ہوتی ہیں؛ قابلِ اطلاق '
+              'ٹیکس شامل ہو سکتے ہیں اور ادائیگی سے پہلے ہمیشہ دکھائے جاتے ہیں۔ '
+              'آپ کسی بھی وقت منسوخ کر سکتے ہیں اور ادا شدہ مدت کے اختتام تک '
+              'رسائی برقرار رکھ سکتے ہیں۔ اگر قیمتیں یا پلان کے فیچرز بدلیں تو '
+              'موجودہ شرائط ہمیشہ سبسکرائب کرنے سے پہلے دکھائی جاتی ہیں۔',
         ),
         const LegalSection(
-          'ہمارا ری سیلر: Paddle',
-          'ہمارا آرڈر کا عمل ہمارے آن لائن ری سیلر Paddle.com کے ذریعے انجام '
-              'پاتا ہے۔ Paddle.com ہمارے تمام آرڈرز کا Merchant of Record ہے۔ '
-              'Paddle تمام کسٹمر سروس سوالات کا جواب دیتا ہے اور واپسیوں کو '
-              'سنبھالتا ہے۔',
+          'ہمارا ادائیگی فراہم کنندہ: Whop',
+          'SmartBudget کو DGOTIX فروخت کرتا ہے۔ ادائیگی اور بلنگ Whop '
+              '(whop.com) سنبھالتا ہے، جو اپنے محفوظ صفحے پر ادائیگی پروسیس '
+              'کرتا ہے، ادائیگی سے پہلے ٹیکس سمیت پوری قیمت دکھاتا ہے اور آپ کو '
+              'رسید بھیجتا ہے۔ آپ اپنی سبسکرپشن ایپ سے منظم یا منسوخ کر سکتے '
+              'ہیں (پلانز ← منظم کریں)۔',
         ),
         LegalSection(
           'رقم کی واپسی کی پالیسی',
           'سوائے اس کے کہ قانون تقاضا کرے، بلنگ مدت شروع ہونے کے بعد '
               'ادائیگیاں عموماً ناقابلِ واپسی ہیں، کیونکہ اس کے اختتام تک آپ کی '
               'رسائی برقرار رہتی ہے۔ آئندہ تجدید روکنے کے لیے آپ کسی بھی وقت '
-              'منسوخ کر سکتے ہیں۔ رقم کی واپسی کی درخواستیں Paddle اپنی خریدار '
-              'شرائط اور قابلِ اطلاق صارف قانون کے تحت سنبھالتا ہے (آپ Paddle سے '
-              'paddle.net پر رابطہ کر سکتے ہیں)؛ آپ ہم سے بھی $_reachUr رابطہ کر '
-              'سکتے ہیں اور ہم مدد کریں گے۔',
+              'منسوخ کر سکتے ہیں۔ رقم کی واپسی کی درخواست یا کسی ادائیگی کے '
+              'بارے میں سوال کے لیے ہم سے $_reachUr رابطہ کریں: ہم ہر درخواست '
+              'کو قابلِ اطلاق صارف قانون کے تحت دیکھتے ہیں اور منظور شدہ رقم '
+              'Whop (یا PayPal) کے ذریعے واپس کرتے ہیں۔',
         ),
         const LegalSection(
           'پروموشنل کوڈز',

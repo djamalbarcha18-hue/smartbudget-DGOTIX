@@ -4,7 +4,7 @@ import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/billing/domain/user_subscription.dart';
 
 UserSubscription sub(String plan, String status) => UserSubscription.fromRow(
-    <String, dynamic>{'plan': plan, 'status': status, 'provider': 'paddle'})!;
+    <String, dynamic>{'plan': plan, 'status': status, 'provider': 'whop'})!;
 
 void main() {
   test('an active or trialing paid plan is in force', () {

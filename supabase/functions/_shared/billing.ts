@@ -1,8 +1,8 @@
 // SmartBudget — billing helpers (provider-agnostic core).
 //
-// Price map, webhook idempotency and Paddle signatures. The webhooks apply
+// Price map, webhook idempotency and sandbox detection. The webhooks apply
 // subscription changes through subscriptions.ts. Nothing here talks to a
-// specific provider except verifyPaddleSignature (clearly named).
+// specific provider.
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.2";
 import { HttpError } from "./auth.ts";
 import { normalizePlan, type Plan } from "./quota.ts";
@@ -20,7 +20,7 @@ export interface PriceMapping {
 export async function priceToPlan(
   db: SupabaseClient,
   priceId: string,
-  provider = "paddle",
+  provider = "whop",
   includeRetired = false,
 ): Promise<PriceMapping | null> {
   const { data } = await db.from("billing_prices")
@@ -38,7 +38,7 @@ export async function planToPrice(
   db: SupabaseClient,
   plan: Plan,
   period: "monthly" | "yearly",
-  provider = "paddle",
+  provider = "whop",
 ): Promise<string | null> {
   const { data } = await db.from("billing_prices")
     .select("price_id").eq("plan", plan).eq("period", period)
@@ -54,7 +54,7 @@ export async function markEventOnce(
   db: SupabaseClient,
   eventId: string,
   type: string,
-  provider = "paddle",
+  provider = "whop",
 ): Promise<boolean> {
   if (!eventId) return true; // no id ⇒ can't dedupe; let caller proceed
   const { error } = await db.from("billing_events")
@@ -78,66 +78,8 @@ export async function unmarkEvent(
   }
 }
 
-/** How far a Paddle webhook's signing time may be from now, in seconds. */
-export const PADDLE_SIGNATURE_MAX_AGE_S = 300;
-
-/**
- * Verify a Paddle Billing webhook signature.
- * Header format: `ts=<unix>;h1=<hex hmac>`; the signed payload is
- * `${ts}:${rawBody}` HMAC-SHA256 with the webhook secret. A signature made
- * more than [PADDLE_SIGNATURE_MAX_AGE_S] from now is refused, so a captured
- * webhook can't be sent again later (Paddle signs each retry afresh).
- */
-export async function verifyPaddleSignature(
-  rawBody: string,
-  signatureHeader: string | null,
-  secret: string,
-  nowS: number = Date.now() / 1000,
-): Promise<boolean> {
-  if (!signatureHeader || !secret) return false;
-  const parts = Object.fromEntries(
-    signatureHeader.split(";").map((kv) => {
-      const i = kv.indexOf("=");
-      return [kv.slice(0, i).trim(), kv.slice(i + 1).trim()];
-    }),
-  );
-  const ts = parts["ts"];
-  const h1 = parts["h1"];
-  if (!ts || !h1) return false;
-  const signedAt = Number(ts);
-  if (
-    !Number.isFinite(signedAt) ||
-    Math.abs(nowS - signedAt) > PADDLE_SIGNATURE_MAX_AGE_S
-  ) {
-    return false;
-  }
-
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-  const mac = await crypto.subtle.sign(
-    "HMAC",
-    key,
-    new TextEncoder().encode(`${ts}:${rawBody}`),
-  );
-  const hex = Array.from(new Uint8Array(mac))
-    .map((b) => b.toString(16).padStart(2, "0")).join("");
-  return timingSafeEqual(hex, h1);
-}
-
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
-}
-
 /** Whether a provider API URL is its sandbox (api-m.sandbox.paypal.com,
- * sandbox-api.paddle.com). Anything unparsable counts as live. */
+ * sandbox-api.whop.com). Anything unparsable counts as live. */
 export function isSandboxUrl(url: string): boolean {
   try {
     return /(^|\.)sandbox[-.]/.test(new URL(url).hostname);

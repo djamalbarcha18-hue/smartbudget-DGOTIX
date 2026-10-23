@@ -3,7 +3,7 @@
 -- safe to re-run)
 -- ----------------------------------------------------------------------------
 -- A user can hold more than one subscription for a while (an upgrade bought
--- before the old plan ends, a PayPal plan next to a Paddle one). Each
+-- before the old plan ends, a PayPal plan next to a Whop one). Each
 -- subscription is therefore kept as its own row, and every payment webhook
 -- goes through apply_subscription_event(), which, under a per-user lock:
 --   1. updates that one subscription (ignoring events older than the last one
@@ -82,7 +82,7 @@ declare
   best text;
   prim billing_subscriptions%rowtype;
 begin
-  if p_provider not in ('paddle', 'paypal') or coalesce(p_subscription_id, '') = '' then
+  if p_provider not in ('whop', 'paypal') or coalesce(p_subscription_id, '') = '' then
     raise exception 'bad subscription event';
   end if;
   if st not in ('active', 'trialing', 'past_due', 'paused', 'canceled', 'refunded', 'pending') then

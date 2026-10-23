@@ -27,8 +27,9 @@ Status: **design locked** · Prices in **USD** · Last reviewed **2026-10**.
 | Yearly saving vs monthly | — | ~33% | ~35% |
 | Positioning | Build the habit | Everyday budgeter, expats | Multiple incomes, investing, heavy AI |
 
-**Regional prices** (set in Paddle as country price overrides on the same
-prices, so no code changes): Arab countries outside the Gulf (Egypt, the
+**Regional prices** (planned — **not set up yet** with Whop, whose support
+for per-country prices on one plan is unconfirmed; until then every buyer pays
+the list price): Arab countries outside the Gulf (Egypt, the
 Maghreb, the Levant, Iraq, Sudan, …) pay BASIC **$2.99 / $24.99** and PRO
 **$5.49 / $44.99**. The app shows the USD list price; the checkout shows the
 buyer's own price and currency.
@@ -47,13 +48,14 @@ answer ≈ $0.001 (Flash-Lite), at worst ≈ $0.01; a cloud scan ≈ $0.006, at
 worst ≈ $0.03 per part. A subscriber who spends the whole allowance every month
 at worst-case cost:
 
-| | net / month (yearly, cheapest region, after Paddle) | typical cost | worst case |
+| | net / month (yearly, cheapest region, after Whop) | typical cost | worst case |
 |---|---|---|---|
-| BASIC | ≈ $1.95 | ≈ $0.15 | ≈ $0.70 |
-| PRO | ≈ $3.50 | ≈ $0.50 | ≈ $2.40 |
+| BASIC | ≈ $1.96 | ≈ $0.15 | ≈ $0.70 |
+| PRO | ≈ $3.55 | ≈ $0.50 | ≈ $2.40 |
 
-So every plan stays profitable in every region even at the worst case. Paddle
-takes about 5% + $0.50 per payment, which is why yearly billing is pushed.
+So every plan stays profitable in every region even at the worst case. Whop
+takes about 2.7% + $0.30 per card payment, plus 2% with its tax collection
+on; the fixed part per payment is why yearly billing is pushed.
 
 ---
 

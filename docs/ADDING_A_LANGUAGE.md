@@ -33,7 +33,6 @@ Pass the new code to the existing `lang.pick(...)` calls:
 | Quick-entry words | `lib/features/quick_entry/domain/quick_entry_parser.dart` (amount multipliers, date words, category keywords) |
 | Biometric prompt | `lib/features/app_lock/data/device_auth_io.dart` |
 | Legal web pages | `tool/export_legal.dart` (one `<article>` per language) |
-| Checkout locale | `web/pay.js` (only if Paddle supports the language) |
 | Password e-mail | `supabase/templates/recovery.html` (then paste it into the Supabase dashboard) |
 | AI assistant | `supabase/functions/_shared/ai/gateway.ts` reply-language hint |
 

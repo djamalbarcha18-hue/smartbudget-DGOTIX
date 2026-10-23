@@ -1,7 +1,7 @@
 # DGoTix / SmartBudget — Security Audit
 
 October 2026. Scope: the Flutter app (web and Android), the Supabase project
-(Auth, Postgres, Edge Functions), payments (Paddle, PayPal), email (Brevo),
+(Auth, Postgres, Edge Functions), payments (Whop, PayPal; Paddle at the time of the audit, since replaced), email (Brevo),
 the domain (Namecheap DNS, GitHub Pages) and CI/CD (GitHub Actions).
 
 No system is "100% secure". This report says what was checked, what was
@@ -43,8 +43,8 @@ Supabase
    └─ Edge Functions  verify the JWT themselves (requireUserId) and use the
                       service role server-side only
         ├─ ai-gateway, receipt-scan  → Gemini (key in function secrets)
-        ├─ create-checkout, manage-subscription → Paddle / PayPal APIs
-        ├─ paddle-webhook, paypal-webhook  ← providers (signature-verified)
+        ├─ create-checkout, manage-subscription → Whop / PayPal APIs
+        ├─ whop-webhook, paypal-webhook  ← providers (signature-verified)
         ├─ coupon-validate, delete-account, billing-config
         └─ market-proxy, parallel-proxy  (public, fixed upstreams)
 GitHub Pages  smartbudget.dgotix.com (static web build, CSP in index.html)
@@ -61,7 +61,7 @@ Brevo SMTP    auth emails + support replies from support@dgotix.com (DKIM, DMARC
   - The payment event ids, kept for idempotency.
   - An AI request log holding numbers only, with no prompts or answers.
 
-**Secrets:** service role key, Gemini, Paddle, PayPal, Brevo, the Supabase
+**Secrets:** service role key, Gemini, Whop, PayPal, Brevo, the Supabase
 access token. They are kept only in Supabase function secrets, GitHub secrets
 or the providers' dashboards. A scan of the full git history found none
 committed. The publishable key in the app is public by design.
@@ -84,6 +84,13 @@ committed. The publishable key in the app is public by design.
 
 Status: **Fixed** (in code, verified), **Owner** (needs an action outside the
 code), **Accepted** (documented risk).
+
+Paddle has since been replaced by Whop. `whop-webhook` keeps every protection
+the findings below gave `paddle-webhook`: the plan only from `billing_prices`,
+a 5-minute signature window, delivery-id dedupe that forgets a failed write,
+the 256 KB body cap, and refusal before any work without signature headers;
+it also reads each membership back from Whop instead of trusting the event
+(scenario tests in `supabase/tests`).
 
 | # | Sev. | Component | Finding | Status |
 |---|---|---|---|---|
@@ -136,7 +143,7 @@ RLS on all 32 tables, every Edge Function, the app, Android, CI and the site.
 | 25 | Medium | paddle-webhook, paypal-webhook | Public endpoints read bodies of any size, and every forged PayPal delivery made the function call PayPal's API. | Fixed: 256 KB cap; a request without the signature headers (or before the webhook id is set) is refused before reading or calling anything (3 new scenario tests) |
 | 26 | Low | create-checkout, coupon-validate | No body size limit. | Fixed: 8 KB |
 | 27 | Low (latent) | market-proxy | Once a paid data source is set, anonymous calls could drain its quota. | Fixed: 10-minute cache per category, `Cache-Control` on both proxies |
-| 28 | Low | App, payments | Checkout and manage links from the server were opened as given. | Fixed: only https links of Paddle, PayPal or dgotix.com (`PaymentLinks`, tested) |
+| 28 | Low | App, payments | Checkout and manage links from the server were opened as given. | Fixed: only https links of the payment providers (now Whop and PayPal) or dgotix.com (`PaymentLinks`, tested) |
 | 29 | Low | Android | Screens showed in the recent-apps preview; Android 12+ device-to-device transfer copied app data despite `allowBackup=false`. | Fixed: FLAG_SECURE while the app lock is on; `dataExtractionRules` exclude everything |
 | 30 | Low | CI | Supabase CLI ran as `latest`. | Fixed: pinned 2.120.0 |
 | 31 | Low | Edge Functions | supabase-js came from the esm.sh build service. | Fixed: `npm:@supabase/supabase-js@2.117.2` (immutable npm release). Its own dependencies still resolve by semver ranges: a `deno.lock` is the next step |
@@ -157,7 +164,7 @@ RLS on all 32 tables, every Edge Function, the app, Android, CI and the site.
 The new **Security tests** workflow runs the access-control and the
 function scenarios on every push.
 
-Not tested here: live Paddle/PayPal sandboxes, a real Android device,
+Not tested here: live Whop/PayPal sandboxes, a real Android device,
 production HTTP headers (the sandbox can't reach the domain).
 
 ## 6. MFA readiness
@@ -217,8 +224,8 @@ Supabase Auth supports TOTP MFA without a rebuild:
 2. **Turn beta off when paid plans go live:** set the Edge Function secret
    `BETA_ALL_ACCESS=false` (and build the app with `BETA_ALL_ACCESS=false`).
 3. **Payments:**
-   - Fill `billing_prices` with the real Paddle/PayPal ids.
-   - Set the webhook secrets: `PADDLE_WEBHOOK_SECRET`, `PAYPAL_WEBHOOK_ID`.
+   - Fill `billing_prices` with the real Whop/PayPal ids.
+   - Set the webhook secrets: `WHOP_WEBHOOK_SECRET`, `PAYPAL_WEBHOOK_ID`.
    - Run one full sandbox purchase, renewal and cancellation for each
      provider.
 4. **Gemini:** the key is on the free tier (no billing, so no charges, but

@@ -10,6 +10,7 @@
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
 import { rateLimited } from "../_shared/usage.ts";
+import { fetchWhopMembership, whopConfigured } from "../_shared/whop.ts";
 
 Deno.serve(async (req: Request) => {
   const cors = corsHeaders();
@@ -42,23 +43,18 @@ Deno.serve(async (req: Request) => {
       return jsonResponse({ url: `${base}/myaccount/autopay/` }, 200, cors);
     }
 
-    // Paddle: the subscription carries hosted management URLs (update / cancel).
-    const apiKey = (Deno.env.get("PADDLE_API_KEY") ?? "").trim();
-    const apiUrl = (Deno.env.get("PADDLE_API_URL") ?? "https://api.paddle.com")
-      .replace(/\/+$/, "");
-    if (!apiKey) return jsonResponse({ error: "not_available" }, 503, cors);
-
-    const res = await fetch(
-      `${apiUrl}/subscriptions/${sub.provider_subscription_id}`,
-      { headers: { "Authorization": `Bearer ${apiKey}` } },
-    );
-    if (!res.ok) return jsonResponse({ error: "provider_error" }, 502, cors);
-    const data = await res.json().catch(() => ({}));
-    const urls = data?.data?.management_urls ?? {};
-    // After a failed payment the card needs fixing; otherwise Manage cancels.
-    const url: string | undefined = sub.status === "past_due"
-      ? urls.update_payment_method ?? urls.cancel
-      : urls.cancel ?? urls.update_payment_method;
+    // Whop: the membership carries the buyer's own billing page (manage,
+    // update the card, cancel).
+    if (!whopConfigured()) {
+      return jsonResponse({ error: "not_available" }, 503, cors);
+    }
+    let membership;
+    try {
+      membership = await fetchWhopMembership(sub.provider_subscription_id);
+    } catch (_) {
+      return jsonResponse({ error: "provider_error" }, 502, cors);
+    }
+    const url: string | undefined = membership?.manage_url ?? undefined;
     if (!url) return jsonResponse({ error: "not_available" }, 404, cors);
     return jsonResponse({ url }, 200, cors);
   } catch (e) {

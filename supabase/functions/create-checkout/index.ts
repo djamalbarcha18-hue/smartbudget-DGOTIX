@@ -5,19 +5,19 @@
 // Provider API keys live ONLY here (secrets), never in the frontend.
 //
 //   POST { plan: "basic"|"pro", period: "monthly"|"yearly",
-//          provider?: "paddle"|"paypal" } -> { url }
+//          provider?: "whop"|"paypal" } -> { url }
 //   | { error: "not_configured" | "unknown_price" | "already_subscribed" | ... }
 //
 // Deploy:  supabase functions deploy create-checkout
-// Secrets (Paddle): PADDLE_API_KEY, PADDLE_API_URL, PADDLE_CLIENT_TOKEN (the
-//   public client-side token web/pay.html starts Paddle.js with), and
-//   optionally PADDLE_CHECKOUT_PAGE (default: the app's own pay.html)
+// Secrets (Whop): WHOP_API_KEY, optionally WHOP_API_URL (sandbox) and
+//   WHOP_COMPANY_ID (the biz_... account, when the key covers several)
 // Secrets (PayPal): PAYPAL_CLIENT_ID, PAYPAL_SECRET, PAYPAL_API_URL
 // Common:  CHECKOUT_SUCCESS_URL, CHECKOUT_CANCEL_URL
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
 import { rateLimited } from "../_shared/usage.ts";
 import { planToPrice } from "../_shared/billing.ts";
+import { createWhopCheckout, whopConfigured } from "../_shared/whop.ts";
 import {
   createPaypalSubscription,
   paypalAccessToken,
@@ -38,7 +38,7 @@ Deno.serve(async (req: Request) => {
     const body = await readJsonBody(req, MAX_SMALL_BODY_BYTES);
     const plan: Plan = normalizePlan(body?.plan);
     const period = body?.period === "yearly" ? "yearly" : "monthly";
-    const provider = body?.provider === "paypal" ? "paypal" : "paddle";
+    const provider = body?.provider === "paypal" ? "paypal" : "whop";
     if (plan === "free") {
       return jsonResponse({ error: "invalid_plan" }, 400, cors);
     }
@@ -66,7 +66,7 @@ Deno.serve(async (req: Request) => {
 
     const url = provider === "paypal"
       ? await paypalCheckout(db, userId, plan, period, successUrl, cancelUrl)
-      : await paddleCheckout(db, userId, plan, period);
+      : await whopCheckout(db, userId, plan, period, successUrl);
 
     if (typeof url !== "string") return url; // an error Response
     return jsonResponse({ url }, 200, cors);
@@ -80,52 +80,29 @@ Deno.serve(async (req: Request) => {
 // deno-lint-ignore no-explicit-any
 type DB = any;
 
-async function paddleCheckout(
+async function whopCheckout(
   db: DB,
   userId: string,
   plan: Plan,
   period: "monthly" | "yearly",
+  successUrl?: string,
 ): Promise<string | Response> {
   const cors = corsHeaders();
-  const apiKey = (Deno.env.get("PADDLE_API_KEY") ?? "").trim();
-  const clientToken = (Deno.env.get("PADDLE_CLIENT_TOKEN") ?? "").trim();
-  const apiUrl = (Deno.env.get("PADDLE_API_URL") ?? "https://api.paddle.com")
-    .replace(/\/+$/, "");
-  if (!apiKey || !clientToken) {
+  if (!whopConfigured()) {
     return jsonResponse({ error: "not_configured" }, 503, cors);
   }
+  const planId = await planToPrice(db, plan, period, "whop");
+  if (!planId) return jsonResponse({ error: "unknown_price" }, 400, cors);
 
-  const priceId = await planToPrice(db, plan, period, "paddle");
-  if (!priceId) return jsonResponse({ error: "unknown_price" }, 400, cors);
-
-  // Paddle Billing: create a transaction. Its checkout.url is our payment page
-  // (an approved domain) with the transaction id (_ptxn); Paddle.js there opens
-  // the checkout and sends the buyer back to the app.
-  const res = await fetch(`${apiUrl}/transactions`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      items: [{ price_id: priceId, quantity: 1 }],
-      custom_data: { user_id: userId, plan, period },
-      checkout: { url: paddleCheckoutPage() },
-    }),
-  });
-  if (!res.ok) return jsonResponse({ error: "provider_error" }, 502, cors);
-  const data = await res.json().catch(() => ({}));
-  const url: string | undefined = data?.data?.checkout?.url;
-  if (!url) return jsonResponse({ error: "no_checkout_url" }, 502, cors);
-  const page = new URL(url);
-  page.searchParams.set("token", clientToken);
-  return page.toString();
-}
-
-/** The page that opens Paddle's checkout (web/pay.html on the app's site). */
-function paddleCheckoutPage(): string {
-  return (Deno.env.get("PADDLE_CHECKOUT_PAGE") ?? "").trim() ||
-    "https://smartbudget.dgotix.com/pay.html";
+  // A checkout configuration for the Whop plan: its metadata is copied onto
+  // the membership, so the webhook knows whose it is.
+  const url = await createWhopCheckout(
+    planId,
+    { user_id: userId, plan, period },
+    successUrl,
+  );
+  if (!url) return jsonResponse({ error: "provider_error" }, 502, cors);
+  return url;
 }
 
 async function paypalCheckout(

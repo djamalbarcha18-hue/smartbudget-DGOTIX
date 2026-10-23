@@ -23,7 +23,7 @@ export type SubStatus =
 export const ENTITLING: ReadonlySet<SubStatus> = new Set(["active", "trialing"]);
 
 export interface SubscriptionEvent {
-  provider: "paddle" | "paypal";
+  provider: "whop" | "paypal";
   subscriptionId: string;
   /** Null when the event names only the subscription (refund, payment). */
   userId: string | null;
@@ -65,15 +65,6 @@ export async function applySubscriptionEvent(
   });
   if (error) throw new HttpError(500, "subscription_write_failed");
   return data as ApplyOutcome;
-}
-
-/** Paddle Billing subscription status, or null for one we don't know. */
-export function paddleStatus(s: unknown): SubStatus | null {
-  const v = String(s ?? "").toLowerCase();
-  return v === "active" || v === "trialing" || v === "past_due" ||
-      v === "paused" || v === "canceled"
-    ? v
-    : null;
 }
 
 /** PayPal subscription status, or null for one we don't know. */

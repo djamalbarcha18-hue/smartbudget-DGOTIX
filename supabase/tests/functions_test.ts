@@ -5,41 +5,55 @@
 //   deno run -A --import-map supabase/tests/import_map.json supabase/tests/functions_test.ts
 // Exits non-zero when a scenario fails.
 // deno-lint-ignore-file no-explicit-any
-import { check, db, finish, load, model, outbound, paddle, paddleSub, paypal, paypalSub, PRICES, sign } from "./harness.ts";
+import { check, db, finish, load, model, outbound, paypal, paypalSub, PRICES, whop, whopCheckouts, whopHeaders, whopMem, whopMemberships } from "./harness.ts";
 
 // A short model deadline, so the "stuck model" scenario below runs quickly.
 Deno.env.set("OCR_TIMEOUT_MS", "300");
-const handlers = await load("paddle-webhook", "paypal-webhook", "create-checkout", "receipt-scan", "ai-gateway");
+const handlers = await load("whop-webhook", "paypal-webhook", "create-checkout", "receipt-scan", "ai-gateway");
 db.tables.billing_prices = PRICES;
 const U1 = "11111111-1111-4111-8111-111111111111";
 const calls = () => db.calls.length;
 const last = () => db.calls[db.calls.length - 1] ?? {};
 
 // ---- Payment webhooks: what reaches the subscription ledger ----
-let r = await paddle(paddleSub("e1", "subscription.activated", U1, "sub_1", "pri_pro", "active", "2026-10-01T10:00:00Z"));
-check("Paddle: a paid subscription is applied with our price's plan", r.status === 200 && last().p_plan === "pro" && last().p_status === "active" && last().p_user === U1 && last().p_subscription_id === "sub_1", JSON.stringify(last()));
+let r = await whop(whopMem("membership.activated", U1, "mem_1", "plan_pro", "active"));
+check("Whop: a paid membership is applied with our plan", r.status === 200 && last().p_plan === "pro" && last().p_status === "active" && last().p_user === U1 && last().p_subscription_id === "mem_1" && last().p_provider === "whop", JSON.stringify(last()));
+const once = JSON.stringify(whopMem("membership.updated", U1, "mem_1", "plan_pro", "active"));
+await whop(once, await whopHeaders(once, "msg_same"));
 let n = calls();
-r = await paddle(paddleSub("e1", "subscription.activated", U1, "sub_1", "pri_pro", "active", "2026-10-01T10:00:00Z"));
-check("Paddle: the same event twice is applied once", r.body.duplicate === true && calls() === n, JSON.stringify(r));
-r = await paddle(paddleSub("e2", "subscription.activated", U1, "sub_2", "pri_cheap_other", "active", "2026-10-01T10:00:00Z", { custom_data: { user_id: U1, plan: "pro" } }));
-check("Paddle: unknown price + custom plan 'pro' grants nothing", r.body.ignored === "unknown_price" && calls() === n, JSON.stringify(r));
-db.failRpc = "apply_subscription_event";
-r = await paddle(paddleSub("e6", "subscription.activated", U1, "sub_4", "pri_pro", "active", "2026-10-01T10:00:00Z"));
-const marked = (db.tables.billing_events ?? []).some((e: any) => e.event_id === "e6");
-check("Paddle: a failed write answers 500 and forgets the event", r.status === 500 && !marked, JSON.stringify(r) + marked);
-db.failRpc = "";
-r = await paddle(paddleSub("e6", "subscription.activated", U1, "sub_4", "pri_pro", "active", "2026-10-01T10:00:00Z"));
-check("Paddle: the retry is then applied", r.status === 200 && last().p_subscription_id === "sub_4", JSON.stringify(r));
+r = await whop(once, await whopHeaders(once, "msg_same"));
+check("Whop: the same delivery twice is applied once", r.body.duplicate === true && calls() === n, JSON.stringify(r));
+r = await whop(whopMem("membership.activated", U1, "mem_2", "plan_cheap_other", "active", { metadata: { user_id: U1, plan: "pro" } }));
+check("Whop: an unknown plan + metadata plan 'pro' grants nothing", r.body.ignored === "unknown_price" && calls() === n, JSON.stringify(r));
+r = await whop(whopMem("membership.activated", U1, "mem_3", "plan_old", "canceling"));
+check("Whop: a cancellation at period end keeps access until then", last().p_status === "active" && last().p_cancel_at_period_end === true && last().p_plan === "basic", JSON.stringify(last()));
+r = await whop(whopMem("membership.deactivated", U1, "mem_3", "plan_old", "expired"));
+check("Whop: an expired membership is cancelled", last().p_status === "canceled", JSON.stringify(last()));
+whopMemberships["mem_1"].status = "canceled";
+r = await whop({ type: "refund.created", data: { id: "rfnd_1", status: "succeeded", payment: { id: "pay_1", membership_id: "mem_1" } } });
+check("Whop: a refund applies the membership as Whop now has it", last().p_subscription_id === "mem_1" && last().p_status === "canceled", JSON.stringify(last()));
 n = calls();
-r = await paddle(paddleSub("e7", "subscription.activated", U1, "sub_5", "pri_pro", "active", "2026-10-01T10:00:00Z"), "ts=1;h1=00");
-check("Paddle: a forged signature is refused", r.status === 401 && calls() === n, JSON.stringify(r));
-const stale = paddleSub("e8", "subscription.activated", U1, "sub_5", "pri_pro", "active", "2026-10-01T10:00:00Z");
-r = await paddle(stale, await sign(JSON.stringify(stale), Math.floor(Date.now() / 1000) - 3600));
-check("Paddle: a correctly signed but hour-old delivery is refused", r.status === 401 && calls() === n, JSON.stringify(r));
-r = await paddle({ event_id: "e9", event_type: "adjustment.updated", occurred_at: "2026-10-02T10:00:00Z", data: { action: "refund", type: "partial", status: "approved", subscription_id: "sub_1" } });
-check("Paddle: a partial refund changes nothing", r.body.ignored === "partial_refund" && calls() === n, JSON.stringify(r));
-r = await paddle({ event_id: "e10", event_type: "adjustment.created", occurred_at: "2026-10-02T10:00:00Z", data: { action: "refund", type: "full", status: "pending_approval", subscription_id: "sub_1" } });
-check("Paddle: a refund awaiting approval changes nothing", r.body.ignored === "not_approved" && calls() === n, JSON.stringify(r));
+r = await whop({ type: "refund.created", data: { id: "rfnd_2", payment: { id: "pay_2", membership_id: "mem_unknown" } } });
+check("Whop: an event about a membership Whop doesn't know changes nothing", r.body.ignored === "unknown_membership" && calls() === n, JSON.stringify(r));
+r = await whop({ type: "product.updated", data: { id: "prod_1" } });
+check("Whop: other events are acknowledged and ignored", r.status === 200 && calls() === n, JSON.stringify(r));
+db.failRpc = "apply_subscription_event";
+const failing = JSON.stringify(whopMem("membership.activated", U1, "mem_4", "plan_pro", "active"));
+r = await whop(failing, await whopHeaders(failing, "msg_fail"));
+const marked = (db.tables.billing_events ?? []).some((e: any) => e.event_id === "msg_fail");
+check("Whop: a failed write answers 500 and forgets the delivery", r.status === 500 && !marked, JSON.stringify(r) + marked);
+db.failRpc = "";
+r = await whop(failing, await whopHeaders(failing, "msg_fail"));
+check("Whop: the retry is then applied", r.status === 200 && last().p_subscription_id === "mem_4", JSON.stringify(r));
+n = calls();
+const forged = JSON.stringify(whopMem("membership.activated", U1, "mem_5", "plan_pro", "active"));
+r = await whop(forged, await whopHeaders(forged, "msg_f", undefined, "ws_wrong"));
+check("Whop: a forged signature is refused", r.status === 401 && calls() === n, JSON.stringify(r));
+r = await whop(forged, await whopHeaders(forged, "msg_old", Math.floor(Date.now() / 1000) - 3600));
+check("Whop: a correctly signed but hour-old delivery is refused", r.status === 401 && calls() === n, JSON.stringify(r));
+const tampered = await whopHeaders(forged, "msg_t");
+r = await whop(forged.replace("plan_pro", "plan_xxx"), tampered);
+check("Whop: a changed body is refused", r.status === 401 && calls() === n, JSON.stringify(r));
 
 r = await paypal(paypalSub("p1", "BILLING.SUBSCRIPTION.ACTIVATED", U1, "I-1", "P-PRO", "ACTIVE", "2026-10-01T10:00:00Z"));
 check("PayPal: a paid subscription is applied with our plan", last().p_provider === "paypal" && last().p_plan === "pro" && last().p_status === "active", JSON.stringify(last()));
@@ -52,11 +66,11 @@ n = calls();
 const outboundBefore = outbound.length;
 r = await paypal(paypalSub("p3", "BILLING.SUBSCRIPTION.ACTIVATED", U1, "I-1", "P-PRO", "ACTIVE", "2026-10-03T10:00:00Z"), {});
 check("PayPal: no signature headers is refused without calling PayPal", r.status === 401 && outbound.length === outboundBefore && calls() === n, JSON.stringify(r));
-const huge = JSON.stringify({ event_id: "big", event_type: "subscription.activated", pad: "x".repeat(300 * 1024) });
-r = await paddle(huge);
-check("Paddle: an oversized delivery is refused", r.status === 413 && calls() === n, JSON.stringify(r));
-r = await paddle(paddleSub("e11", "subscription.activated", U1, "sub_6", "pri_pro", "active", "2026-10-01T10:00:00Z"), "");
-check("Paddle: no signature header is refused", r.status === 401 && calls() === n, JSON.stringify(r));
+const huge = JSON.stringify({ type: "membership.activated", pad: "x".repeat(300 * 1024) });
+r = await whop(huge, await whopHeaders("{}"));
+check("Whop: an oversized delivery is refused", r.status === 413 && calls() === n, JSON.stringify(r));
+r = await whop(forged, {});
+check("Whop: no signature headers is refused", r.status === 401 && calls() === n, JSON.stringify(r));
 
 // ---- Checkout: one subscription at a time ----
 const checkout = async (u: string) => {
@@ -79,10 +93,11 @@ r = await checkout("c4");
 check("Checkout: allowed after a cancelled subscription", r.status === 200 && !!r.body.url, JSON.stringify(r));
 r = await checkout("c5");
 check("Checkout: allowed with no subscription", r.status === 200 && !!r.body.url, JSON.stringify(r));
+const asked = whopCheckouts[whopCheckouts.length - 1];
 check(
-  "Checkout: Paddle opens on the app's payment page with the public token",
-  String(r.body.url).startsWith("https://smartbudget.dgotix.com/pay.html?_ptxn=txn_test&token=test_clienttoken"),
-  JSON.stringify(r),
+  "Checkout: Whop's hosted checkout for our plan, carrying the user id",
+  String(r.body.url).startsWith("https://whop.com/checkout/plan_pro") && asked?.plan_id === "plan_pro" && asked?.metadata?.user_id === "c5" && asked?.metadata?.plan === "pro",
+  JSON.stringify(r) + JSON.stringify(asked),
 );
 
 // ---- Usage limits (BETA off: FREE = 3 scans a month, 5 lifetime AI answers) ----

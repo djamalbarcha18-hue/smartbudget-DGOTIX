@@ -5,13 +5,14 @@
 // a list of enabled provider names, and whether every one of them is a test
 // (sandbox) account — the only case where the app's payment test mode opens.
 //
-//   POST -> { providers: ["paddle", "paypal"], sandbox: false }
+//   POST -> { providers: ["whop", "paypal"], sandbox: false }
 //
 // Deploy:  supabase functions deploy billing-config
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId } from "../_shared/auth.ts";
 import { allSandbox } from "../_shared/billing.ts";
 import { paypalApiBase, paypalConfigured } from "../_shared/paypal.ts";
+import { whopApiBase, whopConfigured } from "../_shared/whop.ts";
 
 Deno.serve(async (req: Request) => {
   const cors = corsHeaders();
@@ -20,14 +21,12 @@ Deno.serve(async (req: Request) => {
   try {
     await requireUserId(req);
     const providers: string[] = [];
-    const paddleReady = ["PADDLE_API_KEY", "PADDLE_CLIENT_TOKEN"]
-      .every((k) => (Deno.env.get(k) ?? "").trim());
-    if (paddleReady) providers.push("paddle");
+    if (whopConfigured()) providers.push("whop");
     if (paypalConfigured()) providers.push("paypal");
-    // Paddle with no API URL set is live.
+    // Whop with no API URL set is live.
     const sandbox = allSandbox(providers, {
       paypal: paypalApiBase(),
-      paddle: Deno.env.get("PADDLE_API_URL") ?? "",
+      whop: whopApiBase(),
     });
     return jsonResponse({ providers, sandbox }, 200, cors);
   } catch (e) {

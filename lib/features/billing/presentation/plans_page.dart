@@ -631,7 +631,7 @@ class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
       if (chosen == null || !mounted) return;
       provider = chosen;
     } else {
-      provider = providers.isNotEmpty ? providers.first : PayProvider.paddle;
+      provider = providers.isNotEmpty ? providers.first : PayProvider.whop;
     }
     await _start(period, provider);
   }

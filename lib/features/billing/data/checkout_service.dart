@@ -5,12 +5,12 @@ import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 
 /// A payment method / gateway the checkout can use.
-enum PayProvider { paddle, paypal }
+enum PayProvider { whop, paypal }
 
 extension PayProviderX on PayProvider {
-  String get id => name; // 'paddle' | 'paypal'
+  String get id => name; // 'whop' | 'paypal'
   static PayProvider? fromId(String? id) => switch (id) {
-        'paddle' => PayProvider.paddle,
+        'whop' => PayProvider.whop,
         'paypal' => PayProvider.paypal,
         _ => null,
       };
@@ -50,7 +50,7 @@ class CheckoutService {
   Future<CheckoutStart> start({
     required Plan plan,
     required BillingPeriod period,
-    PayProvider provider = PayProvider.paddle,
+    PayProvider provider = PayProvider.whop,
   }) async {
     final Map<String, dynamic> body = <String, dynamic>{
       'plan': plan.storageId,
