@@ -11,9 +11,6 @@ enum LockupBadgeStyle {
   /// Gray outline.
   subtle,
 
-  /// Blue outline.
-  accent,
-
   /// Solid blue.
   solid,
 }
@@ -164,8 +161,6 @@ class _Badge extends StatelessWidget {
         : switch (style) {
             LockupBadgeStyle.subtle =>
               (Colors.transparent, colors.textFaint, colors.textMuted),
-            LockupBadgeStyle.accent =>
-              (brand.withValues(alpha: 0.10), brand, brand),
             LockupBadgeStyle.solid => (brand, brand, Colors.white),
           };
     return Container(
