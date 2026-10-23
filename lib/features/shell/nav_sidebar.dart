@@ -114,6 +114,7 @@ class _GroupHeader extends StatelessWidget {
       NavGroup.planning => l.navGroupPlanning,
       NavGroup.insights => l.navGroupInsights,
       NavGroup.special => l.navGroupSpecial,
+      NavGroup.advanced => l.navGroupAdvanced,
       NavGroup.markets => l.navGroupMarkets,
       NavGroup.system => l.navGroupSystem,
     };

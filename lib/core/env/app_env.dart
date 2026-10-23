@@ -77,6 +77,12 @@ abstract final class AppEnv {
   static const bool betaAllAccess =
       storeBuild || bool.fromEnvironment('BETA_ALL_ACCESS', defaultValue: true);
 
+  /// SmartTrip (trips and their expenses), still in testing: shown in debug
+  /// builds and in builds made with `--dart-define=SMART_TRIP=true` (the
+  /// phone test APK), hidden everywhere else until it launches.
+  static const bool smartTrip =
+      kDebugMode || bool.fromEnvironment('SMART_TRIP', defaultValue: false);
+
   /// The Google Play / App Store build (`--dart-define=STORE_BUILD=true`):
   /// no outside payment, no developer tools.
   static const bool storeBuild =

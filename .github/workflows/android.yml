@@ -93,7 +93,9 @@ jobs:
           flutter build appbundle --release $DEFINES
           flutter build apk --release $DEFINES
           # A small APK for today's phones (64-bit ARM), to test on a phone.
-          flutter build apk --release --split-per-abi --target-platform android-arm64 $DEFINES
+          # It also has the features still in testing (SmartTrip); the store
+          # bundle above does not.
+          flutter build apk --release --split-per-abi --target-platform android-arm64 $DEFINES --dart-define=SMART_TRIP=true
           cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk SmartBudget-phone.apk
 
       - name: Upload

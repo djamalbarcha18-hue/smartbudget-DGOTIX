@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
@@ -19,6 +20,8 @@ import 'package:smartbudget/features/transactions/application/custom_categories_
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/trips/application/trips_controller.dart';
+import 'package:smartbudget/features/trips/domain/trip.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
 import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
@@ -116,7 +119,20 @@ class _TransactionEditorSheetState
   String? _initialWallet;
   bool _saving = false;
 
+  /// The trip picked by hand; until then a new expense follows the trip
+  /// under way on its date.
+  String? _tripChoice;
+  bool _tripTouched = false;
+
   bool get _isIncome => widget.type == TransactionType.income;
+
+  String? _tripId(List<Trip> trips) {
+    if (_isIncome) return null;
+    if (_tripTouched) return _tripChoice;
+    final Transaction? e = widget.existing;
+    if (e != null || !AppEnv.smartTrip) return e?.tripId;
+    return TripMath.activeOn(trips, _date)?.id;
+  }
 
   @override
   void initState() {
@@ -197,6 +213,7 @@ class _TransactionEditorSheetState
       notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
       walletId:
           _walletId == null || _walletId == Wallet.generalId ? null : _walletId,
+      tripId: _tripId(ref.read(tripsProvider).valueOrNull ?? const <Trip>[]),
       createdAt: widget.existing?.createdAt ?? AppClock.now(),
     );
     final TransactionActions actions = ref.read(transactionActionsProvider);
@@ -362,6 +379,16 @@ class _TransactionEditorSheetState
                     maxLines: 6,
                   ),
                   const SizedBox(height: DsSpacing.lg),
+                  if (AppEnv.smartTrip && !_isIncome) ...<Widget>[
+                    _TripDropdown(
+                      value: _tripId(ref.watch(tripsProvider).valueOrNull ??
+                          const <Trip>[]),
+                      onChanged: (String? v) => setState(() {
+                        _tripTouched = true;
+                        _tripChoice = v;
+                      }),
+                    ),
+                  ],
                   if (ref.watch(hasWalletsProvider)) ...<Widget>[
                     _WalletDropdown(
                       value: _walletId,
@@ -657,6 +684,75 @@ class _WalletDropdown extends ConsumerWidget {
           onChanged: onChanged,
         ),
       ],
+    );
+  }
+}
+
+/// "Part of a trip" (SmartTrip): none, or one of the user's trips, those
+/// under way and coming first. Shown only once there is a trip.
+class _TripDropdown extends ConsumerWidget {
+  const _TripDropdown({required this.value, required this.onChanged});
+  final String? value;
+  final ValueChanged<String?> onChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final AppLocalizations l = AppLocalizations.of(context);
+    final List<Trip> trips =
+        ref.watch(tripsProvider).valueOrNull ?? const <Trip>[];
+    if (trips.isEmpty) return const SizedBox.shrink();
+    final DateTime now = AppClock.now();
+    final List<Trip> ordered = <Trip>[
+      ...TripMath.current(trips, now),
+      ...TripMath.past(trips, now),
+    ];
+    final String? selected =
+        ordered.any((Trip x) => x.id == value) ? value : null;
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(bottom: DsSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text('${l.fieldTrip} (${l.optional})',
+              style: t.labelMedium?.copyWith(color: c.textMuted)),
+          const SizedBox(height: 6),
+          DropdownButtonFormField<String?>(
+            // Follows the date until the user picks one.
+            key: ValueKey<String?>(selected),
+            initialValue: selected,
+            isExpanded: true,
+            dropdownColor: c.bgElevated,
+            style: t.bodyMedium?.copyWith(color: c.textPrimary),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: c.surfaceMuted,
+              prefixIcon: Icon(Icons.flight_takeoff_outlined,
+                  size: 18, color: c.textMuted),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: DsRadius.brMd,
+                borderSide: BorderSide(color: c.border),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: DsRadius.brMd,
+                borderSide: BorderSide(color: c.brand),
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+            ),
+            items: <DropdownMenuItem<String?>>[
+              DropdownMenuItem<String?>(value: null, child: Text(l.tripNone)),
+              for (final Trip x in ordered)
+                DropdownMenuItem<String?>(
+                  value: x.id,
+                  child: Text(x.name, overflow: TextOverflow.ellipsis),
+                ),
+            ],
+            onChanged: onChanged,
+          ),
+        ],
+      ),
     );
   }
 }

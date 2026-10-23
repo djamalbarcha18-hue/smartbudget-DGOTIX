@@ -40,7 +40,11 @@ void main() {
   });
 
   test('the "new" badge stays rare so it still means something', () {
-    expect(AppNav.destinations.where((NavDestination d) => d.isNew).length,
+    // Counted in the store build: features still in testing aren't there.
+    expect(
+        AppNav.all
+            .where((NavDestination d) => d.isNew && AppNav.isLaunched(d))
+            .length,
         lessThanOrEqualTo(4));
   });
 }

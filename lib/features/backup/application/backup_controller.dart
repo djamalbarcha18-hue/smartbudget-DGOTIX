@@ -19,6 +19,7 @@ import 'package:smartbudget/features/seasons/application/seasons_controller.dart
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 
 /// Outcome of a restore, for user feedback.
@@ -78,6 +79,7 @@ class BackupService {
       challenges: await _ref.read(challengeStoreProvider).all(),
       wallets: await _ref.read(walletStoreProvider).all(),
       walletMoves: await _ref.read(walletMoveStoreProvider).all(),
+      trips: await _ref.read(tripStoreProvider).all(),
       exportedAt: AppClock.now(),
       baseCurrency: _ref.read(baseCurrencyProvider),
       transactions: txns,
@@ -119,6 +121,7 @@ class BackupService {
     await _ref.read(challengeStoreProvider).replaceAll(data.challenges);
     await _ref.read(walletStoreProvider).replaceAll(data.wallets);
     await _ref.read(walletMoveStoreProvider).replaceAll(data.walletMoves);
+    await _ref.read(tripStoreProvider).replaceAll(data.trips);
     if (setBaseCurrency &&
         data.baseCurrency != _ref.read(baseCurrencyProvider)) {
       await _ref.read(baseCurrencyProvider.notifier).set(data.baseCurrency);
@@ -150,7 +153,8 @@ class BackupService {
             await _ref.read(daretStoreProvider).importMany(data.darets) +
             await _ref.read(challengeStoreProvider).importMany(data.challenges) +
             await _ref.read(walletStoreProvider).importMany(data.wallets) +
-            await _ref.read(walletMoveStoreProvider).importMany(data.walletMoves);
+            await _ref.read(walletMoveStoreProvider).importMany(data.walletMoves) +
+            await _ref.read(tripStoreProvider).importMany(data.trips);
     return ImportResult(
       othersAdded: othersAdded,
       transactionsAdded: txAdded,

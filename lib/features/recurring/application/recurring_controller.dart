@@ -85,6 +85,7 @@ class RecurringActions {
       paymentMethod: txn.paymentMethod,
       notes: txn.notes,
       walletId: txn.walletId,
+      tripId: txn.tripId,
       baseAmount: txn.baseAmount,
       createdAt: txn.createdAt,
     );

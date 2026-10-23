@@ -29,6 +29,8 @@ import 'package:smartbudget/features/recurring/presentation/recurring_auto_poste
 import 'package:smartbudget/features/recurring/presentation/recurring_page.dart';
 import 'package:smartbudget/features/reports/presentation/reports_page.dart';
 import 'package:smartbudget/features/seasons/presentation/seasons_page.dart';
+import 'package:smartbudget/features/trips/presentation/trips_page.dart';
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/features/settings/presentation/settings_page.dart';
 import 'package:smartbudget/features/shell/app_shell.dart';
 import 'package:smartbudget/features/shell/nav_destinations.dart';
@@ -142,6 +144,12 @@ GoRouter buildRouter(Ref ref) {
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const NoTransitionPage<void>(child: SeasonsPage()),
           ),
+          if (AppEnv.smartTrip)
+            GoRoute(
+              path: '/trips',
+              pageBuilder: (BuildContext context, GoRouterState state) =>
+                  const NoTransitionPage<void>(child: TripsPage()),
+            ),
           GoRoute(
             path: '/daret',
             pageBuilder: (BuildContext context, GoRouterState state) =>
@@ -242,6 +250,7 @@ const Set<AppSection> _implementedSections = <AppSection>{
   AppSection.monthlyBudget,
   AppSection.goals,
   AppSection.seasons,
+  AppSection.trips,
   AppSection.daret,
   AppSection.portfolio,
   AppSection.debts,

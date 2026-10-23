@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Logical app sections. Order + grouping is a UX decision (not bound to the
@@ -15,6 +16,7 @@ enum AppSection {
   recurring,
   monthlyBudget,
   goals,
+  trips,
   seasons,
   daret,
   portfolio,
@@ -32,9 +34,9 @@ enum AppSection {
 }
 
 /// Sidebar groups, ordered by how often people need them: every day, then
-/// planning and saving, then insight, occasional plans, markets, and finally
-/// account & help.
-enum NavGroup { daily, planning, insights, special, markets, system }
+/// planning and saving, then insight, occasional plans, advanced features,
+/// markets, and finally account & help.
+enum NavGroup { daily, planning, insights, special, advanced, markets, system }
 
 /// Immutable descriptor for a navigation destination.
 class NavDestination {
@@ -62,6 +64,7 @@ class NavDestination {
         AppSection.recurring => l.navRecurring,
         AppSection.monthlyBudget => l.navMonthlyBudget,
         AppSection.goals => l.navGoals,
+        AppSection.trips => l.navTrips,
         AppSection.seasons => l.navSeasons,
         AppSection.daret => l.navDaret,
         AppSection.portfolio => l.navPortfolio,
@@ -81,7 +84,18 @@ class NavDestination {
 
 /// The canonical navigation list (outline icons; no emoji).
 abstract final class AppNav {
-  static const List<NavDestination> destinations = <NavDestination>[
+  /// What the menu, search and routes offer: everything, less features not
+  /// launched in this build.
+  static List<NavDestination> get destinations => <NavDestination>[
+        for (final NavDestination d in all)
+          if (isLaunched(d) || AppEnv.smartTrip) d,
+      ];
+
+  /// In every build (SmartTrip is still in testing).
+  static bool isLaunched(NavDestination d) => d.section != AppSection.trips;
+
+  /// Every destination, launched or not.
+  static const List<NavDestination> all = <NavDestination>[
     // Every day: see where you stand, record, check the accounts.
     NavDestination(
       section: AppSection.dashboard,
@@ -191,6 +205,14 @@ abstract final class AppNav {
       route: '/zakat',
       icon: Icons.mosque_outlined,
       group: NavGroup.special,
+    ),
+    // Advanced features.
+    NavDestination(
+      section: AppSection.trips,
+      route: '/trips',
+      icon: Icons.flight_takeoff_outlined,
+      group: NavGroup.advanced,
+      isNew: true,
     ),
     // Markets & currencies.
     NavDestination(

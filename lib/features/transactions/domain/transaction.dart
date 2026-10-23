@@ -22,6 +22,7 @@ class Transaction {
     this.paymentMethod,
     this.notes,
     this.walletId,
+    this.tripId,
     this.baseAmount,
     required this.createdAt,
   });
@@ -37,6 +38,9 @@ class Transaction {
 
   /// The wallet it moved money in or out of; null = the "General" wallet.
   final String? walletId;
+
+  /// The trip it was spent on, if any (SmartTrip).
+  final String? tripId;
 
   /// For an amount in a foreign currency: its value in the base currency at
   /// the rate of the day it was recorded, so reports can include it without
@@ -63,6 +67,7 @@ class Transaction {
       paymentMethod: paymentMethod,
       notes: notes,
       walletId: walletId,
+      tripId: tripId,
       createdAt: createdAt,
     );
   }
@@ -78,6 +83,8 @@ class Transaction {
     String? notes,
     String? walletId,
     bool clearWallet = false,
+    String? tripId,
+    bool clearTrip = false,
     Money? baseAmount,
     bool clearBase = false,
   }) {
@@ -91,6 +98,7 @@ class Transaction {
       paymentMethod: paymentMethod ?? this.paymentMethod,
       notes: notes ?? this.notes,
       walletId: clearWallet ? null : walletId ?? this.walletId,
+      tripId: clearTrip ? null : tripId ?? this.tripId,
       baseAmount: clearBase ? null : baseAmount ?? this.baseAmount,
       createdAt: createdAt,
     );
@@ -107,6 +115,7 @@ class Transaction {
         'paymentMethod': paymentMethod,
         'notes': notes,
         if (walletId != null) 'walletId': walletId,
+        if (tripId != null) 'tripId': tripId,
         if (baseAmount != null) 'baseMinor': baseAmount!.minorUnits,
         if (baseAmount != null) 'baseCurrency': baseAmount!.currencyCode,
         'createdAt': createdAt.toIso8601String(),
@@ -129,6 +138,8 @@ class Transaction {
       paymentMethod: json['paymentMethod'] as String?,
       notes: json['notes'] as String?,
       walletId: json['walletId'] as String?,
+      // Absent in records made before trips: they simply have none.
+      tripId: json['tripId'] as String?,
       baseAmount: json['baseMinor'] == null
           ? null
           : Money((json['baseMinor'] as num).toInt(),

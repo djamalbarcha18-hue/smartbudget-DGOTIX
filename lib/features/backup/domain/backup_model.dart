@@ -10,6 +10,7 @@ import 'package:smartbudget/features/portfolio/domain/project.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/seasons/domain/season.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/trips/domain/trip.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
 
 /// A complete, portable snapshot of one user's data.
@@ -34,6 +35,7 @@ class BackupData {
     this.challenges = const <Challenge>[],
     this.wallets = const <Wallet>[],
     this.walletMoves = const <WalletMove>[],
+    this.trips = const <Trip>[],
   });
 
   /// Bump when the on-disk shape changes in a breaking way. Adding optional
@@ -56,6 +58,7 @@ class BackupData {
   final List<Challenge> challenges;
   final List<Wallet> wallets;
   final List<WalletMove> walletMoves;
+  final List<Trip> trips;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'schemaVersion': schemaVersion,
@@ -74,6 +77,7 @@ class BackupData {
         'challenges': challenges.map((Challenge c) => c.toJson()).toList(),
         'wallets': wallets.map((Wallet w) => w.toJson()).toList(),
         'walletMoves': walletMoves.map((WalletMove m) => m.toJson()).toList(),
+        'trips': trips.map((Trip t) => t.toJson()).toList(),
         'customCategories': <String, dynamic>{
           'income': customIncome,
           'expense': customExpense,
@@ -105,6 +109,7 @@ class BackupData {
       challenges: _list<Challenge>(json['challenges'], Challenge.fromJson),
       wallets: _list<Wallet>(json['wallets'], Wallet.fromJson),
       walletMoves: _list<WalletMove>(json['walletMoves'], WalletMove.fromJson),
+      trips: _list<Trip>(json['trips'], Trip.fromJson),
     );
   }
 
@@ -144,6 +149,7 @@ abstract final class BackupCodec {
       'darets',
       'challenges',
       'wallets',
+      'trips',
     ];
     if (!sections.any(obj.containsKey)) {
       throw const FormatException('Backup file is missing expected data.');

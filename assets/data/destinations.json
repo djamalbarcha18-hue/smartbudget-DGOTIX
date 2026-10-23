@@ -1,0 +1,276 @@
+[
+  {
+    "id": "makkah",
+    "order": 1,
+    "country": "SA",
+    "icon": "mosque",
+    "image": "assets/images/destinations/makkah.webp",
+    "names": {
+      "ar": "مكة المكرمة",
+      "en": "Makkah",
+      "fr": "La Mecque",
+      "id": "Mekah",
+      "es": "La Meca",
+      "tr": "Mekke",
+      "ms": "Makkah",
+      "ur": "مکہ مکرمہ"
+    },
+    "aliases": [
+      "Mecca",
+      "Makka",
+      "مكة"
+    ]
+  },
+  {
+    "id": "madinah",
+    "order": 2,
+    "country": "SA",
+    "icon": "mosque",
+    "image": "assets/images/destinations/madinah.webp",
+    "names": {
+      "ar": "المدينة المنورة",
+      "en": "Madinah",
+      "fr": "Médine",
+      "id": "Madinah",
+      "es": "Medina",
+      "tr": "Medine",
+      "ms": "Madinah",
+      "ur": "مدینہ منورہ"
+    },
+    "aliases": [
+      "Medina",
+      "المدينة"
+    ]
+  },
+  {
+    "id": "bangkok",
+    "order": 3,
+    "country": "TH",
+    "icon": "temple",
+    "image": "assets/images/destinations/bangkok.webp",
+    "names": {
+      "ar": "بانكوك",
+      "en": "Bangkok",
+      "fr": "Bangkok",
+      "id": "Bangkok",
+      "es": "Bangkok",
+      "tr": "Bangkok",
+      "ms": "Bangkok",
+      "ur": "بینکاک"
+    }
+  },
+  {
+    "id": "london",
+    "order": 4,
+    "country": "GB",
+    "icon": "city",
+    "image": "assets/images/destinations/london.webp",
+    "names": {
+      "ar": "لندن",
+      "en": "London",
+      "fr": "Londres",
+      "id": "London",
+      "es": "Londres",
+      "tr": "Londra",
+      "ms": "London",
+      "ur": "لندن"
+    }
+  },
+  {
+    "id": "istanbul",
+    "order": 5,
+    "country": "TR",
+    "icon": "mosque",
+    "image": "assets/images/destinations/istanbul.webp",
+    "names": {
+      "ar": "إسطنبول",
+      "en": "Istanbul",
+      "fr": "Istanbul",
+      "id": "Istanbul",
+      "es": "Estambul",
+      "tr": "İstanbul",
+      "ms": "Istanbul",
+      "ur": "استنبول"
+    },
+    "aliases": [
+      "اسطنبول"
+    ]
+  },
+  {
+    "id": "dubai",
+    "order": 6,
+    "country": "AE",
+    "icon": "tower",
+    "image": "assets/images/destinations/dubai.webp",
+    "names": {
+      "ar": "دبي",
+      "en": "Dubai",
+      "fr": "Dubaï",
+      "id": "Dubai",
+      "es": "Dubái",
+      "tr": "Dubai",
+      "ms": "Dubai",
+      "ur": "دبئی"
+    }
+  },
+  {
+    "id": "paris",
+    "order": 7,
+    "country": "FR",
+    "icon": "museum",
+    "image": "assets/images/destinations/paris.webp",
+    "names": {
+      "ar": "باريس",
+      "en": "Paris",
+      "fr": "Paris",
+      "id": "Paris",
+      "es": "París",
+      "tr": "Paris",
+      "ms": "Paris",
+      "ur": "پیرس"
+    }
+  },
+  {
+    "id": "kuala_lumpur",
+    "order": 8,
+    "country": "MY",
+    "icon": "tower",
+    "image": "assets/images/destinations/kuala_lumpur.webp",
+    "names": {
+      "ar": "كوالالمبور",
+      "en": "Kuala Lumpur",
+      "fr": "Kuala Lumpur",
+      "id": "Kuala Lumpur",
+      "es": "Kuala Lumpur",
+      "tr": "Kuala Lumpur",
+      "ms": "Kuala Lumpur",
+      "ur": "کوالالمپور"
+    },
+    "aliases": [
+      "KL",
+      "كوالا لمبور"
+    ]
+  },
+  {
+    "id": "rome",
+    "order": 9,
+    "country": "IT",
+    "icon": "columns",
+    "image": "assets/images/destinations/rome.webp",
+    "names": {
+      "ar": "روما",
+      "en": "Rome",
+      "fr": "Rome",
+      "id": "Roma",
+      "es": "Roma",
+      "tr": "Roma",
+      "ms": "Rom",
+      "ur": "روم"
+    }
+  },
+  {
+    "id": "barcelona",
+    "order": 10,
+    "country": "ES",
+    "icon": "church",
+    "image": "assets/images/destinations/barcelona.webp",
+    "names": {
+      "ar": "برشلونة",
+      "en": "Barcelona",
+      "fr": "Barcelone",
+      "id": "Barcelona",
+      "es": "Barcelona",
+      "tr": "Barselona",
+      "ms": "Barcelona",
+      "ur": "بارسلونا"
+    }
+  },
+  {
+    "id": "marrakech",
+    "order": 11,
+    "country": "MA",
+    "icon": "souk",
+    "image": "assets/images/destinations/marrakech.webp",
+    "names": {
+      "ar": "مراكش",
+      "en": "Marrakech",
+      "fr": "Marrakech",
+      "id": "Marrakesh",
+      "es": "Marrakech",
+      "tr": "Marakeş",
+      "ms": "Marrakesh",
+      "ur": "مراکش"
+    },
+    "aliases": [
+      "Marrakesh"
+    ]
+  },
+  {
+    "id": "cairo",
+    "order": 12,
+    "country": "EG",
+    "icon": "pyramid",
+    "image": "assets/images/destinations/cairo.webp",
+    "names": {
+      "ar": "القاهرة",
+      "en": "Cairo",
+      "fr": "Le Caire",
+      "id": "Kairo",
+      "es": "El Cairo",
+      "tr": "Kahire",
+      "ms": "Kaherah",
+      "ur": "قاہرہ"
+    }
+  },
+  {
+    "id": "bali",
+    "order": 13,
+    "country": "ID",
+    "icon": "beach",
+    "image": "assets/images/destinations/bali.webp",
+    "names": {
+      "ar": "بالي",
+      "en": "Bali",
+      "fr": "Bali",
+      "id": "Bali",
+      "es": "Bali",
+      "tr": "Bali",
+      "ms": "Bali",
+      "ur": "بالی"
+    }
+  },
+  {
+    "id": "tunis",
+    "order": 14,
+    "country": "TN",
+    "icon": "sea",
+    "image": "assets/images/destinations/tunis.webp",
+    "names": {
+      "ar": "تونس",
+      "en": "Tunis",
+      "fr": "Tunis",
+      "id": "Tunis",
+      "es": "Túnez",
+      "tr": "Tunus",
+      "ms": "Tunis",
+      "ur": "تیونس"
+    }
+  },
+  {
+    "id": "tbilisi",
+    "order": 15,
+    "country": "GE",
+    "icon": "mountain",
+    "image": "assets/images/destinations/tbilisi.webp",
+    "names": {
+      "ar": "تبليسي",
+      "en": "Tbilisi",
+      "fr": "Tbilissi",
+      "id": "Tbilisi",
+      "es": "Tiflis",
+      "tr": "Tiflis",
+      "ms": "Tbilisi",
+      "ur": "تبلیسی"
+    }
+  }
+]

@@ -47,6 +47,7 @@ abstract final class SyncMerge {
     'challenges',
     'wallets',
     'walletMoves',
+    'trips',
   ];
 
   /// Deletions are remembered this long, then forgotten.

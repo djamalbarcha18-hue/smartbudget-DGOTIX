@@ -109,6 +109,9 @@ flutter:
 
   assets:
     - assets/brand/
+    # Trip destinations (SmartTrip) and their optional pictures.
+    - assets/data/
+    - assets/images/destinations/
     - assets/flags/
     # Bundled Arabic font for offline PDF export (Tajawal, OFL — matches the
     # app's Arabic typography). See docs/THIRD_PARTY_LICENSES.md.
