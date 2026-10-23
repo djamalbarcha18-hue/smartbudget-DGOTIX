@@ -24,6 +24,7 @@ import 'package:smartbudget/features/trips/domain/destination.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
 import 'package:smartbudget/features/trips/domain/trip_report.dart';
 import 'package:smartbudget/features/trips/presentation/trip_editor_sheet.dart';
+import 'package:smartbudget/features/trips/presentation/trip_share_page.dart';
 import 'package:smartbudget/features/trips/presentation/trip_text.dart';
 import 'package:smartbudget/features/trips/presentation/trip_widgets.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -293,11 +294,28 @@ class TripHomeCard extends ConsumerWidget {
         ),
       ],
       const SizedBox(height: DsSpacing.md),
-      DsButton(
-        label: l.tripViewSummary,
-        icon: Icons.insights_outlined,
-        variant: DsButtonVariant.secondary,
-        onPressed: () => context.push('/trips/${trip.id}'),
+      // The moment to share: one tap from the home screen.
+      Row(
+        children: <Widget>[
+          Expanded(
+            child: DsButton(
+              label: l.tripViewSummary,
+              icon: Icons.insights_outlined,
+              variant: DsButtonVariant.secondary,
+              onPressed: () => context.push('/trips/${trip.id}'),
+            ),
+          ),
+          if (r.hasExpenses) ...<Widget>[
+            const SizedBox(width: DsSpacing.sm),
+            Expanded(
+              child: DsButton(
+                label: l.tripShareTitle,
+                icon: Icons.ios_share_rounded,
+                onPressed: () => TripSharePage.open(context, tripId: trip.id),
+              ),
+            ),
+          ],
+        ],
       ),
     ];
   }

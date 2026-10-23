@@ -1327,5 +1327,12 @@
   "tripCountryEG": "Mısır",
   "tripCountryID": "Endonezya",
   "tripCountryTN": "Tunus",
-  "tripCountryGE": "Gürcistan"
+  "tripCountryGE": "Gürcistan",
+  "tripAvgSurplus": "Aylık ortalama artınız: {amount}",
+  "tripNoSurplus": "Son aylarda artı yok; size uygun bir bütçe seçin.",
+  "tripCanSave": "Seyahate kadar yaklaşık {amount} biriktirebilirsiniz.",
+  "tripNeedMore": "Bunun için ayda {amount} gerekir; bu, olağan artınızdan fazla.",
+  "tripWithinSurplus": "Ayda {amount}; olağan artınızın içinde.",
+  "tripSuggestBudget": "Bütçe öner",
+  "tripShareTextSaved": "{place} seyahatimde bütçemin %{pct} kadarını tasarruf ettim, SmartBudget ile takip ettim."
 }

@@ -91,7 +91,8 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
     }
   }
 
-  Future<void> _share(AppLocalizations l, String place) async {
+  Future<void> _share(
+      AppLocalizations l, String place, TripReport report) async {
     setState(() => _busy = true);
     try {
       final Uint8List? png = await capture();
@@ -100,7 +101,10 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
         return;
       }
       final bool ok = await shareTripImage(png,
-          text: '${l.tripShareText(place)} ${AppConfig.appShareUrl}',
+          // The message follows the result: the saving when there is one.
+          text:
+              '${report.underBudget ? l.tripShareTextSaved(report.savedPct!, place) : l.tripShareText(place)} '
+              '${AppConfig.appShareUrl}',
           filename: 'smarttrip.png');
       if (!ok) _say(l.tripShareFailed);
     } finally {
@@ -265,7 +269,7 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
               icon:
                   _busy ? Icons.hourglass_top_rounded : Icons.ios_share_rounded,
               expand: true,
-              onPressed: _busy ? null : () => _share(l, place),
+              onPressed: _busy ? null : () => _share(l, place, report),
             ),
           ),
         ],

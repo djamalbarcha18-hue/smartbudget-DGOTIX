@@ -1327,5 +1327,12 @@
   "tripCountryEG": "Egipto",
   "tripCountryID": "Indonesia",
   "tripCountryTN": "Túnez",
-  "tripCountryGE": "Georgia"
+  "tripCountryGE": "Georgia",
+  "tripAvgSurplus": "Tu excedente mensual medio: {amount}",
+  "tripNoSurplus": "Sin excedente en los últimos meses: elige un presupuesto que te convenga.",
+  "tripCanSave": "Hasta el viaje podrías apartar unos {amount}.",
+  "tripNeedMore": "Necesitas {amount} al mes, más que tu excedente habitual.",
+  "tripWithinSurplus": "{amount} al mes, dentro de tu excedente habitual.",
+  "tripSuggestBudget": "Sugerir un presupuesto",
+  "tripShareTextSaved": "Ahorré un {pct} % del presupuesto de mi viaje a {place}, seguido con SmartBudget."
 }

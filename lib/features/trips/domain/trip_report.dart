@@ -1,5 +1,6 @@
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
+import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
 
@@ -201,5 +202,82 @@ abstract final class TripDashboard {
     if (days < minDaysForMonthly) return null;
     final int months = days ~/ 30;
     return Money((left / months).ceil(), goal.target.currencyCode);
+  }
+}
+
+/// What the user usually has left at the end of a month, and what that could
+/// put aside before a trip: a hint next to the trip budget, never imposed.
+class TripBudgetAdvice {
+  const TripBudgetAdvice({
+    required this.monthlySurplus,
+    required this.monthsCounted,
+    required this.monthsLeft,
+  });
+
+  /// Complete months looked back at (those with any transaction).
+  static const int lookBack = 6;
+
+  /// Average of income − expenses over [monthsCounted] recent complete
+  /// months (zero or less: no surplus).
+  final Money monthlySurplus;
+  final int monthsCounted;
+
+  /// Whole months until the trip starts.
+  final int monthsLeft;
+
+  String get _currency => monthlySurplus.currencyCode;
+
+  bool get hasSurplus => monthlySurplus.minorUnits > 0;
+
+  /// The surplus of every month left, or null when there is none to count.
+  Money? get canSave => hasSurplus && monthsLeft > 0
+      ? Money(monthlySurplus.minorUnits * monthsLeft, _currency)
+      : null;
+
+  /// [canSave] in round figures (whole units; tens from 100 up).
+  Money? get suggestedBudget {
+    final Money? m = canSave;
+    if (m == null) return null;
+    final int per = m.currency.minorPerUnit;
+    int units = m.minorUnits ~/ per;
+    if (units >= 100) units -= units % 10;
+    return units <= 0 ? null : Money(units * per, _currency);
+  }
+
+  /// What [budget] needs each month until the trip; null within a month.
+  Money? neededPerMonth(Money budget) => monthsLeft > 0
+      ? Money((budget.minorUnits / monthsLeft).ceil(), budget.currencyCode)
+      : null;
+
+  /// Whether [budget] fits in the usual surplus (null: can't tell).
+  bool? fits(Money budget) {
+    final Money? need = neededPerMonth(budget);
+    if (need == null || budget.currencyCode != _currency) return null;
+    return need.minorUnits <= monthlySurplus.minorUnits;
+  }
+
+  /// From the last [lookBack] complete months before [now] that have any
+  /// transaction, in [currency]; null when there is none yet.
+  static TripBudgetAdvice? of(List<Transaction> txns, String currency,
+      DateTime now, DateTime tripStart) {
+    int total = 0;
+    int counted = 0;
+    for (int back = 1; back <= lookBack; back++) {
+      final DateTime month = DateTime(now.year, now.month - back);
+      final List<Transaction> inMonth =
+          FinanceCalculator.forMonth(txns, month.year, month.month);
+      final FinanceSummary s = FinanceCalculator.summarize(inMonth, currency);
+      if (s.count == 0) continue;
+      total += s.net.minorUnits;
+      counted++;
+    }
+    if (counted == 0) return null;
+    final DateTime today = DateTime(now.year, now.month, now.day);
+    final int days = tripStart.difference(today).inDays;
+    return TripBudgetAdvice(
+      monthlySurplus: Money((total / counted).round(), currency),
+      monthsCounted: counted,
+      monthsLeft: days < 30 ? 0 : days ~/ 30,
+    );
   }
 }

@@ -1527,5 +1527,12 @@
   "tripCountryEG": "مصر",
   "tripCountryID": "إندونيسيا",
   "tripCountryTN": "تونس",
-  "tripCountryGE": "جورجيا"
+  "tripCountryGE": "جورجيا",
+  "tripAvgSurplus": "متوسط فائضك الشهري: {amount}",
+  "tripNoSurplus": "لا يظهر فائض في الأشهر الأخيرة، فاختر ميزانية تناسبك.",
+  "tripCanSave": "حتى موعد الرحلة يمكنك ادّخار نحو {amount}.",
+  "tripNeedMore": "تحتاج {amount} شهريًا، وهذا أكثر من فائضك المعتاد.",
+  "tripWithinSurplus": "{amount} شهريًا، ضمن فائضك المعتاد.",
+  "tripSuggestBudget": "اقترح ميزانية",
+  "tripShareTextSaved": "وفّرت {pct}% من ميزانية رحلتي إلى {place}، تتبّعتها مع SmartBudget."
 }

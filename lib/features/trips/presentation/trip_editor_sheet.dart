@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/amount_dialog.dart';
@@ -11,10 +12,14 @@ import 'package:smartbudget/design_system/components/currency_suffix.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
+import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
+import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
+import 'package:smartbudget/features/trips/domain/trip_report.dart';
 import 'package:smartbudget/features/trips/presentation/destination_picker.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -254,6 +259,7 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
                   suffixIcon: CurrencySuffix(currency),
                 ),
               ),
+              _BudgetAdvice(budget: _budget, currency: currency, start: _start),
               const SizedBox(height: DsSpacing.lg),
               DsButton(
                 label: l.save,
@@ -265,6 +271,105 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Under the budget: the usual monthly surplus, what it could put aside by
+/// the trip, whether the typed budget fits, and "Suggest a budget". Only a
+/// hint, worked out on the device; nothing when there is no history yet.
+class _BudgetAdvice extends ConsumerWidget {
+  const _BudgetAdvice(
+      {required this.budget, required this.currency, required this.start});
+  final TextEditingController budget;
+  final String currency;
+  final DateTime start;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<Transaction> txns =
+        ref.watch(transactionsProvider).valueOrNull ?? const <Transaction>[];
+    final TripBudgetAdvice? advice =
+        TripBudgetAdvice.of(txns, currency, AppClock.now(), start);
+    if (advice == null) return const SizedBox.shrink();
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final TextStyle line = (t.bodySmall ?? const TextStyle());
+
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: budget,
+      builder: (BuildContext context, TextEditingValue v, _) {
+        final double? typed = parseAmount(v.text);
+        final Money? planned =
+            typed == null ? null : Money.fromDouble(typed, currency);
+        final bool? fits = planned == null ? null : advice.fits(planned);
+        final Money? need =
+            planned == null ? null : advice.neededPerMonth(planned);
+        final Money? suggestion = advice.suggestedBudget;
+        return Container(
+          margin: const EdgeInsetsDirectional.only(top: DsSpacing.sm),
+          padding: const EdgeInsetsDirectional.fromSTEB(
+              DsSpacing.md, DsSpacing.sm, DsSpacing.md, DsSpacing.xs),
+          decoration: BoxDecoration(
+            color: c.surfaceMuted,
+            borderRadius: DsRadius.brMd,
+            border: Border.all(color: c.border),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Icon(Icons.lightbulb_outline_rounded,
+                      size: 16, color: c.brand),
+                  const SizedBox(width: DsSpacing.xs),
+                  Expanded(
+                    child: Text(
+                      advice.hasSurplus
+                          ? l.tripAvgSurplus(
+                              MoneyFormatter.format(advice.monthlySurplus))
+                          : l.tripNoSurplus,
+                      style: line,
+                    ),
+                  ),
+                ],
+              ),
+              if (advice.canSave != null) ...<Widget>[
+                const SizedBox(height: DsSpacing.xs),
+                Text(l.tripCanSave(MoneyFormatter.format(advice.canSave!)),
+                    style: line.copyWith(color: c.textMuted)),
+              ],
+              if (fits != null &&
+                  need != null &&
+                  advice.hasSurplus) ...<Widget>[
+                const SizedBox(height: DsSpacing.xs),
+                Text(
+                  fits
+                      ? l.tripWithinSurplus(MoneyFormatter.format(need))
+                      : l.tripNeedMore(MoneyFormatter.format(need)),
+                  style: line.copyWith(
+                      color: fits ? c.income : c.warning,
+                      fontWeight: FontWeight.w600),
+                ),
+              ],
+              if (suggestion != null)
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: TextButton.icon(
+                    icon: const Icon(Icons.auto_fix_high_outlined, size: 16),
+                    label: Text(l.tripSuggestBudget),
+                    onPressed: () =>
+                        budget.text = suggestion.asDouble.toStringAsFixed(0),
+                  ),
+                )
+              else
+                const SizedBox(height: DsSpacing.xs),
+            ],
+          ),
+        );
+      },
     );
   }
 }

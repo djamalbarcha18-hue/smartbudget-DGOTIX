@@ -24,6 +24,7 @@ import 'package:smartbudget/features/trips/data/trip_photos.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
 import 'package:smartbudget/features/trips/domain/trip_report.dart';
+import 'package:smartbudget/features/trips/presentation/trip_editor_sheet.dart';
 import 'package:smartbudget/features/trips/presentation/trip_home_card.dart';
 import 'package:smartbudget/features/trips/presentation/trip_share_card.dart';
 import 'package:smartbudget/features/trips/presentation/trip_share_page.dart';
@@ -183,6 +184,72 @@ void main() {
     });
   });
 
+  // 1,000 in and 600 out in each of the last three months: 400 a month.
+  List<Transaction> history() => <Transaction>[
+        for (int back = 1; back <= 3; back++) ...<Transaction>[
+          Transaction(
+            id: 'in$back',
+            date: DateTime(now.year, now.month - back, 5),
+            type: TransactionType.income,
+            category: 'راتب أساسي',
+            amount: const Money(100000, 'USD'),
+            createdAt: DateTime(2026),
+          ),
+          Transaction(
+            id: 'out$back',
+            date: DateTime(now.year, now.month - back, 9),
+            type: TransactionType.expense,
+            category: 'السكن',
+            amount: const Money(60000, 'USD'),
+            createdAt: DateTime(2026),
+          ),
+        ],
+      ];
+
+  group('budget hint from the usual surplus', () {
+    test('average surplus, what it puts aside, whether a budget fits', () {
+      final TripBudgetAdvice a = TripBudgetAdvice.of(
+          history(), 'USD', now, today.add(const Duration(days: 95)))!;
+      expect(a.monthsCounted, 3);
+      expect(a.monthlySurplus, const Money(40000, 'USD'));
+      expect(a.monthsLeft, 3);
+      expect(a.canSave, const Money(120000, 'USD'));
+      expect(a.suggestedBudget, const Money(120000, 'USD'));
+      expect(a.fits(const Money(150000, 'USD')), isFalse);
+      expect(a.neededPerMonth(const Money(150000, 'USD')),
+          const Money(50000, 'USD'));
+      expect(a.fits(const Money(90000, 'USD')), isTrue);
+    });
+
+    test('no history: no hint; no surplus: nothing to suggest', () {
+      expect(TripBudgetAdvice.of(const <Transaction>[], 'USD', now, today),
+          isNull);
+      final List<Transaction> losing = <Transaction>[
+        Transaction(
+          id: 'x',
+          date: DateTime(now.year, now.month - 1, 3),
+          type: TransactionType.expense,
+          category: 'السكن',
+          amount: const Money(50000, 'USD'),
+          createdAt: DateTime(2026),
+        ),
+      ];
+      final TripBudgetAdvice a = TripBudgetAdvice.of(
+          losing, 'USD', now, today.add(const Duration(days: 90)))!;
+      expect(a.hasSurplus, isFalse);
+      expect(a.canSave, isNull);
+      expect(a.suggestedBudget, isNull);
+    });
+
+    test('a trip within a month: no monthly figures', () {
+      final TripBudgetAdvice a = TripBudgetAdvice.of(
+          history(), 'USD', now, today.add(const Duration(days: 10)))!;
+      expect(a.monthsLeft, 0);
+      expect(a.canSave, isNull);
+      expect(a.fits(const Money(100000, 'USD')), isNull);
+    });
+  });
+
   // ---- Screens ---------------------------------------------------------------
 
   setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
@@ -339,11 +406,26 @@ void main() {
       expect(find.text('No expenses are linked to this trip yet.'),
           findsOneWidget);
       expect(find.text('Add an expense'), findsOneWidget);
-      final ButtonStyleButton share = tester.widget<ButtonStyleButton>(
-          find.ancestor(
-              of: find.text('Share'),
-              matching: find.bySubtype<ButtonStyleButton>()));
-      expect(share.onPressed, isNull);
+      expect(find.text('Share your trip'), findsNothing);
+    });
+
+    testWidgets('shared only once the trip is over',
+        (WidgetTester tester) async {
+      await pump(tester, const TripSummaryPage(tripId: 'a'),
+          prefs: stored(<Trip>[trip('a', budget: 1500)], five)); // under way
+      expect(find.text('Share your trip'), findsNothing);
+    });
+
+    testWidgets('an ended trip: share opens the preview',
+        (WidgetTester tester) async {
+      await pump(tester, const TripSummaryPage(tripId: 'a'),
+          size: const Size(390, 1600),
+          prefs:
+              stored(<Trip>[trip('a', from: -9, to: -3, budget: 1500)], five));
+      await tester.ensureVisible(find.text('Share your trip'));
+      await tester.tap(find.text('Share your trip'));
+      await tester.pumpAndSettle();
+      expect(find.byType(TripSharePage), findsOneWidget);
     });
 
     for (final (Locale, TextDirection) v in const <(Locale, TextDirection)>[
@@ -359,6 +441,61 @@ void main() {
         expect(tester.takeException(), isNull);
       });
     }
+  });
+
+  group('planning a trip', () {
+    testWidgets('the surplus hint, a suggestion, and a budget too big',
+        (WidgetTester tester) async {
+      await pump(tester, const SingleChildScrollView(child: TripEditorSheet()),
+          size: const Size(390, 1400),
+          prefs: stored(const <Trip>[], history()));
+      expect(find.text('Your average monthly surplus: ${usd(400)}'),
+          findsOneWidget);
+      // Default dates start today: within a month, nothing to put aside.
+      expect(find.textContaining('put aside'), findsNothing);
+    });
+
+    testWidgets('three months ahead: what it puts aside, suggest, too big',
+        (WidgetTester tester) async {
+      final Trip far = trip('a', from: 95, to: 100);
+      await pump(
+          tester, SingleChildScrollView(child: TripEditorSheet(existing: far)),
+          size: const Size(390, 1400), prefs: stored(<Trip>[far], history()));
+      expect(find.text('By the trip you could put aside about ${usd(1200)}.'),
+          findsOneWidget);
+      await tester.tap(find.text('Suggest a budget'));
+      await tester.pumpAndSettle();
+      expect(find.widgetWithText(TextField, '1200'), findsOneWidget);
+      expect(find.text('${usd(400)} a month, within your usual surplus.'),
+          findsOneWidget);
+      await tester.enterText(find.widgetWithText(TextField, '1200'), '3000');
+      await tester.pumpAndSettle();
+      expect(
+          find.text(
+              'This needs ${usd(1000)} a month, more than your usual surplus.'),
+          findsOneWidget);
+    });
+  });
+
+  group('sharing at the right moment', () {
+    testWidgets('the "summary ready" card offers to share in one tap',
+        (WidgetTester tester) async {
+      await pump(tester, const SingleChildScrollView(child: TripHomeCard()),
+          prefs:
+              stored(<Trip>[trip('a', from: -9, to: -3, budget: 1500)], five));
+      expect(find.text('Share your trip'), findsOneWidget);
+      await tester.tap(find.text('Share your trip'));
+      await tester.pumpAndSettle();
+      expect(find.byType(TripSharePage), findsOneWidget);
+    });
+
+    testWidgets('no expenses: nothing to share yet',
+        (WidgetTester tester) async {
+      await pump(tester, const SingleChildScrollView(child: TripHomeCard()),
+          prefs: stored(<Trip>[trip('a', from: -9, to: -3, budget: 1500)],
+              const <Transaction>[]));
+      expect(find.text('Share your trip'), findsNothing);
+    });
   });
 
   group('share card', () {
@@ -462,17 +599,13 @@ void main() {
       expect(userPhoto, findsNothing);
       await tester.tap(find.text('From the gallery'));
       await tester.pumpAndSettle();
-      expect(
-          userPhoto,
-          findsOneWidget);
+      expect(userPhoto, findsOneWidget);
       await settle(tester);
       final img.Image decoded = img.decodePng(await capture(tester))!;
       expect((decoded.width, decoded.height), (1080, 1920));
       await tester.tap(find.text('Default'));
       await tester.pumpAndSettle();
-      expect(
-          userPhoto,
-          findsNothing);
+      expect(userPhoto, findsNothing);
     });
 
     testWidgets('refused photo access: one sentence',

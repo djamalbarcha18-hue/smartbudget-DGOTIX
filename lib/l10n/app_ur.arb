@@ -1327,5 +1327,12 @@
   "tripCountryEG": "مصر",
   "tripCountryID": "انڈونیشیا",
   "tripCountryTN": "تیونس",
-  "tripCountryGE": "جارجیا"
+  "tripCountryGE": "جارجیا",
+  "tripAvgSurplus": "آپ کی اوسط ماہانہ بچت: {amount}",
+  "tripNoSurplus": "حالیہ مہینوں میں بچت نہیں، اس لیے اپنی گنجائش کے مطابق بجٹ چنیں۔",
+  "tripCanSave": "سفر تک آپ تقریباً {amount} بچا سکتے ہیں۔",
+  "tripNeedMore": "اس کے لیے ماہانہ {amount} چاہیے، جو آپ کی معمول کی بچت سے زیادہ ہے۔",
+  "tripWithinSurplus": "ماہانہ {amount}، آپ کی معمول کی بچت کے اندر۔",
+  "tripSuggestBudget": "بجٹ تجویز کریں",
+  "tripShareTextSaved": "میں نے {place} کے سفر میں اپنے بجٹ کا {pct}% بچایا، SmartBudget سے ٹریک کیا۔"
 }

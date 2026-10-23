@@ -1561,5 +1561,17 @@
   "tripCountryEG": "Egypt",
   "tripCountryID": "Indonesia",
   "tripCountryTN": "Tunisia",
-  "tripCountryGE": "Georgia"
+  "tripCountryGE": "Georgia",
+  "tripAvgSurplus": "Your average monthly surplus: {amount}",
+  "@tripAvgSurplus": {"placeholders": {"amount": {"type": "String"}}},
+  "tripNoSurplus": "No surplus in recent months, so pick a budget that suits you.",
+  "tripCanSave": "By the trip you could put aside about {amount}.",
+  "@tripCanSave": {"placeholders": {"amount": {"type": "String"}}},
+  "tripNeedMore": "This needs {amount} a month, more than your usual surplus.",
+  "@tripNeedMore": {"placeholders": {"amount": {"type": "String"}}},
+  "tripWithinSurplus": "{amount} a month, within your usual surplus.",
+  "@tripWithinSurplus": {"placeholders": {"amount": {"type": "String"}}},
+  "tripSuggestBudget": "Suggest a budget",
+  "tripShareTextSaved": "I saved {pct}% of my budget on my trip to {place}, tracked with SmartBudget.",
+  "@tripShareTextSaved": {"placeholders": {"pct": {"type": "int"}, "place": {"type": "String"}}}
 }

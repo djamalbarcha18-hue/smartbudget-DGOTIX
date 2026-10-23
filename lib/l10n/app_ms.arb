@@ -1327,5 +1327,12 @@
   "tripCountryEG": "Mesir",
   "tripCountryID": "Indonesia",
   "tripCountryTN": "Tunisia",
-  "tripCountryGE": "Georgia"
+  "tripCountryGE": "Georgia",
+  "tripAvgSurplus": "Purata lebihan bulanan anda: {amount}",
+  "tripNoSurplus": "Tiada lebihan beberapa bulan lalu, jadi pilih bajet yang sesuai.",
+  "tripCanSave": "Sebelum perjalanan, anda boleh simpan kira-kira {amount}.",
+  "tripNeedMore": "Ini perlukan {amount} sebulan, lebih daripada lebihan biasa anda.",
+  "tripWithinSurplus": "{amount} sebulan, dalam lebihan biasa anda.",
+  "tripSuggestBudget": "Cadangkan bajet",
+  "tripShareTextSaved": "Saya jimat {pct}% bajet perjalanan ke {place}, dijejak dengan SmartBudget."
 }

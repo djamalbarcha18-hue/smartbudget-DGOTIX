@@ -97,15 +97,19 @@ class TripSummaryPage extends ConsumerWidget {
             const SizedBox(height: DsSpacing.lg),
             _BudgetPanel(report: r, percentOnly: pct),
           ],
-          const SizedBox(height: DsSpacing.xl),
-          DsButton(
-            label: l.tripShare,
-            icon: Icons.ios_share_rounded,
-            expand: true,
-            onPressed: r.hasExpenses
-                ? () => TripSharePage.open(context, tripId: tr.id)
-                : null,
-          ),
+          // Shared once the trip is over: the result is complete, and it
+          // never tells anyone the user is away right now.
+          if (r.hasExpenses &&
+              TripMath.status(tr, AppClock.now()) ==
+                  TripStatus.ended) ...<Widget>[
+            const SizedBox(height: DsSpacing.xl),
+            DsButton(
+              label: l.tripShareTitle,
+              icon: Icons.ios_share_rounded,
+              expand: true,
+              onPressed: () => TripSharePage.open(context, tripId: tr.id),
+            ),
+          ],
         ],
       ),
     );
