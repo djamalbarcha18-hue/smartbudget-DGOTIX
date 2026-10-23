@@ -1346,9 +1346,10 @@
   "tripLevelStandard": "Intermedio",
   "tripLevelLuxury": "Lujo",
   "tripDaysLabel": "Días: {days}",
-  "featCalmTheme": "Tema beige",
-  "settingsCalmThemeHint": "Beige: colores cálidos y suaves, más descansados para la vista, en el tema claro.",
+  "featProThemes": "Temas Pro",
+  "settingsThemeStyleHint": "Beige y Salvia: colores más suaves y descansados, para el tema claro.",
   "settingsThemeStyle": "Colores del tema",
   "themeClassic": "Clásico",
-  "themeBeige": "Beige"
+  "themeBeige": "Beige",
+  "themeSage": "Salvia"
 }

@@ -85,8 +85,8 @@ enum Feature {
   /// SmartTrip's clear share card: the whole photo with light details.
   tripPhotoCard,
 
-  /// The calm theme (warm, easy on the eyes).
-  calmTheme,
+  /// The Pro theme colours (Beige, Sage): softer on the eyes.
+  proThemes,
 }
 
 /// How a metered quota resets.
@@ -234,8 +234,8 @@ abstract final class FeatureCatalog {
       feature: Feature.salarySplit,
       minTier: Plan.pro,
     ),
-    Feature.calmTheme: FeatureRule(
-      feature: Feature.calmTheme,
+    Feature.proThemes: FeatureRule(
+      feature: Feature.proThemes,
       minTier: Plan.pro,
     ),
     Feature.tripPhotoCard: FeatureRule(

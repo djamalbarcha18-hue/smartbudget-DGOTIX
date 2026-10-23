@@ -90,8 +90,8 @@ class DsGlass extends ThemeExtension<DsGlass> {
     ],
   );
 
-  /// Warm surfaces for the calm theme.
-  static const DsGlass calm = DsGlass(
+  /// Warm surfaces for the beige theme.
+  static const DsGlass beige = DsGlass(
     blurSigma: 14,
     fill: Color(0xE0FFFDF9),
     fillTop: Color(0xF5FFFDF9),
@@ -105,6 +105,24 @@ class DsGlass extends ThemeExtension<DsGlass> {
     ],
     hoverShadow: <BoxShadow>[
       BoxShadow(color: Color(0x18322A1F), blurRadius: 26, offset: Offset(0, 14)),
+    ],
+  );
+
+  /// Light grey-green surfaces for the sage theme.
+  static const DsGlass sage = DsGlass(
+    blurSigma: 14,
+    fill: Color(0xE0FCFDFB),
+    fillTop: Color(0xF5FCFDFB),
+    fillStrong: Color(0xEBFCFDFB),
+    borderColor: Color(0x1F2F3D33),
+    hoverBorder: Color(0x4D2E6E9E),
+    highlight: Color(0x80FFFFFF),
+    glow: Color(0x0F2E6E9E),
+    shadow: <BoxShadow>[
+      BoxShadow(color: Color(0x10223028), blurRadius: 20, offset: Offset(0, 10)),
+    ],
+    hoverShadow: <BoxShadow>[
+      BoxShadow(color: Color(0x18223028), blurRadius: 26, offset: Offset(0, 14)),
     ],
   );
 

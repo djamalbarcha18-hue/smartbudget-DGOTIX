@@ -96,7 +96,7 @@ class SettingsPage extends ConsumerWidget {
                       onChanged: (ThemeMode m) =>
                           ref.read(themeModeProvider.notifier).set(m),
                     ),
-                    if (AppEnv.calmTheme) ...<Widget>[
+                    if (AppEnv.proThemes) ...<Widget>[
                       const SizedBox(height: DsSpacing.lg),
                       _ThemeStylePicker(mode: mode),
                     ],
@@ -291,31 +291,47 @@ class SettingsPage extends ConsumerWidget {
   }
 }
 
-/// The theme colours for the light theme: Classic (free) and Beige (Pro),
-/// each with a small preview. Room for more themes later.
+/// The colours of the light theme: Classic (free), Beige and Sage (Pro),
+/// each with a small preview. A Pro theme on the free plan opens the
+/// upgrade sheet.
 class _ThemeStylePicker extends ConsumerWidget {
   const _ThemeStylePicker({required this.mode});
   final ThemeMode mode;
+
+  static DsColors _preview(AppThemeStyle s) => switch (s) {
+        AppThemeStyle.classic => DsColors.light,
+        AppThemeStyle.beige => DsColors.beige,
+        AppThemeStyle.sage => DsColors.sage,
+      };
+
+  static String _label(AppLocalizations l, AppThemeStyle s) => switch (s) {
+        AppThemeStyle.classic => l.themeClassic,
+        AppThemeStyle.beige => l.themeBeige,
+        AppThemeStyle.sage => l.themeSage,
+      };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final bool beige = ref.watch(calmThemeProvider);
+    final AppThemeStyle current = ref.watch(themeStyleProvider);
 
-    void choose(bool toBeige) {
-      if (toBeige == beige) return;
-      if (toBeige && !PlanLimits.allow(context, Feature.calmTheme)) return;
-      ref.read(calmThemeProvider.notifier).set(toBeige);
-      // The beige theme is a light theme: show it.
-      if (toBeige && mode == ThemeMode.dark) {
+    void choose(AppThemeStyle style) {
+      if (style == current) return;
+      final bool pro = style != AppThemeStyle.classic;
+      if (pro && !PlanLimits.allow(context, Feature.proThemes)) return;
+      ref.read(themeStyleProvider.notifier).set(style);
+      // The Pro themes are light themes: show them.
+      if (pro && mode == ThemeMode.dark) {
         ref.read(themeModeProvider.notifier).set(ThemeMode.light);
       }
     }
 
-    Widget option(bool isBeige, String label, DsColors preview) {
-      final bool selected = beige == isBeige;
+    Widget option(AppThemeStyle style) {
+      final bool selected = style == current;
+      final DsColors preview = _preview(style);
+      final String label = _label(l, style);
       return Expanded(
         child: Semantics(
           button: true,
@@ -323,7 +339,7 @@ class _ThemeStylePicker extends ConsumerWidget {
           label: label,
           child: InkWell(
             borderRadius: DsRadius.brMd,
-            onTap: () => choose(isBeige),
+            onTap: () => choose(style),
             child: Container(
               padding: const EdgeInsets.all(DsSpacing.sm),
               decoration: BoxDecoration(
@@ -334,7 +350,11 @@ class _ThemeStylePicker extends ConsumerWidget {
               ),
               child: Column(
                 children: <Widget>[
-                  // A miniature: page, card, accent, income and expense.
+                  // A miniature: page, card, accent, income and expense; the
+                  // Pro themes carry the Pro badge in its corner.
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: <Widget>[
                   Container(
                     height: 44,
                     padding: const EdgeInsets.all(6),
@@ -358,34 +378,48 @@ class _ThemeStylePicker extends ConsumerWidget {
                             preview.expense,
                           ]) ...<Widget>[
                             Container(
-                              width: 10,
-                              height: 10,
+                              width: 9,
+                              height: 9,
                               decoration: BoxDecoration(
                                   color: dot, shape: BoxShape.circle),
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: 3),
                           ],
                           const Spacer(),
                           Container(
-                              width: 22, height: 4, color: preview.textMuted),
+                              width: 14, height: 4, color: preview.textMuted),
                         ],
                       ),
                     ),
+                  ),
+                      if (style != AppThemeStyle.classic)
+                        PositionedDirectional(
+                          top: -6,
+                          end: -6,
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                                color: c.surface, shape: BoxShape.circle),
+                            child: Icon(Icons.workspace_premium_rounded,
+                                size: 16, color: c.warning),
+                          ),
+                        ),
+                    ],
                   ),
                   const SizedBox(height: DsSpacing.xs),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      if (selected)
+                      if (selected) ...<Widget>[
                         Icon(Icons.check_circle_rounded,
                             size: 16, color: c.brand),
-                      if (selected) const SizedBox(width: 4),
-                      Flexible(child: Text(label, style: t.bodyMedium)),
-                      if (isBeige) ...<Widget>[
                         const SizedBox(width: 4),
-                        Icon(Icons.workspace_premium_outlined,
-                            size: 16, color: c.warning),
                       ],
+                      Flexible(
+                          child: Text(label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: t.bodyMedium)),
                     ],
                   ),
                 ],
@@ -404,13 +438,15 @@ class _ThemeStylePicker extends ConsumerWidget {
         const SizedBox(height: DsSpacing.sm),
         Row(
           children: <Widget>[
-            option(false, l.themeClassic, DsColors.light),
-            const SizedBox(width: DsSpacing.sm),
-            option(true, l.themeBeige, DsColors.calm),
+            for (final AppThemeStyle s in AppThemeStyle.values) ...<Widget>[
+              if (s != AppThemeStyle.classic)
+                const SizedBox(width: DsSpacing.sm),
+              option(s),
+            ],
           ],
         ),
         const SizedBox(height: DsSpacing.xs),
-        Text(l.settingsCalmThemeHint,
+        Text(l.settingsThemeStyleHint,
             style: t.bodySmall?.copyWith(color: c.textFaint)),
       ],
     );

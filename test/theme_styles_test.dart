@@ -28,39 +28,56 @@ double contrast(Color a, Color b) {
 void main() {
   setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
 
-  group('the calm palette', () {
-    test('a light theme with its own colours and surfaces', () {
-      final ThemeData t = DsTheme.calm();
-      expect(t.brightness, Brightness.light);
-      expect(t.extension<DsColors>(), DsColors.calm);
-      expect(t.extension<DsGlass>(), DsGlass.calm);
-      expect(t.scaffoldBackgroundColor, DsColors.calm.bgPage);
-    });
+  group('Pro theme palettes', () {
+    for (final (String, ThemeData Function(), DsColors, DsGlass) v
+        in <(String, ThemeData Function(), DsColors, DsGlass)>[
+      ('beige', () => DsTheme.beige(), DsColors.beige, DsGlass.beige),
+      ('sage', () => DsTheme.sage(), DsColors.sage, DsGlass.sage),
+    ]) {
+      test('${v.$1}: a light theme with its own colours, easy to read', () {
+        final ThemeData t = v.$2();
+        final DsColors c = v.$3;
+        expect(t.brightness, Brightness.light);
+        expect(t.extension<DsColors>(), c);
+        expect(t.extension<DsGlass>(), v.$4);
+        expect(t.scaffoldBackgroundColor, c.bgPage);
+        // Readable text and figures (WCAG AA 4.5 for body text).
+        for (final Color fg in <Color>[
+          c.textPrimary,
+          c.textMuted,
+          c.income,
+          c.expense,
+          c.brand
+        ]) {
+          expect(contrast(fg, c.surface), greaterThan(4.5), reason: '$fg');
+          expect(contrast(fg, c.bgPage), greaterThan(4.5), reason: '$fg');
+        }
+        // Less glare than black on the standard light background.
+        expect(
+            contrast(c.textPrimary, c.bgPage),
+            lessThan(
+                contrast(DsColors.light.textPrimary, DsColors.light.bgPage)));
+        // The soft pomegranate for expenses.
+        expect(c.expense, const Color(0xFFB5475A));
+      });
+    }
 
-    test('softer than the light theme, still easy to read', () {
-      const DsColors c = DsColors.calm;
-      // Text stays readable (WCAG AA: 4.5 for body text).
-      expect(contrast(c.textPrimary, c.surface), greaterThan(7));
-      expect(contrast(c.textMuted, c.surface), greaterThan(4.5));
-      expect(contrast(c.textPrimary, c.bgPage), greaterThan(7));
-      // The soft pomegranate of expenses still reads on every surface.
-      expect(c.expense, const Color(0xFFB5475A));
-      expect(contrast(c.expense, c.surface), greaterThan(4.5));
-      expect(contrast(c.expense, c.bgPage), greaterThan(4.5));
-      expect(contrast(c.income, c.surface), greaterThan(4.5));
-      // Less glare: less black-on-white than the standard light theme.
-      expect(
-          contrast(c.textPrimary, c.bgPage),
-          lessThan(
-              contrast(DsColors.light.textPrimary, DsColors.light.bgPage)));
-    });
-
-    test('a Pro feature, prepared for the paid plan', () {
-      expect(FeatureCatalog.minTierFor(Feature.calmTheme), Plan.pro);
-      expect(FeatureGate.evaluate(Feature.calmTheme, plan: Plan.free).allowed,
+    test('Pro themes are a Pro feature', () {
+      expect(FeatureCatalog.minTierFor(Feature.proThemes), Plan.pro);
+      expect(FeatureGate.evaluate(Feature.proThemes, plan: Plan.free).allowed,
           isFalse);
-      expect(FeatureGate.evaluate(Feature.calmTheme, plan: Plan.pro).allowed,
+      expect(FeatureGate.evaluate(Feature.proThemes, plan: Plan.pro).allowed,
           isTrue);
+    });
+
+    test('an earlier "beige on" setting is kept', () async {
+      SharedPreferences.setMockInitialValues(
+          <String, Object>{'flutter.sb_theme_calm': true});
+      final ProviderContainer c = ProviderContainer();
+      addTearDown(c.dispose);
+      c.read(themeStyleProvider);
+      await Future<void>.delayed(Duration.zero);
+      expect(c.read(themeStyleProvider), AppThemeStyle.beige);
     });
   });
 
@@ -105,32 +122,35 @@ void main() {
       return c;
     }
 
-    testWidgets('Pro: beige from the theme picker shows the light theme',
+    testWidgets('Pro: beige then sage from the picker, from dark to light',
         (WidgetTester tester) async {
-      expect(AppEnv.calmTheme, isTrue); // debug build: shown
+      expect(AppEnv.proThemes, isTrue); // debug build: shown
       final ProviderContainer c = await pump(tester, Plan.pro,
           prefs: <String, Object>{'flutter.sb_theme_mode': 'dark'});
       expect(c.read(themeModeProvider), ThemeMode.dark);
       await tester.tap(find.text('بيج'));
       await tester.pumpAndSettle();
-      expect(c.read(calmThemeProvider), isTrue);
+      expect(c.read(themeStyleProvider), AppThemeStyle.beige);
       expect(c.read(themeModeProvider), ThemeMode.light);
+      await tester.tap(find.text('مريمية'));
+      await tester.pumpAndSettle();
+      expect(c.read(themeStyleProvider), AppThemeStyle.sage);
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool('sb_theme_calm'), isTrue);
+      expect(prefs.getString('sb_theme_style'), 'sage');
       // Back to Classic.
       await tester.tap(find.text('كلاسيكي'));
       await tester.pumpAndSettle();
-      expect(c.read(calmThemeProvider), isFalse);
+      expect(c.read(themeStyleProvider), AppThemeStyle.classic);
       await close(tester, c);
     });
 
-    testWidgets('free plan: the upgrade sheet, nothing changes',
+    testWidgets('free plan: a Pro theme opens the upgrade sheet',
         (WidgetTester tester) async {
       final ProviderContainer c = await pump(tester, Plan.free);
       await tester.tap(find.text('بيج'));
       await tester.pumpAndSettle();
       expect(find.byType(UpgradeSheet), findsOneWidget);
-      expect(c.read(calmThemeProvider), isFalse);
+      expect(c.read(themeStyleProvider), AppThemeStyle.classic);
       await close(tester, c);
     });
   });

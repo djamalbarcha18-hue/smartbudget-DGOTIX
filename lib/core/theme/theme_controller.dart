@@ -7,33 +7,49 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Dark mode is the default (primary premium experience). The choice is stored
 /// in shared_preferences — a per-viewer convenience, never financial data — and
 /// every read/write is guarded so a storage failure can never break the app.
-/// The calm look for the light theme (experimental; see AppEnv.calmTheme).
-final calmThemeProvider =
-    NotifierProvider<CalmThemeController, bool>(CalmThemeController.new);
+/// The colours of the light theme: Classic (free) or a Pro theme.
+enum AppThemeStyle { classic, beige, sage }
 
-class CalmThemeController extends Notifier<bool> {
-  static const String _key = 'sb_theme_calm';
+/// The chosen light-theme colours (see AppEnv.proThemes). Stored on the
+/// device only.
+final themeStyleProvider =
+    NotifierProvider<ThemeStyleController, AppThemeStyle>(
+        ThemeStyleController.new);
+
+class ThemeStyleController extends Notifier<AppThemeStyle> {
+  static const String _key = 'sb_theme_style';
+
+  /// The earlier on/off setting for beige.
+  static const String _oldKey = 'sb_theme_calm';
 
   @override
-  bool build() {
+  AppThemeStyle build() {
     _load();
-    return false;
+    return AppThemeStyle.classic;
   }
 
   Future<void> _load() async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      state = prefs.getBool(_key) ?? false;
+      final String? name = prefs.getString(_key);
+      if (name != null) {
+        state = AppThemeStyle.values.firstWhere(
+            (AppThemeStyle s) => s.name == name,
+            orElse: () => AppThemeStyle.classic);
+      } else if (prefs.getBool(_oldKey) ?? false) {
+        state = AppThemeStyle.beige;
+      }
     } catch (_) {
       // Keep the default.
     }
   }
 
-  Future<void> set(bool on) async {
-    state = on;
+  Future<void> set(AppThemeStyle style) async {
+    state = style;
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_key, on);
+      await prefs.setString(_key, style.name);
+      await prefs.remove(_oldKey);
     } catch (_) {
       // Non-fatal.
     }

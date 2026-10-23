@@ -15,14 +15,16 @@ class DsBackdrop extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final bool dark = theme.brightness == Brightness.dark;
-    final bool calm = theme.extension<DsColors>() == DsColors.calm;
+    final DsColors? colors = theme.extension<DsColors>();
     return RepaintBoundary(
       child: CustomPaint(
         painter: dark
             ? _BackdropPainter.dark
-            : calm
-                ? _BackdropPainter.calm
-                : _BackdropPainter.light,
+            : colors == DsColors.beige
+                ? _BackdropPainter.beige
+                : colors == DsColors.sage
+                    ? _BackdropPainter.sage
+                    : _BackdropPainter.light,
         size: Size.infinite,
       ),
     );
@@ -71,12 +73,21 @@ class _BackdropPainter extends CustomPainter {
     ],
   );
 
-  // Calm: warm paper, no blue light.
-  static const _BackdropPainter calm = _BackdropPainter(
+  // Beige: warm paper, no blue light.
+  static const _BackdropPainter beige = _BackdropPainter(
     top: Color(0xFFF8F6F1),
     bottom: Color(0xFFF3EFE8),
     glows: <_Glow>[
       _Glow(Offset(0.92, 0.02), 0.55, Color(0x0FD9C7A7)),
+    ],
+  );
+
+  // Sage: a light grey-green, a faint green light.
+  static const _BackdropPainter sage = _BackdropPainter(
+    top: Color(0xFFF3F6F2),
+    bottom: Color(0xFFEDF1EC),
+    glows: <_Glow>[
+      _Glow(Offset(0.92, 0.02), 0.55, Color(0x0F9DB8A5)),
     ],
   );
 

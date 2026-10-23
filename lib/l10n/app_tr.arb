@@ -1346,9 +1346,10 @@
   "tripLevelStandard": "Orta",
   "tripLevelLuxury": "Lüks",
   "tripDaysLabel": "Gün sayısı: {days}",
-  "featCalmTheme": "Bej tema",
-  "settingsCalmThemeHint": "Bej: açık tema için göze daha rahat, sıcak ve yumuşak renkler.",
+  "featProThemes": "Pro temalar",
+  "settingsThemeStyleHint": "Bej ve Adaçayı: açık tema için göze daha rahat, yumuşak renkler.",
   "settingsThemeStyle": "Tema renkleri",
   "themeClassic": "Klasik",
-  "themeBeige": "Bej"
+  "themeBeige": "Bej",
+  "themeSage": "Adaçayı"
 }

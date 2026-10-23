@@ -26,11 +26,19 @@ abstract final class DsTheme {
         lang: lang,
       );
 
-  /// The calm light theme (warm, softer contrast). Experimental.
-  static ThemeData calm({AppLang lang = AppLang.en}) => _build(
+  /// Beige (Pro): the warm light theme.
+  static ThemeData beige({AppLang lang = AppLang.en}) => _build(
         brightness: Brightness.light,
-        colors: DsColors.calm,
-        glass: DsGlass.calm,
+        colors: DsColors.beige,
+        glass: DsGlass.beige,
+        lang: lang,
+      );
+
+  /// Sage (Pro): the light grey-green theme.
+  static ThemeData sage({AppLang lang = AppLang.en}) => _build(
+        brightness: Brightness.light,
+        colors: DsColors.sage,
+        glass: DsGlass.sage,
         lang: lang,
       );
 

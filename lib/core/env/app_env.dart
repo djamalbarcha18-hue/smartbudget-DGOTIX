@@ -83,10 +83,11 @@ abstract final class AppEnv {
   static const bool smartTrip =
       kDebugMode || bool.fromEnvironment('SMART_TRIP', defaultValue: false);
 
-  /// The calm theme (warm, easy on the eyes), still being tried: shown in
-  /// debug builds and with `--dart-define=CALM_THEME=true`.
-  static const bool calmTheme =
-      kDebugMode || bool.fromEnvironment('CALM_THEME', defaultValue: false);
+  /// The theme colours picker with the Pro themes (Beige, Sage), not
+  /// launched yet: shown in debug builds and with
+  /// `--dart-define=PRO_THEMES=true`.
+  static const bool proThemes =
+      kDebugMode || bool.fromEnvironment('PRO_THEMES', defaultValue: false);
 
   /// The Google Play / App Store build (`--dart-define=STORE_BUILD=true`):
   /// no outside payment, no developer tools.

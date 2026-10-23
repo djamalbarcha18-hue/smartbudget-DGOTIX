@@ -1586,9 +1586,10 @@
   "tripLevelLuxury": "Luxury",
   "tripDaysLabel": "Days: {days}",
   "@tripDaysLabel": {"placeholders": {"days": {"type": "int"}}},
-  "featCalmTheme": "Beige theme",
-  "settingsCalmThemeHint": "Beige: warm, soft colours that are easier on the eyes, for the light theme.",
+  "featProThemes": "Pro themes",
+  "settingsThemeStyleHint": "Beige and Sage: softer colours that are easier on the eyes, for the light theme.",
   "settingsThemeStyle": "Theme colours",
   "themeClassic": "Classic",
-  "themeBeige": "Beige"
+  "themeBeige": "Beige",
+  "themeSage": "Sage"
 }

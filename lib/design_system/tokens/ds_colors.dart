@@ -111,10 +111,10 @@ class DsColors extends ThemeExtension<DsColors> {
     shadow: Color(0x1A0F172A),
   );
 
-  /// Calm: a warm, soft light theme that is easier on the eyes (paper-like
-  /// background, warm text, slightly quieter accents). Experimental.
-  static const DsColors calm = DsColors(
-    brand: Color(0xFF2F6FD6),
+  /// Beige (Pro): a warm, soft light theme that is easier on the eyes
+  /// (paper-like background, warm text, slightly quieter accents).
+  static const DsColors beige = DsColors(
+    brand: Color(0xFF2B68CC),
     brandStrong: Color(0xFF255FBF),
     income: Color(0xFF2A7A52),
     expense: Color(0xFFB5475A), // soft pomegranate
@@ -132,6 +132,29 @@ class DsColors extends ThemeExtension<DsColors> {
     textFaint: Color(0xFF948D82),
     onBrand: Color(0xFFFFFFFF),
     shadow: Color(0x14322A1F),
+  );
+
+  /// Sage (Pro): a very light grey-green, restful in daylight; the same
+  /// quiet accents as beige, a cool teal-blue for the brand.
+  static const DsColors sage = DsColors(
+    brand: Color(0xFF2E6E9E),
+    brandStrong: Color(0xFF255C86),
+    income: Color(0xFF2A7A52),
+    expense: Color(0xFFB5475A), // soft pomegranate
+    saving: Color(0xFF3A6EA5),
+    net: Color(0xFF2B7F80),
+    warning: Color(0xFFA8741A),
+    bgPage: Color(0xFFF1F4F0),
+    bgElevated: Color(0xFFF8FAF7),
+    surface: Color(0xFFFCFDFB),
+    surfaceMuted: Color(0xFFE9EEE8),
+    border: Color(0x1F2F3D33), // green-grey @ ~12%
+    borderStrong: Color(0x332F3D33),
+    textPrimary: Color(0xFF1F2A24),
+    textMuted: Color(0xFF4F5D55),
+    textFaint: Color(0xFF85928A),
+    onBrand: Color(0xFFFFFFFF),
+    shadow: Color(0x14223028),
   );
 
   @override

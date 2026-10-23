@@ -34,7 +34,9 @@ class SmartBudgetApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ThemeMode themeMode = ref.watch(themeModeProvider);
-    final bool calm = AppEnv.calmTheme && ref.watch(calmThemeProvider);
+    final AppThemeStyle style = AppEnv.proThemes
+        ? ref.watch(themeStyleProvider)
+        : AppThemeStyle.classic;
     final Locale locale = ref.watch(localeProvider);
     final AppLang lang = AppLang.fromCode(locale.languageCode);
     final GoRouter router = ref.watch(_routerProvider);
@@ -64,7 +66,11 @@ class SmartBudgetApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       // Urdu swaps the font family (DsTypography), so the theme follows the
       // language.
-      theme: calm ? DsTheme.calm(lang: lang) : DsTheme.light(lang: lang),
+      theme: switch (style) {
+        AppThemeStyle.classic => DsTheme.light(lang: lang),
+        AppThemeStyle.beige => DsTheme.beige(lang: lang),
+        AppThemeStyle.sage => DsTheme.sage(lang: lang),
+      },
       darkTheme: DsTheme.dark(lang: lang),
       themeMode: themeMode,
       locale: locale,
