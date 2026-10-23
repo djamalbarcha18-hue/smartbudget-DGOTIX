@@ -111,6 +111,29 @@ class DsColors extends ThemeExtension<DsColors> {
     shadow: Color(0x1A0F172A),
   );
 
+  /// Calm: a warm, soft light theme that is easier on the eyes (paper-like
+  /// background, warm text, slightly quieter accents). Experimental.
+  static const DsColors calm = DsColors(
+    brand: Color(0xFF2F6FD6),
+    brandStrong: Color(0xFF255FBF),
+    income: Color(0xFF2A7A52),
+    expense: Color(0xFFB5475A), // soft pomegranate
+    saving: Color(0xFF3B6FD0),
+    net: Color(0xFF2B8A9E),
+    warning: Color(0xFFB7791F),
+    bgPage: Color(0xFFF6F3EE),
+    bgElevated: Color(0xFFFBF9F5),
+    surface: Color(0xFFFFFDF9),
+    surfaceMuted: Color(0xFFF0ECE4),
+    border: Color(0x1F3D3427), // warm brown @ ~12%
+    borderStrong: Color(0x333D3427),
+    textPrimary: Color(0xFF2A2723),
+    textMuted: Color(0xFF5F5A52),
+    textFaint: Color(0xFF948D82),
+    onBrand: Color(0xFFFFFFFF),
+    shadow: Color(0x14322A1F),
+  );
+
   @override
   DsColors copyWith({
     Color? brand,

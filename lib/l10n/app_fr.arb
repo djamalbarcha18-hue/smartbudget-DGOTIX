@@ -1345,5 +1345,8 @@
   "tripLevelEconomy": "Économique",
   "tripLevelStandard": "Intermédiaire",
   "tripLevelLuxury": "Luxe",
-  "tripDaysLabel": "Jours : {days}"
+  "tripDaysLabel": "Jours : {days}",
+  "featCalmTheme": "Thème apaisant",
+  "settingsCalmTheme": "Aspect apaisant (expérimental)",
+  "settingsCalmThemeHint": "Des couleurs chaudes et douces, plus reposantes, pour le thème clair."
 }

@@ -157,6 +157,7 @@ void main() {
         Feature.projects,
         Feature.prioritySupport,
         Feature.tripPhotoCard,
+        Feature.calmTheme,
       ]) {
         final GateDecision d = FeatureGate.evaluate(f, plan: Plan.free);
         expect(d.allowed, isFalse, reason: '$f');

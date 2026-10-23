@@ -1345,5 +1345,8 @@
   "tripLevelEconomy": "Jimat",
   "tripLevelStandard": "Sederhana",
   "tripLevelLuxury": "Mewah",
-  "tripDaysLabel": "Bilangan hari: {days}"
+  "tripDaysLabel": "Bilangan hari: {days}",
+  "featCalmTheme": "Tema tenang",
+  "settingsCalmTheme": "Rupa tenang (percubaan)",
+  "settingsCalmThemeHint": "Warna hangat dan lembut yang lebih selesa di mata, untuk tema cerah."
 }

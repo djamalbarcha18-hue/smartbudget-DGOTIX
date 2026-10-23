@@ -1345,5 +1345,8 @@
   "tripLevelEconomy": "Económico",
   "tripLevelStandard": "Intermedio",
   "tripLevelLuxury": "Lujo",
-  "tripDaysLabel": "Días: {days}"
+  "tripDaysLabel": "Días: {days}",
+  "featCalmTheme": "Tema sereno",
+  "settingsCalmTheme": "Aspecto sereno (experimental)",
+  "settingsCalmThemeHint": "Colores cálidos y suaves, más descansados para la vista, en el tema claro."
 }

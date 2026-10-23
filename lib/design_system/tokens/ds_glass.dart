@@ -90,6 +90,24 @@ class DsGlass extends ThemeExtension<DsGlass> {
     ],
   );
 
+  /// Warm surfaces for the calm theme.
+  static const DsGlass calm = DsGlass(
+    blurSigma: 14,
+    fill: Color(0xE0FFFDF9),
+    fillTop: Color(0xF5FFFDF9),
+    fillStrong: Color(0xEBFFFDF9),
+    borderColor: Color(0x1F3D3427),
+    hoverBorder: Color(0x4D2F6FD6),
+    highlight: Color(0x80FFFFFF),
+    glow: Color(0x0F2F6FD6),
+    shadow: <BoxShadow>[
+      BoxShadow(color: Color(0x10322A1F), blurRadius: 20, offset: Offset(0, 10)),
+    ],
+    hoverShadow: <BoxShadow>[
+      BoxShadow(color: Color(0x18322A1F), blurRadius: 26, offset: Offset(0, 14)),
+    ],
+  );
+
   @override
   DsGlass copyWith({
     double? blurSigma,

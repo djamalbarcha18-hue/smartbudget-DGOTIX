@@ -1585,5 +1585,8 @@
   "tripLevelStandard": "Mid-range",
   "tripLevelLuxury": "Luxury",
   "tripDaysLabel": "Days: {days}",
-  "@tripDaysLabel": {"placeholders": {"days": {"type": "int"}}}
+  "@tripDaysLabel": {"placeholders": {"days": {"type": "int"}}},
+  "featCalmTheme": "Calm theme",
+  "settingsCalmTheme": "Calm look (experimental)",
+  "settingsCalmThemeHint": "Warm, soft colours that are easier on the eyes, for the light theme."
 }

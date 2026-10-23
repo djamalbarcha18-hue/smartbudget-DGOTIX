@@ -1345,5 +1345,8 @@
   "tripLevelEconomy": "Ekonomik",
   "tripLevelStandard": "Orta",
   "tripLevelLuxury": "Lüks",
-  "tripDaysLabel": "Gün sayısı: {days}"
+  "tripDaysLabel": "Gün sayısı: {days}",
+  "featCalmTheme": "Sakin tema",
+  "settingsCalmTheme": "Sakin görünüm (deneysel)",
+  "settingsCalmThemeHint": "Açık tema için göze daha rahat, sıcak ve yumuşak renkler."
 }

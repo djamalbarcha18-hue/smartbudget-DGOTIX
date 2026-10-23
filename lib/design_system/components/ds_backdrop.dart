@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:smartbudget/design_system/tokens/ds_colors.dart';
+
 /// The calm scene behind the app's glass: the page color as a gentle gradient
 /// with a couple of very soft light pools in the brand blue. It is what gives the translucent surfaces something
 /// to refract — without it, glass on a flat color just looks grey.
@@ -11,10 +13,16 @@ class DsBackdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool dark = Theme.of(context).brightness == Brightness.dark;
+    final ThemeData theme = Theme.of(context);
+    final bool dark = theme.brightness == Brightness.dark;
+    final bool calm = theme.extension<DsColors>() == DsColors.calm;
     return RepaintBoundary(
       child: CustomPaint(
-        painter: dark ? _BackdropPainter.dark : _BackdropPainter.light,
+        painter: dark
+            ? _BackdropPainter.dark
+            : calm
+                ? _BackdropPainter.calm
+                : _BackdropPainter.light,
         size: Size.infinite,
       ),
     );
@@ -60,6 +68,15 @@ class _BackdropPainter extends CustomPainter {
     glows: <_Glow>[
       _Glow(Offset(0.92, 0.02), 0.55, Color(0x171680F7)),
       _Glow(Offset(0.10, 0.90), 0.50, Color(0x0F1680F7)),
+    ],
+  );
+
+  // Calm: warm paper, no blue light.
+  static const _BackdropPainter calm = _BackdropPainter(
+    top: Color(0xFFF8F6F1),
+    bottom: Color(0xFFF3EFE8),
+    glows: <_Glow>[
+      _Glow(Offset(0.92, 0.02), 0.55, Color(0x0FD9C7A7)),
     ],
   );
 

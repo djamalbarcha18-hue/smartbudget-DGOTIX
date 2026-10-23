@@ -38,6 +38,7 @@ String featureTitle(AppLocalizations l, Feature f) => switch (f) {
       Feature.salarySplit => l.planFeatSalarySplit,
       Feature.smartAlerts => l.featSmartAlerts,
       Feature.tripPhotoCard => l.featTripPhotoCard,
+      Feature.calmTheme => l.featCalmTheme,
     };
 
 /// Plan limits at the points where something new is added or opened. The

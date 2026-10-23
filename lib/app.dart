@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/config/app_config.dart';
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/l10n/app_lang.dart';
 import 'package:smartbudget/core/localization/locale_controller.dart';
 import 'package:smartbudget/core/router/app_router.dart';
@@ -33,6 +34,7 @@ class SmartBudgetApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ThemeMode themeMode = ref.watch(themeModeProvider);
+    final bool calm = AppEnv.calmTheme && ref.watch(calmThemeProvider);
     final Locale locale = ref.watch(localeProvider);
     final AppLang lang = AppLang.fromCode(locale.languageCode);
     final GoRouter router = ref.watch(_routerProvider);
@@ -62,7 +64,7 @@ class SmartBudgetApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       // Urdu swaps the font family (DsTypography), so the theme follows the
       // language.
-      theme: DsTheme.light(lang: lang),
+      theme: calm ? DsTheme.calm(lang: lang) : DsTheme.light(lang: lang),
       darkTheme: DsTheme.dark(lang: lang),
       themeMode: themeMode,
       locale: locale,

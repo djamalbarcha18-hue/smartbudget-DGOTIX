@@ -80,18 +80,44 @@ class SettingsPage extends ConsumerWidget {
               _SettingsSection(
                 icon: Icons.palette_outlined,
                 title: l.settingsAppearance,
-                child: _SegmentedRow<ThemeMode>(
-                  value: mode,
-                  options: <_Segment<ThemeMode>>[
-                    _Segment<ThemeMode>(ThemeMode.dark, l.themeDark,
-                        Icons.dark_mode_outlined),
-                    _Segment<ThemeMode>(ThemeMode.light, l.themeLight,
-                        Icons.light_mode_outlined),
-                    _Segment<ThemeMode>(ThemeMode.system, l.themeSystem,
-                        Icons.brightness_auto_outlined),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    _SegmentedRow<ThemeMode>(
+                      value: mode,
+                      options: <_Segment<ThemeMode>>[
+                        _Segment<ThemeMode>(ThemeMode.dark, l.themeDark,
+                            Icons.dark_mode_outlined),
+                        _Segment<ThemeMode>(ThemeMode.light, l.themeLight,
+                            Icons.light_mode_outlined),
+                        _Segment<ThemeMode>(ThemeMode.system, l.themeSystem,
+                            Icons.brightness_auto_outlined),
+                      ],
+                      onChanged: (ThemeMode m) =>
+                          ref.read(themeModeProvider.notifier).set(m),
+                    ),
+                    if (AppEnv.calmTheme)
+                      SwitchListTile.adaptive(
+                        contentPadding: EdgeInsets.zero,
+                        secondary: const Icon(Icons.spa_outlined),
+                        title: Text(l.settingsCalmTheme),
+                        subtitle: Text(l.settingsCalmThemeHint),
+                        value: ref.watch(calmThemeProvider),
+                        onChanged: (bool on) {
+                          if (on &&
+                              !PlanLimits.allow(context, Feature.calmTheme)) {
+                            return;
+                          }
+                          ref.read(calmThemeProvider.notifier).set(on);
+                          // The calm look is a light theme: show it.
+                          if (on && mode == ThemeMode.dark) {
+                            ref
+                                .read(themeModeProvider.notifier)
+                                .set(ThemeMode.light);
+                          }
+                        },
+                      ),
                   ],
-                  onChanged: (ThemeMode m) =>
-                      ref.read(themeModeProvider.notifier).set(m),
                 ),
               ),
               const SizedBox(height: DsSpacing.lg),
