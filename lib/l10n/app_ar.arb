@@ -1507,7 +1507,6 @@
   "tripShowPercent": "النسبة المئوية",
   "tripPhotoTitle": "صورة الرحلة",
   "tripPhotoDefault": "الافتراضية",
-  "tripSafeZones": "المناطق الآمنة",
   "tripCardNow": "أنا في رحلة",
   "tripCardNext": "رحلتي القادمة",
   "tripConfirmPlace": "تأكيد الوجهة",
@@ -1539,5 +1538,7 @@
   "tripTemplate": "القالب",
   "tripTemplateColour": "ملوّن",
   "tripTemplateClear": "شفاف",
-  "tripClearNeedsPhoto": "أضف صورة لاستخدام القالب الشفاف."
+  "tripClearNeedsPhoto": "أضف صورة لاستخدام القالب الشفاف.",
+  "tripFormatStory": "ستوري 9:16",
+  "tripFormatPost": "منشور 4:5"
 }

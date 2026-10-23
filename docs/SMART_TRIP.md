@@ -17,6 +17,10 @@ expenses can be linked to a trip.
   the saving, three categories in one line) and the brand in one place at
   the bottom (app icon, "DGOTIX · SmartBudget", QR). Needs a photo; going
   back to the default photo with no destination picture returns to colour.
+- Sizes: story 9:16 (1080 × 1920, 13% kept clear top and bottom) or feed
+  post 4:5 (1080 × 1350). The photo is kept whole (only turned upright)
+  and each size shows its middle with BoxFit.cover: cropped, never
+  stretched. The logo and QR code never shrink, so the code always scans.
 - Phase 3: the share card, a 9:16 story exported at 1080 × 1920 on the
   device (`TripShareCard`), with an optional trip photo (gallery or camera,
   kept in memory only), four colours, the logo and a QR code to

@@ -1307,7 +1307,6 @@
   "tripShowPercent": "Porcentaje",
   "tripPhotoTitle": "Foto del viaje",
   "tripPhotoDefault": "Predeterminada",
-  "tripSafeZones": "Zonas seguras",
   "tripCardNow": "Estoy de viaje",
   "tripCardNext": "Mi próximo viaje",
   "tripConfirmPlace": "Confirmar destino",
@@ -1339,5 +1338,7 @@
   "tripTemplate": "Plantilla",
   "tripTemplateColour": "Color",
   "tripTemplateClear": "Transparente",
-  "tripClearNeedsPhoto": "Añade una foto para usar la plantilla transparente."
+  "tripClearNeedsPhoto": "Añade una foto para usar la plantilla transparente.",
+  "tripFormatStory": "Historia 9:16",
+  "tripFormatPost": "Publicación 4:5"
 }

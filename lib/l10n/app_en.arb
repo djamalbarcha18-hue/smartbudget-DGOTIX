@@ -1540,7 +1540,6 @@
   "tripShowPercent": "Percentage",
   "tripPhotoTitle": "Trip photo",
   "tripPhotoDefault": "Default",
-  "tripSafeZones": "Safe zones",
   "tripCardNow": "I’m on a trip",
   "tripCardNext": "My next trip",
   "tripConfirmPlace": "Confirm destination",
@@ -1578,5 +1577,7 @@
   "tripTemplate": "Template",
   "tripTemplateColour": "Colour",
   "tripTemplateClear": "Clear",
-  "tripClearNeedsPhoto": "Add a photo to use the clear template."
+  "tripClearNeedsPhoto": "Add a photo to use the clear template.",
+  "tripFormatStory": "Story 9:16",
+  "tripFormatPost": "Post 4:5"
 }

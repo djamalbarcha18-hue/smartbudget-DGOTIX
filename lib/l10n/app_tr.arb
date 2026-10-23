@@ -1307,7 +1307,6 @@
   "tripShowPercent": "Yüzde",
   "tripPhotoTitle": "Seyahat fotoğrafı",
   "tripPhotoDefault": "Varsayılan",
-  "tripSafeZones": "Güvenli alanlar",
   "tripCardNow": "Seyahatteyim",
   "tripCardNext": "Sıradaki seyahatim",
   "tripConfirmPlace": "Varış yerini onayla",
@@ -1339,5 +1338,7 @@
   "tripTemplate": "Şablon",
   "tripTemplateColour": "Renkli",
   "tripTemplateClear": "Şeffaf",
-  "tripClearNeedsPhoto": "Şeffaf şablon için bir fotoğraf ekleyin."
+  "tripClearNeedsPhoto": "Şeffaf şablon için bir fotoğraf ekleyin.",
+  "tripFormatStory": "Hikâye 9:16",
+  "tripFormatPost": "Gönderi 4:5"
 }

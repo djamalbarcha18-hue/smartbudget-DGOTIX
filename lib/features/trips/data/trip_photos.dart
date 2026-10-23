@@ -20,9 +20,11 @@ class TripPhotoFailed implements Exception {
 /// Picks a photo for the share card. Kept in memory only: never saved with
 /// the data, never uploaded.
 abstract interface class TripPhotoPicker {
-  /// The photo cropped to [aspect] (width / height), or null when the user
-  /// cancelled. Throws [TripPhotoDenied] or [TripPhotoFailed].
-  Future<Uint8List?> pick(TripPhotoSource source, {required double aspect});
+  /// The photo upright, cropped to [aspect] (width / height) when given, or
+  /// null when the user cancelled. Throws [TripPhotoDenied] or
+  /// [TripPhotoFailed]. Without [aspect] the whole picture is kept, so each
+  /// card size can take its own middle part without stretching it.
+  Future<Uint8List?> pick(TripPhotoSource source, {double? aspect});
 }
 
 final tripPhotoPickerProvider =
@@ -34,8 +36,7 @@ class DeviceTripPhotoPicker implements TripPhotoPicker {
   const DeviceTripPhotoPicker();
 
   @override
-  Future<Uint8List?> pick(TripPhotoSource source,
-      {required double aspect}) async {
+  Future<Uint8List?> pick(TripPhotoSource source, {double? aspect}) async {
     final XFile? file;
     try {
       file = await ImagePicker().pickImage(
@@ -62,13 +63,16 @@ class DeviceTripPhotoPicker implements TripPhotoPicker {
       code.contains('access_denied') || code.contains('permission');
 }
 
-/// The middle of the picture at [aspect] (width / height), as JPEG 80;
-/// null when it can't be decoded.
-Uint8List? cropToAspect((Uint8List, double) args) {
-  final (Uint8List bytes, double aspect) = args;
+/// The picture turned upright and, with an [aspect] (width / height), its
+/// middle at that shape; as JPEG 80; null when it can't be decoded.
+Uint8List? cropToAspect((Uint8List, double?) args) {
+  final (Uint8List bytes, double? aspect) = args;
   final img.Image? src = img.decodeImage(bytes);
   if (src == null) return null;
   final img.Image upright = img.bakeOrientation(src);
+  if (aspect == null) {
+    return Uint8List.fromList(img.encodeJpg(upright, quality: 80));
+  }
   int w = upright.width;
   int h = (w / aspect).round();
   if (h > upright.height) {

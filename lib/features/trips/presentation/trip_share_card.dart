@@ -35,9 +35,31 @@ enum TripCardColor {
       };
 }
 
-/// A story card (9:16) about a trip, exported at 1080 × 1920. Every size is
-/// a fraction of the card, so it looks the same at any preview size. The
-/// top and bottom [safeZone] stay free of content: Instagram covers them.
+/// The image sizes: a story (9:16) or a feed post (4:5).
+enum TripCardFormat {
+  /// 1080 × 1920; Instagram covers the top and bottom 13%.
+  story(1080, 1920, 0.13),
+
+  /// 1080 × 1350 (feed posts); a small margin only.
+  post(1080, 1350, 0.06);
+
+  const TripCardFormat(this.exportWidth, this.exportHeight, this.safeZone);
+  final int exportWidth;
+  final int exportHeight;
+
+  /// Share of the height kept clear at the top and at the bottom.
+  final double safeZone;
+
+  double get aspect => exportWidth / exportHeight;
+
+  /// Height of the card as laid out (width [TripShareCard.logicalWidth]).
+  double get logicalHeight =>
+      TripShareCard.logicalWidth * exportHeight / exportWidth;
+}
+
+/// A card about a trip, as a story or a post ([format]), exported at
+/// 1080 px wide. Every size is a fraction of the card, so it looks the same
+/// at any preview size, and the format's safe zone stays free of content.
 class TripShareCard extends StatelessWidget {
   const TripShareCard({
     super.key,
@@ -48,20 +70,13 @@ class TripShareCard extends StatelessWidget {
     this.photo,
     this.showBranding = true,
     this.clear = false,
+    this.format = TripCardFormat.story,
   });
 
   /// Width of the card as laid out; exported with pixel ratio 1080 / this.
   static const double logicalWidth = 360;
-  static const double logicalHeight = logicalWidth * 16 / 9;
   static const double exportWidth = 1080;
   static const double exportPixelRatio = exportWidth / logicalWidth;
-
-  /// Share of the height kept clear at the top and at the bottom.
-  static const double safeZone = 0.13;
-
-  /// Photos are cropped to the card's own shape: the clear template shows
-  /// all of it, the coloured one its middle band.
-  static const double photoAspect = 9 / 16;
 
   final TripReport report;
   final TripCardColor color;
@@ -79,6 +94,9 @@ class TripShareCard extends StatelessWidget {
   /// is drawn in colour.
   final bool clear;
 
+  final TripCardFormat format;
+  double get safeZone => format.safeZone;
+
   // Fixed colours: the card is a picture and doesn't follow the app theme.
   static const Color _ink = Color(0xFF111827);
   static const Color _muted = Color(0xFF6B7280);
@@ -89,7 +107,7 @@ class TripShareCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 9 / 16,
+      aspectRatio: format.aspect,
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints box) =>
             _card(context, box.maxWidth, box.maxHeight),
@@ -221,26 +239,33 @@ class TripShareCard extends StatelessWidget {
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(
                   w * 0.07, 2 * u, w * 0.07, h * safeZone),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: h * 0.5),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: w * 0.86,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        _panel(context, l, lang, base, u, compact: hasPicture),
-                        if (showBranding) ...<Widget>[
-                          SizedBox(height: 3.2 * u),
-                          _footer(l, base, u),
-                        ],
-                      ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  // Only the details shrink when space is short (a post);
+                  // the logo and the QR code keep their size, so the code
+                  // still scans.
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxHeight:
+                            h * (format == TripCardFormat.post ? 0.42 : 0.4)),
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.bottomCenter,
+                      child: SizedBox(
+                        width: w * 0.86,
+                        child: _panel(context, l, lang, base, u,
+                            compact:
+                                hasPicture || format == TripCardFormat.post),
+                      ),
                     ),
                   ),
-                ),
+                  if (showBranding) ...<Widget>[
+                    SizedBox(height: 3.2 * u),
+                    _footer(l, base, u),
+                  ],
+                ],
               ),
             ),
           ],

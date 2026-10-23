@@ -768,14 +768,61 @@ void main() {
       });
     });
 
-    test('the photo crop keeps the slot shape', () {
+    test('the photo is kept whole; a crop keeps the asked shape', () {
       final Uint8List jpg = Uint8List.fromList(
           img.encodeJpg(img.Image(width: 1080, height: 1440)));
-      final img.Image out =
-          img.decodeJpg(cropToAspect((jpg, TripShareCard.photoAspect))!)!;
-      expect(out.width / out.height, closeTo(TripShareCard.photoAspect, 0.01));
-      expect(out.height, 1440); // the full height, the sides trimmed
+      final img.Image whole = img.decodeJpg(cropToAspect((jpg, null))!)!;
+      expect((whole.width, whole.height), (1080, 1440));
+      final img.Image out = img.decodeJpg(cropToAspect((jpg, 9 / 16))!)!;
+      expect(out.width / out.height, closeTo(9 / 16, 0.01));
+      expect(out.height, 1440);
     });
+
+    for (final (bool, String) v in const <(bool, String)>[
+      (false, 'colour'),
+      (true, 'clear'),
+    ]) {
+      testWidgets('a post is 1080 × 1350, never stretched (${v.$2})',
+          (WidgetTester tester) async {
+        // A wide photo: each size takes its middle, keeping its proportions.
+        final Uint8List wide = Uint8List.fromList(img.encodeJpg(img.fill(
+            img.Image(width: 1080, height: 720),
+            color: img.ColorRgb8(200, 120, 60))));
+        await pump(tester, const TripSharePage(tripId: 'a'),
+            prefs: stored(
+                <Trip>[trip('a', from: -9, to: -3, budget: 1500, travelers: 2)],
+                five),
+            overrides: <Override>[
+              effectivePlanProvider.overrideWithValue(Plan.pro),
+              tripPhotoPickerProvider.overrideWithValue(_FakePicker(wide)),
+            ]);
+        expect(find.text('Safe zones'), findsNothing);
+        await tester.tap(find.text('From the gallery'));
+        await tester.pumpAndSettle();
+        if (v.$1) {
+          await tester.tap(find.text('Clear'));
+          await tester.pumpAndSettle();
+        }
+        await tester.tap(find.text('Post 4:5'));
+        await tester.pumpAndSettle();
+        final Size card = tester.getSize(find.byType(TripShareCard));
+        expect(card.width / card.height, closeTo(4 / 5, 0.001));
+        final Image photo = tester.widget<Image>(find.byWidgetPredicate(
+            (Widget w) => w is Image && w.image is MemoryImage));
+        expect(photo.fit, BoxFit.cover, reason: 'cropped, never stretched');
+        await settle(tester);
+        expect(tester.takeException(), isNull);
+        final img.Image decoded = img.decodePng(await capture(tester))!;
+        expect((decoded.width, decoded.height), (1080, 1350));
+        File('${out.path}/trip-post-${v.$2}.png')
+            .writeAsBytesSync(img.encodePng(decoded));
+        // And back to a story.
+        await tester.tap(find.text('Story 9:16'));
+        await tester.pumpAndSettle();
+        final img.Image story = img.decodePng(await capture(tester))!;
+        expect((story.width, story.height), (1080, 1920));
+      });
+    }
 
     test('refusals are told apart from other failures', () {
       expect(DeviceTripPhotoPicker.isDenial('camera_access_denied'), isTrue);
@@ -791,8 +838,7 @@ class _FakePicker implements TripPhotoPicker {
   final bool denied;
 
   @override
-  Future<Uint8List?> pick(TripPhotoSource source,
-      {required double aspect}) async {
+  Future<Uint8List?> pick(TripPhotoSource source, {double? aspect}) async {
     if (denied) throw const TripPhotoDenied();
     return bytes;
   }

@@ -1307,7 +1307,6 @@
   "tripShowPercent": "فیصد",
   "tripPhotoTitle": "سفر کی تصویر",
   "tripPhotoDefault": "پہلے سے طے",
-  "tripSafeZones": "محفوظ حصے",
   "tripCardNow": "میں سفر پر ہوں",
   "tripCardNext": "میرا اگلا سفر",
   "tripConfirmPlace": "منزل کی تصدیق کریں",
@@ -1339,5 +1338,7 @@
   "tripTemplate": "سانچہ",
   "tripTemplateColour": "رنگین",
   "tripTemplateClear": "شفاف",
-  "tripClearNeedsPhoto": "شفاف سانچے کے لیے تصویر شامل کریں۔"
+  "tripClearNeedsPhoto": "شفاف سانچے کے لیے تصویر شامل کریں۔",
+  "tripFormatStory": "اسٹوری 9:16",
+  "tripFormatPost": "پوسٹ 4:5"
 }

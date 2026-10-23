@@ -58,7 +58,7 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
   final GlobalKey _cardKey = GlobalKey();
   Uint8List? _photo;
   TripCardColor _color = TripCardColor.green;
-  bool _safeZones = false;
+  TripCardFormat _format = TripCardFormat.story;
 
   /// The clear template (paid plan): the whole photo, light details.
   bool _clear = false;
@@ -93,9 +93,8 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
 
   Future<void> _pickPhoto(AppLocalizations l, TripPhotoSource source) async {
     try {
-      final Uint8List? bytes = await ref
-          .read(tripPhotoPickerProvider)
-          .pick(source, aspect: TripShareCard.photoAspect);
+      final Uint8List? bytes =
+          await ref.read(tripPhotoPickerProvider).pick(source);
       if (bytes != null && mounted) setState(() => _photo = bytes);
     } on TripPhotoDenied {
       _say(l.tripPhotoDenied);
@@ -135,7 +134,7 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
           text:
               '${report.underBudget ? l.tripShareTextSaved(report.savedPct!, place) : l.tripShareText(place)} '
               '${AppConfig.appShareUrl}',
-          filename: 'smarttrip.png');
+          filename: 'smarttrip-${_format.name}.png');
       switch (outcome) {
         case TripShareOutcome.shared:
           // Shared: the home screen stops offering it.
@@ -259,6 +258,27 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
                       _chooseTemplate(l, v.first, destination),
                 ),
                 const SizedBox(height: DsSpacing.sm),
+                // Story or feed post: each its own size, nothing stretched.
+                SegmentedButton<TripCardFormat>(
+                  showSelectedIcon: false,
+                  segments: <ButtonSegment<TripCardFormat>>[
+                    ButtonSegment<TripCardFormat>(
+                      value: TripCardFormat.story,
+                      icon: const Icon(Icons.stay_current_portrait_rounded,
+                          size: 18),
+                      label: Text(l.tripFormatStory),
+                    ),
+                    ButtonSegment<TripCardFormat>(
+                      value: TripCardFormat.post,
+                      icon: const Icon(Icons.crop_portrait_rounded, size: 18),
+                      label: Text(l.tripFormatPost),
+                    ),
+                  ],
+                  selected: <TripCardFormat>{_format},
+                  onSelectionChanged: (Set<TripCardFormat> v) =>
+                      setState(() => _format = v.first),
+                ),
+                const SizedBox(height: DsSpacing.sm),
                 TripValueToggle(percentOnly: pct),
                 const SizedBox(height: DsSpacing.sm),
                 Wrap(
@@ -281,12 +301,6 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
                           label: k.label(l),
                           onTap: () => setState(() => _color = k),
                         ),
-                    const SizedBox(width: DsSpacing.sm),
-                    FilterChip(
-                      label: Text(l.tripSafeZones),
-                      selected: _safeZones,
-                      onSelected: (bool v) => setState(() => _safeZones = v),
-                    ),
                   ],
                 ),
               ],
@@ -301,13 +315,14 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
                 child: FittedBox(
                   child: SizedBox(
                     width: TripShareCard.logicalWidth,
-                    height: TripShareCard.logicalHeight,
+                    height: _format.logicalHeight,
                     child: Stack(
                       children: <Widget>[
                         RepaintBoundary(
                           key: _cardKey,
                           child: TripShareCard(
                             clear: _clear,
+                            format: _format,
                             report: report,
                             color: _color,
                             percentOnly: pct,
@@ -315,11 +330,6 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
                             photo: _photo,
                           ),
                         ),
-                        // Only in the preview: what Instagram covers.
-                        if (_safeZones) ...<Widget>[
-                          const _SafeBand(top: true),
-                          const _SafeBand(top: false),
-                        ],
                       ],
                     ),
                   ),
@@ -411,24 +421,6 @@ class _Swatch extends StatelessWidget {
                 ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
                 : null,
           ),
-        ),
-      );
-}
-
-/// A red band over the top or bottom 13% of the preview.
-class _SafeBand extends StatelessWidget {
-  const _SafeBand({required this.top});
-  final bool top;
-
-  @override
-  Widget build(BuildContext context) => Positioned(
-        left: 0,
-        right: 0,
-        top: top ? 0 : null,
-        bottom: top ? null : 0,
-        height: TripShareCard.logicalHeight * TripShareCard.safeZone,
-        child: IgnorePointer(
-          child: ColoredBox(color: Colors.red.withValues(alpha: 0.28)),
         ),
       );
 }
