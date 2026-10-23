@@ -47,6 +47,7 @@ class TripShareCard extends StatelessWidget {
     this.destination,
     this.photo,
     this.showBranding = true,
+    this.clear = false,
   });
 
   /// Width of the card as laid out; exported with pixel ratio 1080 / this.
@@ -58,9 +59,9 @@ class TripShareCard extends StatelessWidget {
   /// Share of the height kept clear at the top and at the bottom.
   static const double safeZone = 0.13;
 
-  /// The hero picture's share of the height (photos are cropped to it).
-  static const double heroShare = 0.5;
-  static const double photoAspect = 1 / (heroShare * 16 / 9);
+  /// Photos are cropped to the card's own shape: the clear template shows
+  /// all of it, the coloured one its middle band.
+  static const double photoAspect = 9 / 16;
 
   final TripReport report;
   final TripCardColor color;
@@ -72,6 +73,11 @@ class TripShareCard extends StatelessWidget {
 
   /// The logo and QR code (always shown for now; see canRemoveBranding).
   final bool showBranding;
+
+  /// The clear template (paid plan): the whole picture, light details over
+  /// it, and the brand in one place. Needs a picture; without one the card
+  /// is drawn in colour.
+  final bool clear;
 
   // Fixed colours: the card is a picture and doesn't follow the app theme.
   static const Color _ink = Color(0xFF111827);
@@ -101,6 +107,9 @@ class TripShareCard extends StatelessWidget {
     final Trip trip = report.trip;
     final String? asset = destination?.image;
     final bool hasPicture = photo != null || asset != null;
+    if (clear && hasPicture) {
+      return _clearCard(context, l, lang, base, w, h, u, asset);
+    }
 
     final String kicker = switch (TripMath.status(trip, AppClock.now())) {
       TripStatus.ended => l.tripCardBack,
@@ -557,6 +566,205 @@ class TripShareCard extends StatelessWidget {
       );
 
   /// The logo, the line, and the QR code to the app.
+  /// The clear template: the picture fills the card; a soft shade at the top
+  /// and the bottom carries the place, the total, the categories in one line,
+  /// and, once, the brand with the QR code.
+  Widget _clearCard(BuildContext context, AppLocalizations l, AppLang lang,
+      TextStyle base, double w, double h, double u, String? asset) {
+    final TripReport r = report;
+    final Trip trip = r.trip;
+    String money(Money m) => MoneyFormatter.format(m);
+    String pct(double share) => '${(share * 100).round()}%';
+    final TextStyle soft =
+        base.copyWith(color: Colors.white.withValues(alpha: 0.82));
+    const List<Shadow> shade = _textShadow;
+    final String kicker = switch (TripMath.status(trip, AppClock.now())) {
+      TripStatus.ended => l.tripCardBack,
+      TripStatus.active => l.tripCardNow,
+      TripStatus.upcoming => l.tripCardNext,
+    };
+
+    // One line: the three largest categories.
+    final List<TripCategoryShare> top = r.categories.take(3).toList();
+    final Widget categories = Wrap(
+      spacing: 3.2 * u,
+      runSpacing: 1 * u,
+      children: <Widget>[
+        for (int i = 0; i < top.length; i++)
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                width: 1.8 * u,
+                height: 1.8 * u,
+                decoration: BoxDecoration(
+                    color: DsChartPalette.at(i), shape: BoxShape.circle),
+              ),
+              SizedBox(width: 1.2 * u),
+              Text(
+                '${Catalog.label(top[i].category, lang: lang)} '
+                '${percentOnly ? pct(top[i].share) : money(top[i].amount)}',
+                style: soft.copyWith(fontSize: 3.1 * u, shadows: shade),
+              ),
+            ],
+          ),
+      ],
+    );
+
+    final String? headline = !percentOnly
+        ? money(r.spent)
+        : r.hasBudget
+            ? '${r.usedPct}%'
+            : null;
+    final String? caption = !percentOnly
+        ? l.tripTotalSpent
+        : r.hasBudget
+            ? l.tripUsedPct(r.usedPct!)
+            : null;
+
+    return ClipRect(
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          ColoredBox(color: Color.lerp(color.color, Colors.black, 0.4)!),
+          if (photo != null)
+            Image.memory(photo!, fit: BoxFit.cover)
+          else
+            Image.asset(asset!,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink()),
+          // Shade only where the words are; the middle stays the picture.
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: <Color>[
+                  Colors.black.withValues(alpha: 0.42),
+                  Colors.black.withValues(alpha: 0),
+                  Colors.black.withValues(alpha: 0),
+                  Colors.black.withValues(alpha: 0.72),
+                ],
+                stops: const <double>[0, 0.3, 0.52, 1],
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(
+                w * 0.07, h * safeZone, w * 0.07, h * safeZone),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Text(kicker,
+                    style: soft.copyWith(fontSize: 3.6 * u, shadows: shade)),
+                SizedBox(height: 0.8 * u),
+                Text(
+                  destination?.nameFor(lang) ?? trip.destination,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: base.copyWith(
+                      fontSize: 9 * u,
+                      fontWeight: FontWeight.w800,
+                      shadows: shade),
+                ),
+                SizedBox(height: 1.2 * u),
+                Wrap(
+                  spacing: 4 * u,
+                  children: <Widget>[
+                    _meta(Icons.calendar_today_outlined,
+                        l.tripDaysCount(TripDays.total(trip)), base, u),
+                    if (trip.travelers > 1)
+                      _meta(Icons.group_outlined,
+                          l.tripTravelersCount(trip.travelers), base, u),
+                  ],
+                ),
+                const Spacer(),
+                if (r.underBudget)
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Container(
+                      margin: EdgeInsetsDirectional.only(bottom: 2.4 * u),
+                      padding: EdgeInsetsDirectional.symmetric(
+                          horizontal: 3 * u, vertical: 1 * u),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(10 * u),
+                        border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.35)),
+                      ),
+                      child: Text(l.tripSavedPct(r.savedPct!),
+                          style: base.copyWith(
+                              fontSize: 3.4 * u, fontWeight: FontWeight.w700)),
+                    ),
+                  ),
+                if (caption != null)
+                  Text(caption,
+                      style: percentOnly
+                          ? base.copyWith(
+                              fontSize: 5.6 * u,
+                              fontWeight: FontWeight.w800,
+                              shadows: shade)
+                          : soft.copyWith(fontSize: 3.2 * u, shadows: shade)),
+                if (headline != null && !percentOnly)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(headline,
+                            style: base.copyWith(
+                                fontSize: 9.4 * u,
+                                fontWeight: FontWeight.w800,
+                                shadows: shade)),
+                      ),
+                      Text(l.tripPerDay(money(r.dailyAverage)),
+                          style:
+                              soft.copyWith(fontSize: 3.2 * u, shadows: shade)),
+                    ],
+                  ),
+                SizedBox(height: 1.8 * u),
+                categories,
+                if (showBranding) ...<Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 3 * u),
+                    child: Container(
+                        height: 1, color: Colors.white.withValues(alpha: 0.28)),
+                  ),
+                  // The brand, once.
+                  Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Row(
+                      children: <Widget>[
+                        _appIcon(7.4 * u),
+                        SizedBox(width: 2 * u),
+                        Expanded(
+                          child: Text(
+                            '${AppConfig.parentBrand} · ${AppConfig.appName}',
+                            style: base.copyWith(
+                                fontSize: 3.6 * u,
+                                fontWeight: FontWeight.w700,
+                                shadows: shade),
+                          ),
+                        ),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(1.6 * u),
+                          child: SvgPicture.string(
+                            ShareQr.svg(AppConfig.appShareUrl, size: 256),
+                            width: 16 * u,
+                            height: 16 * u,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// The app icon, rounded like on a phone.
   Widget _appIcon(double size) => ClipRRect(
         borderRadius: BorderRadius.circular(size * 0.24),

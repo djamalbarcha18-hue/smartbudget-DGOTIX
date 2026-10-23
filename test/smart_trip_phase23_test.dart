@@ -15,6 +15,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
+import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
+import 'package:smartbudget/features/billing/domain/plan.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/design_system/tokens/ds_glass.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
@@ -688,13 +691,90 @@ void main() {
       });
     }
 
+    group('clear template (paid plan)', () {
+      final Uint8List jpg = Uint8List.fromList(img.encodeJpg(img.fill(
+          img.Image(width: 600, height: 1066),
+          color: img.ColorRgb8(90, 140, 200))));
+
+      testWidgets('free plan: the upgrade sheet, no clear card',
+          (WidgetTester tester) async {
+        await pump(tester, const TripSharePage(tripId: 'a'),
+            prefs: stored(<Trip>[trip('a', from: -9, to: -3)], five),
+            overrides: <Override>[
+              effectivePlanProvider.overrideWithValue(Plan.free),
+              tripPhotoPickerProvider.overrideWithValue(_FakePicker(jpg)),
+            ]);
+        await tester.tap(find.text('Clear'));
+        await tester.pumpAndSettle();
+        expect(find.byType(UpgradeSheet), findsOneWidget);
+        expect(tester.widget<TripShareCard>(find.byType(TripShareCard)).clear,
+            isFalse);
+      });
+
+      testWidgets(
+          'asks for a photo, then the whole photo, the brand once, '
+          '1080 × 1920 with a readable QR', (WidgetTester tester) async {
+        await pump(tester, const TripSharePage(tripId: 'a'),
+            locale: const Locale('ar'),
+            prefs: stored(
+                <Trip>[trip('a', from: -9, to: -3, budget: 1500, travelers: 2)],
+                five),
+            overrides: <Override>[
+              effectivePlanProvider.overrideWithValue(Plan.pro),
+              tripPhotoPickerProvider.overrideWithValue(_FakePicker(jpg)),
+            ]);
+        await tester.tap(find.text('شفاف'));
+        await tester.pumpAndSettle();
+        expect(find.text('أضف صورة لاستخدام القالب الشفاف.'), findsOneWidget);
+        final TripShareCard card =
+            tester.widget<TripShareCard>(find.byType(TripShareCard));
+        expect(card.clear, isTrue);
+        expect(card.photo, isNotNull);
+        // The colours are for the coloured template only.
+        expect(find.bySemanticsLabel('أخضر'), findsNothing);
+        // The brand appears once: one app icon, no tag at the top.
+        expect(
+            find.descendant(
+                of: find.byType(TripShareCard),
+                matching: find.byWidgetPredicate((Widget w) =>
+                    w is Image &&
+                    w.image is AssetImage &&
+                    (w.image as AssetImage).assetName ==
+                        TripShareCard.appIconAsset)),
+            findsOneWidget);
+        expect(find.text('DGOTIX · SmartBudget'), findsOneWidget);
+        await settle(tester);
+        expect(tester.takeException(), isNull);
+        final Uint8List png = await capture(tester);
+        final img.Image decoded = img.decodePng(png)!;
+        expect((decoded.width, decoded.height), (1080, 1920));
+        File('${out.path}/trip-card-clear-ar.png').writeAsBytesSync(png);
+      });
+
+      testWidgets('back to the default photo: back to colour',
+          (WidgetTester tester) async {
+        await pump(tester, const TripSharePage(tripId: 'a'),
+            prefs: stored(<Trip>[trip('a', from: -9, to: -3)], five),
+            overrides: <Override>[
+              effectivePlanProvider.overrideWithValue(Plan.pro),
+              tripPhotoPickerProvider.overrideWithValue(_FakePicker(jpg)),
+            ]);
+        await tester.tap(find.text('Clear'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Default'));
+        await tester.pumpAndSettle();
+        expect(tester.widget<TripShareCard>(find.byType(TripShareCard)).clear,
+            isFalse);
+      });
+    });
+
     test('the photo crop keeps the slot shape', () {
       final Uint8List jpg = Uint8List.fromList(
           img.encodeJpg(img.Image(width: 1080, height: 1440)));
       final img.Image out =
           img.decodeJpg(cropToAspect((jpg, TripShareCard.photoAspect))!)!;
       expect(out.width / out.height, closeTo(TripShareCard.photoAspect, 0.01));
-      expect(out.width, 1080);
+      expect(out.height, 1440); // the full height, the sides trimmed
     });
 
     test('refusals are told apart from other failures', () {

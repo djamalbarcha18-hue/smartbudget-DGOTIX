@@ -1334,5 +1334,10 @@
   "tripNeedMore": "اس کے لیے ماہانہ {amount} چاہیے، جو آپ کی معمول کی بچت سے زیادہ ہے۔",
   "tripWithinSurplus": "ماہانہ {amount}، آپ کی معمول کی بچت کے اندر۔",
   "tripSuggestBudget": "بجٹ تجویز کریں",
-  "tripShareTextSaved": "میں نے {place} کے سفر میں اپنے بجٹ کا {pct}% بچایا، SmartBudget سے ٹریک کیا۔"
+  "tripShareTextSaved": "میں نے {place} کے سفر میں اپنے بجٹ کا {pct}% بچایا، SmartBudget سے ٹریک کیا۔",
+  "featTripPhotoCard": "پوری تصویر والا سفر کارڈ",
+  "tripTemplate": "سانچہ",
+  "tripTemplateColour": "رنگین",
+  "tripTemplateClear": "شفاف",
+  "tripClearNeedsPhoto": "شفاف سانچے کے لیے تصویر شامل کریں۔"
 }

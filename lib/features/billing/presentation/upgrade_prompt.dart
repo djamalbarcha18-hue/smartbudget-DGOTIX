@@ -37,6 +37,7 @@ String featureTitle(AppLocalizations l, Feature f) => switch (f) {
       Feature.prioritySupport => l.planFeatPriority,
       Feature.salarySplit => l.planFeatSalarySplit,
       Feature.smartAlerts => l.featSmartAlerts,
+      Feature.tripPhotoCard => l.featTripPhotoCard,
     };
 
 /// Plan limits at the points where something new is added or opened. The

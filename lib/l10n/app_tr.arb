@@ -1334,5 +1334,10 @@
   "tripNeedMore": "Bunun için ayda {amount} gerekir; bu, olağan artınızdan fazla.",
   "tripWithinSurplus": "Ayda {amount}; olağan artınızın içinde.",
   "tripSuggestBudget": "Bütçe öner",
-  "tripShareTextSaved": "{place} seyahatimde bütçemin %{pct} kadarını tasarruf ettim, SmartBudget ile takip ettim."
+  "tripShareTextSaved": "{place} seyahatimde bütçemin %{pct} kadarını tasarruf ettim, SmartBudget ile takip ettim.",
+  "featTripPhotoCard": "Tam fotoğraflı seyahat kartı",
+  "tripTemplate": "Şablon",
+  "tripTemplateColour": "Renkli",
+  "tripTemplateClear": "Şeffaf",
+  "tripClearNeedsPhoto": "Şeffaf şablon için bir fotoğraf ekleyin."
 }

@@ -15,6 +15,8 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/trips/data/trip_image_share.dart';
 import 'package:smartbudget/features/trips/data/trip_photos.dart';
@@ -57,6 +59,9 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
   Uint8List? _photo;
   TripCardColor _color = TripCardColor.green;
   bool _safeZones = false;
+
+  /// The clear template (paid plan): the whole photo, light details.
+  bool _clear = false;
   bool _busy = false;
 
   @override
@@ -68,6 +73,23 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
 
   void _say(String text) => ScaffoldMessenger.maybeOf(context)
       ?.showSnackBar(SnackBar(content: Text(text)));
+
+  /// The clear template needs the paid plan and a picture: asks for a photo
+  /// when there is none.
+  Future<void> _chooseTemplate(
+      AppLocalizations l, bool clear, Destination? destination) async {
+    if (!clear) {
+      setState(() => _clear = false);
+      return;
+    }
+    if (!PlanLimits.allow(context, Feature.tripPhotoCard)) return;
+    if (_photo == null && destination?.image == null) {
+      _say(l.tripClearNeedsPhoto);
+      await _pickPhoto(l, TripPhotoSource.gallery);
+      if (_photo == null) return;
+    }
+    if (mounted) setState(() => _clear = true);
+  }
 
   Future<void> _pickPhoto(AppLocalizations l, TripPhotoSource source) async {
     try {
@@ -208,9 +230,33 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
                       label: l.tripPhotoDefault,
                       onTap: _photo == null || _busy
                           ? null
-                          : () => setState(() => _photo = null),
+                          : () => setState(() {
+                                _photo = null;
+                                // Clear needs a picture: back to colour.
+                                if (destination?.image == null) _clear = false;
+                              }),
                     ),
                   ],
+                ),
+                const SizedBox(height: DsSpacing.sm),
+                SegmentedButton<bool>(
+                  showSelectedIcon: false,
+                  segments: <ButtonSegment<bool>>[
+                    ButtonSegment<bool>(
+                      value: false,
+                      icon: const Icon(Icons.palette_outlined, size: 18),
+                      label: Text(l.tripTemplateColour),
+                    ),
+                    ButtonSegment<bool>(
+                      value: true,
+                      icon: const Icon(Icons.workspace_premium_outlined,
+                          size: 18),
+                      label: Text(l.tripTemplateClear),
+                    ),
+                  ],
+                  selected: <bool>{_clear},
+                  onSelectionChanged: (Set<bool> v) =>
+                      _chooseTemplate(l, v.first, destination),
                 ),
                 const SizedBox(height: DsSpacing.sm),
                 TripValueToggle(percentOnly: pct),
@@ -220,19 +266,21 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
                   runSpacing: DsSpacing.xs,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: <Widget>[
-                    Padding(
-                      padding:
-                          const EdgeInsetsDirectional.only(end: DsSpacing.xs),
-                      child: Text(l.tripCardColor,
-                          style: t.labelMedium?.copyWith(color: c.textMuted)),
-                    ),
-                    for (final TripCardColor k in TripCardColor.values)
-                      _Swatch(
-                        color: k,
-                        selected: _color == k,
-                        label: k.label(l),
-                        onTap: () => setState(() => _color = k),
+                    if (!_clear)
+                      Padding(
+                        padding:
+                            const EdgeInsetsDirectional.only(end: DsSpacing.xs),
+                        child: Text(l.tripCardColor,
+                            style: t.labelMedium?.copyWith(color: c.textMuted)),
                       ),
+                    for (final TripCardColor k in TripCardColor.values)
+                      if (!_clear)
+                        _Swatch(
+                          color: k,
+                          selected: _color == k,
+                          label: k.label(l),
+                          onTap: () => setState(() => _color = k),
+                        ),
                     const SizedBox(width: DsSpacing.sm),
                     FilterChip(
                       label: Text(l.tripSafeZones),
@@ -259,6 +307,7 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
                         RepaintBoundary(
                           key: _cardKey,
                           child: TripShareCard(
+                            clear: _clear,
                             report: report,
                             color: _color,
                             percentOnly: pct,

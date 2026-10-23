@@ -23,6 +23,7 @@ int _usedFor(Ref ref, Feature f) {
     case Feature.prioritySupport:
     case Feature.salarySplit:
     case Feature.smartAlerts:
+    case Feature.tripPhotoCard:
     // Counted features are checked where an item is added (PlanLimits).
     case Feature.wallets:
     case Feature.multiCurrency:

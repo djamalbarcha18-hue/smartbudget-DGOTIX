@@ -12,6 +12,11 @@ expenses can be linked to a trip.
   "summary ready" state and on the summary). When the user actually shares
   (picks an app), the trip is marked `sharedAt` and its card leaves the
   home screen; it stays in My trips.
+- Clear template (paid plan, `Feature.tripPhotoCard`): the whole photo
+  fills the card with light details over it (place, days, total or % used,
+  the saving, three categories in one line) and the brand in one place at
+  the bottom (app icon, "DGOTIX · SmartBudget", QR). Needs a photo; going
+  back to the default photo with no destination picture returns to colour.
 - Phase 3: the share card, a 9:16 story exported at 1080 × 1920 on the
   device (`TripShareCard`), with an optional trip photo (gallery or camera,
   kept in memory only), four colours, the logo and a QR code to

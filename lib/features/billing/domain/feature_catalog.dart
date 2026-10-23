@@ -81,6 +81,9 @@ enum Feature {
   /// Smart alerts: budget forecasts, unusual spending and weekly/monthly
   /// summaries in the notifications bell.
   smartAlerts,
+
+  /// SmartTrip's clear share card: the whole photo with light details.
+  tripPhotoCard,
 }
 
 /// How a metered quota resets.
@@ -226,6 +229,10 @@ abstract final class FeatureCatalog {
     ),
     Feature.salarySplit: FeatureRule(
       feature: Feature.salarySplit,
+      minTier: Plan.pro,
+    ),
+    Feature.tripPhotoCard: FeatureRule(
+      feature: Feature.tripPhotoCard,
       minTier: Plan.pro,
     ),
     Feature.smartAlerts: FeatureRule(

@@ -1334,5 +1334,10 @@
   "tripNeedMore": "Ini perlukan {amount} sebulan, lebih daripada lebihan biasa anda.",
   "tripWithinSurplus": "{amount} sebulan, dalam lebihan biasa anda.",
   "tripSuggestBudget": "Cadangkan bajet",
-  "tripShareTextSaved": "Saya jimat {pct}% bajet perjalanan ke {place}, dijejak dengan SmartBudget."
+  "tripShareTextSaved": "Saya jimat {pct}% bajet perjalanan ke {place}, dijejak dengan SmartBudget.",
+  "featTripPhotoCard": "Kad perjalanan foto penuh",
+  "tripTemplate": "Templat",
+  "tripTemplateColour": "Berwarna",
+  "tripTemplateClear": "Lutsinar",
+  "tripClearNeedsPhoto": "Tambah foto untuk guna templat lutsinar."
 }

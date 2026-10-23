@@ -1573,5 +1573,10 @@
   "@tripWithinSurplus": {"placeholders": {"amount": {"type": "String"}}},
   "tripSuggestBudget": "Suggest a budget",
   "tripShareTextSaved": "I saved {pct}% of my budget on my trip to {place}, tracked with SmartBudget.",
-  "@tripShareTextSaved": {"placeholders": {"pct": {"type": "int"}, "place": {"type": "String"}}}
+  "@tripShareTextSaved": {"placeholders": {"pct": {"type": "int"}, "place": {"type": "String"}}},
+  "featTripPhotoCard": "Full-photo trip card",
+  "tripTemplate": "Template",
+  "tripTemplateColour": "Colour",
+  "tripTemplateClear": "Clear",
+  "tripClearNeedsPhoto": "Add a photo to use the clear template."
 }

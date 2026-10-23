@@ -1334,5 +1334,10 @@
   "tripNeedMore": "Necesitas {amount} al mes, más que tu excedente habitual.",
   "tripWithinSurplus": "{amount} al mes, dentro de tu excedente habitual.",
   "tripSuggestBudget": "Sugerir un presupuesto",
-  "tripShareTextSaved": "Ahorré un {pct} % del presupuesto de mi viaje a {place}, seguido con SmartBudget."
+  "tripShareTextSaved": "Ahorré un {pct} % del presupuesto de mi viaje a {place}, seguido con SmartBudget.",
+  "featTripPhotoCard": "Tarjeta de viaje con foto completa",
+  "tripTemplate": "Plantilla",
+  "tripTemplateColour": "Color",
+  "tripTemplateClear": "Transparente",
+  "tripClearNeedsPhoto": "Añade una foto para usar la plantilla transparente."
 }

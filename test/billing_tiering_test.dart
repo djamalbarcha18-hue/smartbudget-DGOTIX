@@ -156,6 +156,7 @@ void main() {
         Feature.portfolioFull,
         Feature.projects,
         Feature.prioritySupport,
+        Feature.tripPhotoCard,
       ]) {
         final GateDecision d = FeatureGate.evaluate(f, plan: Plan.free);
         expect(d.allowed, isFalse, reason: '$f');

@@ -1334,5 +1334,10 @@
   "tripNeedMore": "Ini butuh {amount} per bulan, lebih dari surplus biasa Anda.",
   "tripWithinSurplus": "{amount} per bulan, masih dalam surplus biasa Anda.",
   "tripSuggestBudget": "Sarankan anggaran",
-  "tripShareTextSaved": "Saya hemat {pct}% anggaran perjalanan ke {place}, dilacak dengan SmartBudget."
+  "tripShareTextSaved": "Saya hemat {pct}% anggaran perjalanan ke {place}, dilacak dengan SmartBudget.",
+  "featTripPhotoCard": "Kartu perjalanan foto penuh",
+  "tripTemplate": "Templat",
+  "tripTemplateColour": "Berwarna",
+  "tripTemplateClear": "Transparan",
+  "tripClearNeedsPhoto": "Tambahkan foto untuk memakai templat transparan."
 }
