@@ -80,6 +80,16 @@ class TripActions {
     return g;
   }
 
+  /// Notes that the trip's card was shared: its summary leaves the home
+  /// screen (it stays in My trips).
+  Future<void> markShared(String tripId) async {
+    for (final Trip t in await _store.all()) {
+      if (t.id == tripId) {
+        await _store.upsert(t.copyWith(sharedAt: AppClock.now()));
+      }
+    }
+  }
+
   /// Deletes the trip; its expenses stay, no longer tagged with it.
   Future<void> delete(Trip t) async {
     final List<Transaction> txns =

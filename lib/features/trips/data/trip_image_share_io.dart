@@ -3,24 +3,29 @@ import 'dart:typed_data';
 
 import 'package:share_plus/share_plus.dart';
 
+import 'package:smartbudget/features/trips/data/trip_image_share.dart'
+    show TripShareOutcome;
+
 /// Shares [png] with [text] through the system share sheet. The image goes
 /// through a temporary file of its own, removed by [cleanUpTripImages] once
 /// the receiving app has had time to read it (when the preview closes, and
-/// before the next share). Returns false when sharing failed.
-Future<bool> shareTripImage(Uint8List png,
+/// before the next share).
+Future<TripShareOutcome> shareTripImage(Uint8List png,
     {required String text, required String filename}) async {
   await cleanUpTripImages();
   try {
     final Directory dir = await _dir().create(recursive: true);
     final File file = File('${dir.path}/$filename');
     await file.writeAsBytes(png, flush: true);
-    await SharePlus.instance.share(ShareParams(
+    final ShareResult r = await SharePlus.instance.share(ShareParams(
       text: text,
       files: <XFile>[XFile(file.path, mimeType: 'image/png')],
     ));
-    return true;
+    return r.status == ShareResultStatus.dismissed
+        ? TripShareOutcome.cancelled
+        : TripShareOutcome.shared;
   } catch (_) {
-    return false;
+    return TripShareOutcome.failed;
   }
 }
 

@@ -118,6 +118,7 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
           createdAt: widget.existing?.createdAt ?? AppClock.now(),
           goalId: widget.existing?.goalId,
           travelers: _travelers,
+          sharedAt: widget.existing?.sharedAt,
         ));
     if (mounted) Navigator.of(context).pop();
   }

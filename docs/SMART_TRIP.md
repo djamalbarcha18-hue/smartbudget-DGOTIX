@@ -8,6 +8,10 @@ expenses can be linked to a trip.
   after the trip), "Start saving for this trip" (a goal in the existing goals,
   due the day the trip starts), and the trip summary with the
   "Real value | Percentage" switch.
+- Sharing: only once a trip is over ("Share your trip" on the home card's
+  "summary ready" state and on the summary). When the user actually shares
+  (picks an app), the trip is marked `sharedAt` and its card leaves the
+  home screen; it stays in My trips.
 - Phase 3: the share card, a 9:16 story exported at 1080 × 1920 on the
   device (`TripShareCard`), with an optional trip photo (gallery or camera,
   kept in memory only), four colours, the logo and a QR code to

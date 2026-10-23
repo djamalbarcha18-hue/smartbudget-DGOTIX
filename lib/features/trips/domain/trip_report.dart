@@ -146,7 +146,8 @@ abstract final class TripDashboard {
   static const int minDaysForMonthly = 30;
 
   /// The trip closest in time: one under way (the latest to start), else the
-  /// next one coming, else one that ended in the last [summaryDays] days.
+  /// next one coming, else one that ended in the last [summaryDays] days and
+  /// hasn't been shared yet (sharing it closes its card).
   static Trip? pick(List<Trip> trips, DateTime now) {
     final DateTime today = DateTime(now.year, now.month, now.day);
     Trip? active;
@@ -161,6 +162,7 @@ abstract final class TripDashboard {
         case TripStatus.ended:
           final int since = today.difference(t.end).inDays;
           if (since <= summaryDays &&
+              t.sharedAt == null &&
               (ended == null || t.end.isAfter(ended.end))) {
             ended = t;
           }

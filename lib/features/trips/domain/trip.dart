@@ -15,6 +15,7 @@ class Trip {
     this.plannedBudget,
     this.goalId,
     this.travelers = 1,
+    this.sharedAt,
   });
 
   final String id;
@@ -36,7 +37,11 @@ class Trip {
   /// How many people the trip's budget and expenses are for (at least 1).
   final int travelers;
 
-  Trip copyWith({String? goalId, bool clearGoal = false}) => Trip(
+  /// When its card was shared (the home screen then stops offering it).
+  final DateTime? sharedAt;
+
+  Trip copyWith({String? goalId, bool clearGoal = false, DateTime? sharedAt}) =>
+      Trip(
         id: id,
         name: name,
         destination: destination,
@@ -46,6 +51,7 @@ class Trip {
         createdAt: createdAt,
         goalId: clearGoal ? null : goalId ?? this.goalId,
         travelers: travelers,
+        sharedAt: sharedAt ?? this.sharedAt,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -59,6 +65,7 @@ class Trip {
         'createdAt': createdAt.toIso8601String(),
         if (goalId != null) 'goalId': goalId,
         if (travelers > 1) 'travelers': travelers,
+        if (sharedAt != null) 'sharedAt': sharedAt!.toIso8601String(),
       };
 
   factory Trip.fromJson(Map<String, dynamic> j) {
@@ -78,6 +85,7 @@ class Trip {
           DateTime(2026),
       goalId: j['goalId'] as String?,
       travelers: ((j['travelers'] as num?)?.toInt() ?? 1).clamp(1, 99),
+      sharedAt: DateTime.tryParse((j['sharedAt'] as String?) ?? ''),
     );
   }
 

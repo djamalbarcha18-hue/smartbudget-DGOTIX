@@ -20,6 +20,7 @@ import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
+import 'package:smartbudget/features/trips/data/trip_image_share.dart';
 import 'package:smartbudget/features/trips/data/trip_photos.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
@@ -496,6 +497,49 @@ void main() {
               const <Transaction>[]));
       expect(find.text('Share your trip'), findsNothing);
     });
+  });
+
+  group('once shared, the summary leaves the home screen', () {
+    test('a shared trip is no longer offered; the mark is kept', () {
+      final Trip ended = trip('a', from: -9, to: -3, budget: 1500);
+      expect(TripDashboard.pick(<Trip>[ended], now)!.id, 'a');
+      final Trip shared = ended.copyWith(sharedAt: DateTime(2026, 10, 20));
+      expect(TripDashboard.pick(<Trip>[shared], now), isNull);
+      expect(Trip.fromJson(shared.toJson()).sharedAt, DateTime(2026, 10, 20));
+      expect(Trip.fromJson(ended.toJson()).sharedAt, isNull);
+      expect(shared.copyWith(goalId: 'g').sharedAt, shared.sharedAt);
+    });
+
+    for (final (TripShareOutcome, bool) v in const <(TripShareOutcome, bool)>[
+      (TripShareOutcome.shared, true),
+      (TripShareOutcome.cancelled, false),
+      (TripShareOutcome.failed, false),
+    ]) {
+      testWidgets('share ${v.$1.name}: card ${v.$2 ? 'gone' : 'kept'}',
+          (WidgetTester tester) async {
+        final ProviderContainer c = await pump(
+            tester, const TripSharePage(tripId: 'a'),
+            prefs:
+                stored(<Trip>[trip('a', from: -9, to: -3, budget: 1500)], five),
+            overrides: <Override>[
+              tripImageSharerProvider.overrideWithValue((Uint8List png,
+                      {required String text, required String filename}) async =>
+                  v.$1),
+            ]);
+        await tester.runAsync(() async {
+          await tester.tap(find.text('Share'));
+          await Future<void>.delayed(const Duration(milliseconds: 600));
+        });
+        await tester.pumpAndSettle();
+        final Trip saved = (await c.read(tripStoreProvider).all()).single;
+        expect(saved.sharedAt != null, v.$2);
+        expect(TripDashboard.pick(<Trip>[saved], now) == null, v.$2);
+        if (v.$1 == TripShareOutcome.failed) {
+          expect(find.text('The image could not be made. Please try again.'),
+              findsOneWidget);
+        }
+      });
+    }
   });
 
   group('share card', () {

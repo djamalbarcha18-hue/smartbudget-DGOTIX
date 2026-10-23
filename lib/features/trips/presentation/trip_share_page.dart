@@ -25,6 +25,13 @@ import 'package:smartbudget/features/trips/presentation/trip_share_card.dart';
 import 'package:smartbudget/features/trips/presentation/trip_summary_page.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
+/// Sends the card image to the share sheet (replaced in tests).
+typedef TripImageSharer = Future<TripShareOutcome> Function(Uint8List png,
+    {required String text, required String filename});
+
+final tripImageSharerProvider =
+    Provider<TripImageSharer>((_) => shareTripImage);
+
 /// Whether the share card may drop the logo and QR code. Kept for a paid
 /// plan later; false for everyone now and not tied to anything yet.
 final canRemoveBrandingProvider = Provider<bool>((_) => false);
@@ -100,13 +107,22 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
         _say(l.tripShareFailed);
         return;
       }
-      final bool ok = await shareTripImage(png,
+      final TripShareOutcome outcome = await ref.read(tripImageSharerProvider)(
+          png,
           // The message follows the result: the saving when there is one.
           text:
               '${report.underBudget ? l.tripShareTextSaved(report.savedPct!, place) : l.tripShareText(place)} '
               '${AppConfig.appShareUrl}',
           filename: 'smarttrip.png');
-      if (!ok) _say(l.tripShareFailed);
+      switch (outcome) {
+        case TripShareOutcome.shared:
+          // Shared: the home screen stops offering it.
+          await ref.read(tripActionsProvider).markShared(widget.tripId);
+        case TripShareOutcome.cancelled:
+          break;
+        case TripShareOutcome.failed:
+          _say(l.tripShareFailed);
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
