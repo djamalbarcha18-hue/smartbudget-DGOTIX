@@ -1340,5 +1340,10 @@
   "tripTemplateClear": "Lutsinar",
   "tripClearNeedsPhoto": "Tambah foto untuk guna templat lutsinar.",
   "tripFormatStory": "Story 9:16",
-  "tripFormatPost": "Hantaran 4:5"
+  "tripFormatPost": "Hantaran 4:5",
+  "tripLevel": "Gaya perjalanan",
+  "tripLevelEconomy": "Jimat",
+  "tripLevelStandard": "Sederhana",
+  "tripLevelLuxury": "Mewah",
+  "tripDaysLabel": "Bilangan hari: {days}"
 }

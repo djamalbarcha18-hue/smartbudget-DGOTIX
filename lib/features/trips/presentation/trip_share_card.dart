@@ -171,6 +171,9 @@ class TripShareCard extends StatelessWidget {
             if (trip.travelers > 1)
               _meta(Icons.group_outlined, l.tripTravelersCount(trip.travelers),
                   base, u),
+            if (trip.level != null)
+              _meta(
+                  Icons.sell_outlined, tripLevelLabel(l, trip.level!), base, u),
           ],
         ),
       ],
@@ -701,6 +704,9 @@ class TripShareCard extends StatelessWidget {
                     if (trip.travelers > 1)
                       _meta(Icons.group_outlined,
                           l.tripTravelersCount(trip.travelers), base, u),
+                    if (trip.level != null)
+                      _meta(Icons.sell_outlined, tripLevelLabel(l, trip.level!),
+                          base, u),
                   ],
                 ),
                 const Spacer(),

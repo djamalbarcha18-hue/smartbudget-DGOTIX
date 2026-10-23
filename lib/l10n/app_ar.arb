@@ -1540,5 +1540,10 @@
   "tripTemplateClear": "شفاف",
   "tripClearNeedsPhoto": "أضف صورة لاستخدام القالب الشفاف.",
   "tripFormatStory": "ستوري 9:16",
-  "tripFormatPost": "منشور 4:5"
+  "tripFormatPost": "منشور 4:5",
+  "tripLevel": "مستوى الرحلة",
+  "tripLevelEconomy": "اقتصادي",
+  "tripLevelStandard": "متوسط",
+  "tripLevelLuxury": "فاخر",
+  "tripDaysLabel": "عدد الأيام: {days}"
 }

@@ -1340,5 +1340,10 @@
   "tripTemplateClear": "Transparan",
   "tripClearNeedsPhoto": "Tambahkan foto untuk memakai templat transparan.",
   "tripFormatStory": "Story 9:16",
-  "tripFormatPost": "Postingan 4:5"
+  "tripFormatPost": "Postingan 4:5",
+  "tripLevel": "Gaya perjalanan",
+  "tripLevelEconomy": "Hemat",
+  "tripLevelStandard": "Menengah",
+  "tripLevelLuxury": "Mewah",
+  "tripDaysLabel": "Jumlah hari: {days}"
 }

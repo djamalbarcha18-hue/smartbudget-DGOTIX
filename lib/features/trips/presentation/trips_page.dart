@@ -154,7 +154,10 @@ class _TripCard extends ConsumerWidget {
                     // another script never reorders the dates around it.
                     Text(catalog.display(trip.destination, appLangOf(context)),
                         style: t.bodySmall?.copyWith(color: c.textMuted)),
-                    Text(tripDates(context, trip),
+                    Text(
+                        trip.level == null
+                            ? tripDates(context, trip)
+                            : '${tripDates(context, trip)} · ${tripLevelLabel(l, trip.level!)}',
                         style: t.bodySmall?.copyWith(color: c.textFaint)),
                   ],
                 ),

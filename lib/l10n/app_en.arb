@@ -1579,5 +1579,11 @@
   "tripTemplateClear": "Clear",
   "tripClearNeedsPhoto": "Add a photo to use the clear template.",
   "tripFormatStory": "Story 9:16",
-  "tripFormatPost": "Post 4:5"
+  "tripFormatPost": "Post 4:5",
+  "tripLevel": "Trip style",
+  "tripLevelEconomy": "Budget",
+  "tripLevelStandard": "Mid-range",
+  "tripLevelLuxury": "Luxury",
+  "tripDaysLabel": "Days: {days}",
+  "@tripDaysLabel": {"placeholders": {"days": {"type": "int"}}}
 }

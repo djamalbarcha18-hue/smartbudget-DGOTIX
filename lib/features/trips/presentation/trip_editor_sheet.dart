@@ -21,6 +21,7 @@ import 'package:smartbudget/features/trips/domain/destination.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
 import 'package:smartbudget/features/trips/domain/trip_report.dart';
 import 'package:smartbudget/features/trips/presentation/destination_picker.dart';
+import 'package:smartbudget/features/trips/presentation/trip_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Create or edit a trip: where, when, and an optional budget.
@@ -55,8 +56,15 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
           : _plain(widget.existing!.plannedBudget!));
   late String? _destination = widget.existing?.destination;
   late DateTime _start = widget.existing?.start ?? _today;
-  late DateTime _end =
-      widget.existing?.end ?? _today.add(const Duration(days: 6));
+
+  /// How many days (the last day follows from the first).
+  late int _days =
+      widget.existing == null ? 7 : TripDays.total(widget.existing!);
+  late TripLevel? _level = widget.existing?.level;
+  DateTime get _end => _start.add(Duration(days: _days - 1));
+
+  /// The slider goes to 30 days, further for a longer trip being edited.
+  late final int _maxDays = _days > 30 ? _days : 30;
   late int _travelers = widget.existing?.travelers ?? 1;
   bool _needPlace = false;
 
@@ -77,22 +85,14 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
     super.dispose();
   }
 
-  Future<void> _pickDate({required bool start}) async {
+  Future<void> _pickStart() async {
     final DateTime? d = await showDatePicker(
       context: context,
-      initialDate: start ? _start : _end,
+      initialDate: _start,
       firstDate: _today.subtract(const Duration(days: 365 * 5)),
       lastDate: _today.add(const Duration(days: 365 * 3)),
     );
-    if (d == null) return;
-    setState(() {
-      if (start) {
-        _start = d;
-        if (_end.isBefore(d)) _end = d;
-      } else {
-        _end = d.isBefore(_start) ? _start : d;
-      }
-    });
+    if (d != null) setState(() => _start = d);
   }
 
   Future<void> _save(AppLocalizations l, DestinationCatalog catalog) async {
@@ -119,6 +119,7 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
           goalId: widget.existing?.goalId,
           travelers: _travelers,
           sharedAt: widget.existing?.sharedAt,
+          level: _level,
         ));
     if (mounted) Navigator.of(context).pop();
   }
@@ -199,55 +200,89 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
                 ),
               ),
               const SizedBox(height: DsSpacing.md),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.event_outlined, size: 18),
+                label: Text('${l.tripFrom} ${day.format(_start)}'),
+                onPressed: _pickStart,
+              ),
+              const SizedBox(height: DsSpacing.md),
+              // The number of days (the last day follows), and travellers.
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
-                    child: OutlinedButton.icon(
-                      icon: const Icon(Icons.event_outlined, size: 18),
-                      label: Text('${l.tripFrom} ${day.format(_start)}'),
-                      onPressed: () => _pickDate(start: true),
+                    child: Column(
+                      // Stretch: the slider takes the whole half.
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Text(l.tripDaysLabel(_days),
+                            style: t.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w600)),
+                        Slider(
+                          value: _days.toDouble(),
+                          min: 1,
+                          max: _maxDays.toDouble(),
+                          divisions: _maxDays - 1,
+                          label: '$_days',
+                          activeColor: c.brand,
+                          inactiveColor: c.border,
+                          onChanged: (double v) =>
+                              setState(() => _days = v.round()),
+                        ),
+                        Text('${l.tripTo} ${day.format(_end)}',
+                            style: t.bodySmall?.copyWith(color: c.textMuted)),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: DsSpacing.sm),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      icon:
-                          const Icon(Icons.event_available_outlined, size: 18),
-                      label: Text('${l.tripTo} ${day.format(_end)}'),
-                      onPressed: () => _pickDate(start: false),
-                    ),
+                  const SizedBox(width: DsSpacing.md),
+                  Column(
+                    children: <Widget>[
+                      Text(l.tripTravelers,
+                          style: t.bodyMedium?.copyWith(color: c.textMuted)),
+                      const SizedBox(height: DsSpacing.xs),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          IconButton.outlined(
+                            icon: const Icon(Icons.remove_rounded, size: 18),
+                            onPressed: _travelers > 1
+                                ? () => setState(() => _travelers--)
+                                : null,
+                          ),
+                          SizedBox(
+                            width: 32,
+                            child: Text('$_travelers',
+                                textAlign: TextAlign.center,
+                                style: t.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w700)),
+                          ),
+                          IconButton.outlined(
+                            icon: const Icon(Icons.add_rounded, size: 18),
+                            onPressed: _travelers < 99
+                                ? () => setState(() => _travelers++)
+                                : null,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ],
               ),
               const SizedBox(height: DsSpacing.md),
-              Row(
-                children: <Widget>[
-                  Icon(Icons.group_outlined, size: 18, color: c.textMuted),
-                  const SizedBox(width: DsSpacing.sm),
-                  Expanded(
-                    child: Text(l.tripTravelers,
-                        style: t.bodyMedium?.copyWith(color: c.textMuted)),
-                  ),
-                  IconButton.outlined(
-                    icon: const Icon(Icons.remove_rounded, size: 18),
-                    onPressed: _travelers > 1
-                        ? () => setState(() => _travelers--)
-                        : null,
-                  ),
-                  SizedBox(
-                    width: 36,
-                    child: Text('$_travelers',
-                        textAlign: TextAlign.center,
-                        style: t.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w700)),
-                  ),
-                  IconButton.outlined(
-                    icon: const Icon(Icons.add_rounded, size: 18),
-                    onPressed: _travelers < 99
-                        ? () => setState(() => _travelers++)
-                        : null,
-                  ),
+              Text('${l.tripLevel} (${l.optional})',
+                  style: t.labelMedium?.copyWith(color: c.textMuted)),
+              const SizedBox(height: DsSpacing.xs),
+              SegmentedButton<TripLevel>(
+                showSelectedIcon: false,
+                emptySelectionAllowed: true,
+                segments: <ButtonSegment<TripLevel>>[
+                  for (final TripLevel v in TripLevel.values)
+                    ButtonSegment<TripLevel>(
+                        value: v, label: Text(tripLevelLabel(l, v))),
                 ],
+                selected: <TripLevel>{if (_level != null) _level!},
+                onSelectionChanged: (Set<TripLevel> v) =>
+                    setState(() => _level = v.isEmpty ? null : v.first),
               ),
               const SizedBox(height: DsSpacing.md),
               TextField(

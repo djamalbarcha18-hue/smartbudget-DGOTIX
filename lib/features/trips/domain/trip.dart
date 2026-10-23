@@ -2,6 +2,10 @@ import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
 
+/// How the trip is planned to be spent (a description: it doesn't estimate
+/// prices).
+enum TripLevel { economy, standard, luxury }
+
 /// A trip: where to, when, and optionally how much it should cost. Expenses
 /// made for it carry its id ([Transaction.tripId]).
 class Trip {
@@ -16,6 +20,7 @@ class Trip {
     this.goalId,
     this.travelers = 1,
     this.sharedAt,
+    this.level,
   });
 
   final String id;
@@ -40,6 +45,9 @@ class Trip {
   /// When its card was shared (the home screen then stops offering it).
   final DateTime? sharedAt;
 
+  /// Economy, mid-range or luxury; optional.
+  final TripLevel? level;
+
   Trip copyWith({String? goalId, bool clearGoal = false, DateTime? sharedAt}) =>
       Trip(
         id: id,
@@ -52,6 +60,7 @@ class Trip {
         goalId: clearGoal ? null : goalId ?? this.goalId,
         travelers: travelers,
         sharedAt: sharedAt ?? this.sharedAt,
+        level: level,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -66,6 +75,7 @@ class Trip {
         if (goalId != null) 'goalId': goalId,
         if (travelers > 1) 'travelers': travelers,
         if (sharedAt != null) 'sharedAt': sharedAt!.toIso8601String(),
+        if (level != null) 'level': level!.name,
       };
 
   factory Trip.fromJson(Map<String, dynamic> j) {
@@ -86,6 +96,9 @@ class Trip {
       goalId: j['goalId'] as String?,
       travelers: ((j['travelers'] as num?)?.toInt() ?? 1).clamp(1, 99),
       sharedAt: DateTime.tryParse((j['sharedAt'] as String?) ?? ''),
+      level: TripLevel.values
+          .where((TripLevel v) => v.name == j['level'])
+          .firstOrNull,
     );
   }
 

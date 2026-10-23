@@ -21,6 +21,10 @@ expenses can be linked to a trip.
   post 4:5 (1080 × 1350). The photo is kept whole (only turned upright)
   and each size shows its middle with BoxFit.cover: cropped, never
   stretched. The logo and QR code never shrink, so the code always scans.
+- Trip editor: start date, a days slider (1–30, longer when editing a
+  longer trip; the last day follows), travellers, and an optional trip
+  style (economy / mid-range / luxury) shown on the list, the summary and
+  the share card. The style only describes the trip: no price estimate.
 - Phase 3: the share card, a 9:16 story exported at 1080 × 1920 on the
   device (`TripShareCard`), with an optional trip photo (gallery or camera,
   kept in memory only), four colours, the logo and a QR code to

@@ -481,6 +481,62 @@ void main() {
     });
   });
 
+  group('trip style and days', () {
+    test('the style is stored, optional, and kept by other changes', () {
+      final Trip t = Trip(
+        id: 'a',
+        name: 'A',
+        destination: 'Rome',
+        start: today,
+        end: today.add(const Duration(days: 4)),
+        createdAt: DateTime(2026),
+        level: TripLevel.luxury,
+      );
+      expect(Trip.fromJson(t.toJson()).level, TripLevel.luxury);
+      expect(Trip.fromJson(trip('b').toJson()).level, isNull);
+      expect(t.copyWith(goalId: 'g').level, TripLevel.luxury);
+    });
+
+    testWidgets('days by the slider, the style, both saved',
+        (WidgetTester tester) async {
+      final Trip far = trip('a', from: 10, to: 16); // 7 days
+      final ProviderContainer c = await pump(
+          tester, SingleChildScrollView(child: TripEditorSheet(existing: far)),
+          size: const Size(390, 1500),
+          locale: const Locale('ar'),
+          prefs: stored(<Trip>[far], const <Transaction>[]));
+      expect(find.text('عدد الأيام: 7'), findsOneWidget);
+      // Drag the slider all the way: 30 days.
+      await tester.drag(find.byType(Slider), const Offset(-600, 0));
+      await tester.pumpAndSettle();
+      expect(find.text('عدد الأيام: 30'), findsOneWidget);
+      await tester.tap(find.text('فاخر'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('حفظ'));
+      await tester.tap(find.text('حفظ'));
+      await tester.pumpAndSettle();
+      final Trip saved = (await c.read(tripStoreProvider).all()).single;
+      expect(TripDays.total(saved), 30);
+      expect(saved.start, far.start);
+      expect(saved.level, TripLevel.luxury);
+    });
+
+    testWidgets('shown on the summary', (WidgetTester tester) async {
+      final Trip t = Trip(
+        id: 'a',
+        name: 'Trip a',
+        destination: 'Istanbul',
+        start: today.subtract(const Duration(days: 9)),
+        end: today.subtract(const Duration(days: 3)),
+        createdAt: DateTime(2026),
+        level: TripLevel.standard,
+      );
+      await pump(tester, const TripSummaryPage(tripId: 'a'),
+          prefs: stored(<Trip>[t], five));
+      expect(find.text('Mid-range'), findsOneWidget);
+    });
+  });
+
   group('sharing at the right moment', () {
     testWidgets('the "summary ready" card offers to share in one tap',
         (WidgetTester tester) async {

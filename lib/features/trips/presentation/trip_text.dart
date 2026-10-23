@@ -119,3 +119,9 @@ String? tripCountryName(AppLocalizations l, String code) => switch (code) {
       'GE' => l.tripCountryGE,
       _ => null,
     };
+
+String tripLevelLabel(AppLocalizations l, TripLevel level) => switch (level) {
+      TripLevel.economy => l.tripLevelEconomy,
+      TripLevel.standard => l.tripLevelStandard,
+      TripLevel.luxury => l.tripLevelLuxury,
+    };

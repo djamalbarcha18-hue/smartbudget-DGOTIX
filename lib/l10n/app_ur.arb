@@ -1340,5 +1340,10 @@
   "tripTemplateClear": "شفاف",
   "tripClearNeedsPhoto": "شفاف سانچے کے لیے تصویر شامل کریں۔",
   "tripFormatStory": "اسٹوری 9:16",
-  "tripFormatPost": "پوسٹ 4:5"
+  "tripFormatPost": "پوسٹ 4:5",
+  "tripLevel": "سفر کا انداز",
+  "tripLevelEconomy": "کفایتی",
+  "tripLevelStandard": "درمیانہ",
+  "tripLevelLuxury": "پرتعیش",
+  "tripDaysLabel": "دنوں کی تعداد: {days}"
 }

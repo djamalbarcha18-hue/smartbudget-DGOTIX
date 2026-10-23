@@ -1340,5 +1340,10 @@
   "tripTemplateClear": "Transparent",
   "tripClearNeedsPhoto": "Ajoutez une photo pour utiliser le modèle transparent.",
   "tripFormatStory": "Story 9:16",
-  "tripFormatPost": "Publication 4:5"
+  "tripFormatPost": "Publication 4:5",
+  "tripLevel": "Style de voyage",
+  "tripLevelEconomy": "Économique",
+  "tripLevelStandard": "Intermédiaire",
+  "tripLevelLuxury": "Luxe",
+  "tripDaysLabel": "Jours : {days}"
 }

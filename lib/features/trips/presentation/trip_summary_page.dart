@@ -231,6 +231,9 @@ class _Hero extends StatelessWidget {
                     if (trip.travelers > 1)
                       _Meta(Icons.group_outlined,
                           l.tripTravelersCount(trip.travelers), meta),
+                    if (trip.level != null)
+                      _Meta(Icons.sell_outlined, tripLevelLabel(l, trip.level!),
+                          meta),
                     _Meta(Icons.flight_takeoff_outlined, trip.name, meta),
                   ],
                 ),

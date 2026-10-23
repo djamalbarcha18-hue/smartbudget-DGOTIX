@@ -1340,5 +1340,10 @@
   "tripTemplateClear": "Şeffaf",
   "tripClearNeedsPhoto": "Şeffaf şablon için bir fotoğraf ekleyin.",
   "tripFormatStory": "Hikâye 9:16",
-  "tripFormatPost": "Gönderi 4:5"
+  "tripFormatPost": "Gönderi 4:5",
+  "tripLevel": "Seyahat tarzı",
+  "tripLevelEconomy": "Ekonomik",
+  "tripLevelStandard": "Orta",
+  "tripLevelLuxury": "Lüks",
+  "tripDaysLabel": "Gün sayısı: {days}"
 }
