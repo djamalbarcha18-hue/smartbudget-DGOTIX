@@ -300,8 +300,11 @@ Deno.serve(async (req: Request) => {
         // The key goes in a header, never the URL (URLs end up in logs).
         headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
         body: JSON.stringify(geminiBody),
+        signal: AbortSignal.timeout(READ_TIMEOUT_MS),
       },
-    );
+    ).catch((e) => {
+      throw isTimeout(e) ? new HttpError(504, "timeout") : e;
+    });
 
     // A bad or unauthorized key is OUR configuration problem, never the
     // user's: report the service as unavailable.
@@ -392,12 +395,17 @@ async function scanV2(
 ): Promise<Response> {
   const started = Date.now();
   const n = images.length;
+  // One deadline for the whole scan (every strip, and a retry without
+  // thinking), so a stuck model answers "timeout" and the scan is given back
+  // well before the platform stops the function.
+  const deadline = AbortSignal.timeout(READ_TIMEOUT_MS);
   const results = await Promise.all(
     images.map((img, i) =>
       readOne(
         apiKey,
         img,
         mimeType,
+        deadline,
         n > 1
           ? ` This image is part ${i + 1} of ${n} of ONE long receipt, cut top ` +
             "to bottom with a small overlap. Read the item lines it shows; " +
@@ -463,6 +471,22 @@ async function readOne(
   apiKey: string,
   imageBase64: string,
   mimeType: string,
+  deadline: AbortSignal,
+  partNote: string,
+): Promise<{ data: Reading } | { error: string; status: number }> {
+  try {
+    return await readOneOnce(apiKey, imageBase64, mimeType, deadline, partNote);
+  } catch (e) {
+    if (isTimeout(e)) return { error: "timeout", status: 504 };
+    throw e;
+  }
+}
+
+async function readOneOnce(
+  apiKey: string,
+  imageBase64: string,
+  mimeType: string,
+  deadline: AbortSignal,
   partNote: string,
 ): Promise<{ data: Reading } | { error: string; status: number }> {
   const call = (noThinking: boolean) =>
@@ -491,6 +515,7 @@ async function readOne(
             ...(noThinking ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
           },
         }),
+        signal: deadline,
       },
     );
 
@@ -536,6 +561,18 @@ function maskCards(s: string): string {
     }
     return sum % 10 === 0 ? `•••• ${digits.slice(-4)}` : m;
   });
+}
+
+/** The longest one scan waits for the model (secret OCR_TIMEOUT_MS). The
+ * app gives up at 45 s, so the server always answers first. */
+const READ_TIMEOUT_MS = (() => {
+  const n = Number(Deno.env.get("OCR_TIMEOUT_MS") ?? "");
+  return Number.isFinite(n) && n > 0 ? n : 30_000;
+})();
+
+function isTimeout(e: unknown): boolean {
+  return e instanceof DOMException &&
+    (e.name === "TimeoutError" || e.name === "AbortError");
 }
 
 function monthKey(): string {

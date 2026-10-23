@@ -1,4 +1,3 @@
-
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,8 +54,8 @@ class ReceiptScanner {
   static const double maxHeight = 4096;
   static const int jpegQuality = 80;
 
-  ReceiptScanCache get _cache => ReceiptScanCache(
-      _ref.read(authControllerProvider).user?.id ?? 'guest');
+  ReceiptScanCache get _cache =>
+      ReceiptScanCache(_ref.read(authControllerProvider).user?.id ?? 'guest');
 
   Future<ScannedReceipt> scan({
     required ImageSource source,
@@ -100,7 +99,7 @@ class ReceiptScanner {
     sw
       ..reset()
       ..start();
-    final ScannedReceipt read = await _recognize(image);
+    final (ScannedReceipt read, bool quotaReached) = await _recognize(image);
     final int reading = sw.elapsedMilliseconds;
     final Map<String, dynamic>? raw = read.raw;
     if (raw == null) return read; // older scanner: total only
@@ -122,6 +121,7 @@ class ReceiptScanner {
       ),
       onStage,
       fromCloud: !offline,
+      cloudQuotaReached: quotaReached,
     );
   }
 
@@ -129,11 +129,13 @@ class ReceiptScanner {
     try {
       if (kIsWeb) {
         return await prepareWithPlatform(bytes) ??
-            PreparedReceipt(parts: <Uint8List>[bytes], originalBytes: bytes.length);
+            PreparedReceipt(
+                parts: <Uint8List>[bytes], originalBytes: bytes.length);
       }
       return await compute(prepareReceiptInBackground, bytes);
     } catch (_) {
-      return PreparedReceipt(parts: <Uint8List>[bytes], originalBytes: bytes.length);
+      return PreparedReceipt(
+          parts: <Uint8List>[bytes], originalBytes: bytes.length);
     }
   }
 
@@ -143,6 +145,7 @@ class ReceiptScanner {
     ScanTimings timings,
     void Function(ScanStage stage)? onStage, {
     bool fromCloud = true,
+    bool cloudQuotaReached = false,
   }) {
     onStage?.call(ScanStage.checking);
     final Stopwatch sw = Stopwatch()..start();
@@ -157,14 +160,17 @@ class ReceiptScanner {
       timings: timings.copyWith(checks: sw.elapsedMilliseconds),
       imageHash: hash,
       fromCloud: fromCloud,
+      cloudQuotaReached: cloudQuotaReached,
     );
   }
 
-  Future<ScannedReceipt> _recognize(ReceiptImage image) async {
+  /// The reading, and whether it was read on the device because the plan's
+  /// cloud scans are used up (the review then offers the upgrade).
+  Future<(ScannedReceipt, bool)> _recognize(ReceiptImage image) async {
     final bool online = _ref.read(receiptScanEnabledProvider);
     if (!online) {
       final ReceiptOcrEngine offline = _ref.read(offlineReceiptEngineProvider);
-      if (offline.isAvailable) return offline.recognize(image);
+      if (offline.isAvailable) return (await offline.recognize(image), false);
       throw ReceiptScanException(
         AppEnv.hasSupabase
             ? ReceiptScanError.notSignedIn
@@ -172,7 +178,10 @@ class ReceiptScanner {
       );
     }
     try {
-      return await _ref.read(onlineReceiptEngineProvider).recognize(image);
+      return (
+        await _ref.read(onlineReceiptEngineProvider).recognize(image),
+        false
+      );
     } on ReceiptScanException catch (e) {
       // Read on the device when the cloud can't: no connection, the plan's
       // cloud scans used up, or the service down.
@@ -184,7 +193,12 @@ class ReceiptScanner {
       }.contains(e.code)) {
         final ReceiptOcrEngine offline =
             _ref.read(offlineReceiptEngineProvider);
-        if (offline.isAvailable) return offline.recognize(image);
+        if (offline.isAvailable) {
+          return (
+            await offline.recognize(image),
+            e.code == ReceiptScanError.quotaExceeded
+          );
+        }
       }
       rethrow;
     }

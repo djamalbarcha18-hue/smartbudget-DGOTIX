@@ -38,6 +38,8 @@ export const model = {
   fail: {} as Record<string, number>,
   /** The model ids asked, in order. */
   asked: [] as string[],
+  /** Never answers (until the caller's signal gives up). */
+  hang: false,
 };
 /** PayPal sales by id, as the sale lookup returns them. */
 export const paypalSales: Record<string, any> = {};
@@ -52,6 +54,12 @@ globalThis.fetch = (async (input: any, init?: any) => {
     model.calls++;
     const id = url.match(/models\/([^:]+):/)?.[1] ?? "";
     model.asked.push(id);
+    if (model.hang) {
+      await new Promise((_, reject) => {
+        const signal: AbortSignal | undefined = init?.signal;
+        signal?.addEventListener("abort", () => reject(signal.reason));
+      });
+    }
     if (model.fail[id]) {
       return new Response(JSON.stringify({ error: { message: "stub " + model.fail[id] } }), { status: model.fail[id] });
     }

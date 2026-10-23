@@ -761,9 +761,9 @@
   "receiptErrSignIn": "Fiş taramayı kullanmak için giriş yap.",
   "receiptErrUnreadable": "Bu fiş okunamadı — daha net bir fotoğraf dene.",
   "receiptErrNoTotal": "Bu fişte toplam bulunamadı.",
-  "receiptErrNetwork": "Bağlantı yok — tarayıcıya ulaşılamadı.",
+  "receiptErrNetwork": "Tarayıcıya ulaşılamadı — bağlantını kontrol edip tekrar dene.",
   "receiptErrRateLimited": "Kısa sürede çok fazla tarama. Lütfen biraz sonra tekrar dene.",
-  "receiptErrQuota": "Bulutta fiş tarama sınırına ulaştın. Daha fazlası için planını yükselt veya cihazda tara.",
+  "receiptErrQuota": "Bu ayın bulut fiş taramalarını kullandın. Daha fazlası için planını yükselt ya da gelecek ayı bekle.",
   "receiptErrOffline": "Çevrimdışı tarama web'de henüz kullanılamıyor.",
   "receiptErrGeneric": "Fiş taranamadı. Lütfen tekrar dene.",
   "receiptStagePreparing": "Görüntü hazırlanıyor…",
@@ -931,7 +931,6 @@
   "planFeatAiMonthly": "Ayda {count} DGOTIX AI yanıtı",
   "planFeatAiLifetime": "{count} DGOTIX AI yanıtı (tek seferlik)",
   "planFeatOcrMonthly": "Ayda {count} bulut fiş taraması",
-  "planFeatOcrLifetime": "{count} bulut fiş taraması (tek seferlik)",
   "planFeatOnDeviceOcr": "Cihazda sınırsız fiş tarama",
   "planFeatEverythingIn": "{plan} planındaki her şey",
   "planFeatAdvancedReports": "Her yıl için aylık, üç aylık ve yıllık raporlar",
@@ -1219,5 +1218,6 @@
   "privacyHint": "Rakamlarınızı meraklı gözlerden koruyun: tümünü gizlemek veya göstermek için herhangi bir özet kartındaki göz simgesine dokunun.",
   "privacyHideAll": "Özet kartlarındaki tutarları gizle",
   "privacyHideWhileEntering": "İşlem eklerken gizle",
-  "privacyHideWhileEnteringHint": "Bir gelir veya gider eklerken ya da düzenlerken arkadaki toplamlar gizlenir, sonra geri gelir."
+  "privacyHideWhileEnteringHint": "Bir gelir veya gider eklerken ya da düzenlerken arkadaki toplamlar gizlenir, sonra geri gelir.",
+  "invoiceCloudQuotaUsed": "Bu ayın bulut taramaları bitti, bu yüzden fiş telefonunda okundu: tutarları kontrol et. Daha fazla bulut taraması için planını yükselt."
 }

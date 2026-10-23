@@ -761,9 +761,9 @@
   "receiptErrSignIn": "Masuk untuk memakai pemindai struk.",
   "receiptErrUnreadable": "Struk tidak terbaca — coba foto yang lebih jelas.",
   "receiptErrNoTotal": "Tidak menemukan total pada struk itu.",
-  "receiptErrNetwork": "Tidak ada koneksi — pemindai tidak bisa dihubungi.",
+  "receiptErrNetwork": "Pemindai tidak bisa dihubungi — periksa koneksi Anda dan coba lagi.",
   "receiptErrRateLimited": "Terlalu banyak pemindaian dalam waktu singkat. Coba lagi sebentar lagi.",
-  "receiptErrQuota": "Anda telah mencapai batas pemindaian cloud. Tingkatkan paket untuk menambah, atau pindai di perangkat.",
+  "receiptErrQuota": "Anda telah memakai pemindaian struk cloud bulan ini. Tingkatkan paket untuk menambah, atau tunggu bulan depan.",
   "receiptErrOffline": "Pemindaian offline belum tersedia di web.",
   "receiptErrGeneric": "Tidak dapat memindai struk. Silakan coba lagi.",
   "receiptStagePreparing": "Menyiapkan gambar…",
@@ -931,7 +931,6 @@
   "planFeatAiMonthly": "{count} jawaban DGOTIX AI / bulan",
   "planFeatAiLifetime": "{count} jawaban DGOTIX AI (sekali)",
   "planFeatOcrMonthly": "{count} pemindaian struk cloud / bulan",
-  "planFeatOcrLifetime": "{count} pemindaian struk cloud (sekali)",
   "planFeatOnDeviceOcr": "Pemindaian struk di perangkat tanpa batas",
   "planFeatEverythingIn": "Semua yang ada di {plan}",
   "planFeatAdvancedReports": "Laporan bulanan, kuartalan, dan tahunan, untuk tahun mana pun",
@@ -1219,5 +1218,6 @@
   "privacyHint": "Jauhkan angka Anda dari mata yang penasaran: ketuk ikon mata di kartu ringkasan mana pun untuk menyembunyikan atau menampilkan semuanya.",
   "privacyHideAll": "Sembunyikan jumlah di kartu ringkasan",
   "privacyHideWhileEntering": "Sembunyikan saat menambah transaksi",
-  "privacyHideWhileEnteringHint": "Saat Anda menambah atau mengubah pemasukan atau pengeluaran, total di belakangnya disembunyikan, lalu muncul kembali."
+  "privacyHideWhileEnteringHint": "Saat Anda menambah atau mengubah pemasukan atau pengeluaran, total di belakangnya disembunyikan, lalu muncul kembali.",
+  "invoiceCloudQuotaUsed": "Pemindaian cloud bulan ini sudah habis, jadi struk ini dibaca di ponsel Anda: periksa angkanya. Tingkatkan paket untuk lebih banyak pemindaian cloud."
 }

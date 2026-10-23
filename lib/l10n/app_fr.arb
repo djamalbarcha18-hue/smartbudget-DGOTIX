@@ -761,9 +761,9 @@
   "receiptErrSignIn": "Connectez-vous pour utiliser le scan des tickets.",
   "receiptErrUnreadable": "Impossible de lire ce ticket : essayez une photo plus nette.",
   "receiptErrNoTotal": "Impossible de trouver le total sur ce ticket.",
-  "receiptErrNetwork": "Pas de connexion : impossible de joindre le scanner.",
+  "receiptErrNetwork": "Impossible de joindre le scanner : vérifiez votre connexion et réessayez.",
   "receiptErrRateLimited": "Trop de scans en peu de temps. Réessayez dans un instant.",
-  "receiptErrQuota": "Vous avez atteint votre limite de scans dans le cloud. Passez à une formule supérieure, ou scannez sur l'appareil.",
+  "receiptErrQuota": "Vous avez utilisé les scans de tickets dans le cloud de ce mois. Passez à une formule supérieure pour en avoir plus, ou attendez le mois prochain.",
   "receiptErrOffline": "Le scan hors ligne n'est pas encore disponible sur le web.",
   "receiptErrGeneric": "Impossible de scanner le ticket. Veuillez réessayer.",
   "receiptStagePreparing": "Préparation de l'image…",
@@ -931,7 +931,6 @@
   "planFeatAiMonthly": "{count} réponses DGOTIX AI / mois",
   "planFeatAiLifetime": "{count} réponses DGOTIX AI (une seule fois)",
   "planFeatOcrMonthly": "{count} scans de tickets dans le cloud / mois",
-  "planFeatOcrLifetime": "{count} scans de tickets dans le cloud (une seule fois)",
   "planFeatOnDeviceOcr": "Scan de tickets illimité sur l'appareil",
   "planFeatEverythingIn": "Tout ce qu'inclut {plan}",
   "planFeatAdvancedReports": "Rapports mensuels, trimestriels et annuels, pour toute année",
@@ -1219,5 +1218,6 @@
   "privacyHint": "Gardez vos chiffres à l'abri des regards : touchez l'œil d'une carte de synthèse pour tous les masquer ou les afficher.",
   "privacyHideAll": "Masquer les montants des cartes de synthèse",
   "privacyHideWhileEntering": "Les masquer pendant l'ajout d'une opération",
-  "privacyHideWhileEnteringHint": "Pendant que vous ajoutez ou modifiez un revenu ou une dépense, les totaux derrière sont masqués, puis réapparaissent."
+  "privacyHideWhileEnteringHint": "Pendant que vous ajoutez ou modifiez un revenu ou une dépense, les totaux derrière sont masqués, puis réapparaissent.",
+  "invoiceCloudQuotaUsed": "Les scans dans le cloud de ce mois sont épuisés : ce ticket a été lu sur votre téléphone, vérifiez les montants. Passez à une formule supérieure pour plus de scans."
 }

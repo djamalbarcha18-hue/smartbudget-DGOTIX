@@ -16,6 +16,7 @@ class ScannedReceipt {
     this.invoice,
     this.timings = const ScanTimings(),
     this.imageHash,
+    this.cloudQuotaReached = false,
   });
 
   /// The invoice reader's reading (v2 scanner), with its items, totals and
@@ -30,6 +31,9 @@ class ScannedReceipt {
   /// SHA-256 of the image sent.
   final String? imageHash;
 
+  /// The plan's cloud scans are used up, so this one was read on the device.
+  final bool cloudQuotaReached;
+
   /// The reading as the expense to prefill: the invoice reader's total when
   /// there is one.
   factory ScannedReceipt.fromInvoice(
@@ -38,6 +42,7 @@ class ScannedReceipt {
     required ScanTimings timings,
     String? imageHash,
     bool fromCloud = true,
+    bool cloudQuotaReached = false,
   }) =>
       ScannedReceipt(
         merchantName: r.supplier ?? '',
@@ -51,6 +56,7 @@ class ScannedReceipt {
         invoice: r,
         timings: timings,
         imageHash: imageHash,
+        cloudQuotaReached: cloudQuotaReached,
       );
 
   final String merchantName;
@@ -146,4 +152,3 @@ class ScanTimings {
         parts: parts,
       );
 }
-

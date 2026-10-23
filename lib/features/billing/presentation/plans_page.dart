@@ -460,7 +460,7 @@ class _PlanCard extends StatelessWidget {
               _limit(Feature.wallets), _limit(Feature.categoryBudgets)),
           l.planFeatZakatFree,
           l.planFeatAiLifetime(_limit(Feature.dgotixAi)),
-          l.planFeatOcrLifetime(_limit(Feature.cloudOcr)),
+          l.planFeatOcrMonthly(_limit(Feature.cloudOcr)),
           l.planFeatOnDeviceOcr,
         ];
       case Plan.basic:

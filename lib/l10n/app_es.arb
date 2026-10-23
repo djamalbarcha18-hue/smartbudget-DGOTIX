@@ -761,9 +761,9 @@
   "receiptErrSignIn": "Inicia sesión para usar el escáner de tickets.",
   "receiptErrUnreadable": "No se pudo leer ese ticket: prueba con una foto más nítida.",
   "receiptErrNoTotal": "No se encontró el total en ese ticket.",
-  "receiptErrNetwork": "Sin conexión: no se pudo contactar con el escáner.",
+  "receiptErrNetwork": "No se pudo contactar con el escáner: revisa tu conexión e inténtalo de nuevo.",
   "receiptErrRateLimited": "Demasiados escaneos en poco tiempo. Inténtalo de nuevo en un momento.",
-  "receiptErrQuota": "Has alcanzado tu límite de escaneos en la nube. Mejora tu plan para tener más, o escanea en el dispositivo.",
+  "receiptErrQuota": "Has usado los escaneos en la nube de este mes. Mejora tu plan para tener más, o espera al mes que viene.",
   "receiptErrOffline": "El escaneo sin conexión aún no está disponible en la web.",
   "receiptErrGeneric": "No se pudo escanear el ticket. Inténtalo de nuevo.",
   "receiptStagePreparing": "Preparando la imagen…",
@@ -931,7 +931,6 @@
   "planFeatAiMonthly": "{count} respuestas de DGOTIX AI / mes",
   "planFeatAiLifetime": "{count} respuestas de DGOTIX AI (una sola vez)",
   "planFeatOcrMonthly": "{count} escaneos de tickets en la nube / mes",
-  "planFeatOcrLifetime": "{count} escaneos de tickets en la nube (una sola vez)",
   "planFeatOnDeviceOcr": "Escaneo de tickets ilimitado en el dispositivo",
   "planFeatEverythingIn": "Todo lo de {plan}",
   "planFeatAdvancedReports": "Informes mensuales, trimestrales y anuales, de cualquier año",
@@ -1219,5 +1218,6 @@
   "privacyHint": "Protege tus cifras de miradas curiosas: toca el ojo de cualquier tarjeta de resumen para ocultarlas o mostrarlas todas.",
   "privacyHideAll": "Ocultar importes en las tarjetas de resumen",
   "privacyHideWhileEntering": "Ocultarlos al añadir un movimiento",
-  "privacyHideWhileEnteringHint": "Mientras añades o editas un ingreso o gasto, los totales de detrás se ocultan y luego vuelven."
+  "privacyHideWhileEnteringHint": "Mientras añades o editas un ingreso o gasto, los totales de detrás se ocultan y luego vuelven.",
+  "invoiceCloudQuotaUsed": "Los escaneos en la nube de este mes se han agotado, así que este ticket se leyó en tu teléfono: revisa las cifras. Mejora tu plan para más escaneos."
 }

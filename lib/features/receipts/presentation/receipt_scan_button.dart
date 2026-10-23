@@ -115,8 +115,10 @@ class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
           timings: r.timings,
           duplicate: duplicate,
           offline: !r.fromCloud,
-          walletCurrency: ref.read(walletCurrencyProvider(
-              ref.read(effectiveDefaultWalletProvider))),
+          cloudQuotaReached: r.cloudQuotaReached,
+          onUpgrade: () => router.go('/plans'),
+          walletCurrency: ref.read(
+              walletCurrencyProvider(ref.read(effectiveDefaultWalletProvider))),
         );
         if (accepted == null) return;
         await scanner.markAdded(r);
@@ -142,9 +144,8 @@ class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
       final TransactionDraft draft = TransactionDraft(
         amount: r.totalAmount,
         // Only prefill a category the dropdown actually offers.
-        category: Catalog.expenseCategories.contains(r.category)
-            ? r.category
-            : null,
+        category:
+            Catalog.expenseCategories.contains(r.category) ? r.category : null,
         date: r.date,
         description: r.merchantName,
       );
@@ -162,13 +163,15 @@ class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
       if (e.code == ReceiptScanError.cancelled) return;
       // A quota wall is upgrade-only (never "use your own key").
       final SnackBarAction? action = e.code == ReceiptScanError.quotaExceeded
-          ? SnackBarAction(label: l.aiUpgrade, onPressed: () => router.go('/plans'))
+          ? SnackBarAction(
+              label: l.aiUpgrade, onPressed: () => router.go('/plans'))
           : null;
       messenger.showSnackBar(
         SnackBar(content: Text(_messageFor(e.code, l)), action: action),
       );
     } catch (_) {
-      messenger.showSnackBar(SnackBar(content: Text(_messageFor(
+      messenger.showSnackBar(SnackBar(
+          content: Text(_messageFor(
         ReceiptScanError.unknown,
         l,
       ))));

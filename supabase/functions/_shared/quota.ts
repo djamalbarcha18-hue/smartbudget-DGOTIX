@@ -21,7 +21,7 @@ export const AI_QUOTA: Record<Plan, Allowance> = {
 
 /** Cloud receipt OCR scans per period (docs/PRICING.md §3). */
 export const OCR_QUOTA: Record<Plan, Allowance> = {
-  free: { limit: 3, window: "lifetime" },
+  free: { limit: 3, window: "monthly" },
   basic: { limit: 15, window: "monthly" },
   pro: { limit: 50, window: "monthly" },
 };

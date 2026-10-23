@@ -761,9 +761,9 @@
   "receiptErrSignIn": "Log masuk untuk menggunakan pengimbasan resit.",
   "receiptErrUnreadable": "Tidak dapat membaca resit itu — cuba foto yang lebih jelas.",
   "receiptErrNoTotal": "Tidak dapat mencari jumlah pada resit itu.",
-  "receiptErrNetwork": "Tiada sambungan — tidak dapat mencapai pengimbas.",
+  "receiptErrNetwork": "Tidak dapat mencapai pengimbas — semak sambungan anda dan cuba lagi.",
   "receiptErrRateLimited": "Terlalu banyak imbasan dalam masa singkat. Sila cuba lagi sebentar lagi.",
-  "receiptErrQuota": "Anda telah mencapai had imbasan resit awan. Naik taraf pelan untuk lebih, atau imbas pada peranti.",
+  "receiptErrQuota": "Anda telah menggunakan imbasan resit awan bulan ini. Naik taraf pelan untuk lebih, atau tunggu bulan depan.",
   "receiptErrOffline": "Pengimbasan luar talian belum tersedia di web.",
   "receiptErrGeneric": "Tidak dapat mengimbas resit. Sila cuba lagi.",
   "receiptStagePreparing": "Menyediakan imej…",
@@ -931,7 +931,6 @@
   "planFeatAiMonthly": "{count} jawapan DGOTIX AI / bulan",
   "planFeatAiLifetime": "{count} jawapan DGOTIX AI (sekali sahaja)",
   "planFeatOcrMonthly": "{count} imbasan resit awan / bulan",
-  "planFeatOcrLifetime": "{count} imbasan resit awan (sekali sahaja)",
   "planFeatOnDeviceOcr": "Imbasan resit pada peranti tanpa had",
   "planFeatEverythingIn": "Semua dalam {plan}",
   "planFeatAdvancedReports": "Laporan bulanan, suku tahunan dan tahunan, untuk mana-mana tahun",
@@ -1219,5 +1218,6 @@
   "privacyHint": "Jauhkan angka anda daripada mata yang ingin tahu: ketik ikon mata pada mana-mana kad ringkasan untuk menyembunyikan atau menunjukkan semuanya.",
   "privacyHideAll": "Sembunyikan jumlah pada kad ringkasan",
   "privacyHideWhileEntering": "Sembunyikan semasa menambah transaksi",
-  "privacyHideWhileEnteringHint": "Semasa anda menambah atau mengedit pendapatan atau perbelanjaan, jumlah di belakangnya disembunyikan, kemudian kembali."
+  "privacyHideWhileEnteringHint": "Semasa anda menambah atau mengedit pendapatan atau perbelanjaan, jumlah di belakangnya disembunyikan, kemudian kembali.",
+  "invoiceCloudQuotaUsed": "Imbasan awan bulan ini sudah habis, jadi resit ini dibaca pada telefon anda: semak angkanya. Naik taraf untuk lebih banyak imbasan awan."
 }

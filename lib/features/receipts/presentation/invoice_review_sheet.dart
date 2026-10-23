@@ -28,9 +28,16 @@ class InvoiceReviewSheet extends StatefulWidget {
     this.duplicate = false,
     this.walletCurrency,
     this.offline = false,
+    this.cloudQuotaReached = false,
+    this.onUpgrade,
   });
 
   final InvoiceReading reading;
+
+  /// Read on the device because this month's cloud scans are used up; the
+  /// notice then offers [onUpgrade].
+  final bool cloudQuotaReached;
+  final VoidCallback? onUpgrade;
 
   /// Read on the device (no network): worth checking the figures.
   final bool offline;
@@ -49,6 +56,8 @@ class InvoiceReviewSheet extends StatefulWidget {
     bool duplicate = false,
     String? walletCurrency,
     bool offline = false,
+    bool cloudQuotaReached = false,
+    VoidCallback? onUpgrade,
   }) {
     // Figures on the screen behind stay hidden while the entry is open.
     return PrivacyController.whileEntering(
@@ -63,6 +72,8 @@ class InvoiceReviewSheet extends StatefulWidget {
           duplicate: duplicate,
           walletCurrency: walletCurrency,
           offline: offline,
+          cloudQuotaReached: cloudQuotaReached,
+          onUpgrade: onUpgrade,
         ),
       ),
     );
@@ -96,8 +107,8 @@ class _InvoiceReviewSheetState extends State<InvoiceReviewSheet> {
         : null;
 
     return ConstrainedBox(
-      constraints: BoxConstraints(
-          maxHeight: MediaQuery.sizeOf(context).height * 0.92),
+      constraints:
+          BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.92),
       child: Container(
         decoration: BoxDecoration(
           color: c.bgElevated,
@@ -117,7 +128,8 @@ class _InvoiceReviewSheetState extends State<InvoiceReviewSheet> {
                   children: <Widget>[
                     Expanded(child: Text(l.invoiceReady, style: t.titleLarge)),
                     _StatusChip(
-                      label: verified ? l.invoiceVerified : l.invoiceNeedsReview,
+                      label:
+                          verified ? l.invoiceVerified : l.invoiceNeedsReview,
                       icon: verified
                           ? Icons.verified_rounded
                           : Icons.warning_amber_rounded,
@@ -138,7 +150,22 @@ class _InvoiceReviewSheetState extends State<InvoiceReviewSheet> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       _timingLine(c, l, t),
-                      if (widget.offline)
+                      if (widget.cloudQuotaReached)
+                        _Notice(
+                          text: l.invoiceCloudQuotaUsed,
+                          icon: Icons.workspace_premium_outlined,
+                          color: c.brand,
+                          action: widget.onUpgrade == null
+                              ? null
+                              : TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    widget.onUpgrade!();
+                                  },
+                                  child: Text(l.aiUpgrade),
+                                ),
+                        )
+                      else if (widget.offline)
                         _Notice(
                             text: l.invoiceReadOffline,
                             icon: Icons.wifi_off_rounded,
@@ -263,8 +290,8 @@ class _InvoiceReviewSheetState extends State<InvoiceReviewSheet> {
 
   Widget _itemRow(int index, DsColors c, TextTheme t) {
     final InvoiceItem item = _r.items[index];
-    final bool flagged = item.mismatch ||
-        item.confidence < ReviewPolicy.standard.warn;
+    final bool flagged =
+        item.mismatch || item.confidence < ReviewPolicy.standard.warn;
     final String? detail = item.quantity != null && item.unitPrice != null
         ? '${_qty(item.quantity!)} × ${_money(item.unitPrice!)}'
         : (item.quantity != null ? '× ${_qty(item.quantity!)}' : null);
@@ -415,7 +442,8 @@ class _InvoiceReviewSheetState extends State<InvoiceReviewSheet> {
       builder: (_) => _LineEditor(item: _r.items[index]),
     );
     if (edited == null || !mounted) return;
-    final List<InvoiceItem> items = <InvoiceItem>[..._r.items]..[index] = edited;
+    final List<InvoiceItem> items = <InvoiceItem>[..._r.items]..[index] =
+        edited;
     setState(() {
       _r = InvoiceAnalyzer.revalidate(_r, items, today: AppClock.now());
     });
@@ -473,10 +501,15 @@ class _StatusChip extends StatelessWidget {
 }
 
 class _Notice extends StatelessWidget {
-  const _Notice({required this.text, required this.icon, required this.color});
+  const _Notice(
+      {required this.text,
+      required this.icon,
+      required this.color,
+      this.action});
   final String text;
   final IconData icon;
   final Color color;
+  final Widget? action;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -493,7 +526,9 @@ class _Notice extends StatelessWidget {
             Icon(icon, size: 16, color: color),
             const SizedBox(width: DsSpacing.sm),
             Expanded(
-                child: Text(text, style: Theme.of(context).textTheme.bodySmall)),
+                child:
+                    Text(text, style: Theme.of(context).textTheme.bodySmall)),
+            if (action != null) action!,
           ],
         ),
       );

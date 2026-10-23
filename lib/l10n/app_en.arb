@@ -884,9 +884,9 @@
   "receiptErrSignIn": "Sign in to use receipt scanning.",
   "receiptErrUnreadable": "Couldn't read that receipt — try a clearer photo.",
   "receiptErrNoTotal": "Couldn't find a total on that receipt.",
-  "receiptErrNetwork": "No connection — couldn't reach the scanner.",
+  "receiptErrNetwork": "Couldn't reach the scanner — check your connection and try again.",
   "receiptErrRateLimited": "Too many scans in a short time. Please try again in a moment.",
-  "receiptErrQuota": "You've reached your cloud receipt-scan limit. Upgrade your plan for more, or scan on-device.",
+  "receiptErrQuota": "You've used this month's cloud receipt scans. Upgrade your plan for more, or wait for next month.",
   "receiptErrOffline": "Offline scanning isn't available on the web yet.",
   "receiptErrGeneric": "Couldn't scan the receipt. Please try again.",
   "receiptStagePreparing": "Preparing image…",
@@ -1090,8 +1090,6 @@
   "@planFeatAiLifetime": { "placeholders": { "count": { "type": "int" } } },
   "planFeatOcrMonthly": "{count} cloud receipt scans / month",
   "@planFeatOcrMonthly": { "placeholders": { "count": { "type": "int" } } },
-  "planFeatOcrLifetime": "{count} cloud receipt scans (one-time)",
-  "@planFeatOcrLifetime": { "placeholders": { "count": { "type": "int" } } },
   "planFeatOnDeviceOcr": "Unlimited on-device receipt scanning",
   "planFeatEverythingIn": "Everything in {plan}",
   "@planFeatEverythingIn": { "placeholders": { "plan": { "type": "String" } } },
@@ -1434,5 +1432,6 @@
   "privacyHint": "Keep your figures away from curious eyes: tap the eye on any summary card to hide or show them all.",
   "privacyHideAll": "Hide amounts on summary cards",
   "privacyHideWhileEntering": "Hide them while adding a transaction",
-  "privacyHideWhileEnteringHint": "While you add or edit an income or expense, the totals behind it are hidden, then come back."
+  "privacyHideWhileEnteringHint": "While you add or edit an income or expense, the totals behind it are hidden, then come back.",
+  "invoiceCloudQuotaUsed": "This month's cloud scans are used up, so this receipt was read on your phone: check the figures. Upgrade for more cloud scans."
 }

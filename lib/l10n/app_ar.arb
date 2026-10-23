@@ -883,9 +883,9 @@
   "receiptErrSignIn": "سجّل الدخول لاستخدام مسح الفواتير.",
   "receiptErrUnreadable": "تعذّرت قراءة الفاتورة — جرّب صورة أوضح.",
   "receiptErrNoTotal": "تعذّر إيجاد المبلغ الإجمالي في الفاتورة.",
-  "receiptErrNetwork": "لا يوجد اتصال — تعذّر الوصول إلى الماسح.",
+  "receiptErrNetwork": "تعذّر الوصول إلى الماسح — تحقّق من الاتصال وأعد المحاولة.",
   "receiptErrRateLimited": "عدد كبير من عمليات المسح في وقت قصير. حاول مرة أخرى بعد لحظات.",
-  "receiptErrQuota": "لقد بلغت حدّ مسح الفواتير السحابي. رقِّ باقتك للمزيد، أو امسح على الجهاز.",
+  "receiptErrQuota": "استخدمت مسحات الفواتير السحابية لهذا الشهر. رقِّ باقتك للمزيد، أو انتظر الشهر القادم.",
   "receiptErrOffline": "المسح دون إنترنت غير متاح على الويب بعد.",
   "receiptErrGeneric": "تعذّر مسح الفاتورة. حاول مرة أخرى.",
   "receiptStagePreparing": "جارٍ تجهيز الصورة…",
@@ -1083,8 +1083,6 @@
   "@planFeatAiLifetime": { "placeholders": { "count": { "type": "int" } } },
   "planFeatOcrMonthly": "{count} عملية مسح سحابي للفواتير / شهريًا",
   "@planFeatOcrMonthly": { "placeholders": { "count": { "type": "int" } } },
-  "planFeatOcrLifetime": "{count} عملية مسح سحابي للفواتير (لمرة واحدة)",
-  "@planFeatOcrLifetime": { "placeholders": { "count": { "type": "int" } } },
   "planFeatOnDeviceOcr": "مسح غير محدود للفواتير على الجهاز",
   "planFeatEverythingIn": "كل ما في {plan}",
   "@planFeatEverythingIn": { "placeholders": { "plan": { "type": "String" } } },
@@ -1420,5 +1418,6 @@
   "privacyHint": "احمِ أرقامك من أعين المتطفلين: اضغط على أيقونة العين في أي بطاقة ملخّص لإخفاء المبالغ كلها أو إظهارها.",
   "privacyHideAll": "إخفاء المبالغ في بطاقات الملخّص",
   "privacyHideWhileEntering": "إخفاؤها أثناء إضافة معاملة",
-  "privacyHideWhileEnteringHint": "أثناء إضافة دخل أو مصروف أو تعديله تُخفى المجاميع خلفه، ثم تعود عند الإغلاق."
+  "privacyHideWhileEnteringHint": "أثناء إضافة دخل أو مصروف أو تعديله تُخفى المجاميع خلفه، ثم تعود عند الإغلاق.",
+  "invoiceCloudQuotaUsed": "انتهت مسحات هذا الشهر السحابية، فقُرئت هذه الفاتورة على هاتفك: راجع الأرقام. رقِّ باقتك لمسحات سحابية أكثر."
 }

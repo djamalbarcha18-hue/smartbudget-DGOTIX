@@ -5,7 +5,7 @@ expense** form. Hybrid by design:
 
 | Path | Engine | Where it runs | Cost |
 |------|--------|---------------|------|
-| **Online (primary)** | Gemini Flash via a Supabase Edge Function, with DGOTIX's server key | any platform (web + mobile) | included in the plan's cloud-OCR quota (3 lifetime / 15 / 100 per month) |
+| **Online (primary)** | Gemini Flash via a Supabase Edge Function, with DGOTIX's server key | any platform (web + mobile) | included in the plan's cloud-OCR quota (3 / 15 / 50 per month) |
 | **Offline (fallback)** | Google ML Kit Text Recognition | Android / iOS only | free, on-device |
 
 > ML Kit has **no web implementation**, so on Flutter Web only the online path
@@ -39,6 +39,11 @@ supabase functions deploy receipt-scan
 supabase functions delete save-gemini-key
 ```
 
+Time limits: the function gives up on the model after 30 s (`OCR_TIMEOUT_MS`)
+and answers `{ "error": "timeout" }` (504), giving the scan back; the app gives
+up after 45 s. Either way the app reads the receipt on the device where it can
+(Android), or says to check the connection.
+
 `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` are injected
 into Edge Functions automatically — do not set them by hand.
 
@@ -64,5 +69,5 @@ setup is needed.
 { "ok": false, "reason": "unreadable" | "no_total" }
 
 // errors
-{ "error": "ocr_unavailable" | "quota_exceeded" | "rate_limited" | "provider_error" | … }
+{ "error": "ocr_unavailable" | "quota_exceeded" | "rate_limited" | "timeout" | "provider_error" | … }
 ```

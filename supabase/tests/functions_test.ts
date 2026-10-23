@@ -7,6 +7,8 @@
 // deno-lint-ignore-file no-explicit-any
 import { check, db, finish, load, model, outbound, paddle, paddleSub, paypal, paypalSub, PRICES, sign } from "./harness.ts";
 
+// A short model deadline, so the "stuck model" scenario below runs quickly.
+Deno.env.set("OCR_TIMEOUT_MS", "300");
 const handlers = await load("paddle-webhook", "paypal-webhook", "create-checkout", "receipt-scan", "ai-gateway");
 db.tables.billing_prices = PRICES;
 const U1 = "11111111-1111-4111-8111-111111111111";
@@ -83,19 +85,34 @@ check(
   JSON.stringify(r),
 );
 
-// ---- Usage limits (BETA off: FREE = 3 lifetime scans, 5 lifetime AI answers) ----
+// ---- Usage limits (BETA off: FREE = 3 scans a month, 5 lifetime AI answers) ----
 const scan = () => handlers["receipt-scan"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-u7" }, body: JSON.stringify({ imageBase64: "AAAA", mimeType: "image/jpeg", v: 2 }) }));
 model.reply = JSON.stringify({ r: true, inv: "", dt: "2026-10-01", cur: "USD", sym: "$", sup: "S", cus: "", cat: "x", it: [], sub: "", dis: "", tax: "", tot: "9.50", paid: "", due: "" });
 model.calls = 0;
 const codes = await Promise.all(Array.from({ length: 10 }, () => scan().then((x) => x.status)));
-const used = db.tables.ocr_usage_lifetime?.find((x: any) => x.user_id === "u7")?.scans;
-check("OCR: 10 parallel scans on a 3-scan allowance: 3 served", codes.filter((c) => c === 200).length === 3 && model.calls === 3 && used === 3, codes.join(",") + " calls=" + model.calls + " used=" + used);
+const used = db.tables.ocr_usage_monthly?.find((x: any) => x.user_id === "u7")?.scans;
+check("OCR: 10 parallel scans on a 3-scan monthly allowance: 3 served", codes.filter((c) => c === 200).length === 3 && model.calls === 3 && used === 3, codes.join(",") + " calls=" + model.calls + " used=" + used);
+const nextMonth = db.tables.ocr_usage_monthly.find((x: any) => x.user_id === "u7");
+const thisMonth = nextMonth.month;
+nextMonth.month = "2000-01";
+const refilled = await scan();
+check("OCR: FREE scans come back the next month", refilled.status === 200, String(refilled.status));
+db.tables.ocr_usage_monthly = db.tables.ocr_usage_monthly.filter((x: any) => !(x.user_id === "u7" && x.month === "2000-01"));
+nextMonth.month = thisMonth;
 model.reply = JSON.stringify({ r: false });
 const before = db.tables.ocr_usage_lifetime.find((x: any) => x.user_id === "u7").scans;
 db.tables.ocr_usage_lifetime.find((x: any) => x.user_id === "u7").scans = 1;
 db.tables.ocr_usage_monthly.forEach((x: any) => { if (x.user_id === "u7") x.scans = 1; });
 const unreadable = await scan();
 check("OCR: an unreadable photo gives its scan back", (await unreadable.json()).reason === "unreadable" && db.tables.ocr_usage_lifetime.find((x: any) => x.user_id === "u7").scans === 1, String(before));
+
+model.reply = JSON.stringify({ r: true, inv: "", dt: "2026-10-01", cur: "USD", sym: "$", sup: "S", cus: "", cat: "x", it: [], sub: "", dis: "", tax: "", tot: "9.50", paid: "", due: "" });
+model.hang = true;
+const stuck = await handlers["receipt-scan"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-u11" }, body: JSON.stringify({ imageBase64: "AAAA", mimeType: "image/jpeg", v: 2 }) }));
+model.hang = false;
+const stuckBody = await stuck.json();
+const stuckUsed = db.tables.ocr_usage_monthly.find((x: any) => x.user_id === "u11")?.scans ?? 0;
+check("OCR: a stuck model answers 'timeout' and gives the scan back", stuck.status === 504 && stuckBody.error === "timeout" && stuckUsed === 0, stuck.status + " " + JSON.stringify(stuckBody) + " used=" + stuckUsed);
 
 const ask = (u: string) => handlers["ai-gateway"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-" + u }, body: JSON.stringify({ prompt: "hi" }) }));
 model.calls = 0;

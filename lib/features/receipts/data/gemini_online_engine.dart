@@ -14,32 +14,43 @@ import 'package:smartbudget/features/receipts/domain/scanned_receipt.dart';
 /// their own key). Only ever used when Supabase is configured AND a user is
 /// signed in (the controller checks).
 class GeminiOnlineEngine implements ReceiptOcrEngine {
-  const GeminiOnlineEngine();
+  const GeminiOnlineEngine({this.timeout = defaultTimeout, this.invoke});
+
+  /// The longest the app waits for a reading. The server gives up on the
+  /// model at 30 s (and gives the scan back), so it normally answers first;
+  /// this covers a connection that stalls on the way.
+  static const Duration defaultTimeout = Duration(seconds: 45);
+
+  final Duration timeout;
+
+  /// Calls the `receipt-scan` function with this body (tests); null: the
+  /// signed-in Supabase client.
+  final Future<FunctionResponse> Function(Map<String, dynamic> body)? invoke;
+
+  Future<FunctionResponse> _invoke(Map<String, dynamic> body) =>
+      invoke?.call(body) ??
+      Supabase.instance.client.functions.invoke('receipt-scan', body: body);
 
   @override
   bool get isAvailable => true;
 
   @override
   Future<ScannedReceipt> recognize(ReceiptImage image) async {
-    final SupabaseClient client = Supabase.instance.client;
     final bool split = image.parts.length > 1;
     final String b64 = split ? '' : base64Encode(image.bytes);
 
     late final FunctionResponse res;
     try {
-      res = await client.functions.invoke(
-        'receipt-scan',
-        body: <String, dynamic>{
-          if (split)
-            // Strips of a very long receipt, read in parallel by the server.
-            'images': <String>[for (final p in image.parts) base64Encode(p)]
-          else
-            'imageBase64': b64,
-          'mimeType': image.mimeType,
-          // The invoice reader: items and totals, amounts as printed.
-          'v': 2,
-        },
-      );
+      res = await _invoke(<String, dynamic>{
+        if (split)
+          // Strips of a very long receipt, read in parallel by the server.
+          'images': <String>[for (final p in image.parts) base64Encode(p)]
+        else
+          'imageBase64': b64,
+        'mimeType': image.mimeType,
+        // The invoice reader: items and totals, amounts as printed.
+        'v': 2,
+      }).timeout(timeout);
     } on FunctionException catch (e) {
       throw _mapFunctionException(e);
     } catch (_) {
@@ -65,7 +76,9 @@ class GeminiOnlineEngine implements ReceiptOcrEngine {
         fromCloud: true,
         raw: (map['data'] as Map).cast<String, dynamic>(),
         timings: ScanTimings(
-          model: ms is Map && ms['model'] is num ? (ms['model'] as num).round() : 0,
+          model: ms is Map && ms['model'] is num
+              ? (ms['model'] as num).round()
+              : 0,
         ),
       );
     }
@@ -88,6 +101,10 @@ class GeminiOnlineEngine implements ReceiptOcrEngine {
     final Object? details = e.details;
     if (details is Map) {
       err = details['error']?.toString();
+      // The day's cap, not the plan's: "try again later", no upgrade.
+      if (err == 'quota_exceeded' && details['scope'] == 'daily') {
+        err = 'rate_limited';
+      }
     }
     return ReceiptScanException(_codeFromError(err), status: e.status);
   }
@@ -98,6 +115,10 @@ class GeminiOnlineEngine implements ReceiptOcrEngine {
         return ReceiptScanError.backendUnavailable;
       case 'rate_limited':
         return ReceiptScanError.rateLimited;
+      case 'timeout':
+        // The model took too long: like a lost connection, read on the
+        // device where possible.
+        return ReceiptScanError.network;
       case 'quota_exceeded':
         return ReceiptScanError.quotaExceeded;
       case 'missing_token':

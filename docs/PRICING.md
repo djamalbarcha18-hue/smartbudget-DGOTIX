@@ -89,10 +89,13 @@ and is metered **server-side**:
 
 | | FREE | BASIC | PRO |
 |---|---|---|---|
-| Cloud OCR scans | **3 total** (one-time) | **15 / month** | **50 / month** |
+| Cloud OCR scans | **3 / month** | **15 / month** | **50 / month** |
 | On-device OCR | ∞ | ∞ | ∞ |
 
-Same policy as AI: exceeding cloud OCR → **Upgrade** CTA.
+Same policy as AI: exceeding cloud OCR → **Upgrade** CTA. On a phone the
+receipt is still read on the device, and the review offers the upgrade; on the
+web (no on-device reader) the scan answers with the Upgrade message. FREE's 3
+scans refill each calendar month (UTC).
 
 The `receipt-scan` function serves every scan with DGOTIX's **server** Gemini
 key and meters it against the plan quota (counting only successful
@@ -171,7 +174,7 @@ The catalog is the source of truth; this is the intended shape:
 | Smart alerts (forecasts, unusual spending, summaries) | — | — | ✅ |
 | Markets: crypto, metals, commodities | — | — | ✅ |
 | Projects and investment portfolio | — | — | ✅ |
-| Cloud receipt OCR | 3 lifetime | 15 / mo | 50 / mo |
+| Cloud receipt OCR | 3 / mo | 15 / mo | 50 / mo |
 | DGOTIX AI assistant | 5 lifetime | 25 / mo | 100 / mo |
 | Priority support | — | — | ✅ |
 
