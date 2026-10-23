@@ -47,6 +47,7 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
+import 'package:smartbudget/features/privacy/presentation/privacy_section.dart';
 
 /// Settings — appearance (theme), language, base currency, and About.
 ///
@@ -137,6 +138,14 @@ class SettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: DsSpacing.lg),
+
+              // Privacy: hide the figures on KPI cards.
+              _SettingsSection(
+                icon: Icons.visibility_off_outlined,
+                title: l.settingsPrivacy,
+                child: const PrivacySection(),
               ),
               const SizedBox(height: DsSpacing.lg),
 

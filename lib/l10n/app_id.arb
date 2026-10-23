@@ -1211,5 +1211,13 @@
   "featReportTrends": "Grafik tren tahunan",
   "featProjects": "Proyek dan portofolio investasi",
   "dashSummaryMonth": "Ringkasan {month} {year}",
-  "dashSummaryYear": "Ringkasan tahun {year}"
+  "dashSummaryYear": "Ringkasan tahun {year}",
+  "settingsPrivacy": "Privasi",
+  "privacyHide": "Sembunyikan jumlah",
+  "privacyShow": "Tampilkan jumlah",
+  "privacyPeekHint": "Jumlah disembunyikan — tekan lama untuk melihat",
+  "privacyHint": "Jauhkan angka Anda dari mata yang penasaran: ketuk ikon mata di kartu ringkasan mana pun untuk menyembunyikan atau menampilkan semuanya.",
+  "privacyHideAll": "Sembunyikan jumlah di kartu ringkasan",
+  "privacyHideWhileEntering": "Sembunyikan saat menambah transaksi",
+  "privacyHideWhileEnteringHint": "Saat Anda menambah atau mengubah pemasukan atau pengeluaran, total di belakangnya disembunyikan, lalu muncul kembali."
 }

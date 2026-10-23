@@ -15,6 +15,7 @@ import 'package:smartbudget/features/receipts/domain/invoice_analyzer.dart';
 import 'package:smartbudget/features/receipts/domain/invoice_reading.dart';
 import 'package:smartbudget/features/receipts/domain/scanned_receipt.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
+import 'package:smartbudget/features/privacy/application/privacy_controller.dart';
 
 /// What the invoice reader found, checked: header, items and totals, with
 /// "Verified" or "Needs review". Only the useful fields are shown, never the
@@ -49,16 +50,20 @@ class InvoiceReviewSheet extends StatefulWidget {
     String? walletCurrency,
     bool offline = false,
   }) {
-    return showModalBottomSheet<InvoiceReading>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext ctx) => InvoiceReviewSheet(
-        reading: reading,
-        timings: timings,
-        duplicate: duplicate,
-        walletCurrency: walletCurrency,
-        offline: offline,
+    // Figures on the screen behind stay hidden while the entry is open.
+    return PrivacyController.whileEntering(
+      context,
+      () => showModalBottomSheet<InvoiceReading>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext ctx) => InvoiceReviewSheet(
+          reading: reading,
+          timings: timings,
+          duplicate: duplicate,
+          walletCurrency: walletCurrency,
+          offline: offline,
+        ),
       ),
     );
   }

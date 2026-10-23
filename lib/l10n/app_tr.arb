@@ -1211,5 +1211,13 @@
   "featReportTrends": "Yıllık eğilim grafiği",
   "featProjects": "Projeler ve yatırım portföyü",
   "dashSummaryMonth": "{month} {year} özeti",
-  "dashSummaryYear": "{year} yılı özeti"
+  "dashSummaryYear": "{year} yılı özeti",
+  "settingsPrivacy": "Gizlilik",
+  "privacyHide": "Tutarları gizle",
+  "privacyShow": "Tutarları göster",
+  "privacyPeekHint": "Tutar gizli — görmek için basılı tutun",
+  "privacyHint": "Rakamlarınızı meraklı gözlerden koruyun: tümünü gizlemek veya göstermek için herhangi bir özet kartındaki göz simgesine dokunun.",
+  "privacyHideAll": "Özet kartlarındaki tutarları gizle",
+  "privacyHideWhileEntering": "İşlem eklerken gizle",
+  "privacyHideWhileEnteringHint": "Bir gelir veya gider eklerken ya da düzenlerken arkadaki toplamlar gizlenir, sonra geri gelir."
 }

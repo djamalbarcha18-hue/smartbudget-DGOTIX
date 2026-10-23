@@ -1211,5 +1211,13 @@
   "featReportTrends": "Le graphique d'évolution annuelle",
   "featProjects": "Les projets et le portefeuille d'investissement",
   "dashSummaryMonth": "Bilan · {month} {year}",
-  "dashSummaryYear": "Bilan · année {year}"
+  "dashSummaryYear": "Bilan · année {year}",
+  "settingsPrivacy": "Confidentialité",
+  "privacyHide": "Masquer les montants",
+  "privacyShow": "Afficher les montants",
+  "privacyPeekHint": "Montant masqué — appuyez longuement pour le voir",
+  "privacyHint": "Gardez vos chiffres à l'abri des regards : touchez l'œil d'une carte de synthèse pour tous les masquer ou les afficher.",
+  "privacyHideAll": "Masquer les montants des cartes de synthèse",
+  "privacyHideWhileEntering": "Les masquer pendant l'ajout d'une opération",
+  "privacyHideWhileEnteringHint": "Pendant que vous ajoutez ou modifiez un revenu ou une dépense, les totaux derrière sont masqués, puis réapparaissent."
 }

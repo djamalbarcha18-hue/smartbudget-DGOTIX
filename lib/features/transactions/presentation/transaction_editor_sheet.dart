@@ -26,6 +26,7 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/features/privacy/application/privacy_controller.dart';
 
 /// Initial values for a NEW transaction, e.g. extracted from a scanned receipt.
 class TransactionDraft {
@@ -76,15 +77,19 @@ class TransactionEditorSheet extends ConsumerStatefulWidget {
     TransactionDraft? prefill,
     RecurrenceFrequency? initialRepeat,
   }) {
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext ctx) => TransactionEditorSheet(
-        type: type,
-        existing: existing,
-        prefill: prefill,
-        initialRepeat: initialRepeat,
+    // Figures on the screen behind stay hidden while the entry is open.
+    return PrivacyController.whileEntering(
+      context,
+      () => showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext ctx) => TransactionEditorSheet(
+          type: type,
+          existing: existing,
+          prefill: prefill,
+          initialRepeat: initialRepeat,
+        ),
       ),
     );
   }

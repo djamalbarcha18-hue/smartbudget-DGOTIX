@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/money_privacy.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/design_system/tokens/ds_typography.dart';
@@ -38,7 +39,11 @@ class KpiDelta {
 ///
 /// [value] is nullable ON PURPOSE: with no real SmartBudget data wired yet, the
 /// card renders a neutral empty state ("—") rather than a fabricated number.
-class KpiCard extends StatelessWidget {
+///
+/// Under a [MoneyPrivacy], a small eye button hides every card's figure (and
+/// its change) at once; pressing and holding a hidden figure peeks at it until
+/// released.
+class KpiCard extends StatefulWidget {
   const KpiCard({
     super.key,
     required this.label,
@@ -73,13 +78,38 @@ class KpiCard extends StatelessWidget {
   static const double compactWidth = 220;
 
   @override
+  State<KpiCard> createState() => _KpiCardState();
+}
+
+class _KpiCardState extends State<KpiCard> {
+  bool _peeking = false;
+
+  String get label => widget.label;
+  String? get value => widget.value;
+  IconData? get icon => widget.icon;
+  Widget? get iconChild => widget.iconChild;
+  Color? get accent => widget.accent;
+  String? get caption => widget.caption;
+  Widget? get sparkline => widget.sparkline;
+
+  void _peek(bool on) {
+    if (_peeking != on) setState(() => _peeking = on);
+  }
+
+  @override
   Widget build(BuildContext context) => LayoutBuilder(
       builder: (BuildContext context, BoxConstraints box) =>
-          _build(context, box.maxWidth < compactWidth));
+          _build(context, box.maxWidth < KpiCard.compactWidth));
 
   Widget _build(BuildContext context, bool compact) {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
+    // Privacy applies only to a real figure — the empty state has nothing
+    // to hide.
+    final MoneyPrivacy? privacy =
+        value == null ? null : MoneyPrivacy.maybeOf(context);
+    final bool masked = (privacy?.masked ?? false) && !_peeking;
+    final KpiDelta? delta = masked ? null : widget.delta;
     // Universal financial colors, decided in one place for every KPI in the
     // app: green for income, red for expenses, blue (the logo color) for
     // everything else — net, balance, savings rate…
@@ -120,23 +150,39 @@ class KpiCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+              if (privacy != null)
+                _EyeButton(
+                  hidden: privacy.masked,
+                  tooltip:
+                      privacy.masked ? privacy.showLabel : privacy.hideLabel,
+                  onTap: privacy.onToggle,
+                ),
             ],
           ),
           SizedBox(height: compact ? DsSpacing.sm : DsSpacing.md),
           // The figure is the hero: large, tabular, never clipped (it scales
           // down instead on narrow tiles).
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: AlignmentDirectional.centerStart,
-            child: Text(
-              value ?? '—',
-              maxLines: 1,
-              style: DsTypography.mono(
-                t.headlineMedium ?? const TextStyle(),
-              ).copyWith(
-                fontSize: compact ? 22 : 28,
-                fontWeight: FontWeight.w800,
-                color: value == null ? c.textFaint : c.textPrimary,
+          _maybePeekable(
+            privacy,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: AlignmentDirectional.centerStart,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 180),
+                child: Text(
+                  masked ? MoneyPrivacy.mask : (value ?? '—'),
+                  key: ValueKey<bool>(masked),
+                  maxLines: 1,
+                  semanticsLabel: masked ? privacy!.peekHint : null,
+                  style: DsTypography.mono(
+                    t.headlineMedium ?? const TextStyle(),
+                  ).copyWith(
+                    fontSize: compact ? 22 : 28,
+                    fontWeight: FontWeight.w800,
+                    color:
+                        value == null || masked ? c.textFaint : c.textPrimary,
+                  ),
+                ),
               ),
             ),
           ),
@@ -144,7 +190,7 @@ class KpiCard extends StatelessWidget {
           // the change.
           if (compact && (delta != null || caption != null)) ...<Widget>[
             const SizedBox(height: DsSpacing.sm),
-            if (delta != null) _TrendPill(delta: delta!),
+            if (delta != null) _TrendPill(delta: delta),
             if (caption != null) ...<Widget>[
               const SizedBox(height: 4),
               Text(caption!,
@@ -157,7 +203,7 @@ class KpiCard extends StatelessWidget {
             Row(
               children: <Widget>[
                 if (delta != null) ...<Widget>[
-                  _TrendPill(delta: delta!),
+                  _TrendPill(delta: delta),
                   const SizedBox(width: DsSpacing.sm),
                 ],
                 if (caption != null)
@@ -175,6 +221,63 @@ class KpiCard extends StatelessWidget {
             SizedBox(height: 40, child: sparkline),
           ],
         ],
+      ),
+    );
+  }
+
+  /// While privacy is on, pressing and holding the figure shows it until
+  /// the finger (or mouse button) lifts.
+  Widget _maybePeekable(MoneyPrivacy? privacy, Widget figure) {
+    if (privacy == null || !privacy.masked) return figure;
+    return Tooltip(
+      message: privacy.peekHint,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onLongPressStart: (_) => _peek(true),
+        onLongPressEnd: (_) => _peek(false),
+        onLongPressCancel: () => _peek(false),
+        child: figure,
+      ),
+    );
+  }
+}
+
+/// The small eye in a KPI card's corner: hides or shows all figures.
+class _EyeButton extends StatelessWidget {
+  const _EyeButton(
+      {required this.hidden, required this.tooltip, required this.onTap});
+  final bool hidden;
+  final String tooltip;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    return Tooltip(
+      message: tooltip,
+      child: Semantics(
+        button: true,
+        toggled: hidden,
+        label: tooltip,
+        excludeSemantics: true,
+        child: InkResponse(
+          onTap: onTap,
+          radius: 18,
+          child: Padding(
+            padding: const EdgeInsets.all(6),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 180),
+              child: Icon(
+                hidden
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+                key: ValueKey<bool>(hidden),
+                size: 16,
+                color: hidden ? c.brand : c.textFaint,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -21,20 +21,25 @@ import 'package:smartbudget/features/wallets/domain/wallet.dart';
 import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/features/privacy/application/privacy_controller.dart';
 
 /// "Quick entry": type "قهوة 200" (or several, separated by «،») and save.
 class QuickEntrySheet extends ConsumerStatefulWidget {
   const QuickEntrySheet({super.key});
 
   static Future<void> show(BuildContext context) {
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => Padding(
-        padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: const QuickEntrySheet(),
+    // Figures on the screen behind stay hidden while the entry is open.
+    return PrivacyController.whileEntering(
+      context,
+      () => showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => Padding(
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: const QuickEntrySheet(),
+        ),
       ),
     );
   }

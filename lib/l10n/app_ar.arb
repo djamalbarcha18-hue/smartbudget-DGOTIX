@@ -1412,5 +1412,13 @@
   "featReportTrends": "الرسم السنوي ومقارنة الأشهر",
   "featProjects": "محفظة المشاريع والاستثمار",
   "dashSummaryMonth": "ملخّص {month} {year}",
-  "dashSummaryYear": "ملخّص سنة {year}"
+  "dashSummaryYear": "ملخّص سنة {year}",
+  "settingsPrivacy": "الخصوصية",
+  "privacyHide": "إخفاء المبالغ",
+  "privacyShow": "إظهار المبالغ",
+  "privacyPeekHint": "المبلغ مخفي — اضغط مطوّلاً للإطلاع عليه",
+  "privacyHint": "احمِ أرقامك من أعين المتطفلين: اضغط على أيقونة العين في أي بطاقة ملخّص لإخفاء المبالغ كلها أو إظهارها.",
+  "privacyHideAll": "إخفاء المبالغ في بطاقات الملخّص",
+  "privacyHideWhileEntering": "إخفاؤها أثناء إضافة معاملة",
+  "privacyHideWhileEnteringHint": "أثناء إضافة دخل أو مصروف أو تعديله تُخفى المجاميع خلفه، ثم تعود عند الإغلاق."
 }

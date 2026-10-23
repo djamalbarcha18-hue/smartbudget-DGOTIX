@@ -1211,5 +1211,13 @@
   "featReportTrends": "سالانہ رجحان چارٹ",
   "featProjects": "پروجیکٹس اور سرمایہ کاری پورٹ فولیو",
   "dashSummaryMonth": "{month} {year} کا خلاصہ",
-  "dashSummaryYear": "سال {year} کا خلاصہ"
+  "dashSummaryYear": "سال {year} کا خلاصہ",
+  "settingsPrivacy": "رازداری",
+  "privacyHide": "رقمیں چھپائیں",
+  "privacyShow": "رقمیں دکھائیں",
+  "privacyPeekHint": "رقم چھپی ہوئی ہے — دیکھنے کے لیے دبائے رکھیں",
+  "privacyHint": "اپنے اعداد و شمار تانک جھانک سے بچائیں: کسی بھی خلاصہ کارڈ پر آنکھ کے نشان کو دبا کر سب رقمیں چھپائیں یا دکھائیں۔",
+  "privacyHideAll": "خلاصہ کارڈز پر رقمیں چھپائیں",
+  "privacyHideWhileEntering": "لین دین شامل کرتے وقت چھپائیں",
+  "privacyHideWhileEnteringHint": "آمدنی یا خرچ شامل یا تبدیل کرتے وقت پیچھے کے مجموعے چھپ جاتے ہیں، پھر واپس آ جاتے ہیں۔"
 }

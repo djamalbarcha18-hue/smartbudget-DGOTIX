@@ -1211,5 +1211,13 @@
   "featReportTrends": "El gráfico de evolución anual",
   "featProjects": "Los proyectos y la cartera de inversión",
   "dashSummaryMonth": "Resumen de {month} de {year}",
-  "dashSummaryYear": "Resumen del año {year}"
+  "dashSummaryYear": "Resumen del año {year}",
+  "settingsPrivacy": "Privacidad",
+  "privacyHide": "Ocultar importes",
+  "privacyShow": "Mostrar importes",
+  "privacyPeekHint": "Importe oculto: mantén pulsado para verlo",
+  "privacyHint": "Protege tus cifras de miradas curiosas: toca el ojo de cualquier tarjeta de resumen para ocultarlas o mostrarlas todas.",
+  "privacyHideAll": "Ocultar importes en las tarjetas de resumen",
+  "privacyHideWhileEntering": "Ocultarlos al añadir un movimiento",
+  "privacyHideWhileEnteringHint": "Mientras añades o editas un ingreso o gasto, los totales de detrás se ocultan y luego vuelven."
 }
