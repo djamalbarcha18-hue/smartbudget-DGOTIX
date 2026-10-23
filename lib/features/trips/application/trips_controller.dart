@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/storage/local_list_store.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/goals/application/goals_controller.dart';
+import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
@@ -60,6 +63,23 @@ class TripActions {
 
   Future<void> save(Trip t) => _store.upsert(t);
 
+  /// Sets up a savings goal for the trip in the goals the app already has:
+  /// its budget, due the day it starts. Returns the goal.
+  Future<Goal> startSaving(Trip t) async {
+    final Money budget = t.plannedBudget!;
+    final Goal g = Goal(
+      id: GoalActions.newId(),
+      name: t.name,
+      target: budget,
+      saved: Money(0, budget.currencyCode),
+      deadline: t.start,
+      createdAt: AppClock.now(),
+    );
+    await _ref.read(goalActionsProvider).add(g);
+    await _store.upsert(t.copyWith(goalId: g.id));
+    return g;
+  }
+
   /// Deletes the trip; its expenses stay, no longer tagged with it.
   Future<void> delete(Trip t) async {
     final List<Transaction> txns =
@@ -71,3 +91,7 @@ class TripActions {
     await _store.delete(t.id);
   }
 }
+
+/// Trip summary and share card: amounts (false) or percentages only (true).
+/// Chosen on the summary, carried to the share card, for this session.
+final tripPercentModeProvider = StateProvider<bool>((ref) => false);

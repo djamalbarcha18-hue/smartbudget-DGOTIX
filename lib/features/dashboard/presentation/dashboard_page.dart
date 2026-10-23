@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/l10n/month_names.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
@@ -39,6 +40,7 @@ import 'package:smartbudget/features/install/presentation/install_widgets.dart';
 import 'package:smartbudget/features/quick_entry/presentation/quick_entry_sheet.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/features/transactions/presentation/transactions_list.dart';
+import 'package:smartbudget/features/trips/presentation/trip_home_card.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
@@ -139,6 +141,11 @@ class DashboardPage extends ConsumerWidget {
           //    on a phone.
           KpiGrid(children: kpis),
           const SizedBox(height: gap),
+          // SmartTrip (hidden until it launches): the trip closest in time.
+          if (AppEnv.smartTrip) ...const <Widget>[
+            TripHomeCard(),
+            SizedBox(height: gap),
+          ],
 
           // ② Month pulse: budget used · health score · what's due soon.
           const _EqualRow(

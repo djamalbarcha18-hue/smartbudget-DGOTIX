@@ -59,8 +59,12 @@ class DsButton extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          if (icon != null) ...<Widget>[Icon(icon, size: 18), const SizedBox(width: 8)],
-          Text(label),
+          if (icon != null) ...<Widget>[
+            Icon(icon, size: 18),
+            const SizedBox(width: 8)
+          ],
+          // A long label (some languages) wraps instead of overflowing.
+          Flexible(child: Text(label, textAlign: TextAlign.center)),
         ],
       ),
     );

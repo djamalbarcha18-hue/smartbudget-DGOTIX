@@ -52,6 +52,7 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
   late DateTime _start = widget.existing?.start ?? _today;
   late DateTime _end =
       widget.existing?.end ?? _today.add(const Duration(days: 6));
+  late int _travelers = widget.existing?.travelers ?? 1;
   bool _needPlace = false;
 
   static DateTime get _today {
@@ -110,6 +111,8 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
           plannedBudget:
               budget == null ? null : Money.fromDouble(budget, currency),
           createdAt: widget.existing?.createdAt ?? AppClock.now(),
+          goalId: widget.existing?.goalId,
+          travelers: _travelers,
         ));
     if (mounted) Navigator.of(context).pop();
   }
@@ -207,6 +210,36 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
                       label: Text('${l.tripTo} ${day.format(_end)}'),
                       onPressed: () => _pickDate(start: false),
                     ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: DsSpacing.md),
+              Row(
+                children: <Widget>[
+                  Icon(Icons.group_outlined, size: 18, color: c.textMuted),
+                  const SizedBox(width: DsSpacing.sm),
+                  Expanded(
+                    child: Text(l.tripTravelers,
+                        style: t.bodyMedium?.copyWith(color: c.textMuted)),
+                  ),
+                  IconButton.outlined(
+                    icon: const Icon(Icons.remove_rounded, size: 18),
+                    onPressed: _travelers > 1
+                        ? () => setState(() => _travelers--)
+                        : null,
+                  ),
+                  SizedBox(
+                    width: 36,
+                    child: Text('$_travelers',
+                        textAlign: TextAlign.center,
+                        style: t.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w700)),
+                  ),
+                  IconButton.outlined(
+                    icon: const Icon(Icons.add_rounded, size: 18),
+                    onPressed: _travelers < 99
+                        ? () => setState(() => _travelers++)
+                        : null,
                   ),
                 ],
               ),

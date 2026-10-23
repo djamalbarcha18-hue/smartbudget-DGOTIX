@@ -82,3 +82,20 @@ Color tripStatusColor(DsColors c, Trip t, DateTime now) =>
       TripStatus.active => c.income,
       TripStatus.ended => c.textMuted,
     };
+
+/// An icon for an expense category on the trip summary and share card.
+IconData tripCategoryIcon(String category) => switch (category) {
+      'الطعام' => Icons.shopping_basket_outlined,
+      'المطاعم' => Icons.restaurant_outlined,
+      'النقل' || 'الوقود' => Icons.directions_bus_outlined,
+      'السكن' => Icons.hotel_outlined,
+      'السفر' => Icons.flight_outlined,
+      'التسوق' || 'الملابس' => Icons.shopping_bag_outlined,
+      'الترفيه' || 'الرياضة واللياقة' => Icons.local_activity_outlined,
+      'الصحة' => Icons.medical_services_outlined,
+      'الاتصالات والإنترنت' => Icons.wifi_outlined,
+      'الحج والعمرة' => Icons.mosque_outlined,
+      'الطوارئ' || 'التأمين' => Icons.health_and_safety_outlined,
+      'صدقة وتبرّعات' => Icons.volunteer_activism_outlined,
+      _ => Icons.sell_outlined,
+    };

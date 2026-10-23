@@ -1,7 +1,24 @@
 # SmartTrip (in testing)
 
-Trips with a destination, dates and an optional budget; expenses can be
-linked to a trip. Phase 1 only: no sharing card, no trip summary, no prices.
+Trips with a destination, dates, travellers and an optional budget;
+expenses can be linked to a trip.
+
+- Phase 1: trips, destinations, tagging expenses, "My trips" in the menu.
+- Phase 2: the home card (planning / under way / summary ready, kept 14 days
+  after the trip), "Start saving for this trip" (a goal in the existing goals,
+  due the day the trip starts), and the trip summary with the
+  "Real value | Percentage" switch.
+- Phase 3: the share card, a 9:16 story exported at 1080 × 1920 on the
+  device (`TripShareCard`), with an optional trip photo (gallery or camera,
+  kept in memory only), four colours, the logo and a QR code to
+  `AppConfig.appShareUrl` (APP_SHARE_URL). `canRemoveBrandingProvider` is
+  false and tied to nothing yet (for a paid plan later).
+
+Everything is worked out on the device from the trips and the expenses that
+carry `tripId`; no network call, table or service of its own.
+
+Not done: the "trip summary ready" notification (the app has no local
+notifications yet), a price estimator.
 
 ## Where it shows
 
@@ -38,3 +55,9 @@ as text only.
    default in `AppEnv.smartTrip`).
 2. Remove `AppSection.trips` from `AppNav.isLaunched`, and keep at most four
    "new" badges in the menu (`test/nav_destinations_test.dart`).
+
+## Later (owner's plans, not started)
+
+- A dedicated smart trip page.
+- Links to hotel bookings, flights and eSIM.
+- Smart, non-intrusive ads.

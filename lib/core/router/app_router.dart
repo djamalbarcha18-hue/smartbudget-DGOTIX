@@ -29,6 +29,7 @@ import 'package:smartbudget/features/recurring/presentation/recurring_auto_poste
 import 'package:smartbudget/features/recurring/presentation/recurring_page.dart';
 import 'package:smartbudget/features/reports/presentation/reports_page.dart';
 import 'package:smartbudget/features/seasons/presentation/seasons_page.dart';
+import 'package:smartbudget/features/trips/presentation/trip_summary_page.dart';
 import 'package:smartbudget/features/trips/presentation/trips_page.dart';
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/features/settings/presentation/settings_page.dart';
@@ -144,12 +145,20 @@ GoRouter buildRouter(Ref ref) {
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const NoTransitionPage<void>(child: SeasonsPage()),
           ),
-          if (AppEnv.smartTrip)
+          if (AppEnv.smartTrip) ...<RouteBase>[
             GoRoute(
               path: '/trips',
               pageBuilder: (BuildContext context, GoRouterState state) =>
                   const NoTransitionPage<void>(child: TripsPage()),
             ),
+            GoRoute(
+              path: '/trips/:id',
+              pageBuilder: (BuildContext context, GoRouterState state) =>
+                  NoTransitionPage<void>(
+                      child: TripSummaryPage(
+                          tripId: state.pathParameters['id'] ?? '')),
+            ),
+          ],
           GoRoute(
             path: '/daret',
             pageBuilder: (BuildContext context, GoRouterState state) =>

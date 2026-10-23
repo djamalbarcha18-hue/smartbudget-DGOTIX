@@ -33,6 +33,10 @@ abstract final class AppConfig {
   /// from, which is this domain too (github.io redirects to it).
   static const String fallbackUrl = 'https://smartbudget.dgotix.com/';
 
+  /// APP_SHARE_URL: where the QR code on the SmartTrip share card leads (the
+  /// app's page). The one place to change it.
+  static const String appShareUrl = 'https://smartbudget.dgotix.com/';
+
   /// Support/legal destinations. Kept as route/URL placeholders for now; the
   /// support architecture (email / chat / tickets / FAQ) plugs in here later
   /// without touching the footer or sidebar widgets.

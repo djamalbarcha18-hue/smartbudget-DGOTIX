@@ -40,6 +40,7 @@ class TransactionDraft {
     this.description,
     this.notes,
     this.walletId,
+    this.tripId,
   });
 
   final double? amount;
@@ -50,6 +51,9 @@ class TransactionDraft {
 
   /// The wallet to start on; null = the default wallet.
   final String? walletId;
+
+  /// The trip to tag it with (SmartTrip's "Add expense").
+  final String? tripId;
 }
 
 /// Quick-add / edit sheet for a single transaction (income or expense).
@@ -154,6 +158,10 @@ class _TransactionEditorSheetState
     _walletId = e != null
         ? e.walletId ?? Wallet.generalId
         : p?.walletId ?? ref.read(effectiveDefaultWalletProvider);
+    if (p?.tripId != null) {
+      _tripTouched = true;
+      _tripChoice = p!.tripId;
+    }
     _initialWallet = _walletId;
   }
 

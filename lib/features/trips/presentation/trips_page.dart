@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
 import 'package:smartbudget/core/money/money.dart';
@@ -131,6 +132,7 @@ class _TripCard extends ConsumerWidget {
     final Color chipColor = tripStatusColor(c, trip, now);
 
     return GlassCard(
+      onTap: () => context.push('/trips/${trip.id}'),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -173,13 +175,17 @@ class _TripCard extends ConsumerWidget {
                     Icon(Icons.more_vert_rounded, size: 18, color: c.textFaint),
                 color: c.bgElevated,
                 onSelected: (String v) async {
-                  if (v == 'edit') {
+                  if (v == 'summary') {
+                    await context.push('/trips/${trip.id}');
+                  } else if (v == 'edit') {
                     await TripEditorSheet.show(context, existing: trip);
                   } else if (v == 'delete') {
                     await _confirmDelete(context, ref, l);
                   }
                 },
                 itemBuilder: (_) => <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(
+                      value: 'summary', child: Text(l.tripViewSummary)),
                   PopupMenuItem<String>(value: 'edit', child: Text(l.edit)),
                   PopupMenuItem<String>(value: 'delete', child: Text(l.delete)),
                 ],

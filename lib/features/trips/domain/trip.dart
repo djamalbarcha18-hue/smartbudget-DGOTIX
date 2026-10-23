@@ -13,6 +13,8 @@ class Trip {
     required this.end,
     required this.createdAt,
     this.plannedBudget,
+    this.goalId,
+    this.travelers = 1,
   });
 
   final String id;
@@ -28,6 +30,24 @@ class Trip {
   final Money? plannedBudget;
   final DateTime createdAt;
 
+  /// The savings goal set up for it, if any (SmartTrip phase 2).
+  final String? goalId;
+
+  /// How many people the trip's budget and expenses are for (at least 1).
+  final int travelers;
+
+  Trip copyWith({String? goalId, bool clearGoal = false}) => Trip(
+        id: id,
+        name: name,
+        destination: destination,
+        start: start,
+        end: end,
+        plannedBudget: plannedBudget,
+        createdAt: createdAt,
+        goalId: clearGoal ? null : goalId ?? this.goalId,
+        travelers: travelers,
+      );
+
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
         'name': name,
@@ -37,6 +57,8 @@ class Trip {
         if (plannedBudget != null) 'budgetMinor': plannedBudget!.minorUnits,
         if (plannedBudget != null) 'currency': plannedBudget!.currencyCode,
         'createdAt': createdAt.toIso8601String(),
+        if (goalId != null) 'goalId': goalId,
+        if (travelers > 1) 'travelers': travelers,
       };
 
   factory Trip.fromJson(Map<String, dynamic> j) {
@@ -54,6 +76,8 @@ class Trip {
               (j['currency'] as String?) ?? 'USD'),
       createdAt: DateTime.tryParse((j['createdAt'] as String?) ?? '') ??
           DateTime(2026),
+      goalId: j['goalId'] as String?,
+      travelers: ((j['travelers'] as num?)?.toInt() ?? 1).clamp(1, 99),
     );
   }
 
