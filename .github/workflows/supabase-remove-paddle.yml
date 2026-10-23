@@ -78,7 +78,12 @@ jobs:
             -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
             -H "Content-Type: application/json" -d "$sql" "$API/database/query")
           echo "HTTP $code" | tee out/sql-status.txt
-          [ "${code:0:1}" = "2" ] || { echo "::error::The SQL was refused (see the sql-response artifact)."; exit 1; }
+          if [ "${code:0:1}" != "2" ]; then
+            # Supabase's error text (no secrets), on one line, as the annotation.
+            msg=$(head -c 900 out/sql-response.txt | tr '\n\r' '  ')
+            echo "::error::SQL refused, HTTP $code: $msg"
+            exit 1
+          fi
           echo "Applied."
 
       # Supabase's answer to the SQL (status and error text, no secrets), for
