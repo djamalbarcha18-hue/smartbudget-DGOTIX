@@ -12,7 +12,7 @@ IconData destinationIcon(String? name) => switch (name) {
       'mosque' => Icons.mosque_outlined,
       'temple' => Icons.temple_buddhist_outlined,
       'city' => Icons.location_city_outlined,
-      'tower' => Icons.apartment_outlined,
+      'tower' || 'skyscraper' => Icons.apartment_outlined,
       'museum' => Icons.museum_outlined,
       'columns' => Icons.account_balance_outlined,
       'church' => Icons.church_outlined,
@@ -98,4 +98,24 @@ IconData tripCategoryIcon(String category) => switch (category) {
       'الطوارئ' || 'التأمين' => Icons.health_and_safety_outlined,
       'صدقة وتبرّعات' => Icons.volunteer_activism_outlined,
       _ => Icons.sell_outlined,
+    };
+
+/// A destination's country in the app language (the suggested places'
+/// countries; null for any other code).
+String? tripCountryName(AppLocalizations l, String code) => switch (code) {
+      'SA' => l.tripCountrySA,
+      'TH' => l.tripCountryTH,
+      'GB' => l.tripCountryGB,
+      'TR' => l.tripCountryTR,
+      'AE' => l.tripCountryAE,
+      'FR' => l.tripCountryFR,
+      'MY' => l.tripCountryMY,
+      'IT' => l.tripCountryIT,
+      'ES' => l.tripCountryES,
+      'MA' => l.tripCountryMA,
+      'EG' => l.tripCountryEG,
+      'ID' => l.tripCountryID,
+      'TN' => l.tripCountryTN,
+      'GE' => l.tripCountryGE,
+      _ => null,
     };

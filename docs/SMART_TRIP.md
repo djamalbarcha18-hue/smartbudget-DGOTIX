@@ -18,7 +18,10 @@ Everything is worked out on the device from the trips and the expenses that
 carry `tripId`; no network call, table or service of its own.
 
 Not done: the "trip summary ready" notification (the app has no local
-notifications yet), a price estimator.
+notifications yet), a price estimator, and the map: postponed by the owner
+until real use shows it is needed. No paid service is used. Map tile
+providers' free tiers (MapTiler, Stadia) do not allow commercial use, so a
+map would need a paid plan; `lat`/`lng` are already in the destinations.
 
 ## Where it shows
 
@@ -44,7 +47,13 @@ of the existing sync document (collection `trips`), and an expense carries
 
 `assets/data/destinations.json`: `id`, `names` (language code to name;
 English is the fallback), optional `aliases` (other spellings, searched but
-never shown), `country`, `icon`, `order`, optional `image`. Pictures go in
+never shown; old ones such as "Makkah" keep earlier trips recognised),
+`country`, `lat`, `lng`, `icon`, `order`, optional `image`.
+
+Choosing a place: search (every language, accents, vowel marks and hamza
+forms ignored), the first six as chips with "Show all", places from earlier
+trips first, or any typed text ("Use: …"). A picked place shows a card with
+its country and where it came from, and is kept once confirmed. Pictures go in
 `assets/images/destinations/<id>.webp` (see `CREDITS.md` there); a place
 whose picture isn't in the app shows its icon. A trip keeps its destination
 as text only.

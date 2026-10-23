@@ -60,7 +60,7 @@ void main() {
   group('destinations', () {
     test('the 15 places in the set order, named in every language', () {
       expect(catalog.all.map((Destination d) => d.id).toList(), <String>[
-        'makkah', 'madinah', 'bangkok', 'london', 'istanbul', 'dubai', //
+        'mecca', 'medina', 'bangkok', 'london', 'istanbul', 'dubai', //
         'paris', 'kuala_lumpur', 'rome', 'barcelona', 'marrakech', 'cairo',
         'bali', 'tunis', 'tbilisi',
       ]);
@@ -71,6 +71,10 @@ void main() {
         expect(d.image, 'assets/images/destinations/${d.id}.webp');
       }
       expect(catalog.popular().length, 6);
+      final Destination london = catalog.byText('London')!;
+      expect((london.lat, london.lng), (51.5074, -0.1278));
+      expect(london.country, 'GB');
+      expect(catalog.byText('Dubai')!.icon, 'skyscraper');
     });
 
     test('the file, its pictures folder and credits ship with the app', () {
@@ -94,10 +98,18 @@ void main() {
       expect(first('إسْطَنْبُول'), 'istanbul'); // marks
       expect(first('Estambul'), 'istanbul'); // Spanish
       expect(first('İSTANBUL'), 'istanbul'); // Turkish capital İ
-      expect(first('mecca'), 'makkah'); // common spelling
-      expect(first('مكه'), 'makkah'); // ه for ة
-      expect(first('المدينه'), 'madinah');
-      expect(first('مکہ'), 'makkah'); // Urdu letters
+      expect(first('mecca'), 'mecca');
+      expect(first('makkah'), 'mecca'); // the Malay name / old spelling
+      expect(first('مكه'), 'mecca'); // ه for ة
+      expect(first('المدينه'), 'medina');
+      expect(first('مکہ'), 'mecca'); // Urdu letters
+      // French names, accents ignored.
+      expect(first('la mecque'), 'mecca');
+      expect(first('medine'), 'medina');
+      expect(first('Londres'), 'london');
+      expect(first('le caire'), 'cairo');
+      expect(first('tbilissi'), 'tbilisi');
+      expect(first('dubai'), 'dubai'); // Dubaï
       expect(first('paris'), 'paris'); // París in Spanish too
       expect(first('kaherah'), 'cairo'); // Malay
       expect(first('kuala'), 'kuala_lumpur');
@@ -108,6 +120,9 @@ void main() {
       expect(catalog.display('Istanbul', AppLang.ar), 'إسطنبول');
       expect(catalog.display('إسطنبول', AppLang.tr), 'İstanbul');
       expect(catalog.display('Bergen', AppLang.ar), 'Bergen');
+      // Trips saved before the list changed still find their place.
+      expect(catalog.byText('Makkah')!.id, 'mecca');
+      expect(catalog.display('Madinah', AppLang.ar), 'المدينة المنورة');
     });
 
     test('typed places are tidied', () {
@@ -222,6 +237,7 @@ void main() {
 
     Future<ProviderContainer> pump(WidgetTester tester, Widget child,
         {Locale locale = const Locale('en'),
+        bool dark = false,
         Map<String, Object> prefs = const <String, Object>{}}) async {
       SharedPreferences.setMockInitialValues(prefs);
       tester.view.physicalSize = const Size(1170, 2532);
@@ -242,10 +258,13 @@ void main() {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
-          theme: ThemeData(extensions: const <ThemeExtension<dynamic>>[
-            DsColors.light,
-            DsGlass.light,
-          ]),
+          theme: ThemeData(
+            brightness: dark ? Brightness.dark : Brightness.light,
+            extensions: <ThemeExtension<dynamic>>[
+              if (dark) DsColors.dark else DsColors.light,
+              if (dark) DsGlass.dark else DsGlass.light,
+            ],
+          ),
           home: Scaffold(body: child),
         ),
       ));
@@ -272,6 +291,13 @@ void main() {
       expect(find.text('Barcelona'), findsOneWidget);
       await tester.tap(find.text('Istanbul'));
       await tester.pumpAndSettle();
+      // Picked, not chosen yet: the card shows the country and the source.
+      expect(find.text('Türkiye · From the list'), findsOneWidget);
+      await tester.ensureVisible(find.text('Confirm destination'));
+      await tester.tap(find.text('Confirm destination'));
+      await tester.pumpAndSettle();
+      expect(find.text('Destination chosen: Istanbul'), findsOneWidget);
+      await tester.ensureVisible(find.text('Save'));
       await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
       final Trip t = (await saved(c)).single;
@@ -288,9 +314,14 @@ void main() {
       expect(find.text('Use: Bergen Norway'), findsOneWidget);
       await tester.tap(find.text('Use: Bergen Norway'));
       await tester.pumpAndSettle();
+      expect(find.text('Typed in'), findsOneWidget);
+      await tester.ensureVisible(find.text('Confirm destination'));
+      await tester.tap(find.text('Confirm destination'));
+      await tester.pumpAndSettle();
       // The search field gives way to the chosen place: name, then budget.
       await tester.enterText(find.byType(TextField).at(0), 'Fjords');
       await tester.enterText(find.byType(TextField).at(1), '1200');
+      await tester.ensureVisible(find.text('Save'));
       await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
       final Trip t = (await saved(c)).single;
@@ -302,6 +333,7 @@ void main() {
     testWidgets('no place, no save', (WidgetTester tester) async {
       final ProviderContainer c = await pump(
           tester, const SingleChildScrollView(child: TripEditorSheet()));
+      await tester.ensureVisible(find.text('Save'));
       await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
       expect(find.text('Choose where you are going.'), findsOneWidget);
@@ -319,7 +351,7 @@ void main() {
       expect(find.text('من رحلاتك'), findsOneWidget);
       // The past chips come before the popular ones.
       final double pastY = tester.getTopLeft(find.text('Bergen')).dy;
-      final double popularY = tester.getTopLeft(find.text('الأكثر طلبًا')).dy;
+      final double popularY = tester.getTopLeft(find.text('وجهات مقترحة')).dy;
       expect(pastY, lessThan(popularY));
       // Istanbul shows once among the past places, named in Arabic.
       expect(find.text('إسطنبول'), findsNWidgets(2)); // past + popular
@@ -387,5 +419,41 @@ void main() {
       await pump(tester, const TripsPage());
       expect(find.text('No trips yet'), findsOneWidget);
     });
+
+    testWidgets('picking needs a confirmation; a past place says so',
+        (WidgetTester tester) async {
+      final ProviderContainer c = await pump(
+          tester, const SingleChildScrollView(child: TripEditorSheet()),
+          prefs: stored(<Trip>[trip('a', 'Bergen', from: -60, to: -55)]));
+      await tester.tap(find.text('Bergen'));
+      await tester.pumpAndSettle();
+      expect(find.text('From your trips'), findsNWidgets(2)); // label + card
+      await tester.ensureVisible(find.text('Save'));
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+      expect(find.text('Choose where you are going.'), findsOneWidget,
+          reason: 'not confirmed yet');
+      expect((await saved(c)).length, 1);
+    });
+
+    for (final bool dark in <bool>[false, true]) {
+      testWidgets(
+          'the picker in the ${dark ? 'dark' : 'light'} theme, '
+          'right to left', (WidgetTester tester) async {
+        await pump(
+            tester, const SingleChildScrollView(child: TripEditorSheet()),
+            locale: const Locale('ar'), dark: dark);
+        await tester.tap(find.text('لندن'));
+        await tester.pumpAndSettle();
+        expect(find.text('بريطانيا · من القائمة'), findsOneWidget);
+        expect(Directionality.of(tester.element(find.text('تأكيد الوجهة'))),
+            TextDirection.rtl);
+        await tester.ensureVisible(find.text('تأكيد الوجهة'));
+        await tester.tap(find.text('تأكيد الوجهة'));
+        await tester.pumpAndSettle();
+        expect(find.text('تم اختيار الوجهة: لندن'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+    }
   });
 }

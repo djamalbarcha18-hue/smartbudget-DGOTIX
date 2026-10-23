@@ -12,6 +12,8 @@ class Destination {
     required this.order,
     this.aliases = const <String>[],
     this.image,
+    this.lat,
+    this.lng,
   });
 
   final String id;
@@ -32,6 +34,10 @@ class Destination {
   /// A bundled picture, or null when none has been added.
   final String? image;
 
+  /// Where it is (for a map later); null when not given.
+  final double? lat;
+  final double? lng;
+
   String nameFor(AppLang lang) => names[lang.code] ?? names['en'] ?? id;
 
   Iterable<String> get searchNames => <String>[...names.values, ...aliases];
@@ -47,6 +53,8 @@ class Destination {
         icon: (j['icon'] as String?) ?? '',
         order: (j['order'] as num?)?.toInt() ?? 999,
         image: j['image'] as String?,
+        lat: (j['lat'] as num?)?.toDouble(),
+        lng: (j['lng'] as num?)?.toDouble(),
       );
 
   Destination withoutImage() => Destination(
@@ -55,7 +63,9 @@ class Destination {
       aliases: aliases,
       country: country,
       icon: icon,
-      order: order);
+      order: order,
+      lat: lat,
+      lng: lng);
 }
 
 /// The suggested places, in their set order, and searching them.

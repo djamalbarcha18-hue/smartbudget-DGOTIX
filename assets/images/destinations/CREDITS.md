@@ -1,7 +1,7 @@
 # Destination pictures
 
 One picture per place in `assets/data/destinations.json`, named after its
-`id`: `makkah.webp`, `madinah.webp`, `bangkok.webp`, `london.webp`,
+`id`: `mecca.webp`, `medina.webp`, `bangkok.webp`, `london.webp`,
 `istanbul.webp`, `dubai.webp`, `paris.webp`, `kuala_lumpur.webp`, `rome.webp`,
 `barcelona.webp`, `marrakech.webp`, `cairo.webp`, `bali.webp`, `tunis.webp`,
 `tbilisi.webp`.

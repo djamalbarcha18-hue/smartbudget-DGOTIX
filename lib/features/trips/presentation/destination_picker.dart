@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -33,9 +34,16 @@ class DestinationPicker extends StatefulWidget {
   State<DestinationPicker> createState() => _DestinationPickerState();
 }
 
+/// Where a place being chosen comes from (shown on the confirm card).
+enum _Source { list, past, typed }
+
 class _DestinationPickerState extends State<DestinationPicker> {
   final TextEditingController _query = TextEditingController();
   bool _all = false;
+
+  /// Picked but not confirmed yet.
+  String? _pending;
+  _Source _source = _Source.list;
 
   @override
   void dispose() {
@@ -43,9 +51,25 @@ class _DestinationPickerState extends State<DestinationPicker> {
     super.dispose();
   }
 
-  void _pick(String text) {
-    _query.clear();
+  void _pick(String text, _Source source) => setState(() {
+        _query.clear();
+        _pending = text;
+        _source = source;
+      });
+
+  void _confirm() {
+    final String? text = _pending;
+    if (text == null) return;
+    setState(() => _pending = null);
     widget.onChanged(text);
+  }
+
+  bool _same(String a, String b) {
+    final Destination? da = widget.catalog.byText(a);
+    final Destination? db = widget.catalog.byText(b);
+    return da != null && db != null
+        ? da.id == db.id
+        : PlaceText.normalize(a) == PlaceText.normalize(b);
   }
 
   @override
@@ -92,6 +116,17 @@ class _DestinationPickerState extends State<DestinationPicker> {
               ],
             ),
           ),
+          const SizedBox(height: DsSpacing.xs),
+          Row(
+            children: <Widget>[
+              Icon(Icons.check_circle_rounded, size: 16, color: c.income),
+              const SizedBox(width: DsSpacing.xs),
+              Expanded(
+                child: Text(l.tripPlaceChosen(catalog.display(value, lang)),
+                    style: t.bodySmall?.copyWith(color: c.income)),
+              ),
+            ],
+          ),
         ],
       );
     }
@@ -99,6 +134,7 @@ class _DestinationPickerState extends State<DestinationPicker> {
     final String q = _query.text;
     final String nq = PlaceText.normalize(q);
     final List<Widget> body = <Widget>[];
+    bool chosen(String text) => _pending != null && _same(_pending!, text);
 
     if (nq.isEmpty) {
       if (widget.past.isNotEmpty) {
@@ -107,9 +143,10 @@ class _DestinationPickerState extends State<DestinationPicker> {
           ..add(_Chips(<Widget>[
             for (final String p in widget.past)
               _PlaceChip(
-                destination: catalog.byText(p),
                 label: catalog.display(p, lang),
-                onTap: () => _pick(p),
+                selected: chosen(p),
+                past: true,
+                onTap: () => _pick(p, _Source.past),
               ),
           ]));
       }
@@ -119,20 +156,23 @@ class _DestinationPickerState extends State<DestinationPicker> {
         ..add(_Chips(<Widget>[
           for (final Destination d in shown)
             _PlaceChip(
-              destination: d,
               label: d.nameFor(lang),
-              onTap: () => _pick(d.nameFor(lang)),
+              selected: chosen(d.nameFor(lang)),
+              onTap: () => _pick(d.nameFor(lang), _Source.list),
             ),
         ]));
       if (catalog.all.length > 6) {
-        body.add(Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: TextButton.icon(
-            icon: Icon(
-                _all ? Icons.expand_less_rounded : Icons.expand_more_rounded),
-            label:
-                Text(_all ? l.tripShowLess : l.tripShowAll(catalog.all.length)),
-            onPressed: () => setState(() => _all = !_all),
+        body.add(Padding(
+          padding: const EdgeInsetsDirectional.only(top: DsSpacing.sm),
+          child: Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: OutlinedButton.icon(
+              icon: Icon(
+                  _all ? Icons.expand_less_rounded : Icons.expand_more_rounded),
+              label: Text(
+                  _all ? l.tripShowLess : l.tripShowAll(catalog.all.length)),
+              onPressed: () => setState(() => _all = !_all),
+            ),
           ),
         ));
       }
@@ -153,14 +193,14 @@ class _DestinationPickerState extends State<DestinationPicker> {
           leading: const DestinationAvatar(size: 32),
           title: p,
           trailing: Icon(Icons.history_rounded, size: 16, color: c.textFaint),
-          onTap: () => _pick(p),
+          onTap: () => _pick(p, _Source.past),
         ));
       }
       for (final Destination d in found) {
         body.add(_ResultRow(
           leading: DestinationAvatar(destination: d, size: 32),
           title: d.nameFor(lang),
-          onTap: () => _pick(d.nameFor(lang)),
+          onTap: () => _pick(d.nameFor(lang), _Source.list),
         ));
       }
       if (!exact) {
@@ -178,9 +218,60 @@ class _DestinationPickerState extends State<DestinationPicker> {
                 Icon(Icons.add_location_alt_outlined, size: 18, color: c.brand),
           ),
           title: l.tripUseText(typed),
-          onTap: () => _pick(typed),
+          onTap: () => _pick(typed, _Source.typed),
         ));
       }
+    }
+
+    // The confirm card: the place, its country and where it came from.
+    final String? pending = _pending;
+    if (pending != null) {
+      final Destination? d = catalog.byText(pending);
+      final String source = switch (_source) {
+        _Source.list => l.tripSourceList,
+        _Source.past => l.tripFromYourTrips,
+        _Source.typed => l.tripSourceTyped,
+      };
+      final String? country = d == null ? null : tripCountryName(l, d.country);
+      body.add(Container(
+        margin: const EdgeInsetsDirectional.only(top: DsSpacing.lg),
+        padding: const EdgeInsets.all(DsSpacing.md),
+        decoration: BoxDecoration(
+          color: c.surfaceMuted,
+          borderRadius: DsRadius.brLg,
+          border: Border.all(color: c.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                DestinationAvatar(destination: d, size: 44),
+                const SizedBox(width: DsSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(catalog.display(pending, lang),
+                          style: t.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w700)),
+                      Text(country == null ? source : '$country · $source',
+                          style: t.bodySmall?.copyWith(color: c.textMuted)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: DsSpacing.md),
+            DsButton(
+              label: l.tripConfirmPlace,
+              icon: Icons.check_rounded,
+              expand: true,
+              onPressed: _confirm,
+            ),
+          ],
+        ),
+      ));
     }
 
     return Column(
@@ -195,9 +286,9 @@ class _DestinationPickerState extends State<DestinationPicker> {
           onSubmitted: (String v) {
             final Destination? d = catalog.byText(v);
             if (d != null) {
-              _pick(d.nameFor(lang));
+              _pick(d.nameFor(lang), _Source.list);
             } else if (PlaceText.normalize(v).isNotEmpty) {
-              _pick(PlaceText.clean(v));
+              _pick(PlaceText.clean(v), _Source.typed);
             }
           },
           decoration: InputDecoration(
@@ -244,17 +335,27 @@ class _Chips extends StatelessWidget {
 }
 
 class _PlaceChip extends StatelessWidget {
-  const _PlaceChip(
-      {required this.destination, required this.label, required this.onTap});
-  final Destination? destination;
+  const _PlaceChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    this.past = false,
+  });
   final String label;
+  final bool selected;
   final VoidCallback onTap;
 
+  /// From the user's trips (a clock instead of a pin).
+  final bool past;
+
   @override
-  Widget build(BuildContext context) => ActionChip(
-        avatar: DestinationAvatar(destination: destination, size: 22),
+  Widget build(BuildContext context) => ChoiceChip(
+        avatar: Icon(past ? Icons.history_rounded : Icons.location_on_outlined,
+            size: 18),
+        showCheckmark: false,
         label: Text(label),
-        onPressed: onTap,
+        selected: selected,
+        onSelected: (_) => onTap(),
       );
 }
 

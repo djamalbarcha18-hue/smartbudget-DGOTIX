@@ -1,13 +1,9 @@
 [
   {
-    "id": "makkah",
-    "order": 1,
-    "country": "SA",
-    "icon": "mosque",
-    "image": "assets/images/destinations/makkah.webp",
+    "id": "mecca",
     "names": {
       "ar": "مكة المكرمة",
-      "en": "Makkah",
+      "en": "Mecca",
       "fr": "La Mecque",
       "id": "Mekah",
       "es": "La Meca",
@@ -15,21 +11,22 @@
       "ms": "Makkah",
       "ur": "مکہ مکرمہ"
     },
+    "country": "SA",
+    "lat": 21.3891,
+    "lng": 39.8579,
+    "icon": "mosque",
+    "order": 1,
+    "image": "assets/images/destinations/mecca.webp",
     "aliases": [
-      "Mecca",
       "Makka",
       "مكة"
     ]
   },
   {
-    "id": "madinah",
-    "order": 2,
-    "country": "SA",
-    "icon": "mosque",
-    "image": "assets/images/destinations/madinah.webp",
+    "id": "medina",
     "names": {
       "ar": "المدينة المنورة",
-      "en": "Madinah",
+      "en": "Medina",
       "fr": "Médine",
       "id": "Madinah",
       "es": "Medina",
@@ -37,17 +34,18 @@
       "ms": "Madinah",
       "ur": "مدینہ منورہ"
     },
+    "country": "SA",
+    "lat": 24.4709,
+    "lng": 39.6122,
+    "icon": "mosque",
+    "order": 2,
+    "image": "assets/images/destinations/medina.webp",
     "aliases": [
-      "Medina",
       "المدينة"
     ]
   },
   {
     "id": "bangkok",
-    "order": 3,
-    "country": "TH",
-    "icon": "temple",
-    "image": "assets/images/destinations/bangkok.webp",
     "names": {
       "ar": "بانكوك",
       "en": "Bangkok",
@@ -57,14 +55,16 @@
       "tr": "Bangkok",
       "ms": "Bangkok",
       "ur": "بینکاک"
-    }
+    },
+    "country": "TH",
+    "lat": 13.7563,
+    "lng": 100.5018,
+    "icon": "city",
+    "order": 3,
+    "image": "assets/images/destinations/bangkok.webp"
   },
   {
     "id": "london",
-    "order": 4,
-    "country": "GB",
-    "icon": "city",
-    "image": "assets/images/destinations/london.webp",
     "names": {
       "ar": "لندن",
       "en": "London",
@@ -74,14 +74,16 @@
       "tr": "Londra",
       "ms": "London",
       "ur": "لندن"
-    }
+    },
+    "country": "GB",
+    "lat": 51.5074,
+    "lng": -0.1278,
+    "icon": "city",
+    "order": 4,
+    "image": "assets/images/destinations/london.webp"
   },
   {
     "id": "istanbul",
-    "order": 5,
-    "country": "TR",
-    "icon": "mosque",
-    "image": "assets/images/destinations/istanbul.webp",
     "names": {
       "ar": "إسطنبول",
       "en": "Istanbul",
@@ -92,16 +94,18 @@
       "ms": "Istanbul",
       "ur": "استنبول"
     },
+    "country": "TR",
+    "lat": 41.0082,
+    "lng": 28.9784,
+    "icon": "mosque",
+    "order": 5,
+    "image": "assets/images/destinations/istanbul.webp",
     "aliases": [
       "اسطنبول"
     ]
   },
   {
     "id": "dubai",
-    "order": 6,
-    "country": "AE",
-    "icon": "tower",
-    "image": "assets/images/destinations/dubai.webp",
     "names": {
       "ar": "دبي",
       "en": "Dubai",
@@ -111,14 +115,16 @@
       "tr": "Dubai",
       "ms": "Dubai",
       "ur": "دبئی"
-    }
+    },
+    "country": "AE",
+    "lat": 25.2048,
+    "lng": 55.2708,
+    "icon": "skyscraper",
+    "order": 6,
+    "image": "assets/images/destinations/dubai.webp"
   },
   {
     "id": "paris",
-    "order": 7,
-    "country": "FR",
-    "icon": "museum",
-    "image": "assets/images/destinations/paris.webp",
     "names": {
       "ar": "باريس",
       "en": "Paris",
@@ -128,14 +134,16 @@
       "tr": "Paris",
       "ms": "Paris",
       "ur": "پیرس"
-    }
+    },
+    "country": "FR",
+    "lat": 48.8566,
+    "lng": 2.3522,
+    "icon": "city",
+    "order": 7,
+    "image": "assets/images/destinations/paris.webp"
   },
   {
     "id": "kuala_lumpur",
-    "order": 8,
-    "country": "MY",
-    "icon": "tower",
-    "image": "assets/images/destinations/kuala_lumpur.webp",
     "names": {
       "ar": "كوالالمبور",
       "en": "Kuala Lumpur",
@@ -146,6 +154,12 @@
       "ms": "Kuala Lumpur",
       "ur": "کوالالمپور"
     },
+    "country": "MY",
+    "lat": 3.139,
+    "lng": 101.6869,
+    "icon": "skyscraper",
+    "order": 8,
+    "image": "assets/images/destinations/kuala_lumpur.webp",
     "aliases": [
       "KL",
       "كوالا لمبور"
@@ -153,10 +167,6 @@
   },
   {
     "id": "rome",
-    "order": 9,
-    "country": "IT",
-    "icon": "columns",
-    "image": "assets/images/destinations/rome.webp",
     "names": {
       "ar": "روما",
       "en": "Rome",
@@ -166,14 +176,16 @@
       "tr": "Roma",
       "ms": "Rom",
       "ur": "روم"
-    }
+    },
+    "country": "IT",
+    "lat": 41.9028,
+    "lng": 12.4964,
+    "icon": "city",
+    "order": 9,
+    "image": "assets/images/destinations/rome.webp"
   },
   {
     "id": "barcelona",
-    "order": 10,
-    "country": "ES",
-    "icon": "church",
-    "image": "assets/images/destinations/barcelona.webp",
     "names": {
       "ar": "برشلونة",
       "en": "Barcelona",
@@ -183,14 +195,16 @@
       "tr": "Barselona",
       "ms": "Barcelona",
       "ur": "بارسلونا"
-    }
+    },
+    "country": "ES",
+    "lat": 41.3874,
+    "lng": 2.1686,
+    "icon": "city",
+    "order": 10,
+    "image": "assets/images/destinations/barcelona.webp"
   },
   {
     "id": "marrakech",
-    "order": 11,
-    "country": "MA",
-    "icon": "souk",
-    "image": "assets/images/destinations/marrakech.webp",
     "names": {
       "ar": "مراكش",
       "en": "Marrakech",
@@ -201,16 +215,15 @@
       "ms": "Marrakesh",
       "ur": "مراکش"
     },
-    "aliases": [
-      "Marrakesh"
-    ]
+    "country": "MA",
+    "lat": 31.6295,
+    "lng": -7.9811,
+    "icon": "city",
+    "order": 11,
+    "image": "assets/images/destinations/marrakech.webp"
   },
   {
     "id": "cairo",
-    "order": 12,
-    "country": "EG",
-    "icon": "pyramid",
-    "image": "assets/images/destinations/cairo.webp",
     "names": {
       "ar": "القاهرة",
       "en": "Cairo",
@@ -220,14 +233,16 @@
       "tr": "Kahire",
       "ms": "Kaherah",
       "ur": "قاہرہ"
-    }
+    },
+    "country": "EG",
+    "lat": 30.0444,
+    "lng": 31.2357,
+    "icon": "city",
+    "order": 12,
+    "image": "assets/images/destinations/cairo.webp"
   },
   {
     "id": "bali",
-    "order": 13,
-    "country": "ID",
-    "icon": "beach",
-    "image": "assets/images/destinations/bali.webp",
     "names": {
       "ar": "بالي",
       "en": "Bali",
@@ -237,14 +252,16 @@
       "tr": "Bali",
       "ms": "Bali",
       "ur": "بالی"
-    }
+    },
+    "country": "ID",
+    "lat": -8.4095,
+    "lng": 115.1889,
+    "icon": "beach",
+    "order": 13,
+    "image": "assets/images/destinations/bali.webp"
   },
   {
     "id": "tunis",
-    "order": 14,
-    "country": "TN",
-    "icon": "sea",
-    "image": "assets/images/destinations/tunis.webp",
     "names": {
       "ar": "تونس",
       "en": "Tunis",
@@ -254,14 +271,16 @@
       "tr": "Tunus",
       "ms": "Tunis",
       "ur": "تیونس"
-    }
+    },
+    "country": "TN",
+    "lat": 36.8065,
+    "lng": 10.1815,
+    "icon": "city",
+    "order": 14,
+    "image": "assets/images/destinations/tunis.webp"
   },
   {
     "id": "tbilisi",
-    "order": 15,
-    "country": "GE",
-    "icon": "mountain",
-    "image": "assets/images/destinations/tbilisi.webp",
     "names": {
       "ar": "تبليسي",
       "en": "Tbilisi",
@@ -271,6 +290,12 @@
       "tr": "Tiflis",
       "ms": "Tbilisi",
       "ur": "تبلیسی"
-    }
+    },
+    "country": "GE",
+    "lat": 41.7151,
+    "lng": 44.8271,
+    "icon": "city",
+    "order": 15,
+    "image": "assets/images/destinations/tbilisi.webp"
   }
 ]
