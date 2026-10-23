@@ -73,10 +73,24 @@ jobs:
           set -euo pipefail
           sql=$( { echo "begin;"; cat supabase/billing.sql supabase/subscription_lifecycle.sql; echo "commit;"; } \
             | jq -Rs '{query: .}')
-          curl -sS --fail-with-body -X POST \
+          mkdir -p out
+          code=$(curl -sS -o out/sql-response.txt -w "%{http_code}" -X POST \
             -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
-            -H "Content-Type: application/json" -d "$sql" "$API/database/query" >/dev/null
+            -H "Content-Type: application/json" -d "$sql" "$API/database/query")
+          echo "HTTP $code" | tee out/sql-status.txt
+          [ "${code:0:1}" = "2" ] || { echo "::error::The SQL was refused (see the sql-response artifact)."; exit 1; }
           echo "Applied."
+
+      # Supabase's answer to the SQL (status and error text, no secrets), for
+      # reading why it failed.
+      - name: Keep the SQL response
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sql-response
+          path: out/
+          if-no-files-found: ignore
+          retention-days: 3
 
       - name: "Check: no Paddle function or secret is left"
         run: |
