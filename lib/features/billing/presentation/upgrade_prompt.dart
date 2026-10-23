@@ -79,7 +79,7 @@ class UpgradeSheet extends StatelessWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final Plan tier = decision.suggestedTier ?? Plan.basic;
+    final Plan tier = decision.suggestedTier ?? Plan.pro;
     final String name = featureTitle(l, decision.feature);
     final bool counted = decision.window == QuotaWindow.items;
     final String body = counted && decision.limit != null

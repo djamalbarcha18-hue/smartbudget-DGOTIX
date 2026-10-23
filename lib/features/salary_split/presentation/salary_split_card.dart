@@ -28,7 +28,7 @@ class SalarySplitCard extends ConsumerWidget {
     final TextTheme t = Theme.of(context).textTheme;
     final GateDecision gate =
         ref.watch(featureGateProvider(Feature.salarySplit));
-    final Plan tier = gate.suggestedTier ?? Plan.basic;
+    final Plan tier = gate.suggestedTier ?? Plan.pro;
 
     return GlassCard(
       accent: c.brand,

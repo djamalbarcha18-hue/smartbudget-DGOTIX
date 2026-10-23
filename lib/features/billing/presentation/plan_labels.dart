@@ -5,6 +5,5 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 /// domain stays free of l10n.
 String planName(AppLocalizations l, Plan plan) => switch (plan) {
       Plan.free => l.planFree,
-      Plan.basic => l.planBasic,
       Plan.pro => l.planPro,
     };

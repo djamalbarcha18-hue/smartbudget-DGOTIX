@@ -9,9 +9,12 @@ library;
 
 /// Ordered from least to most capable. Rank is the `index`, so higher = more.
 /// Insert new tiers in rank order; never reorder existing values.
+///
+/// Two plans: FREE and PREMIUM. Premium keeps the storage id `pro` (the
+/// server, the database and the billing price map all say `pro`); the old
+/// BASIC plan was merged into it, so a stored `basic` reads as Premium.
 enum Plan {
   free,
-  basic,
   pro,
 }
 
@@ -26,6 +29,7 @@ extension PlanX on Plan {
     for (final Plan p in Plan.values) {
       if (p.name == id) return p;
     }
+    if (id == 'basic') return Plan.pro; // merged into Premium
     return Plan.free; // safe default: unknown/unset ⇒ free tier
   }
 
@@ -37,8 +41,7 @@ extension PlanX on Plan {
   /// Non-localized label for diagnostics. UI uses l10n, not this.
   String get label => switch (this) {
         Plan.free => 'FREE',
-        Plan.basic => 'BASIC',
-        Plan.pro => 'PRO',
+        Plan.pro => 'PREMIUM',
       };
 
   /// Display price in USD for a period, or null when the plan has no such
@@ -46,9 +49,7 @@ extension PlanX on Plan {
   /// display only — the billing provider is authoritative at checkout.
   double? priceUsd(BillingPeriod period) => switch ((this, period)) {
         (Plan.free, _) => 0.0,
-        (Plan.basic, BillingPeriod.monthly) => 4.99,
-        (Plan.basic, BillingPeriod.yearly) => 39.99,
-        (Plan.pro, BillingPeriod.monthly) => 8.99,
-        (Plan.pro, BillingPeriod.yearly) => 69.99,
+        (Plan.pro, BillingPeriod.monthly) => 7.99,
+        (Plan.pro, BillingPeriod.yearly) => 49.99,
       };
 }

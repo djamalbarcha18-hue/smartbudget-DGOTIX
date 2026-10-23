@@ -71,7 +71,7 @@ void main() {
 
   testWidgets('Plus adds without a prompt', (WidgetTester tester) async {
     final List<bool> result = <bool>[];
-    await tester.pumpWidget(_host(Plan.basic, _Probe(result)));
+    await tester.pumpWidget(_host(Plan.pro, _Probe(result)));
     await tester.tap(find.text('add'));
     await tester.pumpAndSettle();
     expect(result, <bool>[true]);
@@ -82,7 +82,7 @@ void main() {
       (WidgetTester tester) async {
     await tester.pumpWidget(_host(
         Plan.free, const LockedFeatureCard(feature: Feature.healthDetails)));
-    expect(find.text('Financial health details and tips is included in Basic.'),
+    expect(find.text('Financial health details and tips is included in Premium.'),
         findsOneWidget);
   });
 
@@ -112,8 +112,8 @@ void main() {
       }
     });
 
-    test('Basic sees what was chosen', () {
-      final ProviderContainer c = container(Plan.basic);
+    test('Premium sees what was chosen', () {
+      final ProviderContainer c = container(Plan.pro);
       addTearDown(c.dispose);
       c.read(selectedReportPeriodProvider.notifier).state =
           ReportPeriod.quarterly;

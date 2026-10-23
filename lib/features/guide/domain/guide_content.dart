@@ -212,7 +212,7 @@ abstract final class GuideContent {
     GuideTopic(
       route: '/plans',
       title: 'Plans & subscription',
-      summary: 'Compare Free, Basic and Pro, and manage your subscription.',
+      summary: 'Compare Free and Premium, and manage your subscription.',
       steps: <String>[
         'The core budgeting tools are free forever.',
         'Paid plans raise the AI and cloud-scan limits and add extra features.',
@@ -382,7 +382,7 @@ abstract final class GuideContent {
     GuideTopic(
       route: '/plans',
       title: 'الباقات والاشتراك',
-      summary: 'قارن بين المجانية والأساسية والاحترافية، وأدِر اشتراكك.',
+      summary: 'قارن بين المجانية وبريميوم، وأدِر اشتراكك.',
       steps: <String>[
         'أدوات الميزانية الأساسية مجانية دائماً.',
         'ترفع الباقات المدفوعة حدود الذكاء الاصطناعي والمسح السحابي وتضيف '
@@ -595,7 +595,7 @@ abstract final class GuideContent {
     GuideTopic(
       route: '/plans',
       title: 'Formules et abonnement',
-      summary: 'Comparez Gratuit, Basic et Pro, et gérez votre abonnement.',
+      summary: 'Comparez Gratuit et Premium, et gérez votre abonnement.',
       steps: <String>[
         'Les outils de budget essentiels sont gratuits pour toujours.',
         'Les formules payantes relèvent les limites de l\'IA et du scan dans le '
@@ -798,7 +798,7 @@ abstract final class GuideContent {
     GuideTopic(
       route: '/plans',
       title: 'Paket & langganan',
-      summary: 'Bandingkan Gratis, Basic, dan Pro, lalu kelola langganan Anda.',
+      summary: 'Bandingkan Gratis dan Premium, lalu kelola langganan Anda.',
       steps: <String>[
         'Fitur anggaran inti gratis selamanya.',
         'Paket berbayar menaikkan batas AI dan pemindaian cloud serta menambah '
@@ -997,7 +997,7 @@ abstract final class GuideContent {
     GuideTopic(
       route: '/plans',
       title: 'Planes y suscripción',
-      summary: 'Compara Gratis, Basic y Pro, y gestiona tu suscripción.',
+      summary: 'Compara Gratis y Premium, y gestiona tu suscripción.',
       steps: <String>[
         'Las herramientas básicas de presupuesto son gratis para siempre.',
         'Los planes de pago suben los límites de IA y de escaneo en la nube y '
@@ -1193,7 +1193,7 @@ abstract final class GuideContent {
     GuideTopic(
       route: '/plans',
       title: 'Planlar ve abonelik',
-      summary: 'Free, Basic ve Pro\'yu karşılaştır ve aboneliğini yönet.',
+      summary: 'Free ve Premium\'u karşılaştır ve aboneliğini yönet.',
       steps: <String>[
         'Temel bütçe araçları sonsuza dek ücretsiz.',
         'Ücretli planlar yapay zekâ ve bulut tarama sınırlarını yükseltir ve '
@@ -1407,7 +1407,7 @@ abstract final class GuideContent {
     GuideTopic(
       route: '/plans',
       title: 'Pelan & langganan',
-      summary: 'Bandingkan Free, Basic dan Pro, dan urus langganan anda.',
+      summary: 'Bandingkan Free dan Premium, dan urus langganan anda.',
       steps: <String>[
         'Alat bajet teras percuma selama-lamanya.',
         'Pelan berbayar menaikkan had AI dan imbasan awan serta menambah ciri '
@@ -1603,7 +1603,7 @@ abstract final class GuideContent {
     GuideTopic(
       route: '/plans',
       title: 'پلانز اور سبسکرپشن',
-      summary: 'Free، Basic اور Pro کا موازنہ کریں اور اپنی سبسکرپشن کا '
+      summary: 'Free اور پریمیم کا موازنہ کریں اور اپنی سبسکرپشن کا '
           'انتظام کریں۔',
       steps: <String>[
         'بجٹ کے بنیادی ٹولز ہمیشہ کے لیے مفت ہیں۔',

@@ -23,7 +23,7 @@ import 'package:smartbudget/features/billing/domain/payment_links.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// Plans & upgrade screen — a transparent side-by-side of FREE / BASIC / PRO.
+/// Plans & upgrade screen — a transparent side-by-side of FREE / PREMIUM.
 ///
 /// Prices and quotas come from the tiering source of truth ([Plan],
 /// [FeatureCatalog]); nothing here is hardcoded twice. Checkout is not wired
@@ -38,14 +38,14 @@ class PlansPage extends ConsumerWidget {
     // Payment test mode (beta, sandbox only): plans are offered from FREE up.
     final bool payTest = ref.watch(paymentTestModeProvider).valueOrNull ?? false;
     final Plan current = payTest ? Plan.free : ref.watch(effectivePlanProvider);
-    final bool wide = MediaQuery.of(context).size.width >= 900;
+    final bool wide = MediaQuery.of(context).size.width >= 700;
 
     final List<Widget> cards = <Widget>[
       for (final Plan p in Plan.values)
         _PlanCard(
             plan: p,
             current: current,
-            highlight: p == Plan.basic,
+            highlight: p == Plan.pro,
             payTest: payTest),
     ];
 
@@ -463,29 +463,25 @@ class _PlanCard extends StatelessWidget {
           l.planFeatOcrMonthly(_limit(Feature.cloudOcr)),
           l.planFeatOnDeviceOcr,
         ];
-      case Plan.basic:
+      case Plan.pro:
+        // The strongest reasons first: currencies and the parallel rate,
+        // sync, AI and cloud scans, full reports, no limits.
         return <String>[
           l.planFeatEverythingIn(l.planFree),
-          l.planFeatUnlimited,
           l.planFeatMultiCurrency,
-          l.planFeatAdvancedReports,
           l.planFeatParallel,
           l.planFeatCloudSync,
-          l.planFeatHealthDetails,
-          l.planFeatSalarySplit,
           l.planFeatAiMonthly(_limit(Feature.dgotixAi)),
           l.planFeatOcrMonthly(_limit(Feature.cloudOcr)),
-        ];
-      case Plan.pro:
-        return <String>[
-          l.planFeatEverythingIn(l.planBasic),
+          l.planFeatAdvancedReports,
           l.planFeatPdf,
           l.planFeatTrends,
           l.planFeatSmartAlerts,
+          l.planFeatUnlimited,
+          l.planFeatHealthDetails,
+          l.planFeatSalarySplit,
           l.planFeatMarkets,
           l.planFeatProjects,
-          l.planFeatAiMonthly(_limit(Feature.dgotixAi)),
-          l.planFeatOcrMonthly(_limit(Feature.cloudOcr)),
           l.planFeatPriority,
         ];
     }

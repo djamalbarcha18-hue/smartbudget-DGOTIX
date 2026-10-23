@@ -30,9 +30,9 @@ as in the official `@whop/sdk`.
 ## One-time setup (owner)
 
 1. **Create the product & plans** in the Whop dashboard: one product
-   (SmartBudget) with four **renewing** plans matching `docs/PRICING.md` —
-   BASIC $4.99 / month and $39.99 / year, PRO $8.99 / month and $69.99 /
-   year. Copy each plan id (`plan_...`).
+   (SmartBudget Premium) with two **renewing** plans matching
+   `docs/PRICING.md` — $7.99 / month and $49.99 / year. Copy each plan id
+   (`plan_...`).
 
 2. **Apply the schema** and record the plan ids:
 
@@ -41,11 +41,10 @@ as in the official `@whop/sdk`.
    supabase db execute -f supabase/subscription_lifecycle.sql
    ```
    ```sql
+   -- Premium is stored as 'pro'.
    insert into billing_prices (price_id, provider, plan, period) values
-     ('plan_xxx_basic_monthly', 'whop', 'basic', 'monthly'),
-     ('plan_xxx_basic_yearly',  'whop', 'basic', 'yearly'),
-     ('plan_xxx_pro_monthly',   'whop', 'pro',   'monthly'),
-     ('plan_xxx_pro_yearly',    'whop', 'pro',   'yearly')
+     ('plan_xxx_monthly', 'whop', 'pro', 'monthly'),
+     ('plan_xxx_yearly',  'whop', 'pro', 'yearly')
    on conflict (price_id) do update set provider = excluded.provider,
      plan = excluded.plan, period = excluded.period, active = true;
    ```
@@ -120,10 +119,8 @@ instead of) Whop:
 
    ```sql
    insert into billing_prices (price_id, provider, plan, period) values
-     ('P-BASIC-MONTHLY', 'paypal', 'basic', 'monthly'),
-     ('P-BASIC-YEARLY',  'paypal', 'basic', 'yearly'),
-     ('P-PRO-MONTHLY',   'paypal', 'pro',   'monthly'),
-     ('P-PRO-YEARLY',    'paypal', 'pro',   'yearly')
+     ('P-PREMIUM-MONTHLY', 'paypal', 'pro', 'monthly'),
+     ('P-PREMIUM-YEARLY',  'paypal', 'pro', 'yearly')
    on conflict (price_id) do update set plan = excluded.plan, period = excluded.period;
    ```
 

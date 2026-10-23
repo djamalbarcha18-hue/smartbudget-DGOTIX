@@ -376,7 +376,7 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Subscriptions, billing and renewals',
-          'The core app is free. Paid plans (Basic and Pro) unlock higher '
+          'The core app is free. Paid plans (Premium) unlock higher '
               'limits and extra features at the prices shown in the app. A paid '
               'plan renews automatically each billing period (monthly or '
               'yearly) until you cancel. Payments are processed by Whop, our '
@@ -494,8 +494,8 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'الاشتراكات والفوترة والتجديد',
-          'التطبيق الأساسي مجاني. وتفتح الباقات المدفوعة (الأساسية '
-              'والاحترافية) حدوداً أعلى وميزات إضافية بالأسعار المعروضة في '
+          'التطبيق الأساسي مجاني. وتفتح الباقات المدفوعة (بريميوم) '
+              'حدوداً أعلى وميزات إضافية بالأسعار المعروضة في '
               'التطبيق. وتتجدّد الباقة المدفوعة تلقائياً في كل فترة فوترة '
               '(شهرياً أو سنوياً) حتى تُلغيها. تُعالَج المدفوعات عبر Whop، '
               'مزوّد الدفع لدينا (أو عبر PayPal إن اخترته)؛ وقد تُضاف ضرائب '
@@ -784,7 +784,7 @@ abstract final class LegalContent {
         const LegalSection(
           'Abonnements, facturation et renouvellements',
           'L\'application de base est gratuite. Les formules payantes '
-              '(Basic et Pro) débloquent des limites plus élevées et des '
+              '(Premium) débloquent des limites plus élevées et des '
               'fonctionnalités supplémentaires aux prix affichés dans '
               'l\'application. Une formule payante se renouvelle '
               'automatiquement à chaque période de facturation (mensuelle ou '
@@ -1067,7 +1067,7 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Langganan, penagihan, dan perpanjangan',
-          'Aplikasi inti gratis. Paket berbayar (Basic dan Pro) membuka '
+          'Aplikasi inti gratis. Paket berbayar (Premium) membuka '
               'batas lebih tinggi dan fitur tambahan dengan harga yang tertera '
               'di aplikasi. Paket berbayar diperpanjang otomatis setiap periode '
               'penagihan (bulanan atau tahunan) sampai Anda membatalkannya. '
@@ -1348,7 +1348,7 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Suscripciones, facturación y renovaciones',
-          'La app básica es gratis. Los planes de pago (Basic y Pro) '
+          'La app básica es gratis. Los planes de pago (Premium) '
               'desbloquean límites mayores y funciones extra a los precios que '
               'muestra la app. Un plan de pago se renueva automáticamente en '
               'cada periodo de facturación (mensual o anual) hasta que lo '
@@ -1625,7 +1625,7 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Abonelikler, faturalandırma ve yenilemeler',
-          'Temel uygulama ücretsizdir. Ücretli planlar (Basic ve Pro), '
+          'Temel uygulama ücretsizdir. Ücretli planlar (Premium), '
               'uygulamada gösterilen fiyatlarla daha yüksek sınırların ve ek '
               'özelliklerin kilidini açar. Ücretli bir plan, iptal edene kadar '
               'her faturalandırma döneminde (aylık veya yıllık) otomatik olarak '
@@ -1905,7 +1905,7 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'Langganan, pengebilan dan pembaharuan',
-          'Aplikasi teras adalah percuma. Pelan berbayar (Basic dan Pro) '
+          'Aplikasi teras adalah percuma. Pelan berbayar (Premium) '
               'membuka had yang lebih tinggi dan ciri tambahan pada harga yang '
               'ditunjukkan dalam aplikasi. Pelan berbayar diperbaharui secara '
               'automatik setiap tempoh pengebilan (bulanan atau tahunan) '
@@ -2181,7 +2181,7 @@ abstract final class LegalContent {
         ),
         const LegalSection(
           'سبسکرپشنز، بلنگ اور تجدید',
-          'بنیادی ایپ مفت ہے۔ ادا شدہ پلانز (Basic اور Pro) ایپ میں دکھائی '
+          'بنیادی ایپ مفت ہے۔ ادا شدہ پلانز (پریمیم) ایپ میں دکھائی '
               'گئی قیمتوں پر زیادہ حدیں اور اضافی فیچرز کھولتے ہیں۔ ادا شدہ '
               'پلان ہر بلنگ مدت (ماہانہ یا سالانہ) پر خود بخود تجدید ہوتا ہے جب '
               'تک آپ منسوخ نہ کریں۔ ادائیگیاں ہمارے ادائیگی فراہم کنندہ Whop '

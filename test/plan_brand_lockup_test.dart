@@ -31,8 +31,7 @@ void main() {
 
   for (final (Plan plan, String label) in <(Plan, String)>[
     (Plan.free, 'FREE'),
-    (Plan.basic, 'BASIC'),
-    (Plan.pro, 'PRO'),
+    (Plan.pro, 'PREMIUM'),
   ]) {
     testWidgets('a $label user sees the $label badge', (WidgetTester tester) async {
       await tester.pumpWidget(host(const PlanBrandLockup(logoHeight: 56), plan: plan));
@@ -42,23 +41,22 @@ void main() {
     });
   }
 
-  test('each plan stands out a little more than the one before', () {
+  test('Premium stands out more than Free', () {
     expect(PlanBrandLockup.styleFor(Plan.free), LockupBadgeStyle.subtle);
-    expect(PlanBrandLockup.styleFor(Plan.basic), LockupBadgeStyle.accent);
     expect(PlanBrandLockup.styleFor(Plan.pro), LockupBadgeStyle.solid);
   });
 
   testWidgets('signed out (no plan known): no badge', (WidgetTester tester) async {
     await tester.pumpWidget(host(const DgotixBrandLockup(logoHeight: 56)));
-    for (final String label in <String>['FREE', 'BASIC', 'PRO']) {
+    for (final String label in <String>['FREE', 'PREMIUM']) {
       expect(find.text(label), findsNothing);
     }
   });
 
   testWidgets('dark mode renders without errors', (WidgetTester tester) async {
     await tester.pumpWidget(host(const PlanBrandLockup(logoHeight: 56),
-        plan: Plan.basic, brightness: Brightness.dark));
-    expect(find.text('BASIC'), findsOneWidget);
+        plan: Plan.pro, brightness: Brightness.dark));
+    expect(find.text('PREMIUM'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

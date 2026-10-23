@@ -138,7 +138,6 @@ abstract final class FeatureCatalog {
       minTier: Plan.free,
       quotas: <Plan, Quota>{
         Plan.free: Quota(5, QuotaWindow.lifetime),
-        Plan.basic: Quota(25, QuotaWindow.monthly),
         Plan.pro: Quota(100, QuotaWindow.monthly),
       },
     ),
@@ -147,17 +146,16 @@ abstract final class FeatureCatalog {
       minTier: Plan.free,
       quotas: <Plan, Quota>{
         Plan.free: Quota(3, QuotaWindow.monthly),
-        Plan.basic: Quota(15, QuotaWindow.monthly),
         Plan.pro: Quota(50, QuotaWindow.monthly),
       },
     ),
     Feature.advancedReports: FeatureRule(
       feature: Feature.advancedReports,
-      minTier: Plan.basic,
+      minTier: Plan.pro,
     ),
     Feature.cloudSyncFull: FeatureRule(
       feature: Feature.cloudSyncFull,
-      minTier: Plan.basic,
+      minTier: Plan.pro,
     ),
     Feature.portfolioFull: FeatureRule(
       feature: Feature.portfolioFull,
@@ -165,7 +163,7 @@ abstract final class FeatureCatalog {
     ),
     Feature.parallelRates: FeatureRule(
       feature: Feature.parallelRates,
-      minTier: Plan.basic,
+      minTier: Plan.pro,
     ),
     Feature.reportPdf: FeatureRule(
       feature: Feature.reportPdf,
@@ -186,7 +184,7 @@ abstract final class FeatureCatalog {
     ),
     Feature.multiCurrency: FeatureRule(
       feature: Feature.multiCurrency,
-      minTier: Plan.basic,
+      minTier: Plan.pro,
     ),
     Feature.categoryBudgets: FeatureRule(
       feature: Feature.categoryBudgets,
@@ -220,7 +218,7 @@ abstract final class FeatureCatalog {
     ),
     Feature.healthDetails: FeatureRule(
       feature: Feature.healthDetails,
-      minTier: Plan.basic,
+      minTier: Plan.pro,
     ),
     Feature.prioritySupport: FeatureRule(
       feature: Feature.prioritySupport,
@@ -228,7 +226,7 @@ abstract final class FeatureCatalog {
     ),
     Feature.salarySplit: FeatureRule(
       feature: Feature.salarySplit,
-      minTier: Plan.basic,
+      minTier: Plan.pro,
     ),
     Feature.smartAlerts: FeatureRule(
       feature: Feature.smartAlerts,
@@ -239,17 +237,14 @@ abstract final class FeatureCatalog {
   // Counted features: FREE gets a few, the paid plans as many as they like.
   static const Map<Plan, Quota> _freeItems1 = <Plan, Quota>{
     Plan.free: Quota(1, QuotaWindow.items),
-    Plan.basic: _unlimitedItems,
     Plan.pro: _unlimitedItems,
   };
   static const Map<Plan, Quota> _freeItems2 = <Plan, Quota>{
     Plan.free: Quota(2, QuotaWindow.items),
-    Plan.basic: _unlimitedItems,
     Plan.pro: _unlimitedItems,
   };
   static const Map<Plan, Quota> _freeItems5 = <Plan, Quota>{
     Plan.free: Quota(5, QuotaWindow.items),
-    Plan.basic: _unlimitedItems,
     Plan.pro: _unlimitedItems,
   };
   static const Quota _unlimitedItems = Quota(-1, QuotaWindow.items);

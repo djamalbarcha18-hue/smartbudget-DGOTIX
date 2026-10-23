@@ -49,8 +49,9 @@ export const PLAN_PRICE_USD: Record<
   { monthly: number; yearly: number | null }
 > = {
   free: { monthly: 0, yearly: null },
-  basic: { monthly: 4.99, yearly: 39.99 },
-  pro: { monthly: 8.99, yearly: 69.99 },
+  // BASIC is no longer sold (merged into PREMIUM, stored as "pro").
+  basic: { monthly: 7.99, yearly: 49.99 },
+  pro: { monthly: 7.99, yearly: 49.99 },
 };
 
 const RANK: Record<Plan, number> = { free: 0, basic: 1, pro: 2 };

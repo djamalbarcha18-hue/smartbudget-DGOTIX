@@ -8,8 +8,11 @@
 
 Status: **design locked** · Prices in **USD** · Last reviewed **2026-10**.
 
+> **Two plans: FREE and PREMIUM** (since 2026-10; BASIC was merged into
+> PREMIUM, which keeps the id `pro` in code, the database and the server).
+>
 > **Beta: everything is unlocked.** While SmartBudget is in beta every user
-> gets PRO limits plus the yearly-only extras, and upgrade prompts, checkout
+> gets PREMIUM limits plus the yearly-only extras, and upgrade prompts, checkout
 > buttons and the coupon box are hidden. One switch on each side turns it off
 > when paid plans go live:
 > - app: build with `--dart-define=BETA_ALL_ACCESS=false` (`AppEnv.betaAllAccess`);
@@ -20,22 +23,23 @@ Status: **design locked** · Prices in **USD** · Last reviewed **2026-10**.
 
 ## 1. Plans at a glance
 
-| | **FREE** | **BASIC** | **PRO** |
-|---|---|---|---|
-| Monthly | **$0** | **$4.99 / mo** | **$8.99 / mo** |
-| Yearly | — | **$39.99 / yr** (≈ $3.33/mo) | **$69.99 / yr** (≈ $5.83/mo) |
-| Yearly saving vs monthly | — | ~33% | ~35% |
-| Positioning | Build the habit | Everyday budgeter, expats | Multiple incomes, investing, heavy AI |
+| | **FREE** | **PREMIUM** |
+|---|---|---|
+| Monthly | **$0** | **$7.99 / mo** |
+| Yearly | — | **$49.99 / yr** (≈ $4.17/mo) |
+| Yearly saving vs monthly | — | ~48% |
+| Positioning | Build the habit | Every currency, sync, AI, full reports, no limits |
 
 **Regional prices** (planned — **not set up yet** with Whop, whose support
 for per-country prices on one plan is unconfirmed; until then every buyer pays
 the list price): Arab countries outside the Gulf (Egypt, the
-Maghreb, the Levant, Iraq, Sudan, …) pay BASIC **$2.99 / $24.99** and PRO
-**$5.49 / $44.99**. The app shows the USD list price; the checkout shows the
+Maghreb, the Levant, Iraq, Sudan, …) would pay PREMIUM **$4.49 / $29.99**
+(at $29.99 a fully used worst-case month roughly breaks even; typical use
+stays well in profit). The app shows the USD list price; the checkout shows the
 buyer's own price and currency.
 
 FREE is a **permanent free tier** (not a time-boxed trial). A new account MAY
-receive a short PRO trial window; that is a marketing lever, not a plan — see
+receive a short PREMIUM trial window; that is a marketing lever, not a plan — see
 §7 Coupons & trials.
 
 All prices are **placeholders in code** until the billing provider is wired; no
@@ -48,12 +52,12 @@ answer ≈ $0.001 (Flash-Lite), at worst ≈ $0.01; a cloud scan ≈ $0.006, at
 worst ≈ $0.03 per part. A subscriber who spends the whole allowance every month
 at worst-case cost:
 
-| | net / month (yearly, cheapest region, after Whop) | typical cost | worst case |
+| PREMIUM | net / month (yearly, after Whop) | typical cost | worst case |
 |---|---|---|---|
-| BASIC | ≈ $1.96 | ≈ $0.15 | ≈ $0.70 |
-| PRO | ≈ $3.55 | ≈ $0.50 | ≈ $2.40 |
+| list price $49.99 | ≈ $3.95 | ≈ $0.50 | ≈ $2.40 |
+| regional $29.99 (planned) | ≈ $2.36 | ≈ $0.50 | ≈ $2.40 |
 
-So every plan stays profitable in every region even at the worst case. Whop
+So Premium stays profitable even at the worst case at the list price. Whop
 takes about 2.7% + $0.30 per card payment, plus 2% with its tax collection
 on; the fixed part per payment is why yearly billing is pushed.
 
@@ -64,10 +68,10 @@ on; the fixed part per payment is why yearly billing is pushed.
 Quota is enforced **server-side** in the `ai-gateway` Edge Function. The number
 below is the count of **successful** assistant answers per period.
 
-| | FREE | BASIC | PRO |
-|---|---|---|---|
-| DGOTIX AI answers | **5 total** (one-time) | **25 / month** | **100 / month** |
-| Reset | never (lifetime intro) | monthly (calendar) | monthly (calendar) |
+| | FREE | PREMIUM |
+|---|---|---|
+| DGOTIX AI answers | **5 total** (one-time) | **100 / month** |
+| Reset | never (lifetime intro) | monthly (calendar) |
 
 - FREE's 5 is a **lifetime** allowance to feel the value, not a monthly refill.
 - Quotas are **request budgets bounded by token governance** (§4), not raw
@@ -89,10 +93,10 @@ runs locally, costs us nothing, and must never be gated.
 Cloud OCR (`GeminiOnlineEngine` via the `receipt-scan` function) has real cost
 and is metered **server-side**:
 
-| | FREE | BASIC | PRO |
-|---|---|---|---|
-| Cloud OCR scans | **3 / month** | **15 / month** | **50 / month** |
-| On-device OCR | ∞ | ∞ | ∞ |
+| | FREE | PREMIUM |
+|---|---|---|
+| Cloud OCR scans | **3 / month** | **50 / month** |
+| On-device OCR | ∞ | ∞ |
 
 Same policy as AI: exceeding cloud OCR → **Upgrade** CTA. On a phone the
 receipt is still read on the device, and the review offers the upgrade; on the
@@ -156,39 +160,39 @@ Sign-up is free, so the limits also depend on the account, not on IP addresses
 
 The catalog is the source of truth; this is the intended shape:
 
-| Capability | FREE | BASIC | PRO |
-|---|---|---|---|
-| Transactions, categories, dashboard, quick entry | ✅ unlimited | ✅ | ✅ |
-| Zakat calculator, app lock, challenges and badges | ✅ | ✅ | ✅ |
-| On-device receipt OCR | ✅ unlimited | ✅ | ✅ |
-| Wallets | 2 (incl. General), base currency only | unlimited, any currency | ✅ |
-| Category budgets (per month) | 5 | unlimited | ✅ |
-| Goals / debts / darets | 1 / 2 / 1 | unlimited | ✅ |
-| Season plans (still ahead or running) | 1 | unlimited | ✅ |
-| Recurring rules | 5 | unlimited | ✅ |
-| Reports | monthly: this month and the previous one | every period, any year | ✅ |
-| Exchange rates | official rates + converter | + parallel / P2P / custom | ✅ |
-| Financial health | score, risks, emergency fund | + strengths, pillars, recommendations | ✅ |
-| Automatic sync across devices | — (backup file export only) | ✅ | ✅ |
-| Smart salary split | — | ✅ | ✅ |
-| PDF report export | — | — | ✅ |
-| Yearly trend chart (months compared) | — | — | ✅ |
-| Smart alerts (forecasts, unusual spending, summaries) | — | — | ✅ |
-| Markets: crypto, metals, commodities | — | — | ✅ |
-| Projects and investment portfolio | — | — | ✅ |
-| Cloud receipt OCR | 3 / mo | 15 / mo | 50 / mo |
-| DGOTIX AI assistant | 5 lifetime | 25 / mo | 100 / mo |
-| Priority support | — | — | ✅ |
+| Capability | FREE | PREMIUM |
+|---|---|---|
+| Transactions, categories, dashboard, quick entry | ✅ unlimited | ✅ |
+| Zakat calculator, app lock, challenges and badges | ✅ | ✅ |
+| On-device receipt OCR | ✅ unlimited | ✅ |
+| Wallets | 2 (incl. General), base currency only | unlimited, any currency |
+| Category budgets (per month) | 5 | unlimited |
+| Goals / debts / darets | 1 / 2 / 1 | unlimited |
+| Season plans (still ahead or running) | 1 | unlimited |
+| Recurring rules | 5 | unlimited |
+| Reports | monthly: this month and the previous one | every period, any year |
+| Exchange rates | official rates + converter | + parallel / P2P / custom |
+| Financial health | score, risks, emergency fund | + strengths, pillars, recommendations |
+| Automatic sync across devices | — (backup file export only) | ✅ |
+| Smart salary split | — | ✅ |
+| PDF report export | — | ✅ |
+| Yearly trend chart (months compared) | — | ✅ |
+| Smart alerts (forecasts, unusual spending, summaries) | — | ✅ |
+| Markets: crypto, metals, commodities | — | ✅ |
+| Projects and investment portfolio | — | ✅ |
+| Cloud receipt OCR | 3 / mo | 50 / mo |
+| DGOTIX AI assistant | 5 lifetime | 100 / mo |
+| Priority support | — | ✅ |
 
 - **Counted features** (`QuotaWindow.items`) are checked where something new
   is added (`PlanLimits.allowAdd`), so a user who goes back to FREE keeps
   everything they already have; only adding more is blocked. These counts
   live on the device (the data is local-first), so they are a client-side
   gate; the costly features (AI, cloud OCR) are enforced by the server.
-- **PRO has its own features** (PDF, trend chart, smart alerts, the wider
-  markets, the projects portfolio), so there is a reason to go from BASIC to
-  PRO, not just bigger allowances. **Smart alerts** come with PRO whether
-  billed monthly or yearly. The basic alerts (over/near budget, negative cash flow, goals,
+- **One paid plan, with a clear story**: currencies and parallel rates, sync,
+  DGOTIX AI and cloud scans, full reports (PDF, trends, smart alerts) and no
+  limits — instead of a BASIC/PRO split users had to work out. **Smart
+  alerts** come with PREMIUM whether billed monthly or yearly. The basic alerts (over/near budget, negative cash flow, goals,
   upcoming recurring items, backup reminder) stay free for everyone.
 - Zakat stays free on purpose: gating a religious duty would hurt the brand.
 
@@ -242,11 +246,11 @@ deploy coupon-validate`.
 
 Benchmarks (annual, list): YNAB ~$109/yr, Monarch ~$99.99/yr, Copilot ~$95/yr.
 SmartBudget is priced for Arab users, who compare it with what they already
-pay monthly (music, video, a coffee): BASIC at **$4.99** reads as "a coffee a
-month" and **$39.99/yr** as a clear deal; PRO stays under **$9** so it
-doesn't feel like a Netflix-sized decision. The product sells what others
+pay monthly (music, video): PREMIUM at **$7.99** stays under a streaming
+subscription, and **$49.99/yr** (≈ $4.17 a month, ~48% off) is the price the
+app leads with. The product sells what others
 don't: Arab currencies and parallel rates, zakat, seasons and darets, and the
-bilingual app. A 14-day PRO trial and showing the yearly price per month do
+bilingual app. A 14-day PREMIUM trial and showing the yearly price per month do
 more for conversion than a lower number.
 
 ---

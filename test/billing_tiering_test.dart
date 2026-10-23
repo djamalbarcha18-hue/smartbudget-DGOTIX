@@ -7,14 +7,14 @@ import 'package:smartbudget/features/billing/domain/plan.dart';
 
 void main() {
   group('Plan ordering', () {
-    test('ranks ascend free < basic < pro', () {
-      expect(Plan.free.index < Plan.basic.index, isTrue);
-      expect(Plan.basic.index < Plan.pro.index, isTrue);
+    test('two plans: free < premium', () {
+      expect(Plan.values, <Plan>[Plan.free, Plan.pro]);
+      expect(Plan.free.index < Plan.pro.index, isTrue);
     });
 
     test('atLeast is a rank compare', () {
-      expect(Plan.pro.atLeast(Plan.basic), isTrue);
-      expect(Plan.basic.atLeast(Plan.pro), isFalse);
+      expect(Plan.pro.atLeast(Plan.free), isTrue);
+      expect(Plan.free.atLeast(Plan.pro), isFalse);
       expect(Plan.free.atLeast(Plan.free), isTrue);
     });
 
@@ -23,44 +23,40 @@ void main() {
         expect(PlanX.fromStorage(p.storageId), p);
       }
       expect(PlanX.fromStorage('nope'), Plan.free);
+      // BASIC was merged into Premium.
+      expect(PlanX.fromStorage('basic'), Plan.pro);
       expect(PlanX.fromStorage(null), Plan.free);
     });
 
     test('locked display prices match docs/PRICING.md', () {
       expect(Plan.free.priceUsd(BillingPeriod.monthly), 0);
-      expect(Plan.basic.priceUsd(BillingPeriod.monthly), 4.99);
-      expect(Plan.basic.priceUsd(BillingPeriod.yearly), 39.99);
-      expect(Plan.pro.priceUsd(BillingPeriod.monthly), 8.99);
-      expect(Plan.pro.priceUsd(BillingPeriod.yearly), 69.99);
+      expect(Plan.pro.priceUsd(BillingPeriod.monthly), 7.99);
+      expect(Plan.pro.priceUsd(BillingPeriod.yearly), 49.99);
       expect(Plan.free.priceUsd(BillingPeriod.yearly), 0);
     });
   });
 
   group('FeatureCatalog quotas (locked)', () {
-    test('DGOTIX AI: 5 lifetime / 25 / 100', () {
+    test('DGOTIX AI: 5 lifetime / 100 a month', () {
       expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.free)!.limit, 5);
       expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.free)!.window,
           QuotaWindow.lifetime);
-      expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.basic)!.limit, 25);
       expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.pro)!.limit, 100);
     });
 
-    test('Cloud OCR: 3 lifetime / 15 / 50', () {
+    test('Cloud OCR: 3 / 50 a month', () {
       expect(FeatureCatalog.quotaFor(Feature.cloudOcr, Plan.free)!.limit, 3);
-      expect(FeatureCatalog.quotaFor(Feature.cloudOcr, Plan.basic)!.limit, 15);
       expect(FeatureCatalog.quotaFor(Feature.cloudOcr, Plan.pro)!.limit, 50);
     });
 
     test('boolean gates have no quota and a min tier', () {
       expect(FeatureCatalog.quotaFor(Feature.advancedReports, Plan.pro), isNull);
-      expect(FeatureCatalog.minTierFor(Feature.advancedReports), Plan.basic);
+      expect(FeatureCatalog.minTierFor(Feature.advancedReports), Plan.pro);
       expect(FeatureCatalog.minTierFor(Feature.prioritySupport), Plan.pro);
     });
 
     test('nextTierWithMore points upward until the top', () {
       expect(FeatureCatalog.nextTierWithMore(Feature.dgotixAi, Plan.free),
-          Plan.basic);
-      expect(FeatureCatalog.nextTierWithMore(Feature.dgotixAi, Plan.basic),
           Plan.pro);
       expect(FeatureCatalog.nextTierWithMore(Feature.dgotixAi, Plan.pro),
           isNull);
@@ -68,25 +64,23 @@ void main() {
   });
 
   group('Salary split is a paid feature', () {
-    test('FREE is asked to upgrade to BASIC', () {
+    test('FREE is asked to upgrade to Premium', () {
       final GateDecision d =
           FeatureGate.evaluate(Feature.salarySplit, plan: Plan.free);
       expect(d.allowed, isFalse);
       expect(d.reason, GateReason.needsUpgrade);
-      expect(d.suggestedTier, Plan.basic);
+      expect(d.suggestedTier, Plan.pro);
     });
 
-    test('BASIC and PRO can use it', () {
-      expect(FeatureGate.evaluate(Feature.salarySplit, plan: Plan.basic).allowed,
-          isTrue);
+    test('Premium can use it', () {
       expect(FeatureGate.evaluate(Feature.salarySplit, plan: Plan.pro).allowed,
           isTrue);
     });
   });
 
-  group('Smart alerts are a Pro feature', () {
-    test('FREE and Basic are asked to upgrade to Pro', () {
-      for (final Plan p in <Plan>[Plan.free, Plan.basic]) {
+  group('Smart alerts are a Premium feature', () {
+    test('FREE is asked to upgrade to Premium', () {
+      for (final Plan p in <Plan>[Plan.free]) {
         final GateDecision d =
             FeatureGate.evaluate(Feature.smartAlerts, plan: p);
         expect(d.allowed, isFalse);
@@ -95,7 +89,7 @@ void main() {
       }
     });
 
-    test('Pro gets it, billed monthly or yearly', () {
+    test('Premium gets it, billed monthly or yearly', () {
       for (final BillingPeriod? period in <BillingPeriod?>[
         null,
         BillingPeriod.monthly,
@@ -111,7 +105,7 @@ void main() {
   });
 
   group('Counted features (FREE limits)', () {
-    test('FREE has a few, then is asked to upgrade to Basic', () {
+    test('FREE has a few, then is asked to upgrade to Premium', () {
       const Map<Feature, int> freeLimits = <Feature, int>{
         Feature.wallets: 2,
         Feature.categoryBudgets: 5,
@@ -131,12 +125,12 @@ void main() {
         expect(d.allowed, isFalse, reason: '$f at the limit');
         expect(d.reason, GateReason.quotaReached);
         expect(d.window, QuotaWindow.items);
-        expect(d.suggestedTier, Plan.basic);
+        expect(d.suggestedTier, Plan.pro);
       });
     });
 
-    test('Basic and Pro have no limit', () {
-      for (final Plan p in <Plan>[Plan.basic, Plan.pro]) {
+    test('Premium has no limit', () {
+      for (final Plan p in <Plan>[Plan.pro]) {
         for (final Feature f in <Feature>[
           Feature.wallets,
           Feature.goals,
@@ -147,7 +141,8 @@ void main() {
       }
     });
 
-    test('Basic switches', () {
+    test('every paid feature: FREE is asked to go Premium, Premium has it',
+        () {
       for (final Feature f in <Feature>[
         Feature.multiCurrency,
         Feature.advancedReports,
@@ -155,14 +150,6 @@ void main() {
         Feature.cloudSyncFull,
         Feature.healthDetails,
         Feature.salarySplit,
-      ]) {
-        expect(FeatureGate.evaluate(f, plan: Plan.free).allowed, isFalse);
-        expect(FeatureGate.evaluate(f, plan: Plan.basic).allowed, isTrue);
-      }
-    });
-
-    test('Pro-only features: Basic is asked to go Pro', () {
-      for (final Feature f in <Feature>[
         Feature.reportPdf,
         Feature.reportTrends,
         Feature.smartAlerts,
@@ -170,7 +157,7 @@ void main() {
         Feature.projects,
         Feature.prioritySupport,
       ]) {
-        final GateDecision d = FeatureGate.evaluate(f, plan: Plan.basic);
+        final GateDecision d = FeatureGate.evaluate(f, plan: Plan.free);
         expect(d.allowed, isFalse, reason: '$f');
         expect(d.suggestedTier, Plan.pro, reason: '$f');
         expect(FeatureGate.evaluate(f, plan: Plan.pro).allowed, isTrue);
@@ -184,12 +171,12 @@ void main() {
           FeatureGate.evaluate(Feature.advancedReports, plan: Plan.free);
       expect(d.allowed, isFalse);
       expect(d.reason, GateReason.needsUpgrade);
-      expect(d.suggestedTier, Plan.basic);
+      expect(d.suggestedTier, Plan.pro);
     });
 
     test('boolean gate at/above min tier ⇒ allowed', () {
       expect(
-          FeatureGate.evaluate(Feature.advancedReports, plan: Plan.basic)
+          FeatureGate.evaluate(Feature.advancedReports, plan: Plan.pro)
               .allowed,
           isTrue);
       expect(
@@ -199,10 +186,10 @@ void main() {
 
     test('metered under budget ⇒ allowed with remaining', () {
       final GateDecision d = FeatureGate.evaluate(Feature.dgotixAi,
-          plan: Plan.basic, used: 10);
+          plan: Plan.pro, used: 10);
       expect(d.allowed, isTrue);
-      expect(d.limit, 25);
-      expect(d.remaining, 15);
+      expect(d.limit, 100);
+      expect(d.remaining, 90);
       expect(d.isMetered, isTrue);
     });
 
@@ -212,12 +199,12 @@ void main() {
       expect(d.allowed, isFalse);
       expect(d.reason, GateReason.quotaReached);
       expect(d.remaining, 0);
-      expect(d.suggestedTier, Plan.basic);
+      expect(d.suggestedTier, Plan.pro);
     });
 
     test('usedFraction drives the 80/90/100 nudges', () {
       final GateDecision d = FeatureGate.evaluate(Feature.dgotixAi,
-          plan: Plan.basic, used: 20);
+          plan: Plan.pro, used: 80);
       expect(d.usedFraction, closeTo(0.8, 1e-9));
     });
 
@@ -250,17 +237,17 @@ void main() {
     test('expired trial falls back to the paid plan', () {
       final DateTime now = DateTime(2026, 9, 22);
       final Entitlement e = Entitlement(
-        plan: Plan.basic,
+        plan: Plan.free,
         trialPlan: Plan.pro,
         trialExpiresAt: now.subtract(const Duration(days: 1)),
       );
       expect(e.trialActiveAt(now), isFalse);
-      expect(e.effectivePlanAt(now), Plan.basic);
+      expect(e.effectivePlanAt(now), Plan.free);
     });
 
     test('billing period round-trips; FREE never has a paid period', () {
       const Entitlement yearly =
-          Entitlement(plan: Plan.basic, period: BillingPeriod.yearly);
+          Entitlement(plan: Plan.pro, period: BillingPeriod.yearly);
       expect(Entitlement.fromJson(yearly.toJson()).paidPeriod,
           BillingPeriod.yearly);
       expect(

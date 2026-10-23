@@ -30,7 +30,7 @@ class CouponResult {
   final bool valid;
   final CouponKind kind;
   final double value;
-  final String? targetPlan; // 'basic' | 'pro' | null (any)
+  final String? targetPlan; // 'pro' (Premium) | null (any)
   final String? targetPeriod; // 'monthly' | 'yearly' | null (any)
   final int? trialDays;
   final CouponReason? reason; // set when !valid
