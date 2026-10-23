@@ -8,8 +8,11 @@ linked to a trip. Phase 1 only: no sharing card, no trip summary, no prices.
 | Build | SmartTrip |
 |-------|-----------|
 | Debug (`flutter run`, tests) | shown |
-| Phone test APK (`SmartBudget-phone-apk` artifact of the Android build) | shown (`--dart-define=SMART_TRIP=true`) |
-| Google Play bundle, universal APK, web app | hidden |
+| Any build with `--dart-define=SMART_TRIP=true` | shown |
+| Google Play bundle, APKs (phone test APK included), web app | hidden |
+
+To try it on a phone again, add `--dart-define=SMART_TRIP=true` to the
+phone APK line of `.github/workflows/android.yml`.
 
 The switch is `AppEnv.smartTrip` (`lib/core/env/app_env.dart`). Hidden means:
 no "My trips" in the menu (section "Advanced features"), no `/trips` route,
