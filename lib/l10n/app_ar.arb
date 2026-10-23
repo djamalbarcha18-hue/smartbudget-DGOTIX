@@ -1546,7 +1546,9 @@
   "tripLevelStandard": "متوسط",
   "tripLevelLuxury": "فاخر",
   "tripDaysLabel": "عدد الأيام: {days}",
-  "featCalmTheme": "المظهر الهادئ",
-  "settingsCalmTheme": "مظهر هادئ (تجريبي)",
-  "settingsCalmThemeHint": "ألوان دافئة وهادئة أريح للعين، للوضع الفاتح."
+  "featCalmTheme": "ثيم البيج",
+  "settingsCalmThemeHint": "البيج: ألوان دافئة وهادئة أريح للعين، للوضع الفاتح.",
+  "settingsThemeStyle": "ألوان المظهر",
+  "themeClassic": "كلاسيكي",
+  "themeBeige": "بيج"
 }

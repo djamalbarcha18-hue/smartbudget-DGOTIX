@@ -96,27 +96,10 @@ class SettingsPage extends ConsumerWidget {
                       onChanged: (ThemeMode m) =>
                           ref.read(themeModeProvider.notifier).set(m),
                     ),
-                    if (AppEnv.calmTheme)
-                      SwitchListTile.adaptive(
-                        contentPadding: EdgeInsets.zero,
-                        secondary: const Icon(Icons.spa_outlined),
-                        title: Text(l.settingsCalmTheme),
-                        subtitle: Text(l.settingsCalmThemeHint),
-                        value: ref.watch(calmThemeProvider),
-                        onChanged: (bool on) {
-                          if (on &&
-                              !PlanLimits.allow(context, Feature.calmTheme)) {
-                            return;
-                          }
-                          ref.read(calmThemeProvider.notifier).set(on);
-                          // The calm look is a light theme: show it.
-                          if (on && mode == ThemeMode.dark) {
-                            ref
-                                .read(themeModeProvider.notifier)
-                                .set(ThemeMode.light);
-                          }
-                        },
-                      ),
+                    if (AppEnv.calmTheme) ...<Widget>[
+                      const SizedBox(height: DsSpacing.lg),
+                      _ThemeStylePicker(mode: mode),
+                    ],
                   ],
                 ),
               ),
@@ -304,6 +287,132 @@ class SettingsPage extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The theme colours for the light theme: Classic (free) and Beige (Pro),
+/// each with a small preview. Room for more themes later.
+class _ThemeStylePicker extends ConsumerWidget {
+  const _ThemeStylePicker({required this.mode});
+  final ThemeMode mode;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final bool beige = ref.watch(calmThemeProvider);
+
+    void choose(bool toBeige) {
+      if (toBeige == beige) return;
+      if (toBeige && !PlanLimits.allow(context, Feature.calmTheme)) return;
+      ref.read(calmThemeProvider.notifier).set(toBeige);
+      // The beige theme is a light theme: show it.
+      if (toBeige && mode == ThemeMode.dark) {
+        ref.read(themeModeProvider.notifier).set(ThemeMode.light);
+      }
+    }
+
+    Widget option(bool isBeige, String label, DsColors preview) {
+      final bool selected = beige == isBeige;
+      return Expanded(
+        child: Semantics(
+          button: true,
+          selected: selected,
+          label: label,
+          child: InkWell(
+            borderRadius: DsRadius.brMd,
+            onTap: () => choose(isBeige),
+            child: Container(
+              padding: const EdgeInsets.all(DsSpacing.sm),
+              decoration: BoxDecoration(
+                borderRadius: DsRadius.brMd,
+                border: Border.all(
+                    color: selected ? c.brand : c.border,
+                    width: selected ? 2 : 1),
+              ),
+              child: Column(
+                children: <Widget>[
+                  // A miniature: page, card, accent, income and expense.
+                  Container(
+                    height: 44,
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: preview.bgPage,
+                      borderRadius: DsRadius.brSm,
+                    ),
+                    child: Container(
+                      padding: const EdgeInsetsDirectional.symmetric(
+                          horizontal: 6),
+                      decoration: BoxDecoration(
+                        color: preview.surface,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: preview.border),
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          for (final Color dot in <Color>[
+                            preview.brand,
+                            preview.income,
+                            preview.expense,
+                          ]) ...<Widget>[
+                            Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                  color: dot, shape: BoxShape.circle),
+                            ),
+                            const SizedBox(width: 4),
+                          ],
+                          const Spacer(),
+                          Container(
+                              width: 22, height: 4, color: preview.textMuted),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: DsSpacing.xs),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      if (selected)
+                        Icon(Icons.check_circle_rounded,
+                            size: 16, color: c.brand),
+                      if (selected) const SizedBox(width: 4),
+                      Flexible(child: Text(label, style: t.bodyMedium)),
+                      if (isBeige) ...<Widget>[
+                        const SizedBox(width: 4),
+                        Icon(Icons.workspace_premium_outlined,
+                            size: 16, color: c.warning),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Text(l.settingsThemeStyle,
+            style: t.labelMedium?.copyWith(color: c.textMuted)),
+        const SizedBox(height: DsSpacing.sm),
+        Row(
+          children: <Widget>[
+            option(false, l.themeClassic, DsColors.light),
+            const SizedBox(width: DsSpacing.sm),
+            option(true, l.themeBeige, DsColors.calm),
+          ],
+        ),
+        const SizedBox(height: DsSpacing.xs),
+        Text(l.settingsCalmThemeHint,
+            style: t.bodySmall?.copyWith(color: c.textFaint)),
+      ],
     );
   }
 }

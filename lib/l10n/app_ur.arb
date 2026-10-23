@@ -1346,7 +1346,9 @@
   "tripLevelStandard": "درمیانہ",
   "tripLevelLuxury": "پرتعیش",
   "tripDaysLabel": "دنوں کی تعداد: {days}",
-  "featCalmTheme": "پرسکون تھیم",
-  "settingsCalmTheme": "پرسکون انداز (تجرباتی)",
-  "settingsCalmThemeHint": "ہلکی تھیم کے لیے گرم اور نرم رنگ جو آنکھوں کو آرام دیں۔"
+  "featCalmTheme": "بیج تھیم",
+  "settingsCalmThemeHint": "بیج: ہلکی تھیم کے لیے گرم اور نرم رنگ جو آنکھوں کو آرام دیں۔",
+  "settingsThemeStyle": "تھیم کے رنگ",
+  "themeClassic": "کلاسیکی",
+  "themeBeige": "بیج"
 }

@@ -1346,7 +1346,9 @@
   "tripLevelStandard": "Menengah",
   "tripLevelLuxury": "Mewah",
   "tripDaysLabel": "Jumlah hari: {days}",
-  "featCalmTheme": "Tema tenang",
-  "settingsCalmTheme": "Tampilan tenang (uji coba)",
-  "settingsCalmThemeHint": "Warna hangat dan lembut yang lebih nyaman di mata, untuk tema terang."
+  "featCalmTheme": "Tema krem",
+  "settingsCalmThemeHint": "Krem: warna hangat dan lembut yang lebih nyaman di mata, untuk tema terang.",
+  "settingsThemeStyle": "Warna tema",
+  "themeClassic": "Klasik",
+  "themeBeige": "Krem"
 }

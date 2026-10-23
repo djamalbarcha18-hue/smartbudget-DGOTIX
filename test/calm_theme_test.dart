@@ -105,25 +105,29 @@ void main() {
       return c;
     }
 
-    testWidgets('Pro: turning it on also shows the light theme',
+    testWidgets('Pro: beige from the theme picker shows the light theme',
         (WidgetTester tester) async {
       expect(AppEnv.calmTheme, isTrue); // debug build: shown
       final ProviderContainer c = await pump(tester, Plan.pro,
           prefs: <String, Object>{'flutter.sb_theme_mode': 'dark'});
       expect(c.read(themeModeProvider), ThemeMode.dark);
-      await tester.tap(find.text('مظهر هادئ (تجريبي)'));
+      await tester.tap(find.text('بيج'));
       await tester.pumpAndSettle();
       expect(c.read(calmThemeProvider), isTrue);
       expect(c.read(themeModeProvider), ThemeMode.light);
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       expect(prefs.getBool('sb_theme_calm'), isTrue);
+      // Back to Classic.
+      await tester.tap(find.text('كلاسيكي'));
+      await tester.pumpAndSettle();
+      expect(c.read(calmThemeProvider), isFalse);
       await close(tester, c);
     });
 
     testWidgets('free plan: the upgrade sheet, nothing changes',
         (WidgetTester tester) async {
       final ProviderContainer c = await pump(tester, Plan.free);
-      await tester.tap(find.text('مظهر هادئ (تجريبي)'));
+      await tester.tap(find.text('بيج'));
       await tester.pumpAndSettle();
       expect(find.byType(UpgradeSheet), findsOneWidget);
       expect(c.read(calmThemeProvider), isFalse);

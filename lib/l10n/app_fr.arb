@@ -1346,7 +1346,9 @@
   "tripLevelStandard": "Intermédiaire",
   "tripLevelLuxury": "Luxe",
   "tripDaysLabel": "Jours : {days}",
-  "featCalmTheme": "Thème apaisant",
-  "settingsCalmTheme": "Aspect apaisant (expérimental)",
-  "settingsCalmThemeHint": "Des couleurs chaudes et douces, plus reposantes, pour le thème clair."
+  "featCalmTheme": "Thème beige",
+  "settingsCalmThemeHint": "Beige : des couleurs chaudes et douces, plus reposantes, pour le thème clair.",
+  "settingsThemeStyle": "Couleurs du thème",
+  "themeClassic": "Classique",
+  "themeBeige": "Beige"
 }

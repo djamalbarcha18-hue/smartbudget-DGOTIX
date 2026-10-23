@@ -1346,7 +1346,9 @@
   "tripLevelStandard": "Intermedio",
   "tripLevelLuxury": "Lujo",
   "tripDaysLabel": "Días: {days}",
-  "featCalmTheme": "Tema sereno",
-  "settingsCalmTheme": "Aspecto sereno (experimental)",
-  "settingsCalmThemeHint": "Colores cálidos y suaves, más descansados para la vista, en el tema claro."
+  "featCalmTheme": "Tema beige",
+  "settingsCalmThemeHint": "Beige: colores cálidos y suaves, más descansados para la vista, en el tema claro.",
+  "settingsThemeStyle": "Colores del tema",
+  "themeClassic": "Clásico",
+  "themeBeige": "Beige"
 }

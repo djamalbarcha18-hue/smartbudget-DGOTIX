@@ -1346,7 +1346,9 @@
   "tripLevelStandard": "Sederhana",
   "tripLevelLuxury": "Mewah",
   "tripDaysLabel": "Bilangan hari: {days}",
-  "featCalmTheme": "Tema tenang",
-  "settingsCalmTheme": "Rupa tenang (percubaan)",
-  "settingsCalmThemeHint": "Warna hangat dan lembut yang lebih selesa di mata, untuk tema cerah."
+  "featCalmTheme": "Tema kuning air",
+  "settingsCalmThemeHint": "Kuning air: warna hangat dan lembut yang lebih selesa di mata, untuk tema cerah.",
+  "settingsThemeStyle": "Warna tema",
+  "themeClassic": "Klasik",
+  "themeBeige": "Kuning air"
 }
