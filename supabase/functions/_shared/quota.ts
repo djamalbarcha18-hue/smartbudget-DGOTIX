@@ -49,7 +49,7 @@ export const PLAN_PRICE_USD: Record<
   { monthly: number; yearly: number | null }
 > = {
   free: { monthly: 0, yearly: null },
-  // BASIC is no longer sold (merged into PREMIUM, stored as "pro").
+  // BASIC is no longer sold (merged into PRO).
   basic: { monthly: 7.99, yearly: 49.99 },
   pro: { monthly: 7.99, yearly: 49.99 },
 };

@@ -6,7 +6,7 @@ import 'package:smartbudget/features/billing/application/entitlement_controller.
 import 'package:smartbudget/features/billing/domain/plan.dart';
 
 /// The brand lockup with the signed-in user's plan as its badge: FREE, or
-/// PREMIUM standing out.
+/// PRO standing out.
 class PlanBrandLockup extends ConsumerWidget {
   const PlanBrandLockup({super.key, this.logoHeight = 40});
 

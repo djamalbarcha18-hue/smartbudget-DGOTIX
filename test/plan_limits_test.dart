@@ -82,7 +82,7 @@ void main() {
       (WidgetTester tester) async {
     await tester.pumpWidget(_host(
         Plan.free, const LockedFeatureCard(feature: Feature.healthDetails)));
-    expect(find.text('Financial health details and tips is included in Premium.'),
+    expect(find.text('Financial health details and tips is included in Pro.'),
         findsOneWidget);
   });
 
@@ -112,7 +112,7 @@ void main() {
       }
     });
 
-    test('Premium sees what was chosen', () {
+    test('Pro sees what was chosen', () {
       final ProviderContainer c = container(Plan.pro);
       addTearDown(c.dispose);
       c.read(selectedReportPeriodProvider.notifier).state =

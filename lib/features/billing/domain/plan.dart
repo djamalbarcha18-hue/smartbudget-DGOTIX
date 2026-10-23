@@ -10,9 +10,8 @@ library;
 /// Ordered from least to most capable. Rank is the `index`, so higher = more.
 /// Insert new tiers in rank order; never reorder existing values.
 ///
-/// Two plans: FREE and PREMIUM. Premium keeps the storage id `pro` (the
-/// server, the database and the billing price map all say `pro`); the old
-/// BASIC plan was merged into it, so a stored `basic` reads as Premium.
+/// Two plans: FREE and PRO. The old BASIC plan was merged into PRO, so a
+/// stored `basic` reads as PRO.
 enum Plan {
   free,
   pro,
@@ -29,7 +28,7 @@ extension PlanX on Plan {
     for (final Plan p in Plan.values) {
       if (p.name == id) return p;
     }
-    if (id == 'basic') return Plan.pro; // merged into Premium
+    if (id == 'basic') return Plan.pro; // merged into PRO
     return Plan.free; // safe default: unknown/unset ⇒ free tier
   }
 
@@ -41,7 +40,7 @@ extension PlanX on Plan {
   /// Non-localized label for diagnostics. UI uses l10n, not this.
   String get label => switch (this) {
         Plan.free => 'FREE',
-        Plan.pro => 'PREMIUM',
+        Plan.pro => 'PRO',
       };
 
   /// Display price in USD for a period, or null when the plan has no such

@@ -7,7 +7,7 @@ import 'package:smartbudget/features/billing/domain/plan.dart';
 
 void main() {
   group('Plan ordering', () {
-    test('two plans: free < premium', () {
+    test('two plans: free < pro', () {
       expect(Plan.values, <Plan>[Plan.free, Plan.pro]);
       expect(Plan.free.index < Plan.pro.index, isTrue);
     });
@@ -23,7 +23,7 @@ void main() {
         expect(PlanX.fromStorage(p.storageId), p);
       }
       expect(PlanX.fromStorage('nope'), Plan.free);
-      // BASIC was merged into Premium.
+      // BASIC was merged into PRO.
       expect(PlanX.fromStorage('basic'), Plan.pro);
       expect(PlanX.fromStorage(null), Plan.free);
     });
@@ -64,7 +64,7 @@ void main() {
   });
 
   group('Salary split is a paid feature', () {
-    test('FREE is asked to upgrade to Premium', () {
+    test('FREE is asked to upgrade to Pro', () {
       final GateDecision d =
           FeatureGate.evaluate(Feature.salarySplit, plan: Plan.free);
       expect(d.allowed, isFalse);
@@ -72,14 +72,14 @@ void main() {
       expect(d.suggestedTier, Plan.pro);
     });
 
-    test('Premium can use it', () {
+    test('Pro can use it', () {
       expect(FeatureGate.evaluate(Feature.salarySplit, plan: Plan.pro).allowed,
           isTrue);
     });
   });
 
-  group('Smart alerts are a Premium feature', () {
-    test('FREE is asked to upgrade to Premium', () {
+  group('Smart alerts are a Pro feature', () {
+    test('FREE is asked to upgrade to Pro', () {
       for (final Plan p in <Plan>[Plan.free]) {
         final GateDecision d =
             FeatureGate.evaluate(Feature.smartAlerts, plan: p);
@@ -89,7 +89,7 @@ void main() {
       }
     });
 
-    test('Premium gets it, billed monthly or yearly', () {
+    test('Pro gets it, billed monthly or yearly', () {
       for (final BillingPeriod? period in <BillingPeriod?>[
         null,
         BillingPeriod.monthly,
@@ -105,7 +105,7 @@ void main() {
   });
 
   group('Counted features (FREE limits)', () {
-    test('FREE has a few, then is asked to upgrade to Premium', () {
+    test('FREE has a few, then is asked to upgrade to Pro', () {
       const Map<Feature, int> freeLimits = <Feature, int>{
         Feature.wallets: 2,
         Feature.categoryBudgets: 5,
@@ -129,7 +129,7 @@ void main() {
       });
     });
 
-    test('Premium has no limit', () {
+    test('Pro has no limit', () {
       for (final Plan p in <Plan>[Plan.pro]) {
         for (final Feature f in <Feature>[
           Feature.wallets,
@@ -141,7 +141,7 @@ void main() {
       }
     });
 
-    test('every paid feature: FREE is asked to go Premium, Premium has it',
+    test('every paid feature: FREE is asked to go Pro, Pro has it',
         () {
       for (final Feature f in <Feature>[
         Feature.multiCurrency,

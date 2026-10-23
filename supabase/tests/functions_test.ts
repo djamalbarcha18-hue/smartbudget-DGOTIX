@@ -95,7 +95,7 @@ r = await checkout("c5");
 check("Checkout: allowed with no subscription", r.status === 200 && !!r.body.url, JSON.stringify(r));
 const asked = whopCheckouts[whopCheckouts.length - 1];
 const oldBasic = await handlers["create-checkout"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-c6" }, body: JSON.stringify({ plan: "basic", period: "monthly" }) }));
-check("Checkout: the retired Basic plan opens Premium", oldBasic.status === 200 && whopCheckouts[whopCheckouts.length - 1]?.metadata?.plan === "pro", String(oldBasic.status) + JSON.stringify(whopCheckouts[whopCheckouts.length - 1]));
+check("Checkout: the retired Basic plan opens Pro", oldBasic.status === 200 && whopCheckouts[whopCheckouts.length - 1]?.metadata?.plan === "pro", String(oldBasic.status) + JSON.stringify(whopCheckouts[whopCheckouts.length - 1]));
 check(
   "Checkout: Whop's hosted checkout for our plan, carrying the user id",
   String(r.body.url).startsWith("https://whop.com/checkout/plan_pro") && asked?.plan_id === "plan_pro" && asked?.metadata?.user_id === "c5" && asked?.metadata?.plan === "pro",

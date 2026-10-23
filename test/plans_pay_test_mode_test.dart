@@ -48,14 +48,14 @@ void main() {
     expect(find.textContaining('Upgrade'), findsNothing);
   });
 
-  testWidgets('payment test mode: the banner and the Premium upgrade are offered',
+  testWidgets('payment test mode: the banner and the Pro upgrade are offered',
       (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(1200, 2400));
     await tester.pumpWidget(_host(payTest: true));
     await tester.pumpAndSettle();
     expect(find.text('Payment test mode'), findsOneWidget);
     expect(find.textContaining('Upgrade'), findsOneWidget);
-    expect(find.text('Premium'), findsWidgets);
+    expect(find.text('Pro'), findsWidgets);
     expect(find.text('Basic'), findsNothing);
   });
 }

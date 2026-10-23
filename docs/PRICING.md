@@ -8,11 +8,10 @@
 
 Status: **design locked** · Prices in **USD** · Last reviewed **2026-10**.
 
-> **Two plans: FREE and PREMIUM** (since 2026-10; BASIC was merged into
-> PREMIUM, which keeps the id `pro` in code, the database and the server).
+> **Two plans: FREE and PRO** (since 2026-10; BASIC was merged into PRO).
 >
 > **Beta: everything is unlocked.** While SmartBudget is in beta every user
-> gets PREMIUM limits plus the yearly-only extras, and upgrade prompts, checkout
+> gets PRO limits plus the yearly-only extras, and upgrade prompts, checkout
 > buttons and the coupon box are hidden. One switch on each side turns it off
 > when paid plans go live:
 > - app: build with `--dart-define=BETA_ALL_ACCESS=false` (`AppEnv.betaAllAccess`);
@@ -23,7 +22,7 @@ Status: **design locked** · Prices in **USD** · Last reviewed **2026-10**.
 
 ## 1. Plans at a glance
 
-| | **FREE** | **PREMIUM** |
+| | **FREE** | **PRO** |
 |---|---|---|
 | Monthly | **$0** | **$7.99 / mo** |
 | Yearly | — | **$49.99 / yr** (≈ $4.17/mo) |
@@ -33,13 +32,13 @@ Status: **design locked** · Prices in **USD** · Last reviewed **2026-10**.
 **Regional prices** (planned — **not set up yet** with Whop, whose support
 for per-country prices on one plan is unconfirmed; until then every buyer pays
 the list price): Arab countries outside the Gulf (Egypt, the
-Maghreb, the Levant, Iraq, Sudan, …) would pay PREMIUM **$4.49 / $29.99**
+Maghreb, the Levant, Iraq, Sudan, …) would pay PRO **$4.49 / $29.99**
 (at $29.99 a fully used worst-case month roughly breaks even; typical use
 stays well in profit). The app shows the USD list price; the checkout shows the
 buyer's own price and currency.
 
 FREE is a **permanent free tier** (not a time-boxed trial). A new account MAY
-receive a short PREMIUM trial window; that is a marketing lever, not a plan — see
+receive a short PRO trial window; that is a marketing lever, not a plan — see
 §7 Coupons & trials.
 
 All prices are **placeholders in code** until the billing provider is wired; no
@@ -52,12 +51,12 @@ answer ≈ $0.001 (Flash-Lite), at worst ≈ $0.01; a cloud scan ≈ $0.006, at
 worst ≈ $0.03 per part. A subscriber who spends the whole allowance every month
 at worst-case cost:
 
-| PREMIUM | net / month (yearly, after Whop) | typical cost | worst case |
+| PRO | net / month (yearly, after Whop) | typical cost | worst case |
 |---|---|---|---|
 | list price $49.99 | ≈ $3.95 | ≈ $0.50 | ≈ $2.40 |
 | regional $29.99 (planned) | ≈ $2.36 | ≈ $0.50 | ≈ $2.40 |
 
-So Premium stays profitable even at the worst case at the list price. Whop
+So Pro stays profitable even at the worst case at the list price. Whop
 takes about 2.7% + $0.30 per card payment, plus 2% with its tax collection
 on; the fixed part per payment is why yearly billing is pushed.
 
@@ -68,7 +67,7 @@ on; the fixed part per payment is why yearly billing is pushed.
 Quota is enforced **server-side** in the `ai-gateway` Edge Function. The number
 below is the count of **successful** assistant answers per period.
 
-| | FREE | PREMIUM |
+| | FREE | PRO |
 |---|---|---|
 | DGOTIX AI answers | **5 total** (one-time) | **100 / month** |
 | Reset | never (lifetime intro) | monthly (calendar) |
@@ -93,7 +92,7 @@ runs locally, costs us nothing, and must never be gated.
 Cloud OCR (`GeminiOnlineEngine` via the `receipt-scan` function) has real cost
 and is metered **server-side**:
 
-| | FREE | PREMIUM |
+| | FREE | PRO |
 |---|---|---|
 | Cloud OCR scans | **3 / month** | **50 / month** |
 | On-device OCR | ∞ | ∞ |
@@ -160,7 +159,7 @@ Sign-up is free, so the limits also depend on the account, not on IP addresses
 
 The catalog is the source of truth; this is the intended shape:
 
-| Capability | FREE | PREMIUM |
+| Capability | FREE | PRO |
 |---|---|---|
 | Transactions, categories, dashboard, quick entry | ✅ unlimited | ✅ |
 | Zakat calculator, app lock, challenges and badges | ✅ | ✅ |
@@ -192,7 +191,7 @@ The catalog is the source of truth; this is the intended shape:
 - **One paid plan, with a clear story**: currencies and parallel rates, sync,
   DGOTIX AI and cloud scans, full reports (PDF, trends, smart alerts) and no
   limits — instead of a BASIC/PRO split users had to work out. **Smart
-  alerts** come with PREMIUM whether billed monthly or yearly. The basic alerts (over/near budget, negative cash flow, goals,
+  alerts** come with PRO whether billed monthly or yearly. The basic alerts (over/near budget, negative cash flow, goals,
   upcoming recurring items, backup reminder) stay free for everyone.
 - Zakat stays free on purpose: gating a religious duty would hurt the brand.
 
@@ -246,11 +245,11 @@ deploy coupon-validate`.
 
 Benchmarks (annual, list): YNAB ~$109/yr, Monarch ~$99.99/yr, Copilot ~$95/yr.
 SmartBudget is priced for Arab users, who compare it with what they already
-pay monthly (music, video): PREMIUM at **$7.99** stays under a streaming
+pay monthly (music, video): PRO at **$7.99** stays under a streaming
 subscription, and **$49.99/yr** (≈ $4.17 a month, ~48% off) is the price the
 app leads with. The product sells what others
 don't: Arab currencies and parallel rates, zakat, seasons and darets, and the
-bilingual app. A 14-day PREMIUM trial and showing the yearly price per month do
+bilingual app. A 14-day PRO trial and showing the yearly price per month do
 more for conversion than a lower number.
 
 ---

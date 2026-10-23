@@ -23,7 +23,7 @@ import 'package:smartbudget/features/billing/domain/payment_links.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// Plans & upgrade screen — a transparent side-by-side of FREE / PREMIUM.
+/// Plans & upgrade screen — a transparent side-by-side of FREE / PRO.
 ///
 /// Prices and quotas come from the tiering source of truth ([Plan],
 /// [FeatureCatalog]); nothing here is hardcoded twice. Checkout is not wired

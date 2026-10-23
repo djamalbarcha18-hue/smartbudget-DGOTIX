@@ -30,7 +30,7 @@ as in the official `@whop/sdk`.
 ## One-time setup (owner)
 
 1. **Create the product & plans** in the Whop dashboard: one product
-   (SmartBudget Premium) with two **renewing** plans matching
+   (SmartBudget Pro) with two **renewing** plans matching
    `docs/PRICING.md` — $7.99 / month and $49.99 / year. Copy each plan id
    (`plan_...`).
 
@@ -41,7 +41,6 @@ as in the official `@whop/sdk`.
    supabase db execute -f supabase/subscription_lifecycle.sql
    ```
    ```sql
-   -- Premium is stored as 'pro'.
    insert into billing_prices (price_id, provider, plan, period) values
      ('plan_xxx_monthly', 'whop', 'pro', 'monthly'),
      ('plan_xxx_yearly',  'whop', 'pro', 'yearly')
@@ -119,8 +118,8 @@ instead of) Whop:
 
    ```sql
    insert into billing_prices (price_id, provider, plan, period) values
-     ('P-PREMIUM-MONTHLY', 'paypal', 'pro', 'monthly'),
-     ('P-PREMIUM-YEARLY',  'paypal', 'pro', 'yearly')
+     ('P-PRO-MONTHLY', 'paypal', 'pro', 'monthly'),
+     ('P-PRO-YEARLY',  'paypal', 'pro', 'yearly')
    on conflict (price_id) do update set plan = excluded.plan, period = excluded.period;
    ```
 

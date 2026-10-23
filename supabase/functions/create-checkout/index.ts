@@ -4,7 +4,7 @@
 // frontend just opens that URL; entitlement is granted later by the webhook.
 // Provider API keys live ONLY here (secrets), never in the frontend.
 //
-//   POST { plan: "pro" (Premium), period: "monthly"|"yearly",
+//   POST { plan: "pro", period: "monthly"|"yearly",
 //          provider?: "whop"|"paypal" } -> { url }
 //   | { error: "not_configured" | "unknown_price" | "already_subscribed" | ... }
 //
@@ -36,7 +36,7 @@ Deno.serve(async (req: Request) => {
   try {
     const userId = await requireUserId(req);
     const body = await readJsonBody(req, MAX_SMALL_BODY_BYTES);
-    // One paid plan, Premium ("pro"); BASIC was merged into it.
+    // One paid plan, PRO; BASIC was merged into it.
     const asked: Plan = normalizePlan(body?.plan);
     const plan: Plan = asked === "basic" ? "pro" : asked;
     const period = body?.period === "yearly" ? "yearly" : "monthly";
