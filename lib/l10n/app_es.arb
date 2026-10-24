@@ -1405,5 +1405,6 @@
   "offerFor": "para tu viaje a {place}",
   "offerProPick": "Sugerencia Pro de nuestros socios",
   "proSuggestionsTitle": "Sugerencias de reserva de socios",
-  "proSuggestionsHint": "Hoteles, aerolíneas y eSIM elegidos para tus viajes —algunos de tu país— con ventajas Pro. Sin anuncios."
+  "proSuggestionsHint": "Hoteles, aerolíneas y eSIM elegidos para tus viajes —algunos de tu país— con ventajas Pro. Sin anuncios.",
+  "proSuggestionsShow": "Mostrarlas en mis viajes"
 }

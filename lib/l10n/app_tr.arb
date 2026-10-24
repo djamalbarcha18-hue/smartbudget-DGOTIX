@@ -1405,5 +1405,6 @@
   "offerFor": "{place} seyahatin için",
   "offerProPick": "Ortaklarımızdan Pro önerisi",
   "proSuggestionsTitle": "Ortaklardan rezervasyon önerileri",
-  "proSuggestionsHint": "Seyahatlerin için seçilmiş oteller, havayolları ve eSIM’ler — bazıları kendi ülkenden — Pro ayrıcalıklarıyla. Reklamsız."
+  "proSuggestionsHint": "Seyahatlerin için seçilmiş oteller, havayolları ve eSIM’ler — bazıları kendi ülkenden — Pro ayrıcalıklarıyla. Reklamsız.",
+  "proSuggestionsShow": "Seyahatlerimde göster"
 }

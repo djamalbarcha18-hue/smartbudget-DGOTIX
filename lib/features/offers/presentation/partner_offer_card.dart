@@ -176,7 +176,7 @@ class ProSuggestionsSetting extends ConsumerWidget {
       contentPadding: EdgeInsets.zero,
       value: ref.watch(proSuggestionsProvider),
       onChanged: (bool v) => ref.read(proSuggestionsProvider.notifier).set(v),
-      title: Text(l.proSuggestionsTitle, style: t.bodyMedium),
+      title: Text(l.proSuggestionsShow, style: t.bodyMedium),
       subtitle: Text(l.proSuggestionsHint,
           style: t.bodySmall?.copyWith(color: c.textFaint)),
     );
