@@ -1277,7 +1277,7 @@
   "tripPlanned": "Rencana",
   "tripActual": "Aktual",
   "tripByCategory": "Per kategori",
-  "tripTopCategory": "Kategori terbesar",
+  "tripTopCategory": "Pengeluaran terbesar",
   "tripNoExpensesYet": "Belum ada pengeluaran yang terhubung ke perjalanan ini.",
   "tripShare": "Bagikan",
   "tripDailyPctOfBudget": "{pct}% anggaran per hari",

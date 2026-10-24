@@ -1477,7 +1477,7 @@
   "tripPlanned": "المخطّط",
   "tripActual": "الفعلي",
   "tripByCategory": "حسب الفئة",
-  "tripTopCategory": "أغلى فئة",
+  "tripTopCategory": "أكبر بند",
   "tripNoExpensesYet": "لا توجد مصاريف مرتبطة بهذه الرحلة بعد.",
   "tripShare": "شارك",
   "tripDailyPctOfBudget": "{pct}% من الميزانية يوميًا",

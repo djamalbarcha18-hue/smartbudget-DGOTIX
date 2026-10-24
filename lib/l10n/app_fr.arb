@@ -1277,7 +1277,7 @@
   "tripPlanned": "Prévu",
   "tripActual": "Réel",
   "tripByCategory": "Par catégorie",
-  "tripTopCategory": "Plus grosse catégorie",
+  "tripTopCategory": "Plus grosse dépense",
   "tripNoExpensesYet": "Aucune dépense n’est encore liée à ce voyage.",
   "tripShare": "Partager",
   "tripDailyPctOfBudget": "{pct} % du budget par jour",

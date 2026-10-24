@@ -1503,7 +1503,7 @@
   "tripPlanned": "Planned",
   "tripActual": "Actual",
   "tripByCategory": "By category",
-  "tripTopCategory": "Biggest category",
+  "tripTopCategory": "Biggest spend",
   "tripNoExpensesYet": "No expenses are linked to this trip yet.",
   "tripShare": "Share",
   "tripDailyPctOfBudget": "{pct}% of the budget a day",

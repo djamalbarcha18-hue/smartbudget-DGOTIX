@@ -1277,7 +1277,7 @@
   "tripPlanned": "Planlanan",
   "tripActual": "Gerçekleşen",
   "tripByCategory": "Kategoriye göre",
-  "tripTopCategory": "En büyük kategori",
+  "tripTopCategory": "En büyük harcama",
   "tripNoExpensesYet": "Bu seyahate henüz bağlı harcama yok.",
   "tripShare": "Paylaş",
   "tripDailyPctOfBudget": "Günde bütçenin %{pct} kadarı",
