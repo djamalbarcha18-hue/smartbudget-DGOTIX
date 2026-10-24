@@ -162,7 +162,7 @@
   "navIncome": "الدخل",
   "navExpenses": "المصروفات",
   "navMonthlyBudget": "الميزانية الشهرية",
-  "navGoals": "الأهداف والادخار",
+  "navGoals": "الأهداف المالية",
   "navSeasons": "ميزانيات المواسم",
   "navDaret": "الجمعية",
   "daretSubtitle": "تابع مساهماتك في الجمعية ودورك في القبض: من يقبض ومتى، ماذا دفعت، وما تأخّر.",
@@ -445,7 +445,7 @@
   "contributeTo": "ادخار للهدف «{name}»",
   "@contributeTo": { "placeholders": { "name": { "type": "String" } } },
   "emptyGoalsTitle": "لا توجد أهداف بعد",
-  "emptyGoalsMessage": "حدّد أول هدف ادخار لتبدأ بمتابعة تقدّمك.",
+  "emptyGoalsMessage": "حدّد هدفك المالي الأول وتابع تقدّمك نحوه — مثل شراء سيارة، أو بناء منزل، أو افتتاح مشروع.",
   "recoAchieved": "🎉 تم تحقيق الهدف بالكامل.",
   "recoExpired": "انتهى الموعد قبل بلوغ الهدف — راجع الخطة.",
   "recoRelaxed": "خصّص {amount} شهرياً — لديك متّسع من الوقت.",
@@ -1580,5 +1580,6 @@
   "tripTopSpentOn": "صرفتُ أكثر على",
   "navFoldTools": "أدوات التخطيط",
   "navFoldOccasions": "مناسبات وخطط خاصة",
-  "navHelpShort": "المساعدة"
+  "navHelpShort": "المساعدة",
+  "fieldGoalNameHint": "مثال: شراء سيارة"
 }

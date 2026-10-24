@@ -129,6 +129,7 @@ class _GoalEditorSheetState extends ConsumerState<GoalEditorSheet> {
                   const SizedBox(height: DsSpacing.lg),
                   DsTextField(
                     label: l.fieldGoalName,
+                    hintText: l.fieldGoalNameHint,
                     controller: _name,
                     prefixIcon: Icons.flag_outlined,
                     validator: (String? v) =>

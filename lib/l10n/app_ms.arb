@@ -135,7 +135,7 @@
   "navIncome": "Pendapatan",
   "navExpenses": "Perbelanjaan",
   "navMonthlyBudget": "Bajet bulanan",
-  "navGoals": "Matlamat & simpanan",
+  "navGoals": "Matlamat kewangan",
   "navSeasons": "Bajet bermusim",
   "navDaret": "Kutu (kumpulan simpanan)",
   "daretSubtitle": "Jejak kumpulan simpanan anda: siapa dapat bila, apa yang sudah dibayar, dan apa yang lewat.",
@@ -381,7 +381,7 @@
   "goalContribute": "Tambah caruman",
   "contributeTo": "Caruman ke “{name}”",
   "emptyGoalsTitle": "Belum ada matlamat",
-  "emptyGoalsMessage": "Tetapkan matlamat simpanan pertama anda untuk mula menjejak kemajuan.",
+  "emptyGoalsMessage": "Tetapkan matlamat kewangan pertama anda dan jejak kemajuannya — contohnya membeli kereta, membina rumah atau membuka perniagaan.",
   "recoAchieved": "🎉 Matlamat tercapai sepenuhnya.",
   "recoExpired": "Tarikh akhir telah berlalu sebelum matlamat tercapai — semak semula rancangan.",
   "recoRelaxed": "Asingkan {amount} sebulan — anda ada banyak masa.",
@@ -1380,5 +1380,6 @@
   "tripTopSpentOn": "Paling banyak untuk",
   "navFoldTools": "Alat perancangan",
   "navFoldOccasions": "Majlis & rancangan khas",
-  "navHelpShort": "Bantuan"
+  "navHelpShort": "Bantuan",
+  "fieldGoalNameHint": "cth. Membeli kereta"
 }

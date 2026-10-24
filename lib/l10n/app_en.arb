@@ -162,7 +162,7 @@
   "navIncome": "Income",
   "navExpenses": "Expenses",
   "navMonthlyBudget": "Monthly Budget",
-  "navGoals": "Goals & Savings",
+  "navGoals": "Financial goals",
   "navSeasons": "Seasonal budgets",
   "navDaret": "Savings circle",
   "daretSubtitle": "Track your savings circle: who collects when, what you've paid, and what's late.",
@@ -446,7 +446,7 @@
   "contributeTo": "Contribute to “{name}”",
   "@contributeTo": { "placeholders": { "name": { "type": "String" } } },
   "emptyGoalsTitle": "No goals yet",
-  "emptyGoalsMessage": "Set your first savings goal to start tracking progress.",
+  "emptyGoalsMessage": "Set your first financial goal and track your progress — like buying a car, building a house or opening a business.",
   "recoAchieved": "🎉 Goal fully achieved.",
   "recoExpired": "The deadline passed before reaching the goal — review the plan.",
   "recoRelaxed": "Set aside {amount} monthly — you have plenty of time.",
@@ -1625,5 +1625,6 @@
   "tripTopSpentOn": "Spent most on",
   "navFoldTools": "Planning tools",
   "navFoldOccasions": "Occasions & special plans",
-  "navHelpShort": "Help"
+  "navHelpShort": "Help",
+  "fieldGoalNameHint": "e.g. Buy a car"
 }

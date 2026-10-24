@@ -135,7 +135,7 @@
   "navIncome": "Pemasukan",
   "navExpenses": "Pengeluaran",
   "navMonthlyBudget": "Anggaran Bulanan",
-  "navGoals": "Target & Tabungan",
+  "navGoals": "Tujuan keuangan",
   "navSeasons": "Anggaran musiman",
   "navDaret": "Arisan",
   "daretSubtitle": "Pantau arisan Anda: siapa yang dapat kapan, apa yang sudah Anda bayar, dan apa yang terlambat.",
@@ -381,7 +381,7 @@
   "goalContribute": "Tambah setoran",
   "contributeTo": "Setor ke “{name}”",
   "emptyGoalsTitle": "Belum ada target",
-  "emptyGoalsMessage": "Buat target tabungan pertama Anda untuk mulai memantau kemajuan.",
+  "emptyGoalsMessage": "Buat tujuan keuangan pertama Anda dan pantau kemajuannya — misalnya membeli mobil, membangun rumah, atau membuka usaha.",
   "recoAchieved": "🎉 Target tercapai sepenuhnya.",
   "recoExpired": "Tenggat lewat sebelum target tercapai — tinjau rencananya.",
   "recoRelaxed": "Sisihkan {amount} per bulan — waktu Anda masih banyak.",
@@ -1380,5 +1380,6 @@
   "tripTopSpentOn": "Paling banyak untuk",
   "navFoldTools": "Alat perencanaan",
   "navFoldOccasions": "Momen & rencana khusus",
-  "navHelpShort": "Bantuan"
+  "navHelpShort": "Bantuan",
+  "fieldGoalNameHint": "mis. Membeli mobil"
 }

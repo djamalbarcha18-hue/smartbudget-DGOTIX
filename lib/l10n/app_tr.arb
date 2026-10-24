@@ -135,7 +135,7 @@
   "navIncome": "Gelir",
   "navExpenses": "Giderler",
   "navMonthlyBudget": "Aylık bütçe",
-  "navGoals": "Hedefler ve birikim",
+  "navGoals": "Finansal hedefler",
   "navSeasons": "Sezonluk bütçeler",
   "navDaret": "Gün (birikim grubu)",
   "daretSubtitle": "Birikim grubunu takip et: kim ne zaman alıyor, ne ödedin, ne gecikti.",
@@ -381,7 +381,7 @@
   "goalContribute": "Katkı ekle",
   "contributeTo": "“{name}” hedefine katkı",
   "emptyGoalsTitle": "Henüz hedef yok",
-  "emptyGoalsMessage": "İlerlemeyi takip etmeye başlamak için ilk birikim hedefini belirle.",
+  "emptyGoalsMessage": "İlk finansal hedefini belirle ve ilerlemeni takip et — araba almak, ev yapmak ya da iş kurmak gibi.",
   "recoAchieved": "🎉 Hedefe tamamen ulaşıldı.",
   "recoExpired": "Hedefe ulaşmadan son tarih geçti — planı gözden geçir.",
   "recoRelaxed": "Ayda {amount} ayır — bolca zamanın var.",
@@ -1380,5 +1380,6 @@
   "tripTopSpentOn": "En çok harcadığım",
   "navFoldTools": "Planlama araçları",
   "navFoldOccasions": "Özel günler ve planlar",
-  "navHelpShort": "Yardım"
+  "navHelpShort": "Yardım",
+  "fieldGoalNameHint": "ör. Araba almak"
 }

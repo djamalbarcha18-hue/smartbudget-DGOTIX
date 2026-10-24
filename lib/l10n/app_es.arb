@@ -135,7 +135,7 @@
   "navIncome": "Ingresos",
   "navExpenses": "Gastos",
   "navMonthlyBudget": "Presupuesto mensual",
-  "navGoals": "Metas y ahorro",
+  "navGoals": "Metas financieras",
   "navSeasons": "Presupuestos de temporada",
   "navDaret": "Tanda (ahorro en grupo)",
   "daretSubtitle": "Sigue tu tanda: quién cobra cuándo, lo que has pagado y lo que va atrasado.",
@@ -381,7 +381,7 @@
   "goalContribute": "Añadir aporte",
   "contributeTo": "Aportar a “{name}”",
   "emptyGoalsTitle": "Aún no hay metas",
-  "emptyGoalsMessage": "Crea tu primera meta de ahorro para seguir tu progreso.",
+  "emptyGoalsMessage": "Crea tu primera meta financiera y sigue tu progreso: comprar un coche, construir una casa o abrir un negocio.",
   "recoAchieved": "🎉 Meta alcanzada por completo.",
   "recoExpired": "La fecha pasó antes de alcanzar la meta: revisa el plan.",
   "recoRelaxed": "Aparta {amount} al mes: tienes tiempo de sobra.",
@@ -1380,5 +1380,6 @@
   "tripTopSpentOn": "Gasté más en",
   "navFoldTools": "Herramientas de planificación",
   "navFoldOccasions": "Ocasiones y planes especiales",
-  "navHelpShort": "Ayuda"
+  "navHelpShort": "Ayuda",
+  "fieldGoalNameHint": "p. ej. Comprar un coche"
 }

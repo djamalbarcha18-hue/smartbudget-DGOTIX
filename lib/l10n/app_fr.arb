@@ -135,7 +135,7 @@
   "navIncome": "Revenus",
   "navExpenses": "Dépenses",
   "navMonthlyBudget": "Budget mensuel",
-  "navGoals": "Objectifs et épargne",
+  "navGoals": "Objectifs financiers",
   "navSeasons": "Budgets saisonniers",
   "navDaret": "Tontine",
   "daretSubtitle": "Suivez votre tontine : qui reçoit quand, ce que vous avez payé et ce qui est en retard.",
@@ -381,7 +381,7 @@
   "goalContribute": "Ajouter une contribution",
   "contributeTo": "Contribuer à « {name} »",
   "emptyGoalsTitle": "Aucun objectif pour l'instant",
-  "emptyGoalsMessage": "Fixez votre premier objectif d'épargne pour suivre vos progrès.",
+  "emptyGoalsMessage": "Fixez votre premier objectif financier et suivez vos progrès : acheter une voiture, construire une maison ou ouvrir une entreprise.",
   "recoAchieved": "🎉 Objectif entièrement atteint.",
   "recoExpired": "L'échéance est passée avant d'atteindre l'objectif : revoyez le plan.",
   "recoRelaxed": "Mettez {amount} de côté par mois : vous avez largement le temps.",
@@ -1380,5 +1380,6 @@
   "tripTopSpentOn": "Ma plus grosse dépense",
   "navFoldTools": "Outils de planification",
   "navFoldOccasions": "Occasions et projets",
-  "navHelpShort": "Aide"
+  "navHelpShort": "Aide",
+  "fieldGoalNameHint": "ex. Acheter une voiture"
 }

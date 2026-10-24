@@ -135,7 +135,7 @@
   "navIncome": "آمدنی",
   "navExpenses": "اخراجات",
   "navMonthlyBudget": "ماہانہ بجٹ",
-  "navGoals": "اہداف اور بچت",
+  "navGoals": "مالی اہداف",
   "navSeasons": "موسمی بجٹ",
   "navDaret": "کمیٹی (بچت گروپ)",
   "daretSubtitle": "اپنی کمیٹی کا حساب رکھیں: کس کی باری کب ہے، آپ نے کیا ادا کیا، اور کیا باقی ہے۔",
@@ -381,7 +381,7 @@
   "goalContribute": "رقم شامل کریں",
   "contributeTo": "“{name}” میں رقم شامل کریں",
   "emptyGoalsTitle": "ابھی کوئی ہدف نہیں",
-  "emptyGoalsMessage": "پیش رفت کا حساب رکھنا شروع کرنے کے لیے بچت کا پہلا ہدف مقرر کریں۔",
+  "emptyGoalsMessage": "اپنا پہلا مالی ہدف مقرر کریں اور پیش رفت دیکھیں — جیسے گاڑی خریدنا، گھر بنانا یا کاروبار شروع کرنا۔",
   "recoAchieved": "🎉 ہدف مکمل طور پر حاصل ہو گیا۔",
   "recoExpired": "ہدف تک پہنچنے سے پہلے آخری تاریخ گزر گئی — منصوبے کا جائزہ لیں۔",
   "recoRelaxed": "ہر ماہ {amount} الگ رکھیں — آپ کے پاس کافی وقت ہے۔",
@@ -1380,5 +1380,6 @@
   "tripTopSpentOn": "سب سے زیادہ خرچ",
   "navFoldTools": "منصوبہ بندی کے اوزار",
   "navFoldOccasions": "مواقع اور خاص منصوبے",
-  "navHelpShort": "مدد"
+  "navHelpShort": "مدد",
+  "fieldGoalNameHint": "مثلاً گاڑی خریدنا"
 }
