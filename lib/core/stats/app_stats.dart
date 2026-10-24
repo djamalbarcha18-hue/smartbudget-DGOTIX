@@ -16,10 +16,12 @@ enum StatEvent {
 /// Sends an event's name to the server, which adds one to that day's total.
 typedef StatSender = Future<void> Function(String event);
 
-/// The real sender: none without a backend, and none in debug builds, so
-/// testing never adds to the totals.
+/// The real sender: none while the totals are off (AppEnv.anonStats), without
+/// a backend, or in debug builds, so testing never adds to the totals.
 final statSenderProvider = Provider<StatSender>((ref) {
-  if (!AppEnv.hasSupabase || kDebugMode) return (_) async {};
+  if (!AppEnv.anonStats || !AppEnv.hasSupabase || kDebugMode) {
+    return (_) async {};
+  }
   return (String event) => Supabase.instance.client
       .rpc<void>('count_event', params: <String, dynamic>{'event_name': event});
 });

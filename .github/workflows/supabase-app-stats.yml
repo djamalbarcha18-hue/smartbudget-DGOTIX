@@ -1,14 +1,10 @@
 name: Apply anonymous totals to Supabase
 
-# Applies supabase/app_stats.sql (the anonymous daily totals the app adds to,
-# docs/APP_STATS.md) to the live database when it changes, or by hand. Safe to
-# run again. Uses the Supabase Management API with SUPABASE_ACCESS_TOKEN.
+# Applies supabase/app_stats.sql (the anonymous daily totals,
+# docs/APP_STATS.md) to the live database. By hand only, when the owner turns
+# the totals on. Safe to run again. Uses the Supabase Management API with
+# SUPABASE_ACCESS_TOKEN, which needs the database read and write permissions.
 on:
-  push:
-    branches: ["main"]
-    paths:
-      - "supabase/app_stats.sql"
-      - ".github/workflows/supabase-app-stats.yml"
   workflow_dispatch:
 
 concurrency:

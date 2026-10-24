@@ -36,7 +36,7 @@ class PrivacySection extends ConsumerWidget {
           value: s.hideWhileEntering,
           onChanged: ctrl.setHideWhileEntering,
         ),
-        if (AppEnv.hasSupabase && AppEnv.smartTrip)
+        if (AppEnv.anonStats && AppEnv.hasSupabase && AppEnv.smartTrip)
           SwitchListTile.adaptive(
             contentPadding: EdgeInsets.zero,
             title: Text(l.anonStatsTrips, style: t.titleSmall),

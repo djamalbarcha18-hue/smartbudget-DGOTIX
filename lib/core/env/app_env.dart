@@ -93,6 +93,13 @@ abstract final class AppEnv {
   static const bool demoOffers =
       kDebugMode || bool.fromEnvironment('DEMO_OFFERS', defaultValue: false);
 
+  /// Anonymous trip totals (docs/APP_STATS.md): off in every build, debug
+  /// included, until the owner turns them on with
+  /// `--dart-define=ANON_STATS=true`. Off, nothing is sent and neither the
+  /// Settings switch nor the Privacy Policy paragraph is shown.
+  static const bool anonStats =
+      bool.fromEnvironment('ANON_STATS', defaultValue: false);
+
   /// The theme colours picker with the Pro themes (Beige, Sage), not
   /// launched yet: shown in debug builds and with
   /// `--dart-define=PRO_THEMES=true`.

@@ -21,7 +21,7 @@ class LegalSection {
 /// have it reviewed for their jurisdiction before relying on it.
 abstract final class LegalContent {
   /// Bump when the wording changes materially (shown as "last updated").
-  static const String lastUpdated = '2026-10-24';
+  static const String lastUpdated = '2026-10-12';
 
   static String get _app => AppConfig.appName;
   static String get _brand => AppConfig.parentBrand;
@@ -169,8 +169,8 @@ abstract final class LegalContent {
           'We do not sell or rent your data, show advertising, or run '
               'behavioural tracking or analytics on your financial activity.',
         ),
-        // Only trips are counted, so only with SmartTrip.
-        if (AppEnv.smartTrip)
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
           const LegalSection(
             'Anonymous counts',
             'When you create a trip, the app sends only the words “a trip was '
@@ -312,8 +312,8 @@ abstract final class LegalContent {
           'لا نبيع بياناتك أو نؤجّرها، ولا نعرض إعلانات، ولا نُجري تعقّباً '
               'سلوكياً أو تحليلات على نشاطك المالي.',
         ),
-        // Only trips are counted, so only with SmartTrip.
-        if (AppEnv.smartTrip)
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
           const LegalSection(
             'إحصاءات مجهولة',
             'عندما تُنشئ رحلة، يرسل التطبيق عبارة «أُنشئت رحلة» فقط، ويضيف '
@@ -715,8 +715,8 @@ abstract final class LegalContent {
               'publicité et ne pratiquons aucun pistage comportemental ni aucune '
               'analyse de votre activité financière.',
         ),
-        // Only trips are counted, so only with SmartTrip.
-        if (AppEnv.smartTrip)
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
           const LegalSection(
             'Comptages anonymes',
             'Lorsque vous créez un voyage, l\'application envoie seulement « un '
@@ -1021,8 +1021,8 @@ abstract final class LegalContent {
               'iklan, dan tidak melakukan pelacakan perilaku atau analitik atas '
               'aktivitas keuangan Anda.',
         ),
-        // Only trips are counted, so only with SmartTrip.
-        if (AppEnv.smartTrip)
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
           const LegalSection(
             'Hitungan anonim',
             'Saat Anda membuat perjalanan, aplikasi hanya mengirim kata '
@@ -1314,8 +1314,8 @@ abstract final class LegalContent {
               'hacemos seguimiento del comportamiento ni analítica de tu '
               'actividad financiera.',
         ),
-        // Only trips are counted, so only with SmartTrip.
-        if (AppEnv.smartTrip)
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
           const LegalSection(
             'Recuentos anónimos',
             'Cuando creas un viaje, la app envía solo las palabras «se creó un '
@@ -1606,8 +1606,8 @@ abstract final class LegalContent {
           'Verilerini satmayız veya kiralamayız, reklam göstermeyiz, finansal'
               ' etkinliğin üzerinde davranışsal izleme veya analiz yapmayız.',
         ),
-        // Only trips are counted, so only with SmartTrip.
-        if (AppEnv.smartTrip)
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
           const LegalSection(
             'Anonim sayımlar',
             'Bir seyahat oluşturduğunda uygulama yalnızca “bir seyahat '
@@ -1894,8 +1894,8 @@ abstract final class LegalContent {
               'atau menjalankan penjejakan tingkah laku atau analitik ke atas '
               'aktiviti kewangan anda.',
         ),
-        // Only trips are counted, so only with SmartTrip.
-        if (AppEnv.smartTrip)
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
           const LegalSection(
             'Kiraan tanpa nama',
             'Apabila anda mencipta perjalanan, aplikasi hanya menghantar '
@@ -2187,8 +2187,8 @@ abstract final class LegalContent {
               'دکھاتے ہیں، اور نہ آپ کی مالی سرگرمی پر رویے کی ٹریکنگ یا تجزیات '
               'چلاتے ہیں۔',
         ),
-        // Only trips are counted, so only with SmartTrip.
-        if (AppEnv.smartTrip)
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
           const LegalSection(
             'گمنام شمار',
             'جب آپ کوئی سفر بناتے ہیں تو ایپ صرف یہ الفاظ بھیجتی ہے «ایک سفر '

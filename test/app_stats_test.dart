@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/stats/app_stats.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
@@ -67,6 +68,10 @@ void main() {
     await c.read(tripActionsProvider).save(trip('t1'));
     await settle();
     expect(await c.read(tripStoreProvider).all(), hasLength(1));
+  });
+
+  test('hidden: off in every build until turned on (ANON_STATS)', () {
+    expect(AppEnv.anonStats, isFalse);
   });
 
   test('the app and the database know the same event names', () {

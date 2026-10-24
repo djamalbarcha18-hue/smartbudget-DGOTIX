@@ -3,6 +3,17 @@
 Real numbers to show partners ("1,200 trips planned this month") without
 knowing anything about anyone.
 
+**Status: hidden.** Off in every build (debug included) until the owner
+decides: nothing is sent, and the Settings switch and the Privacy Policy
+paragraph are not shown. The live database doesn't have the table yet.
+
+To turn it on, in this order:
+1. Run `.github/workflows/supabase-app-stats.yml` by hand (Actions > Run
+   workflow). The `SUPABASE_ACCESS_TOKEN` secret needs the database read and
+   write permissions; or paste `supabase/app_stats.sql` in the SQL editor.
+2. Build with `--dart-define=ANON_STATS=true` (it counts trips, so SmartTrip
+   must be on too).
+
 ## What is sent
 
 When a **new** trip is saved, the app calls `count_event('trip_created')`.
@@ -34,7 +45,7 @@ Clients can't read or change the totals (supabase/tests/access_control_test.sql)
 
 - `supabase/app_stats.sql`: the table, `count_event` and the monthly view.
   Applied to the live database by `.github/workflows/supabase-app-stats.yml`
-  when it changes; also part of `setup_all.sql`.
+  (by hand); also part of `setup_all.sql`.
 - `lib/core/stats/app_stats.dart`: `AppStats.count`, the Settings switch.
 - To count something new: add it to `StatEvent` and to the list in
   `count_event`, then say so in the Privacy Policy.
