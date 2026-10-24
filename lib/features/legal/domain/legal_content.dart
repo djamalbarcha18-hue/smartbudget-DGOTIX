@@ -68,16 +68,20 @@ abstract final class LegalContent {
       ? 'pelo e-mail ${AppConfig.supportEmail}'
       : 'pela página Ajuda e suporte do app';
 
+  static String get _reachIt => AppConfig.hasSupportEmail
+      ? 'all\'indirizzo ${AppConfig.supportEmail}'
+      : 'dalla pagina Aiuto e supporto dell\'app';
+
   static List<LegalSection> sections(LegalDoc doc, {required AppLang lang}) =>
       switch (doc) {
         LegalDoc.privacy => lang.pick(_privacyAr, _privacyEn,
             fr: _privacyFr, id: _privacyId, es: _privacyEs,
             tr: _privacyTr, ms: _privacyMs, ur: _privacyUr, de: _privacyDe,
-            pt: _privacyPt),
+            pt: _privacyPt, it: _privacyIt),
         LegalDoc.terms => lang.pick(_termsAr, _termsEn,
             fr: _termsFr, id: _termsId, es: _termsEs,
             tr: _termsTr, ms: _termsMs, ur: _termsUr, de: _termsDe,
-            pt: _termsPt),
+            pt: _termsPt, it: _termsIt),
       };
 
   // ---- Privacy (English) ----
@@ -2962,6 +2966,302 @@ abstract final class LegalContent {
               'recente; continuar usando o app depois de uma atualização '
               'significa aceitar os termos revisados. Para dúvidas, fale conosco '
               '$_reachPt.',
+        ),
+      ];
+
+  // ---- Privacy (Italian) ----
+  static List<LegalSection> get _privacyIt => <LegalSection>[
+        LegalSection(
+          'Panoramica',
+          'Questa informativa spiega cosa salva $_app, dove lo salva e quali '
+              'scelte hai. In breve: i tuoi dati finanziari sono tuoi, vengono '
+              'salvati prima sul tuo dispositivo e non li vendiamo mai, non ti '
+              'mostriamo pubblicità e non ti tracciamo. Alcune funzioni '
+              'facoltative (accesso e sincronizzazione, DGOTIX AI, scansione '
+              'degli scontrini nel cloud e piani a pagamento) inviano dati '
+              'specifici a un servizio solo quando le usi, come descritto sotto.',
+        ),
+        const LegalSection(
+          'Cosa salviamo',
+          'Le informazioni che inserisci tu: entrate, spese, budget, obiettivi,'
+              ' debiti, portafogli, categorie personalizzate e le tue preferenze '
+              'di visualizzazione (tema, lingua, valuta base). Se crei un '
+              'account, conserviamo anche il tuo indirizzo email, il piano e lo '
+              'stato dell\'abbonamento, e i contatori di utilizzo per periodo di '
+              'DGOTIX AI e della scansione cloud degli scontrini, usati solo per '
+              'applicare i limiti del tuo piano. Non conserviamo le tue domande a'
+              ' DGOTIX AI né le immagini degli scontrini; se segnali una risposta'
+              ' dell\'IA, conserviamo quella risposta e la tua nota facoltativa '
+              'per esaminarla.',
+        ),
+        const LegalSection(
+          'Dove si trovano i tuoi dati',
+          'Tutto viene salvato prima sul tuo dispositivo (nell\'app o, per la '
+              'versione web, nel browser), così l\'app funziona anche senza '
+              'account o connessione. Se accedi, i tuoi dati vengono anche '
+              'sincronizzati automaticamente tra i tuoi dispositivi: una copia è '
+              'conservata nel nostro database (ospitato da Supabase), legata al '
+              'tuo account e isolata in modo che solo tu possa leggerla. Puoi '
+              'disattivare la sincronizzazione nelle Impostazioni; allora i dati '
+              'restano solo su questo dispositivo.',
+        ),
+        const LegalSection(
+          'Il tuo account e le email',
+          'Il tuo indirizzo email serve per l\'accesso e per inviarti email '
+              'dell\'account, come la conferma dell\'indirizzo e la '
+              'reimpostazione della password (inviate tramite Brevo). Non viene '
+              'mai usato per pubblicità né condiviso per marketing. Alla '
+              'registrazione e all\'accesso, un rapido controllo che tu sia una '
+              'persona (Cloudflare Turnstile) tiene lontani gli abusi '
+              'automatizzati.',
+        ),
+        const LegalSection(
+          'DGOTIX AI',
+          'DGOTIX AI è facoltativo. Quando fai una domanda, il testo della '
+              'domanda e un riepilogo delle tue cifre (totali per mese e '
+              'categoria fino a 12 mesi, budget, saldi dei portafogli, obiettivi,'
+              ' transazioni ricorrenti, budget stagionali e giri di risparmio: '
+              'solo importi e date, mai descrizioni, note o i nomi che dai alle '
+              'cose) vengono inviati tramite il nostro server sicuro a un '
+              'fornitore di IA (Google Gemini, OpenAI o Anthropic) per generare '
+              'la risposta. Il nostro server usa le nostre chiavi e registra solo'
+              ' metadati di utilizzo, mai la tua domanda o le tue cifre. Non '
+              'usiamo i tuoi dati per addestrare alcun modello. Le risposte sono '
+              'generate automaticamente, quindi verifica le cifre importanti '
+              'prima di agire.',
+        ),
+        const LegalSection(
+          'Scansione degli scontrini',
+          'Su Android, gli scontrini possono essere letti interamente sul tuo '
+              'dispositivo. La scansione nel cloud invia l\'immagine dello '
+              'scontrino tramite il nostro server sicuro a un fornitore di IA '
+              'solo per leggere esercente, data, importo, articoli e categoria; '
+              'l\'immagine non viene conservata.',
+        ),
+        const LegalSection(
+          'Pagamenti e abbonamenti',
+          'I piani a pagamento sono facoltativi. Paghi sul checkout sicuro di '
+              'Whop (whop.com), il nostro fornitore di pagamenti, o con PayPal se'
+              ' lo scegli. Raccolgono i dati di fatturazione necessari (come '
+              'nome, email, paese e metodo di pagamento) secondo le proprie '
+              'informative; non vediamo né conserviamo mai i dati completi della'
+              ' tua carta. Conserviamo il tuo piano, lo stato dell\'abbonamento, '
+              'la data di rinnovo e gli identificativi dell\'abbonamento del '
+              'fornitore per darti l\'accesso corretto, oltre alla traccia di '
+              'eventuali codici promozionali utilizzati.',
+        ),
+        const LegalSection(
+          'Fornitori di servizi',
+          'A seconda delle funzioni che usi: Supabase (account, '
+              'sincronizzazione e funzioni del nostro server); Whop e PayPal '
+              '(pagamenti); Brevo (email dell\'account); Cloudflare Turnstile (il'
+              ' controllo all\'accesso); GitHub Pages (hosting del sito e della '
+              'web app); Google, OpenAI e Anthropic (DGOTIX AI e scansione cloud '
+              'degli scontrini); e fonti pubbliche di dati di mercato per i '
+              'valori in tempo reale, cioè cambi (open.er-api.com) e prezzi delle'
+              ' cripto (CoinGecko), le cui richieste contengono solo simboli di '
+              'valute o attività, mai i tuoi dati personali o finanziari. Ogni '
+              'fornitore tratta i dati solo per fornire la propria parte del '
+              'servizio.',
+        ),
+        const LegalSection(
+          'Sicurezza',
+          'Le connessioni ai nostri servizi sono cifrate (HTTPS). Nel nostro '
+              'database i dati di ogni utente sono isolati, così un account non '
+              'può mai leggere quelli di un altro. Le chiavi del server non '
+              'arrivano mai all\'app, le notifiche di pagamento vengono '
+              'verificate prima di cambiare qualsiasi cosa e puoi aggiungere un '
+              'blocco app (PIN o impronta) sul tuo dispositivo.',
+        ),
+        const LegalSection(
+          'Cosa non facciamo',
+          'Non vendiamo né affittiamo i tuoi dati, non mostriamo pubblicità e '
+              'non effettuiamo tracciamento comportamentale né analisi sulla tua '
+              'attività finanziaria.',
+        ),
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
+          const LegalSection(
+            'Conteggi anonimi',
+            'Quando crei un viaggio, l\'app invia solo le parole “è stato '
+                'pianificato un viaggio” e il nostro server aggiunge uno al '
+                'totale di quel giorno. Nient\'altro viene inviato o conservato '
+                'insieme (nessun account, dispositivo, destinazione o importo), '
+                'quindi i totali non possono essere collegati a te. Li usiamo solo'
+                ' per sapere quanto viene usata l\'app e per mostrare cifre '
+                'complessive ai partner. Puoi disattivarlo nelle Impostazioni, '
+                'alla voce Privacy.',
+          ),
+        const LegalSection(
+          'Per quanto tempo conserviamo i dati',
+          'I dati sul tuo dispositivo restano finché non li elimini o rimuovi '
+              'l\'app. Il tuo account, i dati sincronizzati, i contatori di '
+              'utilizzo e i metadati delle richieste sono conservati finché '
+              'l\'account esiste, solo per far funzionare il servizio e applicare'
+              ' i limiti del tuo piano, e vengono cancellati definitivamente '
+              'quando lo elimini. Whop e PayPal conservano i documenti di '
+              'fatturazione che la legge impone loro di conservare.',
+        ),
+        LegalSection(
+          'I tuoi diritti e controlli',
+          'Puoi vedere e correggere i tuoi dati nell\'app in qualsiasi momento,'
+              ' esportare un backup completo, disattivare la sincronizzazione, '
+              'uscire ed eliminare l\'account con tutti i dati (vedi sotto). Puoi'
+              ' annullare un abbonamento a pagamento in qualsiasi momento (vedi i'
+              ' Termini). Per qualsiasi altra richiesta sui tuoi dati personali, '
+              'compresi accesso, rettifica, cancellazione od opposizione, '
+              'contattaci $_reachIt e ti risponderemo rapidamente.',
+        ),
+        const LegalSection(
+          'Eliminare l\'account e i dati',
+          'Nell\'app o nella versione web, su qualsiasi dispositivo, apri '
+              'Impostazioni, poi Account, poi “Elimina il mio account”. Questo '
+              'elimina definitivamente il tuo account e tutto ciò che è salvato '
+              'per esso sui nostri server (profilo, dati sincronizzati, '
+              'abbonamento e contatori di utilizzo) e cancella i tuoi dati su quel'
+              ' dispositivo. Annulla prima qualsiasi abbonamento a pagamento. '
+              'L\'eliminazione non si può annullare, quindi esporta prima un '
+              'backup se potresti volere i tuoi dati in futuro.',
+        ),
+        LegalSection(
+          'Età',
+          '$_app è destinata a persone dai 16 anni in su. Non raccogliamo '
+              'consapevolmente dati di minori più giovani; se ritieni che un '
+              'minore abbia creato un account, contattaci $_reachIt e lo '
+              'elimineremo.',
+        ),
+        LegalSection(
+          'Modifiche e contatti',
+          'Possiamo aggiornare questa informativa; la data indicata sopra '
+              'corrisponde all\'ultima versione. Per domande sulla privacy, '
+              'contattaci $_reachIt.',
+        ),
+      ];
+
+  // ---- Terms (Italian) ----
+  static List<LegalSection> get _termsIt => <LegalSection>[
+        LegalSection(
+          'Accettazione',
+          'Usando $_app accetti questi termini. Se non li accetti, non usare '
+              'l\'app.',
+        ),
+        LegalSection(
+          'Chi può usarla',
+          'Devi avere almeno 16 anni per usare $_app. Se crei un account, '
+              'custodisci i dati di accesso; sei responsabile dell\'attività sul '
+              'tuo account.',
+        ),
+        const LegalSection(
+          'Cos\'è il servizio',
+          'Uno strumento personale di budget e pianificazione per seguire '
+              'entrate, spese, budget, obiettivi e relative analisi, con aiuto '
+              'facoltativo dell\'IA, scansione degli scontrini, sincronizzazione '
+              'tra dispositivi e piani a pagamento.',
+        ),
+        const LegalSection(
+          'Strumenti di pianificazione, non consulenza professionale',
+          'Budget, proiezioni, il calcolo della Zakat e le risposte di DGOTIX '
+              'AI sono strumenti di pianificazione per aiutarti a decidere. Non '
+              'sono consulenza professionale finanziaria, fiscale o religiosa. '
+              'Per gli obblighi religiosi come la Zakat, verifica con un sapiente'
+              ' qualificato; per le decisioni finanziarie importanti, rivolgiti a'
+              ' un consulente qualificato.',
+        ),
+        const LegalSection(
+          'Funzioni di IA',
+          'DGOTIX AI e la scansione cloud degli scontrini producono risultati '
+              'automatici per farti risparmiare tempo; verifica le cifre '
+              'importanti prima di agire. Queste funzioni sono incluse entro '
+              'limiti di uso corretto che dipendono dal tuo piano e possono essere'
+              ' adeguati per mantenere il servizio veloce e affidabile per tutti.',
+        ),
+        const LegalSection(
+          'Abbonamenti, fatturazione e rinnovi',
+          'L\'app di base è gratuita. I piani a pagamento (Pro) sbloccano '
+              'limiti più alti e funzioni extra ai prezzi indicati nell\'app. Un'
+              ' piano a pagamento si rinnova automaticamente a ogni periodo di '
+              'fatturazione (mensile o annuale) finché non lo annulli. I '
+              'pagamenti sono gestiti da Whop, il nostro fornitore di pagamenti '
+              '(o da PayPal se lo scegli); eventuali imposte applicabili possono '
+              'essere aggiunte e sono sempre mostrate al checkout prima di '
+              'pagare. Puoi annullare in qualsiasi momento e mantenere l\'accesso'
+              ' fino alla fine del periodo già pagato. Se prezzi o funzioni del '
+              'piano cambiano, i termini aggiornati sono sempre mostrati prima '
+              'dell\'abbonamento.',
+        ),
+        const LegalSection(
+          'Il nostro fornitore di pagamenti: Whop',
+          'SmartBudget è venduto da DGOTIX. Checkout e fatturazione sono '
+              'gestiti da Whop (whop.com), che elabora il pagamento sul proprio '
+              'checkout sicuro, mostra il prezzo completo di imposte prima del '
+              'pagamento e invia la ricevuta. Puoi gestire o annullare '
+              'l\'abbonamento dall\'app (Piani → Gestisci).',
+        ),
+        LegalSection(
+          'Politica di rimborso',
+          'Salvo quanto previsto dalla legge, i pagamenti in genere non sono '
+              'rimborsabili una volta iniziato un periodo di fatturazione, perché'
+              ' mantieni l\'accesso fino alla sua fine. Puoi annullare in '
+              'qualsiasi momento per fermare i rinnovi futuri. Per una richiesta '
+              'di rimborso o domande su un addebito, contattaci $_reachIt: '
+              'esaminiamo ogni richiesta secondo la normativa sui consumatori '
+              'applicabile ed effettuiamo i rimborsi approvati tramite Whop (o '
+              'PayPal).',
+        ),
+        const LegalSection(
+          'Codici promozionali',
+          'Coupon e codici sconto sono facoltativi e cambiano solo il prezzo di'
+              ' un checkout (o danno un periodo di prova). Ogni codice ha le sue '
+              'condizioni (validità, limiti di utilizzo, uno per cliente) e può '
+              'essere ritirato o scadere. Non hanno valore in denaro e non sono '
+              'cumulabili, salvo diversa indicazione.',
+        ),
+        const LegalSection(
+          'I tuoi dati e i backup',
+          'Sei responsabile dell\'esattezza dei dati che inserisci. Per '
+              'mantenere i tuoi dati al sicuro tra dispositivi, accedi per '
+              'sincronizzarli o esporta regolarmente un backup dalle '
+              'Impostazioni.',
+        ),
+        LegalSection(
+          'Disponibilità',
+          'Lavoriamo per mantenere $_app disponibile e affidabile. Nei limiti '
+              'consentiti dalla legge, l\'app è fornita “così com\'è”, senza '
+              'garanzie di alcun tipo. Dati di mercato in tempo reale, IA e '
+              'pagamenti dipendono da servizi di terzi e possono a volte essere '
+              'in ritardo o non disponibili; un\'interruzione del genere non ti '
+              'impedisce mai di usare gli strumenti di budget di base, che '
+              'funzionano anche offline. Le funzioni possono evolvere nel tempo.',
+        ),
+        const LegalSection(
+          'Limitazione di responsabilità',
+          'Nei limiti consentiti dalla legge, non rispondiamo di perdite '
+              'indirette o consequenziali, né delle decisioni che prendi in base '
+              'alle cifre dell\'app. Nulla in questi termini limita i diritti che'
+              ' ti spettano per legge come consumatore e a cui non si può '
+              'rinunciare.',
+        ),
+        const LegalSection(
+          'Uso consentito',
+          'Non abusare del servizio, non tentare di violarne o aggirarne la '
+              'sicurezza o i limiti dei piani e non usarlo per scopi illeciti.',
+        ),
+        LegalSection(
+          'Fine dell\'utilizzo',
+          'Puoi smettere di usare $_app ed eliminare il tuo account in '
+              'qualsiasi momento. Possiamo sospendere un account che viola questi'
+              ' termini o mette a rischio il servizio o altri utenti.',
+        ),
+        LegalSection(
+          'Marchio e proprietà',
+          'Il nome $_app, il marchio $_brand, il design e il codice dell\'app '
+              'restano di proprietà del loro titolare. I tuoi dati restano tuoi.',
+        ),
+        LegalSection(
+          'Modifiche e contatti',
+          'Possiamo aggiornare questi termini e mostrare la data dell\'ultima '
+              'versione; continuare a usare l\'app dopo un aggiornamento significa'
+              ' accettare i termini rivisti. Per domande, contattaci $_reachIt.',
         ),
       ];
 }

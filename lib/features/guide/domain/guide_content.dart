@@ -28,13 +28,13 @@ abstract final class GuideContent {
       lang.pick(_startAr, _startEn,
           fr: _startFr, id: _startId, es: _startEs,
           tr: _startTr, ms: _startMs, ur: _startUr, de: _startDe,
-          pt: _startPt);
+          pt: _startPt, it: _startIt);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
       lang.pick(_topicsAr, _topicsEn,
           fr: _topicsFr, id: _topicsId, es: _topicsEs,
           tr: _topicsTr, ms: _topicsMs, ur: _topicsUr, de: _topicsDe,
-          pt: _topicsPt);
+          pt: _topicsPt, it: _topicsIt);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -2046,6 +2046,212 @@ abstract final class GuideContent {
             'conta conectada, seus dados são sincronizados entre seus aparelhos '
             'automaticamente (também depois de usar offline), e você pode '
             'desativar isso.',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Italian) ----
+  static const List<String> _startIt = <String>[
+    'Apri le Impostazioni e scegli lingua, tema e valuta base: ogni totale '
+        'dell\'app è mostrato in quella valuta.',
+    'Aggiungi entrate e spese (o scansiona uno scontrino): tutto il resto si '
+        'calcola da lì.',
+    'Imposta un budget mensile, così l\'app ti dice quanto puoi ancora '
+        'spendere.',
+    'Guarda la Panoramica e la Salute finanziaria per capire a che punto sei, '
+        'poi aggiungi obiettivi e debiti man mano.',
+  ];
+
+  // ---- Topics (Italian) ----
+  static const List<GuideTopic> _topicsIt = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'Panoramica',
+      summary:
+          'Il tuo mese a colpo d\'occhio: entrate, spese, risparmi e dove sono '
+          'andati i soldi.',
+      steps: <String>[
+        'Le schede mostrano i totali di questo mese nella tua valuta base.',
+        'Tocca una fetta del dettaglio spese per evidenziare quella categoria.',
+        'Gli avvisi ti indicano ciò che richiede attenzione, come una categoria'
+            ' oltre il budget o un obiettivo urgente.',
+        'Senza dati, le schede mostrano “—”: nulla viene mai inventato.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'Entrate e spese',
+      summary: 'Registra ogni movimento di denaro: la base di ogni calcolo '
+          'dell\'app.',
+      steps: <String>[
+        'Usa il pulsante di aggiunta rapida per registrare un\'entrata o una '
+            'spesa con importo, categoria, data e nota.',
+        'Entrate e Spese hanno ciascuna la propria schermata; Transazioni le '
+            'mostra insieme.',
+        'Cerca nell\'elenco per trovare qualsiasi voce e toccala per '
+            'modificarla o eliminarla.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'Transazioni ricorrenti',
+      summary: 'Stipendio, affitto e abbonamenti aggiunti automaticamente alla '
+          'loro data.',
+      steps: <String>[
+        'Quando aggiungi un\'entrata o una spesa, imposta “Ripeti” su ogni '
+            'settimana, mese, 3 mesi, 6 mesi o anno.',
+        'Per un premio o una provvigione che cambia, attiva “L\'importo cambia'
+            ' ogni volta”: a ogni data l\'app chiede l\'importo reale invece di '
+            'aggiungere una stima.',
+        'A ogni scadenza l\'app la aggiunge come una transazione normale: anche'
+            ' se sei stato via, recupera alla prossima apertura.',
+        'Nella schermata Ricorrenti puoi mettere in pausa, riprendere, '
+            'cambiare l\'importo o interrompere. Le transazioni già aggiunte non'
+            ' cambiano mai.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'Scansiona uno scontrino',
+      summary: 'Trasforma la foto di uno scontrino in una spesa pronta da '
+          'salvare.',
+      steps: <String>[
+        'Nella schermata Spese, tocca “Scansiona scontrino” e scatta o scegli '
+            'una foto.',
+        'L\'app compila esercente, data, importo e categoria: controllali prima'
+            ' di salvare.',
+        'La scansione nel cloud dipende dal tuo piano; se uno scontrino non si '
+            'legge, inserisci la spesa a mano.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'Budget mensile',
+      summary: 'Pianifica quanto vuoi spendere per categoria, mese per mese.',
+      steps: <String>[
+        'Scegli anno e mese in alto: una sola schermata copre ogni mese.',
+        'Imposta un limite per ogni categoria che vuoi tenere sotto controllo.',
+        'Le barre si riempiono man mano che spendi; una categoria oltre il '
+            'limite viene segnalata.',
+        'Con un piano a pagamento, “Suggerisci una ripartizione” divide le tue'
+            ' entrate tra le categorie in base alle tue spese recenti: '
+            'controlla e poi applica.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'Obiettivi e risparmi',
+      summary: 'Risparmia per qualcosa di preciso e vedi quanto ti manca.',
+      steps: <String>[
+        'Crea un obiettivo con un importo e, se vuoi, una scadenza.',
+        'Registra i versamenti mentre risparmi; il progresso si aggiorna da '
+            'solo.',
+        'Gli obiettivi vicini alla scadenza sono evidenziati nella Panoramica.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'Debiti e prestiti',
+      summary: 'Tieni traccia di quanto devi e di quanto ti devono.',
+      steps: <String>[
+        'Aggiungi ogni debito o prestito con l\'importo e la persona o '
+            'controparte.',
+        'Aggiorna l\'importo già pagato per vedere il residuo.',
+        'I debiti contano nel tuo punteggio di Salute finanziaria.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'Portafoglio progetti',
+      summary: 'Pianifica i progetti più grandi in comparti a breve, medio e '
+          'lungo termine.',
+      steps: <String>[
+        'Aggiungi i progetti e colloca ciascuno in un orizzonte temporale.',
+        'Il finanziamento riempie i comparti in ordine, così vedi quali '
+            'progetti i tuoi risparmi coprono per primi.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'Salute finanziaria',
+      summary: 'Un punteggio che riassume quanto sono sane le tue finanze, e '
+          'perché.',
+      steps: <String>[
+        'Il punteggio è calcolato sul tuo dispositivo dai tuoi dati.',
+        'I fattori principali mostrano cosa aiuta o pesa: migliora prima '
+            'quelli.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'Report e analisi',
+      summary: 'Guarda l\'andamento dell\'anno e dove vanno i tuoi soldi.',
+      steps: <String>[
+        'Scegli un anno per confrontare entrate e spese mese per mese.',
+        'Usa i dettagli per individuare le categorie che crescono nel tempo.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'Zakat',
+      summary: 'Stima la Zakat dovuta sul tuo patrimonio e segui lo Hawl.',
+      steps: <String>[
+        'Inserisci i beni soggetti a Zakat per ottenere una stima.',
+        'Imposta la data in cui il patrimonio ha raggiunto il nisab per '
+            'seguire il conto alla rovescia dell\'anno lunare, mostrato secondo '
+            'il calendario dell\'Egira.',
+        'È un aiuto alla pianificazione: verifica il tuo obbligo con un '
+            'sapiente qualificato.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'Cambi e mercati',
+      summary: 'Cambi valute e prezzi delle cripto in tempo reale da fonti '
+          'pubbliche.',
+      steps: <String>[
+        'I cambi vengono scaricati in tempo reale; ogni riga indica la fonte.',
+        'Quando un mercato non ha una fonte affidabile, si legge “non '
+            'disponibile”: mai un numero inventato.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'Assistente DGOTIX AI',
+      summary: 'Fai domande sulle tue finanze con parole semplici.',
+      steps: <String>[
+        'Scrivi una domanda o tocca un suggerimento; l\'assistente risponde in'
+            ' base a un breve riepilogo delle tue cifre.',
+        'Il numero di risposte dipende dal tuo piano; vedrai un avviso quando '
+            'sei vicino al limite.',
+        'Le risposte sono generate automaticamente: verifica le decisioni '
+            'importanti. Le analisi basate su regole sotto la chat funzionano '
+            'sempre, anche senza IA.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'Piani e abbonamento',
+      summary: 'Confronta Gratis e Pro e gestisci il tuo abbonamento.',
+      steps: <String>[
+        'Gli strumenti di budget di base sono gratuiti per sempre.',
+        'I piani a pagamento alzano i limiti di IA e scansioni cloud e '
+            'aggiungono funzioni extra.',
+        'Se ti abboni, in alto compaiono il piano attuale e la data di '
+            'rinnovo, con un pulsante per gestire o annullare.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'Impostazioni, dati e backup',
+      summary: 'Rendi l\'app tua e tieni al sicuro i tuoi dati.',
+      steps: <String>[
+        'Lingua, tema e valuta base si trovano in Aspetto e Regione.',
+        'Gestisci le tue categorie di entrata e di spesa.',
+        'In Dati e backup puoi esportare un backup completo quando vuoi; con '
+            'l\'accesso, i dati si sincronizzano automaticamente tra i tuoi '
+            'dispositivi (anche dopo aver lavorato offline), e puoi '
+            'disattivarlo.',
       ],
     ),
   ];

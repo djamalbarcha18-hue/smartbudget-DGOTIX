@@ -201,7 +201,8 @@ class ReportsPage extends ConsumerWidget {
       case ReportPeriod.quarterly:
         return lang.pick('الربع $s', 'Q$s',
             fr: 'T$s', id: 'K$s', es: 'T$s', tr: '$s. Çeyrek', ms: 'Suku $s', ur: 'سہ ماہی $s',
-            de: 'Q$s', pt: '$sº tri');
+            de: 'Q$s', pt: '$sº tri',
+            it: 'T$s');
       case ReportPeriod.halfYearly:
         return s == 2 ? l.half2 : l.half1;
       case ReportPeriod.yearly:
