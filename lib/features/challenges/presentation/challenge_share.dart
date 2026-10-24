@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:smartbudget/core/config/app_config.dart';
@@ -14,6 +15,7 @@ import 'package:smartbudget/features/backup/data/file_io.dart';
 import 'package:smartbudget/features/challenges/domain/challenges.dart';
 import 'package:smartbudget/features/share/data/native_share.dart';
 import 'package:smartbudget/features/share/domain/share_qr.dart';
+import 'package:smartbudget/features/share/presentation/share_card_skin.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// The challenge's share text: a win invites friends to try it, a run in
@@ -34,7 +36,8 @@ String challengeShareText(
 
 /// Shareable card for a side-free challenge. Privacy first: days only; the
 /// amount kept appears only when the user switches it on. Fixed colours so
-/// the exported image looks the same in any theme. 4:5, saved at 1080×1350.
+/// the exported image looks the same in any theme, or a Pro theme's [skin]
+/// on request. 4:5, saved at 1080×1350.
 class ChallengeShareCard extends StatelessWidget {
   const ChallengeShareCard({
     super.key,
@@ -42,12 +45,16 @@ class ChallengeShareCard extends StatelessWidget {
     required this.progress,
     required this.qrSvg,
     this.showSaved = false,
+    this.skin,
   });
 
   final Challenge challenge;
   final ChallengeProgress progress;
   final String qrSvg;
   final bool showSaved;
+
+  /// A Pro theme's colours; null: green for a win, blue during the run.
+  final ShareCardSkin? skin;
 
   static const double width = 300;
   static const double height = 375;
@@ -62,30 +69,14 @@ class ChallengeShareCard extends StatelessWidget {
     final TextTheme t = Theme.of(context).textTheme;
     final ChallengeProgress p = progress;
     final bool won = p.status == ChallengeStatus.won;
+    final ShareCardSkin s =
+        skin ?? (won ? ShareCardSkin.won : ShareCardSkin.brand);
 
     return Container(
       width: width,
       height: height,
       padding: const EdgeInsets.all(22),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: won
-              ? const <Color>[
-                  Color(0xFF052E2B),
-                  Color(0xFF0F766E),
-                  Color(0xFF10B981),
-                ]
-              : const <Color>[
-                  Color(0xFF0A1633),
-                  Color(0xFF0F4C9E),
-                  Color(0xFF1680F7),
-                ],
-          stops: const <double>[0, 0.6, 1],
-        ),
-      ),
+      decoration: s.decoration,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -116,7 +107,7 @@ class ChallengeShareCard extends StatelessWidget {
                     won
                         ? Icons.emoji_events_rounded
                         : Icons.local_fire_department_rounded,
-                    color: _white,
+                    color: s.accent,
                     size: 22),
               ),
               const SizedBox(width: 10),
@@ -135,7 +126,7 @@ class ChallengeShareCard extends StatelessWidget {
               children: <Widget>[
                 Text('${p.clean}',
                     style: t.displayMedium?.copyWith(
-                        color: _white, fontWeight: FontWeight.w800, height: 1)),
+                        color: s.accent, fontWeight: FontWeight.w800, height: 1)),
                 Text('/${p.days}',
                     style: t.titleLarge
                         ?.copyWith(color: _soft, fontWeight: FontWeight.w600)),
@@ -233,7 +224,7 @@ class _DotStrip extends StatelessWidget {
 
 /// Preview + share: the card as an image (system share sheet, or saved and
 /// the caption copied where that isn't available), or just the text.
-class ChallengeShareSheet extends StatefulWidget {
+class ChallengeShareSheet extends ConsumerStatefulWidget {
   const ChallengeShareSheet({
     super.key,
     required this.challenge,
@@ -258,10 +249,11 @@ class ChallengeShareSheet extends StatefulWidget {
   }
 
   @override
-  State<ChallengeShareSheet> createState() => _ChallengeShareSheetState();
+  ConsumerState<ChallengeShareSheet> createState() =>
+      _ChallengeShareSheetState();
 }
 
-class _ChallengeShareSheetState extends State<ChallengeShareSheet> {
+class _ChallengeShareSheetState extends ConsumerState<ChallengeShareSheet> {
   static final RegExp _emoji =
       RegExp(r'[\u{1F000}-\u{1FFFF}]\s?', unicode: true);
   final GlobalKey _cardKey = GlobalKey();
@@ -369,6 +361,7 @@ class _ChallengeShareSheetState extends State<ChallengeShareSheet> {
                     progress: widget.progress,
                     qrSvg: _qr,
                     showSaved: _showSaved,
+                    skin: ref.watch(shareCardSkinProvider),
                   ),
                 ),
               ),
@@ -378,6 +371,7 @@ class _ChallengeShareSheetState extends State<ChallengeShareSheet> {
               Text(_text(l).replaceAll(_emoji, '').trim(),
                   textAlign: TextAlign.center,
                   style: t.bodySmall?.copyWith(color: c.textMuted)),
+              const ShareCardThemeSwitch(),
               if (canShowSaved)
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,

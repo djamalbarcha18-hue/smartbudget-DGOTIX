@@ -1353,5 +1353,7 @@
   "themeBeige": "Kuning air",
   "themeSage": "Sage",
   "themePomegranate": "Delima",
-  "themeBlack": "Hitam Emas"
+  "themeBlack": "Hitam Emas",
+  "shareCardThemeColors": "Dengan warna tema saya",
+  "shareCardThemeColorsHint": "Kad menggunakan tema Pro anda; logo dan kod QR kekal sama."
 }

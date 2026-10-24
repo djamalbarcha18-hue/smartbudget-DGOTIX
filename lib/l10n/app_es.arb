@@ -1353,5 +1353,7 @@
   "themeBeige": "Beige",
   "themeSage": "Salvia",
   "themePomegranate": "Granada",
-  "themeBlack": "Negro y oro"
+  "themeBlack": "Negro y oro",
+  "shareCardThemeColors": "Con los colores de mi tema",
+  "shareCardThemeColorsHint": "La tarjeta usa tu tema Pro; el logo y el código QR no cambian."
 }

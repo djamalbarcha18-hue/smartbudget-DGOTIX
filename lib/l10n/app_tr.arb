@@ -1353,5 +1353,7 @@
   "themeBeige": "Bej",
   "themeSage": "Adaçayı",
   "themePomegranate": "Nar",
-  "themeBlack": "Siyah Altın"
+  "themeBlack": "Siyah Altın",
+  "shareCardThemeColors": "Tema renklerimle",
+  "shareCardThemeColorsHint": "Kart Pro temanızı alır; logo ve QR kod aynı kalır."
 }

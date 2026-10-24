@@ -20,6 +20,7 @@ import 'package:smartbudget/features/share/data/native_share.dart';
 import 'package:smartbudget/features/share/domain/share_channels.dart';
 import 'package:smartbudget/features/share/domain/share_highlight.dart';
 import 'package:smartbudget/features/share/domain/share_qr.dart';
+import 'package:smartbudget/features/share/presentation/share_card_skin.dart';
 import 'package:smartbudget/features/share/presentation/share_progress_card.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -437,10 +438,15 @@ class _ShareAppSheetState extends ConsumerState<ShareAppSheet> {
           fit: BoxFit.scaleDown,
           child: RepaintBoundary(
             key: _progressKey,
-            child: ShareProgressCard(highlight: h, qrSvg: _smallQr),
+            child: ShareProgressCard(
+              highlight: h,
+              qrSvg: _smallQr,
+              skin: ref.watch(shareCardSkinProvider) ?? ShareCardSkin.brand,
+            ),
           ),
         ),
       ),
+      const ShareCardThemeSwitch(),
       const SizedBox(height: DsSpacing.lg),
       DsButton(
         label: l.shareImage,

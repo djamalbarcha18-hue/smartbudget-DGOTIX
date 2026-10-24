@@ -5,20 +5,23 @@ import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/features/financial_health/domain/health_engine.dart';
 import 'package:smartbudget/features/share/domain/share_highlight.dart';
+import 'package:smartbudget/features/share/presentation/share_card_skin.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// The shareable "My progress" card. Fixed brand colours (not the theme) so the
-/// exported image looks the same everywhere. 4:5 — fits feeds, stories and
-/// chats; saved at 1080×1350.
+/// The shareable "My progress" card. Brand colours by default (not the theme)
+/// so the exported image looks the same everywhere; a Pro theme's [skin] on
+/// request. 4:5 — fits feeds, stories and chats; saved at 1080×1350.
 class ShareProgressCard extends StatelessWidget {
   const ShareProgressCard({
     super.key,
     required this.highlight,
     required this.qrSvg,
+    this.skin = ShareCardSkin.brand,
   });
 
   final ShareHighlight highlight;
   final String qrSvg;
+  final ShareCardSkin skin;
 
   static const double width = 300;
   static const double height = 375;
@@ -75,15 +78,7 @@ class ShareProgressCard extends StatelessWidget {
       width: width,
       height: height,
       padding: const EdgeInsets.all(22),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: <Color>[Color(0xFF0A1633), Color(0xFF0F4C9E), Color(0xFF1680F7)],
-          stops: <double>[0, 0.6, 1],
-        ),
-      ),
+      decoration: skin.decoration,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -109,7 +104,7 @@ class ShareProgressCard extends StatelessWidget {
               color: const Color(0x26FFFFFF),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(icon, color: _white, size: 24),
+            child: Icon(icon, color: skin.accent, size: 24),
           ),
           const SizedBox(height: 12),
           if (big != null)
@@ -122,7 +117,7 @@ class ShareProgressCard extends StatelessWidget {
                 children: <Widget>[
                   Text(big,
                       style: t.displayMedium?.copyWith(
-                          color: _white,
+                          color: skin.accent,
                           fontWeight: FontWeight.w800,
                           height: 1)),
                   if (unit != null)

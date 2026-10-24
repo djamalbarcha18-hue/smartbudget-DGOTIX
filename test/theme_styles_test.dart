@@ -16,6 +16,7 @@ import 'package:smartbudget/features/billing/domain/feature_gate.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/features/settings/presentation/settings_page.dart';
+import 'package:smartbudget/features/share/presentation/share_card_skin.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Relative luminance contrast between two colours (WCAG).
@@ -107,6 +108,49 @@ void main() {
       c.read(themeStyleProvider);
       await Future<void>.delayed(Duration.zero);
       expect(c.read(themeStyleProvider), AppThemeStyle.beige);
+    });
+  });
+
+  group('share cards in the Pro theme', () {
+    test('every Pro theme has a card skin, white text easy to read', () {
+      expect(ShareCardSkin.ofStyle(AppThemeStyle.classic), isNull);
+      for (final AppThemeStyle style in AppThemeStyle.values) {
+        if (style == AppThemeStyle.classic) continue;
+        final ShareCardSkin skin = ShareCardSkin.ofStyle(style)!;
+        for (final Color bg in skin.gradient) {
+          expect(contrast(Colors.white, bg), greaterThan(4.5),
+              reason: '$style $bg');
+          expect(contrast(skin.accent, bg), greaterThan(4.5),
+              reason: '$style accent on $bg');
+        }
+      }
+    });
+
+    Future<ProviderContainer> container(Plan plan, String style) async {
+      SharedPreferences.setMockInitialValues(
+          <String, Object>{'flutter.sb_theme_style': style});
+      final ProviderContainer c = ProviderContainer(overrides: <Override>[
+        effectivePlanProvider.overrideWithValue(plan),
+      ]);
+      addTearDown(c.dispose);
+      c.read(themeStyleProvider);
+      await Future<void>.delayed(Duration.zero);
+      return c;
+    }
+
+    test('Pro with Black Gold: the card wears it, unless switched off',
+        () async {
+      final ProviderContainer c = await container(Plan.pro, 'black');
+      expect(c.read(shareCardSkinProvider), ShareCardSkin.blackGold);
+      c.read(shareCardUseThemeProvider.notifier).state = false;
+      expect(c.read(shareCardSkinProvider), isNull);
+    });
+
+    test('free plan or Classic: the DGOTIX colours', () async {
+      expect((await container(Plan.free, 'black')).read(shareCardSkinProvider),
+          isNull);
+      expect((await container(Plan.pro, 'classic')).read(shareCardSkinProvider),
+          isNull);
     });
   });
 

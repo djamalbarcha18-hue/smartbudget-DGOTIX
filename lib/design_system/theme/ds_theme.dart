@@ -93,6 +93,19 @@ abstract final class DsTheme {
       dividerTheme: DividerThemeData(color: colors.border, thickness: 1),
       // Icons default to the logo blue across the whole app.
       iconTheme: IconThemeData(color: colors.brand, size: 20),
+      // The chosen segment in the theme's accent (not the savings colour).
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? colors.brand : null),
+          foregroundColor: WidgetStateProperty.resolveWith((states) =>
+              states.contains(WidgetState.selected)
+                  ? colors.onBrand
+                  : colors.textPrimary),
+          side: WidgetStatePropertyAll<BorderSide>(
+              BorderSide(color: colors.borderStrong)),
+        ),
+      ),
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
           color: colors.bgElevated,

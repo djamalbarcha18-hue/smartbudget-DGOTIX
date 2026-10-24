@@ -1593,5 +1593,7 @@
   "themeBeige": "Beige",
   "themeSage": "Sage",
   "themePomegranate": "Pomegranate",
-  "themeBlack": "Black Gold"
+  "themeBlack": "Black Gold",
+  "shareCardThemeColors": "In my theme colours",
+  "shareCardThemeColorsHint": "The card takes your Pro theme; the logo and QR code stay as they are."
 }

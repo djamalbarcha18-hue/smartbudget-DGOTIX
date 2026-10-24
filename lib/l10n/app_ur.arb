@@ -1353,5 +1353,7 @@
   "themeBeige": "بیج",
   "themeSage": "سیج",
   "themePomegranate": "انار",
-  "themeBlack": "سیاہ سنہری"
+  "themeBlack": "سیاہ سنہری",
+  "shareCardThemeColors": "میری تھیم کے رنگوں میں",
+  "shareCardThemeColorsHint": "کارڈ آپ کی Pro تھیم کے رنگ لیتا ہے؛ لوگو اور QR کوڈ ویسے ہی رہتے ہیں۔"
 }
