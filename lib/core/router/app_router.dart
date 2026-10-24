@@ -24,7 +24,6 @@ import 'package:smartbudget/features/markets/presentation/markets_page.dart';
 import 'package:smartbudget/features/monthly_budget/presentation/monthly_budget_page.dart';
 import 'package:smartbudget/features/onboarding/domain/onboarding.dart';
 import 'package:smartbudget/features/onboarding/presentation/onboarding_visit_marker.dart';
-import 'package:smartbudget/features/portfolio/presentation/portfolio_page.dart';
 import 'package:smartbudget/features/recurring/presentation/recurring_auto_poster.dart';
 import 'package:smartbudget/features/recurring/presentation/recurring_page.dart';
 import 'package:smartbudget/features/reports/presentation/reports_page.dart';
@@ -165,9 +164,10 @@ GoRouter buildRouter(Ref ref) {
                 const NoTransitionPage<void>(child: DaretPage()),
           ),
           GoRoute(
+            // The funding plan is part of Financial goals now.
             path: '/portfolio',
             pageBuilder: (BuildContext context, GoRouterState state) =>
-                const NoTransitionPage<void>(child: PortfolioPage()),
+                const NoTransitionPage<void>(child: GoalsPage()),
           ),
           GoRoute(
             path: '/debts',

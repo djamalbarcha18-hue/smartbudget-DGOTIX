@@ -19,6 +19,8 @@ import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/goals/domain/goal_calculator.dart';
 import 'package:smartbudget/features/goals/presentation/goal_editor_sheet.dart';
+import 'package:smartbudget/features/goals/presentation/goals_funding_card.dart';
+import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -29,6 +31,8 @@ class GoalsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final AsyncValue<List<Goal>> async = ref.watch(goalsProvider);
+    // Projects saved on their own before become goals here too.
+    ref.watch(legacyProjectsMoveProvider);
     final AlertFocus? focus = ref.watch(alertFocusProvider);
     final String? focusGoalId =
         (focus != null && focus.route == '/goals') ? focus.key : null;
@@ -70,13 +74,19 @@ class GoalsPage extends ConsumerWidget {
                       icon: Icons.flag_outlined,
                     )
                   : ListView.separated(
-                      itemCount: goals.length,
+                      itemCount: goals.length + 1,
                       separatorBuilder: (_, __) =>
                           const SizedBox(height: DsSpacing.md),
-                      itemBuilder: (BuildContext context, int i) => _GoalCard(
-                        goal: goals[i],
-                        highlighted: goals[i].id == focusGoalId,
-                      ),
+                      // First, in a sentence (free): is the monthly saving
+                      // enough for all of them? Then the goals.
+                      itemBuilder: (BuildContext context, int i) {
+                        if (i == 0) return const GoalsFundingCard();
+                        final Goal g = goals[i - 1];
+                        return _GoalCard(
+                          goal: g,
+                          highlighted: g.id == focusGoalId,
+                        );
+                      },
                     ),
             ),
           ),
