@@ -170,6 +170,20 @@ def trip_other():
                    svg_circle(7.5, 7.5, 0.5))
 
 
+# An organized trip's package (luggage) and internet & phone (smartphone-nfc).
+def trip_package():
+    return stroked("M6 20a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0"
+                   " 0 1-2 2", "M8 18V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v14",
+                   "M10 20h4", svg_circle(16, 20, 2), svg_circle(8, 20, 2))
+
+
+def trip_connectivity():
+    return stroked("M3 6h5a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1"
+                   " 0 0 1 1-1Z", "M13 8.32a7.43 7.43 0 0 1 0 7.36",
+                   "M16.46 6.21a11.76 11.76 0 0 1 0 11.58",
+                   "M19.91 4.1a15.91 15.91 0 0 1 .01 15.8")
+
+
 # A trip's state: taking off while it is planned, landing once it is over.
 def trip_takeoff():
     return stroked("M2 22h20",
@@ -202,6 +216,8 @@ GLYPHS = {
     "trip_other": (0xE009, trip_other),
     "trip_takeoff": (0xE00A, trip_takeoff),
     "trip_landing": (0xE00B, trip_landing),
+    "trip_package": (0xE00C, trip_package),
+    "trip_connectivity": (0xE00D, trip_connectivity),
 }
 
 

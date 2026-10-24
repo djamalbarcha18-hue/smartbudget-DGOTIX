@@ -1388,5 +1388,15 @@
   "goalsFundingSet": "Indiquer votre épargne mensuelle",
   "goalsFundingChange": "Modifier le montant",
   "goalsFundingEnough": "Votre épargne mensuelle ({amount}) couvre tous vos objectifs à temps.",
-  "goalsFundingShort": "Vos objectifs demandent {need} par mois et vous pouvez épargner {can} : il manque {short}. Les plus proches passent en premier — décalez une date ou épargnez un peu plus."
+  "goalsFundingShort": "Vos objectifs demandent {need} par mois et vous pouvez épargner {can} : il manque {short}. Les plus proches passent en premier — décalez une date ou épargnez un peu plus.",
+  "tripItemPackage": "Forfait (vols et hôtel)",
+  "tripItemConnectivity": "Internet et téléphone",
+  "tripKind": "Comment voyagez-vous ?",
+  "tripKindIndependent": "En solo",
+  "tripKindOrganized": "Organisé",
+  "tripKindOrganizedHint": "Avec une agence : un forfait vols et hébergement.",
+  "tripAgency": "Agence de voyage",
+  "tripAirline": "Compagnie aérienne",
+  "tripHotel": "Hôtel",
+  "tripOrganizedWith": "Organisé avec {name}"
 }

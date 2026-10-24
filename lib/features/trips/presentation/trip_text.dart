@@ -98,6 +98,8 @@ Color tripStatusColor(DsColors c, Trip t, DateTime now) =>
 IconData tripItemIcon(TripItem item) => switch (item) {
       TripItem.flights => SbIcons.tripFlights,
       TripItem.stay => SbIcons.tripStay,
+      TripItem.package => SbIcons.tripPackage,
+      TripItem.connectivity => SbIcons.tripConnectivity,
       TripItem.food => SbIcons.tripFood,
       TripItem.transport => SbIcons.tripTransport,
       TripItem.activities => SbIcons.tripActivities,
@@ -109,6 +111,8 @@ IconData tripItemIcon(TripItem item) => switch (item) {
 String tripItemLabel(AppLocalizations l, TripItem item) => switch (item) {
       TripItem.flights => l.tripItemFlights,
       TripItem.stay => l.tripItemStay,
+      TripItem.package => l.tripItemPackage,
+      TripItem.connectivity => l.tripItemConnectivity,
       TripItem.food => l.tripItemFood,
       TripItem.transport => l.tripItemTransport,
       TripItem.activities => l.tripItemActivities,
@@ -122,6 +126,8 @@ String tripItemLabel(AppLocalizations l, TripItem item) => switch (item) {
 Color tripItemColor(TripItem item) => switch (item) {
       TripItem.flights => const Color(0xFF3B82F6), // blue
       TripItem.stay => const Color(0xFFF59E0B), // amber
+      TripItem.package => const Color(0xFF2563EB), // deep blue
+      TripItem.connectivity => const Color(0xFF06B6D4), // cyan
       TripItem.food => const Color(0xFF10B981), // emerald
       TripItem.transport => const Color(0xFF8B5CF6), // violet
       TripItem.activities => const Color(0xFF14B8A6), // teal
@@ -148,6 +154,11 @@ String? tripCountryName(AppLocalizations l, String code) => switch (code) {
       'TN' => l.tripCountryTN,
       'GE' => l.tripCountryGE,
       _ => null,
+    };
+
+String tripKindLabel(AppLocalizations l, TripKind kind) => switch (kind) {
+      TripKind.independent => l.tripKindIndependent,
+      TripKind.organized => l.tripKindOrganized,
     };
 
 String tripLevelLabel(AppLocalizations l, TripLevel level) => switch (level) {

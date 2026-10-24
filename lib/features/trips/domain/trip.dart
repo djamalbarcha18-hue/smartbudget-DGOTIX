@@ -7,6 +7,10 @@ import 'package:smartbudget/features/trips/domain/trip_item.dart';
 /// prices).
 enum TripLevel { economy, standard, luxury }
 
+/// Organized by the traveller, or with an agency's package (flights and
+/// stay together).
+enum TripKind { independent, organized }
+
 /// A trip: where to, when, and optionally how much it should cost. Expenses
 /// made for it carry its id ([Transaction.tripId]).
 class Trip {
@@ -23,6 +27,10 @@ class Trip {
     this.sharedAt,
     this.level,
     this.split,
+    this.kind = TripKind.independent,
+    this.agency,
+    this.airline,
+    this.hotel,
   });
 
   final String id;
@@ -55,6 +63,16 @@ class Trip {
   /// ([TripItems.splitOf]).
   final Map<TripItem, int>? split;
 
+  /// Independent, or organized with an agency.
+  final TripKind kind;
+
+  /// Who it is with, as the user typed it (an organized trip's agency, the
+  /// airline, the hotel): kept for the summary, and where partner offers
+  /// can show later.
+  final String? agency;
+  final String? airline;
+  final String? hotel;
+
   Trip copyWith({String? goalId, bool clearGoal = false, DateTime? sharedAt}) =>
       Trip(
         id: id,
@@ -69,6 +87,10 @@ class Trip {
         sharedAt: sharedAt ?? this.sharedAt,
         level: level,
         split: split,
+        kind: kind,
+        agency: agency,
+        airline: airline,
+        hotel: hotel,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -89,11 +111,19 @@ class Trip {
             for (final MapEntry<TripItem, int> e in split!.entries)
               e.key.name: e.value,
           },
+        if (kind != TripKind.independent) 'kind': kind.name,
+        if (agency != null) 'agency': agency,
+        if (airline != null) 'airline': airline,
+        if (hotel != null) 'hotel': hotel,
       };
 
   factory Trip.fromJson(Map<String, dynamic> j) {
     final DateTime start = _parseDay(j['start']);
     final DateTime end = _parseDay(j['end']);
+    final TripKind kind = TripKind.values
+            .where((TripKind k) => k.name == j['kind'])
+            .firstOrNull ??
+        TripKind.independent;
     return Trip(
       id: j['id'] as String,
       name: (j['name'] as String?) ?? '',
@@ -112,7 +142,11 @@ class Trip {
       level: TripLevel.values
           .where((TripLevel v) => v.name == j['level'])
           .firstOrNull,
-      split: TripItems.parse(j['split']),
+      split: TripItems.parse(j['split'], kind),
+      kind: kind,
+      agency: j['agency'] as String?,
+      airline: j['airline'] as String?,
+      hotel: j['hotel'] as String?,
     );
   }
 

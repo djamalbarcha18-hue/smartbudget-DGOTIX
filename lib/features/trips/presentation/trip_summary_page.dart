@@ -11,6 +11,7 @@ import 'package:smartbudget/design_system/components/ds_back_button.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -239,6 +240,14 @@ class _Hero extends StatelessWidget {
                           meta),
                     _Meta(tripStatusIcon(TripMath.status(trip, AppClock.now())),
                         trip.name, meta),
+                    // With whom: the agency of an organized trip.
+                    if (trip.kind == TripKind.organized)
+                      _Meta(
+                          SbIcons.tripPackage,
+                          trip.agency == null
+                              ? tripKindLabel(l, trip.kind)
+                              : l.tripOrganizedWith(trip.agency!),
+                          meta),
                   ],
                 ),
               ],

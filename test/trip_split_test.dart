@@ -94,7 +94,11 @@ void main() {
       final Map<TripItem, int> back =
           TripItems.withShare(all, TripItem.stay, 40);
       expect(sum(back), 100);
-      expect(back[TripItem.flights], 10);
+      // The other seven share 60 evenly (8 or 9 each).
+      final Iterable<int> rest = back.entries
+          .where((MapEntry<TripItem, int> e) => e.key != TripItem.stay)
+          .map((MapEntry<TripItem, int> e) => e.value);
+      expect(rest.every((int v) => v == 8 || v == 9), isTrue);
     });
 
     test('saved and read back; a broken split is ignored', () {
@@ -111,6 +115,55 @@ void main() {
     });
   });
 
+  group('an organized trip', () {
+    test('a package instead of flights and stay, and internet for all', () {
+      final Map<TripItem, int> org =
+          TripItems.suggested(TripLevel.standard, 7, TripKind.organized);
+      expect(org.keys, TripItems.plannedOrganized);
+      expect(sum(org), 100);
+      expect(org[TripItem.package], 65);
+      expect(org.containsKey(TripItem.flights), isFalse);
+      for (final TripLevel? level in <TripLevel?>[null, ...TripLevel.values]) {
+        for (final int days in <int>[2, 7, 14]) {
+          expect(
+              sum(TripItems.suggested(level, days, TripKind.organized)), 100);
+        }
+      }
+      expect(TripItems.suggested(null, 7)[TripItem.connectivity], 3);
+    });
+
+    test('flights and stay count as its package; kind and who saved', () {
+      expect(TripItems.of('السفر', TripKind.organized), TripItem.package);
+      expect(TripItems.of('السكن', TripKind.organized), TripItem.package);
+      expect(TripItems.of('الاتصالات والإنترنت'), TripItem.connectivity);
+      final Trip t = Trip(
+        id: 'a', // the expenses' trip
+        name: 'Umrah',
+        destination: 'Makkah',
+        start: today,
+        end: today.add(const Duration(days: 9)),
+        createdAt: DateTime(2026),
+        plannedBudget: const Money(300000, 'USD'),
+        kind: TripKind.organized,
+        agency: 'Al Noor Travel',
+        hotel: 'Near the Haram',
+      );
+      final Trip back = Trip.fromJson(t.toJson());
+      expect(back.kind, TripKind.organized);
+      expect(back.agency, 'Al Noor Travel');
+      expect(back.hotel, 'Near the Haram');
+      expect(back.airline, isNull);
+      expect(Trip.fromJson(trip().toJson()).kind, TripKind.independent);
+      final TripReport r = TripReport.of(
+          t,
+          <Transaction>[spend('1', 1900, 'السفر'), spend('2', 40, 'السكن')],
+          now,
+          currency: 'USD');
+      expect(r.plan.first.item, TripItem.package);
+      expect(r.plan.first.spent, const Money(194000, 'USD'));
+    });
+  });
+
   group('items from categories', () {
     test('every expense category counts under one item', () {
       expect(TripItems.of('السفر'), TripItem.flights);
@@ -122,8 +175,11 @@ void main() {
       expect(TripItems.of('الفواتير'), TripItem.other);
       for (final TripItem i in TripItem.values) {
         final String cat = TripItems.categoryOf(i);
+        final TripKind kind =
+            i == TripItem.package ? TripKind.organized : TripKind.independent;
         expect(Catalog.expenseCategories, contains(cat));
-        expect(TripItems.of(cat), i); // picked as an item, read back as it
+        // Picked as an item, read back as it.
+        expect(TripItems.of(cat, kind), i);
       }
     });
   });
@@ -173,6 +229,7 @@ void main() {
         TripItem.food: 30,
         TripItem.transport: 5,
         TripItem.activities: 0,
+        TripItem.connectivity: 0,
         TripItem.gifts: 25,
         TripItem.emergency: 0,
       };
@@ -180,13 +237,13 @@ void main() {
           trip(budget: 2000, split: s), txns.take(5).toList(), now,
           currency: 'USD');
       expect(r.tip, isNull);
-      expect(r.plan.length, 7); // no "other" without spending on it
+      expect(r.plan.length, 8); // no "other" without spending on it
     });
 
     test('a little over (5% or less) is not flagged', () {
-      // Standard week, 1,400: food gets 238; 240 is 2 over.
+      // Standard week, 1,400: food gets 224 (16%); 230 is 6 over.
       final TripReport r = TripReport.of(
-          trip(budget: 1400), <Transaction>[spend('1', 240, 'المطاعم')], now,
+          trip(budget: 1400), <Transaction>[spend('1', 230, 'المطاعم')], now,
           currency: 'USD');
       final TripItemPlan food =
           r.plan.firstWhere((TripItemPlan p) => p.item == TripItem.food);

@@ -1588,5 +1588,15 @@
   "goalsFundingSet": "حدّد ما تستطيع ادّخاره شهريًا",
   "goalsFundingChange": "تعديل المبلغ",
   "goalsFundingEnough": "ادخارك الشهري ({amount}) يكفي كل أهدافك في وقتها.",
-  "goalsFundingShort": "أهدافك تحتاج {need} شهريًا وتستطيع ادّخار {can}: ينقصك {short}. الأهداف الأقرب أولًا — أجّل موعد هدف أو زِد ادخارك قليلًا."
+  "goalsFundingShort": "أهدافك تحتاج {need} شهريًا وتستطيع ادّخار {can}: ينقصك {short}. الأهداف الأقرب أولًا — أجّل موعد هدف أو زِد ادخارك قليلًا.",
+  "tripItemPackage": "الباقة (طيران وإقامة)",
+  "tripItemConnectivity": "الإنترنت والهاتف",
+  "tripKind": "كيف ستسافر؟",
+  "tripKindIndependent": "رحلة حرّة",
+  "tripKindOrganized": "رحلة منظّمة",
+  "tripKindOrganizedHint": "مع وكالة سفر: باقة تشمل الطيران والإقامة.",
+  "tripAgency": "وكالة السفر",
+  "tripAirline": "شركة الطيران",
+  "tripHotel": "الفندق",
+  "tripOrganizedWith": "منظّمة مع {name}"
 }

@@ -132,6 +132,15 @@ class _TransactionEditorSheetState
 
   bool get _isIncome => widget.type == TransactionType.income;
 
+  /// The linked trip's kind (its items: flights and stay, or a package).
+  TripKind _tripKind() {
+    final List<Trip> trips =
+        ref.read(tripsProvider).valueOrNull ?? const <Trip>[];
+    final String? id = _tripId(trips);
+    return trips.where((Trip t) => t.id == id).firstOrNull?.kind ??
+        TripKind.independent;
+  }
+
   String? _tripId(List<Trip> trips) {
     if (_isIncome) return null;
     if (_tripTouched) return _tripChoice;
@@ -349,8 +358,10 @@ class _TransactionEditorSheetState
                               const <Trip>[]) !=
                           null) ...<Widget>[
                     _TripItemChips(
-                      selected:
-                          _category == null ? null : TripItems.of(_category!),
+                      kind: _tripKind(),
+                      selected: _category == null
+                          ? null
+                          : TripItems.of(_category!, _tripKind()),
                       onPick: (TripItem i) =>
                           setState(() => _category = TripItems.categoryOf(i)),
                     ),
@@ -786,7 +797,9 @@ class _TripDropdown extends ConsumerWidget {
 
 /// The trip's items as chips (flights, stay…), above the category.
 class _TripItemChips extends StatelessWidget {
-  const _TripItemChips({required this.selected, required this.onPick});
+  const _TripItemChips(
+      {required this.kind, required this.selected, required this.onPick});
+  final TripKind kind;
   final TripItem? selected;
   final ValueChanged<TripItem> onPick;
 
@@ -804,7 +817,7 @@ class _TripItemChips extends StatelessWidget {
           spacing: DsSpacing.xs,
           runSpacing: DsSpacing.xs,
           children: <Widget>[
-            for (final TripItem i in TripItems.planned)
+            for (final TripItem i in TripItems.plannedFor(kind))
               ChoiceChip(
                 avatar: Icon(tripItemIcon(i),
                     size: 16,

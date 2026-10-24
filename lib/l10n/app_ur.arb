@@ -1388,5 +1388,15 @@
   "goalsFundingSet": "ماہانہ بچت درج کریں",
   "goalsFundingChange": "رقم تبدیل کریں",
   "goalsFundingEnough": "آپ کی ماہانہ بچت ({amount}) وقت پر سب اہداف کے لیے کافی ہے۔",
-  "goalsFundingShort": "آپ کے اہداف کو ماہانہ {need} چاہیے اور آپ {can} بچا سکتے ہیں: {short} کم ہے۔ قریب ترین اہداف پہلے — کوئی تاریخ آگے کریں یا تھوڑی زیادہ بچت کریں۔"
+  "goalsFundingShort": "آپ کے اہداف کو ماہانہ {need} چاہیے اور آپ {can} بچا سکتے ہیں: {short} کم ہے۔ قریب ترین اہداف پہلے — کوئی تاریخ آگے کریں یا تھوڑی زیادہ بچت کریں۔",
+  "tripItemPackage": "پیکج (پرواز اور قیام)",
+  "tripItemConnectivity": "انٹرنیٹ اور فون",
+  "tripKind": "آپ کیسے سفر کریں گے؟",
+  "tripKindIndependent": "خود سے",
+  "tripKindOrganized": "منظم ٹور",
+  "tripKindOrganizedHint": "ٹریول ایجنسی کے ساتھ: پرواز اور قیام والا پیکج۔",
+  "tripAgency": "ٹریول ایجنسی",
+  "tripAirline": "ایئر لائن",
+  "tripHotel": "ہوٹل",
+  "tripOrganizedWith": "{name} کے ساتھ منظم"
 }

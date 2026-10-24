@@ -1388,5 +1388,15 @@
   "goalsFundingSet": "Indica tu ahorro mensual",
   "goalsFundingChange": "Cambiar el importe",
   "goalsFundingEnough": "Tu ahorro mensual ({amount}) alcanza para todas tus metas a tiempo.",
-  "goalsFundingShort": "Tus metas necesitan {need} al mes y puedes ahorrar {can}: faltan {short}. Las más cercanas van primero; mueve una fecha o ahorra un poco más."
+  "goalsFundingShort": "Tus metas necesitan {need} al mes y puedes ahorrar {can}: faltan {short}. Las más cercanas van primero; mueve una fecha o ahorra un poco más.",
+  "tripItemPackage": "Paquete (vuelos y alojamiento)",
+  "tripItemConnectivity": "Internet y teléfono",
+  "tripKind": "¿Cómo viajas?",
+  "tripKindIndependent": "Por mi cuenta",
+  "tripKindOrganized": "Organizado",
+  "tripKindOrganizedHint": "Con una agencia: un paquete con vuelos y alojamiento.",
+  "tripAgency": "Agencia de viajes",
+  "tripAirline": "Aerolínea",
+  "tripHotel": "Hotel",
+  "tripOrganizedWith": "Organizado con {name}"
 }

@@ -1388,5 +1388,15 @@
   "goalsFundingSet": "Aylık birikimini gir",
   "goalsFundingChange": "Tutarı değiştir",
   "goalsFundingEnough": "Aylık birikimin ({amount}) tüm hedeflerine zamanında yetiyor.",
-  "goalsFundingShort": "Hedeflerin ayda {need} istiyor, sen {can} biriktirebiliyorsun: {short} eksik. En yakınlar önce gelir — bir tarihi ertele ya da biraz daha biriktir."
+  "goalsFundingShort": "Hedeflerin ayda {need} istiyor, sen {can} biriktirebiliyorsun: {short} eksik. En yakınlar önce gelir — bir tarihi ertele ya da biraz daha biriktir.",
+  "tripItemPackage": "Paket (uçuş ve konaklama)",
+  "tripItemConnectivity": "İnternet ve telefon",
+  "tripKind": "Nasıl seyahat ediyorsun?",
+  "tripKindIndependent": "Kendim",
+  "tripKindOrganized": "Organize tur",
+  "tripKindOrganizedHint": "Bir seyahat acentesiyle: uçuş ve konaklama dahil paket.",
+  "tripAgency": "Seyahat acentesi",
+  "tripAirline": "Havayolu",
+  "tripHotel": "Otel",
+  "tripOrganizedWith": "{name} ile organize"
 }

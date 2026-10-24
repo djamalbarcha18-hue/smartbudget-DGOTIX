@@ -1388,5 +1388,15 @@
   "goalsFundingSet": "Tetapkan simpanan bulanan anda",
   "goalsFundingChange": "Tukar jumlah",
   "goalsFundingEnough": "Simpanan bulanan anda ({amount}) cukup untuk semua matlamat tepat pada masanya.",
-  "goalsFundingShort": "Matlamat anda perlukan {need} sebulan dan anda boleh simpan {can}: kurang {short}. Yang terdekat didahulukan — anjak tarikh atau simpan sedikit lagi."
+  "goalsFundingShort": "Matlamat anda perlukan {need} sebulan dan anda boleh simpan {can}: kurang {short}. Yang terdekat didahulukan — anjak tarikh atau simpan sedikit lagi.",
+  "tripItemPackage": "Pakej (penerbangan & penginapan)",
+  "tripItemConnectivity": "Internet & telefon",
+  "tripKind": "Bagaimana anda melancong?",
+  "tripKindIndependent": "Sendiri",
+  "tripKindOrganized": "Pakej",
+  "tripKindOrganizedHint": "Dengan agensi pelancongan: pakej penerbangan dan penginapan.",
+  "tripAgency": "Agensi pelancongan",
+  "tripAirline": "Syarikat penerbangan",
+  "tripHotel": "Hotel",
+  "tripOrganizedWith": "Bersama {name}"
 }

@@ -552,7 +552,7 @@ void main() {
       await tester.tap(find.text('Adjust'));
       await tester.pumpAndSettle();
       final Finder sliders = find.byType(Slider);
-      expect(sliders, findsNWidgets(8)); // the days, then the 7 items
+      expect(sliders, findsNWidgets(9)); // the days, then the 8 items
       // No flights (a road trip): the rest share it out.
       tester.widget<Slider>(sliders.at(1)).onChanged!(0);
       await tester.pumpAndSettle();

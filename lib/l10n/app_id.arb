@@ -1388,5 +1388,15 @@
   "goalsFundingSet": "Atur tabungan bulanan Anda",
   "goalsFundingChange": "Ubah jumlah",
   "goalsFundingEnough": "Tabungan bulanan Anda ({amount}) cukup untuk semua tujuan tepat waktu.",
-  "goalsFundingShort": "Tujuan Anda butuh {need} per bulan dan Anda bisa menabung {can}: kurang {short}. Yang terdekat didahulukan — undur tanggal atau tambah tabungan sedikit."
+  "goalsFundingShort": "Tujuan Anda butuh {need} per bulan dan Anda bisa menabung {can}: kurang {short}. Yang terdekat didahulukan — undur tanggal atau tambah tabungan sedikit.",
+  "tripItemPackage": "Paket (tiket & penginapan)",
+  "tripItemConnectivity": "Internet & telepon",
+  "tripKind": "Bagaimana Anda bepergian?",
+  "tripKindIndependent": "Mandiri",
+  "tripKindOrganized": "Paket tur",
+  "tripKindOrganizedHint": "Dengan agen perjalanan: paket tiket dan penginapan.",
+  "tripAgency": "Agen perjalanan",
+  "tripAirline": "Maskapai",
+  "tripHotel": "Hotel",
+  "tripOrganizedWith": "Bersama {name}"
 }

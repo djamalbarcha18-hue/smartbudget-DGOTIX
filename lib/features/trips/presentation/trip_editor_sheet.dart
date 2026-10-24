@@ -63,6 +63,17 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
   late int _days =
       widget.existing == null ? 7 : TripDays.total(widget.existing!);
   late TripLevel? _level = widget.existing?.level;
+
+  /// Independent or organized; a new trip to Mecca or Medina starts as
+  /// organized (usually with an agency) until the user picks.
+  late TripKind _kind = widget.existing?.kind ?? TripKind.independent;
+  bool _kindTouched = false;
+  late final TextEditingController _agency =
+      TextEditingController(text: widget.existing?.agency ?? '');
+  late final TextEditingController _airline =
+      TextEditingController(text: widget.existing?.airline ?? '');
+  late final TextEditingController _hotel =
+      TextEditingController(text: widget.existing?.hotel ?? '');
   DateTime get _end => _start.add(Duration(days: _days - 1));
 
   /// The slider goes to 30 days, further for a longer trip being edited.
@@ -74,7 +85,16 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
   /// up with the level and the number of days.
   late Map<TripItem, int>? _split = widget.existing?.split;
   Map<TripItem, int> get _effectiveSplit =>
-      _split ?? TripItems.suggested(_level, _days);
+      _split ?? TripItems.suggested(_level, _days, _kind);
+
+  void _setKind(TripKind k) {
+    if (k == _kind) return;
+    _kind = k;
+    _split = null; // other items: back to the suggested split
+  }
+
+  static String? _text(TextEditingController c) =>
+      c.text.trim().isEmpty ? null : c.text.trim();
 
   static DateTime get _today {
     final DateTime n = AppClock.now();
@@ -89,6 +109,9 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
   @override
   void dispose() {
     _name.dispose();
+    _agency.dispose();
+    _airline.dispose();
+    _hotel.dispose();
     _budget.dispose();
     super.dispose();
   }
@@ -129,6 +152,10 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
           sharedAt: widget.existing?.sharedAt,
           level: _level,
           split: _split,
+          kind: _kind,
+          agency: _kind == TripKind.organized ? _text(_agency) : null,
+          airline: _text(_airline),
+          hotel: _text(_hotel),
         ));
     if (mounted) Navigator.of(context).pop();
   }
@@ -194,6 +221,13 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
                 errorText: _needPlace ? l.tripNeedPlace : null,
                 onChanged: (String? v) => setState(() {
                   _destination = v;
+                  // Umrah and Hajj usually go with an agency.
+                  if (!_kindTouched && widget.existing == null) {
+                    _setKind(<String>{'mecca', 'medina'}
+                            .contains(catalog.byText(v ?? '')?.id)
+                        ? TripKind.organized
+                        : TripKind.independent);
+                  }
                   if (v != null) _needPlace = false;
                 }),
               ),
@@ -276,6 +310,61 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
                     ],
                   ),
                 ],
+              ),
+              const SizedBox(height: DsSpacing.md),
+              Text(l.tripKind,
+                  style: t.labelMedium?.copyWith(color: c.textMuted)),
+              const SizedBox(height: DsSpacing.xs),
+              SegmentedButton<TripKind>(
+                showSelectedIcon: false,
+                segments: <ButtonSegment<TripKind>>[
+                  for (final TripKind k in TripKind.values)
+                    ButtonSegment<TripKind>(
+                      value: k,
+                      icon: Icon(
+                          k == TripKind.organized
+                              ? SbIcons.tripPackage
+                              : SbIcons.tripTakeoff,
+                          size: 18),
+                      label: Text(tripKindLabel(l, k)),
+                    ),
+                ],
+                selected: <TripKind>{_kind},
+                onSelectionChanged: (Set<TripKind> v) => setState(() {
+                  _kindTouched = true;
+                  _setKind(v.first);
+                }),
+              ),
+              // Who with: typed for now; partners can be offered here later.
+              if (_kind == TripKind.organized) ...<Widget>[
+                const SizedBox(height: DsSpacing.xs),
+                Text(l.tripKindOrganizedHint,
+                    style: t.bodySmall?.copyWith(color: c.textMuted)),
+                const SizedBox(height: DsSpacing.xs),
+                TextField(
+                  controller: _agency,
+                  textCapitalization: TextCapitalization.words,
+                  decoration: InputDecoration(
+                    labelText: '${l.tripAgency} (${l.optional})',
+                    prefixIcon: const Icon(SbIcons.tripPackage, size: 18),
+                  ),
+                ),
+              ],
+              TextField(
+                controller: _airline,
+                textCapitalization: TextCapitalization.words,
+                decoration: InputDecoration(
+                  labelText: '${l.tripAirline} (${l.optional})',
+                  prefixIcon: const Icon(SbIcons.tripFlights, size: 18),
+                ),
+              ),
+              TextField(
+                controller: _hotel,
+                textCapitalization: TextCapitalization.words,
+                decoration: InputDecoration(
+                  labelText: '${l.tripHotel} (${l.optional})',
+                  prefixIcon: const Icon(SbIcons.tripStay, size: 18),
+                ),
               ),
               const SizedBox(height: DsSpacing.md),
               Text('${l.tripLevel} (${l.optional})',
@@ -467,12 +556,12 @@ class _SplitEditorState extends State<_SplitEditor> {
         final double? typed = parseAmount(v.text);
         if (typed == null || typed <= 0) return const SizedBox.shrink();
         final Money budget = Money.fromDouble(typed, widget.currency);
+        final List<TripItem> items = widget.split.keys.toList();
         final List<int> parts = TripItems.shares(budget.minorUnits, <double>[
-          for (final TripItem i in TripItems.planned)
-            (widget.split[i] ?? 0).toDouble(),
+          for (final TripItem i in items) (widget.split[i] ?? 0).toDouble(),
         ]);
-        String amount(TripItem i) => MoneyFormatter.format(Money(
-            parts[TripItems.planned.indexOf(i)], widget.currency));
+        String amount(TripItem i) => MoneyFormatter.format(
+            Money(parts[items.indexOf(i)], widget.currency));
 
         return Container(
           margin: const EdgeInsetsDirectional.only(top: DsSpacing.sm),
@@ -510,7 +599,7 @@ class _SplitEditorState extends State<_SplitEditor> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    for (final TripItem i in TripItems.planned)
+                    for (final TripItem i in items)
                       if ((widget.split[i] ?? 0) > 0)
                         Expanded(
                           flex: widget.split[i]!,
@@ -531,7 +620,7 @@ class _SplitEditorState extends State<_SplitEditor> {
                   spacing: DsSpacing.md,
                   runSpacing: DsSpacing.xs,
                   children: <Widget>[
-                    for (final TripItem i in TripItems.planned)
+                    for (final TripItem i in items)
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
@@ -546,7 +635,7 @@ class _SplitEditorState extends State<_SplitEditor> {
                   ],
                 )
               else ...<Widget>[
-                for (final TripItem i in TripItems.planned)
+                for (final TripItem i in items)
                   Padding(
                     padding: const EdgeInsets.only(top: DsSpacing.xs),
                     child: Column(

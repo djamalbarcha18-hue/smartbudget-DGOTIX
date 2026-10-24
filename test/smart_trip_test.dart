@@ -320,7 +320,7 @@ void main() {
       await tester.pumpAndSettle();
       // The search field gives way to the chosen place: name, then budget.
       await tester.enterText(find.byType(TextField).at(0), 'Fjords');
-      await tester.enterText(find.byType(TextField).at(1), '1200');
+      await tester.enterText(find.byType(TextField).last, '1200'); // budget
       await tester.ensureVisible(find.text('Save'));
       await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();

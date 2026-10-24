@@ -86,7 +86,7 @@ class TripReport {
       final int minor = x.inCurrency(cur)?.amount.minorUnits ?? 0;
       if (minor == 0) continue;
       total += minor;
-      final TripItem item = TripItems.of(x.category);
+      final TripItem item = TripItems.of(x.category, t.kind);
       byItem[item] = (byItem[item] ?? 0) + minor;
     }
     final List<TripItemShare> cats = <TripItemShare>[
@@ -100,11 +100,12 @@ class TripReport {
     final List<TripItemPlan> plan = <TripItemPlan>[];
     if (budget != null && budget.minorUnits > 0) {
       final Map<TripItem, int> split = TripItems.splitOf(t);
+      final List<TripItem> items = TripItems.plannedFor(t.kind);
       final List<int> parts = TripItems.shares(budget.minorUnits, <double>[
-        for (final TripItem i in TripItems.planned) (split[i] ?? 0).toDouble(),
+        for (final TripItem i in items) (split[i] ?? 0).toDouble(),
       ]);
-      for (int k = 0; k < TripItems.planned.length; k++) {
-        final TripItem i = TripItems.planned[k];
+      for (int k = 0; k < items.length; k++) {
+        final TripItem i = items[k];
         plan.add(TripItemPlan(i, split[i] ?? 0, Money(parts[k], cur),
             Money(byItem[i] ?? 0, cur)));
       }

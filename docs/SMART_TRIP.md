@@ -83,6 +83,15 @@ around, activities, souvenirs & gifts, emergencies (`TripItem`,
   tip: the item furthest over and the one with the most left to cover it
   (also on the home card while the trip is under way; hidden in percentage
   mode).
+- **Internet & phone** is an item of every trip (a SIM or an eSIM plan;
+  category الاتصالات والإنترنت), about 3% of the suggested split.
+- **Organized trips:** "How are you travelling?" — on my own, or organized
+  with an agency. An organized trip has one **package** item (flights and
+  stay; السفر and السكن count under it) instead of flights and stay
+  (suggested 65% in a standard week). Optional travel agency, airline and
+  hotel, typed by the user and shown on the summary ("Organized with …");
+  later the place to offer partners (agencies, airlines, hotels, eSIM). A
+  new trip to Mecca or Medina starts as organized (Umrah and Hajj).
 - Icons: Lucide line icons in the app's own icon font (SbIcons, ISC).
 
 ## Destinations

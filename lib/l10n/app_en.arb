@@ -1635,5 +1635,16 @@
   "goalsFundingEnough": "What you save each month ({amount}) covers all your goals on time.",
   "@goalsFundingEnough": {"placeholders": {"amount": {"type": "String"}}},
   "goalsFundingShort": "Your goals need {need} a month and you can save {can}: {short} short. The nearest goals come first — move a date or save a little more.",
-  "@goalsFundingShort": {"placeholders": {"need": {"type": "String"}, "can": {"type": "String"}, "short": {"type": "String"}}}
+  "@goalsFundingShort": {"placeholders": {"need": {"type": "String"}, "can": {"type": "String"}, "short": {"type": "String"}}},
+  "tripItemPackage": "Package (flights & stay)",
+  "tripItemConnectivity": "Internet & phone",
+  "tripKind": "How are you travelling?",
+  "tripKindIndependent": "On my own",
+  "tripKindOrganized": "Organized",
+  "tripKindOrganizedHint": "With a travel agency: a package with flights and stay.",
+  "tripAgency": "Travel agency",
+  "tripAirline": "Airline",
+  "tripHotel": "Hotel",
+  "tripOrganizedWith": "Organized with {name}",
+  "@tripOrganizedWith": {"placeholders": {"name": {"type": "String"}}}
 }
