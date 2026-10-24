@@ -1171,7 +1171,7 @@
   "usageQuotaUsed": "{limit} yanıttan {used} tanesi kullanıldı",
   "usageQuotaMonthly": "Her ayın başında sıfırlanır.",
   "usageQuotaLifetime": "Tek seferlik deneme hakkı.",
-  "planFeatFreeLimits": "Tek para biriminde {wallets} cüzdan · {budgets} kategori bütçesi · 1 hedef",
+  "planFeatFreeLimits": "Tek para biriminde {wallets} cüzdan · {budgets} kategori bütçesi · 2 hedef",
   "planFeatZakatFree": "Zekât hesaplayıcı ve uygulama kilidi, her zaman ücretsiz",
   "planFeatUnlimited": "Sınırsız cüzdan, bütçe, hedef, borç ve gün",
   "planFeatMultiCurrency": "Dünyanın her para biriminde cüzdanlar",

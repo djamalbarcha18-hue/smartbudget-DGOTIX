@@ -109,7 +109,7 @@ void main() {
       const Map<Feature, int> freeLimits = <Feature, int>{
         Feature.wallets: 2,
         Feature.categoryBudgets: 5,
-        Feature.goals: 1,
+        Feature.goals: 2,
         Feature.debts: 2,
         Feature.darets: 1,
         Feature.seasons: 1,

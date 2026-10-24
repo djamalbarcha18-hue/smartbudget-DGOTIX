@@ -1379,7 +1379,7 @@
   "@usageQuotaUsed": {"placeholders": {"used": {"type": "int"}, "limit": {"type": "int"}}},
   "usageQuotaMonthly": "Resets at the start of every month.",
   "usageQuotaLifetime": "One-time trial allowance.",
-  "planFeatFreeLimits": "{wallets} wallets in one currency · {budgets} category budgets · 1 goal",
+  "planFeatFreeLimits": "{wallets} wallets in one currency · {budgets} category budgets · 2 goals",
   "@planFeatFreeLimits": { "placeholders": { "wallets": { "type": "int" }, "budgets": { "type": "int" } } },
   "planFeatZakatFree": "Zakat calculator and app lock, always free",
   "planFeatUnlimited": "Unlimited wallets, budgets, goals, debts and savings circles",

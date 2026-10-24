@@ -1171,7 +1171,7 @@
   "usageQuotaUsed": "{used} daripada {limit} jawapan digunakan",
   "usageQuotaMonthly": "Diset semula pada awal setiap bulan.",
   "usageQuotaLifetime": "Peruntukan percubaan sekali sahaja.",
-  "planFeatFreeLimits": "{wallets} dompet dalam satu mata wang · {budgets} bajet kategori · 1 matlamat",
+  "planFeatFreeLimits": "{wallets} dompet dalam satu mata wang · {budgets} bajet kategori · 2 matlamat",
   "planFeatZakatFree": "Kalkulator zakat dan kunci aplikasi, sentiasa percuma",
   "planFeatUnlimited": "Dompet, bajet, matlamat, hutang dan kutu tanpa had",
   "planFeatMultiCurrency": "Dompet dalam setiap mata wang dunia",

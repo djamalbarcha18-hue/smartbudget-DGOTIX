@@ -1171,7 +1171,7 @@
   "usageQuotaUsed": "{used} réponses utilisées sur {limit}",
   "usageQuotaMonthly": "Réinitialisé au début de chaque mois.",
   "usageQuotaLifetime": "Crédit d'essai unique.",
-  "planFeatFreeLimits": "{wallets} portefeuilles dans une devise · {budgets} budgets par catégorie · 1 objectif",
+  "planFeatFreeLimits": "{wallets} portefeuilles dans une devise · {budgets} budgets par catégorie · 2 objectifs",
   "planFeatZakatFree": "Calcul de la zakat et verrouillage de l'application, toujours gratuits",
   "planFeatUnlimited": "Portefeuilles, budgets, objectifs, dettes et tontines illimités",
   "planFeatMultiCurrency": "Portefeuilles dans toutes les devises arabes et mondiales",

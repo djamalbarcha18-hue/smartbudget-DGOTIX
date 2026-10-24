@@ -1371,7 +1371,7 @@
   "@usageQuotaUsed": {"placeholders": {"used": {"type": "int"}, "limit": {"type": "int"}}},
   "usageQuotaMonthly": "يتجدّد الرصيد في بداية كل شهر.",
   "usageQuotaLifetime": "رصيد تجريبي لمرة واحدة.",
-  "planFeatFreeLimits": "{wallets} محفظة بعملة واحدة · {budgets} ميزانيات للفئات · هدف واحد",
+  "planFeatFreeLimits": "{wallets} محفظة بعملة واحدة · {budgets} ميزانيات للفئات · هدفان",
   "planFeatZakatFree": "حاسبة الزكاة وقفل التطبيق مجاناً دائماً",
   "planFeatUnlimited": "محافظ وميزانيات وأهداف وديون وجمعيات بلا حدود",
   "planFeatMultiCurrency": "محافظ بكل العملات العربية والعالمية",

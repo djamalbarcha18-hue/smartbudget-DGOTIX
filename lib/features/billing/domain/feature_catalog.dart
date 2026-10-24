@@ -197,10 +197,11 @@ abstract final class FeatureCatalog {
       minTier: Plan.free,
       quotas: _freeItems5,
     ),
+    // Two goals free (with the funding line above them); more on Pro.
     Feature.goals: FeatureRule(
       feature: Feature.goals,
       minTier: Plan.free,
-      quotas: _freeItems1,
+      quotas: _freeItems2,
     ),
     Feature.debts: FeatureRule(
       feature: Feature.debts,

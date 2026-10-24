@@ -1171,7 +1171,7 @@
   "usageQuotaUsed": "{used} de {limit} respuestas usadas",
   "usageQuotaMonthly": "Se reinicia al comienzo de cada mes.",
   "usageQuotaLifetime": "Saldo de prueba de una sola vez.",
-  "planFeatFreeLimits": "{wallets} billeteras en una moneda · {budgets} presupuestos por categoría · 1 meta",
+  "planFeatFreeLimits": "{wallets} billeteras en una moneda · {budgets} presupuestos por categoría · 2 metas",
   "planFeatZakatFree": "Calculadora de zakat y bloqueo de la app, siempre gratis",
   "planFeatUnlimited": "Billeteras, presupuestos, metas, deudas y tandas ilimitados",
   "planFeatMultiCurrency": "Billeteras en todas las monedas árabes y del mundo",
