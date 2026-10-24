@@ -840,9 +840,9 @@
   "sampleDataCleared": "{tx} contoh transaksi dan {bud} anggaran dihapus.",
   "sampleDataNone": "Tidak ada contoh data 2026 untuk dihapus.",
   "navPortfolio": "Portofolio proyek",
-  "portfolioSubtitle": "Danai proyek jangka pendek, menengah, dan panjang Anda — secara cerdas.",
+  "portfolioSubtitle": "Susun tujuan besar Anda menurut jangka waktu; kemampuan menabung bulanan Anda mendanainya berurutan.",
   "portfolioEmpty": "Belum ada proyek. Tambahkan satu untuk mulai merencanakan.",
-  "addProject": "Tambah proyek",
+  "addProject": "Tambah ke rencana",
   "editProject": "Ubah proyek",
   "fieldProjectName": "Nama proyek",
   "fieldHorizon": "Jangka waktu",
@@ -1381,5 +1381,7 @@
   "navFoldTools": "Alat perencanaan",
   "navFoldOccasions": "Momen & rencana khusus",
   "navHelpShort": "Bantuan",
-  "fieldGoalNameHint": "mis. Membeli mobil"
+  "fieldGoalNameHint": "mis. Membeli mobil",
+  "goalsTabMine": "Tujuan saya",
+  "goalsTabPlan": "Rencana pendanaan"
 }

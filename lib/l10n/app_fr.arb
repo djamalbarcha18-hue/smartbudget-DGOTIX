@@ -840,9 +840,9 @@
   "sampleDataCleared": "{tx} transactions et {bud} budgets d'exemple supprimés.",
   "sampleDataNone": "Aucune donnée d'exemple 2026 à supprimer.",
   "navPortfolio": "Portefeuille de projets",
-  "portfolioSubtitle": "Financez intelligemment vos projets à court, moyen et long terme.",
+  "portfolioSubtitle": "Classez vos grands objectifs par échéance ; votre capacité d’épargne mensuelle les finance dans l’ordre.",
   "portfolioEmpty": "Aucun projet pour l'instant. Ajoutez-en un pour commencer à planifier.",
-  "addProject": "Ajouter un projet",
+  "addProject": "Ajouter au plan",
   "editProject": "Modifier le projet",
   "fieldProjectName": "Nom du projet",
   "fieldHorizon": "Horizon",
@@ -1381,5 +1381,7 @@
   "navFoldTools": "Outils de planification",
   "navFoldOccasions": "Occasions et projets",
   "navHelpShort": "Aide",
-  "fieldGoalNameHint": "ex. Acheter une voiture"
+  "fieldGoalNameHint": "ex. Acheter une voiture",
+  "goalsTabMine": "Mes objectifs",
+  "goalsTabPlan": "Plan de financement"
 }

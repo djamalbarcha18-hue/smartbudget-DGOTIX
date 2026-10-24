@@ -11,6 +11,7 @@ import 'package:smartbudget/design_system/components/latin_digits_formatter.dart
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/goals/presentation/goals_tabs.dart';
 import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
 import 'package:smartbudget/features/portfolio/domain/portfolio_planner.dart';
 import 'package:smartbudget/features/portfolio/domain/project.dart';
@@ -40,9 +41,11 @@ class PortfolioPage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Text(l.navPortfolio,
+            Text(l.navGoals,
                 style: Theme.of(context).textTheme.headlineSmall),
-            const SizedBox(height: DsSpacing.xs),
+            const SizedBox(height: DsSpacing.md),
+            const GoalsTabs(plan: true),
+            const SizedBox(height: DsSpacing.md),
             Text(l.portfolioSubtitle,
                 style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: DsSpacing.xl),
@@ -60,7 +63,7 @@ class PortfolioPage extends ConsumerWidget {
           Row(
             children: <Widget>[
               Expanded(
-                child: Text(l.navPortfolio,
+                child: Text(l.navGoals,
                     style: Theme.of(context).textTheme.headlineSmall,
                     overflow: TextOverflow.ellipsis),
               ),
@@ -71,7 +74,9 @@ class PortfolioPage extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: DsSpacing.xs),
+          const SizedBox(height: DsSpacing.md),
+          const GoalsTabs(plan: true),
+          const SizedBox(height: DsSpacing.md),
           Text(l.portfolioSubtitle,
               style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: DsSpacing.xl),

@@ -19,6 +19,7 @@ import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/goals/domain/goal_calculator.dart';
 import 'package:smartbudget/features/goals/presentation/goal_editor_sheet.dart';
+import 'package:smartbudget/features/goals/presentation/goals_tabs.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -58,6 +59,8 @@ class GoalsPage extends ConsumerWidget {
                 addBtn,
               ],
             ),
+          const SizedBox(height: DsSpacing.md),
+          const GoalsTabs(plan: false),
           const SizedBox(height: DsSpacing.lg),
           Expanded(
             child: async.when(

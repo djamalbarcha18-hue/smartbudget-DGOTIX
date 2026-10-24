@@ -840,9 +840,9 @@
   "sampleDataCleared": "{tx} نمونہ ٹرانزیکشنز اور {bud} بجٹ ہٹا دیے گئے۔",
   "sampleDataNone": "ہٹانے کے لیے 2026 کا کوئی نمونہ ڈیٹا نہیں۔",
   "navPortfolio": "پروجیکٹس پورٹ فولیو",
-  "portfolioSubtitle": "اپنے قریبی، درمیانی اور طویل مدتی پروجیکٹس کے لیے سمجھداری سے رقم رکھیں۔",
+  "portfolioSubtitle": "اپنے بڑے اہداف کو مدت کے لحاظ سے ترتیب دیں؛ آپ کی ماہانہ بچت انہیں باری باری پورا کرے گی۔",
   "portfolioEmpty": "ابھی کوئی پروجیکٹ نہیں۔ منصوبہ بندی شروع کرنے کے لیے ایک شامل کریں۔",
-  "addProject": "پروجیکٹ شامل کریں",
+  "addProject": "پلان میں شامل کریں",
   "editProject": "پروجیکٹ میں ترمیم",
   "fieldProjectName": "پروجیکٹ کا نام",
   "fieldHorizon": "مدت",
@@ -1381,5 +1381,7 @@
   "navFoldTools": "منصوبہ بندی کے اوزار",
   "navFoldOccasions": "مواقع اور خاص منصوبے",
   "navHelpShort": "مدد",
-  "fieldGoalNameHint": "مثلاً گاڑی خریدنا"
+  "fieldGoalNameHint": "مثلاً گاڑی خریدنا",
+  "goalsTabMine": "میرے اہداف",
+  "goalsTabPlan": "فنڈنگ پلان"
 }

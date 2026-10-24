@@ -840,9 +840,9 @@
   "sampleDataCleared": "Eliminados {tx} movimientos y {bud} presupuestos de ejemplo.",
   "sampleDataNone": "No hay datos de ejemplo de 2026 que eliminar.",
   "navPortfolio": "Cartera de proyectos",
-  "portfolioSubtitle": "Financia tus proyectos a corto, medio y largo plazo, con cabeza.",
+  "portfolioSubtitle": "Ordena tus grandes metas por plazo; tu capacidad de ahorro mensual las financia en orden.",
   "portfolioEmpty": "Aún no hay proyectos. Añade uno para empezar a planificar.",
-  "addProject": "Añadir proyecto",
+  "addProject": "Añadir al plan",
   "editProject": "Editar proyecto",
   "fieldProjectName": "Nombre del proyecto",
   "fieldHorizon": "Horizonte",
@@ -1381,5 +1381,7 @@
   "navFoldTools": "Herramientas de planificación",
   "navFoldOccasions": "Ocasiones y planes especiales",
   "navHelpShort": "Ayuda",
-  "fieldGoalNameHint": "p. ej. Comprar un coche"
+  "fieldGoalNameHint": "p. ej. Comprar un coche",
+  "goalsTabMine": "Mis metas",
+  "goalsTabPlan": "Plan de financiación"
 }

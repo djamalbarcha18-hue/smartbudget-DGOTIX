@@ -289,7 +289,6 @@ abstract final class AppMenu {
     NavFold.occasions: <AppSection>[
       AppSection.seasons,
       AppSection.daret,
-      AppSection.portfolio,
       AppSection.zakat,
       AppSection.trips,
     ],
@@ -310,6 +309,8 @@ abstract final class AppMenu {
     AppSection.income: AppSection.transactions,
     AppSection.expenses: AppSection.transactions,
     AppSection.guide: AppSection.helpSupport,
+    // The funding plan is a tab of Financial goals.
+    AppSection.portfolio: AppSection.goals,
   };
 
   /// The destination of [s] in this build, or null (not launched).

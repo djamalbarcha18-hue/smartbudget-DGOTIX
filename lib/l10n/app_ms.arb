@@ -840,9 +840,9 @@
   "sampleDataCleared": "{tx} transaksi contoh dan {bud} bajet dibuang.",
   "sampleDataNone": "Tiada data contoh 2026 untuk dibuang.",
   "navPortfolio": "Portfolio projek",
-  "portfolioSubtitle": "Biayai projek jangka pendek, sederhana dan panjang anda — dengan bijak.",
+  "portfolioSubtitle": "Susun matlamat besar anda mengikut tempoh; keupayaan simpanan bulanan anda membiayainya mengikut giliran.",
   "portfolioEmpty": "Belum ada projek. Tambah satu untuk mula merancang.",
-  "addProject": "Tambah projek",
+  "addProject": "Tambah ke pelan",
   "editProject": "Sunting projek",
   "fieldProjectName": "Nama projek",
   "fieldHorizon": "Jangka masa",
@@ -1381,5 +1381,7 @@
   "navFoldTools": "Alat perancangan",
   "navFoldOccasions": "Majlis & rancangan khas",
   "navHelpShort": "Bantuan",
-  "fieldGoalNameHint": "cth. Membeli kereta"
+  "fieldGoalNameHint": "cth. Membeli kereta",
+  "goalsTabMine": "Matlamat saya",
+  "goalsTabPlan": "Pelan pembiayaan"
 }

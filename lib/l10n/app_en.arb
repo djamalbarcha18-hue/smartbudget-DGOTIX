@@ -976,9 +976,9 @@
   "sampleDataNone": "No 2026 sample data to remove.",
 
   "navPortfolio": "Projects portfolio",
-  "portfolioSubtitle": "Fund your near, mid and long-term projects — smartly.",
+  "portfolioSubtitle": "Line up your big goals by time frame; your monthly saving capacity funds them in order.",
   "portfolioEmpty": "No projects yet. Add one to start planning.",
-  "addProject": "Add project",
+  "addProject": "Add to the plan",
   "editProject": "Edit project",
   "fieldProjectName": "Project name",
   "fieldHorizon": "Horizon",
@@ -1626,5 +1626,7 @@
   "navFoldTools": "Planning tools",
   "navFoldOccasions": "Occasions & special plans",
   "navHelpShort": "Help",
-  "fieldGoalNameHint": "e.g. Buy a car"
+  "fieldGoalNameHint": "e.g. Buy a car",
+  "goalsTabMine": "My goals",
+  "goalsTabPlan": "Funding plan"
 }

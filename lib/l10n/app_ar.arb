@@ -970,9 +970,9 @@
   "sampleDataNone": "لا توجد بيانات 2026 تجريبية للحذف.",
 
   "navPortfolio": "محفظة المشاريع",
-  "portfolioSubtitle": "موّل مشاريعك القريبة والمتوسطة والبعيدة المدى — بذكاء.",
+  "portfolioSubtitle": "رتّب أهدافك الكبيرة حسب المدى، وتوزَّع قدرتك الادخارية الشهرية عليها بالترتيب.",
   "portfolioEmpty": "لا مشاريع بعد. أضِف مشروعاً لتبدأ التخطيط.",
-  "addProject": "إضافة مشروع",
+  "addProject": "أضف إلى الخطة",
   "editProject": "تعديل المشروع",
   "fieldProjectName": "اسم المشروع",
   "fieldHorizon": "الأفق الزمني",
@@ -1581,5 +1581,7 @@
   "navFoldTools": "أدوات التخطيط",
   "navFoldOccasions": "مناسبات وخطط خاصة",
   "navHelpShort": "المساعدة",
-  "fieldGoalNameHint": "مثال: شراء سيارة"
+  "fieldGoalNameHint": "مثال: شراء سيارة",
+  "goalsTabMine": "أهدافي",
+  "goalsTabPlan": "خطة التمويل"
 }
