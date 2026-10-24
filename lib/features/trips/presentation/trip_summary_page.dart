@@ -349,8 +349,7 @@ class _TotalPanel extends StatelessWidget {
                       size: 20, color: c.textMuted),
                   const SizedBox(width: DsSpacing.sm),
                   Expanded(
-                    child: Text(
-                        tripItemLabel(l, r.categories[i].item),
+                    child: Text(tripItemLabel(l, r.categories[i].item),
                         style: t.bodyMedium),
                   ),
                   Text(
@@ -529,10 +528,8 @@ class TripPlanPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
-    final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final TripReport r = report;
-    String money(Money m) => MoneyFormatter.format(m);
     // Amounts stay hidden in "percentage" mode, the tip with them.
     final TripItemTip? tip = percentOnly ? null : r.tip;
 
@@ -547,51 +544,75 @@ class TripPlanPanel extends StatelessWidget {
             TripTipBox(tip: tip),
           ],
           for (final TripItemPlan p in r.plan)
+            _PlanRow(plan: p, report: r, percentOnly: percentOnly),
+        ],
+      ),
+    );
+  }
+}
+
+/// One item: its name, what it cost of its share, a bar, and what is left
+/// (red when clearly over, amber when a little over).
+class _PlanRow extends StatelessWidget {
+  const _PlanRow(
+      {required this.plan, required this.report, required this.percentOnly});
+  final TripItemPlan plan;
+  final TripReport report;
+  final bool percentOnly;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final TripItemPlan p = plan;
+    final TripReport r = report;
+    String money(Money m) => MoneyFormatter.format(m);
+    final bool other = p.item == TripItem.other;
+    final Color? flag = other
+        ? null
+        : p.clearlyOver
+            ? c.expense
+            : p.over
+                ? c.warning
+                : null;
+    return Padding(
+      padding: const EdgeInsets.only(top: DsSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Icon(tripItemIcon(p.item),
+                  size: 18, color: tripItemColor(p.item)),
+              const SizedBox(width: DsSpacing.xs),
+              Expanded(
+                child: Text(tripItemLabel(l, p.item), style: t.bodyMedium),
+              ),
+              Text(
+                p.item == TripItem.other
+                    ? percentOnly
+                        ? '${(p.spent.minorUnits / r.spent.minorUnits * 100).round()}%'
+                        : money(p.spent)
+                    : percentOnly
+                        ? '${(p.ratio * 100).round()}%'
+                        : l.tripItemOfPlanned(money(p.spent), money(p.planned)),
+                style: t.bodySmall
+                    ?.copyWith(fontWeight: FontWeight.w700, color: flag),
+              ),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.xs),
+          TripBar(
+              value: other ? 1 : p.ratio, color: flag ?? tripItemColor(p.item)),
+          if (p.item != TripItem.other && !percentOnly)
             Padding(
-              padding: const EdgeInsets.only(top: DsSpacing.md),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Icon(tripItemIcon(p.item),
-                          size: 18, color: tripItemColor(p.item)),
-                      const SizedBox(width: DsSpacing.xs),
-                      Expanded(
-                        child: Text(tripItemLabel(l, p.item),
-                            style: t.bodyMedium),
-                      ),
-                      Text(
-                        p.item == TripItem.other
-                            ? percentOnly
-                                ? '${(p.spent.minorUnits / r.spent.minorUnits * 100).round()}%'
-                                : money(p.spent)
-                            : percentOnly
-                                ? '${(p.ratio * 100).round()}%'
-                                : l.tripItemOfPlanned(
-                                    money(p.spent), money(p.planned)),
-                        style: t.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: p.over ? c.expense : null),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: DsSpacing.xs),
-                  TripBar(
-                      value: p.item == TripItem.other ? 1 : p.ratio,
-                      color: p.over ? c.expense : tripItemColor(p.item)),
-                  if (p.item != TripItem.other && !percentOnly)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Text(
-                        p.over
-                            ? l.tripItemOverBy(money(p.spent - p.planned))
-                            : l.tripItemLeftAmount(money(p.left)),
-                        style: t.labelSmall?.copyWith(
-                            color: p.over ? c.expense : c.textMuted),
-                      ),
-                    ),
-                ],
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(
+                p.over
+                    ? l.tripItemOverBy(money(p.spent - p.planned))
+                    : l.tripItemLeftAmount(money(p.left)),
+                style: t.labelSmall?.copyWith(color: flag ?? c.textMuted),
               ),
             ),
         ],

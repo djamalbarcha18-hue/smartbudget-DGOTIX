@@ -183,6 +183,22 @@ void main() {
       expect(r.plan.length, 7); // no "other" without spending on it
     });
 
+    test('a little over (5% or less) is not flagged', () {
+      // Standard week, 1,400: food gets 238; 240 is 2 over.
+      final TripReport r = TripReport.of(
+          trip(budget: 1400), <Transaction>[spend('1', 240, 'المطاعم')], now,
+          currency: 'USD');
+      final TripItemPlan food =
+          r.plan.firstWhere((TripItemPlan p) => p.item == TripItem.food);
+      expect(food.over, isTrue);
+      expect(food.clearlyOver, isFalse);
+      expect(r.tip, isNull);
+      final TripReport more = TripReport.of(
+          trip(budget: 1400), <Transaction>[spend('1', 260, 'المطاعم')], now,
+          currency: 'USD');
+      expect(more.tip!.over, TripItem.food);
+    });
+
     test('no budget: no plan, no tip', () {
       final TripReport r = TripReport.of(trip(), txns, now, currency: 'USD');
       expect(r.plan, isEmpty);

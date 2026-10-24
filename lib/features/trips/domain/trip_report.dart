@@ -28,7 +28,16 @@ class TripItemPlan {
   final Money planned;
   final Money spent;
 
+  /// Over its share by more than this part of it is flagged; a little over
+  /// (a few euros) only shows as "slightly over".
+  static const double tolerance = 0.05;
+
   bool get over => spent.minorUnits > planned.minorUnits;
+
+  /// Over by more than [tolerance] of its share (always, with nothing
+  /// planned).
+  bool get clearlyOver =>
+      spent.minorUnits > planned.minorUnits * (1 + tolerance);
 
   /// Planned minus spent (negative when over).
   Money get left => planned - spent;
@@ -169,13 +178,14 @@ class TripReport {
   TripItemShare? get top => categories.isEmpty ? null : categories.first;
 
   /// The planned item furthest over its share, and the one with the most
-  /// left to cover it; null when every item is within its share.
+  /// left to cover it; null when every item is within its share (or only
+  /// slightly over, see [TripItemPlan.tolerance]).
   TripItemTip? get tip {
     TripItemPlan? over;
     TripItemPlan? spare;
     for (final TripItemPlan p in plan) {
       if (p.item == TripItem.other) continue;
-      if (p.over &&
+      if (p.clearlyOver &&
           (over == null || p.left.minorUnits < over.left.minorUnits)) {
         over = p;
       }
