@@ -137,7 +137,7 @@ class ChallengeShareCard extends StatelessWidget {
           Text(l.sfCardLabel,
               style: t.titleSmall?.copyWith(color: _soft, height: 1.3)),
           const SizedBox(height: 12),
-          _DotStrip(marks: p.marks),
+          _DotStrip(marks: p.marks, clean: s.accent),
           if (showSaved && p.saved != null) ...<Widget>[
             const SizedBox(height: 12),
             Container(
@@ -189,8 +189,11 @@ class ChallengeShareCard extends StatelessWidget {
 
 /// The days as small dots: clean filled, slip hollow-red, others faint.
 class _DotStrip extends StatelessWidget {
-  const _DotStrip({required this.marks});
+  const _DotStrip({required this.marks, this.clean = Colors.white});
   final List<DayMark> marks;
+
+  /// A clean day: white, or the Pro theme's accent (gold in Black Gold).
+  final Color clean;
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +213,7 @@ class _DotStrip extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: switch (m) {
-                DayMark.clean => Colors.white,
+                DayMark.clean => clean,
                 DayMark.slip => const Color(0xFFFCA5A5),
                 DayMark.today => const Color(0x80FFFFFF),
                 DayMark.upcoming => const Color(0x26FFFFFF),
