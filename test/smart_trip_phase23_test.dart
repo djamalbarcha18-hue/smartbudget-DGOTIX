@@ -21,6 +21,7 @@ import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/design_system/tokens/ds_glass.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
+import 'package:smartbudget/features/share/presentation/share_card_skin.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/trips/data/trip_image_share.dart';
@@ -684,6 +685,32 @@ void main() {
             .first);
         expect(bg.color, k.color);
       }
+    });
+
+    testWidgets('Pro theme: the card in its colours first, then a colour',
+        (WidgetTester tester) async {
+      await pump(tester, const TripSharePage(tripId: 'a'),
+          prefs: <String, Object>{
+            ...stored(<Trip>[trip('a', from: -9, to: -3, budget: 1500)], five),
+            'flutter.sb_theme_style': 'pomegranate',
+          },
+          overrides: <Override>[
+            effectivePlanProvider.overrideWithValue(Plan.pro),
+          ]);
+      Color background() => tester
+          .widget<ColoredBox>(find
+              .descendant(
+                  of: find.byType(TripShareCard),
+                  matching: find.byType(ColoredBox))
+              .first)
+          .color;
+      expect(background(), ShareCardSkin.pomegranate.solid);
+      await tester.tap(find.bySemanticsLabel('Blue'));
+      await tester.pumpAndSettle();
+      expect(background(), TripCardColor.blue.color);
+      await tester.tap(find.bySemanticsLabel('In my theme colours'));
+      await tester.pumpAndSettle();
+      expect(background(), ShareCardSkin.pomegranate.solid);
     });
 
     testWidgets('with a photo from the gallery, and back to the default',

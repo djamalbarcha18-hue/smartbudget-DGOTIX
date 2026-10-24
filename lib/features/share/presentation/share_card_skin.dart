@@ -64,6 +64,13 @@ class ShareCardSkin {
         AppThemeStyle.black => blackGold,
       };
 
+  /// One flat colour of the skin (the trip card's background).
+  Color get solid => gradient[1];
+
+  /// A fill that reads on white (the trip card's bars): the flat colour, or
+  /// the gold of Black Gold.
+  Color get mark => border == null ? solid : accent;
+
   BoxDecoration get decoration => BoxDecoration(
         borderRadius: BorderRadius.circular(22),
         gradient: LinearGradient(

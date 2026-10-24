@@ -17,6 +17,7 @@ import 'package:smartbudget/features/transactions/application/transactions_contr
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
+import 'package:smartbudget/features/share/presentation/share_card_skin.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/trips/data/trip_image_share.dart';
 import 'package:smartbudget/features/trips/data/trip_photos.dart';
@@ -191,6 +192,10 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
         currency: ref.watch(baseCurrencyProvider));
     final Destination? destination = catalog.byText(trip.destination);
     final String place = catalog.display(trip.destination, appLangOf(context));
+    // The Pro theme's colours, as on the other share cards.
+    final ShareCardSkin? themeSkin = ref.watch(shareCardThemeSkinProvider);
+    final bool themed =
+        themeSkin != null && ref.watch(shareCardUseThemeProvider);
 
     return SafeArea(
       top: false,
@@ -293,13 +298,29 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
                         child: Text(l.tripCardColor,
                             style: t.labelMedium?.copyWith(color: c.textMuted)),
                       ),
+                    // The user's Pro theme first, when there is one.
+                    if (!_clear && themeSkin != null)
+                      _Swatch(
+                        fill: themeSkin.solid,
+                        edge: themeSkin.border,
+                        pro: true,
+                        selected: themed,
+                        label: l.shareCardThemeColors,
+                        onTap: () => ref
+                            .read(shareCardUseThemeProvider.notifier)
+                            .state = true,
+                      ),
                     for (final TripCardColor k in TripCardColor.values)
                       if (!_clear)
                         _Swatch(
-                          color: k,
-                          selected: _color == k,
+                          fill: k.color,
+                          selected: !themed && _color == k,
                           label: k.label(l),
-                          onTap: () => setState(() => _color = k),
+                          onTap: () {
+                            ref.read(shareCardUseThemeProvider.notifier).state =
+                                false;
+                            setState(() => _color = k);
+                          },
                         ),
                   ],
                 ),
@@ -325,6 +346,7 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
                             format: _format,
                             report: report,
                             color: _color,
+                            skin: themed ? themeSkin : null,
                             percentOnly: pct,
                             destination: destination,
                             photo: _photo,
@@ -387,12 +409,18 @@ class _PhotoButton extends StatelessWidget {
 
 class _Swatch extends StatelessWidget {
   const _Swatch({
-    required this.color,
+    required this.fill,
     required this.selected,
     required this.label,
     required this.onTap,
+    this.edge,
+    this.pro = false,
   });
-  final TripCardColor color;
+  final Color fill;
+  final Color? edge;
+
+  /// The Pro badge in the corner.
+  final bool pro;
   final bool selected;
   final String label;
   final VoidCallback onTap;
@@ -405,21 +433,40 @@ class _Swatch extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: DsRadius.brSm,
-          child: Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: color.color,
-              borderRadius: DsRadius.brSm,
-              border: Border.all(
-                  color: selected
-                      ? context.dsColors.textPrimary
-                      : Colors.transparent,
-                  width: 2),
-            ),
-            child: selected
-                ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
-                : null,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: <Widget>[
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: fill,
+                  borderRadius: DsRadius.brSm,
+                  border: Border.all(
+                      color: selected
+                          ? context.dsColors.textPrimary
+                          : edge ?? Colors.transparent,
+                      width: 2),
+                ),
+                child: selected
+                    ? const Icon(Icons.check_rounded,
+                        color: Colors.white, size: 18)
+                    : null,
+              ),
+              if (pro)
+                PositionedDirectional(
+                  top: -6,
+                  end: -6,
+                  child: Container(
+                    padding: const EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                        color: context.dsColors.surface,
+                        shape: BoxShape.circle),
+                    child: Icon(Icons.workspace_premium_rounded,
+                        size: 13, color: context.dsColors.warning),
+                  ),
+                ),
+            ],
           ),
         ),
       );

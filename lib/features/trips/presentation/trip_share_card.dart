@@ -10,6 +10,7 @@ import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/tokens/ds_chart_palette.dart';
 import 'package:smartbudget/features/share/domain/share_qr.dart';
+import 'package:smartbudget/features/share/presentation/share_card_skin.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
@@ -71,6 +72,7 @@ class TripShareCard extends StatelessWidget {
     this.showBranding = true,
     this.clear = false,
     this.format = TripCardFormat.story,
+    this.skin,
   });
 
   /// Width of the card as laid out; exported with pixel ratio 1080 / this.
@@ -96,6 +98,11 @@ class TripShareCard extends StatelessWidget {
 
   final TripCardFormat format;
   double get safeZone => format.safeZone;
+
+  /// The user's Pro theme colours instead of [color].
+  final ShareCardSkin? skin;
+  Color get _bg => skin?.solid ?? color.color;
+  Color get _mark => skin?.mark ?? color.color;
 
   // Fixed colours: the card is a picture and doesn't follow the app theme.
   static const Color _ink = Color(0xFF111827);
@@ -185,7 +192,7 @@ class TripShareCard extends StatelessWidget {
     // so the picture keeps more room.
     return ClipRect(
       child: ColoredBox(
-        color: color.color,
+        color: _bg,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -210,7 +217,7 @@ class TripShareCard extends StatelessWidget {
                             Colors.black.withValues(alpha: 0.45),
                             Colors.black.withValues(alpha: 0),
                             Colors.black.withValues(alpha: 0),
-                            color.color,
+                            _bg,
                           ],
                           stops: const <double>[0, 0.45, 0.82, 1],
                         ),
@@ -441,7 +448,7 @@ class TripShareCard extends StatelessWidget {
               child: const Divider(height: 1, color: _track),
             ),
             _bar(l.tripPlanned, percentOnly ? '100%' : money(r.budget!),
-                r.budget!.minorUnits / _scale, color.color, ink, muted, u),
+                r.budget!.minorUnits / _scale, _mark, ink, muted, u),
             SizedBox(height: 2 * u),
             _bar(
                 l.tripActual,
@@ -654,7 +661,7 @@ class TripShareCard extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          ColoredBox(color: Color.lerp(color.color, Colors.black, 0.4)!),
+          ColoredBox(color: Color.lerp(_bg, Colors.black, 0.4)!),
           if (photo != null)
             Image.memory(photo!, fit: BoxFit.cover)
           else
