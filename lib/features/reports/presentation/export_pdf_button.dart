@@ -147,7 +147,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
         return lang.pick('الربع $s', 'Q$s',
             fr: 'T$s', id: 'K$s', es: 'T$s', tr: '$s. Çeyrek', ms: 'Suku $s', ur: 'سہ ماہی $s',
             de: 'Q$s', pt: '$sº tri',
-            it: 'T$s');
+            it: 'T$s', nl: 'K$s');
       case ReportPeriod.halfYearly:
         return s == 2 ? l.half2 : l.half1;
       case ReportPeriod.yearly:

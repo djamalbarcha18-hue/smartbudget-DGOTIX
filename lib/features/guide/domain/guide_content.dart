@@ -28,13 +28,13 @@ abstract final class GuideContent {
       lang.pick(_startAr, _startEn,
           fr: _startFr, id: _startId, es: _startEs,
           tr: _startTr, ms: _startMs, ur: _startUr, de: _startDe,
-          pt: _startPt, it: _startIt);
+          pt: _startPt, it: _startIt, nl: _startNl);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
       lang.pick(_topicsAr, _topicsEn,
           fr: _topicsFr, id: _topicsId, es: _topicsEs,
           tr: _topicsTr, ms: _topicsMs, ur: _topicsUr, de: _topicsDe,
-          pt: _topicsPt, it: _topicsIt);
+          pt: _topicsPt, it: _topicsIt, nl: _topicsNl);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -2252,6 +2252,210 @@ abstract final class GuideContent {
             'l\'accesso, i dati si sincronizzano automaticamente tra i tuoi '
             'dispositivi (anche dopo aver lavorato offline), e puoi '
             'disattivarlo.',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Dutch) ----
+  static const List<String> _startNl = <String>[
+    'Open Instellingen en kies je taal, thema en basisvaluta — elk totaal in de'
+        ' app wordt in die valuta getoond.',
+    'Voeg je inkomsten en uitgaven toe (of scan een bon) — al het andere wordt '
+        'daaruit berekend.',
+    'Stel een maandbudget in, zodat de app je vertelt hoeveel je nog kunt '
+        'uitgeven.',
+    'Bekijk het Overzicht en je Financiële gezondheid om te zien waar je staat,'
+        ' en voeg daarna gaandeweg doelen en schulden toe.',
+  ];
+
+  // ---- Topics (Dutch) ----
+  static const List<GuideTopic> _topicsNl = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'Overzicht',
+      summary:
+          'Je maand in één oogopslag: inkomsten, uitgaven, spaargeld en waar '
+          'het geld naartoe ging.',
+      steps: <String>[
+        'De tegels tonen de totalen van deze maand in je basisvaluta.',
+        'Tik op een deel van de uitgavenverdeling om die categorie te '
+            'markeren.',
+        'Meldingen wijzen je op wat aandacht nodig heeft, zoals een categorie '
+            'boven budget of een dringend doel.',
+        'Zonder gegevens tonen de tegels “—” — er wordt nooit iets verzonnen.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'Inkomsten en uitgaven',
+      summary: 'Registreer elke geldbeweging — de basis van elke berekening in '
+          'de app.',
+      steps: <String>[
+        'Gebruik de knop voor snel toevoegen om een inkomen of uitgave te '
+            'registreren met bedrag, categorie, datum en notitie.',
+        'Inkomsten en Uitgaven hebben elk een eigen scherm; Transacties toont '
+            'ze samen.',
+        'Doorzoek de lijst om een post te vinden, en tik erop om hem te '
+            'bewerken of te verwijderen.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'Terugkerende transacties',
+      summary: 'Salaris, huur en abonnementen automatisch toegevoegd op hun '
+          'datum.',
+      steps: <String>[
+        'Zet bij het toevoegen van een inkomen of uitgave “Herhalen” op elke '
+            'week, maand, 3 maanden, 6 maanden of elk jaar.',
+        'Voor een bonus of provisie die wisselt, zet je “Het bedrag verandert '
+            'elke keer” aan: op elke datum vraagt de app het echte bedrag in '
+            'plaats van een schatting toe te voegen.',
+        'Elke keer dat het verschuldigd is, voegt de app het toe als gewone '
+            'transactie — ook als je weg was, haalt hij het in zodra je de app '
+            'weer opent.',
+        'Op het scherm Terugkerend kun je pauzeren, hervatten, het bedrag '
+            'wijzigen of stoppen. Al toegevoegde transacties veranderen nooit.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'Een bon scannen',
+      summary: 'Maak van een foto van een bon een uitgave die klaar is om op te'
+          ' slaan.',
+      steps: <String>[
+        'Tik op het scherm Uitgaven op “Bon scannen” en maak of kies een foto.',
+        'De app vult winkel, datum, bedrag en categorie in — controleer ze voor'
+            ' het opslaan.',
+        'Scannen in de cloud hangt af van je abonnement; als een bon niet te '
+            'lezen is, vul de uitgave dan zelf in.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'Maandbudget',
+      summary: 'Plan hoeveel je per categorie wilt uitgeven, maand na maand.',
+      steps: <String>[
+        'Kies bovenaan het jaar en de maand — één scherm dekt elke maand.',
+        'Stel een limiet in voor elke categorie die je in de hand wilt houden.',
+        'Voortgangsbalken vullen zich als je uitgeeft; een categorie boven de '
+            'limiet wordt gemarkeerd.',
+        'Met een betaald abonnement verdeelt “Verdeling voorstellen” je inkomen'
+            ' over de categorieën op basis van je eigen recente uitgaven — '
+            'controleer het en pas het daarna toe.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'Doelen en sparen',
+      summary: 'Spaar voor iets specifieks en zie hoe dichtbij je bent.',
+      steps: <String>[
+        'Maak een doel aan met een bedrag en eventueel een deadline.',
+        'Registreer inleggen terwijl je spaart; de voortgang wordt automatisch'
+            ' bijgewerkt.',
+        'Doelen vlak voor hun deadline worden gemarkeerd in het Overzicht.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'Schulden en leningen',
+      summary: 'Houd bij wat je verschuldigd bent en wat anderen jou schuldig '
+          'zijn.',
+      steps: <String>[
+        'Voeg elke schuld of lening toe met het bedrag en de persoon of partij.',
+        'Werk het al betaalde bedrag bij om het restant te zien.',
+        'Schulden tellen mee in je score voor financiële gezondheid.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'Projectportfolio',
+      summary: 'Plan grotere projecten in vakken voor korte, middellange en '
+          'lange termijn.',
+      steps: <String>[
+        'Voeg projecten toe en plaats elk project in een termijn.',
+        'De financiering vult de vakken op volgorde, zodat je ziet welke '
+            'projecten je spaargeld als eerste dekt.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'Financiële gezondheid',
+      summary: 'Een score die samenvat hoe gezond je financiën zijn, en waarom.',
+      steps: <String>[
+        'De score wordt op je apparaat berekend uit je eigen gegevens.',
+        'De belangrijkste factoren tonen wat helpt of schaadt — verbeter die '
+            'eerst.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'Rapporten en analyses',
+      summary: 'Bekijk het verloop over het jaar en waar je geld naartoe gaat.',
+      steps: <String>[
+        'Kies een jaar om inkomsten en uitgaven per maand te vergelijken.',
+        'Gebruik de uitsplitsingen om categorieën te zien die in de loop van de'
+            ' tijd groeien.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'Zakat',
+      summary: 'Schat de zakat over je vermogen en volg de hawl.',
+      steps: <String>[
+        'Vul het zakatplichtige vermogen in om een schatting te krijgen.',
+        'Stel de datum in waarop je vermogen de nisab bereikte om het aftellen '
+            'van het maanjaar te volgen, getoond in de Hijri-kalender.',
+        'Dit is een planningshulpmiddel — laat je verplichting bevestigen door '
+            'een bevoegde geleerde.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'Wisselkoersen en markten',
+      summary: 'Actuele wisselkoersen en cryptoprijzen uit openbare bronnen.',
+      steps: <String>[
+        'Koersen worden live opgehaald; elke regel toont de bron.',
+        'Als een markt geen betrouwbare bron heeft, staat er “niet '
+            'beschikbaar” — nooit een verzonnen getal.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'AI-assistent DGOTIX AI',
+      summary: 'Stel vragen over je financiën in gewone taal.',
+      steps: <String>[
+        'Typ een vraag of tik op een suggestie; de assistent antwoordt op basis'
+            ' van een korte samenvatting van je cijfers.',
+        'Het aantal antwoorden hangt af van je abonnement; je ziet een melding '
+            'als je dicht bij de limiet zit.',
+        'Antwoorden worden automatisch gemaakt — controleer belangrijke '
+            'beslissingen. De op regels gebaseerde inzichten onder de chat '
+            'werken altijd, ook zonder AI.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'Abonnementen',
+      summary: 'Vergelijk Gratis en Pro, en beheer je abonnement.',
+      steps: <String>[
+        'De basisbudgettools zijn voor altijd gratis.',
+        'Betaalde abonnementen verhogen de limieten voor AI en cloudscans en '
+            'voegen extra functies toe.',
+        'Als je een abonnement neemt, staan bovenaan je huidige abonnement en '
+            'de verlengingsdatum, met een knop om te beheren of op te zeggen.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'Instellingen, gegevens en back-up',
+      summary: 'Maak de app van jou en houd je gegevens veilig.',
+      steps: <String>[
+        'Taal, thema en basisvaluta vind je onder Weergave en Regio.',
+        'Beheer je eigen inkomsten- en uitgavencategorieën.',
+        'Bij Gegevens en back-up exporteer je op elk moment een volledige '
+            'back-up; als je bent ingelogd, worden je gegevens automatisch '
+            'tussen je apparaten gesynchroniseerd (ook na offline werken), en '
+            'dat kun je uitzetten.',
       ],
     ),
   ];

@@ -83,6 +83,15 @@ abstract final class MonthNames {
     'lug', 'ago', 'set', 'ott', 'nov', 'dic',
   ];
 
+  static const List<String> _nl = <String>[
+    'januari', 'februari', 'maart', 'april', 'mei', 'juni', //
+    'juli', 'augustus', 'september', 'oktober', 'november', 'december',
+  ];
+  static const List<String> _nlShort = <String>[
+    'jan', 'feb', 'mrt', 'apr', 'mei', 'jun', //
+    'jul', 'aug', 'sep', 'okt', 'nov', 'dec',
+  ];
+
   // Urdu names are short enough for the axes too.
   static const List<String> _ur = <String>[
     'جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', //
@@ -91,12 +100,12 @@ abstract final class MonthNames {
 
   /// Full names, January first.
   static List<String> full({required AppLang lang}) => lang.pick(_ar, _en,
-      fr: _fr, id: _id, es: _es, tr: _tr, ms: _ms, ur: _ur, de: _de, pt: _pt, it: _it);
+      fr: _fr, id: _id, es: _es, tr: _tr, ms: _ms, ur: _ur, de: _de, pt: _pt, it: _it, nl: _nl);
 
   /// Short names for tight axes (Arabic and Urdu names are already short).
   static List<String> short({required AppLang lang}) => lang.pick(
       _ar, <String>[for (final String m in _en) m.substring(0, 3)],
       fr: _frShort, id: _idShort, es: _esShort,
       tr: _trShort, ms: _msShort, ur: _ur, de: _deShort, pt: _ptShort,
-      it: _itShort);
+      it: _itShort, nl: _nlShort);
 }
