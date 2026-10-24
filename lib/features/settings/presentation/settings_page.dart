@@ -401,6 +401,19 @@ class _ThemeStylePicker extends ConsumerWidget {
                       ),
                     ),
                   ),
+                      // The chosen one is ticked in the other corner, so
+                      // the name below keeps its full width.
+                      if (selected)
+                        PositionedDirectional(
+                          top: -6,
+                          start: -6,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: c.surface, shape: BoxShape.circle),
+                            child: Icon(Icons.check_circle_rounded,
+                                size: 20, color: c.brand),
+                          ),
+                        ),
                       if (style != AppThemeStyle.classic)
                         PositionedDirectional(
                           top: -6,
@@ -416,21 +429,11 @@ class _ThemeStylePicker extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: DsSpacing.xs),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      if (selected) ...<Widget>[
-                        Icon(Icons.check_circle_rounded,
-                            size: 16, color: c.brand),
-                        const SizedBox(width: 4),
-                      ],
-                      Flexible(
-                          child: Text(label,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: t.bodyMedium)),
-                    ],
-                  ),
+                  Text(label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: t.bodyMedium),
                 ],
               ),
             ),

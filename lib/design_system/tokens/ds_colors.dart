@@ -180,10 +180,10 @@ class DsColors extends ThemeExtension<DsColors> {
     shadow: Color(0x1A632130),
   );
 
-  /// Black (Pro): a graphite-black dark theme with a warm yellow accent.
+  /// Black Gold (Pro): a graphite-black dark theme with a gold accent.
   static const DsColors black = DsColors(
-    brand: Color(0xFFF5C542),
-    brandStrong: Color(0xFFFFD35C),
+    brand: Color(0xFFD4AF37),
+    brandStrong: Color(0xFFE6C35C),
     income: Color(0xFF3CC9B0),
     expense: Color(0xFFF87171),
     saving: Color(0xFF4FC3F7),

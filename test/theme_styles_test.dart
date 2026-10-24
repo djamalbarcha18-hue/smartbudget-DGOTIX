@@ -70,7 +70,7 @@ void main() {
       });
     }
 
-    test('black: a dark theme with a yellow accent, easy to read', () {
+    test('black: a dark theme with a gold accent, easy to read', () {
       final ThemeData t = DsTheme.black();
       const DsColors c = DsColors.black;
       expect(t.brightness, Brightness.dark);
@@ -87,7 +87,7 @@ void main() {
         expect(contrast(fg, c.surface), greaterThan(4.5), reason: '$fg');
         expect(contrast(fg, c.bgPage), greaterThan(4.5), reason: '$fg');
       }
-      // Dark text on the yellow buttons.
+      // Dark text on the gold buttons.
       expect(contrast(c.onBrand, c.brand), greaterThan(4.5));
     });
 
@@ -167,7 +167,7 @@ void main() {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       expect(prefs.getString('sb_theme_style'), 'sage');
       // Black switches to the dark mode, Pomegranate back to light.
-      await tester.tap(find.text('أسود'));
+      await tester.tap(find.text('أسود ذهبي'));
       await tester.pumpAndSettle();
       expect(c.read(themeStyleProvider), AppThemeStyle.black);
       expect(c.read(themeModeProvider), ThemeMode.dark);

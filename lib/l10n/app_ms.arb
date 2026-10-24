@@ -1347,11 +1347,11 @@
   "tripLevelLuxury": "Mewah",
   "tripDaysLabel": "Bilangan hari: {days}",
   "featProThemes": "Tema Pro",
-  "settingsThemeStyleHint": "Warna Pro: Kuning air, Sage dan Delima untuk tema cerah, Hitam untuk tema gelap.",
+  "settingsThemeStyleHint": "Warna Pro: Kuning air, Sage dan Delima untuk tema cerah, Hitam Emas untuk tema gelap.",
   "settingsThemeStyle": "Warna tema",
   "themeClassic": "Klasik",
   "themeBeige": "Kuning air",
   "themeSage": "Sage",
   "themePomegranate": "Delima",
-  "themeBlack": "Hitam"
+  "themeBlack": "Hitam Emas"
 }

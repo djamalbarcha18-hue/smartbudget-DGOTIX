@@ -1347,11 +1347,11 @@
   "tripLevelLuxury": "Lüks",
   "tripDaysLabel": "Gün sayısı: {days}",
   "featProThemes": "Pro temalar",
-  "settingsThemeStyleHint": "Pro renkler: açık tema için Bej, Adaçayı ve Nar, koyu tema için Siyah.",
+  "settingsThemeStyleHint": "Pro renkler: açık tema için Bej, Adaçayı ve Nar, koyu tema için Siyah Altın.",
   "settingsThemeStyle": "Tema renkleri",
   "themeClassic": "Klasik",
   "themeBeige": "Bej",
   "themeSage": "Adaçayı",
   "themePomegranate": "Nar",
-  "themeBlack": "Siyah"
+  "themeBlack": "Siyah Altın"
 }
