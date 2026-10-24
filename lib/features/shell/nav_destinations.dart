@@ -52,6 +52,9 @@ class NavDestination {
   final String route;
   final IconData icon;
   final NavGroup group;
+
+  /// "New" in the menu until the user first opens it (kept for the Islamic
+  /// features at launch, then for what each update adds).
   final bool isNew;
 
   String label(AppLocalizations l) => switch (section) {
@@ -126,7 +129,6 @@ abstract final class AppNav {
       route: '/wallets',
       icon: Icons.wallet_outlined,
       group: NavGroup.daily,
-      isNew: true,
     ),
     // Plan & save: the month's budget and what it builds toward.
     NavDestination(
@@ -146,7 +148,6 @@ abstract final class AppNav {
       route: '/challenges',
       icon: Icons.emoji_events_outlined,
       group: NavGroup.planning,
-      isNew: true,
     ),
     NavDestination(
       section: AppSection.recurring,
@@ -192,7 +193,6 @@ abstract final class AppNav {
       route: '/daret',
       icon: Icons.groups_2_outlined,
       group: NavGroup.special,
-      isNew: true,
     ),
     NavDestination(
       section: AppSection.portfolio,
@@ -205,6 +205,8 @@ abstract final class AppNav {
       route: '/zakat',
       icon: Icons.mosque_outlined,
       group: NavGroup.special,
+      // Islamic features: shown as new until first opened.
+      isNew: true,
     ),
     // Advanced features.
     NavDestination(

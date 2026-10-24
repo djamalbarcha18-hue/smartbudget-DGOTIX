@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
@@ -13,6 +14,7 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/billing/presentation/plan_brand_lockup.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/features/shell/nav_destinations.dart';
+import 'package:smartbudget/features/shell/nav_seen.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Professional desktop sidebar (also used inside the mobile drawer).
@@ -134,7 +136,7 @@ class NavSidebar extends StatelessWidget {
 
 /// A folded part of the menu: its name, what is inside in a line, and the
 /// items once opened (smoothly).
-class _Fold extends StatefulWidget {
+class _Fold extends ConsumerStatefulWidget {
   const _Fold({
     required this.fold,
     required this.items,
@@ -147,10 +149,10 @@ class _Fold extends StatefulWidget {
   final List<Widget> children;
 
   @override
-  State<_Fold> createState() => _FoldState();
+  ConsumerState<_Fold> createState() => _FoldState();
 }
 
-class _FoldState extends State<_Fold> {
+class _FoldState extends ConsumerState<_Fold> {
   late bool _open = widget.open;
 
   @override
@@ -169,7 +171,9 @@ class _FoldState extends State<_Fold> {
       NavFold.occasions => (Icons.celebration_outlined, l.navFoldOccasions),
       NavFold.markets => (Icons.currency_exchange_outlined, l.navGroupMarkets),
     };
-    final bool hasNew = widget.items.any((NavDestination d) => d.isNew);
+    final Set<String> seen = ref.watch(navSeenProvider);
+    final bool hasNew = widget.items
+        .any((NavDestination d) => d.isNew && !seen.contains(d.route));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
@@ -333,9 +337,16 @@ class _NavItem extends StatelessWidget {
                   ),
                 ),
                 if (destination.isNew && !compact)
-                  DsBadge(
-                    label: AppLocalizations.of(context).badgeNew,
-                    tone: DsBadgeTone.income,
+                  // Until the user first opens it.
+                  Consumer(
+                    builder: (BuildContext context, WidgetRef ref, _) => ref
+                            .watch(navSeenProvider)
+                            .contains(destination.route)
+                        ? const SizedBox.shrink()
+                        : DsBadge(
+                            label: AppLocalizations.of(context).badgeNew,
+                            tone: DsBadgeTone.income,
+                          ),
                   ),
               ],
             ),

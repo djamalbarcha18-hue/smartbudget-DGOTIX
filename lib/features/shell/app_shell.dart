@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/design_system/components/ds_backdrop.dart';
@@ -8,6 +9,8 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/features/search/app_search.dart';
 import 'package:smartbudget/features/shell/app_footer.dart';
 import 'package:smartbudget/features/shell/app_top_bar.dart';
+import 'package:smartbudget/features/shell/nav_destinations.dart';
+import 'package:smartbudget/features/shell/nav_seen.dart';
 import 'package:smartbudget/features/shell/nav_sidebar.dart';
 
 /// Responsive application shell: a floating glass sidebar on desktop/tablet,
@@ -43,6 +46,7 @@ class AppShell extends StatelessWidget {
           ),
         ),
         Expanded(child: child),
+        _MarkSeen(route: route),
         // Phones keep the whole screen for the page; the legal and help
         // links are in Support, in the menu.
         if (!isMobile) const AppFooter(),
@@ -108,5 +112,23 @@ class AppShell extends StatelessWidget {
       },
       child: Focus(autofocus: true, child: child),
     );
+  }
+}
+
+/// Opening a page marked "new" in the menu takes its badge away.
+class _MarkSeen extends ConsumerWidget {
+  const _MarkSeen({required this.route});
+  final String route;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bool fresh = AppNav.destinations
+            .any((NavDestination d) => d.isNew && d.route == route) &&
+        !ref.watch(navSeenProvider).contains(route);
+    if (fresh) {
+      WidgetsBinding.instance.addPostFrameCallback(
+          (_) => ref.read(navSeenProvider.notifier).markSeen(route));
+    }
+    return const SizedBox.shrink();
   }
 }

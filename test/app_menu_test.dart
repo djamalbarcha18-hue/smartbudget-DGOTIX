@@ -31,4 +31,13 @@ void main() {
     expect(AppMenu.foldOf(AppSection.debts), NavFold.tools);
     expect(AppMenu.foldOf(AppSection.dashboard), isNull);
   });
+
+  test('"new" only on the Islamic features (and SmartTrip, later)', () {
+    expect(
+        <AppSection>{
+          for (final NavDestination d in AppNav.all)
+            if (d.isNew) d.section,
+        },
+        <AppSection>{AppSection.seasons, AppSection.zakat, AppSection.trips});
+  });
 }
