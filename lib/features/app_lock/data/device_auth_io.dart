@@ -19,6 +19,7 @@ String get _reason => switch (PlatformDispatcher.instance.locale.languageCode) {
       'ms' => 'Buka kunci SmartBudget',
       'ur' => 'SmartBudget کھولیں',
       'de' => 'SmartBudget entsperren',
+      'pt' => 'Desbloquear o SmartBudget',
       _ => 'Unlock SmartBudget',
     };
 

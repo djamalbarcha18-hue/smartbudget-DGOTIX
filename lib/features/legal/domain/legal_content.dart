@@ -64,14 +64,20 @@ abstract final class LegalContent {
       ? 'unter ${AppConfig.supportEmail}'
       : 'über die Seite Hilfe & Support in der App';
 
+  static String get _reachPt => AppConfig.hasSupportEmail
+      ? 'pelo e-mail ${AppConfig.supportEmail}'
+      : 'pela página Ajuda e suporte do app';
+
   static List<LegalSection> sections(LegalDoc doc, {required AppLang lang}) =>
       switch (doc) {
         LegalDoc.privacy => lang.pick(_privacyAr, _privacyEn,
             fr: _privacyFr, id: _privacyId, es: _privacyEs,
-            tr: _privacyTr, ms: _privacyMs, ur: _privacyUr, de: _privacyDe),
+            tr: _privacyTr, ms: _privacyMs, ur: _privacyUr, de: _privacyDe,
+            pt: _privacyPt),
         LegalDoc.terms => lang.pick(_termsAr, _termsEn,
             fr: _termsFr, id: _termsId, es: _termsEs,
-            tr: _termsTr, ms: _termsMs, ur: _termsUr, de: _termsDe),
+            tr: _termsTr, ms: _termsMs, ur: _termsUr, de: _termsDe,
+            pt: _termsPt),
       };
 
   // ---- Privacy (English) ----
@@ -2666,6 +2672,296 @@ abstract final class LegalContent {
               'neuesten Fassung anzeigen; wenn du die App nach einer '
               'Aktualisierung weiter nutzt, akzeptierst du die geänderten '
               'Bedingungen. Bei Fragen kontaktiere uns $_reachDe.',
+        ),
+      ];
+
+  // ---- Privacy (Portuguese) ----
+  static List<LegalSection> get _privacyPt => <LegalSection>[
+        LegalSection(
+          'Visão geral',
+          'Esta política explica o que o $_app guarda, onde guarda e quais '
+              'escolhas você tem. Em resumo: seus dados financeiros são seus, '
+              'ficam primeiro no seu aparelho, e nunca os vendemos, nunca '
+              'mostramos anúncios nem rastreamos você. Alguns recursos opcionais '
+              '(login e sincronização, DGOTIX AI, leitura de recibos na nuvem e '
+              'planos pagos) enviam dados específicos a um serviço só quando você'
+              ' os usa, como descrito abaixo.',
+        ),
+        const LegalSection(
+          'O que guardamos',
+          'As informações que você mesmo informa: receitas, despesas, '
+              'orçamentos, metas, dívidas, carteiras, categorias personalizadas e'
+              ' suas preferências de exibição (tema, idioma, moeda base). Se você'
+              ' cria uma conta, também guardamos seu e-mail, seu plano e a '
+              'situação da assinatura, além de contadores de uso por período da '
+              'DGOTIX AI e da leitura de recibos na nuvem — usados só para '
+              'aplicar os limites do seu plano. Não guardamos suas perguntas à '
+              'DGOTIX AI nem as imagens dos seus recibos; se você denunciar uma '
+              'resposta da IA, guardamos essa resposta e sua observação opcional '
+              'para analisá-la.',
+        ),
+        const LegalSection(
+          'Onde seus dados ficam',
+          'Tudo é salvo primeiro no seu aparelho (no app ou, na versão web, no'
+              ' seu navegador), então o app funciona mesmo sem conta ou conexão. '
+              'Se você entra na sua conta, seus dados também são sincronizados '
+              'automaticamente entre seus aparelhos: uma cópia fica no nosso '
+              'banco de dados (hospedado pela Supabase), ligada à sua conta e '
+              'isolada para que só você possa lê-la. Você pode desativar a '
+              'sincronização em Configurações; aí seus dados ficam só neste '
+              'aparelho.',
+        ),
+        const LegalSection(
+          'Sua conta e e-mails',
+          'Seu e-mail é usado para você entrar na conta e para enviar e-mails '
+              'da conta, como confirmação do endereço e redefinição de senha '
+              '(enviados pela Brevo). Ele nunca é usado para publicidade nem '
+              'compartilhado para marketing. Ao se cadastrar ou entrar, uma '
+              'verificação rápida de que você é uma pessoa (Cloudflare Turnstile)'
+              ' impede abusos automatizados.',
+        ),
+        const LegalSection(
+          'DGOTIX AI',
+          'A DGOTIX AI é opcional. Quando você faz uma pergunta, o texto dela e'
+              ' um resumo dos seus números (totais por mês e categoria de até 12 '
+              'meses, orçamentos, saldos das carteiras, metas, transações '
+              'recorrentes, orçamentos de temporada e círculos de poupança — só '
+              'valores e datas, nunca descrições, observações ou os nomes que '
+              'você dá às coisas) são enviados pelo nosso servidor seguro a um '
+              'provedor de IA (Google Gemini, OpenAI ou Anthropic) para gerar a '
+              'resposta. Nosso servidor usa nossas próprias chaves de provedor e '
+              'registra só metadados de uso, nunca sua pergunta ou seus números. '
+              'Não usamos seus dados para treinar nenhum modelo. As respostas são'
+              ' geradas automaticamente, então confira os números importantes '
+              'antes de agir.',
+        ),
+        const LegalSection(
+          'Leitura de recibos',
+          'No Android, os recibos podem ser lidos inteiramente no seu '
+              'aparelho. A leitura na nuvem envia a imagem do recibo pelo nosso '
+              'servidor seguro a um provedor de IA só para ler o estabelecimento,'
+              ' a data, o valor, os itens e a categoria; a imagem não é guardada.',
+        ),
+        const LegalSection(
+          'Pagamentos e assinaturas',
+          'Os planos pagos são opcionais. Você paga no checkout seguro da Whop '
+              '(whop.com), nosso provedor de pagamentos, ou com PayPal, se '
+              'preferir. Eles coletam os dados de cobrança de que precisam (como '
+              'nome, e-mail, país e forma de pagamento) segundo as próprias '
+              'políticas de privacidade; nunca vemos nem guardamos os dados '
+              'completos do seu cartão. Guardamos seu plano, a situação da '
+              'assinatura, a data de renovação e os identificadores de assinatura'
+              ' do provedor de pagamento para dar a você o acesso certo, além do '
+              'registro de qualquer código promocional que você use.',
+        ),
+        const LegalSection(
+          'Prestadores de serviço',
+          'Conforme os recursos que você usa: Supabase (contas, sincronização e'
+              ' nossas funções de servidor); Whop e PayPal (pagamentos); Brevo '
+              '(e-mails da conta); Cloudflare Turnstile (a verificação no login);'
+              ' GitHub Pages (hospedagem do nosso site e do app web); Google, '
+              'OpenAI e Anthropic (DGOTIX AI e leitura de recibos na nuvem); e '
+              'fontes públicas de dados de mercado para valores ao vivo — '
+              'câmbio (open.er-api.com) e preços de cripto (CoinGecko) —, cujas '
+              'solicitações contêm só símbolos de moedas ou ativos, nunca seus '
+              'dados pessoais ou financeiros. Cada prestador trata os dados só '
+              'para entregar sua parte do serviço.',
+        ),
+        const LegalSection(
+          'Segurança',
+          'As conexões com nossos serviços são criptografadas (HTTPS). No nosso'
+              ' banco de dados, os registros de cada usuário são isolados para '
+              'que uma conta nunca leia os de outra. As chaves do servidor nunca '
+              'chegam ao app, as notificações de pagamento são verificadas antes '
+              'de mudar qualquer coisa, e você pode ativar um bloqueio do app (PIN'
+              ' ou digital) no seu aparelho.',
+        ),
+        const LegalSection(
+          'O que não fazemos',
+          'Não vendemos nem alugamos seus dados, não mostramos anúncios e não '
+              'fazemos rastreamento de comportamento nem análises da sua '
+              'atividade financeira.',
+        ),
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
+          const LegalSection(
+            'Contagens anônimas',
+            'Quando você cria uma viagem, o app envia só as palavras “uma '
+                'viagem foi planejada”, e nosso servidor soma um ao total '
+                'daquele dia. Nada mais é enviado nem guardado junto — nem conta,'
+                ' nem aparelho, nem destino, nem valor —, então os totais não '
+                'podem ser ligados a você. Usamos esses totais só para saber '
+                'quanto o app é usado e para mostrar números gerais a parceiros. '
+                'Você pode desativar isso em Configurações, em Privacidade.',
+          ),
+        const LegalSection(
+          'Por quanto tempo guardamos os dados',
+          'Os dados no seu aparelho ficam até você apagá-los ou remover o app. '
+              'Sua conta, os dados sincronizados, os contadores de uso e os '
+              'metadados das solicitações são mantidos enquanto sua conta existir'
+              ' — só para operar o serviço e aplicar os limites do seu plano — e '
+              'são apagados de vez quando você a exclui. A Whop e o PayPal '
+              'guardam os registros de cobrança que a lei os obriga a manter.',
+        ),
+        LegalSection(
+          'Seus direitos e controles',
+          'Você pode ver e corrigir seus dados no app a qualquer momento, '
+              'exportar um backup completo, desativar a sincronização, sair e '
+              'excluir sua conta com todos os dados (veja abaixo). Você pode '
+              'cancelar uma assinatura paga a qualquer momento (veja os Termos). '
+              'Para qualquer outro pedido sobre seus dados pessoais — incluindo '
+              'acesso, correção, exclusão ou oposição — fale conosco $_reachPt, '
+              'e responderemos rapidamente.',
+        ),
+        const LegalSection(
+          'Excluir sua conta e seus dados',
+          'No app ou na versão web, em qualquer aparelho, abra Configurações, '
+              'depois Conta e depois “Excluir minha conta”. Isso exclui de vez '
+              'sua conta e tudo o que está guardado para ela nos nossos '
+              'servidores (perfil, dados sincronizados, registro da assinatura e '
+              'contadores de uso) e apaga seus dados naquele aparelho. Cancele '
+              'antes qualquer assinatura paga. A exclusão não pode ser desfeita, '
+              'então exporte um backup antes se puder querer seus dados depois.',
+        ),
+        LegalSection(
+          'Idade',
+          'O $_app é destinado a pessoas com 16 anos ou mais. Não coletamos '
+              'conscientemente dados de crianças mais novas; se você acha que '
+              'uma criança criou uma conta, fale conosco $_reachPt e nós a '
+              'excluiremos.',
+        ),
+        LegalSection(
+          'Alterações e contato',
+          'Podemos atualizar esta política; a data mostrada acima indica a '
+              'versão mais recente. Para dúvidas sobre privacidade, fale conosco '
+              '$_reachPt.',
+        ),
+      ];
+
+  // ---- Terms (Portuguese) ----
+  static List<LegalSection> get _termsPt => <LegalSection>[
+        LegalSection(
+          'Aceitação',
+          'Ao usar o $_app, você concorda com estes termos. Se não concordar, '
+              'não use o app.',
+        ),
+        LegalSection(
+          'Quem pode usar',
+          'Você precisa ter pelo menos 16 anos para usar o $_app. Se criar uma '
+              'conta, mantenha seus dados de acesso em segurança; você é '
+              'responsável pela atividade na sua conta.',
+        ),
+        const LegalSection(
+          'O que é o serviço',
+          'Uma ferramenta pessoal de orçamento e planejamento para acompanhar '
+              'receitas, despesas, orçamentos, metas e análises relacionadas, com'
+              ' ajuda opcional de IA, leitura de recibos, sincronização entre '
+              'aparelhos e planos pagos.',
+        ),
+        const LegalSection(
+          'Ferramentas de planejamento, não aconselhamento profissional',
+          'Orçamentos, projeções, o cálculo do Zakat e as respostas da DGOTIX '
+              'AI são ferramentas de planejamento para ajudar você a decidir. Não'
+              ' são aconselhamento profissional financeiro, tributário ou '
+              'religioso. Para obrigações religiosas como o Zakat, confirme com '
+              'um estudioso qualificado; para decisões financeiras importantes, '
+              'consulte um profissional qualificado.',
+        ),
+        const LegalSection(
+          'Recursos de IA',
+          'A DGOTIX AI e a leitura de recibos na nuvem geram resultados '
+              'automáticos para poupar seu tempo; confira os números importantes '
+              'antes de agir. Esses recursos estão incluídos dentro de limites de'
+              ' uso justo que dependem do seu plano e podem ser ajustados para '
+              'manter o serviço rápido e confiável para todos.',
+        ),
+        const LegalSection(
+          'Assinaturas, cobrança e renovação',
+          'O app básico é gratuito. Os planos pagos (Pro) liberam limites '
+              'maiores e recursos extras pelos preços mostrados no app. Um plano '
+              'pago renova automaticamente a cada período de cobrança (mensal ou '
+              'anual) até você cancelar. Os pagamentos são processados pela Whop,'
+              ' nosso provedor de pagamentos (ou pelo PayPal, se você escolher); '
+              'impostos aplicáveis podem ser acrescentados e sempre aparecem no '
+              'checkout antes de você pagar. Você pode cancelar a qualquer momento'
+              ' e manter o acesso até o fim do período já pago. Se os preços ou '
+              'os recursos do plano mudarem, os termos atuais sempre aparecem '
+              'antes de você assinar.',
+        ),
+        const LegalSection(
+          'Nosso provedor de pagamentos: Whop',
+          'O SmartBudget é vendido pela DGOTIX. O checkout e a cobrança são '
+              'feitos pela Whop (whop.com), que processa o pagamento no próprio '
+              'checkout seguro, mostra o preço completo com impostos antes de '
+              'você pagar e envia seu recibo. Você pode gerenciar ou cancelar sua'
+              ' assinatura no app (Planos → Gerenciar).',
+        ),
+        LegalSection(
+          'Política de reembolso',
+          'Salvo quando a lei exigir, os pagamentos em geral não são '
+              'reembolsáveis depois que um período de cobrança começa, já que '
+              'você mantém o acesso até o fim dele. Você pode cancelar a qualquer'
+              ' momento para interromper as renovações futuras. Para pedir '
+              'reembolso ou tirar dúvidas sobre uma cobrança, fale conosco '
+              '$_reachPt: analisamos cada pedido conforme a lei do consumidor '
+              'aplicável e fazemos os reembolsos aprovados pela Whop (ou pelo '
+              'PayPal).',
+        ),
+        const LegalSection(
+          'Códigos promocionais',
+          'Cupons e códigos de desconto são opcionais e mudam só o preço de um'
+              ' checkout (ou concedem um período de teste). Cada código tem suas '
+              'próprias condições (validade, limites de uso, um por cliente) e '
+              'pode ser retirado ou expirar. Eles não têm valor em dinheiro e não'
+              ' podem ser combinados, salvo indicação.',
+        ),
+        const LegalSection(
+          'Seus dados e backups',
+          'Você é responsável pela exatidão dos dados que informa. Para manter'
+              ' seus dados seguros entre aparelhos, entre na sua conta para '
+              'sincronizá-los ou exporte um backup regularmente em Configurações.',
+        ),
+        LegalSection(
+          'Disponibilidade',
+          'Trabalhamos para manter o $_app disponível e confiável. Na medida '
+              'permitida pela lei, o app é fornecido “no estado em que se '
+              'encontra”, sem garantias de qualquer tipo. Dados de mercado ao '
+              'vivo, IA e pagamentos dependem de serviços de terceiros e podem '
+              'atrasar ou ficar indisponíveis de vez em quando; essa interrupção '
+              'nunca impede você de usar as ferramentas básicas de orçamento, que'
+              ' também funcionam offline. Os recursos podem evoluir com o tempo.',
+        ),
+        const LegalSection(
+          'Limitação de responsabilidade',
+          'Na medida permitida pela lei, não respondemos por perdas indiretas '
+              'ou consequentes, nem por decisões que você tome com base nos '
+              'números do app. Nada nestes termos limita direitos que você tem '
+              'pela lei do consumidor e que não podem ser renunciados.',
+        ),
+        const LegalSection(
+          'Uso aceitável',
+          'Não faça mau uso do serviço, não tente quebrar ou contornar a '
+              'segurança ou os limites dos planos, nem use o serviço para fins '
+              'ilegais.',
+        ),
+        LegalSection(
+          'Encerrar o uso',
+          'Você pode parar de usar o $_app e excluir sua conta a qualquer '
+              'momento. Podemos suspender uma conta que viole estes termos ou '
+              'coloque em risco o serviço ou outros usuários.',
+        ),
+        LegalSection(
+          'Marca e propriedade',
+          'O nome $_app, a marca $_brand e o design e o código do app '
+              'continuam sendo propriedade do seu titular. Seus dados continuam '
+              'sendo seus.',
+        ),
+        LegalSection(
+          'Alterações e contato',
+          'Podemos atualizar estes termos e mostrar a data da versão mais '
+              'recente; continuar usando o app depois de uma atualização '
+              'significa aceitar os termos revisados. Para dúvidas, fale conosco '
+              '$_reachPt.',
         ),
       ];
 }

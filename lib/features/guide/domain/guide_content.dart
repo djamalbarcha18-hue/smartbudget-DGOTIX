@@ -27,12 +27,14 @@ abstract final class GuideContent {
   static List<String> gettingStarted({required AppLang lang}) =>
       lang.pick(_startAr, _startEn,
           fr: _startFr, id: _startId, es: _startEs,
-          tr: _startTr, ms: _startMs, ur: _startUr, de: _startDe);
+          tr: _startTr, ms: _startMs, ur: _startUr, de: _startDe,
+          pt: _startPt);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
       lang.pick(_topicsAr, _topicsEn,
           fr: _topicsFr, id: _topicsId, es: _topicsEs,
-          tr: _topicsTr, ms: _topicsMs, ur: _topicsUr, de: _topicsDe);
+          tr: _topicsTr, ms: _topicsMs, ur: _topicsUr, de: _topicsDe,
+          pt: _topicsPt);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -1840,6 +1842,210 @@ abstract final class GuideContent {
             'Sicherung exportieren; wenn du angemeldet bist, werden deine Daten '
             'automatisch zwischen deinen Geräten synchronisiert (auch nach '
             'Offline-Arbeit), und du kannst das ausschalten.',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Portuguese) ----
+  static const List<String> _startPt = <String>[
+    'Abra Configurações e escolha o idioma, o tema e a moeda base — todos os '
+        'totais do app aparecem nessa moeda.',
+    'Adicione suas receitas e despesas (ou leia um recibo) — todo o resto é '
+        'calculado a partir delas.',
+    'Defina um orçamento mensal para o app dizer quanto ainda resta para '
+        'gastar.',
+    'Confira o Painel e a Saúde financeira para saber onde você está, depois '
+        'adicione metas e dívidas aos poucos.',
+  ];
+
+  // ---- Topics (Portuguese) ----
+  static const List<GuideTopic> _topicsPt = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'Painel',
+      summary:
+          'Seu mês num relance: receitas, gastos, poupança e para onde foi o '
+          'dinheiro.',
+      steps: <String>[
+        'Os blocos mostram os totais deste mês na sua moeda base.',
+        'Toque numa fatia do detalhamento de gastos para destacar essa '
+            'categoria.',
+        'Os alertas apontam o que precisa de atenção, como uma categoria acima'
+            ' do orçamento ou uma meta urgente.',
+        'Sem dados ainda, os blocos mostram “—” — nada é inventado.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'Receitas e despesas',
+      summary: 'Registre cada movimento de dinheiro — a base de todos os '
+          'cálculos do app.',
+      steps: <String>[
+        'Use o botão de adição rápida para registrar uma receita ou despesa '
+            'com valor, categoria, data e observação.',
+        'Receitas e Despesas têm cada uma sua tela; Transações mostra as duas '
+            'juntas.',
+        'Busque na lista para achar qualquer lançamento e toque nele para '
+            'editar ou excluir.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'Transações recorrentes',
+      summary: 'Salário, aluguel e assinaturas adicionados automaticamente na '
+          'data.',
+      steps: <String>[
+        'Ao adicionar uma receita ou despesa, defina “Repetir” como toda '
+            'semana, todo mês, a cada 3 meses, a cada 6 meses ou todo ano.',
+        'Para um bônus ou comissão de valor variável, ative “O valor muda a '
+            'cada vez”: em cada data o app pergunta o valor real em vez de '
+            'adicionar uma estimativa.',
+        'A cada vencimento, o app adiciona como uma transação normal — mesmo '
+            'que você tenha ficado fora, ele põe tudo em dia quando você abrir o'
+            ' app de novo.',
+        'Na tela Recorrentes, pause, retome, mude o valor ou pare de repetir. '
+            'As transações já adicionadas nunca mudam.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'Ler um recibo',
+      summary: 'Transforme a foto de um recibo numa despesa pronta para salvar.',
+      steps: <String>[
+        'Na tela Despesas, toque em “Ler recibo” e tire ou escolha uma foto.',
+        'O app preenche o estabelecimento, a data, o valor e a categoria — '
+            'revise antes de salvar.',
+        'A leitura na nuvem depende do seu plano; se um recibo não puder ser '
+            'lido, informe a despesa manualmente.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'Orçamento mensal',
+      summary: 'Planeje quanto quer gastar por categoria, mês a mês.',
+      steps: <String>[
+        'Escolha o ano e o mês no topo — uma tela cobre todos os meses.',
+        'Defina um limite para cada categoria que você quer controlar.',
+        'As barras de progresso enchem conforme você gasta; uma categoria '
+            'acima do limite é sinalizada.',
+        'Num plano pago, “Sugerir divisão” reparte sua renda entre as '
+            'categorias com base nos seus próprios gastos recentes — revise e '
+            'depois aplique.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'Metas e poupança',
+      summary: 'Guarde para algo específico e veja quanto falta.',
+      steps: <String>[
+        'Crie uma meta com um valor e, se quiser, um prazo.',
+        'Registre os aportes conforme poupa; o progresso é atualizado '
+            'automaticamente.',
+        'Metas perto do prazo aparecem em destaque no Painel.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'Dívidas e empréstimos',
+      summary: 'Acompanhe o que você deve e o que devem a você.',
+      steps: <String>[
+        'Adicione cada dívida ou empréstimo com o valor e a pessoa ou parte.',
+        'Atualize o valor já pago para ver o saldo restante.',
+        'As dívidas entram na sua pontuação de Saúde financeira.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'Carteira de projetos',
+      summary: 'Planeje projetos maiores em compartimentos de curto, médio e '
+          'longo prazo.',
+      steps: <String>[
+        'Adicione projetos e coloque cada um num prazo.',
+        'O financiamento enche os compartimentos em ordem, para você ver quais'
+            ' projetos sua poupança cobre primeiro.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'Saúde financeira',
+      summary: 'Uma pontuação que resume quão saudáveis estão suas finanças, e '
+          'por quê.',
+      steps: <String>[
+        'A pontuação é calculada no seu aparelho a partir dos seus próprios '
+            'dados.',
+        'Os fatores principais mostram o que ajuda ou atrapalha — melhore '
+            'esses primeiro.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'Relatórios e análises',
+      summary: 'Veja a evolução ao longo do ano e para onde vai seu dinheiro.',
+      steps: <String>[
+        'Escolha um ano para comparar receitas e despesas mês a mês.',
+        'Use os detalhamentos para identificar categorias que crescem com o '
+            'tempo.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'Zakat',
+      summary: 'Estime o Zakat devido sobre seu patrimônio e acompanhe o Hawl.',
+      steps: <String>[
+        'Informe os bens sujeitos ao Zakat para obter uma estimativa.',
+        'Defina a data em que seu patrimônio atingiu o nisab para acompanhar a'
+            ' contagem regressiva do ano lunar, mostrada no calendário hégira.',
+        'Isto é uma ajuda de planejamento — confirme sua obrigação com um '
+            'estudioso qualificado.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'Câmbio e mercados',
+      summary: 'Cotações e preços de cripto ao vivo, de fontes públicas.',
+      steps: <String>[
+        'As cotações são buscadas ao vivo; cada linha mostra de onde veio.',
+        'Quando um mercado não tem fonte confiável, aparece “indisponível” — '
+            'nunca um número inventado.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'Assistente DGOTIX AI',
+      summary: 'Faça perguntas sobre suas finanças em linguagem simples.',
+      steps: <String>[
+        'Digite uma pergunta ou toque numa sugestão; o assistente responde com'
+            ' base num breve resumo dos seus números.',
+        'O número de respostas depende do seu plano; você verá um aviso quando'
+            ' estiver perto do limite.',
+        'As respostas são geradas automaticamente — confira as decisões '
+            'importantes. As análises por regras abaixo do chat sempre '
+            'funcionam, mesmo sem IA.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'Planos e assinatura',
+      summary: 'Compare Grátis e Pro e gerencie sua assinatura.',
+      steps: <String>[
+        'As ferramentas básicas de orçamento são gratuitas para sempre.',
+        'Os planos pagos aumentam os limites de IA e de leitura na nuvem e '
+            'trazem recursos extras.',
+        'Se você assinar, seu plano atual e a data de renovação aparecem no '
+            'topo, com um botão para gerenciar ou cancelar.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'Configurações, dados e backup',
+      summary: 'Deixe o app do seu jeito e mantenha seus dados seguros.',
+      steps: <String>[
+        'Idioma, tema e moeda base ficam em Aparência e Região.',
+        'Gerencie suas próprias categorias de receita e despesa.',
+        'Em Dados e backup, exporte um backup completo quando quiser; com a '
+            'conta conectada, seus dados são sincronizados entre seus aparelhos '
+            'automaticamente (também depois de usar offline), e você pode '
+            'desativar isso.',
       ],
     ),
   ];

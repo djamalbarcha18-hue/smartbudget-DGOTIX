@@ -15,7 +15,8 @@ enum AppLang {
   ur('ur', 'اردو', rtl: true),
 
   /// Ready but not offered yet (see [hidden]).
-  de('de', 'Deutsch', hidden: true);
+  de('de', 'Deutsch', hidden: true),
+  pt('pt', 'Português', hidden: true);
 
   const AppLang(this.code, this.nativeName,
       {this.rtl = false, this.hidden = false});
@@ -64,7 +65,7 @@ enum AppLang {
   /// back to English (names of currencies, markets…), so a new language can
   /// ship before every long text is translated.
   T pick<T>(T ar, T en,
-          {T? fr, T? id, T? es, T? tr, T? ms, T? ur, T? de}) =>
+          {T? fr, T? id, T? es, T? tr, T? ms, T? ur, T? de, T? pt}) =>
       switch (this) {
         AppLang.ar => ar,
         AppLang.en => en,
@@ -75,5 +76,6 @@ enum AppLang {
         AppLang.ms => ms ?? en,
         AppLang.ur => ur ?? en,
         AppLang.de => de ?? en,
+        AppLang.pt => pt ?? en,
       };
 }
