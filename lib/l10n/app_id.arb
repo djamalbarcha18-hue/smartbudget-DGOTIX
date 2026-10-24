@@ -1377,5 +1377,8 @@
   "tripItemLeftAmount": "Sisa {amount}",
   "tripTipCover": "{over} melebihi bagiannya {amount}; {spare} masih punya {left} untuk menutupinya.",
   "tripTipOver": "{over} melebihi bagiannya {amount}.",
-  "tripTopSpentOn": "Paling banyak untuk"
+  "tripTopSpentOn": "Paling banyak untuk",
+  "navFoldTools": "Alat perencanaan",
+  "navFoldOccasions": "Momen & rencana khusus",
+  "navHelpShort": "Bantuan"
 }

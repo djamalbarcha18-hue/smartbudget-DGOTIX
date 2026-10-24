@@ -1622,5 +1622,8 @@
   "@tripTipCover": {"placeholders": {"over": {"type": "String"}, "amount": {"type": "String"}, "spare": {"type": "String"}, "left": {"type": "String"}}},
   "tripTipOver": "{over} is {amount} over its share.",
   "@tripTipOver": {"placeholders": {"over": {"type": "String"}, "amount": {"type": "String"}}},
-  "tripTopSpentOn": "Spent most on"
+  "tripTopSpentOn": "Spent most on",
+  "navFoldTools": "Planning tools",
+  "navFoldOccasions": "Occasions & special plans",
+  "navHelpShort": "Help"
 }

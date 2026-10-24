@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
-import 'package:smartbudget/core/l10n/app_lang_context.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -42,12 +41,13 @@ class NavSidebar extends StatelessWidget {
     final Widget body = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          // A smaller lockup leaves the room to the menu.
           const Padding(
             padding: EdgeInsets.symmetric(
               horizontal: DsSpacing.lg,
-              vertical: DsSpacing.xl,
+              vertical: DsSpacing.lg,
             ),
-            child: PlanBrandLockup(logoHeight: 56),
+            child: PlanBrandLockup(logoHeight: 40),
           ),
           Divider(height: 1, color: c.border),
           Expanded(
@@ -56,7 +56,30 @@ class NavSidebar extends StatelessWidget {
                 horizontal: DsSpacing.md,
                 vertical: DsSpacing.md,
               ),
-              children: _buildGroupedItems(context, l),
+              children: _buildMenu(context, l),
+            ),
+          ),
+          Divider(height: 1, color: c.border),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+                DsSpacing.md, DsSpacing.xs, DsSpacing.md, 0),
+            child: Row(
+              children: <Widget>[
+                for (final AppSection s in AppMenu.footer)
+                  if (AppMenu.of(s) case final NavDestination d)
+                    Expanded(
+                      child: _NavItem(
+                        destination: d,
+                        // Short, side by side ("Help", not "Help & support").
+                        label: s == AppSection.helpSupport
+                            ? l.navHelpShort
+                            : d.label(l),
+                        selected: AppMenu.selectedFor(currentRoute) == s,
+                        compact: true,
+                        onTap: () => onSelect(d.route),
+                      ),
+                    ),
+              ],
             ),
           ),
           Padding(
@@ -79,59 +102,154 @@ class NavSidebar extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildGroupedItems(BuildContext context, AppLocalizations l) {
-    final List<Widget> out = <Widget>[];
-    NavGroup? lastGroup;
-    for (final NavDestination d in AppNav.destinations) {
-      if (d.group != lastGroup) {
-        out.add(_GroupHeader(group: d.group, l: l));
-        lastGroup = d.group;
-      }
-      out.add(
-        _NavItem(
+  List<Widget> _buildMenu(BuildContext context, AppLocalizations l) {
+    final AppSection? selected = AppMenu.selectedFor(currentRoute);
+    Widget item(NavDestination d) => _NavItem(
           destination: d,
           label: d.label(l),
-          selected: currentRoute == d.route ||
-              (currentRoute == '/' && d.section == AppSection.dashboard),
+          selected: selected == d.section,
           onTap: () => onSelect(d.route),
-        ),
-      );
-    }
-    return out;
+        );
+    return <Widget>[
+      for (final AppSection s in AppMenu.main)
+        if (AppMenu.of(s) case final NavDestination d) item(d),
+      const SizedBox(height: DsSpacing.sm),
+      for (final MapEntry<NavFold, List<AppSection>> f
+          in AppMenu.folds.entries)
+        if (<NavDestination>[
+          for (final AppSection s in f.value)
+            if (AppMenu.of(s) case final NavDestination d) d,
+        ]
+            case final List<NavDestination> items when items.isNotEmpty)
+          _Fold(
+            fold: f.key,
+            items: items,
+            // The page shown keeps its part of the menu open.
+            open: AppMenu.foldOf(selected) == f.key,
+            children: <Widget>[for (final NavDestination d in items) item(d)],
+          ),
+    ];
   }
 }
 
-class _GroupHeader extends StatelessWidget {
-  const _GroupHeader({required this.group, required this.l});
-  final NavGroup group;
-  final AppLocalizations l;
+/// A folded part of the menu: its name, what is inside in a line, and the
+/// items once opened (smoothly).
+class _Fold extends StatefulWidget {
+  const _Fold({
+    required this.fold,
+    required this.items,
+    required this.open,
+    required this.children,
+  });
+  final NavFold fold;
+  final List<NavDestination> items;
+  final bool open;
+  final List<Widget> children;
+
+  @override
+  State<_Fold> createState() => _FoldState();
+}
+
+class _FoldState extends State<_Fold> {
+  late bool _open = widget.open;
+
+  @override
+  void didUpdateWidget(_Fold old) {
+    super.didUpdateWidget(old);
+    if (widget.open && !old.open) _open = true;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
-    final String text = switch (group) {
-      NavGroup.daily => l.navGroupDaily,
-      NavGroup.planning => l.navGroupPlanning,
-      NavGroup.insights => l.navGroupInsights,
-      NavGroup.special => l.navGroupSpecial,
-      NavGroup.advanced => l.navGroupAdvanced,
-      NavGroup.markets => l.navGroupMarkets,
-      NavGroup.system => l.navGroupSystem,
+    final TextTheme t = Theme.of(context).textTheme;
+    final (IconData icon, String title) = switch (widget.fold) {
+      NavFold.tools => (Icons.tune_rounded, l.navFoldTools),
+      NavFold.occasions => (Icons.celebration_outlined, l.navFoldOccasions),
+      NavFold.markets => (Icons.currency_exchange_outlined, l.navGroupMarkets),
     };
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        DsSpacing.md,
-        DsSpacing.lg,
-        DsSpacing.md,
-        DsSpacing.xs,
-      ),
-      child: Text(
-        appLangOf(context).upper(text),
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: c.textFaint,
-              letterSpacing: 0.8,
+    final bool hasNew = widget.items.any((NavDestination d) => d.isNew);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Material(
+          color: Colors.transparent,
+          borderRadius: DsRadius.brMd,
+          child: InkWell(
+            borderRadius: DsRadius.brMd,
+            onTap: () => setState(() => _open = !_open),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: DsSpacing.md, vertical: DsSpacing.sm + 2),
+              child: Row(
+                children: <Widget>[
+                  Icon(icon, size: 20, color: c.textMuted),
+                  const SizedBox(width: DsSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Flexible(
+                              child: Text(title,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: t.bodyMedium?.copyWith(
+                                      color: c.textPrimary,
+                                      fontWeight: FontWeight.w600)),
+                            ),
+                            if (hasNew && !_open) ...<Widget>[
+                              const SizedBox(width: 6),
+                              Container(
+                                width: 7,
+                                height: 7,
+                                decoration: BoxDecoration(
+                                    color: c.income, shape: BoxShape.circle),
+                              ),
+                            ],
+                          ],
+                        ),
+                        // What is inside, so nothing feels hidden.
+                        if (!_open)
+                          Text(
+                            widget.items
+                                .map((NavDestination d) => d.label(l))
+                                .join(' · '),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: t.labelSmall?.copyWith(color: c.textFaint),
+                          ),
+                      ],
+                    ),
+                  ),
+                  AnimatedRotation(
+                    turns: _open ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(Icons.expand_more_rounded,
+                        size: 20, color: c.textFaint),
+                  ),
+                ],
+              ),
             ),
-      ),
+          ),
+        ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
+          alignment: AlignmentDirectional.topStart,
+          child: _open
+              ? Padding(
+                  padding:
+                      const EdgeInsetsDirectional.only(start: DsSpacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: widget.children,
+                  ),
+                )
+              : const SizedBox(width: double.infinity),
+        ),
+      ],
     );
   }
 }
@@ -142,12 +260,16 @@ class _NavItem extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
+    this.compact = false,
   });
 
   final NavDestination destination;
   final String label;
   final bool selected;
   final VoidCallback onTap;
+
+  /// Settings and help at the bottom: smaller, side by side.
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -191,13 +313,13 @@ class _NavItem extends StatelessWidget {
           borderRadius: DsRadius.brMd,
           hoverColor: c.textPrimary.withValues(alpha: 0.05),
           child: Padding(
-            padding: const EdgeInsets.symmetric(
+            padding: EdgeInsets.symmetric(
               horizontal: DsSpacing.md,
-              vertical: DsSpacing.md,
+              vertical: compact ? DsSpacing.sm : DsSpacing.md - 2,
             ),
             child: Row(
               children: <Widget>[
-                Icon(destination.icon, size: 20, color: fg),
+                Icon(destination.icon, size: compact ? 18 : 20, color: fg),
                 const SizedBox(width: DsSpacing.md),
                 Expanded(
                   child: Text(
@@ -210,7 +332,7 @@ class _NavItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                if (destination.isNew)
+                if (destination.isNew && !compact)
                   DsBadge(
                     label: AppLocalizations.of(context).badgeNew,
                     tone: DsBadgeTone.income,

@@ -1377,5 +1377,8 @@
   "tripItemLeftAmount": "Reste {amount}",
   "tripTipCover": "{over} dépasse sa part de {amount} ; {spare} a encore {left} pour le couvrir.",
   "tripTipOver": "{over} dépasse sa part de {amount}.",
-  "tripTopSpentOn": "Ma plus grosse dépense"
+  "tripTopSpentOn": "Ma plus grosse dépense",
+  "navFoldTools": "Outils de planification",
+  "navFoldOccasions": "Occasions et projets",
+  "navHelpShort": "Aide"
 }

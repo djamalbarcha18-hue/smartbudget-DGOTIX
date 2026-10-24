@@ -1377,5 +1377,8 @@
   "tripItemLeftAmount": "{amount} kaldı",
   "tripTipCover": "{over} payını {amount} aştı; {spare} kaleminde bunu karşılayacak {left} kaldı.",
   "tripTipOver": "{over} payını {amount} aştı.",
-  "tripTopSpentOn": "En çok harcadığım"
+  "tripTopSpentOn": "En çok harcadığım",
+  "navFoldTools": "Planlama araçları",
+  "navFoldOccasions": "Özel günler ve planlar",
+  "navHelpShort": "Yardım"
 }

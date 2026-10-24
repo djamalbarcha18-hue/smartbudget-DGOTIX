@@ -1377,5 +1377,8 @@
   "tripItemLeftAmount": "Baki {amount}",
   "tripTipCover": "{over} melebihi bahagiannya sebanyak {amount}; {spare} masih ada {left} untuk menampungnya.",
   "tripTipOver": "{over} melebihi bahagiannya sebanyak {amount}.",
-  "tripTopSpentOn": "Paling banyak untuk"
+  "tripTopSpentOn": "Paling banyak untuk",
+  "navFoldTools": "Alat perancangan",
+  "navFoldOccasions": "Majlis & rancangan khas",
+  "navHelpShort": "Bantuan"
 }

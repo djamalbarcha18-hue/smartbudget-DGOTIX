@@ -256,3 +256,80 @@ abstract final class AppNav {
 
   static NavGroup groupOf(int index) => destinations[index].group;
 }
+
+/// The menu's folding parts, closed until opened (or holding the page open).
+enum NavFold { tools, occasions, markets }
+
+/// What the side menu shows, so a newcomer understands it at first sight:
+/// a few everyday items, then the rest folded by purpose, then settings and
+/// help. Everything stays in search and at its route; income and expenses
+/// are filters of the transactions page, the guide is under help, and the
+/// plans behind the upgrade card.
+abstract final class AppMenu {
+  /// Always shown, in this order.
+  static const List<AppSection> main = <AppSection>[
+    AppSection.dashboard,
+    AppSection.transactions,
+    AppSection.monthlyBudget,
+    AppSection.goals,
+    AppSection.reports,
+    AppSection.financialHealth,
+    AppSection.aiAssistant,
+  ];
+
+  static const Map<NavFold, List<AppSection>> folds = <NavFold, List<AppSection>>{
+    NavFold.tools: <AppSection>[
+      AppSection.wallets,
+      AppSection.recurring,
+      AppSection.debts,
+      AppSection.challenges,
+    ],
+    NavFold.occasions: <AppSection>[
+      AppSection.seasons,
+      AppSection.daret,
+      AppSection.portfolio,
+      AppSection.zakat,
+      AppSection.trips,
+    ],
+    NavFold.markets: <AppSection>[
+      AppSection.exchangeRates,
+      AppSection.markets,
+    ],
+  };
+
+  /// Small, at the bottom.
+  static const List<AppSection> footer = <AppSection>[
+    AppSection.settings,
+    AppSection.helpSupport,
+  ];
+
+  /// Reached from another menu item: its page lights that item up.
+  static const Map<AppSection, AppSection> within = <AppSection, AppSection>{
+    AppSection.income: AppSection.transactions,
+    AppSection.expenses: AppSection.transactions,
+    AppSection.guide: AppSection.helpSupport,
+  };
+
+  /// The destination of [s] in this build, or null (not launched).
+  static NavDestination? of(AppSection s) => AppNav.destinations
+      .where((NavDestination d) => d.section == s)
+      .firstOrNull;
+
+  /// The section the menu lights up for [route].
+  static AppSection? selectedFor(String route) {
+    if (route == '/') return AppSection.dashboard;
+    final NavDestination? d = AppNav.destinations
+        .where((NavDestination d) => d.route == route)
+        .firstOrNull;
+    if (d == null) return null;
+    return within[d.section] ?? d.section;
+  }
+
+  /// The fold holding [section], if any.
+  static NavFold? foldOf(AppSection? section) {
+    for (final MapEntry<NavFold, List<AppSection>> e in folds.entries) {
+      if (e.value.contains(section)) return e.key;
+    }
+    return null;
+  }
+}

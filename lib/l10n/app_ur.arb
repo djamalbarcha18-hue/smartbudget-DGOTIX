@@ -1377,5 +1377,8 @@
   "tripItemLeftAmount": "{amount} باقی",
   "tripTipCover": "{over} اپنے حصے سے {amount} زیادہ ہو گیا؛ {spare} میں اسے پورا کرنے کے لیے {left} باقی ہیں۔",
   "tripTipOver": "{over} اپنے حصے سے {amount} زیادہ ہو گیا۔",
-  "tripTopSpentOn": "سب سے زیادہ خرچ"
+  "tripTopSpentOn": "سب سے زیادہ خرچ",
+  "navFoldTools": "منصوبہ بندی کے اوزار",
+  "navFoldOccasions": "مواقع اور خاص منصوبے",
+  "navHelpShort": "مدد"
 }
