@@ -34,6 +34,14 @@ abstract final class DsTheme {
         lang: lang,
       );
 
+  /// Black (Pro): graphite black and yellow, the dark Pro theme.
+  static ThemeData black({AppLang lang = AppLang.en}) => _build(
+        brightness: Brightness.dark,
+        colors: DsColors.black,
+        glass: DsGlass.black,
+        lang: lang,
+      );
+
   /// Pomegranate (Pro): rose and deep wine.
   static ThemeData pomegranate({AppLang lang = AppLang.en}) => _build(
         brightness: Brightness.light,

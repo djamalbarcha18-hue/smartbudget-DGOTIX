@@ -1347,10 +1347,11 @@
   "tripLevelLuxury": "پرتعیش",
   "tripDaysLabel": "دنوں کی تعداد: {days}",
   "featProThemes": "Pro تھیمز",
-  "settingsThemeStyleHint": "بیج، سیج اور انار: ہلکی تھیم کے لیے آنکھوں کو آرام دینے والے Pro رنگ۔",
+  "settingsThemeStyleHint": "Pro رنگ: ہلکی تھیم کے لیے بیج، سیج اور انار، گہری تھیم کے لیے سیاہ۔",
   "settingsThemeStyle": "تھیم کے رنگ",
   "themeClassic": "کلاسیکی",
   "themeBeige": "بیج",
   "themeSage": "سیج",
-  "themePomegranate": "انار"
+  "themePomegranate": "انار",
+  "themeBlack": "سیاہ"
 }

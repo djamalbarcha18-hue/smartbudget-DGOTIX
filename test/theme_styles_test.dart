@@ -70,6 +70,27 @@ void main() {
       });
     }
 
+    test('black: a dark theme with a yellow accent, easy to read', () {
+      final ThemeData t = DsTheme.black();
+      const DsColors c = DsColors.black;
+      expect(t.brightness, Brightness.dark);
+      expect(t.extension<DsColors>(), c);
+      expect(t.extension<DsGlass>(), DsGlass.black);
+      expect(t.scaffoldBackgroundColor, c.bgPage);
+      for (final Color fg in <Color>[
+        c.textPrimary,
+        c.textMuted,
+        c.income,
+        c.expense,
+        c.brand
+      ]) {
+        expect(contrast(fg, c.surface), greaterThan(4.5), reason: '$fg');
+        expect(contrast(fg, c.bgPage), greaterThan(4.5), reason: '$fg');
+      }
+      // Dark text on the yellow buttons.
+      expect(contrast(c.onBrand, c.brand), greaterThan(4.5));
+    });
+
     test('Pro themes are a Pro feature', () {
       expect(FeatureCatalog.minTierFor(Feature.proThemes), Plan.pro);
       expect(FeatureGate.evaluate(Feature.proThemes, plan: Plan.free).allowed,
@@ -145,6 +166,15 @@ void main() {
       expect(c.read(themeStyleProvider), AppThemeStyle.sage);
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       expect(prefs.getString('sb_theme_style'), 'sage');
+      // Black switches to the dark mode, Pomegranate back to light.
+      await tester.tap(find.text('أسود'));
+      await tester.pumpAndSettle();
+      expect(c.read(themeStyleProvider), AppThemeStyle.black);
+      expect(c.read(themeModeProvider), ThemeMode.dark);
+      await tester.tap(find.text('رماني'));
+      await tester.pumpAndSettle();
+      expect(c.read(themeStyleProvider), AppThemeStyle.pomegranate);
+      expect(c.read(themeModeProvider), ThemeMode.light);
       // Back to Classic.
       await tester.tap(find.text('كلاسيكي'));
       await tester.pumpAndSettle();

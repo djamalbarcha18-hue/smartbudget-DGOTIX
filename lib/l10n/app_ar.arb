@@ -1547,10 +1547,11 @@
   "tripLevelLuxury": "فاخر",
   "tripDaysLabel": "عدد الأيام: {days}",
   "featProThemes": "ثيمات Pro",
-  "settingsThemeStyleHint": "البيج والمريمية والرماني: ألوان Pro أهدأ وأريح للعين، للوضع الفاتح.",
+  "settingsThemeStyleHint": "ألوان Pro: البيج والمريمية والرماني للوضع الفاتح، والأسود للوضع الداكن.",
   "settingsThemeStyle": "ألوان المظهر",
   "themeClassic": "كلاسيكي",
   "themeBeige": "بيج",
   "themeSage": "مريمية",
-  "themePomegranate": "رماني"
+  "themePomegranate": "رماني",
+  "themeBlack": "أسود"
 }

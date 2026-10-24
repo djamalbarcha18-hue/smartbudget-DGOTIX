@@ -303,6 +303,7 @@ class _ThemeStylePicker extends ConsumerWidget {
         AppThemeStyle.beige => DsColors.beige,
         AppThemeStyle.sage => DsColors.sage,
         AppThemeStyle.pomegranate => DsColors.pomegranate,
+        AppThemeStyle.black => DsColors.black,
       };
 
   static String _label(AppLocalizations l, AppThemeStyle s) => switch (s) {
@@ -310,6 +311,7 @@ class _ThemeStylePicker extends ConsumerWidget {
         AppThemeStyle.beige => l.themeBeige,
         AppThemeStyle.sage => l.themeSage,
         AppThemeStyle.pomegranate => l.themePomegranate,
+        AppThemeStyle.black => l.themeBlack,
       };
 
   @override
@@ -324,17 +326,22 @@ class _ThemeStylePicker extends ConsumerWidget {
       final bool pro = style != AppThemeStyle.classic;
       if (pro && !PlanLimits.allow(context, Feature.proThemes)) return;
       ref.read(themeStyleProvider.notifier).set(style);
-      // The Pro themes are light themes: show them.
-      if (pro && mode == ThemeMode.dark) {
+      // Black is a dark theme, the other Pro themes are light: show it.
+      if (style == AppThemeStyle.black) {
+        if (mode != ThemeMode.dark) {
+          ref.read(themeModeProvider.notifier).set(ThemeMode.dark);
+        }
+      } else if (pro && mode == ThemeMode.dark) {
         ref.read(themeModeProvider.notifier).set(ThemeMode.light);
       }
     }
 
-    Widget option(AppThemeStyle style) {
+    Widget option(AppThemeStyle style, double width) {
       final bool selected = style == current;
       final DsColors preview = _preview(style);
       final String label = _label(l, style);
-      return Expanded(
+      return SizedBox(
+        width: width,
         child: Semantics(
           button: true,
           selected: selected,
@@ -438,14 +445,22 @@ class _ThemeStylePicker extends ConsumerWidget {
         Text(l.settingsThemeStyle,
             style: t.labelMedium?.copyWith(color: c.textMuted)),
         const SizedBox(height: DsSpacing.sm),
-        Row(
-          children: <Widget>[
-            for (final AppThemeStyle s in AppThemeStyle.values) ...<Widget>[
-              if (s != AppThemeStyle.classic)
-                const SizedBox(width: DsSpacing.sm),
-              option(s),
-            ],
-          ],
+        // One row when there is room, otherwise three per row.
+        LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints box) {
+            final int count = AppThemeStyle.values.length;
+            final int cols = box.maxWidth >= 480 ? count : 3;
+            final double width =
+                (box.maxWidth - DsSpacing.sm * (cols - 1)) / cols;
+            return Wrap(
+              spacing: DsSpacing.sm,
+              runSpacing: DsSpacing.md,
+              children: <Widget>[
+                for (final AppThemeStyle s in AppThemeStyle.values)
+                  option(s, width),
+              ],
+            );
+          },
         ),
         const SizedBox(height: DsSpacing.xs),
         Text(l.settingsThemeStyleHint,

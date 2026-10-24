@@ -180,6 +180,28 @@ class DsColors extends ThemeExtension<DsColors> {
     shadow: Color(0x1A632130),
   );
 
+  /// Black (Pro): a graphite-black dark theme with a warm yellow accent.
+  static const DsColors black = DsColors(
+    brand: Color(0xFFF5C542),
+    brandStrong: Color(0xFFFFD35C),
+    income: Color(0xFF3CC9B0),
+    expense: Color(0xFFF87171),
+    saving: Color(0xFF4FC3F7),
+    net: Color(0xFF5EEAD4),
+    warning: Color(0xFFFB923C),
+    bgPage: Color(0xFF121214),
+    bgElevated: Color(0xFF18181B),
+    surface: Color(0xFF1F2023),
+    surfaceMuted: Color(0xFF2A2B2F),
+    border: Color(0x1AFFFFFF), // white @ 10%
+    borderStrong: Color(0x2EFFFFFF),
+    textPrimary: Color(0xFFF2F2F3),
+    textMuted: Color(0xFFA1A1AA),
+    textFaint: Color(0xFF6B6B73),
+    onBrand: Color(0xFF17140A),
+    shadow: Color(0x80000000),
+  );
+
   @override
   DsColors copyWith({
     Color? brand,

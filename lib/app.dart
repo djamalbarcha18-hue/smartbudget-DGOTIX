@@ -71,8 +71,12 @@ class SmartBudgetApp extends ConsumerWidget {
         AppThemeStyle.beige => DsTheme.beige(lang: lang),
         AppThemeStyle.sage => DsTheme.sage(lang: lang),
         AppThemeStyle.pomegranate => DsTheme.pomegranate(lang: lang),
+        // Black is the dark Pro theme: the light theme stays classic.
+        AppThemeStyle.black => DsTheme.light(lang: lang),
       },
-      darkTheme: DsTheme.dark(lang: lang),
+      darkTheme: style == AppThemeStyle.black
+          ? DsTheme.black(lang: lang)
+          : DsTheme.dark(lang: lang),
       themeMode: themeMode,
       locale: locale,
       supportedLocales: AppLocalizations.supportedLocales,

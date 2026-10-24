@@ -144,6 +144,24 @@ class DsGlass extends ThemeExtension<DsGlass> {
     ],
   );
 
+  /// Graphite surfaces with a yellow edge on hover for the black theme.
+  static const DsGlass black = DsGlass(
+    blurSigma: 16,
+    fill: Color(0xE61F2023),
+    fillTop: Color(0xF0262629),
+    fillStrong: Color(0xF218181B),
+    borderColor: Color(0x1AFFFFFF),
+    hoverBorder: Color(0x66F5C542),
+    highlight: Color(0x14FFFFFF),
+    glow: Color(0x1FF5C542),
+    shadow: <BoxShadow>[
+      BoxShadow(color: Color(0x66000000), blurRadius: 26, offset: Offset(0, 12)),
+    ],
+    hoverShadow: <BoxShadow>[
+      BoxShadow(color: Color(0x80000000), blurRadius: 32, offset: Offset(0, 16)),
+    ],
+  );
+
   @override
   DsGlass copyWith({
     double? blurSigma,

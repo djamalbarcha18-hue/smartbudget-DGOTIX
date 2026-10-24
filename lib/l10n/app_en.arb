@@ -1587,10 +1587,11 @@
   "tripDaysLabel": "Days: {days}",
   "@tripDaysLabel": {"placeholders": {"days": {"type": "int"}}},
   "featProThemes": "Pro themes",
-  "settingsThemeStyleHint": "Beige, Sage and Pomegranate: Pro colours that are easier on the eyes, for the light theme.",
+  "settingsThemeStyleHint": "Pro colours: Beige, Sage and Pomegranate for the light theme, Black for the dark theme.",
   "settingsThemeStyle": "Theme colours",
   "themeClassic": "Classic",
   "themeBeige": "Beige",
   "themeSage": "Sage",
-  "themePomegranate": "Pomegranate"
+  "themePomegranate": "Pomegranate",
+  "themeBlack": "Black"
 }

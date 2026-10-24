@@ -1347,10 +1347,11 @@
   "tripLevelLuxury": "Lujo",
   "tripDaysLabel": "Días: {days}",
   "featProThemes": "Temas Pro",
-  "settingsThemeStyleHint": "Beige, Salvia y Granada: colores Pro más descansados, para el tema claro.",
+  "settingsThemeStyleHint": "Colores Pro: Beige, Salvia y Granada para el tema claro, Negro para el tema oscuro.",
   "settingsThemeStyle": "Colores del tema",
   "themeClassic": "Clásico",
   "themeBeige": "Beige",
   "themeSage": "Salvia",
-  "themePomegranate": "Granada"
+  "themePomegranate": "Granada",
+  "themeBlack": "Negro"
 }

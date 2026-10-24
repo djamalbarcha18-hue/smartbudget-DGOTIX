@@ -18,9 +18,11 @@ class DsBackdrop extends StatelessWidget {
     final DsColors? colors = theme.extension<DsColors>();
     return RepaintBoundary(
       child: CustomPaint(
-        painter: dark
-            ? _BackdropPainter.dark
-            : colors == DsColors.beige
+        painter: colors == DsColors.black
+            ? _BackdropPainter.black
+            : dark
+                ? _BackdropPainter.dark
+                : colors == DsColors.beige
                 ? _BackdropPainter.beige
                 : colors == DsColors.sage
                     ? _BackdropPainter.sage
@@ -81,6 +83,16 @@ class _BackdropPainter extends CustomPainter {
     bottom: Color(0xFFF3EFE8),
     glows: <_Glow>[
       _Glow(Offset(0.92, 0.02), 0.55, Color(0x0FD9C7A7)),
+    ],
+  );
+
+  // Black: graphite, with a faint warm light from the top corner.
+  static const _BackdropPainter black = _BackdropPainter(
+    top: Color(0xFF17171A),
+    bottom: Color(0xFF0F0F11),
+    glows: <_Glow>[
+      _Glow(Offset(0.95, 0.0), 0.5, Color(0x14F5C542)),
+      _Glow(Offset(0.0, 1.0), 0.55, Color(0x0AFFFFFF)),
     ],
   );
 
