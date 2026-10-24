@@ -1407,6 +1407,8 @@
   "proSuggestionsTitle": "Suggestions de réservation des partenaires",
   "proSuggestionsHint": "Hôtels, compagnies et eSIM choisis pour vos voyages — certains de votre pays — avec des avantages Pro. Sans pub.",
   "proSuggestionsShow": "Les afficher dans mes voyages",
+  "anonStatsTrips": "Compter mes voyages anonymement",
+  "anonStatsTripsHint": "Seul « un voyage a été créé » est envoyé, pour compter les voyages par jour. Ni compte, ni lieu, ni montant.",
   "offerProPerk": "Avec Pro : {perk}",
   "offerBookWithPartner": "Réservé chez le partenaire",
   "offerNoticeTitle": "Avant d’aller chez le partenaire",

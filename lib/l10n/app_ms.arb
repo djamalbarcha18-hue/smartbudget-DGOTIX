@@ -1407,6 +1407,8 @@
   "proSuggestionsTitle": "Cadangan tempahan daripada rakan kongsi",
   "proSuggestionsHint": "Hotel, syarikat penerbangan dan eSIM pilihan untuk perjalanan anda — sebahagiannya dari negara anda — dengan kelebihan Pro. Tiada iklan.",
   "proSuggestionsShow": "Tunjukkan dalam perjalanan saya",
+  "anonStatsTrips": "Kira perjalanan saya tanpa nama",
+  "anonStatsTripsHint": "Hanya “perjalanan dibuat” dihantar, untuk mengira perjalanan sehari. Tiada akaun, tempat atau jumlah.",
   "offerProPerk": "Dengan Pro: {perk}",
   "offerBookWithPartner": "Ditempah terus dengan rakan kongsi",
   "offerNoticeTitle": "Sebelum ke rakan kongsi",

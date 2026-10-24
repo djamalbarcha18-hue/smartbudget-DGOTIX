@@ -1407,6 +1407,8 @@
   "proSuggestionsTitle": "Saran pemesanan dari mitra",
   "proSuggestionsHint": "Hotel, maskapai, dan eSIM pilihan untuk perjalanan Anda — sebagian dari negara Anda — dengan keuntungan Pro. Tanpa iklan.",
   "proSuggestionsShow": "Tampilkan di perjalanan saya",
+  "anonStatsTrips": "Hitung perjalanan saya secara anonim",
+  "anonStatsTripsHint": "Hanya “perjalanan dibuat” yang dikirim, untuk menghitung perjalanan per hari. Tanpa akun, tempat, atau jumlah.",
   "offerProPerk": "Dengan Pro: {perk}",
   "offerBookWithPartner": "Dipesan langsung ke mitra",
   "offerNoticeTitle": "Sebelum ke mitra",

@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/stats/app_stats.dart';
 import 'package:smartbudget/core/storage/local_list_store.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/core/money/money.dart';
@@ -61,7 +62,14 @@ class TripActions {
   static String newId() =>
       'trip-${AppClock.now().microsecondsSinceEpoch.toRadixString(36)}';
 
-  Future<void> save(Trip t) => _store.upsert(t);
+  /// Saves the trip; a new one adds one to the anonymous daily total.
+  Future<void> save(Trip t) async {
+    final bool isNew = !(await _store.all()).any((Trip x) => x.id == t.id);
+    await _store.upsert(t);
+    if (isNew) {
+      _ref.read(appStatsProvider).count(StatEvent.tripCreated).ignore();
+    }
+  }
 
   /// Sets up a savings goal for the trip in the goals the app already has:
   /// its budget, due the day it starts. Returns the goal.

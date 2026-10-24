@@ -99,7 +99,20 @@ select pg_temp.attempt('anon reads subscriptions', 'select * from subscriptions'
 select pg_temp.attempt('anon reads transactions', 'select * from transactions', 'rows=0');
 select pg_temp.attempt('anon reserves usage', $q$select reserve_usage('aaaaaaaa-0000-0000-0000-000000000001', 'ai', '2026-10', 999, false, null)$q$, 'denied');
 select pg_temp.attempt('anon applies a payment event', $q$select apply_subscription_event('whop', 'mem_x', 'aaaaaaaa-0000-0000-0000-000000000001', 'pro', 'monthly', 'active', null, null, false, now())$q$, 'denied');
+-- Anonymous totals: anyone may add one, nobody may read or set them.
+select pg_temp.attempt('anon counts a trip', $q$select count_event('trip_created')$q$, 'rows=1');
+select pg_temp.attempt('anon counts an unknown event', $q$select count_event('anything')$q$, 'rows=1');
+select pg_temp.attempt('anon reads the totals', 'select * from app_stats_daily', 'denied');
+select pg_temp.attempt('anon reads the monthly totals', 'select * from app_stats_monthly', 'denied');
+select pg_temp.attempt('anon sets a total', $q$insert into app_stats_daily (day, event, count) values (current_date, 'trip_created', 999999)$q$, 'denied');
 reset role;
+set role authenticated;
+select set_config('request.jwt.claim.sub', 'aaaaaaaa-0000-0000-0000-000000000001', false);
+select pg_temp.attempt('A counts a trip', $q$select count_event('trip_created')$q$, 'rows=1');
+select pg_temp.attempt('A reads the totals', 'select * from app_stats_daily', 'denied');
+select pg_temp.attempt('A changes a total', $q$update app_stats_daily set count = 999999$q$, 'denied');
+reset role;
+select pg_temp.attempt('the totals hold two trips and nothing else', $q$select 1 from app_stats_daily where event = 'trip_created' and count = 2 and not exists (select 1 from app_stats_daily where event <> 'trip_created')$q$, 'rows=1');
 
 select outcome || '  ' || test from results;
 select count(*) filter (where outcome = 'PASS') || ' passed, ' || count(*) filter (where outcome <> 'PASS') || ' failed' from results;

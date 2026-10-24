@@ -1407,6 +1407,8 @@
   "proSuggestionsTitle": "پارٹنرز کی بکنگ تجاویز",
   "proSuggestionsHint": "آپ کے سفر کے لیے منتخب ہوٹل، ایئر لائنز اور eSIM — کچھ آپ کے اپنے ملک سے — Pro فوائد کے ساتھ۔ کوئی اشتہار نہیں۔",
   "proSuggestionsShow": "میرے سفر میں دکھائیں",
+  "anonStatsTrips": "میرے سفر گمنام طور پر شمار کریں",
+  "anonStatsTripsHint": "صرف «ایک سفر بنایا گیا» بھیجا جاتا ہے، روزانہ سفروں کی گنتی کے لیے۔ نہ اکاؤنٹ، نہ جگہ، نہ رقم۔",
   "offerProPerk": "Pro کے ساتھ: {perk}",
   "offerBookWithPartner": "بکنگ براہ راست پارٹنر کے ساتھ",
   "offerNoticeTitle": "پارٹنر کے پاس جانے سے پہلے",

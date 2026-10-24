@@ -1,4 +1,5 @@
 import 'package:smartbudget/core/config/app_config.dart';
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/l10n/app_lang.dart';
 
 /// Which legal document to render.
@@ -20,7 +21,7 @@ class LegalSection {
 /// have it reviewed for their jurisdiction before relying on it.
 abstract final class LegalContent {
   /// Bump when the wording changes materially (shown as "last updated").
-  static const String lastUpdated = '2026-10-12';
+  static const String lastUpdated = '2026-10-24';
 
   static String get _app => AppConfig.appName;
   static String get _brand => AppConfig.parentBrand;
@@ -168,6 +169,17 @@ abstract final class LegalContent {
           'We do not sell or rent your data, show advertising, or run '
               'behavioural tracking or analytics on your financial activity.',
         ),
+        // Only trips are counted, so only with SmartTrip.
+        if (AppEnv.smartTrip)
+          const LegalSection(
+            'Anonymous counts',
+            'When you create a trip, the app sends only the words “a trip was '
+                'planned”, and our server adds one to that day\'s total. Nothing '
+                'else is sent or kept with it — no account, device, destination or '
+                'amount — so the totals can\'t be linked to you. We use them only to'
+                ' know how much the app is used and to show partners overall '
+                'figures. You can turn this off in Settings, under Privacy.',
+          ),
         const LegalSection(
           'How long we keep data',
           'Data on your device stays until you delete it or remove the app. '
@@ -300,6 +312,17 @@ abstract final class LegalContent {
           'لا نبيع بياناتك أو نؤجّرها، ولا نعرض إعلانات، ولا نُجري تعقّباً '
               'سلوكياً أو تحليلات على نشاطك المالي.',
         ),
+        // Only trips are counted, so only with SmartTrip.
+        if (AppEnv.smartTrip)
+          const LegalSection(
+            'إحصاءات مجهولة',
+            'عندما تُنشئ رحلة، يرسل التطبيق عبارة «أُنشئت رحلة» فقط، ويضيف '
+                'خادمنا واحداً إلى مجموع ذلك اليوم. لا يُرسَل ولا يُحفظ معها أي شيء'
+                ' آخر — لا حساب ولا جهاز ولا وجهة ولا مبلغ — فلا يمكن ربط هذه '
+                'المجاميع بك. نستخدمها فقط لمعرفة مدى استخدام التطبيق ولعرض أرقام '
+                'إجمالية على الشركاء. ويمكنك إيقاف ذلك من الإعدادات، في قسم '
+                'الخصوصية.',
+          ),
         const LegalSection(
           'مدة الاحتفاظ بالبيانات',
           'تبقى البيانات على جهازك حتى تحذفها أو تُزيل التطبيق. ويُحتفظ '
@@ -692,6 +715,19 @@ abstract final class LegalContent {
               'publicité et ne pratiquons aucun pistage comportemental ni aucune '
               'analyse de votre activité financière.',
         ),
+        // Only trips are counted, so only with SmartTrip.
+        if (AppEnv.smartTrip)
+          const LegalSection(
+            'Comptages anonymes',
+            'Lorsque vous créez un voyage, l\'application envoie seulement « un '
+                'voyage a été créé », et notre serveur ajoute un au total du jour. '
+                'Rien d\'autre n\'est envoyé ni conservé avec — ni compte, ni '
+                'appareil, ni destination, ni montant — ces totaux ne peuvent donc '
+                'pas être reliés à vous. Nous les utilisons uniquement pour savoir '
+                'dans quelle mesure l\'application est utilisée et pour montrer des '
+                'chiffres globaux à nos partenaires. Vous pouvez désactiver cela '
+                'dans Paramètres, rubrique Confidentialité.',
+          ),
         const LegalSection(
           'Durée de conservation',
           'Les données sur votre appareil y restent jusqu\'à ce que vous '
@@ -985,6 +1021,19 @@ abstract final class LegalContent {
               'iklan, dan tidak melakukan pelacakan perilaku atau analitik atas '
               'aktivitas keuangan Anda.',
         ),
+        // Only trips are counted, so only with SmartTrip.
+        if (AppEnv.smartTrip)
+          const LegalSection(
+            'Hitungan anonim',
+            'Saat Anda membuat perjalanan, aplikasi hanya mengirim kata '
+                '“perjalanan dibuat”, dan server kami menambahkan satu ke total '
+                'hari itu. Tidak ada hal lain yang dikirim atau disimpan bersamanya'
+                ' — tanpa akun, perangkat, tujuan, atau jumlah — sehingga total '
+                'tersebut tidak dapat dikaitkan dengan Anda. Kami memakainya hanya '
+                'untuk mengetahui seberapa banyak aplikasi dipakai dan untuk '
+                'menunjukkan angka keseluruhan kepada mitra. Anda dapat '
+                'mematikannya di Pengaturan, bagian Privasi.',
+          ),
         const LegalSection(
           'Berapa lama data disimpan',
           'Data di perangkat Anda tetap ada sampai Anda menghapusnya atau '
@@ -1265,6 +1314,18 @@ abstract final class LegalContent {
               'hacemos seguimiento del comportamiento ni analítica de tu '
               'actividad financiera.',
         ),
+        // Only trips are counted, so only with SmartTrip.
+        if (AppEnv.smartTrip)
+          const LegalSection(
+            'Recuentos anónimos',
+            'Cuando creas un viaje, la app envía solo las palabras «se creó un '
+                'viaje», y nuestro servidor suma uno al total de ese día. No se '
+                'envía ni se guarda nada más con ello —ni cuenta, ni dispositivo, '
+                'ni destino, ni importe—, así que los totales no pueden vincularse '
+                'contigo. Los usamos solo para saber cuánto se usa la app y para '
+                'mostrar cifras globales a los socios. Puedes desactivarlo en '
+                'Ajustes, en Privacidad.',
+          ),
         const LegalSection(
           'Cuánto tiempo guardamos los datos',
           'Los datos de tu dispositivo se quedan ahí hasta que los borres o '
@@ -1545,6 +1606,19 @@ abstract final class LegalContent {
           'Verilerini satmayız veya kiralamayız, reklam göstermeyiz, finansal'
               ' etkinliğin üzerinde davranışsal izleme veya analiz yapmayız.',
         ),
+        // Only trips are counted, so only with SmartTrip.
+        if (AppEnv.smartTrip)
+          const LegalSection(
+            'Anonim sayımlar',
+            'Bir seyahat oluşturduğunda uygulama yalnızca “bir seyahat '
+                'oluşturuldu” bilgisini gönderir ve sunucumuz o günün toplamına bir'
+                ' ekler. Bununla birlikte başka hiçbir şey gönderilmez veya '
+                'saklanmaz — hesap, cihaz, varış yeri veya tutar yok — bu yüzden '
+                'toplamlar seninle ilişkilendirilemez. Bunları yalnızca uygulamanın'
+                ' ne kadar kullanıldığını bilmek ve iş ortaklarına genel rakamlar '
+                'göstermek için kullanırız. Bunu Ayarlar\'da, Gizlilik bölümünden '
+                'kapatabilirsin.',
+          ),
         const LegalSection(
           'Verileri ne kadar tutuyoruz',
           'Cihazındaki veriler sen silene veya uygulamayı kaldırana kadar '
@@ -1820,6 +1894,19 @@ abstract final class LegalContent {
               'atau menjalankan penjejakan tingkah laku atau analitik ke atas '
               'aktiviti kewangan anda.',
         ),
+        // Only trips are counted, so only with SmartTrip.
+        if (AppEnv.smartTrip)
+          const LegalSection(
+            'Kiraan tanpa nama',
+            'Apabila anda mencipta perjalanan, aplikasi hanya menghantar '
+                'perkataan “perjalanan dibuat”, dan pelayan kami menambah satu '
+                'kepada jumlah hari itu. Tiada perkara lain dihantar atau disimpan '
+                'bersamanya — tiada akaun, peranti, destinasi atau amaun — jadi '
+                'jumlah itu tidak boleh dikaitkan dengan anda. Kami menggunakannya '
+                'hanya untuk mengetahui sejauh mana aplikasi digunakan dan untuk '
+                'menunjukkan angka keseluruhan kepada rakan kongsi. Anda boleh '
+                'mematikannya dalam Tetapan, di bahagian Privasi.',
+          ),
         const LegalSection(
           'Berapa lama kami menyimpan data',
           'Data pada peranti anda kekal sehingga anda memadamnya atau '
@@ -2100,6 +2187,18 @@ abstract final class LegalContent {
               'دکھاتے ہیں، اور نہ آپ کی مالی سرگرمی پر رویے کی ٹریکنگ یا تجزیات '
               'چلاتے ہیں۔',
         ),
+        // Only trips are counted, so only with SmartTrip.
+        if (AppEnv.smartTrip)
+          const LegalSection(
+            'گمنام شمار',
+            'جب آپ کوئی سفر بناتے ہیں تو ایپ صرف یہ الفاظ بھیجتی ہے «ایک سفر '
+                'بنایا گیا»، اور ہمارا سرور اس دن کے مجموعے میں ایک کا اضافہ کرتا '
+                'ہے۔ اس کے ساتھ کچھ اور نہ بھیجا جاتا ہے نہ رکھا جاتا ہے — نہ '
+                'اکاؤنٹ، نہ ڈیوائس، نہ منزل، نہ رقم — اس لیے یہ مجموعے آپ سے جوڑے '
+                'نہیں جا سکتے۔ ہم انہیں صرف یہ جاننے کے لیے استعمال کرتے ہیں کہ ایپ'
+                ' کتنی استعمال ہوتی ہے اور شراکت داروں کو مجموعی اعداد دکھانے کے '
+                'لیے۔ آپ اسے سیٹنگز میں، رازداری کے حصے سے بند کر سکتے ہیں۔',
+          ),
         const LegalSection(
           'ہم ڈیٹا کب تک رکھتے ہیں',
           'آپ کی ڈیوائس پر ڈیٹا تب تک رہتا ہے جب تک آپ اسے حذف نہ کریں یا '

@@ -1407,6 +1407,8 @@
   "proSuggestionsTitle": "Ortaklardan rezervasyon önerileri",
   "proSuggestionsHint": "Seyahatlerin için seçilmiş oteller, havayolları ve eSIM’ler — bazıları kendi ülkenden — Pro ayrıcalıklarıyla. Reklamsız.",
   "proSuggestionsShow": "Seyahatlerimde göster",
+  "anonStatsTrips": "Seyahatlerimi anonim olarak say",
+  "anonStatsTripsHint": "Yalnızca “bir seyahat oluşturuldu” gönderilir, günlük seyahat sayısı için. Hesap, yer veya tutar yok.",
   "offerProPerk": "Pro ile: {perk}",
   "offerBookWithPartner": "Rezervasyon ortakla yapılır",
   "offerNoticeTitle": "Ortağa gitmeden önce",

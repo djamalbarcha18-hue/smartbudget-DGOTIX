@@ -1656,6 +1656,8 @@
   "proSuggestionsTitle": "Booking suggestions from partners",
   "proSuggestionsHint": "Hotels, airlines and eSIMs picked for your trips — some from your own country — with Pro perks. No ads.",
   "proSuggestionsShow": "Show them on my trips",
+  "anonStatsTrips": "Count my trips anonymously",
+  "anonStatsTripsHint": "Only “a trip was planned” is sent, to count trips per day. No account, place or amount.",
   "offerProPerk": "With Pro: {perk}",
   "@offerProPerk": {"placeholders": {"perk": {"type": "String"}}},
   "offerBookWithPartner": "Booked with the partner",

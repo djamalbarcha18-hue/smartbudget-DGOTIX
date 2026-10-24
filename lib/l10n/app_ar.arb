@@ -1607,6 +1607,8 @@
   "proSuggestionsTitle": "اقتراحات الحجز من الشركاء",
   "proSuggestionsHint": "فنادق وشركات طيران وشرائح eSIM مختارة لرحلاتك — بعضها من بلدك — مع مزايا لمشتركي Pro. بلا إعلانات.",
   "proSuggestionsShow": "أظهرها في رحلاتي",
+  "anonStatsTrips": "احسب رحلاتي بشكل مجهول",
+  "anonStatsTripsHint": "يُرسَل فقط «أُنشئت رحلة» لعدّ الرحلات في كل يوم، بلا حساب ولا وجهة ولا مبلغ.",
   "offerProPerk": "مع Pro: {perk}",
   "offerBookWithPartner": "الحجز مع الشريك مباشرة",
   "offerNoticeTitle": "قبل الانتقال إلى الشريك",
