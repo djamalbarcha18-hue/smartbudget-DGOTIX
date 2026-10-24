@@ -834,6 +834,35 @@ void main() {
         File('${out.path}/trip-card-clear-ar.png').writeAsBytesSync(png);
       });
 
+      testWidgets('Black Gold: a touch of gold on the photo, or plain white',
+          (WidgetTester tester) async {
+        await pump(tester, const TripSharePage(tripId: 'a'),
+            prefs: <String, Object>{
+              ...stored(
+                  <Trip>[trip('a', from: -9, to: -3, budget: 1500)], five),
+              'flutter.sb_theme_style': 'black',
+            },
+            overrides: <Override>[
+              effectivePlanProvider.overrideWithValue(Plan.pro),
+              tripPhotoPickerProvider.overrideWithValue(_FakePicker(jpg)),
+            ]);
+        await tester.tap(find.text('Clear'));
+        await tester.pumpAndSettle();
+        Finder gold() => find.descendant(
+            of: find.byType(TripShareCard),
+            matching: find.byWidgetPredicate((Widget w) =>
+                w is Text && w.style?.color == ShareCardSkin.blackGold.accent));
+        // The total in gold; the colours stay hidden.
+        expect(gold(), findsOneWidget);
+        expect(find.bySemanticsLabel('Green'), findsNothing);
+        await tester.tap(find.bySemanticsLabel('White'));
+        await tester.pumpAndSettle();
+        expect(gold(), findsNothing);
+        await tester.tap(find.bySemanticsLabel('In my theme colours'));
+        await tester.pumpAndSettle();
+        expect(gold(), findsOneWidget);
+      });
+
       testWidgets('back to the default photo: back to colour',
           (WidgetTester tester) async {
         await pump(tester, const TripSharePage(tripId: 'a'),

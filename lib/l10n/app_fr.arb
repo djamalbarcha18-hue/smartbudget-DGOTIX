@@ -1355,5 +1355,6 @@
   "themePomegranate": "Grenade",
   "themeBlack": "Noir et or",
   "shareCardThemeColors": "Aux couleurs de mon thème",
-  "shareCardThemeColorsHint": "La carte prend votre thème Pro ; le logo et le code QR restent tels quels."
+  "shareCardThemeColorsHint": "La carte prend votre thème Pro ; le logo et le code QR restent tels quels.",
+  "tripColorWhite": "Blanc"
 }

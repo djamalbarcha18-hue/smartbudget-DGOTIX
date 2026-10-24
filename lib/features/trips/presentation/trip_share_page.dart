@@ -291,15 +291,16 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
                   runSpacing: DsSpacing.xs,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: <Widget>[
-                    if (!_clear)
+                    if (!_clear || themeSkin != null)
                       Padding(
                         padding:
                             const EdgeInsetsDirectional.only(end: DsSpacing.xs),
                         child: Text(l.tripCardColor,
                             style: t.labelMedium?.copyWith(color: c.textMuted)),
                       ),
-                    // The user's Pro theme first, when there is one.
-                    if (!_clear && themeSkin != null)
+                    // The user's Pro theme first, when there is one; on the
+                    // clear template, its accent or plain white.
+                    if (themeSkin != null)
                       _Swatch(
                         fill: themeSkin.solid,
                         edge: themeSkin.border,
@@ -309,6 +310,16 @@ class _TripSharePageState extends ConsumerState<TripSharePage> {
                         onTap: () => ref
                             .read(shareCardUseThemeProvider.notifier)
                             .state = true,
+                      ),
+                    if (_clear && themeSkin != null)
+                      _Swatch(
+                        fill: Colors.white,
+                        edge: c.borderStrong,
+                        selected: !themed,
+                        label: l.tripColorWhite,
+                        onTap: () => ref
+                            .read(shareCardUseThemeProvider.notifier)
+                            .state = false,
                       ),
                     for (final TripCardColor k in TripCardColor.values)
                       if (!_clear)
@@ -449,8 +460,11 @@ class _Swatch extends StatelessWidget {
                       width: 2),
                 ),
                 child: selected
-                    ? const Icon(Icons.check_rounded,
-                        color: Colors.white, size: 18)
+                    ? Icon(Icons.check_rounded,
+                        color: fill.computeLuminance() > 0.5
+                            ? Colors.black87
+                            : Colors.white,
+                        size: 18)
                     : null,
               ),
               if (pro)

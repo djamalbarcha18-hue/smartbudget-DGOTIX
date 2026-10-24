@@ -99,7 +99,8 @@ class TripShareCard extends StatelessWidget {
   final TripCardFormat format;
   double get safeZone => format.safeZone;
 
-  /// The user's Pro theme colours instead of [color].
+  /// The user's Pro theme colours instead of [color]; on the clear template,
+  /// a light touch of its accent (the total, the line, the saved badge).
   final ShareCardSkin? skin;
   Color get _bg => skin?.solid ?? color.color;
   Color get _mark => skin?.mark ?? color.color;
@@ -613,6 +614,8 @@ class TripShareCard extends StatelessWidget {
     final TextStyle soft =
         base.copyWith(color: Colors.white.withValues(alpha: 0.82));
     const List<Shadow> shade = _textShadow;
+    // The Pro theme's accent, lightly: the picture stays whole.
+    final Color? accent = skin?.accent;
     final String kicker = switch (TripMath.status(trip, AppClock.now())) {
       TripStatus.ended => l.tripCardBack,
       TripStatus.active => l.tripCardNow,
@@ -728,7 +731,8 @@ class TripShareCard extends StatelessWidget {
                         color: Colors.white.withValues(alpha: 0.18),
                         borderRadius: BorderRadius.circular(10 * u),
                         border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.35)),
+                            color: accent?.withValues(alpha: 0.85) ??
+                                Colors.white.withValues(alpha: 0.35)),
                       ),
                       child: Text(l.tripSavedPct(r.savedPct!),
                           style: base.copyWith(
@@ -741,6 +745,7 @@ class TripShareCard extends StatelessWidget {
                           ? base.copyWith(
                               fontSize: 5.6 * u,
                               fontWeight: FontWeight.w800,
+                              color: accent,
                               shadows: shade)
                           : soft.copyWith(fontSize: 3.2 * u, shadows: shade)),
                 if (headline != null && !percentOnly)
@@ -752,6 +757,7 @@ class TripShareCard extends StatelessWidget {
                             style: base.copyWith(
                                 fontSize: 9.4 * u,
                                 fontWeight: FontWeight.w800,
+                                color: accent,
                                 shadows: shade)),
                       ),
                       Text(l.tripPerDay(money(r.dailyAverage)),
@@ -765,7 +771,9 @@ class TripShareCard extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 3 * u),
                     child: Container(
-                        height: 1, color: Colors.white.withValues(alpha: 0.28)),
+                        height: 1,
+                        color: accent?.withValues(alpha: 0.7) ??
+                            Colors.white.withValues(alpha: 0.28)),
                   ),
                   // The brand, once.
                   Directionality(
