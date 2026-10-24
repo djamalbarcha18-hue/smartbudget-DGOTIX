@@ -15,11 +15,15 @@ class AuthScaffold extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.children,
+    this.mascot,
   });
 
   final String title;
   final String subtitle;
   final List<Widget> children;
+
+  /// Shown beside the title (the DGOTIX owl on the sign-in screen).
+  final Widget? mascot;
 
   @override
   Widget build(BuildContext context) {
@@ -59,9 +63,25 @@ class AuthScaffold extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Text(title, style: t.titleLarge),
-                            const SizedBox(height: DsSpacing.xs),
-                            Text(subtitle, style: t.bodySmall),
+                            Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(title, style: t.titleLarge),
+                                      const SizedBox(height: DsSpacing.xs),
+                                      Text(subtitle, style: t.bodySmall),
+                                    ],
+                                  ),
+                                ),
+                                if (mascot != null) ...<Widget>[
+                                  const SizedBox(width: DsSpacing.md),
+                                  mascot!,
+                                ],
+                              ],
+                            ),
                             const SizedBox(height: DsSpacing.xl),
                             ...children,
                           ],

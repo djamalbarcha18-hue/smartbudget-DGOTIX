@@ -111,4 +111,36 @@ void main() {
     await t.pump(const Duration(milliseconds: 100));
     expect(t.hasRunningAnimations, isFalse);
   });
+
+  testWidgets('dances while signing in, then stops', (WidgetTester t) async {
+    await t.pumpWidget(
+        _host(const DgotixOwl(interactive: true, mood: OwlMood.dancing)));
+    await t.pump(const Duration(milliseconds: 300));
+    expect(t.hasRunningAnimations, isTrue);
+    await t.pumpWidget(_host(const DgotixOwl(interactive: true)));
+    await t.pump(const Duration(milliseconds: 300));
+    expect(t.hasRunningAnimations, isFalse);
+    expect(t.takeException(), isNull);
+  });
+
+  testWidgets('shakes its head once when angry', (WidgetTester t) async {
+    await t.pumpWidget(_host(const DgotixOwl(interactive: true)));
+    await t.pumpWidget(
+        _host(const DgotixOwl(interactive: true, mood: OwlMood.angry)));
+    await t.pump(const Duration(milliseconds: 100));
+    expect(t.hasRunningAnimations, isTrue);
+    await t.pump(const Duration(seconds: 1));
+    expect(t.hasRunningAnimations, isFalse);
+    expect(t.takeException(), isNull);
+  });
+
+  testWidgets('dances and frowns stay still under reduced motion',
+      (WidgetTester t) async {
+    for (final OwlMood m in <OwlMood>[OwlMood.dancing, OwlMood.angry]) {
+      await t.pumpWidget(
+          _host(DgotixOwl(interactive: true, mood: m), reduceMotion: true));
+      await t.pump(const Duration(milliseconds: 100));
+      expect(t.hasRunningAnimations, isFalse);
+    }
+  });
 }

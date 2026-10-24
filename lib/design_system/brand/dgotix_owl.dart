@@ -23,6 +23,12 @@ enum OwlMood {
 
   /// Tilts its head and squints (something went wrong).
   confused,
+
+  /// Dances happily: hops to a beat, flaps its wings, smiles (signing in).
+  dancing,
+
+  /// Frowns, blushes red and shakes its head (a wrong password).
+  angry,
 }
 
 /// The DGOTIX owl: the mascot of DGOTIX AI, with the logo's "DG" drawn on its
@@ -71,6 +77,10 @@ class _DgotixOwlState extends State<DgotixOwl> with TickerProviderStateMixin {
     vsync: this,
     duration: const Duration(milliseconds: 90),
   );
+  late final AnimationController _shake = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 700),
+  );
   final math.Random _rng = math.Random();
   Timer? _blinkTimer;
   Timer? _gazeTimer;
@@ -96,11 +106,17 @@ class _DgotixOwlState extends State<DgotixOwl> with TickerProviderStateMixin {
         !_still) {
       _hop.forward(from: 0);
     }
+    if (widget.mood == OwlMood.angry &&
+        oldWidget.mood != OwlMood.angry &&
+        !_still) {
+      _shake.forward(from: 0);
+    }
   }
 
   void _sync() {
     _still = MediaQuery.disableAnimationsOf(context);
-    final bool run = widget.animate && !_still;
+    final bool run =
+        (widget.animate || widget.mood == OwlMood.dancing) && !_still;
     if (run && !_loop.isAnimating) {
       _loop.repeat();
     } else if (!run && _loop.isAnimating) {
@@ -180,6 +196,8 @@ class _DgotixOwlState extends State<DgotixOwl> with TickerProviderStateMixin {
         OwlMood.reading => const Offset(0, 0.85),
         OwlMood.thinking => const Offset(0.5, -0.6),
         OwlMood.confused => const Offset(-0.6, 0.1),
+        OwlMood.angry => const Offset(0, 0.15),
+        OwlMood.dancing => Offset.zero,
         _ => _watching ? _gaze : Offset.zero,
       };
 
@@ -189,6 +207,7 @@ class _DgotixOwlState extends State<DgotixOwl> with TickerProviderStateMixin {
     _loop.dispose();
     _hop.dispose();
     _blink.dispose();
+    _shake.dispose();
     super.dispose();
   }
 
@@ -202,13 +221,16 @@ class _DgotixOwlState extends State<DgotixOwl> with TickerProviderStateMixin {
       height: widget.size,
       child: TweenAnimationBuilder<Offset>(
         tween: Tween<Offset>(begin: Offset.zero, end: _targetLook),
-        duration: const Duration(milliseconds: 160),
+        duration: _still ? Duration.zero : const Duration(milliseconds: 160),
         curve: Curves.easeOut,
         builder: (BuildContext context, Offset look, _) => AnimatedBuilder(
-          animation: Listenable.merge(<Listenable>[_loop, _hop, _blink]),
+          animation:
+              Listenable.merge(<Listenable>[_loop, _hop, _blink, _shake]),
           builder: (BuildContext context, _) {
             final bool hopping = _hop.isAnimating;
+            final bool dancing = widget.mood == OwlMood.dancing;
             final bool smile = widget.mood == OwlMood.happy ||
+                dancing ||
                 hopping ||
                 (widget.smiling && !_watching && widget.mood == OwlMood.idle);
             final double blink = smile ? 1 : _blink.value;
@@ -224,6 +246,9 @@ class _DgotixOwlState extends State<DgotixOwl> with TickerProviderStateMixin {
                 blinkRight: confused ? math.max(blink, 0.45) : blink,
                 hop: hopping ? _hop.value : 0,
                 tilt: confused ? -8 : 0,
+                dance: dancing,
+                angry: widget.mood == OwlMood.angry && !smile,
+                shake: _shake.isAnimating ? _shake.value : 0,
               ),
             );
           },
@@ -316,6 +341,9 @@ class _OwlPainter extends CustomPainter {
     required this.blinkRight,
     required this.hop,
     required this.tilt,
+    required this.dance,
+    required this.angry,
+    required this.shake,
   });
 
   final double t;
@@ -327,6 +355,9 @@ class _OwlPainter extends CustomPainter {
   final double blinkRight;
   final double hop;
   final double tilt;
+  final bool dance;
+  final bool angry;
+  final double shake;
 
   static const Rect fullView = Rect.fromLTWH(0, 0, 1600, 1700);
   static const Rect headView = Rect.fromLTRB(120, 40, 1480, 1240);
@@ -349,16 +380,28 @@ class _OwlPainter extends CustomPainter {
     final _OwlColors k = colors;
     Paint fill(Color c) => Paint()..color = c;
 
-    // The waiting loop: a gentle bob and sway, a look up to the right (as if
-    // thinking), a happy blink, a look to the left, a half blink.
-    final int frame = (t * 48).floor();
-    double bob = moving ? 26 * math.sin(t * 4 * math.pi) : 0;
-    double turn = moving ? 6 * math.sin(t * 2 * math.pi) : tilt;
-    double spark = moving ? 0.55 + 0.45 * math.sin(t * 3 * math.pi).abs() : 1;
+    double bob = 0;
+    double turn = tilt;
+    double spark = 1;
+    double flap = 0;
     Offset look = this.look;
     double blinkL = blinkLeft;
     double blinkR = blinkRight;
-    if (moving) {
+    if (moving && dance) {
+      // The dance: four bouncy beats a loop, swaying side to side, wings up
+      // on every beat, the sparkle pulsing along.
+      final double beat = math.sin(t * 4 * math.pi).abs();
+      bob = -70 * beat;
+      turn = 9 * math.sin(t * 4 * math.pi);
+      flap = 32 * beat;
+      spark = 0.6 + 0.5 * beat;
+    } else if (moving) {
+      // The waiting loop: a gentle bob and sway, a look up to the right (as
+      // if thinking), a happy blink, a look to the left, a half blink.
+      final int frame = (t * 48).floor();
+      bob = 26 * math.sin(t * 4 * math.pi);
+      turn = 6 * math.sin(t * 2 * math.pi);
+      spark = 0.55 + 0.45 * math.sin(t * 3 * math.pi).abs();
       look = Offset.zero;
       if (frame >= 10 && frame < 22) look = const Offset(0.5, -0.6);
       if (frame >= 26 && frame < 36) look = const Offset(-0.5, -0.3);
@@ -372,6 +415,8 @@ class _OwlPainter extends CustomPainter {
       spark = 1 + 0.5 * h;
       turn += 5 * math.sin(hop * 2 * math.pi);
     }
+    // An angry shake of the head: quick, fading out.
+    if (shake > 0) turn += 9 * math.sin(shake * 6 * math.pi) * (1 - shake);
 
     canvas
       ..translate(0, bob)
@@ -408,9 +453,24 @@ class _OwlPainter extends CustomPainter {
               _rad(20), _rad(140), false, stroke);
         }
       }
-      canvas
-        ..drawOval(const Rect.fromLTRB(330, 1080, 530, 1470), fill(k.wing))
-        ..drawOval(const Rect.fromLTRB(1070, 1080, 1270, 1470), fill(k.wing));
+      // Wings hang from the shoulders and lift outward when dancing.
+      for (final (Offset shoulder, Rect wing, double sign)
+          in <(Offset, Rect, double)>[
+        (const Offset(480, 1120), const Rect.fromLTRB(330, 1080, 530, 1470), 1),
+        (
+          const Offset(1120, 1120),
+          const Rect.fromLTRB(1070, 1080, 1270, 1470),
+          -1
+        ),
+      ]) {
+        canvas
+          ..save()
+          ..translate(shoulder.dx, shoulder.dy)
+          ..rotate(sign * _rad(flap))
+          ..translate(-shoulder.dx, -shoulder.dy)
+          ..drawOval(wing, fill(k.wing))
+          ..restore();
+      }
     }
 
     // Ear tufts, head, cheeks.
@@ -430,7 +490,8 @@ class _OwlPainter extends CustomPainter {
             ..close(),
           fill(k.body))
       ..drawOval(const Rect.fromLTRB(160, 100, 1440, 1220), fill(k.body));
-    final Color? cheek = k.cheek;
+    // An angry owl goes red in the face.
+    final Color? cheek = angry ? const Color(0xFFFF5A5F) : k.cheek;
     if (cheek != null) {
       canvas
         ..drawOval(const Rect.fromLTRB(285, 938, 455, 1022), fill(cheek))
@@ -488,6 +549,51 @@ class _OwlPainter extends CustomPainter {
       }
     }
 
+    // Angry brows: lids slanting down toward the beak, under the logo.
+    if (angry) {
+      canvas
+        ..drawPath(
+            Path()
+              ..moveTo(400, 590)
+              ..lineTo(775, 590)
+              ..lineTo(775, 765)
+              ..lineTo(400, 665)
+              ..close(),
+            fill(k.body))
+        ..drawPath(
+            Path()
+              ..moveTo(795, 600)
+              ..lineTo(1080, 600)
+              ..lineTo(1080, 690)
+              ..lineTo(795, 785)
+              ..close(),
+            fill(k.body))
+        ..save()
+        ..translate(-939, -784)
+        ..scale(4)
+        ..drawPath(_d, fill(k.mark))
+        ..drawPath(_g, fill(k.mark))
+        ..restore();
+      // The anger mark by its ear.
+      final Paint vein = Paint()
+        ..color = const Color(0xFFE5484D)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 26
+        ..strokeCap = StrokeCap.round;
+      const Offset at = Offset(1330, 300);
+      for (final (double sx, double sy) in const <(double, double)>[
+        (1, 1),
+        (1, -1),
+        (-1, 1),
+        (-1, -1),
+      ]) {
+        final Offset c = at + Offset(sx * 62, sy * 62);
+        final double toward = math.atan2(-sy, -sx);
+        canvas.drawArc(Rect.fromCircle(center: c, radius: 50),
+            toward - math.pi / 4, math.pi / 2, false, vein);
+      }
+    }
+
     // Beak.
     canvas.drawPath(
         Path()
@@ -498,7 +604,7 @@ class _OwlPainter extends CustomPainter {
         fill(k.beak));
 
     // The AI sparkle.
-    if (!headOnly) {
+    if (!headOnly && !angry) {
       _star(canvas, const Offset(1400, 130), 110 * spark, fill(k.star));
       _star(canvas, const Offset(1530, 300), 48 * (1.6 - spark), fill(k.star));
     }
@@ -528,7 +634,10 @@ class _OwlPainter extends CustomPainter {
       old.blinkLeft != blinkLeft ||
       old.blinkRight != blinkRight ||
       old.hop != hop ||
-      old.tilt != tilt;
+      old.tilt != tilt ||
+      old.dance != dance ||
+      old.angry != angry ||
+      old.shake != shake;
 
   // Paths copied from assets/brand/dgotix-logo.svg (the D and the G).
   static Path _letterD() => Path()
