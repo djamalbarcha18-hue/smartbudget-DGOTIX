@@ -839,7 +839,7 @@
   "clearSampleData": "Borrar datos de ejemplo de 2026",
   "sampleDataCleared": "Eliminados {tx} movimientos y {bud} presupuestos de ejemplo.",
   "sampleDataNone": "No hay datos de ejemplo de 2026 que eliminar.",
-  "navPortfolio": "Cartera de proyectos",
+  "navPortfolio": "Plan de financiación de metas",
   "portfolioSubtitle": "Ordena tus grandes metas por plazo; tu capacidad de ahorro mensual las financia en orden.",
   "portfolioEmpty": "Aún no hay proyectos. Añade uno para empezar a planificar.",
   "addProject": "Añadir al plan",
@@ -1207,7 +1207,7 @@
   "featParallelRates": "Los tipos de cambio paralelos",
   "featReportPdf": "La exportación de informes en PDF",
   "featReportTrends": "El gráfico de evolución anual",
-  "featProjects": "Los proyectos y la cartera de inversión",
+  "featProjects": "El plan de financiación de tus metas",
   "dashSummaryMonth": "Resumen de {month} de {year}",
   "dashSummaryYear": "Resumen del año {year}",
   "settingsPrivacy": "Privacidad",
@@ -1383,5 +1383,10 @@
   "navHelpShort": "Ayuda",
   "fieldGoalNameHint": "p. ej. Comprar un coche",
   "goalsTabMine": "Mis metas",
-  "goalsTabPlan": "Plan de financiación"
+  "goalsTabPlan": "Plan de financiación",
+  "goalsFundingAsk": "¿Cuánto puedes ahorrar cada mes? Te diremos si alcanza para todas tus metas a tiempo.",
+  "goalsFundingSet": "Indica tu ahorro mensual",
+  "goalsFundingChange": "Cambiar el importe",
+  "goalsFundingEnough": "Tu ahorro mensual ({amount}) alcanza para todas tus metas a tiempo.",
+  "goalsFundingShort": "Tus metas necesitan {need} al mes y puedes ahorrar {can}: faltan {short}. Las más cercanas van primero; mueve una fecha o ahorra un poco más."
 }

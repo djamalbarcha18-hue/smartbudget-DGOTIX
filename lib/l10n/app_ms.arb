@@ -839,7 +839,7 @@
   "clearSampleData": "Kosongkan data contoh 2026",
   "sampleDataCleared": "{tx} transaksi contoh dan {bud} bajet dibuang.",
   "sampleDataNone": "Tiada data contoh 2026 untuk dibuang.",
-  "navPortfolio": "Portfolio projek",
+  "navPortfolio": "Pelan pembiayaan matlamat",
   "portfolioSubtitle": "Susun matlamat besar anda mengikut tempoh; keupayaan simpanan bulanan anda membiayainya mengikut giliran.",
   "portfolioEmpty": "Belum ada projek. Tambah satu untuk mula merancang.",
   "addProject": "Tambah ke pelan",
@@ -1207,7 +1207,7 @@
   "featParallelRates": "Kadar pertukaran selari",
   "featReportPdf": "Eksport laporan PDF",
   "featReportTrends": "Carta trend tahunan",
-  "featProjects": "Projek dan portfolio pelaburan",
+  "featProjects": "Pelan pembiayaan matlamat anda",
   "dashSummaryMonth": "Ringkasan {month} {year}",
   "dashSummaryYear": "Ringkasan tahun {year}",
   "settingsPrivacy": "Privasi",
@@ -1383,5 +1383,10 @@
   "navHelpShort": "Bantuan",
   "fieldGoalNameHint": "cth. Membeli kereta",
   "goalsTabMine": "Matlamat saya",
-  "goalsTabPlan": "Pelan pembiayaan"
+  "goalsTabPlan": "Pelan pembiayaan",
+  "goalsFundingAsk": "Berapa yang boleh anda simpan setiap bulan? Kami akan beritahu sama ada cukup untuk semua matlamat tepat pada masanya.",
+  "goalsFundingSet": "Tetapkan simpanan bulanan anda",
+  "goalsFundingChange": "Tukar jumlah",
+  "goalsFundingEnough": "Simpanan bulanan anda ({amount}) cukup untuk semua matlamat tepat pada masanya.",
+  "goalsFundingShort": "Matlamat anda perlukan {need} sebulan dan anda boleh simpan {can}: kurang {short}. Yang terdekat didahulukan — anjak tarikh atau simpan sedikit lagi."
 }

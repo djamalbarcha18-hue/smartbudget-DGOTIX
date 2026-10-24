@@ -19,7 +19,9 @@ import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/goals/domain/goal_calculator.dart';
 import 'package:smartbudget/features/goals/presentation/goal_editor_sheet.dart';
-import 'package:smartbudget/features/goals/presentation/goals_tabs.dart';
+import 'package:smartbudget/features/goals/presentation/goals_funding_card.dart';
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -33,6 +35,9 @@ class GoalsPage extends ConsumerWidget {
     final AsyncValue<List<Goal>> async = ref.watch(goalsProvider);
     // Projects saved on their own before become goals here too.
     ref.watch(legacyProjectsMoveProvider);
+    // The funding plan (Pro) as one line above the goals.
+    final bool funding =
+        ref.watch(featureGateProvider(Feature.projects)).allowed;
     final AlertFocus? focus = ref.watch(alertFocusProvider);
     final String? focusGoalId =
         (focus != null && focus.route == '/goals') ? focus.key : null;
@@ -62,8 +67,6 @@ class GoalsPage extends ConsumerWidget {
                 addBtn,
               ],
             ),
-          const SizedBox(height: DsSpacing.md),
-          const GoalsTabs(plan: false),
           const SizedBox(height: DsSpacing.lg),
           Expanded(
             child: async.when(
@@ -76,13 +79,19 @@ class GoalsPage extends ConsumerWidget {
                       icon: Icons.flag_outlined,
                     )
                   : ListView.separated(
-                      itemCount: goals.length,
+                      itemCount: goals.length + (funding ? 1 : 0),
                       separatorBuilder: (_, __) =>
                           const SizedBox(height: DsSpacing.md),
-                      itemBuilder: (BuildContext context, int i) => _GoalCard(
-                        goal: goals[i],
-                        highlighted: goals[i].id == focusGoalId,
-                      ),
+                      // First, in a sentence: is the monthly saving enough
+                      // for all of them? Then the goals.
+                      itemBuilder: (BuildContext context, int i) {
+                        if (funding && i == 0) return const GoalsFundingCard();
+                        final Goal g = goals[funding ? i - 1 : i];
+                        return _GoalCard(
+                          goal: g,
+                          highlighted: g.id == focusGoalId,
+                        );
+                      },
                     ),
             ),
           ),

@@ -839,7 +839,7 @@
   "clearSampleData": "Hapus contoh data 2026",
   "sampleDataCleared": "{tx} contoh transaksi dan {bud} anggaran dihapus.",
   "sampleDataNone": "Tidak ada contoh data 2026 untuk dihapus.",
-  "navPortfolio": "Portofolio proyek",
+  "navPortfolio": "Rencana pendanaan tujuan",
   "portfolioSubtitle": "Susun tujuan besar Anda menurut jangka waktu; kemampuan menabung bulanan Anda mendanainya berurutan.",
   "portfolioEmpty": "Belum ada proyek. Tambahkan satu untuk mulai merencanakan.",
   "addProject": "Tambah ke rencana",
@@ -1207,7 +1207,7 @@
   "featParallelRates": "Kurs paralel",
   "featReportPdf": "Ekspor laporan PDF",
   "featReportTrends": "Grafik tren tahunan",
-  "featProjects": "Proyek dan portofolio investasi",
+  "featProjects": "Rencana pendanaan tujuan Anda",
   "dashSummaryMonth": "Ringkasan {month} {year}",
   "dashSummaryYear": "Ringkasan tahun {year}",
   "settingsPrivacy": "Privasi",
@@ -1383,5 +1383,10 @@
   "navHelpShort": "Bantuan",
   "fieldGoalNameHint": "mis. Membeli mobil",
   "goalsTabMine": "Tujuan saya",
-  "goalsTabPlan": "Rencana pendanaan"
+  "goalsTabPlan": "Rencana pendanaan",
+  "goalsFundingAsk": "Berapa yang bisa Anda sisihkan setiap bulan? Kami akan memberi tahu apakah cukup untuk semua tujuan tepat waktu.",
+  "goalsFundingSet": "Atur tabungan bulanan Anda",
+  "goalsFundingChange": "Ubah jumlah",
+  "goalsFundingEnough": "Tabungan bulanan Anda ({amount}) cukup untuk semua tujuan tepat waktu.",
+  "goalsFundingShort": "Tujuan Anda butuh {need} per bulan dan Anda bisa menabung {can}: kurang {short}. Yang terdekat didahulukan — undur tanggal atau tambah tabungan sedikit."
 }

@@ -839,7 +839,7 @@
   "clearSampleData": "2026 کا نمونہ ڈیٹا صاف کریں",
   "sampleDataCleared": "{tx} نمونہ ٹرانزیکشنز اور {bud} بجٹ ہٹا دیے گئے۔",
   "sampleDataNone": "ہٹانے کے لیے 2026 کا کوئی نمونہ ڈیٹا نہیں۔",
-  "navPortfolio": "پروجیکٹس پورٹ فولیو",
+  "navPortfolio": "اہداف کا فنڈنگ پلان",
   "portfolioSubtitle": "اپنے بڑے اہداف کو مدت کے لحاظ سے ترتیب دیں؛ آپ کی ماہانہ بچت انہیں باری باری پورا کرے گی۔",
   "portfolioEmpty": "ابھی کوئی پروجیکٹ نہیں۔ منصوبہ بندی شروع کرنے کے لیے ایک شامل کریں۔",
   "addProject": "پلان میں شامل کریں",
@@ -1207,7 +1207,7 @@
   "featParallelRates": "متوازی ایکسچینج ریٹس",
   "featReportPdf": "PDF رپورٹ ایکسپورٹ",
   "featReportTrends": "سالانہ رجحان چارٹ",
-  "featProjects": "پروجیکٹس اور سرمایہ کاری پورٹ فولیو",
+  "featProjects": "آپ کے اہداف کا فنڈنگ پلان",
   "dashSummaryMonth": "{month} {year} کا خلاصہ",
   "dashSummaryYear": "سال {year} کا خلاصہ",
   "settingsPrivacy": "رازداری",
@@ -1383,5 +1383,10 @@
   "navHelpShort": "مدد",
   "fieldGoalNameHint": "مثلاً گاڑی خریدنا",
   "goalsTabMine": "میرے اہداف",
-  "goalsTabPlan": "فنڈنگ پلان"
+  "goalsTabPlan": "فنڈنگ پلان",
+  "goalsFundingAsk": "آپ ہر مہینے کتنا بچا سکتے ہیں؟ ہم بتائیں گے کہ کیا یہ وقت پر آپ کے سب اہداف کے لیے کافی ہے۔",
+  "goalsFundingSet": "ماہانہ بچت درج کریں",
+  "goalsFundingChange": "رقم تبدیل کریں",
+  "goalsFundingEnough": "آپ کی ماہانہ بچت ({amount}) وقت پر سب اہداف کے لیے کافی ہے۔",
+  "goalsFundingShort": "آپ کے اہداف کو ماہانہ {need} چاہیے اور آپ {can} بچا سکتے ہیں: {short} کم ہے۔ قریب ترین اہداف پہلے — کوئی تاریخ آگے کریں یا تھوڑی زیادہ بچت کریں۔"
 }

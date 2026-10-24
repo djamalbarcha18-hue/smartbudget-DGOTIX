@@ -839,7 +839,7 @@
   "clearSampleData": "Effacer les données d'exemple 2026",
   "sampleDataCleared": "{tx} transactions et {bud} budgets d'exemple supprimés.",
   "sampleDataNone": "Aucune donnée d'exemple 2026 à supprimer.",
-  "navPortfolio": "Portefeuille de projets",
+  "navPortfolio": "Plan de financement des objectifs",
   "portfolioSubtitle": "Classez vos grands objectifs par échéance ; votre capacité d’épargne mensuelle les finance dans l’ordre.",
   "portfolioEmpty": "Aucun projet pour l'instant. Ajoutez-en un pour commencer à planifier.",
   "addProject": "Ajouter au plan",
@@ -1207,7 +1207,7 @@
   "featParallelRates": "Les taux de change parallèles",
   "featReportPdf": "L'export des rapports en PDF",
   "featReportTrends": "Le graphique d'évolution annuelle",
-  "featProjects": "Les projets et le portefeuille d'investissement",
+  "featProjects": "Le plan de financement de vos objectifs",
   "dashSummaryMonth": "Bilan · {month} {year}",
   "dashSummaryYear": "Bilan · année {year}",
   "settingsPrivacy": "Confidentialité",
@@ -1383,5 +1383,10 @@
   "navHelpShort": "Aide",
   "fieldGoalNameHint": "ex. Acheter une voiture",
   "goalsTabMine": "Mes objectifs",
-  "goalsTabPlan": "Plan de financement"
+  "goalsTabPlan": "Plan de financement",
+  "goalsFundingAsk": "Combien pouvez-vous mettre de côté chaque mois ? Nous vous dirons si cela couvre tous vos objectifs à temps.",
+  "goalsFundingSet": "Indiquer votre épargne mensuelle",
+  "goalsFundingChange": "Modifier le montant",
+  "goalsFundingEnough": "Votre épargne mensuelle ({amount}) couvre tous vos objectifs à temps.",
+  "goalsFundingShort": "Vos objectifs demandent {need} par mois et vous pouvez épargner {can} : il manque {short}. Les plus proches passent en premier — décalez une date ou épargnez un peu plus."
 }

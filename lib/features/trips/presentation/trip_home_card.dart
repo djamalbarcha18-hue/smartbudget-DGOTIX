@@ -8,6 +8,7 @@ import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
+import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/money_privacy.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -168,7 +169,7 @@ class TripHomeCard extends ConsumerWidget {
         const SizedBox(height: DsSpacing.md),
         DsButton(
           label: l.tripStartSaving,
-          icon: Icons.savings_outlined,
+          icon: SbIcons.moneyBox,
           variant: DsButtonVariant.secondary,
           onPressed: () => _startSaving(context, ref, l, trip),
         ),

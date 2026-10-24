@@ -969,7 +969,7 @@
   "@sampleDataCleared": { "placeholders": { "tx": { "type": "int" }, "bud": { "type": "int" } } },
   "sampleDataNone": "لا توجد بيانات 2026 تجريبية للحذف.",
 
-  "navPortfolio": "محفظة المشاريع",
+  "navPortfolio": "خطة تمويل الأهداف",
   "portfolioSubtitle": "رتّب أهدافك الكبيرة حسب المدى، وتوزَّع قدرتك الادخارية الشهرية عليها بالترتيب.",
   "portfolioEmpty": "لا مشاريع بعد. أضِف مشروعاً لتبدأ التخطيط.",
   "addProject": "أضف إلى الخطة",
@@ -1407,7 +1407,7 @@
   "featParallelRates": "السعر الموازي لأسعار الصرف",
   "featReportPdf": "تصدير التقارير PDF",
   "featReportTrends": "الرسم السنوي ومقارنة الأشهر",
-  "featProjects": "محفظة المشاريع والاستثمار",
+  "featProjects": "خطة تمويل الأهداف",
   "dashSummaryMonth": "ملخّص {month} {year}",
   "dashSummaryYear": "ملخّص سنة {year}",
   "settingsPrivacy": "الخصوصية",
@@ -1583,5 +1583,10 @@
   "navHelpShort": "المساعدة",
   "fieldGoalNameHint": "مثال: شراء سيارة",
   "goalsTabMine": "أهدافي",
-  "goalsTabPlan": "خطة التمويل"
+  "goalsTabPlan": "خطة التمويل",
+  "goalsFundingAsk": "كم تستطيع أن تدّخر كل شهر؟ سنخبرك هل يكفي لكل أهدافك في وقتها.",
+  "goalsFundingSet": "حدّد ما تستطيع ادّخاره شهريًا",
+  "goalsFundingChange": "تعديل المبلغ",
+  "goalsFundingEnough": "ادخارك الشهري ({amount}) يكفي كل أهدافك في وقتها.",
+  "goalsFundingShort": "أهدافك تحتاج {need} شهريًا وتستطيع ادّخار {can}: ينقصك {short}. الأهداف الأقرب أولًا — أجّل موعد هدف أو زِد ادخارك قليلًا."
 }
