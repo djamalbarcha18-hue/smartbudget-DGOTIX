@@ -100,6 +100,13 @@ abstract final class Currencies {
     Currency(code: 'BAM', symbol: 'KM', nameEn: 'Convertible Mark', nameAr: 'المارك البوسني القابل للتحويل', country: 'ba'),
     // Like the rupiah: ISO lists 2 minor units, but prices are whole lek.
     Currency(code: 'ALL', symbol: 'L', nameEn: 'Albanian Lek', nameAr: 'الليك الألباني', country: 'al', decimals: 0),
+    // Central Asia and the Caucasus, where Russian is widely used. Like the
+    // rupiah, tenge and Uzbek som prices are whole units.
+    Currency(code: 'KZT', symbol: '₸', nameEn: 'Kazakhstani Tenge', nameAr: 'التينغ الكازاخستاني', country: 'kz', decimals: 0),
+    Currency(code: 'UZS', symbol: "so'm", nameEn: 'Uzbekistani Som', nameAr: 'السوم الأوزبكي', country: 'uz', decimals: 0),
+    Currency(code: 'KGS', symbol: 'сом', nameEn: 'Kyrgyzstani Som', nameAr: 'السوم القيرغيزي', country: 'kg'),
+    Currency(code: 'TJS', symbol: 'SM', nameEn: 'Tajikistani Somoni', nameAr: 'السوموني الطاجيكي', country: 'tj'),
+    Currency(code: 'AZN', symbol: '₼', nameEn: 'Azerbaijani Manat', nameAr: 'المانات الأذربيجاني', country: 'az'),
     Currency(code: 'MXN', symbol: 'Mex\$', nameEn: 'Mexican Peso', nameAr: 'البيزو المكسيكي', country: 'mx'),
     Currency(code: 'ARS', symbol: 'AR\$', nameEn: 'Argentine Peso', nameAr: 'البيزو الأرجنتيني', country: 'ar'),
     Currency(code: 'COP', symbol: 'COL\$', nameEn: 'Colombian Peso', nameAr: 'البيزو الكولومبي', country: 'co'),

@@ -70,20 +70,21 @@ class NavSidebar extends StatelessWidget {
             children: <Widget>[
               for (final AppSection s in AppMenu.footer)
                 if (AppMenu.of(s) case final NavDestination d)
-                  Expanded(
-                    // "Help" is short; Settings gets the room ("Einstellungen").
-                    flex: s == AppSection.helpSupport ? 2 : 3,
-                    child: _NavItem(
-                      destination: d,
-                      // Short, side by side ("Help", not "Help & support").
-                      label: s == AppSection.helpSupport
-                          ? l.navHelpShort
-                          : d.label(l),
-                      selected: AppMenu.selectedFor(currentRoute) == s,
-                      compact: true,
-                      onTap: () => onSelect(d.route),
+                  if (s == AppSection.helpSupport ? l.navHelpShort : d.label(l)
+                      case final String label)
+                    Expanded(
+                      // Room in proportion to each label ("Einstellungen",
+                      // "Помощь"), on top of the icon and padding.
+                      flex: label.length + 9,
+                      child: _NavItem(
+                        destination: d,
+                        // Short, side by side ("Help", not "Help & support").
+                        label: label,
+                        selected: AppMenu.selectedFor(currentRoute) == s,
+                        compact: true,
+                        onTap: () => onSelect(d.route),
+                      ),
                     ),
-                  ),
             ],
           ),
         ),
@@ -329,7 +330,7 @@ class _NavItem extends StatelessWidget {
                     DgotixOwl(size: compact ? 20 : 22, headOnly: true)
                   else
                     Icon(destination.icon, size: compact ? 18 : 20, color: fg),
-                  const SizedBox(width: DsSpacing.md),
+                  SizedBox(width: compact ? DsSpacing.sm : DsSpacing.md),
                   Expanded(
                     child: Text(
                       label,

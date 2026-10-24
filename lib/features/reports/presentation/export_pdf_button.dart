@@ -95,17 +95,27 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
       );
 
       // Urdu letters aren't in Tajawal: Urdu reports use Noto Naskh Arabic.
-      final String family =
-          lang == AppLang.ur ? 'NotoNaskhArabic' : 'Tajawal';
-      final pw.Font base = pw.Font.ttf(
-          await rootBundle.load('assets/fonts/$family-Regular.ttf'));
-      final pw.Font bold =
-          pw.Font.ttf(await rootBundle.load('assets/fonts/$family-Bold.ttf'));
+      // Cyrillic isn't either: Russian reports are set in Inter.
+      final pw.Font base;
+      final pw.Font bold;
+      if (lang == AppLang.ru) {
+        base = pw.Font.ttf(
+            await rootBundle.load('assets/google_fonts/Inter-Regular.ttf'));
+        bold = pw.Font.ttf(
+            await rootBundle.load('assets/google_fonts/Inter-SemiBold.ttf'));
+      } else {
+        final String family =
+            lang == AppLang.ur ? 'NotoNaskhArabic' : 'Tajawal';
+        base = pw.Font.ttf(
+            await rootBundle.load('assets/fonts/$family-Regular.ttf'));
+        bold = pw.Font.ttf(
+            await rootBundle.load('assets/fonts/$family-Bold.ttf'));
+      }
       // Only where letters are missing, to keep files small: Tajawal for the
-      // digits and Latin of Urdu reports, Inter for Turkish ğ ş İ and
-      // Bosnian č ć đ.
+      // digits and Latin of Urdu reports and any Arabic in Russian ones,
+      // Inter for Turkish ğ ş İ and Bosnian č ć đ.
       final List<pw.Font> fallback = switch (lang) {
-        AppLang.ur => <pw.Font>[
+        AppLang.ur || AppLang.ru => <pw.Font>[
             pw.Font.ttf(
                 await rootBundle.load('assets/fonts/Tajawal-Regular.ttf'))
           ],
@@ -148,7 +158,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
         return lang.pick('الربع $s', 'Q$s',
             fr: 'T$s', id: 'K$s', es: 'T$s', tr: '$s. Çeyrek', ms: 'Suku $s', ur: 'سہ ماہی $s',
             de: 'Q$s', pt: '$sº tri',
-            it: 'T$s', nl: 'K$s', bs: 'K$s', sq: 'T$s');
+            it: 'T$s', nl: 'K$s', bs: 'K$s', sq: 'T$s', ru: '$s кв.');
       case ReportPeriod.halfYearly:
         return s == 2 ? l.half2 : l.half1;
       case ReportPeriod.yearly:
