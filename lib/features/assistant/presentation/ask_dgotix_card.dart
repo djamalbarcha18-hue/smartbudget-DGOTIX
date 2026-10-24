@@ -121,7 +121,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              const DgotixOwl(size: 22, headOnly: true),
+              const DgotixOwl(size: 28, headOnly: true),
               const SizedBox(width: DsSpacing.sm),
               Expanded(
                 child: Text(l.askAiTitle,
@@ -163,7 +163,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
             Row(
               children: <Widget>[
                 // The owl sways and looks around while DGOTIX AI thinks.
-                const DgotixOwl(size: 44, animate: true),
+                const DgotixOwl(size: 64, animate: true),
                 const SizedBox(width: DsSpacing.sm),
                 Text(l.askAiThinking,
                     style: t.bodySmall?.copyWith(color: c.textMuted)),

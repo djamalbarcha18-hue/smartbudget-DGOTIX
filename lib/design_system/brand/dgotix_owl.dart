@@ -32,7 +32,7 @@ class _DgotixOwlState extends State<DgotixOwl>
     with SingleTickerProviderStateMixin {
   late final AnimationController _c = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 3360),
+    duration: const Duration(milliseconds: 2400),
   );
 
   @override
@@ -134,8 +134,8 @@ class _OwlPainter extends CustomPainter {
     // The waiting loop: a gentle bob and sway, a look up to the right (as if
     // thinking), a happy blink, a look to the left, a half blink.
     final int frame = (t * 48).floor();
-    final double bob = moving ? 18 * math.sin(t * 4 * math.pi) : 0;
-    final double tilt = moving ? 4 * math.sin(t * 2 * math.pi) : 0;
+    final double bob = moving ? 26 * math.sin(t * 4 * math.pi) : 0;
+    final double tilt = moving ? 6 * math.sin(t * 2 * math.pi) : 0;
     final double spark =
         moving ? 0.55 + 0.45 * math.sin(t * 3 * math.pi).abs() : 1;
     Offset look = Offset.zero;
