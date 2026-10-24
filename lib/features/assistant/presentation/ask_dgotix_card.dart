@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,13 +39,41 @@ class AskDgotixCard extends ConsumerStatefulWidget {
 
 class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
   final TextEditingController _ctrl = TextEditingController();
+  final FocusNode _focus = FocusNode();
   bool _busy = false;
   String? _error; // already-localized message
   bool _errorIsQuota = false; // error is a quota wall ⇒ offer Upgrade
+  bool _answered = false; // an answer just arrived ⇒ the owl cheers
+  bool _reading = false; // the user is typing ⇒ the owl looks down
+  Timer? _answeredTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    // The owl looks down while the user types.
+    _ctrl.addListener(_onTyping);
+    _focus.addListener(_onTyping);
+  }
+
+  void _onTyping() {
+    final bool reading = _focus.hasFocus || _ctrl.text.isNotEmpty;
+    if (reading != _reading) setState(() => _reading = reading);
+  }
+
+  /// What the owl in the header shows.
+  OwlMood get _mood {
+    if (_busy) return OwlMood.thinking;
+    if (_error != null) return OwlMood.confused;
+    if (_answered) return OwlMood.happy;
+    if (_reading) return OwlMood.reading;
+    return OwlMood.idle;
+  }
 
   @override
   void dispose() {
+    _answeredTimer?.cancel();
     _ctrl.dispose();
+    _focus.dispose();
     super.dispose();
   }
 
@@ -77,6 +107,13 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
       final GatewayAnswer a = await ref.read(aiGatewayServiceProvider).ask(
           task: AiTaskType.chat, prompt: q, context: ctx, history: history);
       chat.add(ChatMessage(fromUser: false, text: a.text));
+      if (mounted) {
+        setState(() => _answered = true);
+        _answeredTimer?.cancel();
+        _answeredTimer = Timer(const Duration(seconds: 2), () {
+          if (mounted) setState(() => _answered = false);
+        });
+      }
       usage.record(a.model.isEmpty ? 'dgotix-ai' : a.model,
           inputTokens: a.inputTokens, outputTokens: a.outputTokens);
     } on AiFailure catch (e) {
@@ -121,7 +158,8 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              const DgotixOwl(size: 28, headOnly: true),
+              DgotixOwl(
+                  size: 36, headOnly: true, interactive: true, mood: _mood),
               const SizedBox(width: DsSpacing.sm),
               Expanded(
                 child: Text(l.askAiTitle,
@@ -199,6 +237,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
                 child: TextField(
                   inputFormatters: LatinDigitsFormatter.only,
                   controller: _ctrl,
+                  focusNode: _focus,
                   enabled: !_busy,
                   textInputAction: TextInputAction.send,
                   onSubmitted: _sendText,

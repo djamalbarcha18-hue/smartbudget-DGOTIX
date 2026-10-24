@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:smartbudget/design_system/brand/dgotix_owl.dart';
@@ -47,8 +48,67 @@ void main() {
     expect(t.hasRunningAnimations, isFalse);
   });
 
+  testWidgets('the smiling owl paints and stays still', (WidgetTester t) async {
+    await t.pumpWidget(_host(const DgotixOwl(smiling: true)));
+    expect(t.takeException(), isNull);
+    expect(t.hasRunningAnimations, isFalse);
+  });
+
   testWidgets('the icon form never animates', (WidgetTester t) async {
     await t.pumpWidget(_host(const DgotixOwl(headOnly: true)));
+    expect(t.hasRunningAnimations, isFalse);
+  });
+
+  testWidgets('an interactive owl hops when tapped', (WidgetTester t) async {
+    await t.pumpWidget(_host(const DgotixOwl(interactive: true)));
+    await t.tap(find.byType(DgotixOwl));
+    await t.pump(const Duration(milliseconds: 100));
+    expect(t.hasRunningAnimations, isTrue);
+    await t.pump(const Duration(seconds: 1));
+    expect(t.takeException(), isNull);
+  });
+
+  testWidgets('its eyes follow the pointer, then rest', (WidgetTester t) async {
+    await t
+        .pumpWidget(_host(const DgotixOwl(interactive: true, smiling: true)));
+    final TestGesture g = await t.createGesture(kind: PointerDeviceKind.mouse);
+    await g.addPointer(location: Offset.zero);
+    await g.moveTo(const Offset(20, 20));
+    await t.pump(const Duration(milliseconds: 200));
+    await g.moveTo(const Offset(700, 500));
+    await t.pump(const Duration(milliseconds: 200));
+    expect(t.takeException(), isNull);
+    // After a quiet moment it rests (and smiles again).
+    await t.pump(const Duration(seconds: 3));
+    await g.removePointer();
+    // Leaving the screen unhooks it from the pointer.
+    await t.pumpWidget(_host(const SizedBox()));
+    await g.addPointer(location: Offset.zero);
+    await g.moveTo(const Offset(30, 30));
+    expect(t.takeException(), isNull);
+    await g.removePointer();
+  });
+
+  testWidgets('an answer makes it hop; moods paint', (WidgetTester t) async {
+    for (final OwlMood m in OwlMood.values) {
+      await t.pumpWidget(
+          _host(DgotixOwl(headOnly: true, interactive: true, mood: m)));
+      await t.pump(const Duration(milliseconds: 300));
+      expect(t.takeException(), isNull);
+    }
+    await t.pumpWidget(_host(const DgotixOwl(interactive: true)));
+    await t.pumpWidget(
+        _host(const DgotixOwl(interactive: true, mood: OwlMood.happy)));
+    await t.pump(const Duration(milliseconds: 100));
+    expect(t.hasRunningAnimations, isTrue);
+    await t.pump(const Duration(seconds: 1));
+  });
+
+  testWidgets('no life under reduced motion', (WidgetTester t) async {
+    await t.pumpWidget(
+        _host(const DgotixOwl(interactive: true), reduceMotion: true));
+    await t.tap(find.byType(DgotixOwl));
+    await t.pump(const Duration(milliseconds: 100));
     expect(t.hasRunningAnimations, isFalse);
   });
 }

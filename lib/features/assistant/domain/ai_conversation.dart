@@ -9,8 +9,7 @@ class ChatMessage {
   final bool fromUser;
   final String text;
 
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{'u': fromUser, 't': text};
+  Map<String, dynamic> toJson() => <String, dynamic>{'u': fromUser, 't': text};
 
   static ChatMessage fromJson(Map<String, dynamic> j) =>
       ChatMessage(fromUser: j['u'] == true, text: (j['t'] ?? '').toString());
@@ -56,7 +55,6 @@ abstract final class AiConversation {
     return out;
   }
 
-  static String _cap(String s) => s.length <= maxCharsPerTurn
-      ? s
-      : '${s.substring(0, maxCharsPerTurn)}…';
+  static String _cap(String s) =>
+      s.length <= maxCharsPerTurn ? s : '${s.substring(0, maxCharsPerTurn)}…';
 }

@@ -129,8 +129,8 @@ abstract final class InsightEngine {
 
     // Savings rate — reported as a neutral fact (no good/bad judgement, so no
     // invented benchmark).
-    info.add(Insight(InsightKey.savingsRate, InsightTone.info,
-        rate: i.savingsRate));
+    info.add(
+        Insight(InsightKey.savingsRate, InsightTone.info, rate: i.savingsRate));
 
     // Largest expense category (plain arithmetic: max of category totals).
     if (i.topExpenseCategory != null && i.topExpenseMinor > 0) {

@@ -42,7 +42,7 @@ class AssistantPage extends ConsumerWidget {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  const DgotixOwl(size: 40, headOnly: true),
+                  const DgotixOwl(size: 40, headOnly: true, interactive: true),
                   const SizedBox(width: DsSpacing.sm),
                   BrandedTitle(l.brandAi,
                       style: Theme.of(context).textTheme.headlineSmall),
@@ -178,16 +178,9 @@ class _AssistantLockedCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Container(
-            width: 40,
-            height: 40,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: c.brand.withValues(alpha: 0.12),
-              borderRadius: DsRadius.brMd,
-            ),
-            child: Icon(Icons.forum_outlined, color: c.brand),
-          ),
+          // A smiling owl welcomes the user to sign in; it opens its eyes
+          // to watch the user's finger and hops when tapped.
+          const DgotixOwl(size: 64, smiling: true, interactive: true),
           const SizedBox(width: DsSpacing.md),
           Expanded(
             child: Column(

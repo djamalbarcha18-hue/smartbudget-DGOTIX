@@ -53,8 +53,8 @@ final aiContextProvider = Provider<String>((ref) {
   final String todayLabel = ymd(now);
 
   if (all.isEmpty) {
-    return AiSnapshot.build(AiSnapshotInput(
-        currency: currency, today: todayLabel, hasData: false));
+    return AiSnapshot.build(
+        AiSnapshotInput(currency: currency, today: todayLabel, hasData: false));
   }
 
   final List<Transaction> monthTx =
@@ -95,7 +95,8 @@ final aiContextProvider = Provider<String>((ref) {
   final List<AiMonthLine> history = <AiMonthLine>[];
   for (int back = 11; back >= 0; back--) {
     final DateTime d = DateTime(now.year, now.month - back, 1);
-    final List<Transaction> tx = FinanceCalculator.forMonth(all, d.year, d.month);
+    final List<Transaction> tx =
+        FinanceCalculator.forMonth(all, d.year, d.month);
     final FinanceSummary sum = FinanceCalculator.summarize(tx, currency);
     if (sum.count == 0) continue;
     history.add(AiMonthLine(
@@ -107,7 +108,9 @@ final aiContextProvider = Provider<String>((ref) {
       categories: <AiCategoryLine>[
         for (final CategoryTotal c in FinanceCalculator.categoryTotals(
             tx, TransactionType.expense, currency))
-          AiCategoryLine(c.category, m(c.amount),
+          AiCategoryLine(
+              c.category,
+              m(c.amount),
               sum.expense.minorUnits > 0
                   ? c.amount.minorUnits / sum.expense.minorUnits
                   : 0),
@@ -178,8 +181,8 @@ final aiContextProvider = Provider<String>((ref) {
 
   // Seasonal budgets that ended less than a year ago or are still to come.
   final List<AiSeasonLine> seasons = <AiSeasonLine>[
-    for (final SeasonPlan p in ref.watch(seasonPlansProvider).valueOrNull ??
-        const <SeasonPlan>[])
+    for (final SeasonPlan p
+        in ref.watch(seasonPlansProvider).valueOrNull ?? const <SeasonPlan>[])
       if (p.end.isAfter(DateTime(now.year - 1, now.month, now.day)))
         AiSeasonLine(
           kind: p.kind.name,
@@ -253,7 +256,9 @@ final aiContextProvider = Provider<String>((ref) {
     incomeCategories: <AiCategoryLine>[
       for (final CategoryTotal c in FinanceCalculator.categoryTotals(
           monthTx, TransactionType.income, currency))
-        AiCategoryLine(c.category, m(c.amount),
+        AiCategoryLine(
+            c.category,
+            m(c.amount),
             month.income.minorUnits > 0
                 ? c.amount.minorUnits / month.income.minorUnits
                 : 0),

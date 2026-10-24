@@ -233,8 +233,8 @@ abstract final class AiSnapshot {
       b.writeln('.');
     }
     if (i.topCategories.isNotEmpty) {
-      b.writeln('Top spending this month: ${i.topCategories.map(
-          (AiCategoryLine c) => '${c.category} ${c.amount} (${_pct(c.share)})').join('; ')}.');
+      b.writeln(
+          'Top spending this month: ${i.topCategories.map((AiCategoryLine c) => '${c.category} ${c.amount} (${_pct(c.share)})').join('; ')}.');
     }
     if (i.budgetPlanned != null) {
       b.writeln('Budget this month: planned ${i.budgetPlanned}, spent '
@@ -265,9 +265,8 @@ abstract final class AiSnapshot {
     return b.toString().trim();
   }
 
-  static String _cats(List<AiCategoryLine> cats) => cats
-      .map((AiCategoryLine c) => '${c.category} ${c.amount}')
-      .join(', ');
+  static String _cats(List<AiCategoryLine> cats) =>
+      cats.map((AiCategoryLine c) => '${c.category} ${c.amount}').join(', ');
 
   /// The detailed figures, one section per kind (sections with nothing in
   /// them are left out).
@@ -289,13 +288,13 @@ abstract final class AiSnapshot {
       }
     }
     if (i.categoryBudgets.isNotEmpty) {
-      b.writeln('Budget by category this month: ${i.categoryBudgets.map(
-          (AiBudgetLine l) => '${l.category} planned ${l.planned}, spent '
+      b.writeln(
+          'Budget by category this month: ${i.categoryBudgets.map((AiBudgetLine l) => '${l.category} planned ${l.planned}, spent '
               '${l.spent} (${_pct(l.used)})').join('; ')}.');
     }
     if (i.wallets.isNotEmpty) {
-      b.writeln('Wallet balances (each in its own currency): ${i.wallets.map(
-          (AiWalletLine w) => '${w.kind} ${w.balance}').join('; ')}.');
+      b.writeln(
+          'Wallet balances (each in its own currency): ${i.wallets.map((AiWalletLine w) => '${w.kind} ${w.balance}').join('; ')}.');
     }
     if (i.goals.isNotEmpty) {
       b.writeln('Goals: ${<String>[
@@ -306,15 +305,15 @@ abstract final class AiSnapshot {
       ].join('; ')}.');
     }
     if (i.recurring.isNotEmpty) {
-      b.writeln('Recurring transactions: ${i.recurring.map(
-          (AiRecurringLine r) => '${r.income ? 'income' : 'expense'} '
+      b.writeln(
+          'Recurring transactions: ${i.recurring.map((AiRecurringLine r) => '${r.income ? 'income' : 'expense'} '
               '${r.category} ${r.amount} ${r.frequency}, next ${r.next}').join('; ')}.');
     }
     if (i.seasons.isNotEmpty) {
-      b.writeln('Seasonal budgets: ${i.seasons.map((AiSeasonLine s) =>
-          '${s.kind} ${s.start} to ${s.end} (${s.status}): budget ${s.budget}, '
-          'set aside ${s.setAside}'
-          '${s.spent != null ? ', spent ${s.spent}' : ''}').join('; ')}.');
+      b.writeln(
+          'Seasonal budgets: ${i.seasons.map((AiSeasonLine s) => '${s.kind} ${s.start} to ${s.end} (${s.status}): budget ${s.budget}, '
+              'set aside ${s.setAside}'
+              '${s.spent != null ? ', spent ${s.spent}' : ''}').join('; ')}.');
     }
     if (i.darets.isNotEmpty) {
       b.writeln('Daret / savings circles: ${<String>[
