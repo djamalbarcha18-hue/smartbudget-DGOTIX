@@ -239,6 +239,20 @@ without redeeming it — redemption happens at checkout. The Plans screen has a
 Deploy: `supabase db execute -f supabase/coupons.sql` + `supabase functions
 deploy coupon-validate`.
 
+### Later: invite a friend (planned, not built)
+
+The owner's idea, for after launch: a user shares a short invite code; when a
+friend signs up with it, **both** get **one more cloud receipt scan and one
+more DGOTIX AI question** on top of the free allowance.
+
+To keep it from being abused (see "Limits against mass sign-ups"):
+- A short code of its own per account, never the internal account id.
+- The reward counts only once the friend's account is confirmed and has been
+  used for a few days, on another device; no inviting yourself.
+- A cap per account (for example 5 friends a month) and a share of the
+  platform's monthly AI/scan capacity, like the other free use.
+- Granted server-side only, like coupons.
+
 ---
 
 ## 8. Pricing rationale (market context)
