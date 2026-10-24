@@ -94,6 +94,40 @@ around, activities, souvenirs & gifts, emergencies (`TripItem`,
   new trip to Mecca or Medina starts as organized (Umrah and Hajj).
 - Icons: Lucide line icons in the app's own icon font (SbIcons, ISC).
 
+## Partner offers (eSIM, hotels, airlines…)
+
+Hidden behind `PARTNER_OFFERS` (and SmartTrip). One offer at most per
+screen, at the moment it helps, chosen on the device from the trip alone
+(nothing about the user is sent anywhere):
+
+| Where | When | Kinds, best first |
+|---|---|---|
+| Trip editor, under airline/hotel | while planning | organized: agency, hotel; else hotel, airline |
+| Trip home card | the 14 days before | eSIM (no internet expense yet), insurance (no emergency expense), transport |
+| Trip home card | during the trip | eSIM, transport, restaurant, activity |
+
+Never after the trip, never in the summary or share card, no pop-ups or
+notifications. Every offer says "Partner offer · for your trip to …", has
+a hide button (hidden 30 days, `sb_offers_hidden`), and opens the partner's
+https link with `utm_source=smartbudget`. Paying Pro subscribers see none
+(`paidProProvider`; the free launch access doesn't count).
+
+Offers live in `assets/data/partner_offers.json` (empty until partners
+sign; later the server):
+
+```json
+{"offers": [{
+  "id": "acme-esim-tr", "partner": "Acme", "kind": "esim",
+  "title": {"ar": "…", "en": "…"}, "body": {"ar": "…", "en": "…"},
+  "url": "https://…", "countries": ["TR"], "destinations": [],
+  "from": "2026-11-01", "until": "2027-03-31"
+}]}
+```
+
+Kinds: esim, hotel, airline, transport, restaurant, insurance, agency,
+activity. Empty `countries` and `destinations`: anywhere. Made-up samples
+show in debug builds or with `DEMO_OFFERS=true` (example.com links).
+
 ## Destinations
 
 `assets/data/destinations.json`: `id`, `names` (language code to name;

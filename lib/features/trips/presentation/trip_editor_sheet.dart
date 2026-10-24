@@ -17,6 +17,8 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/offers/domain/partner_offer.dart';
+import 'package:smartbudget/features/offers/presentation/partner_offer_card.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
@@ -366,6 +368,20 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
                   prefixIcon: const Icon(SbIcons.tripStay, size: 18),
                 ),
               ),
+              // Under who the trip is with: one partner suggestion at most.
+              if (place != null)
+                PartnerOfferSlot(
+                  slot: OfferSlot.tripEditor,
+                  trip: Trip(
+                    id: widget.existing?.id ?? 'draft',
+                    name: '',
+                    destination: place,
+                    start: _start,
+                    end: _end,
+                    createdAt: AppClock.now(),
+                    kind: _kind,
+                  ),
+                ),
               const SizedBox(height: DsSpacing.md),
               Text('${l.tripLevel} (${l.optional})',
                   style: t.labelMedium?.copyWith(color: c.textMuted)),

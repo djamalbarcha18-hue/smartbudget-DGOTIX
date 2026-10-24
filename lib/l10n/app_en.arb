@@ -1646,5 +1646,10 @@
   "tripAirline": "Airline",
   "tripHotel": "Hotel",
   "tripOrganizedWith": "Organized with {name}",
-  "@tripOrganizedWith": {"placeholders": {"name": {"type": "String"}}}
+  "@tripOrganizedWith": {"placeholders": {"name": {"type": "String"}}},
+  "offerSponsored": "Partner offer",
+  "offerOpen": "See the offer",
+  "offerHide": "Hide",
+  "offerFor": "for your trip to {place}",
+  "@offerFor": {"placeholders": {"place": {"type": "String"}}}
 }

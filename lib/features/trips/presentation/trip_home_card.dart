@@ -20,6 +20,8 @@ import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
+import 'package:smartbudget/features/offers/domain/partner_offer.dart';
+import 'package:smartbudget/features/offers/presentation/partner_offer_card.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
@@ -132,6 +134,16 @@ class TripHomeCard extends ConsumerWidget {
           ),
           const SizedBox(height: DsSpacing.lg),
           ...body,
+          // One partner offer at most, and only when it helps: before the
+          // trip (eSIM, insurance…) or during it; never after.
+          if (status != TripStatus.ended)
+            PartnerOfferSlot(
+              slot: status == TripStatus.upcoming
+                  ? OfferSlot.beforeTrip
+                  : OfferSlot.duringTrip,
+              trip: trip,
+              report: r,
+            ),
         ],
       ),
     );

@@ -83,6 +83,16 @@ abstract final class AppEnv {
   static const bool smartTrip =
       kDebugMode || bool.fromEnvironment('SMART_TRIP', defaultValue: false);
 
+  /// Partner offers in SmartTrip (eSIM, hotels, airlines…), not launched:
+  /// shown in debug builds and with `--dart-define=PARTNER_OFFERS=true`.
+  static const bool partnerOffers =
+      kDebugMode || bool.fromEnvironment('PARTNER_OFFERS', defaultValue: false);
+
+  /// Made-up sample offers to see the slots before real partners exist:
+  /// debug builds and `--dart-define=DEMO_OFFERS=true` only.
+  static const bool demoOffers =
+      kDebugMode || bool.fromEnvironment('DEMO_OFFERS', defaultValue: false);
+
   /// The theme colours picker with the Pro themes (Beige, Sage), not
   /// launched yet: shown in debug builds and with
   /// `--dart-define=PRO_THEMES=true`.

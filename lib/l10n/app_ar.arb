@@ -1598,5 +1598,9 @@
   "tripAgency": "وكالة السفر",
   "tripAirline": "شركة الطيران",
   "tripHotel": "الفندق",
-  "tripOrganizedWith": "منظّمة مع {name}"
+  "tripOrganizedWith": "منظّمة مع {name}",
+  "offerSponsored": "عرض شريك",
+  "offerOpen": "اعرض العرض",
+  "offerHide": "إخفاء",
+  "offerFor": "لرحلتك إلى {place}"
 }

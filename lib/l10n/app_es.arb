@@ -1398,5 +1398,9 @@
   "tripAgency": "Agencia de viajes",
   "tripAirline": "Aerolínea",
   "tripHotel": "Hotel",
-  "tripOrganizedWith": "Organizado con {name}"
+  "tripOrganizedWith": "Organizado con {name}",
+  "offerSponsored": "Oferta de socio",
+  "offerOpen": "Ver la oferta",
+  "offerHide": "Ocultar",
+  "offerFor": "para tu viaje a {place}"
 }

@@ -1398,5 +1398,9 @@
   "tripAgency": "ٹریول ایجنسی",
   "tripAirline": "ایئر لائن",
   "tripHotel": "ہوٹل",
-  "tripOrganizedWith": "{name} کے ساتھ منظم"
+  "tripOrganizedWith": "{name} کے ساتھ منظم",
+  "offerSponsored": "پارٹنر کی پیشکش",
+  "offerOpen": "پیشکش دیکھیں",
+  "offerHide": "چھپائیں",
+  "offerFor": "{place} کے سفر کے لیے"
 }
