@@ -70,6 +70,8 @@ class NavSidebar extends StatelessWidget {
                 for (final AppSection s in AppMenu.footer)
                   if (AppMenu.of(s) case final NavDestination d)
                     Expanded(
+                      // "Help" is short; Settings gets the room ("Einstellungen").
+                      flex: s == AppSection.helpSupport ? 2 : 3,
                       child: _NavItem(
                         destination: d,
                         // Short, side by side ("Help", not "Help & support").
