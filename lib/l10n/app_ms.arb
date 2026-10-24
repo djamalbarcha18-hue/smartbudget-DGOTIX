@@ -1407,5 +1407,10 @@
   "proSuggestionsTitle": "Cadangan tempahan daripada rakan kongsi",
   "proSuggestionsHint": "Hotel, syarikat penerbangan dan eSIM pilihan untuk perjalanan anda — sebahagiannya dari negara anda — dengan kelebihan Pro. Tiada iklan.",
   "proSuggestionsShow": "Tunjukkan dalam perjalanan saya",
-  "offerProPerk": "Dengan Pro: {perk}"
+  "offerProPerk": "Dengan Pro: {perk}",
+  "offerBookWithPartner": "Ditempah terus dengan rakan kongsi",
+  "offerNoticeTitle": "Sebelum ke rakan kongsi",
+  "offerNoticeContinue": "Teruskan",
+  "offerThePartner": "rakan kongsi",
+  "offerNoticeBody": "Tempahan dan bayaran dibuat terus dengan {partner}, mengikut syaratnya dan atas tanggungjawab anda. SmartBudget tidak menjual atau menjamin perkhidmatan ini, dan ia bukan sebahagian daripada langganan SmartBudget atau pelan Pro; sebarang kelebihan Pro ditawarkan oleh rakan kongsi."
 }

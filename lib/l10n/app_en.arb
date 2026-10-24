@@ -1657,5 +1657,11 @@
   "proSuggestionsHint": "Hotels, airlines and eSIMs picked for your trips — some from your own country — with Pro perks. No ads.",
   "proSuggestionsShow": "Show them on my trips",
   "offerProPerk": "With Pro: {perk}",
-  "@offerProPerk": {"placeholders": {"perk": {"type": "String"}}}
+  "@offerProPerk": {"placeholders": {"perk": {"type": "String"}}},
+  "offerBookWithPartner": "Booked with the partner",
+  "offerNoticeTitle": "Before you go to the partner",
+  "offerNoticeContinue": "Continue",
+  "offerThePartner": "the partner",
+  "offerNoticeBody": "Booking and payment are made directly with {partner}, on their terms and at your own responsibility. SmartBudget doesn’t sell or guarantee these services, and they are not part of your SmartBudget subscription or the Pro plan; any Pro perk is offered by the partner.",
+  "@offerNoticeBody": {"placeholders": {"partner": {"type": "String"}}}
 }

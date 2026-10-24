@@ -272,6 +272,20 @@ void main() {
       expect(find.text('With Pro: 1 GB extra'), findsOneWidget);
       await tester.tap(find.byTooltip('Hide'));
       expect(hidden, isTrue);
+      // Booking is with the partner: said on the card, and plainly the
+      // first time the offer is opened (not part of SmartBudget or Pro).
+      expect(find.text('Booked with the partner'), findsOneWidget);
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      await tester.tap(find.text('See the offer'));
+      await tester.pumpAndSettle();
+      expect(find.text('Before you go to the partner'), findsOneWidget);
+      expect(
+          find.textContaining(
+              'not part of your SmartBudget subscription or the Pro plan'),
+          findsOneWidget);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+      expect(find.text('Before you go to the partner'), findsNothing);
     });
   });
 }

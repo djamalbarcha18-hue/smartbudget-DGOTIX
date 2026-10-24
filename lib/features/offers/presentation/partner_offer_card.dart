@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
@@ -138,8 +139,8 @@ class PartnerOfferCard extends StatelessWidget {
                             child: Text(
                                 l.offerProPerk(
                                     PartnerOffer.text(offer.perk, lang)),
-                                style: t.labelSmall
-                                    ?.copyWith(color: c.textMuted)),
+                                style:
+                                    t.labelSmall?.copyWith(color: c.textMuted)),
                           ),
                         ],
                       ),
@@ -161,16 +162,24 @@ class PartnerOfferCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        visualDensity: VisualDensity.compact),
-                    onPressed: () => launchUrl(offer.link(),
-                        mode: LaunchMode.externalApplication),
-                    child: Text(l.offerOpen),
-                  ),
+                Row(
+                  children: <Widget>[
+                    TextButton(
+                      style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          visualDensity: VisualDensity.compact),
+                      onPressed: () => openOffer(context, offer),
+                      child: Text(l.offerOpen),
+                    ),
+                    const SizedBox(width: DsSpacing.xs),
+                    // Who you deal with, said where you tap.
+                    Flexible(
+                      child: Text(l.offerBookWithPartner,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: t.labelSmall?.copyWith(color: c.textFaint)),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -205,4 +214,40 @@ class ProSuggestionsSetting extends ConsumerWidget {
           style: t.bodySmall?.copyWith(color: c.textFaint)),
     );
   }
+}
+
+/// Opens the partner's page; the first time, says plainly that booking and
+/// payment are with the partner, at the user's own responsibility, and not
+/// part of SmartBudget or its Pro plan.
+Future<void> openOffer(BuildContext context, PartnerOffer offer) async {
+  const String key = 'sb_offers_notice_seen';
+  bool seen = false;
+  try {
+    seen = (await SharedPreferences.getInstance()).getBool(key) ?? false;
+  } catch (_) {}
+  if (!seen) {
+    if (!context.mounted) return;
+    final AppLocalizations l = AppLocalizations.of(context);
+    final bool? go = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext ctx) => AlertDialog(
+        title: Text(l.offerNoticeTitle),
+        content: Text(l.offerNoticeBody(
+            offer.partner.isEmpty ? l.offerThePartner : offer.partner)),
+        actions: <Widget>[
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(l.cancel)),
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(l.offerNoticeContinue)),
+        ],
+      ),
+    );
+    if (go != true) return;
+    try {
+      await (await SharedPreferences.getInstance()).setBool(key, true);
+    } catch (_) {}
+  }
+  await launchUrl(offer.link(), mode: LaunchMode.externalApplication);
 }

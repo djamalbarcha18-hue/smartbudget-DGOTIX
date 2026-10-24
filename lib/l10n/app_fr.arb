@@ -1407,5 +1407,10 @@
   "proSuggestionsTitle": "Suggestions de réservation des partenaires",
   "proSuggestionsHint": "Hôtels, compagnies et eSIM choisis pour vos voyages — certains de votre pays — avec des avantages Pro. Sans pub.",
   "proSuggestionsShow": "Les afficher dans mes voyages",
-  "offerProPerk": "Avec Pro : {perk}"
+  "offerProPerk": "Avec Pro : {perk}",
+  "offerBookWithPartner": "Réservé chez le partenaire",
+  "offerNoticeTitle": "Avant d’aller chez le partenaire",
+  "offerNoticeContinue": "Continuer",
+  "offerThePartner": "le partenaire",
+  "offerNoticeBody": "La réservation et le paiement se font directement avec {partner}, selon ses conditions et sous votre responsabilité. SmartBudget ne vend ni ne garantit ces services, qui ne font pas partie de votre abonnement SmartBudget ni du plan Pro ; tout avantage Pro est offert par le partenaire."
 }

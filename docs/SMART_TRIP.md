@@ -139,6 +139,14 @@ Kinds: esim, hotel, airline, transport, restaurant, insurance, agency,
 activity. Empty `countries` and `destinations`: anywhere. Made-up samples
 show in debug builds or with `DEMO_OFFERS=true` (example.com links).
 
+Booking is the user's business with the partner: each offer says "Booked
+with the partner", and the first time one is opened a notice says that
+booking and payment are with the partner, on their terms and at the user's
+own responsibility, and are not part of the SmartBudget subscription or
+the Pro plan (perks are the partner's). **At launch**, add the same clause
+to the Terms (`legal_content.dart`, every language) under a "Partner
+offers" heading.
+
 ## Destinations
 
 `assets/data/destinations.json`: `id`, `names` (language code to name;

@@ -1407,5 +1407,10 @@
   "proSuggestionsTitle": "Ortaklardan rezervasyon önerileri",
   "proSuggestionsHint": "Seyahatlerin için seçilmiş oteller, havayolları ve eSIM’ler — bazıları kendi ülkenden — Pro ayrıcalıklarıyla. Reklamsız.",
   "proSuggestionsShow": "Seyahatlerimde göster",
-  "offerProPerk": "Pro ile: {perk}"
+  "offerProPerk": "Pro ile: {perk}",
+  "offerBookWithPartner": "Rezervasyon ortakla yapılır",
+  "offerNoticeTitle": "Ortağa gitmeden önce",
+  "offerNoticeContinue": "Devam",
+  "offerThePartner": "ortak",
+  "offerNoticeBody": "Rezervasyon ve ödeme doğrudan {partner} ile, onun koşullarında ve senin sorumluluğunda yapılır. SmartBudget bu hizmetleri satmaz veya garanti etmez; bunlar SmartBudget aboneliğinin ya da Pro planının parçası değildir; Pro ayrıcalıklarını ortak sunar."
 }

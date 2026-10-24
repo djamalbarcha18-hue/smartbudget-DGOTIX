@@ -1607,5 +1607,10 @@
   "proSuggestionsTitle": "اقتراحات الحجز من الشركاء",
   "proSuggestionsHint": "فنادق وشركات طيران وشرائح eSIM مختارة لرحلاتك — بعضها من بلدك — مع مزايا لمشتركي Pro. بلا إعلانات.",
   "proSuggestionsShow": "أظهرها في رحلاتي",
-  "offerProPerk": "مع Pro: {perk}"
+  "offerProPerk": "مع Pro: {perk}",
+  "offerBookWithPartner": "الحجز مع الشريك مباشرة",
+  "offerNoticeTitle": "قبل الانتقال إلى الشريك",
+  "offerNoticeContinue": "متابعة",
+  "offerThePartner": "الشريك",
+  "offerNoticeBody": "الحجز والدفع يتمّان مباشرة مع {partner}، بشروطه وعلى مسؤوليتك. SmartBudget لا يبيع هذه الخدمات ولا يضمنها، وهي ليست جزءًا من اشتراكك في SmartBudget ولا من خطة Pro؛ وأي ميزة لمشتركي Pro يقدّمها الشريك نفسه."
 }
