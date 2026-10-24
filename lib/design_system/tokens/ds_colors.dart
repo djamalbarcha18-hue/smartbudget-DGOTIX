@@ -180,7 +180,7 @@ class DsColors extends ThemeExtension<DsColors> {
     shadow: Color(0x1A632130),
   );
 
-  /// Black Gold (Pro): a graphite-black dark theme with a gold accent.
+  /// Black Gold (Pro): a warm charcoal-black dark theme with a gold accent.
   static const DsColors black = DsColors(
     brand: Color(0xFFD4AF37),
     brandStrong: Color(0xFFE6C35C),
@@ -189,15 +189,15 @@ class DsColors extends ThemeExtension<DsColors> {
     saving: Color(0xFF4FC3F7),
     net: Color(0xFF5EEAD4),
     warning: Color(0xFFFB923C),
-    bgPage: Color(0xFF121214),
-    bgElevated: Color(0xFF18181B),
-    surface: Color(0xFF1F2023),
-    surfaceMuted: Color(0xFF2A2B2F),
+    bgPage: Color(0xFF121110),
+    bgElevated: Color(0xFF181614),
+    surface: Color(0xFF1E1C1A),
+    surfaceMuted: Color(0xFF292624),
     border: Color(0x1AFFFFFF), // white @ 10%
     borderStrong: Color(0x2EFFFFFF),
-    textPrimary: Color(0xFFF2F2F3),
-    textMuted: Color(0xFFA1A1AA),
-    textFaint: Color(0xFF6B6B73),
+    textPrimary: Color(0xFFF3F1EE),
+    textMuted: Color(0xFFA8A29A),
+    textFaint: Color(0xFF6F6A63),
     onBrand: Color(0xFF17140A),
     shadow: Color(0x80000000),
   );

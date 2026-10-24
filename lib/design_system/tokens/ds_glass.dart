@@ -144,12 +144,12 @@ class DsGlass extends ThemeExtension<DsGlass> {
     ],
   );
 
-  /// Graphite surfaces with a gold edge on hover for the black gold theme.
+  /// Warm charcoal surfaces with a gold edge on hover for the black gold theme.
   static const DsGlass black = DsGlass(
     blurSigma: 16,
-    fill: Color(0xE61F2023),
-    fillTop: Color(0xF0262629),
-    fillStrong: Color(0xF218181B),
+    fill: Color(0xE61E1C1A),
+    fillTop: Color(0xF0262421),
+    fillStrong: Color(0xF2181614),
     borderColor: Color(0x1AFFFFFF),
     hoverBorder: Color(0x66D4AF37),
     highlight: Color(0x14FFFFFF),

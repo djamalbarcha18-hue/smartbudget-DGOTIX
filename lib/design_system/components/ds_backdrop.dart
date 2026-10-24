@@ -86,13 +86,13 @@ class _BackdropPainter extends CustomPainter {
     ],
   );
 
-  // Black Gold: graphite, with a faint gold light from the top corner.
+  // Black Gold: warm charcoal, with a faint gold light from the top corner.
   static const _BackdropPainter black = _BackdropPainter(
-    top: Color(0xFF17171A),
-    bottom: Color(0xFF0F0F11),
+    top: Color(0xFF171513),
+    bottom: Color(0xFF0F0E0D),
     glows: <_Glow>[
       _Glow(Offset(0.95, 0.0), 0.5, Color(0x17D4AF37)),
-      _Glow(Offset(0.0, 1.0), 0.55, Color(0x0AFFFFFF)),
+      _Glow(Offset(0.0, 1.0), 0.55, Color(0x0AFFF4E0)),
     ],
   );
 
