@@ -70,6 +70,7 @@ class SmartBudgetApp extends ConsumerWidget {
         AppThemeStyle.classic => DsTheme.light(lang: lang),
         AppThemeStyle.beige => DsTheme.beige(lang: lang),
         AppThemeStyle.sage => DsTheme.sage(lang: lang),
+        AppThemeStyle.pomegranate => DsTheme.pomegranate(lang: lang),
       },
       darkTheme: DsTheme.dark(lang: lang),
       themeMode: themeMode,

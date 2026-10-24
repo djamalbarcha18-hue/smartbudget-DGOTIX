@@ -1347,9 +1347,10 @@
   "tripLevelLuxury": "Mewah",
   "tripDaysLabel": "Jumlah hari: {days}",
   "featProThemes": "Tema Pro",
-  "settingsThemeStyleHint": "Krem dan Sage: warna lebih lembut yang nyaman di mata, untuk tema terang.",
+  "settingsThemeStyleHint": "Krem, Sage, dan Delima: warna Pro yang nyaman di mata, untuk tema terang.",
   "settingsThemeStyle": "Warna tema",
   "themeClassic": "Klasik",
   "themeBeige": "Krem",
-  "themeSage": "Sage"
+  "themeSage": "Sage",
+  "themePomegranate": "Delima"
 }

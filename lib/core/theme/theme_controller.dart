@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// in shared_preferences — a per-viewer convenience, never financial data — and
 /// every read/write is guarded so a storage failure can never break the app.
 /// The colours of the light theme: Classic (free) or a Pro theme.
-enum AppThemeStyle { classic, beige, sage }
+enum AppThemeStyle { classic, beige, sage, pomegranate }
 
 /// The chosen light-theme colours (see AppEnv.proThemes). Stored on the
 /// device only.

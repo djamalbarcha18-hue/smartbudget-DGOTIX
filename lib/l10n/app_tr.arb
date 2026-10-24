@@ -1347,9 +1347,10 @@
   "tripLevelLuxury": "Lüks",
   "tripDaysLabel": "Gün sayısı: {days}",
   "featProThemes": "Pro temalar",
-  "settingsThemeStyleHint": "Bej ve Adaçayı: açık tema için göze daha rahat, yumuşak renkler.",
+  "settingsThemeStyleHint": "Bej, Adaçayı ve Nar: açık tema için göze rahat Pro renkler.",
   "settingsThemeStyle": "Tema renkleri",
   "themeClassic": "Klasik",
   "themeBeige": "Bej",
-  "themeSage": "Adaçayı"
+  "themeSage": "Adaçayı",
+  "themePomegranate": "Nar"
 }

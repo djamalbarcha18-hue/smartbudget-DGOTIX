@@ -34,6 +34,14 @@ abstract final class DsTheme {
         lang: lang,
       );
 
+  /// Pomegranate (Pro): rose and deep wine.
+  static ThemeData pomegranate({AppLang lang = AppLang.en}) => _build(
+        brightness: Brightness.light,
+        colors: DsColors.pomegranate,
+        glass: DsGlass.pomegranate,
+        lang: lang,
+      );
+
   /// Sage (Pro): the light grey-green theme.
   static ThemeData sage({AppLang lang = AppLang.en}) => _build(
         brightness: Brightness.light,

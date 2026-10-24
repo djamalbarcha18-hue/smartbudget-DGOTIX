@@ -1347,9 +1347,10 @@
   "tripLevelLuxury": "Luxe",
   "tripDaysLabel": "Jours : {days}",
   "featProThemes": "Thèmes Pro",
-  "settingsThemeStyleHint": "Beige et Sauge : des couleurs plus douces et reposantes, pour le thème clair.",
+  "settingsThemeStyleHint": "Beige, Sauge et Grenade : des couleurs Pro plus reposantes, pour le thème clair.",
   "settingsThemeStyle": "Couleurs du thème",
   "themeClassic": "Classique",
   "themeBeige": "Beige",
-  "themeSage": "Sauge"
+  "themeSage": "Sauge",
+  "themePomegranate": "Grenade"
 }

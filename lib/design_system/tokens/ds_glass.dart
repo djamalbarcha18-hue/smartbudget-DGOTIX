@@ -126,6 +126,24 @@ class DsGlass extends ThemeExtension<DsGlass> {
     ],
   );
 
+  /// Blush surfaces with a pomegranate edge for the pomegranate theme.
+  static const DsGlass pomegranate = DsGlass(
+    blurSigma: 14,
+    fill: Color(0xE6FFF8F8),
+    fillTop: Color(0xF5FFF8F8),
+    fillStrong: Color(0xEBFFF8F8),
+    borderColor: Color(0x338E3550),
+    hoverBorder: Color(0x668E3550),
+    highlight: Color(0x80FFFFFF),
+    glow: Color(0x1A8E3550),
+    shadow: <BoxShadow>[
+      BoxShadow(color: Color(0x1A632130), blurRadius: 20, offset: Offset(0, 10)),
+    ],
+    hoverShadow: <BoxShadow>[
+      BoxShadow(color: Color(0x24632130), blurRadius: 26, offset: Offset(0, 14)),
+    ],
+  );
+
   @override
   DsGlass copyWith({
     double? blurSigma,

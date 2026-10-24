@@ -302,12 +302,14 @@ class _ThemeStylePicker extends ConsumerWidget {
         AppThemeStyle.classic => DsColors.light,
         AppThemeStyle.beige => DsColors.beige,
         AppThemeStyle.sage => DsColors.sage,
+        AppThemeStyle.pomegranate => DsColors.pomegranate,
       };
 
   static String _label(AppLocalizations l, AppThemeStyle s) => switch (s) {
         AppThemeStyle.classic => l.themeClassic,
         AppThemeStyle.beige => l.themeBeige,
         AppThemeStyle.sage => l.themeSage,
+        AppThemeStyle.pomegranate => l.themePomegranate,
       };
 
   @override

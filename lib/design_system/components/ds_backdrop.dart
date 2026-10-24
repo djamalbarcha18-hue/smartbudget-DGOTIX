@@ -24,7 +24,9 @@ class DsBackdrop extends StatelessWidget {
                 ? _BackdropPainter.beige
                 : colors == DsColors.sage
                     ? _BackdropPainter.sage
-                    : _BackdropPainter.light,
+                    : colors == DsColors.pomegranate
+                        ? _BackdropPainter.pomegranate
+                        : _BackdropPainter.light,
         size: Size.infinite,
       ),
     );
@@ -79,6 +81,17 @@ class _BackdropPainter extends CustomPainter {
     bottom: Color(0xFFF3EFE8),
     glows: <_Glow>[
       _Glow(Offset(0.92, 0.02), 0.55, Color(0x0FD9C7A7)),
+    ],
+  );
+
+  // Pomegranate: rose, with soft wine-coloured pools like gentle waves.
+  static const _BackdropPainter pomegranate = _BackdropPainter(
+    top: Color(0xFFF7E1E5),
+    bottom: Color(0xFFF5DEE0),
+    glows: <_Glow>[
+      _Glow(Offset(0.0, 0.22), 0.5, Color(0x2EA45368)),
+      _Glow(Offset(0.98, 0.04), 0.42, Color(0x1F943851)),
+      _Glow(Offset(1.0, 1.0), 0.55, Color(0x40A45368)),
     ],
   );
 

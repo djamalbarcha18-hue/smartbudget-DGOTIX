@@ -157,6 +157,29 @@ class DsColors extends ThemeExtension<DsColors> {
     shadow: Color(0x14223028),
   );
 
+  /// Pomegranate (Pro): a light rose page, blush-white cards and a deep
+  /// pomegranate (wine) accent.
+  static const DsColors pomegranate = DsColors(
+    brand: Color(0xFF8E3550),
+    brandStrong: Color(0xFF772539),
+    income: Color(0xFF2B7349),
+    expense: Color(0xFFA3304A),
+    saving: Color(0xFF7B3F75),
+    net: Color(0xFF8A4B5E),
+    warning: Color(0xFF9A6A16),
+    bgPage: Color(0xFFF8E7EA),
+    bgElevated: Color(0xFFFDF6F6),
+    surface: Color(0xFFFFF8F8),
+    surfaceMuted: Color(0xFFF6E0E6),
+    border: Color(0x338E3550), // pomegranate @ 20%
+    borderStrong: Color(0x4D8E3550),
+    textPrimary: Color(0xFF3F1820),
+    textMuted: Color(0xFF6E4650),
+    textFaint: Color(0xFFA27C86),
+    onBrand: Color(0xFFFFFFFF),
+    shadow: Color(0x1A632130),
+  );
+
   @override
   DsColors copyWith({
     Color? brand,

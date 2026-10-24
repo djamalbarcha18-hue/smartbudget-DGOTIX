@@ -33,6 +33,12 @@ void main() {
         in <(String, ThemeData Function(), DsColors, DsGlass)>[
       ('beige', () => DsTheme.beige(), DsColors.beige, DsGlass.beige),
       ('sage', () => DsTheme.sage(), DsColors.sage, DsGlass.sage),
+      (
+        'pomegranate',
+        () => DsTheme.pomegranate(),
+        DsColors.pomegranate,
+        DsGlass.pomegranate
+      ),
     ]) {
       test('${v.$1}: a light theme with its own colours, easy to read', () {
         final ThemeData t = v.$2();
@@ -57,8 +63,10 @@ void main() {
             contrast(c.textPrimary, c.bgPage),
             lessThan(
                 contrast(DsColors.light.textPrimary, DsColors.light.bgPage)));
-        // The soft pomegranate for expenses.
-        expect(c.expense, const Color(0xFFB5475A));
+        // Expenses in a pomegranate red.
+        if (c != DsColors.pomegranate) {
+          expect(c.expense, const Color(0xFFB5475A));
+        }
       });
     }
 
