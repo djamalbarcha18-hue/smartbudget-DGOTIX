@@ -5,10 +5,11 @@ import 'package:smartbudget/core/money/currency.dart';
 /// their country's own (from the device region) when the app has it, else the
 /// most common one for the app language.
 abstract final class CurrencyDefaults {
-  /// Euro-area countries (ISO 3166-1 alpha-2, lower case).
+  /// Countries that pay in euros (ISO 3166-1 alpha-2, lower case): the euro
+  /// area, plus Kosovo and Montenegro, which use it without being members.
   static const Set<String> _euroArea = <String>{
     'at', 'be', 'cy', 'de', 'ee', 'es', 'fi', 'fr', 'gr', 'hr', 'ie', 'it', //
-    'lt', 'lu', 'lv', 'mt', 'nl', 'pt', 'si', 'sk',
+    'lt', 'lu', 'lv', 'mt', 'nl', 'pt', 'si', 'sk', 'xk', 'me',
   };
 
   /// With no usable region: the language's largest market, or the dollar
@@ -27,6 +28,7 @@ abstract final class CurrencyDefaults {
     AppLang.it: 'EUR',
     AppLang.nl: 'EUR',
     AppLang.bs: 'BAM',
+    AppLang.sq: 'ALL',
   };
 
   /// The currency of [country] (ISO 3166-1 alpha-2), or null when the app

@@ -80,18 +80,22 @@ abstract final class LegalContent {
       ? 'na ${AppConfig.supportEmail}'
       : 'preko stranice Pomoć i podrška u aplikaciji';
 
+  static String get _reachSq => AppConfig.hasSupportEmail
+      ? 'në ${AppConfig.supportEmail}'
+      : 'nga faqja Ndihmë dhe mbështetje në aplikacion';
+
   static List<LegalSection> sections(LegalDoc doc, {required AppLang lang}) =>
       switch (doc) {
         LegalDoc.privacy => lang.pick(_privacyAr, _privacyEn,
             fr: _privacyFr, id: _privacyId, es: _privacyEs,
             tr: _privacyTr, ms: _privacyMs, ur: _privacyUr, de: _privacyDe,
             pt: _privacyPt, it: _privacyIt, nl: _privacyNl,
-            bs: _privacyBs),
+            bs: _privacyBs, sq: _privacySq),
         LegalDoc.terms => lang.pick(_termsAr, _termsEn,
             fr: _termsFr, id: _termsId, es: _termsEs,
             tr: _termsTr, ms: _termsMs, ur: _termsUr, de: _termsDe,
             pt: _termsPt, it: _termsIt, nl: _termsNl,
-            bs: _termsBs),
+            bs: _termsBs, sq: _termsSq),
       };
 
   // ---- Privacy (English) ----
@@ -3847,6 +3851,296 @@ abstract final class LegalContent {
           'Ove uslove možemo ažurirati i prikazati datum najnovije verzije; '
               'nastavak korištenja nakon ažuriranja znači da prihvataš izmijenjene'
               ' uslove. Za pitanja kontaktiraj nas $_reachBs.',
+        ),
+      ];
+
+  // ---- Privacy (Albanian) ----
+  static List<LegalSection> get _privacySq => <LegalSection>[
+        LegalSection(
+          'Përmbledhje',
+          'Kjo politikë shpjegon çfarë ruan $_app, ku e ruan dhe çfarë '
+              'zgjedhjesh ke. Shkurt: të dhënat e tua financiare janë të tuat, '
+              'ruhen fillimisht në pajisjen tënde dhe ne nuk i shesim kurrë, nuk '
+              'të shfaqim reklama dhe nuk të ndjekim. Disa funksione opsionale '
+              '(hyrja dhe sinkronizimi, DGOTIX AI, skanimi i faturave në cloud '
+              'dhe paketat me pagesë) i dërgojnë të dhëna të caktuara një '
+              'shërbimi vetëm kur i përdor, siç përshkruhet më poshtë.',
+        ),
+        const LegalSection(
+          'Çfarë ruajmë',
+          'Informacionin që fut vetë: të ardhurat, shpenzimet, buxhetet, '
+              'qëllimet, borxhet, portofolat, kategoritë e tua dhe preferencat e'
+              ' shfaqjes (tema, gjuha, monedha bazë). Nëse krijon llogari, '
+              'ruajmë gjithashtu email-in, paketën dhe statusin e abonimit, si '
+              'dhe numëruesit e përdorimit për periudhë për DGOTIX AI dhe '
+              'skanimin e faturave në cloud — vetëm për të zbatuar kufijtë e '
+              'paketës. Nuk ruajmë pyetjet e tua për DGOTIX AI as imazhet e '
+              'faturave; nëse raporton një përgjigje të AI, ruajmë atë përgjigje '
+              'dhe shënimin tënd opsional për ta shqyrtuar.',
+        ),
+        const LegalSection(
+          'Ku ndodhen të dhënat e tua',
+          'Gjithçka ruhet fillimisht në pajisjen tënde (në aplikacion ose, për'
+              ' versionin web, në shfletues), ndaj aplikacioni funksionon edhe '
+              'pa llogari apo lidhje. Nëse hyn në llogari, të dhënat '
+              'sinkronizohen gjithashtu automatikisht mes pajisjeve: një kopje '
+              'ruhet në bazën tonë të të dhënave (e pritur nga Supabase), e '
+              'lidhur me llogarinë tënde dhe e izoluar që vetëm ti ta lexosh. '
+              'Mund ta çaktivizosh sinkronizimin te Cilësimet; atëherë të dhënat '
+              'qëndrojnë vetëm në këtë pajisje.',
+        ),
+        const LegalSection(
+          'Llogaria jote dhe email-et',
+          'Email-i yt përdoret për hyrjen dhe për email-e të llogarisë, si '
+              'konfirmimi i adresës dhe rivendosja e fjalëkalimit (dërgohen '
+              'përmes Brevo). Nuk përdoret kurrë për reklama dhe nuk ndahet për '
+              'marketing. Gjatë regjistrimit dhe hyrjes, një kontroll i shpejtë '
+              'që je person (Cloudflare Turnstile) parandalon abuzimet e '
+              'automatizuara.',
+        ),
+        const LegalSection(
+          'DGOTIX AI',
+          'DGOTIX AI është opsional. Kur bën një pyetje, teksti i saj dhe një '
+              'përmbledhje e shifrave të tua (totale sipas muajit dhe kategorisë '
+              'deri në 12 muaj, buxhete, gjendje portofolash, qëllime, '
+              'transaksione periodike, buxhete sezonale dhe rrethe kursimi — '
+              'vetëm shuma dhe data, kurrë përshkrime, shënime apo emrat që u '
+              'vë gjërave) dërgohen përmes serverit tonë të sigurt te një ofrues '
+              'AI (Google Gemini, OpenAI ose Anthropic) për të krijuar '
+              'përgjigjen. Serveri ynë përdor çelësat tanë dhe regjistron vetëm '
+              'meta të dhëna përdorimi, kurrë pyetjen apo shifrat e tua. Nuk i '
+              'përdorim të dhënat e tua për të trajnuar modele. Përgjigjet '
+              'krijohen automatikisht, ndaj kontrollo shifrat e rëndësishme para'
+              ' se të veprosh.',
+        ),
+        const LegalSection(
+          'Skanimi i faturave',
+          'Në Android, faturat mund të lexohen plotësisht në pajisjen tënde. '
+              'Skanimi në cloud e dërgon imazhin e faturës përmes serverit tonë '
+              'të sigurt te një ofrues AI vetëm për të lexuar tregtarin, datën, '
+              'shumën, artikujt dhe kategorinë; imazhi nuk ruhet.',
+        ),
+        const LegalSection(
+          'Pagesat dhe abonimet',
+          'Paketat me pagesë janë opsionale. Paguan në arkën e sigurt të Whop '
+              '(whop.com), ofruesit tonë të pagesave, ose me PayPal nëse e '
+              'zgjedh. Ata mbledhin të dhënat e faturimit që u nevojiten (si '
+              'emri, email-i, shteti dhe mënyra e pagesës) sipas politikave të '
+              'tyre të privatësisë; ne nuk i shohim dhe nuk i ruajmë kurrë të '
+              'dhënat e plota të kartës. Ruajmë paketën, statusin e abonimit, '
+              'datën e rinovimit dhe identifikuesit e abonimit të ofruesit për të'
+              ' të dhënë aksesin e duhur, si dhe një regjistër të kodeve '
+              'promocionale që përdor.',
+        ),
+        const LegalSection(
+          'Ofruesit e shërbimeve',
+          'Sipas funksioneve që përdor: Supabase (llogaritë, sinkronizimi dhe '
+              'funksionet e serverit); Whop dhe PayPal (pagesat); Brevo (email-et'
+              ' e llogarisë); Cloudflare Turnstile (kontrolli në hyrje); GitHub '
+              'Pages (pritja e faqes dhe aplikacionit web); Google, OpenAI dhe '
+              'Anthropic (DGOTIX AI dhe skanimi i faturave në cloud); dhe burime '
+              'publike të dhënash tregu për shifra në kohë reale — kurse këmbimi '
+              '(open.er-api.com) dhe çmime kripto (CoinGecko) — kërkesat e të '
+              'cilave përmbajnë vetëm simbole monedhash ose aktivesh, kurrë të '
+              'dhënat e tua personale apo financiare. Çdo ofrues i përpunon të '
+              'dhënat vetëm për të ofruar pjesën e vet të shërbimit.',
+        ),
+        const LegalSection(
+          'Siguria',
+          'Lidhjet me shërbimet tona janë të enkriptuara (HTTPS). Në bazën tonë'
+              ' të të dhënave, regjistrimet e çdo përdoruesi janë të izoluara që '
+              'një llogari të mos lexojë kurrë ato të një tjetre. Çelësat e '
+              'serverit nuk arrijnë kurrë në aplikacion, njoftimet e pagesave '
+              'verifikohen para se të ndryshojnë diçka dhe mund të aktivizosh '
+              'kyçjen e aplikacionit (PIN ose gjurmë gishti) në pajisjen tënde.',
+        ),
+        const LegalSection(
+          'Çfarë nuk bëjmë',
+          'Nuk i shesim dhe nuk i japim me qira të dhënat e tua, nuk shfaqim '
+              'reklama dhe nuk bëjmë ndjekje të sjelljes apo analiza të '
+              'aktivitetit tënd financiar.',
+        ),
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
+          const LegalSection(
+            'Numërime anonime',
+            'Kur krijon një udhëtim, aplikacioni dërgon vetëm fjalët “u '
+                'planifikua një udhëtim” dhe serveri ynë shton një te totali i '
+                'asaj dite. Asgjë tjetër nuk dërgohet apo ruhet bashkë me të — '
+                'as llogari, as pajisje, as destinacion, as shumë — ndaj totalet '
+                'nuk mund të lidhen me ty. I përdorim vetëm për të ditur sa '
+                'përdoret aplikacioni dhe për t\'u treguar partnerëve shifra të '
+                'përgjithshme. Mund ta çaktivizosh te Cilësimet, nën Privatësia.',
+          ),
+        const LegalSection(
+          'Sa kohë i ruajmë të dhënat',
+          'Të dhënat në pajisjen tënde qëndrojnë derisa t\'i fshish ose të '
+              'heqësh aplikacionin. Llogaria, të dhënat e sinkronizuara, '
+              'numëruesit e përdorimit dhe meta të dhënat e kërkesave ruhen sa '
+              'kohë ekziston llogaria — vetëm për të funksionuar shërbimi dhe '
+              'për të zbatuar kufijtë e paketës — dhe fshihen përgjithmonë kur e'
+              ' fshin. Whop dhe PayPal ruajnë regjistrat e faturimit që ligji i '
+              'detyron t\'i ruajnë.',
+        ),
+        LegalSection(
+          'Të drejtat dhe kontrollet e tua',
+          'Mund t\'i shohësh dhe t\'i korrigjosh të dhënat në aplikacion në '
+              'çdo kohë, të eksportosh një kopje të plotë rezervë, të çaktivizosh'
+              ' sinkronizimin, të dalësh dhe të fshish llogarinë me të gjitha të'
+              ' dhënat (shih më poshtë). Mund ta anulosh një abonim me pagesë në'
+              ' çdo kohë (shih Kushtet). Për çdo kërkesë tjetër për të dhënat e '
+              'tua personale — përfshirë aksesin, korrigjimin, fshirjen ose '
+              'kundërshtimin — na kontakto $_reachSq dhe do të përgjigjemi '
+              'shpejt.',
+        ),
+        const LegalSection(
+          'Fshirja e llogarisë dhe e të dhënave',
+          'Në aplikacion ose në versionin web, në çdo pajisje, hap Cilësimet, '
+              'pastaj Llogaria, pastaj “Fshi llogarinë time”. Kjo fshin '
+              'përgjithmonë llogarinë dhe gjithçka të ruajtur për të në '
+              'serverat tanë (profili, të dhënat e sinkronizuara, regjistri i '
+              'abonimit dhe numëruesit e përdorimit) dhe fshin të dhënat në atë '
+              'pajisje. Anulo më parë çdo abonim me pagesë. Fshirja nuk mund të '
+              'zhbëhet, ndaj eksporto një kopje rezervë nëse mund t\'i duash të '
+              'dhënat më vonë.',
+        ),
+        LegalSection(
+          'Mosha',
+          '$_app është menduar për persona 16 vjeç e lart. Nuk mbledhim '
+              'qëllimisht të dhëna nga fëmijë më të vegjël; nëse mendon se një '
+              'fëmijë ka krijuar llogari, na kontakto $_reachSq dhe do ta '
+              'fshijmë.',
+        ),
+        LegalSection(
+          'Ndryshimet dhe kontakti',
+          'Mund ta përditësojmë këtë politikë; data e shfaqur më sipër është '
+              'ajo e versionit më të fundit. Për pyetje për privatësinë, na '
+              'kontakto $_reachSq.',
+        ),
+      ];
+
+  // ---- Terms (Albanian) ----
+  static List<LegalSection> get _termsSq => <LegalSection>[
+        LegalSection(
+          'Pranimi',
+          'Duke përdorur $_app, pranon këto kushte. Nëse nuk pajtohesh, mos e '
+              'përdor aplikacionin.',
+        ),
+        LegalSection(
+          'Kush mund ta përdorë',
+          'Duhet të jesh të paktën 16 vjeç për të përdorur $_app. Nëse krijon '
+              'llogari, mbaji të sigurta të dhënat e hyrjes; je përgjegjës për '
+              'aktivitetin në llogarinë tënde.',
+        ),
+        const LegalSection(
+          'Çfarë është shërbimi',
+          'Një mjet personal buxheti dhe planifikimi për të ndjekur të ardhurat,'
+              ' shpenzimet, buxhetet, qëllimet dhe vështrimet përkatëse, me '
+              'ndihmë opsionale nga AI, skanim faturash, sinkronizim mes '
+              'pajisjeve dhe paketa me pagesë.',
+        ),
+        const LegalSection(
+          'Mjete planifikimi, jo këshillë profesionale',
+          'Buxhetet, parashikimet, llogaritja e zekatit dhe përgjigjet e DGOTIX'
+              ' AI janë mjete planifikimi që të ndihmojnë të vendosësh. Nuk janë '
+              'këshillë profesionale financiare, tatimore apo fetare. Për '
+              'detyrime fetare si zekati, konfirmo me një dijetar të kualifikuar;'
+              ' për vendime të mëdha financiare, konsultohu me një këshilltar të '
+              'kualifikuar.',
+        ),
+        const LegalSection(
+          'Funksionet AI',
+          'DGOTIX AI dhe skanimi i faturave në cloud japin rezultate automatike'
+              ' për të të kursyer kohë; kontrollo shifrat e rëndësishme para se '
+              'të veprosh. Këto funksione përfshihen brenda kufijve të përdorimit'
+              ' të arsyeshëm që varen nga paketa jote dhe mund të përshtaten për '
+              'ta mbajtur shërbimin të shpejtë dhe të besueshëm për të gjithë.',
+        ),
+        const LegalSection(
+          'Abonimet, faturimi dhe rinovimet',
+          'Aplikacioni bazë është falas. Paketat me pagesë (Pro) zhbllokojnë '
+              'kufij më të lartë dhe funksione shtesë me çmimet e shfaqura në '
+              'aplikacion. Një paketë me pagesë rinovohet automatikisht çdo '
+              'periudhë faturimi (mujore ose vjetore) derisa ta anulosh. Pagesat '
+              'përpunohen nga Whop, ofruesi ynë i pagesave (ose nga PayPal nëse e'
+              ' zgjedh); taksat e zbatueshme mund të shtohen dhe shfaqen gjithmonë'
+              ' në arkë para se të paguash. Mund ta anulosh në çdo kohë dhe e '
+              'mban aksesin deri në fund të periudhës së paguar. Nëse çmimet ose '
+              'funksionet e paketës ndryshojnë, kushtet aktuale shfaqen gjithmonë'
+              ' para se të abonohesh.',
+        ),
+        const LegalSection(
+          'Ofruesi ynë i pagesave: Whop',
+          'SmartBudget shitet nga DGOTIX. Arka dhe faturimi kryhen nga Whop '
+              '(whop.com), i cili e përpunon pagesën në arkën e vet të sigurt, '
+              'shfaq çmimin e plotë me taksat para pagesës dhe të dërgon '
+              'faturën. Mund ta menaxhosh ose ta anulosh abonimin nga '
+              'aplikacioni (Paketat → Menaxho).',
+        ),
+        LegalSection(
+          'Politika e rimbursimit',
+          'Përveç kur e kërkon ligji, pagesat në përgjithësi nuk rimbursohen '
+              'pasi të ketë nisur një periudhë faturimi, sepse e mban aksesin '
+              'deri në fund të saj. Mund ta anulosh në çdo kohë për të ndaluar '
+              'rinovimet e ardhshme. Për një kërkesë rimbursimi ose pyetje për '
+              'një tarifim, na kontakto $_reachSq: e shqyrtojmë çdo kërkesë sipas'
+              ' ligjit të zbatueshëm për mbrojtjen e konsumatorit dhe i bëjmë '
+              'rimbursimet e miratuara përmes Whop (ose PayPal).',
+        ),
+        const LegalSection(
+          'Kodet promocionale',
+          'Kuponët dhe kodet e zbritjes janë opsionale dhe ndryshojnë vetëm '
+              'çmimin në arkë (ose japin një periudhë prove). Çdo kod ka kushtet e'
+              ' veta (vlefshmëria, kufijtë e përdorimit, një për klient) dhe mund '
+              'të tërhiqet ose të skadojë. Nuk kanë vlerë në para dhe nuk mund të'
+              ' kombinohen, përveç kur thuhet ndryshe.',
+        ),
+        const LegalSection(
+          'Të dhënat dhe kopjet rezervë',
+          'Je përgjegjës për saktësinë e të dhënave që fut. Për t\'i mbajtur të'
+              ' sigurta mes pajisjeve, hyr për t\'i sinkronizuar ose eksporto '
+              'rregullisht një kopje rezervë nga Cilësimet.',
+        ),
+        LegalSection(
+          'Disponueshmëria',
+          'Punojmë që $_app të jetë i disponueshëm dhe i besueshëm. Në masën që'
+              ' e lejon ligji, aplikacioni ofrohet “siç është”, pa garanci të '
+              'asnjë lloji. Të dhënat e tregut në kohë reale, AI dhe pagesat '
+              'varen nga shërbime të palëve të treta dhe ndonjëherë mund të '
+              'vonohen ose të mos jenë të disponueshme; një ndërprerje e tillë '
+              'nuk të pengon kurrë të përdorësh mjetet bazë të buxhetit, që '
+              'funksionojnë edhe offline. Funksionet mund të ndryshojnë me kohën.',
+        ),
+        const LegalSection(
+          'Kufizimi i përgjegjësisë',
+          'Në masën që e lejon ligji, nuk mbajmë përgjegjësi për humbje '
+              'indirekte ose pasuese, as për vendimet që merr bazuar në shifrat e'
+              ' aplikacionit. Asgjë në këto kushte nuk kufizon të drejtat që ke '
+              'si konsumator dhe që nuk mund t\'i heqësh dorë.',
+        ),
+        const LegalSection(
+          'Përdorimi i lejuar',
+          'Mos e keqpërdor shërbimin, mos provo të thyesh apo të anashkalosh '
+              'sigurinë ose kufijtë e paketave dhe mos e përdor për qëllime të '
+              'paligjshme.',
+        ),
+        LegalSection(
+          'Ndërprerja e përdorimit',
+          'Mund ta ndalosh përdorimin e $_app dhe ta fshish llogarinë në çdo '
+              'kohë. Mund ta pezullojmë një llogari që shkel këto kushte ose që '
+              'rrezikon shërbimin apo përdoruesit e tjerë.',
+        ),
+        LegalSection(
+          'Marka dhe pronësia',
+          'Emri $_app, marka $_brand, si dhe dizajni dhe kodi i aplikacionit '
+              'mbeten pronë e zotëruesit të tyre. Të dhënat e tua mbeten të '
+              'tuat.',
+        ),
+        LegalSection(
+          'Ndryshimet dhe kontakti',
+          'Mund t\'i përditësojmë këto kushte dhe të shfaqim datën e versionit '
+              'më të fundit; përdorimi i vazhduar pas një përditësimi do të thotë'
+              ' se pranon kushtet e rishikuara. Për pyetje, na kontakto $_reachSq.',
         ),
       ];
 }

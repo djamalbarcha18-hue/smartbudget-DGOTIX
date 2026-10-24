@@ -916,6 +916,75 @@ abstract final class Catalog {
     'أخرى': 'Ostalo',
   };
 
+  /// Albanian display labels, keyed like [_en].
+  static const Map<String, String> _sq = <String, String>{
+    // Income
+    'راتب أساسي': 'Rroga',
+    'مكافآت وحوافز': 'Bonuse dhe shpërblime',
+    'مكافأة نهاية الخدمة': 'Shpërblim largimi',
+    'معاش تقاعدي': 'Pension',
+    'عمل حر': 'Punë e pavarur',
+    'عمولات': 'Komisione',
+    'أرباح تجارية': 'Fitim biznesi',
+    'دخل استثماري': 'Të ardhura nga investimet',
+    'أرباح أسهم وتوزيعات': 'Dividendë',
+    'أرباح العملات الرقمية': 'Fitime nga kripto',
+    'إيجارات': 'Të ardhura nga qiraja',
+    'تأجير قصير الأمد': 'Qira afatshkurtër',
+    'تجارة إلكترونية': 'Shitje online',
+    'بيع أصول أو ممتلكات': 'Shitje pasurie',
+    'محتوى رقمي وإبداعي': 'Përmbajtje dixhitale dhe krijuese',
+    'استرجاع نقدي ومكافآت': 'Rimbursime dhe shpërblime',
+    'منحة أو إعانة': 'Bursë ose ndihmë',
+    'ميراث': 'Trashëgimi',
+    'استرداد أو تعويض': 'Kthim ose kompensim',
+    'هدايا': 'Dhurata',
+    'زكاة أو صدقة مستلمة': 'Zekat ose sadaka e marrë',
+    // Expenses
+    'الطعام': 'Ushqime',
+    'المطاعم': 'Restorante',
+    'النقل': 'Transport',
+    'السكن': 'Banesa',
+    'الفواتير': 'Fatura',
+    'الاتصالات والإنترنت': 'Telefon dhe internet',
+    'الصحة': 'Shëndet',
+    'التعليم': 'Arsim',
+    'الأطفال والعائلة': 'Fëmijë dhe familje',
+    'التسوق': 'Blerje',
+    'الملابس': 'Veshje',
+    'الترفيه': 'Argëtim',
+    'الرياضة واللياقة': 'Sport dhe palestër',
+    'الاشتراكات': 'Abonime',
+    'السفر': 'Udhëtime',
+    'الأقساط والقروض': 'Kredi dhe këste',
+    'التأمين': 'Sigurime',
+    'الضرائب والرسوم': 'Taksa dhe tarifa',
+    'الصيانة والإصلاح': 'Mirëmbajtje dhe riparime',
+    'الأثاث والمنزل': 'Shtëpi dhe mobilie',
+    'الوقود': 'Karburant',
+    'الخدمات المهنية والقانونية': 'Shërbime profesionale dhe ligjore',
+    'البرمجيات والأدوات الرقمية': 'Softuer dhe mjete dixhitale',
+    'الحج والعمرة': 'Haxh dhe Umre',
+    'صدقة وتبرّعات': 'Sadaka dhe dhurime',
+    'زكاة': 'Zekat',
+    'الادخار والاستثمار': 'Kursime dhe investime',
+    'الطوارئ': 'Emergjenca',
+    // Payment methods
+    'نقداً': 'Cash',
+    'بطاقة بنكية': 'Kartë debiti',
+    'بطاقة ائتمان': 'Kartë krediti',
+    'محفظة إلكترونية': 'Portofol elektronik',
+    'تحويل الكتروني': 'Transfertë bankare',
+    'تحويل بنكي فوري': 'Transfertë e menjëhershme',
+    'الدفع عند الاستلام': 'Pagesë në dorëzim',
+    'محفظة عملات رقمية': 'Portofol kripto',
+    'أموال عبر الهاتف': 'Pagesë me telefon',
+    'شيك': 'Çek',
+    'بطاقة هدايا أو قسيمة': 'Kartë dhuratë / kupon',
+    // Shared
+    'أخرى': 'Tjetër',
+  };
+
   /// Localized display label for a stored category/payment value.
   static String label(String value, {required AppLang lang}) =>
       lang.pick(value, _en[value] ?? value,
@@ -929,5 +998,6 @@ abstract final class Catalog {
           pt: _pt[value] ?? _en[value] ?? value,
           it: _it[value] ?? _en[value] ?? value,
           nl: _nl[value] ?? _en[value] ?? value,
-          bs: _bs[value] ?? _en[value] ?? value);
+          bs: _bs[value] ?? _en[value] ?? value,
+          sq: _sq[value] ?? _en[value] ?? value);
 }

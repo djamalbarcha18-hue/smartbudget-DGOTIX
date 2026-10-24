@@ -61,6 +61,7 @@ void main() {
     expect(AppLang.it.hidden, isTrue);
     expect(AppLang.nl.hidden, isTrue);
     expect(AppLang.bs.hidden, isTrue);
+    expect(AppLang.sq.hidden, isTrue);
     expect(AppLang.showHidden, isFalse);
     for (final AppLang l in AppLang.values.where((AppLang l) => l.hidden)) {
       expect(AppLang.offered, isNot(contains(l)));

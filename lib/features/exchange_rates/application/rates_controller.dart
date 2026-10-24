@@ -159,6 +159,7 @@ class RatesController extends Notifier<Map<String, double>> {
     'KRW': 1350.0,
     'SEK': 10.6,
     'BAM': 1.8, // fixed to the euro (1.95583 per euro)
+    'ALL': 92.0,
     'MXN': 18.5,
     'ARS': 1350.0,
     'COP': 4000.0,

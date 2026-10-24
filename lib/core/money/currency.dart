@@ -98,6 +98,8 @@ abstract final class Currencies {
     Currency(code: 'KRW', symbol: '₩', nameEn: 'South Korean Won', nameAr: 'الوون الكوري الجنوبي', country: 'kr', decimals: 0),
     Currency(code: 'SEK', symbol: 'kr', nameEn: 'Swedish Krona', nameAr: 'الكرونة السويدية', country: 'se'),
     Currency(code: 'BAM', symbol: 'KM', nameEn: 'Convertible Mark', nameAr: 'المارك البوسني القابل للتحويل', country: 'ba'),
+    // Like the rupiah: ISO lists 2 minor units, but prices are whole lek.
+    Currency(code: 'ALL', symbol: 'L', nameEn: 'Albanian Lek', nameAr: 'الليك الألباني', country: 'al', decimals: 0),
     Currency(code: 'MXN', symbol: 'Mex\$', nameEn: 'Mexican Peso', nameAr: 'البيزو المكسيكي', country: 'mx'),
     Currency(code: 'ARS', symbol: 'AR\$', nameEn: 'Argentine Peso', nameAr: 'البيزو الأرجنتيني', country: 'ar'),
     Currency(code: 'COP', symbol: 'COL\$', nameEn: 'Colombian Peso', nameAr: 'البيزو الكولومبي', country: 'co'),

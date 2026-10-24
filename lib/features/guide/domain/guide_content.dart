@@ -28,13 +28,15 @@ abstract final class GuideContent {
       lang.pick(_startAr, _startEn,
           fr: _startFr, id: _startId, es: _startEs,
           tr: _startTr, ms: _startMs, ur: _startUr, de: _startDe,
-          pt: _startPt, it: _startIt, nl: _startNl, bs: _startBs);
+          pt: _startPt, it: _startIt, nl: _startNl, bs: _startBs,
+          sq: _startSq);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
       lang.pick(_topicsAr, _topicsEn,
           fr: _topicsFr, id: _topicsId, es: _topicsEs,
           tr: _topicsTr, ms: _topicsMs, ur: _topicsUr, de: _topicsDe,
-          pt: _topicsPt, it: _topicsIt, nl: _topicsNl, bs: _topicsBs);
+          pt: _topicsPt, it: _topicsIt, nl: _topicsNl, bs: _topicsBs,
+          sq: _topicsSq);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -2651,6 +2653,210 @@ abstract final class GuideContent {
         'U Podaci i backup izvezi puni backup bilo kada; kad si prijavljen, '
             'podaci se automatski sinhronizuju između uređaja (i nakon rada bez '
             'mreže), a to možeš isključiti.',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Albanian) ----
+  static const List<String> _startSq = <String>[
+    'Hap Cilësimet dhe zgjidh gjuhën, temën dhe monedhën bazë — çdo total në '
+        'aplikacion shfaqet në atë monedhë.',
+    'Shto të ardhurat dhe shpenzimet (ose skano një faturë) — gjithçka tjetër '
+        'llogaritet prej tyre.',
+    'Vendos një buxhet mujor që aplikacioni të të tregojë sa të mbetet për të '
+        'shpenzuar.',
+    'Shiko Përmbledhjen dhe Shëndetin financiar për të ditur ku je, pastaj '
+        'shto qëllime dhe borxhe gradualisht.',
+  ];
+
+  // ---- Topics (Albanian) ----
+  static const List<GuideTopic> _topicsSq = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'Përmbledhja',
+      summary:
+          'Muaji yt me një shikim: të ardhurat, shpenzimet, kursimet dhe ku '
+          'shkuan paratë.',
+      steps: <String>[
+        'Pllakat tregojnë totalet e këtij muaji në monedhën tënde bazë.',
+        'Prek një pjesë të ndarjes së shpenzimeve për të theksuar atë '
+            'kategori.',
+        'Njoftimet të tregojnë çfarë kërkon vëmendje, si një kategori mbi '
+            'buxhet ose një qëllim urgjent.',
+        'Pa të dhëna, pllakat tregojnë “—” — asgjë nuk shpiket kurrë.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'Të ardhurat dhe shpenzimet',
+      summary: 'Regjistro çdo lëvizje parash — bazën e çdo llogaritjeje në '
+          'aplikacion.',
+      steps: <String>[
+        'Përdor butonin e shtimit të shpejtë për të regjistruar një të ardhur '
+            'ose shpenzim me shumë, kategori, datë dhe shënim.',
+        'Të ardhurat dhe Shpenzimet kanë secila ekranin e vet; Transaksionet i'
+            ' tregon të dyja bashkë.',
+        'Kërko në listë për të gjetur çdo regjistrim dhe prek atë për ta '
+            'ndryshuar ose fshirë.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'Transaksione periodike',
+      summary: 'Rroga, qiraja dhe abonimet shtohen automatikisht në datën e '
+          'tyre.',
+      steps: <String>[
+        'Kur shton një të ardhur ose shpenzim, vendos “Përsërit” çdo javë, '
+            'muaj, 3 muaj, 6 muaj ose vit.',
+        'Për një bonus ose komision me shumë të ndryshueshme, aktivizo “Shuma '
+            'ndryshon çdo herë”: në çdo datë aplikacioni pyet për shumën reale '
+            'në vend që të shtojë një vlerësim.',
+        'Sa herë që skadon, aplikacioni e shton si transaksion të zakonshëm — '
+            'edhe nëse ke munguar, i plotëson kur ta hapësh përsëri.',
+        'Te ekrani Periodike mund të pezullosh, të vazhdosh, të ndryshosh '
+            'shumën ose të ndalosh përsëritjen. Transaksionet e shtuara nuk '
+            'ndryshojnë kurrë.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'Skano një faturë',
+      summary: 'Ktheje foton e një fature në një shpenzim gati për t\'u ruajtur.',
+      steps: <String>[
+        'Te ekrani Shpenzimet, prek “Skano faturën” dhe bëj ose zgjidh një '
+            'foto.',
+        'Aplikacioni plotëson tregtarin, datën, shumën dhe kategorinë — '
+            'rishikoji para se të ruash.',
+        'Skanimi në cloud varet nga paketa; nëse një faturë nuk lexohet, '
+            'shkruaje shpenzimin me dorë.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'Buxheti mujor',
+      summary: 'Planifiko sa do të shpenzosh për kategori, muaj pas muaji.',
+      steps: <String>[
+        'Zgjidh vitin dhe muajin lart — një ekran mbulon çdo muaj.',
+        'Vendos një kufi për çdo kategori që do të kontrollosh.',
+        'Shiritat e progresit mbushen ndërsa shpenzon; një kategori mbi kufi '
+            'shënohet.',
+        'Në një paketë me pagesë, “Sugjero ndarjen” i ndan të ardhurat mes '
+            'kategorive bazuar në shpenzimet e tua të fundit — rishikoje, pastaj'
+            ' apliko.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'Qëllimet dhe kursimet',
+      summary: 'Kurse për diçka të caktuar dhe shiko sa afër je.',
+      steps: <String>[
+        'Krijo një qëllim me një shumë dhe, nëse do, një afat.',
+        'Regjistro kontributet ndërsa kursen; progresi përditësohet '
+            'automatikisht.',
+        'Qëllimet afër afatit theksohen te Përmbledhja.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'Borxhet dhe huatë',
+      summary: 'Ndiq sa detyrohesh dhe sa të detyrohen të tjerët.',
+      steps: <String>[
+        'Shto çdo borxh ose hua me shumën dhe personin ose palën.',
+        'Përditëso shumën e paguar deri tani për të parë mbetjen.',
+        'Borxhet ndikojnë në pikët e Shëndetit financiar.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'Portofoli i projekteve',
+      summary: 'Planifiko projektet më të mëdha në ndarje afatshkurtra, '
+          'afatmesme dhe afatgjata.',
+      steps: <String>[
+        'Shto projekte dhe vendos secilin në një afat.',
+        'Financimi i mbush ndarjet me radhë, kështu sheh cilat projekte i '
+            'mbulojnë kursimet e tua të parat.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'Shëndeti financiar',
+      summary: 'Një pikëzim që përmbledh sa të shëndetshme janë financat e '
+          'tua, dhe pse.',
+      steps: <String>[
+        'Pikët llogariten në pajisjen tënde nga të dhënat e tua.',
+        'Faktorët kryesorë tregojnë çfarë ndihmon apo dëmton — përmirëso ata '
+            'të parët.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'Raporte dhe analiza',
+      summary: 'Shiko ecurinë gjatë vitit dhe ku shkojnë paratë.',
+      steps: <String>[
+        'Zgjidh një vit për të krahasuar të ardhurat dhe shpenzimet muaj pas '
+            'muaji.',
+        'Përdor ndarjet për të dalluar kategoritë që rriten me kohën.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'Zekati',
+      summary: 'Vlerëso zekatin mbi pasurinë tënde dhe ndiq havlin.',
+      steps: <String>[
+        'Shkruaj pasuritë e zekatueshme për të marrë një vlerësim.',
+        'Vendos datën kur pasuria arriti nisabin për të ndjekur numërimin '
+            'mbrapsht të vitit hënor, në kalendarin hixhri.',
+        'Kjo është ndihmë planifikimi — konfirmo detyrimin me një dijetar të '
+            'kualifikuar.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'Kurset dhe tregjet',
+      summary: 'Kurse këmbimi dhe çmime kripto në kohë reale nga burime '
+          'publike.',
+      steps: <String>[
+        'Kurset merren në kohë reale; çdo rresht tregon burimin.',
+        'Kur një treg nuk ka burim të besueshëm, shkruhet “nuk është i '
+            'disponueshëm” — kurrë një numër i shpikur.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'Asistenti DGOTIX AI',
+      summary: 'Bëj pyetje për financat e tua me fjalë të thjeshta.',
+      steps: <String>[
+        'Shkruaj një pyetje ose prek një sugjerim; asistenti përgjigjet bazuar'
+            ' në një përmbledhje të shkurtër të shifrave të tua.',
+        'Numri i përgjigjeve varet nga paketa; do të shohësh një shënim kur je'
+            ' afër kufirit.',
+        'Përgjigjet krijohen automatikisht — kontrollo vendimet e rëndësishme.'
+            ' Vështrimet me rregulla poshtë bisedës funksionojnë gjithmonë, edhe'
+            ' pa AI.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'Paketat dhe abonimi',
+      summary: 'Krahaso Falas dhe Pro dhe menaxho abonimin.',
+      steps: <String>[
+        'Mjetet bazë të buxhetit janë falas përgjithmonë.',
+        'Paketat me pagesë rrisin kufijtë e AI dhe skanimeve në cloud dhe '
+            'shtojnë funksione.',
+        'Nëse abonohesh, paketa aktuale dhe data e rinovimit shfaqen lart, me '
+            'një buton për ta menaxhuar ose anuluar.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'Cilësimet, të dhënat dhe kopja rezervë',
+      summary: 'Bëje aplikacionin tëndin dhe mbaji të sigurta të dhënat.',
+      steps: <String>[
+        'Gjuha, tema dhe monedha bazë janë te Pamja dhe Rajoni.',
+        'Menaxho kategoritë e tua të të ardhurave dhe shpenzimeve.',
+        'Te Të dhënat dhe kopja rezervë, eksporto një kopje të plotë kur të '
+            'duash; kur je i identifikuar, të dhënat sinkronizohen automatikisht'
+            ' mes pajisjeve (edhe pas punës offline) dhe mund ta çaktivizosh.',
       ],
     ),
   ];
