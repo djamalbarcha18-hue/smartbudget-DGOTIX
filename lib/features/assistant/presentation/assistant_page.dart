@@ -42,8 +42,6 @@ class AssistantPage extends ConsumerWidget {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  const DgotixOwl(size: 40, headOnly: true, interactive: true),
-                  const SizedBox(width: DsSpacing.sm),
                   BrandedTitle(l.brandAi,
                       style: Theme.of(context).textTheme.headlineSmall),
                 ],

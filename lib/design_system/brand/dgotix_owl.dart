@@ -194,7 +194,7 @@ class _DgotixOwlState extends State<DgotixOwl> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final Color brand = context.dsColors.brand;
+    final _OwlColors colors = _OwlColors.of(context.dsColors);
     final Rect view =
         widget.headOnly ? _OwlPainter.headView : _OwlPainter.fullView;
     final Widget owl = SizedBox(
@@ -217,7 +217,7 @@ class _DgotixOwlState extends State<DgotixOwl> with TickerProviderStateMixin {
               painter: _OwlPainter(
                 t: _loop.value,
                 moving: _loop.isAnimating,
-                brand: brand,
+                colors: colors,
                 headOnly: widget.headOnly,
                 look: look,
                 blinkLeft: blink,
@@ -239,12 +239,77 @@ class _DgotixOwlState extends State<DgotixOwl> with TickerProviderStateMixin {
   }
 }
 
+/// The owl's colors for a theme: the body follows the brand color; the
+/// logo and eyes are always white; the rest follows how light that color is.
+/// A light brand (Black Gold's gold) takes dark-brown pupils, a bronze beak,
+/// a pale-gold sparkle and no blush; the others navy pupils, an amber beak
+/// and sparkle, and pink cheeks.
+@immutable
+class _OwlColors {
+  const _OwlColors({
+    required this.body,
+    required this.wing,
+    required this.belly,
+    required this.feather,
+    required this.mark,
+    required this.eye,
+    required this.pupil,
+    required this.beak,
+    required this.star,
+    required this.cheek,
+  });
+
+  factory _OwlColors.of(DsColors c) {
+    const Color white = Color(0xFFFFFFFF);
+    const Color black = Color(0xFF000000);
+    final Color b = c.brand;
+    final bool lightBrand = b.computeLuminance() > 0.35;
+    return _OwlColors(
+      body: b,
+      wing: Color.lerp(b, black, 0.18)!,
+      belly: Color.lerp(b, white, 0.55)!,
+      feather: Color.lerp(b, white, 0.3)!,
+      mark: white,
+      eye: white,
+      pupil: lightBrand ? const Color(0xFF1A1610) : const Color(0xFF0B1B33),
+      beak: lightBrand ? Color.lerp(b, black, 0.55)! : const Color(0xFFF5A623),
+      star: lightBrand ? c.brandStrong : const Color(0xFFF5A623),
+      cheek: lightBrand ? null : const Color(0xFFFF96AF),
+    );
+  }
+
+  final Color body;
+  final Color wing;
+  final Color belly;
+  final Color feather;
+  final Color mark;
+  final Color eye;
+  final Color pupil;
+  final Color beak;
+  final Color star;
+  final Color? cheek;
+
+  @override
+  bool operator ==(Object other) =>
+      other is _OwlColors &&
+      other.body == body &&
+      other.mark == mark &&
+      other.eye == eye &&
+      other.pupil == pupil &&
+      other.beak == beak &&
+      other.star == star &&
+      other.cheek == cheek;
+
+  @override
+  int get hashCode => Object.hash(body, mark, eye, pupil, beak, star, cheek);
+}
+
 /// Paints the owl on a 1600 x 1700 canvas, scaled to fit.
 class _OwlPainter extends CustomPainter {
   _OwlPainter({
     required this.t,
     required this.moving,
-    required this.brand,
+    required this.colors,
     required this.headOnly,
     required this.look,
     required this.blinkLeft,
@@ -255,7 +320,7 @@ class _OwlPainter extends CustomPainter {
 
   final double t;
   final bool moving;
-  final Color brand;
+  final _OwlColors colors;
   final bool headOnly;
   final Offset look;
   final double blinkLeft;
@@ -265,11 +330,6 @@ class _OwlPainter extends CustomPainter {
 
   static const Rect fullView = Rect.fromLTWH(0, 0, 1600, 1700);
   static const Rect headView = Rect.fromLTRB(120, 40, 1480, 1240);
-
-  static const Color _white = Color(0xFFFFFFFF);
-  static const Color _pupil = Color(0xFF0B1B33);
-  static const Color _amber = Color(0xFFF5A623);
-  static const Color _cheek = Color(0xFFFF96AF);
 
   static final Path _d = _letterD();
   static final Path _g = _letterG();
@@ -286,9 +346,7 @@ class _OwlPainter extends CustomPainter {
       ..scale(s)
       ..translate(-view.left, -view.top);
 
-    final Color dark = Color.lerp(brand, const Color(0xFF000000), 0.18)!;
-    final Color belly = Color.lerp(brand, _white, 0.55)!;
-    final Color feather = Color.lerp(brand, _white, 0.3)!;
+    final _OwlColors k = colors;
     Paint fill(Color c) => Paint()..color = c;
 
     // The waiting loop: a gentle bob and sway, a look up to the right (as if
@@ -317,25 +375,26 @@ class _OwlPainter extends CustomPainter {
 
     canvas
       ..translate(0, bob)
-      ..translate(800, 1580)
+      // The full owl sways on its feet; the head alone turns on its center.
+      ..translate(800, headOnly ? 660 : 1580)
       ..rotate(-turn * math.pi / 180)
-      ..translate(-800, -1580);
+      ..translate(-800, headOnly ? -660 : -1580);
 
     if (!headOnly) {
       // Feet, body, belly feathers, wings.
       for (final int sx in const <int>[-1, 1]) {
         final double fx = 800.0 + sx * 140;
-        for (final int k in const <int>[-1, 0, 1]) {
+        for (final int toe in const <int>[-1, 0, 1]) {
           canvas.drawOval(
-              Rect.fromLTRB(fx + k * 42 - 30, 1522, fx + k * 42 + 30, 1584),
-              fill(_amber));
+              Rect.fromLTRB(fx + toe * 42 - 30, 1522, fx + toe * 42 + 30, 1584),
+              fill(k.beak));
         }
       }
       canvas
-        ..drawOval(const Rect.fromLTRB(420, 1020, 1180, 1580), fill(brand))
-        ..drawOval(const Rect.fromLTRB(550, 1140, 1050, 1560), fill(belly));
+        ..drawOval(const Rect.fromLTRB(420, 1020, 1180, 1580), fill(k.body))
+        ..drawOval(const Rect.fromLTRB(550, 1140, 1050, 1560), fill(k.belly));
       final Paint stroke = Paint()
-        ..color = feather
+        ..color = k.feather
         ..style = PaintingStyle.stroke
         ..strokeWidth = 13;
       const List<(double, List<double>)> rows = <(double, List<double>)>[
@@ -350,8 +409,8 @@ class _OwlPainter extends CustomPainter {
         }
       }
       canvas
-        ..drawOval(const Rect.fromLTRB(330, 1080, 530, 1470), fill(dark))
-        ..drawOval(const Rect.fromLTRB(1070, 1080, 1270, 1470), fill(dark));
+        ..drawOval(const Rect.fromLTRB(330, 1080, 530, 1470), fill(k.wing))
+        ..drawOval(const Rect.fromLTRB(1070, 1080, 1270, 1470), fill(k.wing));
     }
 
     // Ear tufts, head, cheeks.
@@ -362,24 +421,28 @@ class _OwlPainter extends CustomPainter {
             ..lineTo(210, 80)
             ..lineTo(540, 190)
             ..close(),
-          fill(brand))
+          fill(k.body))
       ..drawPath(
           Path()
             ..moveTo(1280, 320)
             ..lineTo(1390, 80)
             ..lineTo(1060, 190)
             ..close(),
-          fill(brand))
-      ..drawOval(const Rect.fromLTRB(160, 100, 1440, 1220), fill(brand))
-      ..drawOval(const Rect.fromLTRB(285, 938, 455, 1022), fill(_cheek))
-      ..drawOval(const Rect.fromLTRB(1145, 938, 1315, 1022), fill(_cheek));
+          fill(k.body))
+      ..drawOval(const Rect.fromLTRB(160, 100, 1440, 1220), fill(k.body));
+    final Color? cheek = k.cheek;
+    if (cheek != null) {
+      canvas
+        ..drawOval(const Rect.fromLTRB(285, 938, 455, 1022), fill(cheek))
+        ..drawOval(const Rect.fromLTRB(1145, 938, 1315, 1022), fill(cheek));
+    }
 
     // Eye whites: round on the left, the G's bowl on the right.
     if (blinkL < 0.99) {
-      canvas.drawCircle(const Offset(585, 775), 150, fill(_white));
+      canvas.drawCircle(const Offset(585, 775), 150, fill(k.eye));
     }
     if (blinkR < 0.99) {
-      canvas.drawOval(const Rect.fromLTRB(815, 640, 1060, 940), fill(_white));
+      canvas.drawOval(const Rect.fromLTRB(815, 640, 1060, 940), fill(k.eye));
     }
 
     // The logo's D and G (SVG units) over the eyes.
@@ -387,8 +450,8 @@ class _OwlPainter extends CustomPainter {
       ..save()
       ..translate(-939, -784)
       ..scale(4)
-      ..drawPath(_d, fill(_white))
-      ..drawPath(_g, fill(_white))
+      ..drawPath(_d, fill(k.mark))
+      ..drawPath(_g, fill(k.mark))
       ..restore();
 
     // Pupils (or happy closed eyes).
@@ -404,24 +467,24 @@ class _OwlPainter extends CustomPainter {
             _rad(140),
             false,
             Paint()
-              ..color = _pupil
+              ..color = k.pupil
               ..style = PaintingStyle.stroke
               ..strokeWidth = 26);
         continue;
       }
       final double h = r * (1 - blink);
       canvas.drawOval(
-          Rect.fromLTRB(p.dx - r, p.dy - h, p.dx + r, p.dy + h), fill(_pupil));
+          Rect.fromLTRB(p.dx - r, p.dy - h, p.dx + r, p.dy + h), fill(k.pupil));
       if (blink < 0.5) {
         canvas
           ..drawOval(
               Rect.fromLTRB(p.dx + r * 0.1, p.dy - r * 0.7, p.dx + r * 0.62,
                   p.dy - r * 0.18),
-              fill(_white))
+              fill(k.eye))
           ..drawOval(
               Rect.fromLTRB(p.dx - r * 0.55, p.dy + r * 0.25, p.dx - r * 0.3,
                   p.dy + r * 0.5),
-              fill(_white));
+              fill(k.eye));
       }
     }
 
@@ -432,12 +495,12 @@ class _OwlPainter extends CustomPainter {
           ..lineTo(840, 970)
           ..lineTo(792, 1050)
           ..close(),
-        fill(_amber));
+        fill(k.beak));
 
     // The AI sparkle.
     if (!headOnly) {
-      _star(canvas, const Offset(1400, 130), 110 * spark, fill(_amber));
-      _star(canvas, const Offset(1530, 300), 48 * (1.6 - spark), fill(_amber));
+      _star(canvas, const Offset(1400, 130), 110 * spark, fill(k.star));
+      _star(canvas, const Offset(1530, 300), 48 * (1.6 - spark), fill(k.star));
     }
     canvas.restore();
   }
@@ -459,7 +522,7 @@ class _OwlPainter extends CustomPainter {
   bool shouldRepaint(_OwlPainter old) =>
       old.t != t ||
       old.moving != moving ||
-      old.brand != brand ||
+      old.colors != colors ||
       old.headOnly != headOnly ||
       old.look != look ||
       old.blinkLeft != blinkLeft ||
