@@ -30,8 +30,7 @@ class PortfolioPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
-    final List<Project> projects =
-        ref.watch(projectsProvider).valueOrNull ?? const <Project>[];
+    final List<Project> projects = ref.watch(planProjectsProvider);
     final PortfolioPlan plan = ref.watch(portfolioPlanProvider);
 
     // The projects portfolio is part of Pro; projects already saved stay.

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/goals/domain/goal.dart';
 
 /// Time-horizon "compartment" a project is filed under.
 enum ProjectHorizon { near, mid, long }
@@ -14,9 +15,22 @@ extension ProjectHorizonX on ProjectHorizon {
         ProjectHorizon.mid => 24, // 1–3 years
         ProjectHorizon.long => 48, // > 3 years
       };
+
+  /// The horizon a deadline falls in from [now]: within a year near, within
+  /// three mid, later long; no deadline mid.
+  static ProjectHorizon forDeadline(DateTime? deadline, DateTime now) {
+    if (deadline == null) return ProjectHorizon.mid;
+    final int months =
+        (deadline.year - now.year) * 12 + deadline.month - now.month;
+    if (months <= 12) return ProjectHorizon.near;
+    if (months <= 36) return ProjectHorizon.mid;
+    return ProjectHorizon.long;
+  }
 }
 
-/// A funded project inside the investment/projects portfolio.
+/// A goal as the funding plan sees it (the plan reads Financial goals:
+/// [Project.fromGoal] / [Project.toGoal]); also the shape of projects saved
+/// before goals and the plan were one list.
 ///
 /// Like [Goal], `saved` is DERIVED — it grows only through explicit
 /// contributions, never a free-typed seed. User inputs: name, target, horizon,
@@ -63,6 +77,30 @@ class Project {
       createdAt: createdAt,
     );
   }
+
+  /// [g] in the plan: its own horizon, else the one its deadline falls in.
+  factory Project.fromGoal(Goal g, DateTime now) => Project(
+        id: g.id,
+        name: g.name,
+        target: g.target,
+        saved: g.saved,
+        horizon: g.horizon ?? ProjectHorizonX.forDeadline(g.deadline, now),
+        targetDate: g.deadline,
+        note: g.note,
+        createdAt: g.createdAt,
+      );
+
+  /// Back to the goal it stands for (the horizon kept when the user set it).
+  Goal toGoal() => Goal(
+        id: id,
+        name: name,
+        target: target,
+        saved: saved,
+        deadline: targetDate,
+        createdAt: createdAt,
+        horizon: horizon,
+        note: note,
+      );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,

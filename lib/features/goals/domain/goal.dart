@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/portfolio/domain/project.dart';
 
 /// A savings goal (domain entity).
 ///
@@ -17,6 +18,8 @@ class Goal {
     required this.saved,
     this.deadline,
     required this.createdAt,
+    this.horizon,
+    this.note,
   });
 
   final String id;
@@ -25,6 +28,13 @@ class Goal {
   final Money saved;
   final DateTime? deadline;
   final DateTime createdAt;
+
+  /// Its place in the funding plan when the user chose one; else it follows
+  /// the deadline ([ProjectHorizonX.forDeadline]).
+  final ProjectHorizon? horizon;
+
+  /// A note written in the funding plan.
+  final String? note;
 
   Goal copyWith({
     String? name,
@@ -39,6 +49,8 @@ class Goal {
       saved: saved ?? this.saved,
       deadline: deadline ?? this.deadline,
       createdAt: createdAt,
+      horizon: horizon,
+      note: note,
     );
   }
 
@@ -50,6 +62,8 @@ class Goal {
         'currency': target.currencyCode,
         'deadline': deadline?.toIso8601String(),
         'createdAt': createdAt.toIso8601String(),
+        if (horizon != null) 'horizon': horizon!.name,
+        if (note != null) 'note': note,
       };
 
   factory Goal.fromJson(Map<String, dynamic> json) {
@@ -64,6 +78,10 @@ class Goal {
           : DateTime.tryParse(json['deadline'] as String),
       createdAt:
           DateTime.tryParse((json['createdAt'] as String?) ?? '') ?? AppClock.now(),
+      horizon: ProjectHorizon.values
+          .where((ProjectHorizon h) => h.name == json['horizon'])
+          .firstOrNull,
+      note: json['note'] as String?,
     );
   }
 }

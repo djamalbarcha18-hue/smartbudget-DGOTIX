@@ -20,6 +20,7 @@ import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/goals/domain/goal_calculator.dart';
 import 'package:smartbudget/features/goals/presentation/goal_editor_sheet.dart';
 import 'package:smartbudget/features/goals/presentation/goals_tabs.dart';
+import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -30,6 +31,8 @@ class GoalsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final AsyncValue<List<Goal>> async = ref.watch(goalsProvider);
+    // Projects saved on their own before become goals here too.
+    ref.watch(legacyProjectsMoveProvider);
     final AlertFocus? focus = ref.watch(alertFocusProvider);
     final String? focusGoalId =
         (focus != null && focus.route == '/goals') ? focus.key : null;
