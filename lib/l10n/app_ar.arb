@@ -1606,5 +1606,6 @@
   "offerProPick": "اقتراح من شركائنا لمشتركي Pro",
   "proSuggestionsTitle": "اقتراحات الحجز من الشركاء",
   "proSuggestionsHint": "فنادق وشركات طيران وشرائح eSIM مختارة لرحلاتك — بعضها من بلدك — مع مزايا لمشتركي Pro. بلا إعلانات.",
-  "proSuggestionsShow": "أظهرها في رحلاتي"
+  "proSuggestionsShow": "أظهرها في رحلاتي",
+  "offerProPerk": "مع Pro: {perk}"
 }

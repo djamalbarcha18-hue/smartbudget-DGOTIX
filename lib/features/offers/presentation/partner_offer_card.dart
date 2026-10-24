@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
@@ -121,6 +122,29 @@ class PartnerOfferCard extends StatelessWidget {
                     style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700)),
                 Text(PartnerOffer.text(offer.body, lang),
                     style: t.bodySmall?.copyWith(color: c.textMuted)),
+                // On the free plan, the partner's Pro perk as a small locked
+                // line: one tap to the plans (what pays for the app).
+                if (!pro && offer.perk.isNotEmpty)
+                  InkWell(
+                    onTap: () => context.go('/plans'),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.lock_outline_rounded,
+                              size: 13, color: c.textFaint),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                                l.offerProPerk(
+                                    PartnerOffer.text(offer.perk, lang)),
+                                style: t.labelSmall
+                                    ?.copyWith(color: c.textMuted)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 if (pro && offer.perk.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 2),

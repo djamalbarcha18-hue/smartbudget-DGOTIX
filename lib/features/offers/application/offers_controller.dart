@@ -143,6 +143,10 @@ const List<PartnerOffer> demoOffers = <PartnerOffer>[
       'ar': 'باقة بيانات eSIM تفعّلها قبل السفر.',
       'en': 'A data eSIM you activate before you fly.',
     },
+    perk: <String, String>{
+      'ar': '1 جيغابايت إضافي',
+      'en': '1 GB extra',
+    },
     url: 'https://example.com/esim',
   ),
   PartnerOffer(

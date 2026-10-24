@@ -1406,5 +1406,6 @@
   "offerProPick": "Sugerencia Pro de nuestros socios",
   "proSuggestionsTitle": "Sugerencias de reserva de socios",
   "proSuggestionsHint": "Hoteles, aerolíneas y eSIM elegidos para tus viajes —algunos de tu país— con ventajas Pro. Sin anuncios.",
-  "proSuggestionsShow": "Mostrarlas en mis viajes"
+  "proSuggestionsShow": "Mostrarlas en mis viajes",
+  "offerProPerk": "Con Pro: {perk}"
 }

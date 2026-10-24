@@ -268,6 +268,8 @@ void main() {
       expect(
           find.text('Partner offer · for your trip to Rome'), findsOneWidget);
       expect(find.text('See the offer'), findsOneWidget);
+      // The partner's Pro perk, locked, on the free plan.
+      expect(find.text('With Pro: 1 GB extra'), findsOneWidget);
       await tester.tap(find.byTooltip('Hide'));
       expect(hidden, isTrue);
     });

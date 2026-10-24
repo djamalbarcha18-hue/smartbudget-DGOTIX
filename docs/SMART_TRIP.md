@@ -118,7 +118,8 @@ first, and a partner from the user's own country (`homeCountries`, from
 the country of their main currency; none for the euro) before others.
 Marked "Pro suggestion from our partners", with a switch to turn them off
 in Settings (`sb_pro_suggestions`). Offers with `"audience": "free"` show
-on the free plan only.
+on the free plan only. On the free plan an offer's `perk` shows as a
+small locked line ("With Pro: …") that opens the plans.
 
 Offers live in `assets/data/partner_offers.json` (empty until partners
 sign; later the server):

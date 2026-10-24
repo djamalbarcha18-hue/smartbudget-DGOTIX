@@ -1406,5 +1406,6 @@
   "offerProPick": "Cadangan Pro daripada rakan kongsi kami",
   "proSuggestionsTitle": "Cadangan tempahan daripada rakan kongsi",
   "proSuggestionsHint": "Hotel, syarikat penerbangan dan eSIM pilihan untuk perjalanan anda — sebahagiannya dari negara anda — dengan kelebihan Pro. Tiada iklan.",
-  "proSuggestionsShow": "Tunjukkan dalam perjalanan saya"
+  "proSuggestionsShow": "Tunjukkan dalam perjalanan saya",
+  "offerProPerk": "Dengan Pro: {perk}"
 }

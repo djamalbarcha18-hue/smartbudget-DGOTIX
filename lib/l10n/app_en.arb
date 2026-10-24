@@ -1655,5 +1655,7 @@
   "offerProPick": "Pro suggestion from our partners",
   "proSuggestionsTitle": "Booking suggestions from partners",
   "proSuggestionsHint": "Hotels, airlines and eSIMs picked for your trips — some from your own country — with Pro perks. No ads.",
-  "proSuggestionsShow": "Show them on my trips"
+  "proSuggestionsShow": "Show them on my trips",
+  "offerProPerk": "With Pro: {perk}",
+  "@offerProPerk": {"placeholders": {"perk": {"type": "String"}}}
 }

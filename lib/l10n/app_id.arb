@@ -1406,5 +1406,6 @@
   "offerProPick": "Saran Pro dari mitra kami",
   "proSuggestionsTitle": "Saran pemesanan dari mitra",
   "proSuggestionsHint": "Hotel, maskapai, dan eSIM pilihan untuk perjalanan Anda — sebagian dari negara Anda — dengan keuntungan Pro. Tanpa iklan.",
-  "proSuggestionsShow": "Tampilkan di perjalanan saya"
+  "proSuggestionsShow": "Tampilkan di perjalanan saya",
+  "offerProPerk": "Dengan Pro: {perk}"
 }
