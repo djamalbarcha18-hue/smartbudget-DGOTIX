@@ -847,6 +847,75 @@ abstract final class Catalog {
     'أخرى': 'Overig',
   };
 
+  /// Bosnian display labels, keyed like [_en].
+  static const Map<String, String> _bs = <String, String>{
+    // Income
+    'راتب أساسي': 'Plata',
+    'مكافآت وحوافز': 'Bonusi i stimulacije',
+    'مكافأة نهاية الخدمة': 'Otpremnina',
+    'معاش تقاعدي': 'Penzija',
+    'عمل حر': 'Samostalni rad',
+    'عمولات': 'Provizije',
+    'أرباح تجارية': 'Dobit od posla',
+    'دخل استثماري': 'Prihod od ulaganja',
+    'أرباح أسهم وتوزيعات': 'Dividende',
+    'أرباح العملات الرقمية': 'Zarada od kripta',
+    'إيجارات': 'Prihod od kirije',
+    'تأجير قصير الأمد': 'Kratkoročni najam',
+    'تجارة إلكترونية': 'Online prodaja',
+    'بيع أصول أو ممتلكات': 'Prodaja imovine',
+    'محتوى رقمي وإبداعي': 'Digitalni i kreativni sadržaj',
+    'استرجاع نقدي ومكافآت': 'Povrat novca i nagrade',
+    'منحة أو إعانة': 'Stipendija ili pomoć',
+    'ميراث': 'Nasljedstvo',
+    'استرداد أو تعويض': 'Povrat ili naknada',
+    'هدايا': 'Pokloni',
+    'زكاة أو صدقة مستلمة': 'Primljeni zekat ili sadaka',
+    // Expenses
+    'الطعام': 'Namirnice',
+    'المطاعم': 'Restorani',
+    'النقل': 'Prevoz',
+    'السكن': 'Stanovanje',
+    'الفواتير': 'Režije',
+    'الاتصالات والإنترنت': 'Telefon i internet',
+    'الصحة': 'Zdravlje',
+    'التعليم': 'Obrazovanje',
+    'الأطفال والعائلة': 'Djeca i porodica',
+    'التسوق': 'Kupovina',
+    'الملابس': 'Odjeća',
+    'الترفيه': 'Slobodno vrijeme',
+    'الرياضة واللياقة': 'Sport i fitnes',
+    'الاشتراكات': 'Pretplate',
+    'السفر': 'Putovanja',
+    'الأقساط والقروض': 'Krediti i rate',
+    'التأمين': 'Osiguranje',
+    'الضرائب والرسوم': 'Porezi i takse',
+    'الصيانة والإصلاح': 'Održavanje i popravke',
+    'الأثاث والمنزل': 'Kuća i namještaj',
+    'الوقود': 'Gorivo',
+    'الخدمات المهنية والقانونية': 'Stručne i pravne usluge',
+    'البرمجيات والأدوات الرقمية': 'Softver i digitalni alati',
+    'الحج والعمرة': 'Hadž i umra',
+    'صدقة وتبرّعات': 'Sadaka i donacije',
+    'زكاة': 'Zekat',
+    'الادخار والاستثمار': 'Štednja i ulaganja',
+    'الطوارئ': 'Hitni slučajevi',
+    // Payment methods
+    'نقداً': 'Gotovina',
+    'بطاقة بنكية': 'Debitna kartica',
+    'بطاقة ائتمان': 'Kreditna kartica',
+    'محفظة إلكترونية': 'Digitalni novčanik',
+    'تحويل الكتروني': 'Bankovni transfer',
+    'تحويل بنكي فوري': 'Instant transfer',
+    'الدفع عند الاستلام': 'Plaćanje pouzećem',
+    'محفظة عملات رقمية': 'Kripto novčanik',
+    'أموال عبر الهاتف': 'Plaćanje telefonom',
+    'شيك': 'Ček',
+    'بطاقة هدايا أو قسيمة': 'Poklon kartica / vaučer',
+    // Shared
+    'أخرى': 'Ostalo',
+  };
+
   /// Localized display label for a stored category/payment value.
   static String label(String value, {required AppLang lang}) =>
       lang.pick(value, _en[value] ?? value,
@@ -859,5 +928,6 @@ abstract final class Catalog {
           de: _de[value] ?? _en[value] ?? value,
           pt: _pt[value] ?? _en[value] ?? value,
           it: _it[value] ?? _en[value] ?? value,
-          nl: _nl[value] ?? _en[value] ?? value);
+          nl: _nl[value] ?? _en[value] ?? value,
+          bs: _bs[value] ?? _en[value] ?? value);
 }

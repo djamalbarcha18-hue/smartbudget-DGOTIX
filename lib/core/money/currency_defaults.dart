@@ -26,6 +26,7 @@ abstract final class CurrencyDefaults {
     AppLang.pt: 'BRL',
     AppLang.it: 'EUR',
     AppLang.nl: 'EUR',
+    AppLang.bs: 'BAM',
   };
 
   /// The currency of [country] (ISO 3166-1 alpha-2), or null when the app

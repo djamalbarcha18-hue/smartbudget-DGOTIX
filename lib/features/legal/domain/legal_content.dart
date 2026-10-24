@@ -76,16 +76,22 @@ abstract final class LegalContent {
       ? 'via ${AppConfig.supportEmail}'
       : 'via de pagina Hulp en support in de app';
 
+  static String get _reachBs => AppConfig.hasSupportEmail
+      ? 'na ${AppConfig.supportEmail}'
+      : 'preko stranice Pomoć i podrška u aplikaciji';
+
   static List<LegalSection> sections(LegalDoc doc, {required AppLang lang}) =>
       switch (doc) {
         LegalDoc.privacy => lang.pick(_privacyAr, _privacyEn,
             fr: _privacyFr, id: _privacyId, es: _privacyEs,
             tr: _privacyTr, ms: _privacyMs, ur: _privacyUr, de: _privacyDe,
-            pt: _privacyPt, it: _privacyIt, nl: _privacyNl),
+            pt: _privacyPt, it: _privacyIt, nl: _privacyNl,
+            bs: _privacyBs),
         LegalDoc.terms => lang.pick(_termsAr, _termsEn,
             fr: _termsFr, id: _termsId, es: _termsEs,
             tr: _termsTr, ms: _termsMs, ur: _termsUr, de: _termsDe,
-            pt: _termsPt, it: _termsIt, nl: _termsNl),
+            pt: _termsPt, it: _termsIt, nl: _termsNl,
+            bs: _termsBs),
       };
 
   // ---- Privacy (English) ----
@@ -3566,6 +3572,281 @@ abstract final class LegalContent {
               'versie tonen; als je de app na een update blijft gebruiken, ga je '
               'akkoord met de herziene voorwaarden. Neem voor vragen contact op '
               '$_reachNl.',
+        ),
+      ];
+
+  // ---- Privacy (Bosnian) ----
+  static List<LegalSection> get _privacyBs => <LegalSection>[
+        LegalSection(
+          'Pregled',
+          'Ova politika objašnjava šta $_app čuva, gdje se čuva i kakve izbore '
+              'imaš. Ukratko: tvoji finansijski podaci su tvoji, prvo se čuvaju '
+              'na tvom uređaju, a mi ih nikad ne prodajemo, ne prikazujemo ti '
+              'reklame i ne pratimo te. Nekoliko opcionalnih funkcija (prijava i'
+              ' sinhronizacija, DGOTIX AI, skeniranje računa u oblaku i plaćeni '
+              'paketi) šalju određene podatke nekoj usluzi samo kad ih koristiš, '
+              'kako je opisano ispod.',
+        ),
+        const LegalSection(
+          'Šta čuvamo',
+          'Podatke koje sam uneseš: prihode, troškove, budžete, ciljeve, '
+              'dugove, novčanike, vlastite kategorije i postavke prikaza (tema, '
+              'jezik, osnovna valuta). Ako napraviš račun, čuvamo i tvoju e-mail'
+              ' adresu, paket i status pretplate te brojače korištenja po '
+              'periodima za DGOTIX AI i skeniranje računa u oblaku — samo da '
+              'primijenimo ograničenja tvog paketa. Ne čuvamo tvoja pitanja za '
+              'DGOTIX AI niti slike računa; ako prijaviš AI odgovor, čuvamo taj '
+              'odgovor i tvoju opcionalnu bilješku da ga pregledamo.',
+        ),
+        const LegalSection(
+          'Gdje su tvoji podaci',
+          'Sve se prvo čuva na tvom uređaju (u aplikaciji ili, za web verziju,'
+              ' u pregledniku), pa aplikacija radi i bez računa ili veze. Ako se '
+              'prijaviš, tvoji podaci se i automatski sinhronizuju između tvojih '
+              'uređaja: kopija se čuva u našoj bazi podataka (koju hostuje '
+              'Supabase), vezana za tvoj račun i odvojena tako da je samo ti '
+              'možeš čitati. Sinhronizaciju možeš isključiti u Postavkama; tada '
+              'podaci ostaju samo na ovom uređaju.',
+        ),
+        const LegalSection(
+          'Tvoj račun i e-mailovi',
+          'Tvoja e-mail adresa služi za prijavu i slanje e-mailova o računu, '
+              'kao što su potvrda adrese i resetovanje lozinke (šalju se preko '
+              'Breva). Nikad se ne koristi za reklame niti dijeli u marketinške '
+              'svrhe. Pri registraciji i prijavi kratka provjera da si osoba '
+              '(Cloudflare Turnstile) sprečava automatizovane zloupotrebe.',
+        ),
+        const LegalSection(
+          'DGOTIX AI',
+          'DGOTIX AI je opcionalan. Kad postaviš pitanje, tekst pitanja i '
+              'sažetak tvojih brojki (zbirovi po mjesecu i kategoriji za najviše '
+              '12 mjeseci, budžeti, stanja novčanika, ciljevi, ponavljajuće '
+              'transakcije, sezonski budžeti i krugovi štednje — samo iznosi i '
+              'datumi, nikad opisi, bilješke ili nazivi koje daješ stvarima) '
+              'šalju se preko našeg sigurnog servera AI pružaocu (Google Gemini, '
+              'OpenAI ili Anthropic) da napravi odgovor. Naš server koristi naše '
+              'ključeve i bilježi samo metapodatke o korištenju, nikad tvoje '
+              'pitanje ili brojke. Tvoje podatke ne koristimo za treniranje '
+              'modela. Odgovori se prave automatski, pa provjeri važne brojke '
+              'prije nego što djeluješ.',
+        ),
+        const LegalSection(
+          'Skeniranje računa',
+          'Na Androidu se računi mogu pročitati u potpunosti na tvom uređaju. '
+              'Skeniranje u oblaku šalje sliku računa preko našeg sigurnog '
+              'servera AI pružaocu samo da pročita trgovca, datum, iznos, stavke '
+              'i kategoriju; slika se ne čuva.',
+        ),
+        const LegalSection(
+          'Plaćanja i pretplate',
+          'Plaćeni paketi su opcionalni. Plaćaš na sigurnoj naplati Whopa '
+              '(whop.com), našeg pružaoca plaćanja, ili PayPalom ako to izabereš.'
+              ' Oni prikupljaju potrebne podatke za naplatu (npr. ime, e-mail, '
+              'zemlju i način plaćanja) prema svojim politikama privatnosti; mi '
+              'nikad ne vidimo niti čuvamo pune podatke tvoje kartice. Čuvamo '
+              'tvoj paket, status pretplate, datum obnove i identifikatore '
+              'pretplate pružaoca plaćanja da ti damo pravi pristup, kao i '
+              'zapis o iskorištenim promotivnim kodovima.',
+        ),
+        const LegalSection(
+          'Pružaoci usluga',
+          'Zavisno od funkcija koje koristiš: Supabase (računi, sinhronizacija'
+              ' i naše serverske funkcije); Whop i PayPal (plaćanja); Brevo '
+              '(e-mailovi o računu); Cloudflare Turnstile (provjera pri prijavi);'
+              ' GitHub Pages (hosting naše web stranice i web aplikacije); '
+              'Google, OpenAI i Anthropic (DGOTIX AI i skeniranje računa u '
+              'oblaku); te javni izvori tržišnih podataka za aktuelne brojke — '
+              'kursevi (open.er-api.com) i cijene kripta (CoinGecko) — čiji '
+              'zahtjevi sadrže samo oznake valuta ili imovine, nikad tvoje lične '
+              'ili finansijske podatke. Svaki pružalac obrađuje podatke samo da '
+              'pruži svoj dio usluge.',
+        ),
+        const LegalSection(
+          'Sigurnost',
+          'Veze s našim uslugama su šifrovane (HTTPS). U našoj bazi podataka '
+              'zapisi svakog korisnika su odvojeni tako da jedan račun nikad ne '
+              'može čitati tuđe. Serverski ključevi nikad ne dolaze do '
+              'aplikacije, obavještenja o plaćanju se provjeravaju prije nego što'
+              ' išta promijene, a na uređaju možeš uključiti zaključavanje '
+              'aplikacije (PIN ili otisak prsta).',
+        ),
+        const LegalSection(
+          'Šta ne radimo',
+          'Ne prodajemo niti iznajmljujemo tvoje podatke, ne prikazujemo '
+              'reklame i ne pratimo ponašanje niti analiziramo tvoju finansijsku '
+              'aktivnost.',
+        ),
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
+          const LegalSection(
+            'Anonimno brojanje',
+            'Kad napraviš putovanje, aplikacija šalje samo riječi „isplanirano '
+                'je putovanje“, a naš server dodaje jedan zbiru za taj dan. Ništa '
+                'drugo se ne šalje niti čuva uz to — ni račun, ni uređaj, ni '
+                'destinacija, ni iznos — pa se zbirovi ne mogu povezati s tobom. '
+                'Koristimo ih samo da znamo koliko se aplikacija koristi i da '
+                'partnerima pokažemo ukupne brojke. Ovo možeš isključiti u '
+                'Postavkama, pod Privatnost.',
+          ),
+        const LegalSection(
+          'Koliko dugo čuvamo podatke',
+          'Podaci na tvom uređaju ostaju dok ih ne obrišeš ili ne ukloniš '
+              'aplikaciju. Tvoj račun, sinhronizovani podaci, brojači korištenja '
+              'i metapodaci zahtjeva čuvaju se dok račun postoji — samo da '
+              'usluga radi i da se primijene ograničenja paketa — i trajno se '
+              'brišu kad ga obrišeš. Whop i PayPal čuvaju zapise o naplati koje '
+              'su zakonom dužni čuvati.',
+        ),
+        LegalSection(
+          'Tvoja prava i kontrole',
+          'Svoje podatke možeš u aplikaciji vidjeti i ispraviti u bilo kojem '
+              'trenutku, izvesti puni backup, isključiti sinhronizaciju, odjaviti'
+              ' se i obrisati račun sa svim podacima (vidi ispod). Plaćenu '
+              'pretplatu možeš otkazati bilo kada (vidi Uslove). Za svaki drugi '
+              'zahtjev o tvojim ličnim podacima — uključujući pristup, ispravku, '
+              'brisanje ili prigovor — kontaktiraj nas $_reachBs i brzo ćemo '
+              'odgovoriti.',
+        ),
+        const LegalSection(
+          'Brisanje računa i podataka',
+          'U aplikaciji ili web verziji, na bilo kojem uređaju, otvori '
+              'Postavke, pa Račun, pa „Obriši moj račun“. Time se trajno briše '
+              'tvoj račun i sve što je za njega sačuvano na našim serverima '
+              '(profil, sinhronizovani podaci, zapis o pretplati i brojači '
+              'korištenja), a brišu se i tvoji podaci na tom uređaju. Prvo '
+              'otkaži plaćenu pretplatu. Brisanje se ne može poništiti, pa prije'
+              ' izvezi backup ako bi ti podaci mogli trebati kasnije.',
+        ),
+        LegalSection(
+          'Starost',
+          '$_app je namijenjen osobama od 16 i više godina. Svjesno ne '
+              'prikupljamo podatke mlađe djece; ako misliš da je dijete '
+              'napravilo račun, kontaktiraj nas $_reachBs i obrisat ćemo ga.',
+        ),
+        LegalSection(
+          'Izmjene i kontakt',
+          'Ovu politiku možemo ažurirati; datum iznad pokazuje najnoviju '
+              'verziju. Za pitanja o privatnosti kontaktiraj nas $_reachBs.',
+        ),
+      ];
+
+  // ---- Terms (Bosnian) ----
+  static List<LegalSection> get _termsBs => <LegalSection>[
+        LegalSection(
+          'Prihvatanje',
+          'Korištenjem aplikacije $_app prihvataš ove uslove. Ako se ne slažeš,'
+              ' nemoj koristiti aplikaciju.',
+        ),
+        LegalSection(
+          'Ko je može koristiti',
+          'Moraš imati najmanje 16 godina da koristiš $_app. Ako napraviš '
+              'račun, čuvaj podatke za prijavu; odgovoran si za aktivnosti na '
+              'svom računu.',
+        ),
+        const LegalSection(
+          'Šta je usluga',
+          'Lični alat za budžet i planiranje za praćenje prihoda, troškova, '
+              'budžeta, ciljeva i povezanih uvida, uz opcionalnu pomoć AI-a, '
+              'skeniranje računa, sinhronizaciju između uređaja i plaćene pakete.',
+        ),
+        const LegalSection(
+          'Alati za planiranje, ne stručni savjet',
+          'Budžeti, projekcije, izračun zekata i odgovori DGOTIX AI su alati za'
+              ' planiranje koji ti pomažu da odlučiš. Nisu stručni finansijski, '
+              'poreski niti vjerski savjet. Za vjerske obaveze poput zekata '
+              'provjeri s kvalifikovanim alimom; za velike finansijske odluke '
+              'obrati se kvalifikovanom savjetniku.',
+        ),
+        const LegalSection(
+          'AI funkcije',
+          'DGOTIX AI i skeniranje računa u oblaku daju automatske rezultate da '
+              'ti uštede vrijeme; provjeri važne brojke prije nego što djeluješ. '
+              'Ove funkcije su uključene u granicama razumnog korištenja koje '
+              'zavise od tvog paketa i mogu se prilagoditi da usluga ostane brza '
+              'i pouzdana za sve.',
+        ),
+        const LegalSection(
+          'Pretplate, naplata i obnove',
+          'Osnovna aplikacija je besplatna. Plaćeni paketi (Pro) otključavaju '
+              'veća ograničenja i dodatne funkcije po cijenama prikazanim u '
+              'aplikaciji. Plaćeni paket se automatski obnavlja svakog perioda '
+              'naplate (mjesečno ili godišnje) dok ga ne otkažeš. Plaćanja '
+              'obrađuje Whop, naš pružalac plaćanja (ili PayPal ako ga '
+              'izabereš); mogući porezi se mogu dodati i uvijek se prikazuju pri '
+              'naplati prije plaćanja. Možeš otkazati bilo kada i zadržati '
+              'pristup do kraja već plaćenog perioda. Ako se cijene ili funkcije '
+              'paketa promijene, aktuelni uslovi se uvijek prikazuju prije '
+              'pretplate.',
+        ),
+        const LegalSection(
+          'Naš pružalac plaćanja: Whop',
+          'SmartBudget prodaje DGOTIX. Naplatu i fakturisanje obavlja Whop '
+              '(whop.com), koji obrađuje plaćanje na svojoj sigurnoj naplati, '
+              'prije plaćanja prikazuje punu cijenu s porezima i šalje ti '
+              'potvrdu. Pretplatom možeš upravljati ili je otkazati u aplikaciji '
+              '(Paketi → Upravljaj).',
+        ),
+        LegalSection(
+          'Politika povrata novca',
+          'Osim kad zakon nalaže drugačije, uplate se u pravilu ne vraćaju '
+              'nakon što period naplate počne, jer zadržavaš pristup do njegovog '
+              'kraja. Možeš otkazati bilo kada da zaustaviš buduće obnove. Za '
+              'zahtjev za povrat ili pitanje o naplati kontaktiraj nas $_reachBs:'
+              ' svaki zahtjev razmatramo prema važećem zakonu o zaštiti '
+              'potrošača, a odobrene povrate vršimo preko Whopa (ili PayPala).',
+        ),
+        const LegalSection(
+          'Promotivni kodovi',
+          'Kuponi i kodovi za popust su opcionalni i mijenjaju samo cijenu '
+              'pri naplati (ili daju probni period). Svaki kod ima vlastite '
+              'uslove (rok važenja, ograničenja korištenja, jedan po kupcu) i '
+              'može biti povučen ili isteći. Nemaju novčanu vrijednost i ne mogu '
+              'se kombinovati, osim ako je navedeno.',
+        ),
+        const LegalSection(
+          'Tvoji podaci i backup',
+          'Odgovoran si za tačnost podataka koje uneseš. Da tvoji podaci budu '
+              'sigurni na svim uređajima, prijavi se da ih sinhronizuješ ili '
+              'redovno izvozi backup iz Postavki.',
+        ),
+        LegalSection(
+          'Dostupnost',
+          'Radimo na tome da $_app bude dostupan i pouzdan. U mjeri koju '
+              'zakon dozvoljava, aplikacija se pruža „kakva jeste“, bez ikakvih '
+              'garancija. Tržišni podaci uživo, AI i plaćanja zavise od usluga '
+              'trećih strana i ponekad mogu kasniti ili biti nedostupni; takav '
+              'prekid te nikad ne sprečava da koristiš osnovne alate za budžet, '
+              'koji rade i bez interneta. Funkcije se vremenom mogu mijenjati.',
+        ),
+        const LegalSection(
+          'Ograničenje odgovornosti',
+          'U mjeri koju zakon dozvoljava, ne odgovaramo za indirektne ili '
+              'posljedične gubitke, niti za odluke koje doneseš na osnovu brojki '
+              'u aplikaciji. Ništa u ovim uslovima ne ograničava prava koja imaš '
+              'kao potrošač i kojih se ne možeš odreći.',
+        ),
+        const LegalSection(
+          'Dozvoljeno korištenje',
+          'Ne zloupotrebljavaj uslugu, ne pokušavaj probiti ili zaobići njenu '
+              'sigurnost ili ograničenja paketa i ne koristi je u nezakonite '
+              'svrhe.',
+        ),
+        LegalSection(
+          'Prestanak korištenja',
+          'Možeš prestati koristiti $_app i obrisati račun bilo kada. Možemo '
+              'suspendovati račun koji krši ove uslove ili ugrožava uslugu ili '
+              'druge korisnike.',
+        ),
+        LegalSection(
+          'Brend i vlasništvo',
+          'Naziv $_app, brend $_brand te dizajn i kod aplikacije ostaju '
+              'vlasništvo njihovog vlasnika. Tvoji podaci ostaju tvoji.',
+        ),
+        LegalSection(
+          'Izmjene i kontakt',
+          'Ove uslove možemo ažurirati i prikazati datum najnovije verzije; '
+              'nastavak korištenja nakon ažuriranja znači da prihvataš izmijenjene'
+              ' uslove. Za pitanja kontaktiraj nas $_reachBs.',
         ),
       ];
 }

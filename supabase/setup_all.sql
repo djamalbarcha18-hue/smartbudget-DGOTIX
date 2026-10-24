@@ -86,6 +86,7 @@ insert into currencies (code, name_ar, name_en, symbol, decimals) values
   ('SGD', 'الدولار السنغافوري', 'Singapore Dollar', 'S$', 2),
   ('KRW', 'الوون الكوري الجنوبي', 'South Korean Won', '₩', 0),
   ('SEK', 'الكرونة السويدية', 'Swedish Krona', 'kr', 2),
+  ('BAM', 'المارك البوسني القابل للتحويل', 'Convertible Mark', 'KM', 2),
   ('MXN', 'البيزو المكسيكي', 'Mexican Peso', 'Mex$', 2),
   ('IDR', 'الروبية الإندونيسية', 'Indonesian Rupiah', 'Rp', 0),
   ('ARS', 'البيزو الأرجنتيني', 'Argentine Peso', 'AR$', 2),

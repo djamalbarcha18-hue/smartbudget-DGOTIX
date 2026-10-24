@@ -28,13 +28,13 @@ abstract final class GuideContent {
       lang.pick(_startAr, _startEn,
           fr: _startFr, id: _startId, es: _startEs,
           tr: _startTr, ms: _startMs, ur: _startUr, de: _startDe,
-          pt: _startPt, it: _startIt, nl: _startNl);
+          pt: _startPt, it: _startIt, nl: _startNl, bs: _startBs);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
       lang.pick(_topicsAr, _topicsEn,
           fr: _topicsFr, id: _topicsId, es: _topicsEs,
           tr: _topicsTr, ms: _topicsMs, ur: _topicsUr, de: _topicsDe,
-          pt: _topicsPt, it: _topicsIt, nl: _topicsNl);
+          pt: _topicsPt, it: _topicsIt, nl: _topicsNl, bs: _topicsBs);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -2456,6 +2456,201 @@ abstract final class GuideContent {
             'back-up; als je bent ingelogd, worden je gegevens automatisch '
             'tussen je apparaten gesynchroniseerd (ook na offline werken), en '
             'dat kun je uitzetten.',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Bosnian) ----
+  static const List<String> _startBs = <String>[
+    'Otvori Postavke i izaberi jezik, temu i osnovnu valutu — svaki zbir u '
+        'aplikaciji prikazuje se u toj valuti.',
+    'Dodaj prihode i troškove (ili skeniraj račun) — sve ostalo se računa iz '
+        'njih.',
+    'Postavi mjesečni budžet da ti aplikacija kaže koliko još možeš potrošiti.',
+    'Pogledaj Pregled i Finansijsko zdravlje da vidiš gdje si, pa postepeno '
+        'dodaj ciljeve i dugove.',
+  ];
+
+  // ---- Topics (Bosnian) ----
+  static const List<GuideTopic> _topicsBs = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'Pregled',
+      summary:
+          'Tvoj mjesec na prvi pogled: prihodi, troškovi, štednja i gdje je '
+          'novac otišao.',
+      steps: <String>[
+        'Pločice prikazuju zbirove ovog mjeseca u tvojoj osnovnoj valuti.',
+        'Dodirni dio raščlambe troškova da istakneš tu kategoriju.',
+        'Upozorenja te upućuju na ono što traži pažnju, npr. kategoriju preko '
+            'budžeta ili hitan cilj.',
+        'Bez podataka pločice prikazuju „—“ — ništa se nikad ne izmišlja.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'Prihodi i troškovi',
+      summary: 'Bilježi svako kretanje novca — osnovu svakog izračuna u '
+          'aplikaciji.',
+      steps: <String>[
+        'Dugmetom za brzo dodavanje zabilježi prihod ili trošak s iznosom, '
+            'kategorijom, datumom i bilješkom.',
+        'Prihodi i Troškovi imaju svaki svoj ekran; Transakcije prikazuju oboje'
+            ' zajedno.',
+        'Pretraži listu da nađeš bilo koji unos i dodirni ga da ga urediš ili '
+            'obrišeš.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'Ponavljajuće transakcije',
+      summary: 'Plata, kirija i pretplate dodaju se automatski na svoj datum.',
+      steps: <String>[
+        'Pri dodavanju prihoda ili troška postavi „Ponavljaj“ na svake sedmice,'
+            ' mjeseca, 3 mjeseca, 6 mjeseci ili godine.',
+        'Za bonus ili proviziju čiji se iznos mijenja uključi „Iznos se svaki '
+            'put mijenja“: na svaki datum aplikacija pita za stvarni iznos umjesto'
+            ' da doda procjenu.',
+        'Svaki put kad dospije, aplikacija ga dodaje kao običnu transakciju — '
+            'čak i ako te nije bilo, nadoknadi sve kad ponovo otvoriš aplikaciju.',
+        'Na ekranu Ponavljajuće možeš pauzirati, nastaviti, promijeniti iznos '
+            'ili prestati ponavljati. Već dodane transakcije se nikad ne mijenjaju.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'Skeniraj račun',
+      summary: 'Pretvori fotografiju računa u trošak spreman za čuvanje.',
+      steps: <String>[
+        'Na ekranu Troškovi dodirni „Skeniraj račun“ i fotografiši ili izaberi '
+            'sliku.',
+        'Aplikacija popunjava trgovca, datum, iznos i kategoriju — pregledaj ih '
+            'prije čuvanja.',
+        'Skeniranje u oblaku zavisi od tvog paketa; ako se račun ne može '
+            'pročitati, upiši trošak ručno.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'Mjesečni budžet',
+      summary: 'Planiraj koliko želiš potrošiti po kategoriji, mjesec po mjesec.',
+      steps: <String>[
+        'Izaberi godinu i mjesec na vrhu — jedan ekran pokriva svaki mjesec.',
+        'Postavi granicu za svaku kategoriju koju želiš kontrolisati.',
+        'Trake napretka se pune kako trošiš; kategorija preko granice se '
+            'označava.',
+        'U plaćenom paketu „Predloži raspodjelu“ dijeli tvoj prihod po '
+            'kategorijama na osnovu tvoje nedavne potrošnje — pregledaj, pa '
+            'primijeni.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'Ciljevi i štednja',
+      summary: 'Štedi za nešto određeno i vidi koliko ti je još ostalo.',
+      steps: <String>[
+        'Napravi cilj s iznosom i, po želji, rokom.',
+        'Bilježi uplate dok štediš; napredak se ažurira automatski.',
+        'Ciljevi blizu roka istaknuti su na Pregledu.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'Dugovi i krediti',
+      summary: 'Prati šta duguješ i šta drugi duguju tebi.',
+      steps: <String>[
+        'Dodaj svaki dug ili kredit s iznosom i osobom ili stranom.',
+        'Ažuriraj dosad plaćeni iznos da vidiš preostalo.',
+        'Dugovi utiču na tvoju ocjenu finansijskog zdravlja.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'Portfolio projekata',
+      summary: 'Planiraj veće projekte u kratkoročnim, srednjoročnim i '
+          'dugoročnim pregradama.',
+      steps: <String>[
+        'Dodaj projekte i smjesti svaki u vremenski okvir.',
+        'Finansiranje puni pregrade redom, pa vidiš koje projekte tvoja '
+            'štednja pokriva prve.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'Finansijsko zdravlje',
+      summary: 'Ocjena koja sažima koliko su zdrave tvoje finansije, i zašto.',
+      steps: <String>[
+        'Ocjena se računa na tvom uređaju iz tvojih podataka.',
+        'Ključni faktori pokazuju šta pomaže, a šta odmaže — prvo poboljšaj '
+            'njih.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'Izvještaji i analize',
+      summary: 'Pogledaj trendove kroz godinu i gdje ide tvoj novac.',
+      steps: <String>[
+        'Izaberi godinu da porediš prihode i troškove mjesec po mjesec.',
+        'Koristi raščlambe da uočiš kategorije koje vremenom rastu.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'Zekat',
+      summary: 'Procijeni zekat na svoju imovinu i prati hawl.',
+      steps: <String>[
+        'Upiši imovinu podložnu zekatu da dobiješ procjenu.',
+        'Postavi datum kada je imovina dostigla nisab da pratiš odbrojavanje '
+            'lunarne godine, prikazano po hidžretskom kalendaru.',
+        'Ovo je pomoć za planiranje — svoju obavezu provjeri s kvalifikovanim '
+            'alimom.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'Kursevi i tržišta',
+      summary: 'Aktuelni kursevi i cijene kripta iz javnih izvora.',
+      steps: <String>[
+        'Kursevi se preuzimaju uživo; svaki red pokazuje izvor.',
+        'Kad tržište nema pouzdan izvor, piše „nije dostupno“ — nikad '
+            'izmišljen broj.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'DGOTIX AI asistent',
+      summary: 'Postavljaj pitanja o svojim finansijama običnim jezikom.',
+      steps: <String>[
+        'Upiši pitanje ili dodirni prijedlog; asistent odgovara na osnovu '
+            'kratkog sažetka tvojih brojki.',
+        'Broj odgovora zavisi od tvog paketa; vidjet ćeš napomenu kad se '
+            'približiš granici.',
+        'Odgovori se prave automatski — provjeri važne odluke. Uvidi zasnovani'
+            ' na pravilima ispod razgovora uvijek rade, i bez AI-a.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'Paketi i pretplata',
+      summary: 'Uporedi Besplatno i Pro i upravljaj pretplatom.',
+      steps: <String>[
+        'Osnovni alati za budžet su zauvijek besplatni.',
+        'Plaćeni paketi povećavaju ograničenja za AI i skeniranje u oblaku i '
+            'dodaju funkcije.',
+        'Ako se pretplatiš, trenutni paket i datum obnove pojavljuju se na '
+            'vrhu, s dugmetom za upravljanje ili otkazivanje.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'Postavke, podaci i backup',
+      summary: 'Prilagodi aplikaciju sebi i čuvaj svoje podatke.',
+      steps: <String>[
+        'Jezik, tema i osnovna valuta su pod Izgled i Regija.',
+        'Upravljaj vlastitim kategorijama prihoda i troškova.',
+        'U Podaci i backup izvezi puni backup bilo kada; kad si prijavljen, '
+            'podaci se automatski sinhronizuju između uređaja (i nakon rada bez '
+            'mreže), a to možeš isključiti.',
       ],
     ),
   ];

@@ -97,6 +97,7 @@ abstract final class Currencies {
     Currency(code: 'SGD', symbol: 'S\$', nameEn: 'Singapore Dollar', nameAr: 'الدولار السنغافوري', country: 'sg'),
     Currency(code: 'KRW', symbol: '₩', nameEn: 'South Korean Won', nameAr: 'الوون الكوري الجنوبي', country: 'kr', decimals: 0),
     Currency(code: 'SEK', symbol: 'kr', nameEn: 'Swedish Krona', nameAr: 'الكرونة السويدية', country: 'se'),
+    Currency(code: 'BAM', symbol: 'KM', nameEn: 'Convertible Mark', nameAr: 'المارك البوسني القابل للتحويل', country: 'ba'),
     Currency(code: 'MXN', symbol: 'Mex\$', nameEn: 'Mexican Peso', nameAr: 'البيزو المكسيكي', country: 'mx'),
     Currency(code: 'ARS', symbol: 'AR\$', nameEn: 'Argentine Peso', nameAr: 'البيزو الأرجنتيني', country: 'ar'),
     Currency(code: 'COP', symbol: 'COL\$', nameEn: 'Colombian Peso', nameAr: 'البيزو الكولومبي', country: 'co'),

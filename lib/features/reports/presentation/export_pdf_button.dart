@@ -102,13 +102,14 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
       final pw.Font bold =
           pw.Font.ttf(await rootBundle.load('assets/fonts/$family-Bold.ttf'));
       // Only where letters are missing, to keep files small: Tajawal for the
-      // digits and Latin of Urdu reports, Inter for Turkish ğ ş İ.
+      // digits and Latin of Urdu reports, Inter for Turkish ğ ş İ and
+      // Bosnian č ć đ.
       final List<pw.Font> fallback = switch (lang) {
         AppLang.ur => <pw.Font>[
             pw.Font.ttf(
                 await rootBundle.load('assets/fonts/Tajawal-Regular.ttf'))
           ],
-        AppLang.tr => <pw.Font>[
+        AppLang.tr || AppLang.bs => <pw.Font>[
             pw.Font.ttf(await rootBundle
                 .load('assets/google_fonts/Inter-Regular.ttf'))
           ],
@@ -147,7 +148,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
         return lang.pick('الربع $s', 'Q$s',
             fr: 'T$s', id: 'K$s', es: 'T$s', tr: '$s. Çeyrek', ms: 'Suku $s', ur: 'سہ ماہی $s',
             de: 'Q$s', pt: '$sº tri',
-            it: 'T$s', nl: 'K$s');
+            it: 'T$s', nl: 'K$s', bs: 'K$s');
       case ReportPeriod.halfYearly:
         return s == 2 ? l.half2 : l.half1;
       case ReportPeriod.yearly:
