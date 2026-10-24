@@ -135,7 +135,11 @@ void main() {
 
   test('the plane: taking off, flying, landing once back', () {
     expect(tripStatusIcon(TripStatus.upcoming), SbIcons.tripTakeoff);
-    expect(tripStatusIcon(TripStatus.active), SbIcons.tripFlights);
+    expect(tripStatusIcon(TripStatus.active), SbIcons.tripInFlight);
+    // All three follow the reading direction.
+    for (final TripStatus s in TripStatus.values) {
+      expect(tripStatusIcon(s).matchTextDirection, isTrue);
+    }
     expect(tripStatusIcon(TripStatus.ended), SbIcons.tripLanding);
   });
 

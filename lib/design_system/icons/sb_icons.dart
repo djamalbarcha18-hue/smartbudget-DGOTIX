@@ -22,8 +22,11 @@ abstract final class SbIcons {
   static const IconData tripEmergency = IconData(0xe008, fontFamily: _family);
   static const IconData tripOther = IconData(0xe009, fontFamily: _family);
 
-  /// A trip's state: taking off (planned) and landing (back); mirrored in
-  /// right-to-left languages so the plane goes the way the text reads.
+  /// A trip's state: taking off (planned), in the air (under way) and
+  /// landing (back); mirrored in right-to-left languages so the plane goes
+  /// the way the text reads. The flights item keeps [tripFlights] as drawn.
+  static const IconData tripInFlight =
+      IconData(0xe002, fontFamily: _family, matchTextDirection: true);
   static const IconData tripTakeoff =
       IconData(0xe00a, fontFamily: _family, matchTextDirection: true);
   static const IconData tripLanding =

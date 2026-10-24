@@ -83,7 +83,7 @@ String tripStatusLabel(AppLocalizations l, Trip t, DateTime now) =>
 /// under way, landing once back.
 IconData tripStatusIcon(TripStatus s) => switch (s) {
       TripStatus.upcoming => SbIcons.tripTakeoff,
-      TripStatus.active => SbIcons.tripFlights,
+      TripStatus.active => SbIcons.tripInFlight,
       TripStatus.ended => SbIcons.tripLanding,
     };
 
