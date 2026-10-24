@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
+import 'package:smartbudget/design_system/brand/dgotix_owl.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -41,8 +42,7 @@ class AssistantPage extends ConsumerWidget {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Icon(Icons.auto_awesome_outlined,
-                      color: context.dsColors.brand),
+                  const DgotixOwl(size: 30, headOnly: true),
                   const SizedBox(width: DsSpacing.sm),
                   BrandedTitle(l.brandAi,
                       style: Theme.of(context).textTheme.headlineSmall),
@@ -194,7 +194,8 @@ class _AssistantLockedCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(l.aiLockedTitle,
-                    style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                    style:
+                        t.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
                 const SizedBox(height: DsSpacing.xs),
                 Text(l.aiLockedBody,
                     style: t.bodySmall?.copyWith(color: c.textMuted)),

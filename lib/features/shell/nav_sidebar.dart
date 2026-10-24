@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/design_system/brand/dgotix_owl.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -41,56 +42,56 @@ class NavSidebar extends StatelessWidget {
     final AppLocalizations l = AppLocalizations.of(context);
 
     final Widget body = Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          // A smaller lockup leaves the room to the menu.
-          const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: DsSpacing.lg,
-              vertical: DsSpacing.lg,
-            ),
-            child: PlanBrandLockup(logoHeight: 40),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        // A smaller lockup leaves the room to the menu.
+        const Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: DsSpacing.lg,
+            vertical: DsSpacing.lg,
           ),
-          Divider(height: 1, color: c.border),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: DsSpacing.md,
-                vertical: DsSpacing.md,
-              ),
-              children: _buildMenu(context, l),
+          child: PlanBrandLockup(logoHeight: 40),
+        ),
+        Divider(height: 1, color: c.border),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: DsSpacing.md,
+              vertical: DsSpacing.md,
             ),
+            children: _buildMenu(context, l),
           ),
-          Divider(height: 1, color: c.border),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-                DsSpacing.md, DsSpacing.xs, DsSpacing.md, 0),
-            child: Row(
-              children: <Widget>[
-                for (final AppSection s in AppMenu.footer)
-                  if (AppMenu.of(s) case final NavDestination d)
-                    Expanded(
-                      // "Help" is short; Settings gets the room ("Einstellungen").
-                      flex: s == AppSection.helpSupport ? 2 : 3,
-                      child: _NavItem(
-                        destination: d,
-                        // Short, side by side ("Help", not "Help & support").
-                        label: s == AppSection.helpSupport
-                            ? l.navHelpShort
-                            : d.label(l),
-                        selected: AppMenu.selectedFor(currentRoute) == s,
-                        compact: true,
-                        onTap: () => onSelect(d.route),
-                      ),
+        ),
+        Divider(height: 1, color: c.border),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+              DsSpacing.md, DsSpacing.xs, DsSpacing.md, 0),
+          child: Row(
+            children: <Widget>[
+              for (final AppSection s in AppMenu.footer)
+                if (AppMenu.of(s) case final NavDestination d)
+                  Expanded(
+                    // "Help" is short; Settings gets the room ("Einstellungen").
+                    flex: s == AppSection.helpSupport ? 2 : 3,
+                    child: _NavItem(
+                      destination: d,
+                      // Short, side by side ("Help", not "Help & support").
+                      label: s == AppSection.helpSupport
+                          ? l.navHelpShort
+                          : d.label(l),
+                      selected: AppMenu.selectedFor(currentRoute) == s,
+                      compact: true,
+                      onTap: () => onSelect(d.route),
                     ),
-              ],
-            ),
+                  ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(DsSpacing.md),
-            child: _UpgradeCard(l: l),
-          ),
-        ],
+        ),
+        Padding(
+          padding: const EdgeInsets.all(DsSpacing.md),
+          child: _UpgradeCard(l: l),
+        ),
+      ],
     );
     if (floating) {
       return SizedBox(width: width, child: GlassPanel(child: body));
@@ -118,8 +119,7 @@ class NavSidebar extends StatelessWidget {
       for (final AppSection s in AppMenu.main)
         if (AppMenu.of(s) case final NavDestination d) item(d),
       const SizedBox(height: DsSpacing.sm),
-      for (final MapEntry<NavFold, List<AppSection>> f
-          in AppMenu.folds.entries)
+      for (final MapEntry<NavFold, List<AppSection>> f in AppMenu.folds.entries)
         if (<NavDestination>[
           for (final AppSection s in f.value)
             if (AppMenu.of(s) case final NavDestination d) d,
@@ -312,49 +312,51 @@ class _NavItem extends StatelessWidget {
       child: DecoratedBox(
         decoration: active ?? const BoxDecoration(),
         child: Material(
-        color: Colors.transparent,
-        borderRadius: DsRadius.brMd,
-        child: InkWell(
-          onTap: onTap,
+          color: Colors.transparent,
           borderRadius: DsRadius.brMd,
-          hoverColor: c.textPrimary.withValues(alpha: 0.05),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: DsSpacing.md,
-              vertical: compact ? DsSpacing.sm : DsSpacing.md - 2,
-            ),
-            child: Row(
-              children: <Widget>[
-                Icon(destination.icon, size: compact ? 18 : 20, color: fg),
-                const SizedBox(width: DsSpacing.md),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: selected ? c.textPrimary : c.textMuted,
-                          fontWeight:
-                              selected ? FontWeight.w700 : FontWeight.w500,
-                        ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                if (destination.isNew && !compact)
-                  // Until the user first opens it.
-                  Consumer(
-                    builder: (BuildContext context, WidgetRef ref, _) => ref
-                            .watch(navSeenProvider)
-                            .contains(destination.route)
-                        ? const SizedBox.shrink()
-                        : DsBadge(
-                            label: AppLocalizations.of(context).badgeNew,
-                            tone: DsBadgeTone.income,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: DsRadius.brMd,
+            hoverColor: c.textPrimary.withValues(alpha: 0.05),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: DsSpacing.md,
+                vertical: compact ? DsSpacing.sm : DsSpacing.md - 2,
+              ),
+              child: Row(
+                children: <Widget>[
+                  if (destination.section == AppSection.aiAssistant)
+                    DgotixOwl(size: compact ? 20 : 22, headOnly: true)
+                  else
+                    Icon(destination.icon, size: compact ? 18 : 20, color: fg),
+                  const SizedBox(width: DsSpacing.md),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: selected ? c.textPrimary : c.textMuted,
+                            fontWeight:
+                                selected ? FontWeight.w700 : FontWeight.w500,
                           ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-              ],
+                  if (destination.isNew && !compact)
+                    // Until the user first opens it.
+                    Consumer(
+                      builder: (BuildContext context, WidgetRef ref, _) =>
+                          ref.watch(navSeenProvider).contains(destination.route)
+                              ? const SizedBox.shrink()
+                              : DsBadge(
+                                  label: AppLocalizations.of(context).badgeNew,
+                                  tone: DsBadgeTone.income,
+                                ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
       ),
     );
   }

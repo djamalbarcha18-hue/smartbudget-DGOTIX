@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/network/connectivity.dart';
+import 'package:smartbudget/design_system/brand/dgotix_owl.dart';
 import 'package:smartbudget/design_system/components/markdown_text.dart';
 import 'package:smartbudget/features/assistant/domain/ai_conversation.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -120,7 +121,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Icon(Icons.auto_awesome_rounded, size: 18, color: c.brand),
+              const DgotixOwl(size: 22, headOnly: true),
               const SizedBox(width: DsSpacing.sm),
               Expanded(
                 child: Text(l.askAiTitle,
@@ -161,12 +162,8 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
             const SizedBox(height: DsSpacing.xs),
             Row(
               children: <Widget>[
-                SizedBox(
-                  width: 14,
-                  height: 14,
-                  child:
-                      CircularProgressIndicator(strokeWidth: 2, color: c.brand),
-                ),
+                // The owl sways and looks around while DGOTIX AI thinks.
+                const DgotixOwl(size: 44, animate: true),
                 const SizedBox(width: DsSpacing.sm),
                 Text(l.askAiThinking,
                     style: t.bodySmall?.copyWith(color: c.textMuted)),
