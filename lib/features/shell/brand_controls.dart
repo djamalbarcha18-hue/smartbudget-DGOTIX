@@ -48,7 +48,7 @@ class LanguageToggleButton extends ConsumerWidget {
       onSelected: (String code) =>
           ref.read(localeProvider.notifier).set(Locale(code)),
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        for (final AppLang lang in AppLang.values)
+        for (final AppLang lang in AppLang.offered)
           PopupMenuItem<String>(
             value: lang.code,
             child: Text(lang.nativeName),

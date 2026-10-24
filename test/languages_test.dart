@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:smartbudget/core/l10n/app_lang.dart';
@@ -43,13 +44,28 @@ void main() {
     expect(AppLocalizations.supportedLocales.map((l) => l.languageCode).toSet(),
         AppLang.values.map((AppLang l) => l.code).toSet());
     expect(SupportedLocales.all.map((l) => l.languageCode).toList(),
-        AppLang.values.map((AppLang l) => l.code).toList());
+        AppLang.offered.map((AppLang l) => l.code).toList());
     expect(AppLang.values.first, AppLang.ar, reason: 'Arabic-first');
-    for (final AppLang l in AppLang.values) {
+    for (final AppLang l in AppLang.offered) {
       expect(AppLang.fromCode(l.code), l);
+    }
+    for (final AppLang l in AppLang.values) {
       expect(l.nativeName, isNotEmpty);
     }
     expect(AppLang.tryCode('xx'), isNull);
+  });
+
+  test('hidden languages are ready but not offered (NEW_LANGS)', () {
+    expect(AppLang.de.hidden, isTrue);
+    expect(AppLang.showHidden, isFalse);
+    for (final AppLang l in AppLang.values.where((AppLang l) => l.hidden)) {
+      expect(AppLang.offered, isNot(contains(l)));
+      expect(SupportedLocales.all.map((Locale x) => x.languageCode),
+          isNot(contains(l.code)));
+      // A phone in that language, or a saved choice, gets the default.
+      expect(AppLang.tryCode(l.code), isNull);
+    }
+    expect(AppLang.offered.where((AppLang l) => l.hidden), isEmpty);
   });
 
   test('every language has every string, with the same placeholders', () {

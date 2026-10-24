@@ -571,6 +571,75 @@ abstract final class Catalog {
     'أخرى': 'دیگر',
   };
 
+  /// German display labels, keyed like [_en].
+  static const Map<String, String> _de = <String, String>{
+    // Income
+    'راتب أساسي': 'Grundgehalt',
+    'مكافآت وحوافز': 'Boni und Prämien',
+    'مكافأة نهاية الخدمة': 'Abfindung',
+    'معاش تقاعدي': 'Rente',
+    'عمل حر': 'Freiberufliche Arbeit',
+    'عمولات': 'Provisionen',
+    'أرباح تجارية': 'Geschäftsgewinn',
+    'دخل استثماري': 'Kapitalerträge',
+    'أرباح أسهم وتوزيعات': 'Dividenden',
+    'أرباح العملات الرقمية': 'Krypto-Gewinne',
+    'إيجارات': 'Mieteinnahmen',
+    'تأجير قصير الأمد': 'Kurzzeitvermietung',
+    'تجارة إلكترونية': 'Onlinehandel',
+    'بيع أصول أو ممتلكات': 'Verkauf von Vermögen',
+    'محتوى رقمي وإبداعي': 'Digitale und kreative Inhalte',
+    'استرجاع نقدي ومكافآت': 'Cashback und Prämien',
+    'منحة أو إعانة': 'Stipendium oder Zuschuss',
+    'ميراث': 'Erbschaft',
+    'استرداد أو تعويض': 'Erstattung oder Entschädigung',
+    'هدايا': 'Geschenke',
+    'زكاة أو صدقة مستلمة': 'Erhaltene Zakat oder Sadaqa',
+    // Expenses
+    'الطعام': 'Lebensmittel',
+    'المطاعم': 'Restaurants',
+    'النقل': 'Verkehr',
+    'السكن': 'Wohnen',
+    'الفواتير': 'Rechnungen',
+    'الاتصالات والإنترنت': 'Telefon und Internet',
+    'الصحة': 'Gesundheit',
+    'التعليم': 'Bildung',
+    'الأطفال والعائلة': 'Kinder und Familie',
+    'التسوق': 'Einkaufen',
+    'الملابس': 'Kleidung',
+    'الترفيه': 'Freizeit',
+    'الرياضة واللياقة': 'Sport und Fitness',
+    'الاشتراكات': 'Abos',
+    'السفر': 'Reisen',
+    'الأقساط والقروض': 'Kredite und Raten',
+    'التأمين': 'Versicherungen',
+    'الضرائب والرسوم': 'Steuern und Gebühren',
+    'الصيانة والإصلاح': 'Wartung und Reparatur',
+    'الأثاث والمنزل': 'Haushalt und Möbel',
+    'الوقود': 'Kraftstoff',
+    'الخدمات المهنية والقانونية': 'Beratung und Rechtsdienste',
+    'البرمجيات والأدوات الرقمية': 'Software und digitale Tools',
+    'الحج والعمرة': 'Hadsch und Umra',
+    'صدقة وتبرّعات': 'Sadaqa und Spenden',
+    'زكاة': 'Zakat',
+    'الادخار والاستثمار': 'Sparen und Anlegen',
+    'الطوارئ': 'Notfälle',
+    // Payment methods
+    'نقداً': 'Bargeld',
+    'بطاقة بنكية': 'Bankkarte',
+    'بطاقة ائتمان': 'Kreditkarte',
+    'محفظة إلكترونية': 'E-Wallet',
+    'تحويل الكتروني': 'Überweisung',
+    'تحويل بنكي فوري': 'Echtzeitüberweisung',
+    'الدفع عند الاستلام': 'Zahlung bei Lieferung',
+    'محفظة عملات رقمية': 'Krypto-Wallet',
+    'أموال عبر الهاتف': 'Mobiles Bezahlen',
+    'شيك': 'Scheck',
+    'بطاقة هدايا أو قسيمة': 'Geschenkkarte / Gutschein',
+    // Shared
+    'أخرى': 'Sonstiges',
+  };
+
   /// Localized display label for a stored category/payment value.
   static String label(String value, {required AppLang lang}) =>
       lang.pick(value, _en[value] ?? value,
@@ -579,5 +648,6 @@ abstract final class Catalog {
           es: _es[value] ?? _en[value] ?? value,
           tr: _tr[value] ?? _en[value] ?? value,
           ms: _ms[value] ?? _en[value] ?? value,
-          ur: _ur[value] ?? _en[value] ?? value);
+          ur: _ur[value] ?? _en[value] ?? value,
+          de: _de[value] ?? _en[value] ?? value);
 }

@@ -79,7 +79,7 @@ class SmartBudgetApp extends ConsumerWidget {
           : DsTheme.dark(lang: lang),
       themeMode: themeMode,
       locale: locale,
-      supportedLocales: AppLocalizations.supportedLocales,
+      supportedLocales: SupportedLocales.all,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       routerConfig: router,
       builder: (BuildContext context, Widget? child) =>

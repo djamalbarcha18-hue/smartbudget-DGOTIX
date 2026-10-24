@@ -13,7 +13,7 @@ abstract final class SupportedLocales {
   static const Locale english = Locale('en');
 
   static final List<Locale> all = <Locale>[
-    for (final AppLang l in AppLang.values) Locale(l.code),
+    for (final AppLang l in AppLang.offered) Locale(l.code),
   ];
 }
 

@@ -114,7 +114,7 @@ class SettingsPage extends ConsumerWidget {
                 child: _SegmentedRow<String>(
                   value: locale.languageCode,
                   options: <_Segment<String>>[
-                    for (final AppLang lang in AppLang.values)
+                    for (final AppLang lang in AppLang.offered)
                       _Segment<String>(lang.code, lang.nativeName, null),
                   ],
                   onChanged: (String code) => ref

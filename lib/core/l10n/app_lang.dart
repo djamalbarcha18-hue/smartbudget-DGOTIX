@@ -12,9 +12,13 @@ enum AppLang {
   es('es', 'Español'),
   tr('tr', 'Türkçe'),
   ms('ms', 'Bahasa Melayu'),
-  ur('ur', 'اردو', rtl: true);
+  ur('ur', 'اردو', rtl: true),
 
-  const AppLang(this.code, this.nativeName, {this.rtl = false});
+  /// Ready but not offered yet (see [hidden]).
+  de('de', 'Deutsch', hidden: true);
+
+  const AppLang(this.code, this.nativeName,
+      {this.rtl = false, this.hidden = false});
 
   /// The locale code (ISO 639-1), as used by the ARB files.
   final String code;
@@ -25,9 +29,23 @@ enum AppLang {
   /// Written right to left (Arabic, Urdu).
   final bool rtl;
 
-  /// The language for a locale code, or null if the app doesn't have it.
+  /// Translated but kept for a later update: not in the menus, Settings or
+  /// the supported locales (a phone in that language gets the app's default)
+  /// unless the build has `--dart-define=NEW_LANGS=true`.
+  final bool hidden;
+
+  static const bool showHidden =
+      bool.fromEnvironment('NEW_LANGS', defaultValue: false);
+
+  /// The languages the app offers, in order.
+  static List<AppLang> get offered => <AppLang>[
+        for (final AppLang l in values)
+          if (!l.hidden || showHidden) l,
+      ];
+
+  /// The language for a locale code, or null if the app doesn't offer it.
   static AppLang? tryCode(String? code) {
-    for (final AppLang l in values) {
+    for (final AppLang l in offered) {
       if (l.code == code) return l;
     }
     return null;
@@ -46,7 +64,7 @@ enum AppLang {
   /// back to English (names of currencies, markets…), so a new language can
   /// ship before every long text is translated.
   T pick<T>(T ar, T en,
-          {T? fr, T? id, T? es, T? tr, T? ms, T? ur}) =>
+          {T? fr, T? id, T? es, T? tr, T? ms, T? ur, T? de}) =>
       switch (this) {
         AppLang.ar => ar,
         AppLang.en => en,
@@ -56,5 +74,6 @@ enum AppLang {
         AppLang.tr => tr ?? en,
         AppLang.ms => ms ?? en,
         AppLang.ur => ur ?? en,
+        AppLang.de => de ?? en,
       };
 }

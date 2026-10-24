@@ -22,6 +22,7 @@ abstract final class CurrencyDefaults {
     AppLang.tr: 'TRY',
     AppLang.ms: 'MYR',
     AppLang.ur: 'PKR',
+    AppLang.de: 'EUR',
   };
 
   /// The currency of [country] (ISO 3166-1 alpha-2), or null when the app
