@@ -11,17 +11,16 @@ import 'package:smartbudget/design_system/components/ds_back_button.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
-import 'package:smartbudget/design_system/tokens/ds_chart_palette.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
-import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
+import 'package:smartbudget/features/trips/domain/trip_item.dart';
 import 'package:smartbudget/features/trips/domain/trip_report.dart';
 import 'package:smartbudget/features/trips/presentation/trip_share_page.dart';
 import 'package:smartbudget/features/trips/presentation/trip_text.dart';
@@ -96,6 +95,10 @@ class TripSummaryPage extends ConsumerWidget {
           if (r.hasExpenses && r.hasBudget) ...<Widget>[
             const SizedBox(height: DsSpacing.lg),
             _BudgetPanel(report: r, percentOnly: pct),
+          ],
+          if (r.plan.isNotEmpty) ...<Widget>[
+            const SizedBox(height: DsSpacing.lg),
+            TripPlanPanel(report: r, percentOnly: pct),
           ],
           // Shared once the trip is over: the result is complete, and it
           // never tells anyone the user is away right now.
@@ -275,7 +278,6 @@ class _TotalPanel extends StatelessWidget {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final TripReport r = report;
-    final AppLang lang = appLangOf(context);
     final NumberFormat percent =
         NumberFormat.percentPattern(Localizations.localeOf(context).toString());
     final TextStyle side =
@@ -339,15 +341,16 @@ class _TotalPanel extends StatelessWidget {
                     width: 10,
                     height: 10,
                     decoration: BoxDecoration(
-                        color: DsChartPalette.at(i), shape: BoxShape.circle),
+                        color: tripItemColor(r.categories[i].item),
+                        shape: BoxShape.circle),
                   ),
                   const SizedBox(width: DsSpacing.sm),
-                  Icon(tripCategoryIcon(r.categories[i].category),
+                  Icon(tripItemIcon(r.categories[i].item),
                       size: 20, color: c.textMuted),
                   const SizedBox(width: DsSpacing.sm),
                   Expanded(
                     child: Text(
-                        Catalog.label(r.categories[i].category, lang: lang),
+                        tripItemLabel(l, r.categories[i].item),
                         style: t.bodyMedium),
                   ),
                   Text(
@@ -369,7 +372,7 @@ class _TotalPanel extends StatelessWidget {
 class TripSegmentBar extends StatelessWidget {
   const TripSegmentBar(
       {super.key, required this.categories, this.height = 10, this.gap = 3});
-  final List<TripCategoryShare> categories;
+  final List<TripItemShare> categories;
   final double height;
   final double gap;
 
@@ -385,7 +388,7 @@ class TripSegmentBar extends StatelessWidget {
                 flex: (categories[i].share * 1000).round().clamp(1, 1000),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: DsChartPalette.at(i),
+                    color: tripItemColor(categories[i].item),
                     borderRadius: BorderRadius.circular(height),
                   ),
                 ),
@@ -408,12 +411,11 @@ class _BudgetPanel extends StatelessWidget {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final TripReport r = report;
-    final AppLang lang = appLangOf(context);
     String money(Money m) => MoneyFormatter.format(m);
     final double scale = r.spent.minorUnits > r.budget!.minorUnits
         ? r.spent.minorUnits.toDouble()
         : r.budget!.minorUnits.toDouble();
-    final TripCategoryShare? top = r.top;
+    final TripItemShare? top = r.top;
     final Money diff = r.difference!;
 
     Widget bar(String label, String value, double ratio, Color color) => Column(
@@ -477,7 +479,7 @@ class _BudgetPanel extends StatelessWidget {
             TripStat(
               label: l.tripTopCategory,
               value:
-                  '${Catalog.label(top.category, lang: lang)} · ${percentOnly ? l.tripPctOfTotal((top.share * 100).round()) : money(top.amount)}',
+                  '${tripItemLabel(l, top.item)} · ${percentOnly ? l.tripPctOfTotal((top.share * 100).round()) : money(top.amount)}',
             ),
           ],
         ],
@@ -510,6 +512,88 @@ class _NoExpenses extends StatelessWidget {
                 type: TransactionType.expense,
                 prefill: TransactionDraft(tripId: trip.id)),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The budget split by item: what each was given against what it cost, and
+/// a tip when one runs over (covered from the item with the most left).
+class TripPlanPanel extends StatelessWidget {
+  const TripPlanPanel(
+      {super.key, required this.report, required this.percentOnly});
+  final TripReport report;
+  final bool percentOnly;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final TripReport r = report;
+    String money(Money m) => MoneyFormatter.format(m);
+    // Amounts stay hidden in "percentage" mode, the tip with them.
+    final TripItemTip? tip = percentOnly ? null : r.tip;
+
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(l.tripSplitTitle,
+              style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+          if (tip != null) ...<Widget>[
+            const SizedBox(height: DsSpacing.sm),
+            TripTipBox(tip: tip),
+          ],
+          for (final TripItemPlan p in r.plan)
+            Padding(
+              padding: const EdgeInsets.only(top: DsSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Icon(tripItemIcon(p.item),
+                          size: 18, color: tripItemColor(p.item)),
+                      const SizedBox(width: DsSpacing.xs),
+                      Expanded(
+                        child: Text(tripItemLabel(l, p.item),
+                            style: t.bodyMedium),
+                      ),
+                      Text(
+                        p.item == TripItem.other
+                            ? percentOnly
+                                ? '${(p.spent.minorUnits / r.spent.minorUnits * 100).round()}%'
+                                : money(p.spent)
+                            : percentOnly
+                                ? '${(p.ratio * 100).round()}%'
+                                : l.tripItemOfPlanned(
+                                    money(p.spent), money(p.planned)),
+                        style: t.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: p.over ? c.expense : null),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: DsSpacing.xs),
+                  TripBar(
+                      value: p.item == TripItem.other ? 1 : p.ratio,
+                      color: p.over ? c.expense : tripItemColor(p.item)),
+                  if (p.item != TripItem.other && !percentOnly)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text(
+                        p.over
+                            ? l.tripItemOverBy(money(p.spent - p.planned))
+                            : l.tripItemLeftAmount(money(p.left)),
+                        style: t.labelSmall?.copyWith(
+                            color: p.over ? c.expense : c.textMuted),
+                      ),
+                    ),
+                ],
+              ),
+            ),
         ],
       ),
     );

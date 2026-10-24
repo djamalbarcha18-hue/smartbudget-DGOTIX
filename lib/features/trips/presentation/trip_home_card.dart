@@ -248,6 +248,11 @@ class TripHomeCard extends ConsumerWidget {
           Expanded(child: TripStat(label: l.tripToday, value: money(today))),
         ],
       ),
+      // An item over its share, while there is still time to adjust.
+      if (r.tip != null) ...<Widget>[
+        const SizedBox(height: DsSpacing.md),
+        TripTipBox(tip: r.tip!),
+      ],
       const SizedBox(height: DsSpacing.md),
       DsButton(
         label: l.tripAddExpense,

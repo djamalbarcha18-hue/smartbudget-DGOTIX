@@ -19,6 +19,7 @@ import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
+import 'package:smartbudget/features/trips/domain/trip_item.dart';
 import 'package:smartbudget/features/trips/domain/trip_report.dart';
 import 'package:smartbudget/features/trips/presentation/destination_picker.dart';
 import 'package:smartbudget/features/trips/presentation/trip_text.dart';
@@ -67,6 +68,12 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
   late final int _maxDays = _days > 30 ? _days : 30;
   late int _travelers = widget.existing?.travelers ?? 1;
   bool _needPlace = false;
+
+  /// The user's own split; null follows the suggestion, which then keeps
+  /// up with the level and the number of days.
+  late Map<TripItem, int>? _split = widget.existing?.split;
+  Map<TripItem, int> get _effectiveSplit =>
+      _split ?? TripItems.suggested(_level, _days);
 
   static DateTime get _today {
     final DateTime n = AppClock.now();
@@ -120,6 +127,7 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
           travelers: _travelers,
           sharedAt: widget.existing?.sharedAt,
           level: _level,
+          split: _split,
         ));
     if (mounted) Navigator.of(context).pop();
   }
@@ -296,6 +304,15 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
                 ),
               ),
               _BudgetAdvice(budget: _budget, currency: currency, start: _start),
+              _SplitEditor(
+                budget: _budget,
+                currency: currency,
+                split: _effectiveSplit,
+                custom: _split != null,
+                onChanged: (Map<TripItem, int> s) =>
+                    setState(() => _split = s),
+                onReset: () => setState(() => _split = null),
+              ),
               const SizedBox(height: DsSpacing.lg),
               DsButton(
                 label: l.save,
@@ -402,6 +419,184 @@ class _BudgetAdvice extends ConsumerWidget {
                 )
               else
                 const SizedBox(height: DsSpacing.xs),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Under the budget, once there is one: how it splits between the trip's
+/// items — a bar and the shares at a glance, then one slider per item on
+/// "Adjust" (moving one shares the rest out in proportion).
+class _SplitEditor extends StatefulWidget {
+  const _SplitEditor({
+    required this.budget,
+    required this.currency,
+    required this.split,
+    required this.custom,
+    required this.onChanged,
+    required this.onReset,
+  });
+  final TextEditingController budget;
+  final String currency;
+  final Map<TripItem, int> split;
+
+  /// Set by the user (else the suggested split).
+  final bool custom;
+  final ValueChanged<Map<TripItem, int>> onChanged;
+  final VoidCallback onReset;
+
+  @override
+  State<_SplitEditor> createState() => _SplitEditorState();
+}
+
+class _SplitEditorState extends State<_SplitEditor> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: widget.budget,
+      builder: (BuildContext context, TextEditingValue v, _) {
+        final double? typed = parseAmount(v.text);
+        if (typed == null || typed <= 0) return const SizedBox.shrink();
+        final Money budget = Money.fromDouble(typed, widget.currency);
+        final List<int> parts = TripItems.shares(budget.minorUnits, <double>[
+          for (final TripItem i in TripItems.planned)
+            (widget.split[i] ?? 0).toDouble(),
+        ]);
+        String amount(TripItem i) => MoneyFormatter.format(Money(
+            parts[TripItems.planned.indexOf(i)], widget.currency));
+
+        return Container(
+          margin: const EdgeInsetsDirectional.only(top: DsSpacing.sm),
+          padding: const EdgeInsets.all(DsSpacing.md),
+          decoration: BoxDecoration(
+            color: c.surfaceMuted,
+            borderRadius: DsRadius.brMd,
+            border: Border.all(color: c.border),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Icon(Icons.pie_chart_outline_rounded,
+                      size: 18, color: c.brand),
+                  const SizedBox(width: DsSpacing.xs),
+                  Expanded(
+                    child: Text(l.tripSplitTitle,
+                        style: t.titleSmall
+                            ?.copyWith(fontWeight: FontWeight.w700)),
+                  ),
+                  TextButton(
+                    onPressed: () => setState(() => _open = !_open),
+                    child: Text(_open ? l.tripSplitDone : l.tripSplitEdit),
+                  ),
+                ],
+              ),
+              Text(l.tripSplitHint,
+                  style: t.bodySmall?.copyWith(color: c.textMuted)),
+              const SizedBox(height: DsSpacing.sm),
+              // The split at a glance, in the items' colours.
+              SizedBox(
+                height: 10,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    for (final TripItem i in TripItems.planned)
+                      if ((widget.split[i] ?? 0) > 0)
+                        Expanded(
+                          flex: widget.split[i]!,
+                          child: Container(
+                            margin: const EdgeInsetsDirectional.only(end: 2),
+                            decoration: BoxDecoration(
+                              color: tripItemColor(i),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: DsSpacing.sm),
+              if (!_open)
+                Wrap(
+                  spacing: DsSpacing.md,
+                  runSpacing: DsSpacing.xs,
+                  children: <Widget>[
+                    for (final TripItem i in TripItems.planned)
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Icon(tripItemIcon(i),
+                              size: 14, color: tripItemColor(i)),
+                          const SizedBox(width: 4),
+                          Text(
+                              '${tripItemLabel(l, i)} ${widget.split[i] ?? 0}%',
+                              style: t.bodySmall),
+                        ],
+                      ),
+                  ],
+                )
+              else ...<Widget>[
+                for (final TripItem i in TripItems.planned)
+                  Padding(
+                    padding: const EdgeInsets.only(top: DsSpacing.xs),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Icon(tripItemIcon(i),
+                                size: 18, color: tripItemColor(i)),
+                            const SizedBox(width: DsSpacing.xs),
+                            Expanded(
+                                child: Text(tripItemLabel(l, i),
+                                    style: t.bodyMedium)),
+                            Text(amount(i),
+                                style: t.bodyMedium
+                                    ?.copyWith(fontWeight: FontWeight.w700)),
+                            SizedBox(
+                              width: 48,
+                              child: Text('${widget.split[i] ?? 0}%',
+                                  textAlign: TextAlign.end,
+                                  style: t.bodySmall
+                                      ?.copyWith(color: c.textMuted)),
+                            ),
+                          ],
+                        ),
+                        Slider(
+                          value: (widget.split[i] ?? 0).toDouble(),
+                          max: 100,
+                          divisions: 100,
+                          activeColor: tripItemColor(i),
+                          inactiveColor: c.border,
+                          label: '${widget.split[i] ?? 0}%',
+                          semanticFormatterCallback: (double v) =>
+                              '${tripItemLabel(l, i)} ${v.round()}%',
+                          onChanged: (double v) => widget.onChanged(
+                              TripItems.withShare(
+                                  widget.split, i, v.round())),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (widget.custom)
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: TextButton.icon(
+                      icon: const Icon(Icons.auto_fix_high_outlined, size: 16),
+                      label: Text(l.tripSplitReset),
+                      onPressed: widget.onReset,
+                    ),
+                  ),
+              ],
             ],
           ),
         );

@@ -8,12 +8,11 @@ import 'package:smartbudget/core/l10n/app_lang_context.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
-import 'package:smartbudget/design_system/tokens/ds_chart_palette.dart';
 import 'package:smartbudget/features/share/domain/share_qr.dart';
 import 'package:smartbudget/features/share/presentation/share_card_skin.dart';
-import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
+import 'package:smartbudget/features/trips/domain/trip_item.dart';
 import 'package:smartbudget/features/trips/domain/trip_report.dart';
 import 'package:smartbudget/features/trips/presentation/trip_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -310,22 +309,30 @@ class TripShareCard extends StatelessWidget {
     String money(Money m) => MoneyFormatter.format(m);
     String pct(double share) => '${(share * 100).round()}%';
 
-    // Largest categories, the rest together as "Other".
+    // Largest items, the rest together as "Other".
     final int keep = compact ? 3 : (r.hasBudget ? 3 : 5);
-    final List<TripCategoryShare> cats = r.categories.length <= keep + 1
-        ? r.categories
-        : <TripCategoryShare>[
-            ...r.categories.take(keep),
-            TripCategoryShare(
-              'أخرى',
-              Money(
-                  r.categories.skip(keep).fold<int>(0,
-                      (int a, TripCategoryShare c) => a + c.amount.minorUnits),
-                  r.currency),
-              r.categories.skip(keep).fold<double>(
-                  0, (double a, TripCategoryShare c) => a + c.share),
-            ),
-          ];
+    final List<TripItemShare> named = r.categories
+        .where((TripItemShare c) => c.item != TripItem.other)
+        .toList();
+    final List<TripItemShare> cats;
+    if (r.categories.length <= keep + 1) {
+      cats = r.categories;
+    } else {
+      final List<TripItemShare> rest = r.categories
+          .where((TripItemShare c) => !named.take(keep).contains(c))
+          .toList();
+      cats = <TripItemShare>[
+        ...named.take(keep),
+        TripItemShare(
+          TripItem.other,
+          Money(
+              rest.fold<int>(
+                  0, (int a, TripItemShare c) => a + c.amount.minorUnits),
+              r.currency),
+          rest.fold<double>(0, (double a, TripItemShare c) => a + c.share),
+        ),
+      ];
+    }
 
     final Widget headline;
     if (!percentOnly) {
@@ -371,18 +378,16 @@ class TripShareCard extends StatelessWidget {
                 width: 2.2 * u,
                 height: 2.2 * u,
                 decoration: BoxDecoration(
-                  color: cats[i].category == 'أخرى' && i == keep
-                      ? DsChartPalette.other
-                      : DsChartPalette.at(i),
+                  color: tripItemColor(cats[i].item),
                   shape: BoxShape.circle,
                 ),
               ),
               SizedBox(width: 2 * u),
-              Icon(tripCategoryIcon(cats[i].category),
+              Icon(tripItemIcon(cats[i].item),
                   size: 4 * u, color: _muted),
               SizedBox(width: 1.6 * u),
               Expanded(
-                child: Text(Catalog.label(cats[i].category, lang: lang),
+                child: Text(tripItemLabel(l, cats[i].item),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: ink.copyWith(fontSize: 3.6 * u)),
@@ -424,17 +429,20 @@ class TripShareCard extends StatelessWidget {
                           width: 2 * u,
                           height: 2 * u,
                           decoration: BoxDecoration(
-                            color: cats[i].category == 'أخرى' && i == keep
-                                ? DsChartPalette.other
-                                : DsChartPalette.at(i),
+                            color: tripItemColor(cats[i].item),
                             shape: BoxShape.circle,
                           ),
                         ),
                         SizedBox(width: 1.2 * u),
-                        Text(
-                          '${Catalog.label(cats[i].category, lang: lang)} '
-                          '${percentOnly ? pct(cats[i].share) : money(cats[i].amount)}',
-                          style: ink.copyWith(fontSize: 3.1 * u),
+                        // A long name never runs off the card.
+                        Flexible(
+                          child: Text(
+                            '${tripItemLabel(l, cats[i].item)} '
+                            '${percentOnly ? pct(cats[i].share) : money(cats[i].amount)}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: ink.copyWith(fontSize: 3.1 * u),
+                          ),
                         ),
                       ],
                     ),
@@ -504,7 +512,7 @@ class TripShareCard extends StatelessWidget {
                   if (r.top != null)
                     _tile(
                         l.tripTopCategory,
-                        Catalog.label(r.top!.category, lang: lang),
+                        tripItemLabel(l, r.top!.item),
                         ink,
                         muted,
                         u),
@@ -523,7 +531,7 @@ class TripShareCard extends StatelessWidget {
     return (a > b ? a : b).toDouble();
   }
 
-  Widget _segments(List<TripCategoryShare> cats, double u, int keep) =>
+  Widget _segments(List<TripItemShare> cats, double u, int keep) =>
       SizedBox(
         height: 2.6 * u,
         child: Row(
@@ -535,9 +543,7 @@ class TripShareCard extends StatelessWidget {
                 flex: (cats[i].share * 1000).round().clamp(1, 1000),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: cats[i].category == 'أخرى' && i == keep
-                        ? DsChartPalette.other
-                        : DsChartPalette.at(i),
+                    color: tripItemColor(cats[i].item),
                     borderRadius: BorderRadius.circular(2 * u),
                   ),
                 ),
@@ -623,7 +629,7 @@ class TripShareCard extends StatelessWidget {
     };
 
     // One line: the three largest categories.
-    final List<TripCategoryShare> top = r.categories.take(3).toList();
+    final List<TripItemShare> top = r.categories.take(3).toList();
     final Widget categories = Wrap(
       spacing: 3.2 * u,
       runSpacing: 1 * u,
@@ -636,13 +642,17 @@ class TripShareCard extends StatelessWidget {
                 width: 1.8 * u,
                 height: 1.8 * u,
                 decoration: BoxDecoration(
-                    color: DsChartPalette.at(i), shape: BoxShape.circle),
+                    color: tripItemColor(top[i].item), shape: BoxShape.circle),
               ),
               SizedBox(width: 1.2 * u),
-              Text(
-                '${Catalog.label(top[i].category, lang: lang)} '
-                '${percentOnly ? pct(top[i].share) : money(top[i].amount)}',
-                style: soft.copyWith(fontSize: 3.1 * u, shadows: shade),
+              Flexible(
+                child: Text(
+                  '${tripItemLabel(l, top[i].item)} '
+                  '${percentOnly ? pct(top[i].share) : money(top[i].amount)}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: soft.copyWith(fontSize: 3.1 * u, shadows: shade),
+                ),
               ),
             ],
           ),

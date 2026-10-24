@@ -1,6 +1,7 @@
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
+import 'package:smartbudget/features/trips/domain/trip_item.dart';
 
 /// How the trip is planned to be spent (a description: it doesn't estimate
 /// prices).
@@ -21,6 +22,7 @@ class Trip {
     this.travelers = 1,
     this.sharedAt,
     this.level,
+    this.split,
   });
 
   final String id;
@@ -48,6 +50,11 @@ class Trip {
   /// Economy, mid-range or luxury; optional.
   final TripLevel? level;
 
+  /// How the budget is split between the items, in percent (adds up to
+  /// 100), when the user set it; null follows the suggested split
+  /// ([TripItems.splitOf]).
+  final Map<TripItem, int>? split;
+
   Trip copyWith({String? goalId, bool clearGoal = false, DateTime? sharedAt}) =>
       Trip(
         id: id,
@@ -61,6 +68,7 @@ class Trip {
         travelers: travelers,
         sharedAt: sharedAt ?? this.sharedAt,
         level: level,
+        split: split,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -76,6 +84,11 @@ class Trip {
         if (travelers > 1) 'travelers': travelers,
         if (sharedAt != null) 'sharedAt': sharedAt!.toIso8601String(),
         if (level != null) 'level': level!.name,
+        if (split != null)
+          'split': <String, int>{
+            for (final MapEntry<TripItem, int> e in split!.entries)
+              e.key.name: e.value,
+          },
       };
 
   factory Trip.fromJson(Map<String, dynamic> j) {
@@ -99,6 +112,7 @@ class Trip {
       level: TripLevel.values
           .where((TripLevel v) => v.name == j['level'])
           .firstOrNull,
+      split: TripItems.parse(j['split']),
     );
   }
 

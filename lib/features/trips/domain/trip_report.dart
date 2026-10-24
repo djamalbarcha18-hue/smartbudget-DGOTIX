@@ -3,17 +3,50 @@ import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
+import 'package:smartbudget/features/trips/domain/trip_item.dart';
 
-/// One category's part of a trip's spending.
-class TripCategoryShare {
-  const TripCategoryShare(this.category, this.amount, this.share);
+/// One item's part of a trip's spending.
+class TripItemShare {
+  const TripItemShare(this.item, this.amount, this.share);
 
-  /// The category key (as stored on transactions).
-  final String category;
+  /// Flights, stay… (read from the expenses' categories).
+  final TripItem item;
   final Money amount;
 
   /// Of the trip's total, 0..1.
   final double share;
+}
+
+/// An item's share of the budget against what was spent on it.
+class TripItemPlan {
+  const TripItemPlan(this.item, this.percent, this.planned, this.spent);
+
+  final TripItem item;
+
+  /// Of the budget (0 for "other", which isn't planned).
+  final int percent;
+  final Money planned;
+  final Money spent;
+
+  bool get over => spent.minorUnits > planned.minorUnits;
+
+  /// Planned minus spent (negative when over).
+  Money get left => planned - spent;
+
+  /// Spent / planned (above 1 when over); 0 with nothing planned.
+  double get ratio =>
+      planned.minorUnits == 0 ? 0 : spent.minorUnits / planned.minorUnits;
+}
+
+/// A smart hint: the item furthest over its share, and the one with the
+/// most left to cover it, if any.
+class TripItemTip {
+  const TripItemTip(this.over, this.overBy, this.spare, this.spareLeft);
+
+  final TripItem over;
+  final Money overBy;
+  final TripItem? spare;
+  final Money? spareLeft;
 }
 
 /// What a trip cost, worked out on the device from its tagged expenses: the
@@ -26,6 +59,7 @@ class TripReport {
     required this.budget,
     required this.expenseCount,
     required this.categories,
+    required this.plan,
     required this.daysCounted,
   });
 
@@ -35,7 +69,7 @@ class TripReport {
       {required String currency}) {
     final Money? budget = t.plannedBudget;
     final String cur = budget?.currencyCode ?? currency;
-    final Map<String, int> byCategory = <String, int>{};
+    final Map<TripItem, int> byItem = <TripItem, int>{};
     int total = 0;
     int count = 0;
     for (final Transaction x in TripMath.expensesOf(t, txns)) {
@@ -43,14 +77,34 @@ class TripReport {
       final int minor = x.inCurrency(cur)?.amount.minorUnits ?? 0;
       if (minor == 0) continue;
       total += minor;
-      byCategory[x.category] = (byCategory[x.category] ?? 0) + minor;
+      final TripItem item = TripItems.of(x.category);
+      byItem[item] = (byItem[item] ?? 0) + minor;
     }
-    final List<TripCategoryShare> cats = <TripCategoryShare>[
-      for (final MapEntry<String, int> e in byCategory.entries)
-        TripCategoryShare(
+    final List<TripItemShare> cats = <TripItemShare>[
+      for (final MapEntry<TripItem, int> e in byItem.entries)
+        TripItemShare(
             e.key, Money(e.value, cur), total == 0 ? 0 : e.value / total),
-    ]..sort((TripCategoryShare a, TripCategoryShare b) =>
+    ]..sort((TripItemShare a, TripItemShare b) =>
         b.amount.minorUnits.compareTo(a.amount.minorUnits));
+    // The budget split between the items, in whole minor units that add up
+    // to the budget; "other" only once something is spent on it.
+    final List<TripItemPlan> plan = <TripItemPlan>[];
+    if (budget != null && budget.minorUnits > 0) {
+      final Map<TripItem, int> split = TripItems.splitOf(t);
+      final List<int> parts = TripItems.shares(budget.minorUnits, <double>[
+        for (final TripItem i in TripItems.planned) (split[i] ?? 0).toDouble(),
+      ]);
+      for (int k = 0; k < TripItems.planned.length; k++) {
+        final TripItem i = TripItems.planned[k];
+        plan.add(TripItemPlan(i, split[i] ?? 0, Money(parts[k], cur),
+            Money(byItem[i] ?? 0, cur)));
+      }
+      final int other = byItem[TripItem.other] ?? 0;
+      if (other > 0) {
+        plan.add(TripItemPlan(
+            TripItem.other, 0, Money(0, cur), Money(other, cur)));
+      }
+    }
     return TripReport._(
       trip: t,
       currency: cur,
@@ -58,6 +112,7 @@ class TripReport {
       budget: budget,
       expenseCount: count,
       categories: cats,
+      plan: plan,
       daysCounted: switch (TripMath.status(t, now)) {
         TripStatus.active => TripDays.dayNumber(t, now),
         _ => TripDays.total(t),
@@ -71,8 +126,12 @@ class TripReport {
   final Money? budget;
   final int expenseCount;
 
-  /// Largest first.
-  final List<TripCategoryShare> categories;
+  /// By item, largest first.
+  final List<TripItemShare> categories;
+
+  /// With a budget: each item's share of it against what was spent, in the
+  /// planned order (empty without a budget).
+  final List<TripItemPlan> plan;
 
   /// Days the average is spread over: so far while under way, else all.
   final int daysCounted;
@@ -107,7 +166,29 @@ class TripReport {
   /// Budget minus spent (negative when over), or null without a budget.
   Money? get difference => hasBudget ? budget! - spent : null;
 
-  TripCategoryShare? get top => categories.isEmpty ? null : categories.first;
+  TripItemShare? get top => categories.isEmpty ? null : categories.first;
+
+  /// The planned item furthest over its share, and the one with the most
+  /// left to cover it; null when every item is within its share.
+  TripItemTip? get tip {
+    TripItemPlan? over;
+    TripItemPlan? spare;
+    for (final TripItemPlan p in plan) {
+      if (p.item == TripItem.other) continue;
+      if (p.over &&
+          (over == null || p.left.minorUnits < over.left.minorUnits)) {
+        over = p;
+      }
+      if (!p.over &&
+          p.left.minorUnits > 0 &&
+          (spare == null || p.left.minorUnits > spare.left.minorUnits)) {
+        spare = p;
+      }
+    }
+    if (over == null) return null;
+    return TripItemTip(over.item, over.spent - over.planned, spare?.item,
+        spare?.left);
+  }
 
   /// The total split between the travellers, or null for one person.
   Money? get perPerson => trip.travelers > 1

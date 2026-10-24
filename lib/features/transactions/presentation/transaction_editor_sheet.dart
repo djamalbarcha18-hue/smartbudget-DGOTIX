@@ -22,6 +22,8 @@ import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
+import 'package:smartbudget/features/trips/domain/trip_item.dart';
+import 'package:smartbudget/features/trips/presentation/trip_text.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
 import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
@@ -339,6 +341,21 @@ class _TransactionEditorSheetState
                     ),
                   ],
                   const SizedBox(height: DsSpacing.lg),
+                  // For a trip: its items first (flights, stay…), each saved
+                  // under a category so the month's budget still counts it.
+                  if (AppEnv.smartTrip &&
+                      !_isIncome &&
+                      _tripId(ref.watch(tripsProvider).valueOrNull ??
+                              const <Trip>[]) !=
+                          null) ...<Widget>[
+                    _TripItemChips(
+                      selected:
+                          _category == null ? null : TripItems.of(_category!),
+                      onPick: (TripItem i) =>
+                          setState(() => _category = TripItems.categoryOf(i)),
+                    ),
+                    const SizedBox(height: DsSpacing.md),
+                  ],
                   _CategoryDropdown(
                     label: l.fieldCategory,
                     hint: l.selectCategory,
@@ -606,6 +623,8 @@ class _CategoryDropdown extends StatelessWidget {
         Text(label, style: t.labelMedium?.copyWith(color: c.textMuted)),
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
+          // Follows a value set from outside (a trip item).
+          key: ValueKey<String?>(value),
           initialValue: value,
           isExpanded: true,
           dropdownColor: c.bgElevated,
@@ -761,6 +780,46 @@ class _TripDropdown extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// The trip's items as chips (flights, stay…), above the category.
+class _TripItemChips extends StatelessWidget {
+  const _TripItemChips({required this.selected, required this.onPick});
+  final TripItem? selected;
+  final ValueChanged<TripItem> onPick;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(l.tripItemPick, style: t.labelMedium?.copyWith(color: c.textMuted)),
+        const SizedBox(height: 6),
+        Wrap(
+          spacing: DsSpacing.xs,
+          runSpacing: DsSpacing.xs,
+          children: <Widget>[
+            for (final TripItem i in TripItems.planned)
+              ChoiceChip(
+                avatar: Icon(tripItemIcon(i),
+                    size: 16,
+                    color: selected == i ? c.onBrand : tripItemColor(i)),
+                label: Text(tripItemLabel(l, i)),
+                selected: selected == i,
+                showCheckmark: false,
+                selectedColor: c.brand,
+                labelStyle: t.bodySmall?.copyWith(
+                    color: selected == i ? c.onBrand : c.textPrimary),
+                onSelected: (_) => onPick(i),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }

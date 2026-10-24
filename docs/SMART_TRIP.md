@@ -60,6 +60,31 @@ stored like the other plans (`sb_trips_<account>`), are part of backups and
 of the existing sync document (collection `trips`), and an expense carries
 `tripId` only when it has one (older records simply have none).
 
+## Budget split by item
+
+A trip's budget is split between seven items: flights, stay, food, getting
+around, activities, souvenirs & gifts, emergencies (`TripItem`,
+`lib/features/trips/domain/trip_item.dart`).
+
+- **Suggested split** by the trip's level and length (standard week:
+  30 / 25 / 17 / 10 / 8 / 5 / 5 %; luxury gives more to the stay, economy
+  more to emergencies; 10+ days shift from flights to stay and food, 3 days
+  or fewer the other way). It follows the level and days until the user
+  moves a slider; then it is saved on the trip (`split`, percent, adds up to
+  100). Moving one item shares the rest out in proportion.
+- **Expenses stay ordinary transactions.** Adding one inside a trip offers
+  the items first; each is saved under an app category (flights → السفر,
+  stay → السكن, food → المطاعم, getting around → النقل, activities →
+  الترفيه, gifts → التسوق, emergencies → الطوارئ), so the month's budget and
+  reports still count it. Any category reads back as an item (الطعام → food,
+  الوقود → getting around, الملابس → gifts, الصحة/التأمين → emergencies…;
+  the rest → other).
+- **Summary:** each item's share against what it cost, over in red, and a
+  tip: the item furthest over and the one with the most left to cover it
+  (also on the home card while the trip is under way; hidden in percentage
+  mode).
+- Icons: Lucide line icons in the app's own icon font (SbIcons, ISC).
+
 ## Destinations
 
 `assets/data/destinations.json`: `id`, `names` (language code to name;

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:smartbudget/design_system/icons/sb_icons.dart';
+import 'package:smartbudget/design_system/tokens/ds_chart_palette.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
+import 'package:smartbudget/features/trips/domain/trip_item.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// The icon named in destinations.json.
@@ -83,21 +86,40 @@ Color tripStatusColor(DsColors c, Trip t, DateTime now) =>
       TripStatus.ended => c.textMuted,
     };
 
-/// An icon for an expense category on the trip summary and share card.
-IconData tripCategoryIcon(String category) => switch (category) {
-      'الطعام' => Icons.shopping_basket_outlined,
-      'المطاعم' => Icons.restaurant_outlined,
-      'النقل' || 'الوقود' => Icons.directions_bus_outlined,
-      'السكن' => Icons.hotel_outlined,
-      'السفر' => Icons.flight_outlined,
-      'التسوق' || 'الملابس' => Icons.shopping_bag_outlined,
-      'الترفيه' || 'الرياضة واللياقة' => Icons.local_activity_outlined,
-      'الصحة' => Icons.medical_services_outlined,
-      'الاتصالات والإنترنت' => Icons.wifi_outlined,
-      'الحج والعمرة' => Icons.mosque_outlined,
-      'الطوارئ' || 'التأمين' => Icons.health_and_safety_outlined,
-      'صدقة وتبرّعات' => Icons.volunteer_activism_outlined,
-      _ => Icons.sell_outlined,
+/// A trip item's icon on the summary, the editor and the share card.
+IconData tripItemIcon(TripItem item) => switch (item) {
+      TripItem.flights => SbIcons.tripFlights,
+      TripItem.stay => SbIcons.tripStay,
+      TripItem.food => SbIcons.tripFood,
+      TripItem.transport => SbIcons.tripTransport,
+      TripItem.activities => SbIcons.tripActivities,
+      TripItem.gifts => SbIcons.tripGifts,
+      TripItem.emergency => SbIcons.tripEmergency,
+      TripItem.other => SbIcons.tripOther,
+    };
+
+String tripItemLabel(AppLocalizations l, TripItem item) => switch (item) {
+      TripItem.flights => l.tripItemFlights,
+      TripItem.stay => l.tripItemStay,
+      TripItem.food => l.tripItemFood,
+      TripItem.transport => l.tripItemTransport,
+      TripItem.activities => l.tripItemActivities,
+      TripItem.gifts => l.tripItemGifts,
+      TripItem.emergency => l.tripItemEmergency,
+      TripItem.other => l.tripItemOther,
+    };
+
+/// One colour per item, the same on every screen and card; never red, which
+/// says "over its share".
+Color tripItemColor(TripItem item) => switch (item) {
+      TripItem.flights => const Color(0xFF3B82F6), // blue
+      TripItem.stay => const Color(0xFFF59E0B), // amber
+      TripItem.food => const Color(0xFF10B981), // emerald
+      TripItem.transport => const Color(0xFF8B5CF6), // violet
+      TripItem.activities => const Color(0xFF14B8A6), // teal
+      TripItem.gifts => const Color(0xFFEC4899), // pink
+      TripItem.emergency => const Color(0xFF6366F1), // indigo
+      TripItem.other => DsChartPalette.other,
     };
 
 /// A destination's country in the app language (the suggested places'

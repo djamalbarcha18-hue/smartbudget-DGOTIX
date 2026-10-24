@@ -381,6 +381,35 @@ void main() {
       expect(txns.single.tripId, 'on');
     });
 
+    testWidgets('within a trip: its items first, saved under a category',
+        (WidgetTester tester) async {
+      final ProviderContainer c = await pump(
+          tester,
+          const TransactionEditorSheet(
+            type: TransactionType.expense,
+            prefill: TransactionDraft(amount: 42),
+          ),
+          prefs: stored(<Trip>[trip('on', 'Rome', from: -1, to: 3)]));
+      expect(find.text('Trip item'), findsOneWidget);
+      await tester.tap(find.text('Flights'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Save'));
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+      final Transaction saved =
+          (await c.read(financeRepositoryProvider).watchAll().first).single;
+      expect(saved.category, 'السفر');
+      expect(saved.tripId, 'on');
+    });
+
+    testWidgets('no trip: the usual categories only',
+        (WidgetTester tester) async {
+      await pump(
+          tester, const TransactionEditorSheet(type: TransactionType.expense),
+          prefs: stored(<Trip>[trip('old', 'Rome', from: -30, to: -25)]));
+      expect(find.text('Trip item'), findsNothing);
+    });
+
     testWidgets('income has no trip field', (WidgetTester tester) async {
       await pump(
           tester, const TransactionEditorSheet(type: TransactionType.income),

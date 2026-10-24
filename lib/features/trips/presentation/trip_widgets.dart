@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
+import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/trips/domain/trip_report.dart';
+import 'package:smartbudget/features/trips/presentation/trip_text.dart';
+import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// A thin rounded progress bar (value 0..1).
 class TripBar extends StatelessWidget {
@@ -67,4 +73,43 @@ class TripChip extends StatelessWidget {
                 .labelSmall
                 ?.copyWith(color: color, fontWeight: FontWeight.w700)),
       );
+}
+
+/// "Food is 40 over its share; Activities still has 60 to cover it."
+class TripTipBox extends StatelessWidget {
+  const TripTipBox({super.key, required this.tip});
+  final TripItemTip tip;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    String money(Money m) => MoneyFormatter.format(m);
+    return Container(
+      padding: const EdgeInsets.all(DsSpacing.sm),
+      decoration: BoxDecoration(
+        color: c.warning.withValues(alpha: 0.1),
+        borderRadius: DsRadius.brMd,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Icon(Icons.lightbulb_outline_rounded, size: 16, color: c.warning),
+          const SizedBox(width: DsSpacing.xs),
+          Expanded(
+            child: Text(
+              tip.spare == null
+                  ? l.tripTipOver(tripItemLabel(l, tip.over), money(tip.overBy))
+                  : l.tripTipCover(
+                      tripItemLabel(l, tip.over),
+                      money(tip.overBy),
+                      tripItemLabel(l, tip.spare!),
+                      money(tip.spareLeft!)),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

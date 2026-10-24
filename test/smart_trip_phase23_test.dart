@@ -28,6 +28,7 @@ import 'package:smartbudget/features/trips/data/trip_image_share.dart';
 import 'package:smartbudget/features/trips/data/trip_photos.dart';
 import 'package:smartbudget/features/trips/domain/destination.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
+import 'package:smartbudget/features/trips/domain/trip_item.dart';
 import 'package:smartbudget/features/trips/domain/trip_report.dart';
 import 'package:smartbudget/features/trips/presentation/trip_editor_sheet.dart';
 import 'package:smartbudget/features/trips/presentation/trip_home_card.dart';
@@ -141,9 +142,13 @@ void main() {
       expect(r.difference, const Money(18000, 'USD'));
       expect(r.dailyAverage, const Money(18857, 'USD')); // 1,320 / 7
       expect(r.perPerson, const Money(66000, 'USD'));
-      expect(r.top!.category, 'السكن');
-      expect(r.categories.map((TripCategoryShare c) => c.category),
-          <String>['السكن', 'التسوق', 'المطاعم', 'النقل']);
+      expect(r.top!.item, TripItem.stay);
+      expect(r.categories.map((TripItemShare c) => c.item), <TripItem>[
+        TripItem.stay,
+        TripItem.gifts,
+        TripItem.food,
+        TripItem.transport
+      ]);
     });
 
     test('no budget: no comparison and no badge', () {
@@ -520,6 +525,43 @@ void main() {
       expect(TripDays.total(saved), 30);
       expect(saved.start, far.start);
       expect(saved.level, TripLevel.luxury);
+    });
+
+    testWidgets('the budget split: suggested, adjusted, saved',
+        (WidgetTester tester) async {
+      final Trip far = trip('a', from: 10, to: 16, budget: 1500);
+      final ProviderContainer c = await pump(
+          tester, SingleChildScrollView(child: TripEditorSheet(existing: far)),
+          size: const Size(390, 2600),
+          prefs: stored(<Trip>[far], const <Transaction>[]));
+      expect(find.text('Budget split'), findsOneWidget);
+      expect(find.text('Flights 30%'), findsOneWidget);
+      // Shorter trip: the suggestion follows (no flights change by hand yet).
+      await tester.tap(find.text('Adjust'));
+      await tester.pumpAndSettle();
+      final Finder sliders = find.byType(Slider);
+      expect(sliders, findsNWidgets(8)); // the days, then the 7 items
+      // No flights (a road trip): the rest share it out.
+      tester.widget<Slider>(sliders.at(1)).onChanged!(0);
+      await tester.pumpAndSettle();
+      expect(find.text('Suggested split'), findsOneWidget);
+      await tester.ensureVisible(find.text('Save'));
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+      final Trip saved = (await c.read(tripStoreProvider).all()).single;
+      expect(saved.split![TripItem.flights], 0);
+      expect(saved.split!.values.fold<int>(0, (int a, int v) => a + v), 100);
+    });
+
+    testWidgets('the summary: each item against its share, and a tip',
+        (WidgetTester tester) async {
+      await pump(tester, const TripSummaryPage(tripId: 'a'),
+          size: const Size(390, 2400),
+          prefs:
+              stored(<Trip>[trip('a', from: -9, to: -3, budget: 1500)], five));
+      expect(find.byType(TripPlanPanel), findsOneWidget);
+      expect(find.textContaining('Souvenirs & gifts is'), findsOneWidget);
+      expect(find.textContaining('Flights still has'), findsOneWidget);
     });
 
     testWidgets('shown on the summary', (WidgetTester tester) async {

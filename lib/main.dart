@@ -63,6 +63,9 @@ Future<void> _start() async {
       yield LicenseEntryWithLineBreaks(<String>[f],
           await rootBundle.loadString('assets/google_fonts/OFL-$f.txt'));
     }
+    // The trip item icons in SbIcons are Lucide's.
+    yield LicenseEntryWithLineBreaks(<String>['Lucide'],
+        await rootBundle.loadString('assets/fonts/LICENSE-Lucide.txt'));
   });
 
   // Erase personal AI keys saved by earlier versions (no longer supported).

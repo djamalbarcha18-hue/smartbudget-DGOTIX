@@ -63,3 +63,14 @@ the Google Fonts variable font, subset to the Arabic script (Arabic and Urdu).
 - License: SIL Open Font License 1.1: `assets/google_fonts/OFL-NotoNaskhArabic.txt`
   (also shown in the app's licenses page).
 Copyright 2022 The Noto Project Authors (https://github.com/notofonts/arabic)
+
+## Trip item icons (in `assets/fonts/icons/SbIcons.ttf`)
+
+The SmartTrip item icons (plane, bed, utensils, bus, ticket, gift,
+shield-check, tag) are **Lucide** icons, their strokes turned into outlines
+by `tool/build_icon_font.py`.
+
+- Source: https://lucide.dev (lucide-static 0.460.0)
+- License: ISC — `assets/fonts/LICENSE-Lucide.txt` (also shown in the app's
+  licenses page).
+Copyright (c) Lucide Contributors 2022; portions Cole Bemis 2013-2022 (Feather, MIT).
