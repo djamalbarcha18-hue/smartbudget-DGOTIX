@@ -1621,5 +1621,6 @@
   "tripTipCover": "{over} is {amount} over its share; {spare} still has {left} to cover it.",
   "@tripTipCover": {"placeholders": {"over": {"type": "String"}, "amount": {"type": "String"}, "spare": {"type": "String"}, "left": {"type": "String"}}},
   "tripTipOver": "{over} is {amount} over its share.",
-  "@tripTipOver": {"placeholders": {"over": {"type": "String"}, "amount": {"type": "String"}}}
+  "@tripTipOver": {"placeholders": {"over": {"type": "String"}, "amount": {"type": "String"}}},
+  "tripTopSpentOn": "Spent most on"
 }

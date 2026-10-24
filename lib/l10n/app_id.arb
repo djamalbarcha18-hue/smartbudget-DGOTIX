@@ -1376,5 +1376,6 @@
   "tripItemOverBy": "Lebih {amount}",
   "tripItemLeftAmount": "Sisa {amount}",
   "tripTipCover": "{over} melebihi bagiannya {amount}; {spare} masih punya {left} untuk menutupinya.",
-  "tripTipOver": "{over} melebihi bagiannya {amount}."
+  "tripTipOver": "{over} melebihi bagiannya {amount}.",
+  "tripTopSpentOn": "Paling banyak untuk"
 }

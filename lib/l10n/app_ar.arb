@@ -1576,5 +1576,6 @@
   "tripItemOverBy": "تجاوز بـ {amount}",
   "tripItemLeftAmount": "بقي {amount}",
   "tripTipCover": "{over} تجاوز حصته بـ {amount}، ويمكن تغطيته مما بقي في {spare} ({left}).",
-  "tripTipOver": "{over} تجاوز حصته بـ {amount}."
+  "tripTipOver": "{over} تجاوز حصته بـ {amount}.",
+  "tripTopSpentOn": "صرفتُ أكثر على"
 }

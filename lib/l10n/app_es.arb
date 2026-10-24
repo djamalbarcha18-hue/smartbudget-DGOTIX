@@ -1376,5 +1376,6 @@
   "tripItemOverBy": "{amount} de más",
   "tripItemLeftAmount": "Quedan {amount}",
   "tripTipCover": "{over} supera su parte en {amount}; a {spare} le quedan {left} para cubrirlo.",
-  "tripTipOver": "{over} supera su parte en {amount}."
+  "tripTipOver": "{over} supera su parte en {amount}.",
+  "tripTopSpentOn": "Gasté más en"
 }

@@ -515,7 +515,7 @@ class TripShareCard extends StatelessWidget {
                       u),
                   if (r.top != null)
                     _tile(
-                        l.tripTopCategory,
+                        l.tripTopSpentOn, // in the traveller's own words
                         tripItemLabel(l, r.top!.item),
                         ink,
                         muted,
