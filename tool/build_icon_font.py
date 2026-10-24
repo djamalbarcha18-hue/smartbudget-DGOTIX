@@ -117,7 +117,7 @@ def stroked(*paths, width=2.0):
 
 
 # The trip items, from Lucide (plane, bed, utensils, bus, ticket, gift,
-# shield-check, tag).
+# shield-check, tag; plane-takeoff and plane-landing for the trip's state).
 def trip_flights():
     return stroked("M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 "
                    "1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 "
@@ -170,6 +170,25 @@ def trip_other():
                    svg_circle(7.5, 7.5, 0.5))
 
 
+# A trip's state: taking off while it is planned, landing once it is over.
+def trip_takeoff():
+    return stroked("M2 22h20",
+                   "M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0"
+                   " 1.8 0L8 12 5 6l.9-.45a2 2 0 0 1 2.09.2l4.02 3a2 2 0 0 0 2.1"
+                   ".2l4.19-2.06a2.41 2.41 0 0 1 1.73-.17L21 7a1.4 1.4 0 0 1 .87"
+                   " 1.99l-.38.76c-.23.46-.6.84-1.07 1.08L7.58 17.2a2 2 0 0 1"
+                   "-1.22.18Z")
+
+
+def trip_landing():
+    return stroked("M2 22h20",
+                   "M3.77 10.77 2 9l2-4.5 1.1.55c.55.28.9.84.9 1.45s.35 1.17.9"
+                   " 1.45L8 8.5l3-6 1.05.53a2 2 0 0 1 1.09 1.52l.72 5.4a2 2 0 0"
+                   " 0 1.09 1.52l4.4 2.2c.42.22.78.55 1.01.96l.6 1.03c.49.88-.06"
+                   " 1.98-1.06 2.1l-1.18.15c-.47.06-.95-.02-1.37-.24L4.29 11.15"
+                   "a2 2 0 0 1-.52-.38Z")
+
+
 GLYPHS = {
     "moneybox": (0xE000, money_box_outlined),
     "moneybox_filled": (0xE001, money_box_filled),
@@ -181,6 +200,8 @@ GLYPHS = {
     "trip_gifts": (0xE007, trip_gifts),
     "trip_emergency": (0xE008, trip_emergency),
     "trip_other": (0xE009, trip_other),
+    "trip_takeoff": (0xE00A, trip_takeoff),
+    "trip_landing": (0xE00B, trip_landing),
 }
 
 

@@ -11,6 +11,7 @@ import 'package:smartbudget/design_system/components/amount_dialog.dart';
 import 'package:smartbudget/design_system/components/currency_suffix.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
+import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -165,7 +166,7 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Icon(Icons.flight_takeoff_outlined, color: c.brand),
+                  Icon(SbIcons.tripTakeoff, color: c.brand),
                   const SizedBox(width: DsSpacing.sm),
                   Expanded(
                     child: Text(

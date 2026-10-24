@@ -169,9 +169,17 @@ class _TripCard extends ConsumerWidget {
                   color: chipColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(999),
                 ),
-                child: Text(tripStatusLabel(l, trip, now),
-                    style: t.labelSmall?.copyWith(
-                        color: chipColor, fontWeight: FontWeight.w700)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(tripStatusIcon(TripMath.status(trip, now)),
+                        size: 13, color: chipColor),
+                    const SizedBox(width: 4),
+                    Text(tripStatusLabel(l, trip, now),
+                        style: t.labelSmall?.copyWith(
+                            color: chipColor, fontWeight: FontWeight.w700)),
+                  ],
+                ),
               ),
               PopupMenuButton<String>(
                 icon:

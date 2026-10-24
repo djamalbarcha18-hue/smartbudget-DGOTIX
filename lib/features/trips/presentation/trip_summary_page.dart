@@ -237,7 +237,8 @@ class _Hero extends StatelessWidget {
                     if (trip.level != null)
                       _Meta(Icons.sell_outlined, tripLevelLabel(l, trip.level!),
                           meta),
-                    _Meta(Icons.flight_takeoff_outlined, trip.name, meta),
+                    _Meta(tripStatusIcon(TripMath.status(trip, AppClock.now())),
+                        trip.name, meta),
                   ],
                 ),
               ],

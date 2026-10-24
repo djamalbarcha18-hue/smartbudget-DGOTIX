@@ -67,7 +67,7 @@ Copyright 2022 The Noto Project Authors (https://github.com/notofonts/arabic)
 ## Trip item icons (in `assets/fonts/icons/SbIcons.ttf`)
 
 The SmartTrip item icons (plane, bed, utensils, bus, ticket, gift,
-shield-check, tag) are **Lucide** icons, their strokes turned into outlines
+shield-check, tag, plane-takeoff, plane-landing) are **Lucide** icons, their strokes turned into outlines
 by `tool/build_icon_font.py`.
 
 - Source: https://lucide.dev (lucide-static 0.460.0)

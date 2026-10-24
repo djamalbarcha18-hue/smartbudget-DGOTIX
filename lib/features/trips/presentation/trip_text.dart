@@ -79,6 +79,14 @@ String tripStatusLabel(AppLocalizations l, Trip t, DateTime now) =>
       TripStatus.ended => l.tripEnded,
     };
 
+/// The plane by the trip's state: taking off while planned, flying while
+/// under way, landing once back.
+IconData tripStatusIcon(TripStatus s) => switch (s) {
+      TripStatus.upcoming => SbIcons.tripTakeoff,
+      TripStatus.active => SbIcons.tripFlights,
+      TripStatus.ended => SbIcons.tripLanding,
+    };
+
 Color tripStatusColor(DsColors c, Trip t, DateTime now) =>
     switch (TripMath.status(t, now)) {
       TripStatus.upcoming => c.brand,

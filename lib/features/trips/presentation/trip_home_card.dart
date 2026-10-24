@@ -96,9 +96,19 @@ class TripHomeCard extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(phase,
-                        style: t.labelMedium?.copyWith(
-                            color: phaseColor, fontWeight: FontWeight.w700)),
+                    Row(
+                      children: <Widget>[
+                        Icon(tripStatusIcon(status),
+                            size: 16, color: phaseColor),
+                        const SizedBox(width: DsSpacing.xs),
+                        Flexible(
+                          child: Text(phase,
+                              style: t.labelMedium?.copyWith(
+                                  color: phaseColor,
+                                  fontWeight: FontWeight.w700)),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 2),
                     Text(trip.name,
                         style: t.titleMedium

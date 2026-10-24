@@ -148,6 +148,10 @@ class TripShareCard extends StatelessWidget {
       children: <Widget>[
         Row(
           children: <Widget>[
+            // The plane by the trip's state: landing once back.
+            Icon(tripStatusIcon(TripMath.status(trip, AppClock.now())),
+                size: 4.6 * u, color: Colors.white.withValues(alpha: 0.9)),
+            SizedBox(width: 1.6 * u),
             Expanded(
               child: Text(kicker,
                   style: base.copyWith(
@@ -703,8 +707,20 @@ class TripShareCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Text(kicker,
-                    style: soft.copyWith(fontSize: 3.6 * u, shadows: shade)),
+                Row(
+                  children: <Widget>[
+                    Icon(tripStatusIcon(TripMath.status(trip, AppClock.now())),
+                        size: 4.4 * u,
+                        color: Colors.white.withValues(alpha: 0.82),
+                        shadows: shade),
+                    SizedBox(width: 1.6 * u),
+                    Expanded(
+                      child: Text(kicker,
+                          style: soft.copyWith(
+                              fontSize: 3.6 * u, shadows: shade)),
+                    ),
+                  ],
+                ),
                 SizedBox(height: 0.8 * u),
                 Text(
                   destination?.nameFor(lang) ?? trip.destination,

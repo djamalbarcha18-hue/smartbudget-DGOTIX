@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
+import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
@@ -35,6 +36,7 @@ import 'package:smartbudget/features/trips/presentation/trip_home_card.dart';
 import 'package:smartbudget/features/trips/presentation/trip_share_card.dart';
 import 'package:smartbudget/features/trips/presentation/trip_share_page.dart';
 import 'package:smartbudget/features/trips/presentation/trip_summary_page.dart';
+import 'package:smartbudget/features/trips/presentation/trip_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// How the app writes [dollars] (with its direction marks).
@@ -129,6 +131,12 @@ void main() {
           TripReport.of(trip('a', budget: 1000), five, now, currency: 'USD');
       expect(TripDashboard.dailyAvailable(over, now), const Money(0, 'USD'));
     });
+  });
+
+  test('the plane: taking off, flying, landing once back', () {
+    expect(tripStatusIcon(TripStatus.upcoming), SbIcons.tripTakeoff);
+    expect(tripStatusIcon(TripStatus.active), SbIcons.tripFlights);
+    expect(tripStatusIcon(TripStatus.ended), SbIcons.tripLanding);
   });
 
   group('the numbers', () {
