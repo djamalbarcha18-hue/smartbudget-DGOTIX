@@ -37,6 +37,8 @@ import 'package:smartbudget/features/portfolio/application/portfolio_controller.
 import 'package:smartbudget/features/account/presentation/delete_account_section.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_section.dart';
 import 'package:smartbudget/features/install/presentation/install_widgets.dart';
+import 'package:smartbudget/features/offers/application/offers_controller.dart';
+import 'package:smartbudget/features/offers/presentation/partner_offer_card.dart';
 import 'package:smartbudget/features/settings/presentation/base_currency_change.dart';
 import 'package:smartbudget/features/settings/presentation/clock_section.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
@@ -157,6 +159,18 @@ class SettingsPage extends ConsumerWidget {
                 child: const PrivacySection(),
               ),
               const SizedBox(height: DsSpacing.lg),
+
+              // Pro: partners' booking suggestions for trips (no ads).
+              if (AppEnv.smartTrip &&
+                  AppEnv.partnerOffers &&
+                  ref.watch(paidProProvider)) ...<Widget>[
+                _SettingsSection(
+                  icon: Icons.workspace_premium_outlined,
+                  title: l.proSuggestionsTitle,
+                  child: const ProSuggestionsSetting(),
+                ),
+                const SizedBox(height: DsSpacing.lg),
+              ],
 
               // App lock (PIN / device).
               _SettingsSection(

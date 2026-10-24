@@ -109,8 +109,16 @@ screen, at the moment it helps, chosen on the device from the trip alone
 Never after the trip, never in the summary or share card, no pop-ups or
 notifications. Every offer says "Partner offer · for your trip to …", has
 a hide button (hidden 30 days, `sb_offers_hidden`), and opens the partner's
-https link with `utm_source=smartbudget`. Paying Pro subscribers see none
-(`paidProProvider`; the free launch access doesn't count).
+https link with `utm_source=smartbudget`.
+
+**Pro:** no ads. Paying subscribers (`paidProProvider`; the free launch
+access doesn't count) see *booking suggestions* instead: offers with
+`"audience": "pro"` and their `perk` (a discount, an extra bag…) come
+first, and a partner from the user's own country (`homeCountries`, from
+the country of their main currency; none for the euro) before others.
+Marked "Pro suggestion from our partners", with a switch to turn them off
+in Settings (`sb_pro_suggestions`). Offers with `"audience": "free"` show
+on the free plan only.
 
 Offers live in `assets/data/partner_offers.json` (empty until partners
 sign; later the server):
@@ -120,7 +128,9 @@ sign; later the server):
   "id": "acme-esim-tr", "partner": "Acme", "kind": "esim",
   "title": {"ar": "…", "en": "…"}, "body": {"ar": "…", "en": "…"},
   "url": "https://…", "countries": ["TR"], "destinations": [],
-  "from": "2026-11-01", "until": "2027-03-31"
+  "from": "2026-11-01", "until": "2027-03-31",
+  "audience": "everyone", "homeCountries": [],
+  "perk": {"ar": "…", "en": "…"}
 }]}
 ```
 

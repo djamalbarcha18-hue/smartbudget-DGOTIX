@@ -1402,5 +1402,8 @@
   "offerSponsored": "Tawaran rakan kongsi",
   "offerOpen": "Lihat tawaran",
   "offerHide": "Sembunyikan",
-  "offerFor": "untuk perjalanan anda ke {place}"
+  "offerFor": "untuk perjalanan anda ke {place}",
+  "offerProPick": "Cadangan Pro daripada rakan kongsi kami",
+  "proSuggestionsTitle": "Cadangan tempahan daripada rakan kongsi",
+  "proSuggestionsHint": "Hotel, syarikat penerbangan dan eSIM pilihan untuk perjalanan anda — sebahagiannya dari negara anda — dengan kelebihan Pro. Tiada iklan."
 }

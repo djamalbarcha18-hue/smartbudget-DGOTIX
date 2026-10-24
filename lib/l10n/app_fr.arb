@@ -1402,5 +1402,8 @@
   "offerSponsored": "Offre partenaire",
   "offerOpen": "Voir l’offre",
   "offerHide": "Masquer",
-  "offerFor": "pour votre voyage à {place}"
+  "offerFor": "pour votre voyage à {place}",
+  "offerProPick": "Suggestion Pro de nos partenaires",
+  "proSuggestionsTitle": "Suggestions de réservation des partenaires",
+  "proSuggestionsHint": "Hôtels, compagnies et eSIM choisis pour vos voyages — certains de votre pays — avec des avantages Pro. Sans pub."
 }

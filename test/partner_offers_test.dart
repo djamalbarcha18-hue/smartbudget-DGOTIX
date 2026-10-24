@@ -3,8 +3,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/theme/ds_theme.dart';
 import 'package:smartbudget/features/offers/application/offers_controller.dart';
 import 'package:smartbudget/features/offers/domain/partner_offer.dart';
@@ -125,6 +127,74 @@ void main() {
     });
   });
 
+  group('Pro: booking suggestions, partners from home', () {
+    PartnerOffer offer(String id,
+            {OfferAudience audience = OfferAudience.everyone,
+            Set<String> home = const <String>{}}) =>
+        PartnerOffer(
+          id: id,
+          partner: id,
+          kind: OfferKind.airline,
+          title: const <String, String>{'en': 'x'},
+          body: const <String, String>{'en': 'y'},
+          url: 'https://example.com/$id',
+          audience: audience,
+          homeCountries: home,
+        );
+    final List<PartnerOffer> offers = <PartnerOffer>[
+      offer('ad'),
+      offer('free-only', audience: OfferAudience.free),
+      offer('pro'),
+      offer('pro-perk', audience: OfferAudience.pro),
+      offer('pro-home-sa', audience: OfferAudience.pro, home: <String>{'SA'}),
+    ];
+    String? id({required bool pro, String? home}) => OfferMatcher.pick(
+          offers: offers,
+          slot: OfferSlot.tripEditor,
+          trip: trip(kind: TripKind.independent),
+          place: rome,
+          now: now,
+          pro: pro,
+          home: home,
+          // Only airlines in this list: hide nothing, the hotel slot is empty.
+        )?.id;
+
+    test('Pro: a partner from their own country first, then Pro picks', () {
+      expect(id(pro: true, home: 'SA'), 'pro-home-sa');
+      expect(id(pro: true, home: 'MA'), 'pro-perk');
+      expect(id(pro: true), 'pro-perk');
+    });
+
+    test('the free plan never gets the Pro picks', () {
+      expect(<String?>{id(pro: false), id(pro: false, home: 'SA')},
+          everyElement(isIn(<String>['ad', 'free-only'])));
+    });
+
+    test('Pro can turn the suggestions off', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      final ProviderContainer c = ProviderContainer(
+          overrides: <Override>[paidProProvider.overrideWithValue(true)]);
+      addTearDown(c.dispose);
+      expect(c.read(offersOnProvider), isTrue);
+      await c.read(proSuggestionsProvider.notifier).set(false);
+      expect(c.read(offersOnProvider), isFalse);
+    });
+
+    test('home is the country of the main currency; none for the euro', () {
+      for (final (String, String?) v in <(String, String?)>[
+        ('SAR', 'SA'),
+        ('MAD', 'MA'),
+        ('EUR', null),
+      ]) {
+        final ProviderContainer c = ProviderContainer(overrides: <Override>[
+          baseCurrencyProvider.overrideWith(() => _Base(v.$1)),
+        ]);
+        addTearDown(c.dispose);
+        expect(c.read(homeCountryProvider), v.$2, reason: v.$1);
+      }
+    });
+  });
+
   group('reading offers', () {
     test('only https links, known kinds; dates, places', () {
       final PartnerOffer o = PartnerOffer.fromJson(<String, dynamic>{
@@ -164,9 +234,11 @@ void main() {
   group('quiet, marked, and not for Pro', () {
     setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
 
-    test('a paying Pro subscriber sees no offers', () {
-      final ProviderContainer pro = ProviderContainer(
-          overrides: <Override>[paidProProvider.overrideWithValue(true)]);
+    test('a paying Pro subscriber sees no ads (only Pro picks, if on)', () {
+      final ProviderContainer pro = ProviderContainer(overrides: <Override>[
+        paidProProvider.overrideWithValue(true),
+        proSuggestionsProvider.overrideWith(_Off.new),
+      ]);
       addTearDown(pro.dispose);
       expect(pro.read(offersOnProvider), isFalse);
       final ProviderContainer free = ProviderContainer(
@@ -200,4 +272,17 @@ void main() {
       expect(hidden, isTrue);
     });
   });
+}
+
+class _Off extends ProSuggestionsController {
+  @override
+  bool build() => false;
+}
+
+class _Base extends BaseCurrencyController {
+  _Base(this.code);
+  final String code;
+
+  @override
+  String build() => code;
 }

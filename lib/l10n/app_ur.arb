@@ -1402,5 +1402,8 @@
   "offerSponsored": "پارٹنر کی پیشکش",
   "offerOpen": "پیشکش دیکھیں",
   "offerHide": "چھپائیں",
-  "offerFor": "{place} کے سفر کے لیے"
+  "offerFor": "{place} کے سفر کے لیے",
+  "offerProPick": "ہمارے پارٹنرز کی Pro تجویز",
+  "proSuggestionsTitle": "پارٹنرز کی بکنگ تجاویز",
+  "proSuggestionsHint": "آپ کے سفر کے لیے منتخب ہوٹل، ایئر لائنز اور eSIM — کچھ آپ کے اپنے ملک سے — Pro فوائد کے ساتھ۔ کوئی اشتہار نہیں۔"
 }

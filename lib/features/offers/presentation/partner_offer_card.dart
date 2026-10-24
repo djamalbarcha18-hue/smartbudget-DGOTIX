@@ -42,6 +42,7 @@ class PartnerOfferSlot extends ConsumerWidget {
     final DestinationCatalog catalog =
         ref.watch(destinationCatalogProvider).valueOrNull ??
             DestinationCatalog.empty;
+    final bool pro = ref.watch(paidProProvider);
     final PartnerOffer? offer = OfferMatcher.pick(
       offers: ref.watch(partnerOffersProvider).valueOrNull ??
           const <PartnerOffer>[],
@@ -51,12 +52,15 @@ class PartnerOfferSlot extends ConsumerWidget {
       now: AppClock.now(),
       hidden: ref.watch(hiddenOffersProvider),
       report: report,
+      pro: pro,
+      home: ref.watch(homeCountryProvider),
     );
     if (offer == null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.only(top: DsSpacing.md),
       child: PartnerOfferCard(
         offer: offer,
+        pro: pro,
         place: catalog.display(trip.destination, appLangOf(context)),
         onHide: () => ref.read(hiddenOffersProvider.notifier).hide(offer.id),
       ),
@@ -71,8 +75,12 @@ class PartnerOfferCard extends StatelessWidget {
       {super.key,
       required this.offer,
       required this.place,
-      required this.onHide});
+      required this.onHide,
+      this.pro = false});
   final PartnerOffer offer;
+
+  /// A Pro subscriber's booking suggestion (with its perk), not an ad.
+  final bool pro;
   final String place;
   final VoidCallback onHide;
 
@@ -103,7 +111,8 @@ class PartnerOfferCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 // Always said: this is a partner's offer, and why it's here.
-                Text('${l.offerSponsored} · ${l.offerFor(place)}',
+                Text(
+                    '${pro ? l.offerProPick : l.offerSponsored} · ${l.offerFor(place)}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: t.labelSmall?.copyWith(color: c.textFaint)),
@@ -112,6 +121,22 @@ class PartnerOfferCard extends StatelessWidget {
                     style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700)),
                 Text(PartnerOffer.text(offer.body, lang),
                     style: t.bodySmall?.copyWith(color: c.textMuted)),
+                if (pro && offer.perk.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Row(
+                      children: <Widget>[
+                        Icon(Icons.workspace_premium_rounded,
+                            size: 14, color: c.warning),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(PartnerOffer.text(offer.perk, lang),
+                              style: t.labelMedium?.copyWith(
+                                  color: c.brand, fontWeight: FontWeight.w700)),
+                        ),
+                      ],
+                    ),
+                  ),
                 Align(
                   alignment: AlignmentDirectional.centerStart,
                   child: TextButton(
@@ -134,6 +159,26 @@ class PartnerOfferCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Settings, Pro only: booking suggestions from partners on or off.
+class ProSuggestionsSetting extends ConsumerWidget {
+  const ProSuggestionsSetting({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    return SwitchListTile(
+      contentPadding: EdgeInsets.zero,
+      value: ref.watch(proSuggestionsProvider),
+      onChanged: (bool v) => ref.read(proSuggestionsProvider.notifier).set(v),
+      title: Text(l.proSuggestionsTitle, style: t.bodyMedium),
+      subtitle: Text(l.proSuggestionsHint,
+          style: t.bodySmall?.copyWith(color: c.textFaint)),
     );
   }
 }

@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/core/money/currency.dart';
+import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
 import 'package:smartbudget/features/billing/domain/entitlement.dart';
@@ -39,9 +41,50 @@ final paidProProvider = Provider<bool>((ref) {
   return e.effectivePlanAt(AppClock.now()) == Plan.pro;
 });
 
-/// Whether offers show at all.
+/// Whether offers show at all: ads on the free plan; on Pro, booking
+/// suggestions unless the subscriber turned them off.
 final offersOnProvider = Provider<bool>((ref) =>
-    AppEnv.smartTrip && AppEnv.partnerOffers && !ref.watch(paidProProvider));
+    AppEnv.smartTrip &&
+    AppEnv.partnerOffers &&
+    (!ref.watch(paidProProvider) || ref.watch(proSuggestionsProvider)));
+
+/// The country the user lives in, as their main currency tells it (null for
+/// a currency of many countries, like the euro).
+final homeCountryProvider = Provider<String?>((ref) {
+  final String c =
+      Currencies.byCode(ref.watch(baseCurrencyProvider)).country.toUpperCase();
+  return c.length == 2 && c != 'EU' ? c : null;
+});
+
+/// Pro: booking suggestions from partners on (default) or off.
+final proSuggestionsProvider = NotifierProvider<ProSuggestionsController, bool>(
+    ProSuggestionsController.new);
+
+class ProSuggestionsController extends Notifier<bool> {
+  static const String _key = 'sb_pro_suggestions';
+
+  @override
+  bool build() {
+    _load();
+    return true;
+  }
+
+  Future<void> _load() async {
+    try {
+      final SharedPreferences p = await SharedPreferences.getInstance();
+      final bool? v = p.getBool(_key);
+      if (v != null) state = v;
+    } catch (_) {}
+  }
+
+  Future<void> set(bool on) async {
+    state = on;
+    try {
+      final SharedPreferences p = await SharedPreferences.getInstance();
+      await p.setBool(_key, on);
+    } catch (_) {}
+  }
+}
 
 /// Offers the user hid, and when (they stay away 30 days).
 final hiddenOffersProvider =
@@ -158,6 +201,46 @@ const List<PartnerOffer> demoOffers = <PartnerOffer>[
     },
     url: 'https://example.com/umrah',
     destinations: <String>{'mecca', 'medina'},
+  ),
+  // Pro: booking suggestions with a perk, and a partner from home.
+  PartnerOffer(
+    id: 'demo-pro-hotel',
+    partner: 'Sample hotels',
+    kind: OfferKind.hotel,
+    audience: OfferAudience.pro,
+    title: <String, String>{
+      'ar': 'فنادق مختارة في وجهتك',
+      'en': 'Hand-picked hotels where you are going',
+    },
+    body: <String, String>{
+      'ar': 'احجز مباشرة من الشريك.',
+      'en': 'Book directly with the partner.',
+    },
+    perk: <String, String>{
+      'ar': 'خصم 10% لمشتركي Pro',
+      'en': '10% off for Pro subscribers',
+    },
+    url: 'https://example.com/pro-hotels',
+  ),
+  PartnerOffer(
+    id: 'demo-pro-airline-home',
+    partner: 'Sample home airline',
+    kind: OfferKind.airline,
+    audience: OfferAudience.pro,
+    homeCountries: <String>{'SA'},
+    title: <String, String>{
+      'ar': 'شركة طيران من بلدك إلى وجهتك',
+      'en': 'An airline from your country to your destination',
+    },
+    body: <String, String>{
+      'ar': 'رحلات مباشرة وحجز بعملتك.',
+      'en': 'Direct flights, booked in your currency.',
+    },
+    perk: <String, String>{
+      'ar': 'حقيبة إضافية مجانًا لمشتركي Pro',
+      'en': 'A free extra bag for Pro subscribers',
+    },
+    url: 'https://example.com/home-airline',
   ),
   PartnerOffer(
     id: 'demo-transport',

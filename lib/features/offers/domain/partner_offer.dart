@@ -15,6 +15,10 @@ enum OfferKind {
   activity,
 }
 
+/// Who an offer is for: everyone, the free plan (ads), or Pro subscribers
+/// (booking suggestions, usually with a perk).
+enum OfferAudience { everyone, free, pro }
+
 /// Where an offer may show: one place per screen, at the moment it helps.
 enum OfferSlot {
   /// In the trip editor, by the hotel / airline / agency the user types.
@@ -41,6 +45,9 @@ class PartnerOffer {
     this.countries = const <String>{},
     this.from,
     this.until,
+    this.audience = OfferAudience.everyone,
+    this.homeCountries = const <String>{},
+    this.perk = const <String, String>{},
   });
 
   final String id;
@@ -57,6 +64,20 @@ class PartnerOffer {
   final Set<String> countries;
   final DateTime? from;
   final DateTime? until;
+  final OfferAudience audience;
+
+  /// Countries the user lives in for it to show (a home airline or agency);
+  /// empty: users from anywhere.
+  final Set<String> homeCountries;
+
+  /// What Pro subscribers get (a discount…), by language; may be empty.
+  final Map<String, String> perk;
+
+  /// For a user on Pro or not, living in [home] (null: unknown).
+  bool isForUser({required bool pro, String? home}) =>
+      (audience == OfferAudience.everyone ||
+          (audience == OfferAudience.pro) == pro) &&
+      (homeCountries.isEmpty || homeCountries.contains(home));
 
   static String text(Map<String, String> m, String lang) =>
       m[lang] ?? m['en'] ?? (m.isEmpty ? '' : m.values.first);
@@ -120,6 +141,16 @@ class PartnerOffer {
       },
       from: DateTime.tryParse((j['from'] as String?) ?? ''),
       until: DateTime.tryParse((j['until'] as String?) ?? ''),
+      audience: OfferAudience.values
+              .where((OfferAudience a) => a.name == j['audience'])
+              .firstOrNull ??
+          OfferAudience.everyone,
+      homeCountries: <String>{
+        for (final dynamic c
+            in (j['homeCountries'] as List<dynamic>?) ?? <dynamic>[])
+          '$c',
+      },
+      perk: _texts(j['perk']),
     );
   }
 }
@@ -142,6 +173,8 @@ abstract final class OfferMatcher {
     required DateTime now,
     Map<String, DateTime> hidden = const <String, DateTime>{},
     TripReport? report,
+    bool pro = false,
+    String? home,
   }) {
     final TripStatus status = TripMath.status(trip, now);
     final Set<TripItem> spentOn = <TripItem>{
@@ -181,15 +214,24 @@ abstract final class OfferMatcher {
           if (o.kind == k &&
               o.liveOn(day) &&
               o.isFor(place) &&
+              o.isForUser(pro: pro, home: home) &&
               !_stillHidden(hidden[o.id], now))
             o,
       ];
       if (fit.isEmpty) continue;
+      // On Pro, the offers made for Pro (with their perk) first; then a
+      // partner from the user's own country.
+      final int best = fit.map(_rank).reduce((int a, int b) => a < b ? a : b);
+      fit.removeWhere((PartnerOffer o) => _rank(o) != best);
       // Several partners: take turns by day, so each gets seen.
       return fit[day.difference(DateTime(2026)).inDays.abs() % fit.length];
     }
     return null;
   }
+
+  static int _rank(PartnerOffer o) =>
+      (o.audience == OfferAudience.pro ? 0 : 2) +
+      (o.homeCountries.isEmpty ? 1 : 0);
 
   static bool _stillHidden(DateTime? at, DateTime now) =>
       at != null && now.difference(at) < hiddenFor;

@@ -1402,5 +1402,8 @@
   "offerSponsored": "Partner teklifi",
   "offerOpen": "Teklifi gör",
   "offerHide": "Gizle",
-  "offerFor": "{place} seyahatin için"
+  "offerFor": "{place} seyahatin için",
+  "offerProPick": "Ortaklarımızdan Pro önerisi",
+  "proSuggestionsTitle": "Ortaklardan rezervasyon önerileri",
+  "proSuggestionsHint": "Seyahatlerin için seçilmiş oteller, havayolları ve eSIM’ler — bazıları kendi ülkenden — Pro ayrıcalıklarıyla. Reklamsız."
 }

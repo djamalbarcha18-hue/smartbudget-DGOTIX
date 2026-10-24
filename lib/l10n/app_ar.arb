@@ -1602,5 +1602,8 @@
   "offerSponsored": "عرض شريك",
   "offerOpen": "اعرض العرض",
   "offerHide": "إخفاء",
-  "offerFor": "لرحلتك إلى {place}"
+  "offerFor": "لرحلتك إلى {place}",
+  "offerProPick": "اقتراح من شركائنا لمشتركي Pro",
+  "proSuggestionsTitle": "اقتراحات الحجز من الشركاء",
+  "proSuggestionsHint": "فنادق وشركات طيران وشرائح eSIM مختارة لرحلاتك — بعضها من بلدك — مع مزايا لمشتركي Pro. بلا إعلانات."
 }

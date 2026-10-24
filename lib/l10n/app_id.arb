@@ -1402,5 +1402,8 @@
   "offerSponsored": "Penawaran mitra",
   "offerOpen": "Lihat penawaran",
   "offerHide": "Sembunyikan",
-  "offerFor": "untuk perjalanan Anda ke {place}"
+  "offerFor": "untuk perjalanan Anda ke {place}",
+  "offerProPick": "Saran Pro dari mitra kami",
+  "proSuggestionsTitle": "Saran pemesanan dari mitra",
+  "proSuggestionsHint": "Hotel, maskapai, dan eSIM pilihan untuk perjalanan Anda — sebagian dari negara Anda — dengan keuntungan Pro. Tanpa iklan."
 }
