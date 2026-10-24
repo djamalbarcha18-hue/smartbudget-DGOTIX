@@ -60,14 +60,18 @@ abstract final class LegalContent {
       ? '${AppConfig.supportEmail} پر'
       : 'ایپ میں مدد اور سپورٹ کے صفحے کے ذریعے';
 
+  static String get _reachDe => AppConfig.hasSupportEmail
+      ? 'unter ${AppConfig.supportEmail}'
+      : 'über die Seite Hilfe & Support in der App';
+
   static List<LegalSection> sections(LegalDoc doc, {required AppLang lang}) =>
       switch (doc) {
         LegalDoc.privacy => lang.pick(_privacyAr, _privacyEn,
             fr: _privacyFr, id: _privacyId, es: _privacyEs,
-            tr: _privacyTr, ms: _privacyMs, ur: _privacyUr),
+            tr: _privacyTr, ms: _privacyMs, ur: _privacyUr, de: _privacyDe),
         LegalDoc.terms => lang.pick(_termsAr, _termsEn,
             fr: _termsFr, id: _termsId, es: _termsEs,
-            tr: _termsTr, ms: _termsMs, ur: _termsUr),
+            tr: _termsTr, ms: _termsMs, ur: _termsUr, de: _termsDe),
       };
 
   // ---- Privacy (English) ----
@@ -2362,6 +2366,306 @@ abstract final class LegalContent {
               ' سکتے ہیں؛ اپ ڈیٹ کے بعد استعمال جاری رکھنے کا مطلب ہے کہ آپ '
               'نظرثانی شدہ شرائط قبول کرتے ہیں۔ سوالات کے لیے ہم سے $_reachUr '
               'رابطہ کریں۔',
+        ),
+      ];
+
+  // ---- Privacy (German) ----
+  static List<LegalSection> get _privacyDe => <LegalSection>[
+        LegalSection(
+          'Überblick',
+          'Diese Erklärung beschreibt, was $_app speichert, wo es gespeichert '
+              'wird und welche Wahl du hast. Kurz gesagt: Deine Finanzdaten '
+              'gehören dir, sie werden zuerst auf deinem Gerät gespeichert, und '
+              'wir verkaufen sie nie, zeigen dir keine Werbung und verfolgen dich '
+              'nicht. Einige optionale Funktionen (Anmeldung und Synchronisierung,'
+              ' DGOTIX AI, Belegscan in der Cloud und bezahlte Tarife) senden '
+              'bestimmte Daten nur dann an einen Dienst, wenn du sie nutzt, wie '
+              'unten beschrieben.',
+        ),
+        const LegalSection(
+          'Was wir speichern',
+          'Die Angaben, die du selbst eingibst: Einnahmen, Ausgaben, Budgets, '
+              'Ziele, Schulden, Geldbörsen, eigene Kategorien und deine '
+              'Anzeigeeinstellungen (Design, Sprache, Basiswährung). Wenn du ein '
+              'Konto erstellst, speichern wir zusätzlich deine E-Mail-Adresse, '
+              'deinen Tarif und Abo-Status sowie Nutzungszähler pro Zeitraum für '
+              'DGOTIX AI und den Belegscan in der Cloud – nur, um die Limits '
+              'deines Tarifs anzuwenden. Wir speichern weder deine Fragen an '
+              'DGOTIX AI noch deine Belegbilder; wenn du eine KI-Antwort meldest, '
+              'speichern wir diese Antwort und deine optionale Notiz, um sie zu '
+              'prüfen.',
+        ),
+        const LegalSection(
+          'Wo deine Daten liegen',
+          'Alles wird zuerst auf deinem Gerät gespeichert (in der App oder, in'
+              ' der Webversion, in deinem Browser), sodass die App auch ohne Konto'
+              ' oder Verbindung funktioniert. Wenn du dich anmeldest, werden deine'
+              ' Daten außerdem automatisch zwischen deinen Geräten synchronisiert:'
+              ' Eine Kopie liegt in unserer Datenbank (gehostet von Supabase), ist'
+              ' mit deinem Konto verknüpft und so abgeschottet, dass nur du sie '
+              'lesen kannst. Du kannst die Synchronisierung in den Einstellungen '
+              'ausschalten; dann bleiben deine Daten nur auf diesem Gerät.',
+        ),
+        const LegalSection(
+          'Dein Konto und E-Mails',
+          'Deine E-Mail-Adresse dient der Anmeldung und dem Versand von '
+              'Konto-E-Mails, etwa zur Bestätigung der Adresse oder zum '
+              'Zurücksetzen des Passworts (versendet über Brevo). Sie wird nie '
+              'für Werbung verwendet oder zu Marketingzwecken weitergegeben. Bei '
+              'Registrierung und Anmeldung hält eine kurze Prüfung, ob du ein '
+              'Mensch bist (Cloudflare Turnstile), automatisierten Missbrauch fern.',
+        ),
+        const LegalSection(
+          'DGOTIX AI',
+          'DGOTIX AI ist optional. Wenn du eine Frage stellst, werden der Text '
+              'der Frage und eine Zusammenfassung deiner Zahlen (Summen nach Monat'
+              ' und Kategorie für bis zu 12 Monate, Budgets, Stände der '
+              'Geldbörsen, Ziele, wiederkehrende Buchungen, Saisonbudgets und '
+              'Sparrunden – nur Beträge und Daten, nie Beschreibungen, Notizen '
+              'oder die Namen, die du vergibst) über unseren sicheren Server an '
+              'einen KI-Anbieter (Google Gemini, OpenAI oder Anthropic) gesendet, '
+              'um die Antwort zu erzeugen. Unser Server nutzt unsere eigenen '
+              'Anbieterschlüssel und speichert nur Nutzungsmetadaten, nie deine '
+              'Frage oder deine Zahlen. Wir nutzen deine Daten nicht zum Trainieren'
+              ' von Modellen. Antworten werden automatisch erzeugt; prüfe wichtige'
+              ' Zahlen, bevor du danach handelst.',
+        ),
+        const LegalSection(
+          'Belegscan',
+          'Unter Android können Belege vollständig auf deinem Gerät gelesen '
+              'werden. Beim Scan in der Cloud wird das Belegbild über unseren '
+              'sicheren Server an einen KI-Anbieter gesendet, nur um Händler, '
+              'Datum, Betrag, Positionen und Kategorie zu lesen; das Bild wird '
+              'nicht gespeichert.',
+        ),
+        const LegalSection(
+          'Zahlungen und Abos',
+          'Bezahlte Tarife sind optional. Du zahlst über den sicheren '
+              'Bezahlvorgang von Whop (whop.com), unserem Zahlungsanbieter, oder '
+              'mit PayPal, wenn du das wählst. Sie erheben die nötigen '
+              'Rechnungsdaten (etwa Name, E-Mail, Land und Zahlungsart) nach ihren'
+              ' eigenen Datenschutzbestimmungen; wir sehen oder speichern nie '
+              'deine vollständigen Kartendaten. Wir speichern deinen Tarif, den '
+              'Abo-Status, das Verlängerungsdatum und die Abo-Kennungen des '
+              'Zahlungsanbieters, um dir den richtigen Zugang zu geben, sowie '
+              'einen Nachweis über eingelöste Aktionscodes.',
+        ),
+        const LegalSection(
+          'Dienstleister',
+          'Je nach genutzten Funktionen: Supabase (Konten, Synchronisierung und'
+              ' unsere Serverfunktionen); Whop und PayPal (Zahlungen); Brevo '
+              '(Konto-E-Mails); Cloudflare Turnstile (die Prüfung bei der '
+              'Anmeldung); GitHub Pages (Hosting unserer Website und Web-App); '
+              'Google, OpenAI und Anthropic (DGOTIX AI und Belegscan in der '
+              'Cloud); sowie öffentliche Marktdatenquellen für aktuelle Werte – '
+              'Wechselkurse (open.er-api.com) und Kryptopreise (CoinGecko) –, '
+              'deren Anfragen nur Währungs- oder Anlagesymbole enthalten, nie '
+              'deine persönlichen oder finanziellen Daten. Jeder Anbieter '
+              'verarbeitet Daten nur, um seinen Teil des Dienstes zu erbringen.',
+        ),
+        const LegalSection(
+          'Sicherheit',
+          'Verbindungen zu unseren Diensten sind verschlüsselt (HTTPS). In '
+              'unserer Datenbank sind die Einträge jedes Nutzers so abgeschottet,'
+              ' dass ein Konto nie die eines anderen lesen kann. Serverschlüssel '
+              'gelangen nie in die App, Zahlungsbenachrichtigungen werden geprüft,'
+              ' bevor sie etwas ändern, und du kannst auf deinem Gerät eine '
+              'App-Sperre (PIN oder Fingerabdruck) einrichten.',
+        ),
+        const LegalSection(
+          'Was wir nicht tun',
+          'Wir verkaufen oder vermieten deine Daten nicht, zeigen keine Werbung'
+              ' und betreiben kein Verhaltens-Tracking und keine Analysen deiner '
+              'finanziellen Aktivitäten.',
+        ),
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
+          const LegalSection(
+            'Anonyme Zählungen',
+            'Wenn du eine Reise anlegst, sendet die App nur die Worte „eine '
+                'Reise wurde geplant“, und unser Server erhöht die Summe dieses '
+                'Tages um eins. Sonst wird nichts gesendet oder dazu gespeichert –'
+                ' kein Konto, kein Gerät, kein Reiseziel, kein Betrag –, sodass '
+                'die Summen nicht mit dir verknüpft werden können. Wir nutzen sie '
+                'nur, um zu wissen, wie viel die App genutzt wird, und um Partnern'
+                ' Gesamtzahlen zu zeigen. Du kannst das in den Einstellungen unter'
+                ' Privatsphäre ausschalten.',
+          ),
+        const LegalSection(
+          'Wie lange wir Daten aufbewahren',
+          'Daten auf deinem Gerät bleiben, bis du sie löschst oder die App '
+              'entfernst. Dein Konto, synchronisierte Daten, Nutzungszähler und '
+              'Anfrage-Metadaten werden aufbewahrt, solange dein Konto besteht – '
+              'nur, um den Dienst zu betreiben und die Limits deines Tarifs '
+              'anzuwenden –, und endgültig gelöscht, wenn du es löschst. Whop und'
+              ' PayPal bewahren die Abrechnungsunterlagen auf, die sie gesetzlich '
+              'aufbewahren müssen.',
+        ),
+        LegalSection(
+          'Deine Rechte und Einstellungen',
+          'Du kannst deine Daten jederzeit in der App ansehen und korrigieren, '
+              'eine vollständige Sicherung exportieren, die Synchronisierung '
+              'ausschalten, dich abmelden und dein Konto mit allen Daten löschen '
+              '(siehe unten). Ein bezahltes Abo kannst du jederzeit kündigen '
+              '(siehe Nutzungsbedingungen). Für jedes andere Anliegen zu deinen '
+              'personenbezogenen Daten – darunter Auskunft, Berichtigung, Löschung'
+              ' oder Widerspruch – kontaktiere uns $_reachDe, und wir antworten '
+              'zeitnah.',
+        ),
+        const LegalSection(
+          'Konto und Daten löschen',
+          'Öffne in der App oder der Webversion, auf jedem Gerät, die '
+              'Einstellungen, dann Konto und dann „Mein Konto löschen“. Damit '
+              'werden dein Konto und alles, was dafür auf unseren Servern '
+              'gespeichert ist (Profil, synchronisierte Daten, Abo-Eintrag und '
+              'Nutzungszähler), endgültig gelöscht und deine Daten auf diesem '
+              'Gerät entfernt. Kündige vorher ein bezahltes Abo. Die Löschung kann'
+              ' nicht rückgängig gemacht werden – exportiere also vorher eine '
+              'Sicherung, falls du deine Daten später noch brauchst.',
+        ),
+        LegalSection(
+          'Alter',
+          '$_app richtet sich an Personen ab 16 Jahren. Wir erheben nicht '
+              'wissentlich Daten von jüngeren Kindern; wenn du glaubst, dass ein '
+              'Kind ein Konto erstellt hat, kontaktiere uns $_reachDe, und wir '
+              'löschen es.',
+        ),
+        LegalSection(
+          'Änderungen und Kontakt',
+          'Wir können diese Erklärung aktualisieren; das oben angezeigte Datum '
+              'nennt die neueste Fassung. Bei Fragen zum Datenschutz kontaktiere '
+              'uns $_reachDe.',
+        ),
+      ];
+
+  // ---- Terms (German) ----
+  static List<LegalSection> get _termsDe => <LegalSection>[
+        LegalSection(
+          'Zustimmung',
+          'Mit der Nutzung von $_app stimmst du diesen Bedingungen zu. Wenn du '
+              'nicht zustimmst, nutze die App bitte nicht.',
+        ),
+        LegalSection(
+          'Wer sie nutzen darf',
+          'Du musst mindestens 16 Jahre alt sein, um $_app zu nutzen. Wenn du '
+              'ein Konto erstellst, bewahre deine Anmeldedaten sicher auf; du '
+              'bist für die Aktivitäten in deinem Konto verantwortlich.',
+        ),
+        const LegalSection(
+          'Was der Dienst ist',
+          'Ein persönliches Werkzeug für Budget und Planung, um Einnahmen, '
+              'Ausgaben, Budgets, Ziele und zugehörige Einblicke zu verfolgen, mit'
+              ' optionaler KI-Hilfe, Belegscan, Synchronisierung zwischen Geräten '
+              'und bezahlten Tarifen.',
+        ),
+        const LegalSection(
+          'Planungswerkzeuge, keine fachliche Beratung',
+          'Budgets, Prognosen, die Zakat-Berechnung und die Antworten von '
+              'DGOTIX AI sind Planungswerkzeuge, die dir bei Entscheidungen helfen.'
+              ' Sie sind keine fachliche Finanz-, Steuer- oder religiöse Beratung.'
+              ' Lass religiöse Pflichten wie die Zakat von einem qualifizierten '
+              'Gelehrten bestätigen; bei großen finanziellen Entscheidungen wende '
+              'dich an eine qualifizierte Beratung.',
+        ),
+        const LegalSection(
+          'KI-Funktionen',
+          'DGOTIX AI und der Belegscan in der Cloud liefern automatische '
+              'Ergebnisse, um dir Zeit zu sparen; prüfe wichtige Zahlen, bevor du '
+              'danach handelst. Diese Funktionen sind innerhalb von '
+              'Fair-Use-Grenzen enthalten, die von deinem Tarif abhängen, und '
+              'können angepasst werden, damit der Dienst für alle schnell und '
+              'zuverlässig bleibt.',
+        ),
+        const LegalSection(
+          'Abos, Abrechnung und Verlängerung',
+          'Die Kern-App ist kostenlos. Bezahlte Tarife (Pro) schalten höhere '
+              'Limits und zusätzliche Funktionen zu den in der App angezeigten '
+              'Preisen frei. Ein bezahlter Tarif verlängert sich automatisch um '
+              'jeden Abrechnungszeitraum (monatlich oder jährlich), bis du '
+              'kündigst. Zahlungen wickelt Whop ab, unser Zahlungsanbieter (oder '
+              'PayPal, wenn du das wählst); anfallende Steuern können hinzukommen '
+              'und werden vor dem Bezahlen immer angezeigt. Du kannst jederzeit '
+              'kündigen und behältst den Zugang bis zum Ende des bereits bezahlten'
+              ' Zeitraums. Wenn sich Preise oder Leistungen ändern, werden dir die'
+              ' aktuellen Bedingungen immer vor dem Abschluss angezeigt.',
+        ),
+        const LegalSection(
+          'Unser Zahlungsanbieter: Whop',
+          'SmartBudget wird von DGOTIX verkauft. Bezahlvorgang und Abrechnung '
+              'übernimmt Whop (whop.com): Whop wickelt die Zahlung über den '
+              'eigenen sicheren Bezahlvorgang ab, zeigt vor dem Bezahlen den '
+              'vollen Preis einschließlich Steuern und sendet dir die Quittung. '
+              'Du kannst dein Abo in der App verwalten oder kündigen (Tarife → '
+              'Verwalten).',
+        ),
+        LegalSection(
+          'Erstattungen',
+          'Soweit gesetzlich nicht anders vorgeschrieben, werden Zahlungen nach'
+              ' Beginn eines Abrechnungszeitraums grundsätzlich nicht erstattet, '
+              'da du den Zugang bis zu dessen Ende behältst. Du kannst jederzeit '
+              'kündigen, um künftige Verlängerungen zu stoppen. Für einen '
+              'Erstattungswunsch oder Fragen zu einer Abbuchung kontaktiere uns '
+              '$_reachDe: Wir prüfen jede Anfrage nach geltendem '
+              'Verbraucherrecht und erstatten genehmigte Beträge über Whop (oder '
+              'PayPal).',
+        ),
+        const LegalSection(
+          'Aktionscodes',
+          'Gutscheine und Rabattcodes sind optional und ändern nur den Preis '
+              'eines Bezahlvorgangs (oder gewähren eine Testphase). Jeder Code hat'
+              ' eigene Bedingungen (Gültigkeitszeitraum, Nutzungsgrenzen, einer '
+              'pro Kunde) und kann zurückgezogen werden oder ablaufen. Sie haben '
+              'keinen Barwert und lassen sich nur kombinieren, wenn das angegeben '
+              'ist.',
+        ),
+        const LegalSection(
+          'Deine Daten und Sicherungen',
+          'Du bist für die Richtigkeit der eingegebenen Daten verantwortlich. '
+              'Um deine Daten geräteübergreifend zu schützen, melde dich an, um '
+              'sie zu synchronisieren, oder exportiere regelmäßig eine Sicherung '
+              'in den Einstellungen.',
+        ),
+        LegalSection(
+          'Verfügbarkeit',
+          'Wir arbeiten daran, dass $_app verfügbar und zuverlässig bleibt. '
+              'Soweit gesetzlich zulässig, wird die App „wie besehen“ und ohne '
+              'Gewährleistung jeglicher Art bereitgestellt. Aktuelle Marktdaten, '
+              'KI und Zahlungen hängen von Diensten Dritter ab und können '
+              'gelegentlich verzögert oder nicht verfügbar sein; eine solche '
+              'Unterbrechung hindert dich nie an der Nutzung der grundlegenden '
+              'Budgetwerkzeuge, die auch offline funktionieren. Funktionen können '
+              'sich mit der Zeit weiterentwickeln.',
+        ),
+        const LegalSection(
+          'Haftungsbeschränkung',
+          'Soweit gesetzlich zulässig, haften wir nicht für mittelbare Schäden '
+              'oder Folgeschäden oder für Entscheidungen, die du auf Grundlage der'
+              ' Zahlen der App triffst. Nichts in diesen Bedingungen schränkt '
+              'Rechte ein, die dir nach zwingendem Verbraucherrecht zustehen.',
+        ),
+        const LegalSection(
+          'Zulässige Nutzung',
+          'Missbrauche den Dienst nicht, versuche nicht, seine Sicherheit oder '
+              'die Tarifgrenzen zu umgehen oder zu brechen, und nutze ihn nicht '
+              'für rechtswidrige Zwecke.',
+        ),
+        LegalSection(
+          'Ende der Nutzung',
+          'Du kannst $_app jederzeit nicht mehr nutzen und dein Konto löschen. '
+              'Wir können ein Konto sperren, das gegen diese Bedingungen verstößt '
+              'oder den Dienst oder andere Nutzer gefährdet.',
+        ),
+        LegalSection(
+          'Marke und Eigentum',
+          'Der Name $_app, die Marke $_brand sowie Design und Code der App '
+              'bleiben Eigentum ihres Inhabers. Deine Daten bleiben deine.',
+        ),
+        LegalSection(
+          'Änderungen und Kontakt',
+          'Wir können diese Bedingungen aktualisieren und das Datum der '
+              'neuesten Fassung anzeigen; wenn du die App nach einer '
+              'Aktualisierung weiter nutzt, akzeptierst du die geänderten '
+              'Bedingungen. Bei Fragen kontaktiere uns $_reachDe.',
         ),
       ];
 }

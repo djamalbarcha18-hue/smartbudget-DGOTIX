@@ -18,6 +18,13 @@ there. `test/languages_test.dart` fails until the required pieces exist.
    `AppLang.pick` and a case to its `switch`, falling back to `en`.
 4. Run `flutter analyze` and `flutter test`.
 
+## Ready but not yet offered
+
+Pass `hidden: true` to the `AppLang` entry (as German is): the language is
+built and tested but stays out of the menus, Settings and the supported
+locales, so a phone in that language gets the default. Preview it with
+`--dart-define=NEW_LANGS=true`; remove `hidden: true` to release it.
+
 ## Optional content (falls back to English when missing)
 
 Pass the new code to the existing `lang.pick(...)` calls:

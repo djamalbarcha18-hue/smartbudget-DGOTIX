@@ -27,12 +27,12 @@ abstract final class GuideContent {
   static List<String> gettingStarted({required AppLang lang}) =>
       lang.pick(_startAr, _startEn,
           fr: _startFr, id: _startId, es: _startEs,
-          tr: _startTr, ms: _startMs, ur: _startUr);
+          tr: _startTr, ms: _startMs, ur: _startUr, de: _startDe);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
       lang.pick(_topicsAr, _topicsEn,
           fr: _topicsFr, id: _topicsId, es: _topicsEs,
-          tr: _topicsTr, ms: _topicsMs, ur: _topicsUr);
+          tr: _topicsTr, ms: _topicsMs, ur: _topicsUr, de: _topicsDe);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -1623,6 +1623,223 @@ abstract final class GuideContent {
         'ڈیٹا اور بیک اپ کے تحت کسی بھی وقت مکمل بیک اپ ایکسپورٹ کریں؛ سائن '
             'ان ہونے پر آپ کا ڈیٹا آپ کی ڈیوائسز میں خود بخود ہم آہنگ ہوتا ہے '
             '(آف لائن کام کے بعد بھی)، اور آپ اسے بند کر سکتے ہیں۔',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (German) ----
+  static const List<String> _startDe = <String>[
+    'Öffne die Einstellungen und wähle Sprache, Design und Basiswährung – '
+        'jede Summe in der App wird in dieser Währung angezeigt.',
+    'Füge deine Einnahmen und Ausgaben hinzu (oder scanne einen Beleg) – alles '
+        'andere wird daraus berechnet.',
+    'Lege ein Monatsbudget fest, damit die App dir sagt, wie viel du noch '
+        'ausgeben kannst.',
+    'Sieh dir die Übersicht und die finanzielle Gesundheit an, um zu wissen, wo'
+        ' du stehst, und füge dann nach und nach Ziele und Schulden hinzu.',
+  ];
+
+  // ---- Topics (German) ----
+  static const List<GuideTopic> _topicsDe = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'Übersicht',
+      summary:
+          'Dein Monat auf einen Blick: Einnahmen, Ausgaben, Ersparnisse und '
+          'wohin das Geld gegangen ist.',
+      steps: <String>[
+        'Die Kacheln zeigen die Summen dieses Monats in deiner Basiswährung.',
+        'Tippe auf ein Segment der Ausgabenaufteilung, um diese Kategorie '
+            'hervorzuheben.',
+        'Hinweise zeigen dir, was Aufmerksamkeit braucht, etwa eine Kategorie '
+            'über dem Budget oder ein dringendes Ziel.',
+        'Solange es noch keine Daten gibt, zeigen die Kacheln „—“ – es wird nie'
+            ' etwas erfunden.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'Einnahmen & Ausgaben',
+      summary: 'Erfasse jede Geldbewegung – die Grundlage jeder Berechnung in '
+          'der App.',
+      steps: <String>[
+        'Mit der Schnell-hinzufügen-Schaltfläche erfasst du eine Einnahme oder '
+            'Ausgabe mit Betrag, Kategorie, Datum und Notiz.',
+        'Einnahmen und Ausgaben haben jeweils einen eigenen Bildschirm; '
+            'Buchungen zeigt beide zusammen.',
+        'Durchsuche die Liste, um jeden Eintrag zu finden, und tippe darauf, um'
+            ' ihn zu bearbeiten oder zu löschen.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'Wiederkehrende Buchungen',
+      summary: 'Gehalt, Miete und Abos werden automatisch an ihrem Datum '
+          'hinzugefügt.',
+      steps: <String>[
+        'Stelle beim Hinzufügen einer Einnahme oder Ausgabe „Wiederholen“ auf '
+            'jede Woche, jeden Monat, alle 3 Monate, alle 6 Monate oder jedes '
+            'Jahr.',
+        'Für einen Bonus oder eine Provision mit wechselndem Betrag schalte '
+            '„Der Betrag ändert sich jedes Mal“ ein: An jedem Datum fragt die '
+            'App nach dem echten Betrag, statt eine Schätzung hinzuzufügen.',
+        'Bei jeder Fälligkeit fügt die App sie als normale Buchung hinzu – auch'
+            ' wenn du weg warst, holt sie das beim nächsten Öffnen nach.',
+        'Auf dem Bildschirm Wiederkehrend kannst du pausieren, fortsetzen, den '
+            'Betrag ändern oder die Wiederholung beenden. Bereits hinzugefügte '
+            'Buchungen werden nie geändert.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'Beleg scannen',
+      summary: 'Mach aus dem Foto eines Belegs eine Ausgabe, die du nur noch '
+          'speichern musst.',
+      steps: <String>[
+        'Tippe auf dem Bildschirm Ausgaben auf „Beleg scannen“ und nimm ein '
+            'Foto auf oder wähle eines.',
+        'Die App füllt Händler, Datum, Betrag und Kategorie aus – prüfe sie vor'
+            ' dem Speichern.',
+        'Der Scan in der Cloud hängt von deinem Tarif ab; lässt sich ein Beleg '
+            'nicht lesen, gib die Ausgabe von Hand ein.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'Monatsbudget',
+      summary: 'Plane, wie viel du pro Kategorie ausgeben willst, Monat für '
+          'Monat.',
+      steps: <String>[
+        'Wähle oben Jahr und Monat – ein Bildschirm deckt jeden Monat ab.',
+        'Lege für jede Kategorie, die du im Griff haben willst, ein Limit fest.',
+        'Fortschrittsbalken füllen sich, während du ausgibst; eine Kategorie '
+            'über ihrem Limit wird markiert.',
+        'In einem bezahlten Tarif verteilt „Aufteilung vorschlagen“ dein '
+            'Einkommen anhand deiner eigenen letzten Ausgaben auf die Kategorien'
+            ' – prüfe den Vorschlag und übernimm ihn dann.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'Ziele & Sparen',
+      summary: 'Spare auf etwas Bestimmtes hin und sieh, wie nah du dran bist.',
+      steps: <String>[
+        'Lege ein Ziel mit einem Zielbetrag und optional einer Frist an.',
+        'Erfasse Einzahlungen, während du sparst; der Fortschritt wird '
+            'automatisch aktualisiert.',
+        'Ziele kurz vor ihrer Frist werden in der Übersicht hervorgehoben.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'Schulden & Kredite',
+      summary: 'Behalte im Blick, was du schuldest und was andere dir schulden.',
+      steps: <String>[
+        'Füge jede Schuld oder jeden Kredit mit Betrag und Person oder '
+            'Gegenseite hinzu.',
+        'Aktualisiere den bisher bezahlten Betrag, um den offenen Rest zu '
+            'sehen.',
+        'Schulden fließen in deinen Wert für die finanzielle Gesundheit ein.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'Projektportfolio',
+      summary: 'Plane größere Projekte in kurz-, mittel- und langfristigen '
+          'Fächern.',
+      steps: <String>[
+        'Füge Projekte hinzu und ordne jedes einem Zeitrahmen zu.',
+        'Die Finanzierung füllt die Fächer der Reihe nach, sodass du siehst, '
+            'welche Projekte deine Ersparnisse zuerst abdecken können.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'Finanzielle Gesundheit',
+      summary: 'Ein Wert, der zusammenfasst, wie gesund deine Finanzen sind, '
+          'und warum.',
+      steps: <String>[
+        'Der Wert wird auf deinem Gerät aus deinen eigenen Daten berechnet.',
+        'Die wichtigsten Faktoren zeigen, was hilft oder schadet – verbessere '
+            'diese zuerst.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'Berichte & Analysen',
+      summary: 'Sieh Entwicklungen über das Jahr und wohin dein Geld geht.',
+      steps: <String>[
+        'Wähle ein Jahr, um Einnahmen und Ausgaben Monat für Monat zu '
+            'vergleichen.',
+        'Nutze die Aufschlüsselungen, um Kategorien zu erkennen, die mit der '
+            'Zeit wachsen.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'Zakat',
+      summary: 'Schätze die fällige Zakat auf dein Vermögen und verfolge den '
+          'Hawl.',
+      steps: <String>[
+        'Gib das zakatpflichtige Vermögen ein, um eine Schätzung zu erhalten.',
+        'Lege das Datum fest, an dem dein Vermögen den Nisab erreicht hat, um '
+            'den Countdown des Mondjahres zu verfolgen, angezeigt im '
+            'Hidschra-Kalender.',
+        'Das ist eine Planungshilfe – lass deine Pflicht von einem '
+            'qualifizierten Gelehrten bestätigen.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'Wechselkurse & Märkte',
+      summary: 'Aktuelle Wechselkurse und Kryptopreise aus öffentlichen '
+          'Quellen.',
+      steps: <String>[
+        'Kurse werden live abgerufen; jede Zeile zeigt ihre Quelle.',
+        'Hat ein Markt keine verlässliche Quelle, steht dort „nicht verfügbar“ '
+            '– nie eine erfundene Zahl.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'KI-Assistent DGOTIX AI',
+      summary: 'Stell Fragen zu deinen Finanzen in einfachen Worten.',
+      steps: <String>[
+        'Tippe eine Frage ein oder wähle einen Vorschlag; der Assistent '
+            'antwortet anhand einer kurzen Übersicht deiner Zahlen.',
+        'Die Zahl der Antworten hängt von deinem Tarif ab; du siehst einen '
+            'Hinweis, wenn du nah am Limit bist.',
+        'Antworten werden automatisch erzeugt – prüfe wichtige Entscheidungen '
+            'noch einmal. Die regelbasierten Einblicke unter dem Chat '
+            'funktionieren immer, auch ohne KI.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'Tarife & Abo',
+      summary: 'Vergleiche Kostenlos und Pro und verwalte dein Abo.',
+      steps: <String>[
+        'Die grundlegenden Budgetwerkzeuge sind für immer kostenlos.',
+        'Bezahlte Tarife erhöhen die Limits für KI und Cloud-Scans und bieten '
+            'zusätzliche Funktionen.',
+        'Wenn du ein Abo abschließt, erscheinen oben dein aktueller Tarif und '
+            'das Verlängerungsdatum, mit einer Schaltfläche zum Verwalten oder '
+            'Kündigen.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'Einstellungen, Daten & Sicherung',
+      summary: 'Richte die App nach deinen Wünschen ein und schütze deine '
+          'Daten.',
+      steps: <String>[
+        'Sprache, Design und Basiswährung findest du unter Darstellung und '
+            'Region.',
+        'Verwalte deine eigenen Einnahme- und Ausgabenkategorien.',
+        'Unter Daten & Sicherung kannst du jederzeit eine vollständige '
+            'Sicherung exportieren; wenn du angemeldet bist, werden deine Daten '
+            'automatisch zwischen deinen Geräten synchronisiert (auch nach '
+            'Offline-Arbeit), und du kannst das ausschalten.',
       ],
     ),
   ];
