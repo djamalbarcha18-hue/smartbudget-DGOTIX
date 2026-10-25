@@ -1425,5 +1425,9 @@
   "dateFieldHint": "yyyy/mm/dd",
   "dateInvalid": "Kwanan wata ba daidai ba: 2026/10/25",
   "numberStyleTitle": "Tsarin lambobi",
-  "numberStyleHint": "Yadda ake rubuta kuɗi: alamar raba dubbai da ta goma."
+  "numberStyleHint": "Yadda ake rubuta kuɗi: alamar raba dubbai da ta goma.",
+  "shareSmsFilled": "An cike daga saƙon da aka raba: duba, sannan ka ajiye.",
+  "shareSmsNoAmount": "Ba a sami adadin kuɗi a rubutun da aka raba ba.",
+  "shareSmsTip": "Shawara: daga saƙonninka, raba SMS na banki da SmartBudget don a ƙara shi a mataki ɗaya.",
+  "pasteSmsRead": "An karanta a matsayin saƙon banki: duba layin da ke ƙasa, sannan ka ajiye."
 }

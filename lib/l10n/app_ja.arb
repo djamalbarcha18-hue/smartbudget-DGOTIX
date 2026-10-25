@@ -1425,5 +1425,9 @@
   "dateFieldHint": "yyyy/mm/dd",
   "dateInvalid": "無効な日付です（例：2026/10/25）",
   "numberStyleTitle": "数値の形式",
-  "numberStyleHint": "金額の書き方：桁区切りと小数点。"
+  "numberStyleHint": "金額の書き方：桁区切りと小数点。",
+  "shareSmsFilled": "共有されたメッセージから入力しました。確認して保存してください。",
+  "shareSmsNoAmount": "共有されたテキストに金額が見つかりません。",
+  "shareSmsTip": "ヒント：メッセージアプリから銀行のSMSをSmartBudgetに共有すると、1ステップで追加できます。",
+  "pasteSmsRead": "銀行のメッセージとして読み取りました。下の行を確認して保存してください。"
 }

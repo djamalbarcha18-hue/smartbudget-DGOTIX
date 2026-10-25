@@ -1678,5 +1678,9 @@
   "@dateFieldHint": {"description": "Placeholder of a typed date: year/month/day in the language's letters."},
   "@dateInvalid": {"description": "Shown under a typed date that is not a real date. One short line: the field cuts longer text."},
   "numberStyleTitle": "Number format",
-  "numberStyleHint": "How amounts are written: thousands and decimal separators."
+  "numberStyleHint": "How amounts are written: thousands and decimal separators.",
+  "shareSmsFilled": "Filled from the shared message: check it, then save.",
+  "shareSmsNoAmount": "No amount found in the shared text.",
+  "shareSmsTip": "Tip: in your messages, share a bank SMS to SmartBudget to add it in one step.",
+  "pasteSmsRead": "Read as a bank message: check the line below, then save."
 }

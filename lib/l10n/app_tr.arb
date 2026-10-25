@@ -1425,5 +1425,9 @@
   "dateFieldHint": "yyyy/aa/gg",
   "dateInvalid": "Geçersiz tarih. Ör. 2026/10/25",
   "numberStyleTitle": "Sayı biçimi",
-  "numberStyleHint": "Tutarların yazılışı: binlik ve ondalık ayırıcı."
+  "numberStyleHint": "Tutarların yazılışı: binlik ve ondalık ayırıcı.",
+  "shareSmsFilled": "Paylaşılan mesajdan dolduruldu: kontrol edip kaydedin.",
+  "shareSmsNoAmount": "Paylaşılan metinde tutar bulunamadı.",
+  "shareSmsTip": "İpucu: mesajlarınızdan banka SMS’ini SmartBudget ile paylaşın, tek adımda eklensin.",
+  "pasteSmsRead": "Banka mesajı olarak okundu: aşağıdaki satırı kontrol edip kaydedin."
 }

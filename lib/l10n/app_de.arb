@@ -1425,5 +1425,9 @@
   "dateFieldHint": "jjjj/mm/tt",
   "dateInvalid": "Ungültiges Datum, z. B. 2026/10/25",
   "numberStyleTitle": "Zahlenformat",
-  "numberStyleHint": "Wie Beträge geschrieben werden: Tausender- und Dezimaltrennzeichen."
+  "numberStyleHint": "Wie Beträge geschrieben werden: Tausender- und Dezimaltrennzeichen.",
+  "shareSmsFilled": "Aus der geteilten Nachricht ausgefüllt: prüfen, dann speichern.",
+  "shareSmsNoAmount": "Im geteilten Text wurde kein Betrag gefunden.",
+  "shareSmsTip": "Tipp: Teile eine Bank-SMS aus deinen Nachrichten mit SmartBudget, um sie in einem Schritt hinzuzufügen.",
+  "pasteSmsRead": "Als Bank-Nachricht gelesen: Zeile unten prüfen, dann speichern."
 }

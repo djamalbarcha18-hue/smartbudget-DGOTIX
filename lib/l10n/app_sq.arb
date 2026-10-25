@@ -1425,5 +1425,9 @@
   "dateFieldHint": "vvvv/mm/dd",
   "dateInvalid": "Datë e pavlefshme, p.sh. 2026/10/25",
   "numberStyleTitle": "Formati i numrave",
-  "numberStyleHint": "Si shkruhen shumat: ndarësi i mijësheve dhe i dhjetësheve."
+  "numberStyleHint": "Si shkruhen shumat: ndarësi i mijësheve dhe i dhjetësheve.",
+  "shareSmsFilled": "U plotësua nga mesazhi i ndarë: kontrollojeni, pastaj ruajeni.",
+  "shareSmsNoAmount": "Nuk u gjet shumë në tekstin e ndarë.",
+  "shareSmsTip": "Këshillë: nga mesazhet, ndani SMS-in e bankës me SmartBudget për ta shtuar me një hap.",
+  "pasteSmsRead": "U lexua si mesazh banke: kontrolloni rreshtin më poshtë, pastaj ruajeni."
 }

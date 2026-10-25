@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,7 +11,9 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
+import 'package:smartbudget/features/quick_entry/domain/bank_message.dart';
 import 'package:smartbudget/features/quick_entry/domain/quick_entry_parser.dart';
+import 'package:smartbudget/features/quick_entry/presentation/shared_text_listener.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
@@ -59,6 +62,15 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
   }
 
   void _parse(String v) {
+    // A pasted bank message: read as one payment or deposit.
+    final QuickEntry? bank = _fromBankMessage(v);
+    if (bank != null || _bank) {
+      setState(() {
+        _bank = bank != null;
+        _entries = bank == null ? const <QuickEntry>[] : <QuickEntry>[bank];
+      });
+      if (bank != null) return;
+    }
     final CustomCategories cc = ref.read(customCategoriesProvider);
     setState(() => _entries = QuickEntryParser.parseAll(v,
         today: AppClock.now(),
@@ -66,6 +78,32 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
         customExpense: cc.expense,
         wallets: ref.read(walletsProvider),
         defaultWalletId: ref.read(effectiveDefaultWalletProvider)));
+  }
+
+  /// True while the text is read as a pasted bank message.
+  bool _bank = false;
+
+  QuickEntry? _fromBankMessage(String v) {
+    if (!BankMessageParser.looksLikeMessage(v)) return null;
+    final DateTime today = AppClock.now();
+    final BankMessage? m = BankMessageParser.parse(v, today: today);
+    if (m == null) return null;
+    final d = draftFromMessage(
+      m,
+      wallets: ref.read(walletsProvider),
+      baseCurrency: ref.read(baseCurrencyProvider),
+      today: today,
+    );
+    return QuickEntry(
+      type: d.type,
+      amount: m.amount,
+      category: d.draft.category ?? QuickEntryParser.other,
+      description: m.merchant ?? '',
+      date: m.date ?? today,
+      recognized: d.draft.category != null,
+      walletId: d.draft.walletId,
+      currency: m.currency,
+    );
   }
 
   /// A currency was named but the entry's wallet holds another one (no wallet
@@ -193,6 +231,13 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
               ),
               Text(l.quickHint,
                   style: t.bodySmall?.copyWith(color: c.textMuted)),
+              // Sharing a bank message is the Android app's share sheet.
+              if (!kIsWeb &&
+                  defaultTargetPlatform == TargetPlatform.android) ...<Widget>[
+                const SizedBox(height: DsSpacing.xs),
+                Text(l.shareSmsTip,
+                    style: t.bodySmall?.copyWith(color: c.textMuted)),
+              ],
               const SizedBox(height: DsSpacing.md),
               TextField(
                 controller: _text,
@@ -207,6 +252,12 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
                 ),
               ),
               const SizedBox(height: DsSpacing.md),
+              if (_bank)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: DsSpacing.sm),
+                  child: Text(l.pasteSmsRead,
+                      style: t.labelSmall?.copyWith(color: c.textMuted)),
+                ),
               for (final QuickEntry e in _entries)
                 Container(
                   margin: const EdgeInsets.only(bottom: DsSpacing.sm),

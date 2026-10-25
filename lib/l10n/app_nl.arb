@@ -1425,5 +1425,9 @@
   "dateFieldHint": "jjjj/mm/dd",
   "dateInvalid": "Ongeldige datum, bijv. 2026/10/25",
   "numberStyleTitle": "Getalnotatie",
-  "numberStyleHint": "Hoe bedragen worden geschreven: scheidingsteken voor duizendtallen en decimalen."
+  "numberStyleHint": "Hoe bedragen worden geschreven: scheidingsteken voor duizendtallen en decimalen.",
+  "shareSmsFilled": "Ingevuld vanuit het gedeelde bericht: controleer en sla op.",
+  "shareSmsNoAmount": "Geen bedrag gevonden in de gedeelde tekst.",
+  "shareSmsTip": "Tip: deel een bank-sms uit je berichten met SmartBudget om hem in één stap toe te voegen.",
+  "pasteSmsRead": "Gelezen als bankbericht: controleer de regel hieronder en sla op."
 }

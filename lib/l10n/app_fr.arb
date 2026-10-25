@@ -1425,5 +1425,9 @@
   "dateFieldHint": "aaaa/mm/jj",
   "dateInvalid": "Date invalide. Ex. : 2026/10/25",
   "numberStyleTitle": "Format des nombres",
-  "numberStyleHint": "Comment les montants s’écrivent : séparateur des milliers et des décimales."
+  "numberStyleHint": "Comment les montants s’écrivent : séparateur des milliers et des décimales.",
+  "shareSmsFilled": "Rempli depuis le message partagé : vérifiez, puis enregistrez.",
+  "shareSmsNoAmount": "Aucun montant trouvé dans le texte partagé.",
+  "shareSmsTip": "Astuce : depuis vos messages, partagez un SMS de la banque avec SmartBudget pour l’ajouter en une étape.",
+  "pasteSmsRead": "Lu comme un message bancaire : vérifiez la ligne ci-dessous, puis enregistrez."
 }

@@ -1425,5 +1425,9 @@
   "dateFieldHint": "yyyy/mm/dd",
   "dateInvalid": "잘못된 날짜예요(예: 2026/10/25)",
   "numberStyleTitle": "숫자 형식",
-  "numberStyleHint": "금액 표기 방식: 천 단위 구분 기호와 소수점."
+  "numberStyleHint": "금액 표기 방식: 천 단위 구분 기호와 소수점.",
+  "shareSmsFilled": "공유한 메시지로 채웠어요. 확인한 뒤 저장하세요.",
+  "shareSmsNoAmount": "공유한 텍스트에서 금액을 찾지 못했어요.",
+  "shareSmsTip": "팁: 메시지 앱에서 은행 문자를 SmartBudget으로 공유하면 한 번에 추가돼요.",
+  "pasteSmsRead": "은행 문자로 읽었어요. 아래 줄을 확인한 뒤 저장하세요."
 }

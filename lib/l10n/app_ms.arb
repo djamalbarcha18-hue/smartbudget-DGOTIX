@@ -1425,5 +1425,9 @@
   "dateFieldHint": "tttt/bb/hh",
   "dateInvalid": "Tarikh tidak sah. Cth. 2026/10/25",
   "numberStyleTitle": "Format nombor",
-  "numberStyleHint": "Cara amaun ditulis: pemisah ribu dan perpuluhan."
+  "numberStyleHint": "Cara amaun ditulis: pemisah ribu dan perpuluhan.",
+  "shareSmsFilled": "Diisi daripada mesej yang dikongsi: semak, kemudian simpan.",
+  "shareSmsNoAmount": "Tiada amaun dalam teks yang dikongsi.",
+  "shareSmsTip": "Petua: daripada mesej anda, kongsi SMS bank dengan SmartBudget untuk menambahnya dalam satu langkah.",
+  "pasteSmsRead": "Dibaca sebagai mesej bank: semak baris di bawah, kemudian simpan."
 }

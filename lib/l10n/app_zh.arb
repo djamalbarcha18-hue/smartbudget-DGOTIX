@@ -1425,5 +1425,9 @@
   "dateFieldHint": "yyyy/mm/dd",
   "dateInvalid": "日期无效，例如 2026/10/25",
   "numberStyleTitle": "数字格式",
-  "numberStyleHint": "金额的写法：千位分隔符和小数点。"
+  "numberStyleHint": "金额的写法：千位分隔符和小数点。",
+  "shareSmsFilled": "已根据分享的短信填写：请检查后保存。",
+  "shareSmsNoAmount": "分享的文字中没有找到金额。",
+  "shareSmsTip": "提示：在短信中把银行短信分享给 SmartBudget，一步即可记账。",
+  "pasteSmsRead": "已识别为银行短信：请检查下面这一行后保存。"
 }

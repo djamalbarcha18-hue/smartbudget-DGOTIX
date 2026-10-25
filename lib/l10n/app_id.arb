@@ -1425,5 +1425,9 @@
   "dateFieldHint": "tttt/bb/hh",
   "dateInvalid": "Tanggal salah, mis. 2026/10/25",
   "numberStyleTitle": "Format angka",
-  "numberStyleHint": "Cara penulisan nominal: pemisah ribuan dan desimal."
+  "numberStyleHint": "Cara penulisan nominal: pemisah ribuan dan desimal.",
+  "shareSmsFilled": "Diisi dari pesan yang dibagikan: periksa, lalu simpan.",
+  "shareSmsNoAmount": "Tidak ada nominal di teks yang dibagikan.",
+  "shareSmsTip": "Tips: dari aplikasi pesan, bagikan SMS bank ke SmartBudget untuk menambahkannya sekali langkah.",
+  "pasteSmsRead": "Dibaca sebagai pesan bank: periksa baris di bawah, lalu simpan."
 }

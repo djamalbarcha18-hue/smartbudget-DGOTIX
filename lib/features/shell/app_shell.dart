@@ -12,6 +12,7 @@ import 'package:smartbudget/features/shell/app_top_bar.dart';
 import 'package:smartbudget/features/shell/nav_destinations.dart';
 import 'package:smartbudget/features/shell/nav_seen.dart';
 import 'package:smartbudget/features/shell/nav_sidebar.dart';
+import 'package:smartbudget/features/quick_entry/presentation/shared_text_listener.dart';
 import 'package:smartbudget/features/reminders/presentation/reminder_section.dart';
 
 /// Responsive application shell: a floating glass sidebar on desktop/tablet,
@@ -54,13 +55,16 @@ class AppShell extends StatelessWidget {
       ],
     );
 
-    // A tap on the daily reminder opens quick entry here.
+    // A tap on the daily reminder opens quick entry here, and a bank
+    // message shared with the app opens a filled-in transaction.
     Widget scene(Widget scaffold) => ReminderTapListener(
-          child: Stack(
-            children: <Widget>[
-              const Positioned.fill(child: DsBackdrop()),
-              BackdropGroup(child: scaffold),
-            ],
+          child: SharedTextListener(
+            child: Stack(
+              children: <Widget>[
+                const Positioned.fill(child: DsBackdrop()),
+                BackdropGroup(child: scaffold),
+              ],
+            ),
           ),
         );
 

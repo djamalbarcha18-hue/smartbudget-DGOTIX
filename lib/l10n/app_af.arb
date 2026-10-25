@@ -1425,5 +1425,9 @@
   "dateFieldHint": "jjjj/mm/dd",
   "dateInvalid": "Ongeldige datum, bv. 2026/10/25",
   "numberStyleTitle": "Getalformaat",
-  "numberStyleHint": "Hoe bedrae geskryf word: skeiding van duisende en desimale."
+  "numberStyleHint": "Hoe bedrae geskryf word: skeiding van duisende en desimale.",
+  "shareSmsFilled": "Ingevul uit die gedeelde boodskap: gaan dit na en stoor.",
+  "shareSmsNoAmount": "Geen bedrag in die gedeelde teks gevind nie.",
+  "shareSmsTip": "Wenk: deel ’n bank-SMS uit jou boodskappe met SmartBudget om dit in een stap by te voeg.",
+  "pasteSmsRead": "As ’n bankboodskap gelees: gaan die reël hieronder na en stoor."
 }

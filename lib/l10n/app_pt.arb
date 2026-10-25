@@ -1425,5 +1425,9 @@
   "dateFieldHint": "aaaa/mm/dd",
   "dateInvalid": "Data inválida. Ex.: 2026/10/25",
   "numberStyleTitle": "Formato dos números",
-  "numberStyleHint": "Como os valores são escritos: separador de milhares e de decimais."
+  "numberStyleHint": "Como os valores são escritos: separador de milhares e de decimais.",
+  "shareSmsFilled": "Preenchido a partir da mensagem compartilhada: confira e salve.",
+  "shareSmsNoAmount": "Nenhum valor encontrado no texto compartilhado.",
+  "shareSmsTip": "Dica: nas suas mensagens, compartilhe um SMS do banco com o SmartBudget para adicioná-lo em um passo.",
+  "pasteSmsRead": "Lido como mensagem do banco: confira a linha abaixo e salve."
 }

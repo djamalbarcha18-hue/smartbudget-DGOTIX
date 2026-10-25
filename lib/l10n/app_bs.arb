@@ -1425,5 +1425,9 @@
   "dateFieldHint": "gggg/mm/dd",
   "dateInvalid": "Neispravan datum, npr. 2026/10/25",
   "numberStyleTitle": "Format brojeva",
-  "numberStyleHint": "Kako se pišu iznosi: razdjelnik hiljada i decimala."
+  "numberStyleHint": "Kako se pišu iznosi: razdjelnik hiljada i decimala.",
+  "shareSmsFilled": "Popunjeno iz podijeljene poruke: provjerite, pa sačuvajte.",
+  "shareSmsNoAmount": "U podijeljenom tekstu nema iznosa.",
+  "shareSmsTip": "Savjet: iz poruka podijelite SMS banke sa SmartBudgetom da ga dodate u jednom koraku.",
+  "pasteSmsRead": "Pročitano kao poruka banke: provjerite red ispod, pa sačuvajte."
 }

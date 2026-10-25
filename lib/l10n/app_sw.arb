@@ -1425,5 +1425,9 @@
   "dateFieldHint": "yyyy/mm/dd",
   "dateInvalid": "Tarehe si sahihi, mfano 2026/10/25",
   "numberStyleTitle": "Mtindo wa namba",
-  "numberStyleHint": "Jinsi kiasi kinavyoandikwa: kitenganishi cha maelfu na desimali."
+  "numberStyleHint": "Jinsi kiasi kinavyoandikwa: kitenganishi cha maelfu na desimali.",
+  "shareSmsFilled": "Imejazwa kutoka ujumbe ulioshirikiwa: kagua, kisha hifadhi.",
+  "shareSmsNoAmount": "Hakuna kiasi kilichopatikana kwenye maandishi yaliyoshirikiwa.",
+  "shareSmsTip": "Kidokezo: kutoka kwenye ujumbe, shiriki SMS ya benki na SmartBudget ili iongezwe kwa hatua moja.",
+  "pasteSmsRead": "Imesomwa kama ujumbe wa benki: kagua mstari ulio chini, kisha hifadhi."
 }
