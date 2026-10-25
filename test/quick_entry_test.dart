@@ -346,4 +346,25 @@ void main() {
       }
     });
   });
+
+  test('a gift given is an expense, a gift received an income', () {
+    for (final String s in <String>['هدية 3000', 'اشتريت هدية 2000', 'gift 25']) {
+      expect(p(s).category, 'الهدايا', reason: s);
+      expect(p(s).type, TransactionType.expense, reason: s);
+    }
+    for (final String s in <String>[
+      'وصلتني هدية 3000',
+      'هدية مستلمة 5000',
+      '+هدية 3000',
+      'gift received 50',
+      'cadeau reçu 40',
+      'получил подарок 1000',
+      '收到礼物 200',
+      'プレゼントをもらった 3000',
+      '선물 받음 50000',
+    ]) {
+      expect(p(s).category, 'هدايا', reason: s);
+      expect(p(s).type, TransactionType.income, reason: s);
+    }
+  });
 }

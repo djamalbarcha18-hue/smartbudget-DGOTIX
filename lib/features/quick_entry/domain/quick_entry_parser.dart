@@ -257,15 +257,19 @@ abstract final class QuickEntryParser {
             ? TransactionType.expense
             : typeFromCategory ?? TransactionType.expense;
 
-    // A keyword of the other type (e.g. "+ قهوة") doesn't fit: fall back.
-    final bool fits = category != null && typeFromCategory == type;
+    // A keyword of the other type (e.g. "+ قهوة") doesn't fit: fall back,
+    // unless the category has a twin on that side ("+ هدية" is a gift
+    // received).
+    final String? use =
+        typeFromCategory == type ? category : _twins[category];
+    final bool fits = use != null;
     final String description =
         rest.replaceAll(RegExp(r'\s+'), ' ').trim();
 
     return QuickEntry(
       type: type,
       amount: amount,
-      category: fits ? category : other,
+      category: use ?? other,
       description: description,
       date: date,
       recognized: fits,
@@ -431,6 +435,12 @@ abstract final class QuickEntryParser {
     }
     return s;
   }
+
+  /// Categories that exist on both sides: gifts given and received.
+  static const Map<String, String> _twins = <String, String>{
+    'الهدايا': 'هدايا',
+    'هدايا': 'الهدايا',
+  };
 
   static const List<(String, int)> _dateWords = <(String, int)>[
     ('اول امس', 2),
@@ -1110,6 +1120,7 @@ abstract final class QuickEntryParser {
     _Rule.expense('الصيانة والإصلاح', <String>['تصليح', 'صيانه', 'ميكانيكي', 'بلومبي', 'reparation', 'repair', 'mecanicien', 'plombier', 'servis', 'bengkel', 'reparacion', 'mecanico', 'taller', 'tamir', 'tamirat', 'usta', 'baiki', 'مرمت', 'مستری', 'mechanic', 'reparatur', 'werkstatt', 'handwerker', 'conserto', 'manutenção', 'mecânico', 'oficina', 'encanador', 'riparazione', 'meccanico', 'idraulico', 'manutenzione', 'reparatie', 'garage', 'monteur', 'loodgieter', 'popravka', 'servis auta', 'majstor', 'vodoinstalater', 'riparim', 'mekanik', 'hidraulik', 'servis', 'ремонт', 'сантехник', 'электрик', 'автосервис', 'шиномонтаж', 'мастер', 'fundi', 'matengenezo', 'gyaran mota', 'makanike', 'herstel', 'herstelwerk', 'werktuigkundige', 'motorhawe', 'تعمیر', 'تعمیرات', 'مکانیک', 'لوله کش', 'मरम्मत', 'रिपेयर', 'मिस्त्री', 'प्लंबर', 'सर्विसिंग', '维修', '修理', '保养', '修车', '修理', 'メンテナンス', '車検', '수리', '정비', '수리비']),
     _Rule.expense('العناية الشخصية والتجميل', <String>['حلاق', 'حلاقه', 'صالون', 'كوافير', 'عطر', 'عطور', 'مكياج', 'مستحضرات تجميل', 'haircut', 'barber', 'hairdresser', 'perfume', 'cosmetics', 'makeup', 'coiffeur', 'parfum', 'maquillage', 'berber', 'kuaför', 'parfüm', 'tukang cukur', 'salon kecantikan', 'gunting rambut', 'نائی', 'حجام', 'friseur', 'kosmetik', 'cabeleireiro', 'barbearia', 'peluquería', 'barbiere', 'parrucchiere', 'profumo', 'kapper', 'frizer', 'parfem', 'floktar', 'парикмахерская', 'стрижка', 'косметика', 'парфюм', 'kinyozi', 'saluni', 'manukato', 'aski', 'gyaran gashi', 'haarkapper', 'آرایشگاه', 'آرایشی', 'सैलून', 'नाई', 'इत्र', '理发', '美容院', '化妆品', '香水', '散髪', '化粧品', '美容室', '미용실', '화장품', '향수']),
     _Rule.expense('الإلكترونيات والأجهزة', <String>['هاتف جديد', 'جوال جديد', 'لابتوب', 'حاسوب', 'كمبيوتر', 'سماعات', 'شاحن', 'smartphone', 'new phone', 'laptop', 'computer', 'headphones', 'tablet', 'charger', 'ordinateur', 'portable neuf', 'bilgisayar', 'dizüstü', 'komputer', 'komputer riba', 'لیپ ٹاپ', 'notebook', 'computador', 'portatile', 'računar', 'kompjuter', 'ноутбук', 'смартфон', 'наушники', 'kompyuta', 'kwamfuta', 'rekenaar', 'لپ تاپ', 'گوشی نو', 'लैपटॉप', 'कंप्यूटर', '电脑', '笔记本电脑', '耳机', 'パソコン', 'イヤホン', '노트북', '이어폰']),
+    _Rule.income('هدايا', <String>['هديه مستلمه', 'وصلتني هديه', 'جاتني هديه', 'استلمت هديه', 'هديه من', 'gift received', 'received a gift', 'got a gift', 'cadeau reçu', 'reçu un cadeau', 'hediye aldım', 'gelen hediye', 'dapat hadiah', 'hadiah diterima', 'terima hadiah', 'تحفہ ملا', 'geschenk bekommen', 'geschenk erhalten', 'presente recebido', 'ganhei presente', 'regalo recibido', 'me regalaron', 'regalo ricevuto', 'cadeau gekregen', 'dobio poklon', 'dobila poklon', 'mora dhuratë', 'получил подарок', 'подарили', 'nimepewa zawadi', 'zawadi niliyopewa', 'an ba ni kyauta', 'geskenk ontvang', 'هدیه گرفتم', 'هدیه دریافتی', 'उपहार मिला', 'तोहफ़ा मिला', '收到礼物', '收到红包', 'プレゼントをもらった', 'お祝いをもらった', '선물 받음', '선물을 받았다']),
     _Rule.expense('الهدايا', <String>['هديه', 'هدايا', 'gift', 'gifts', 'present', 'cadeau', 'cadeaux', 'hediye', 'hadiah', 'tohfa', 'تحفہ', 'geschenk', 'presente', 'regalo', 'poklon', 'dhuratë', 'dhurate', 'подарок', 'подарки', 'zawadi', 'kyauta', 'geskenk', 'هدیه', 'उपहार', 'तोहफ़ा', '礼物', 'プレゼント', '선물']),
     _Rule.expense('المناسبات الاجتماعية', <String>['عرس', 'زفاف', 'عزومه', 'عقيقه', 'وليمه', 'مناسبه', 'wedding', 'party', 'mariage', 'fête', 'düğün', 'nikah', 'pernikahan', 'kondangan', 'kenduri', 'شادی', 'hochzeit', 'feier', 'casamento', 'festa', 'boda', 'matrimonio', 'bruiloft', 'feest', 'svadba', 'vjenčanje', 'dasma', 'свадьба', 'праздник', 'harusi', 'sherehe', 'biki', 'troue', 'partytjie', 'عروسی', 'مهمانی', 'शादी', 'पार्टी', '婚礼', '份子钱', '聚会', 'ご祝儀', '結婚式', '飲み会', '축의금', '결혼식', '회식']),
     _Rule.expense('الحيوانات الأليفة', <String>['قطه', 'قطط', 'كلب', 'بيطري', 'طعام القطط', 'pet', 'pets', 'vet', 'veterinary', 'cat food', 'dog food', 'vétérinaire', 'croquettes', 'veteriner', 'kedi maması', 'dokter hewan', 'makanan kucing', 'haiwan', 'tierarzt', 'katzenfutter', 'hundefutter', 'veterinário', 'ração', 'veterinario', 'pienso', 'dierenarts', 'kattenvoer', 'hondenvoer', 'veterinar', 'ветеринар', 'корм для кошек', 'корм для собак', 'daktari wa mifugo', 'chakula cha paka', 'veearts', 'kattekos', 'دامپزشک', 'غذای گربه', 'पशु चिकित्सक', '宠物', '猫粮', '狗粮', 'ペット', '動物病院', 'キャットフード', '반려동물', '동물병원', '사료']),
