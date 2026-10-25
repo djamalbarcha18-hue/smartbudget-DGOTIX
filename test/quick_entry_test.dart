@@ -126,12 +126,24 @@ void main() {
   group('wallets', () {
     final List<Wallet> wallets = <Wallet>[
       Wallet.general('DZD'),
-      Wallet(id: 'w-cash', name: 'الجيب', type: WalletType.cash,
-          opening: const Money(0, 'DZD'), createdAt: DateTime(2026)),
-      Wallet(id: 'w-ccp', name: 'CCP', type: WalletType.bank,
-          opening: const Money(0, 'DZD'), createdAt: DateTime(2026)),
-      Wallet(id: 'w-sal', name: 'حساب الراتب', type: WalletType.bank,
-          opening: const Money(0, 'DZD'), createdAt: DateTime(2026)),
+      Wallet(
+          id: 'w-cash',
+          name: 'الجيب',
+          type: WalletType.cash,
+          opening: const Money(0, 'DZD'),
+          createdAt: DateTime(2026)),
+      Wallet(
+          id: 'w-ccp',
+          name: 'CCP',
+          type: WalletType.bank,
+          opening: const Money(0, 'DZD'),
+          createdAt: DateTime(2026)),
+      Wallet(
+          id: 'w-sal',
+          name: 'حساب الراتب',
+          type: WalletType.bank,
+          opening: const Money(0, 'DZD'),
+          createdAt: DateTime(2026)),
     ];
     QuickEntry q(String s) =>
         QuickEntryParser.parse(s, today: today, wallets: wallets)!;
@@ -162,12 +174,24 @@ void main() {
     // savings wallet.
     final List<Wallet> wallets = <Wallet>[
       Wallet.general('SAR'),
-      Wallet(id: 'w-sar', name: 'الراجحي', type: WalletType.bank,
-          opening: const Money(0, 'SAR'), createdAt: DateTime(2026)),
-      Wallet(id: 'w-cash', name: 'كاش', type: WalletType.cash,
-          opening: const Money(0, 'SAR'), createdAt: DateTime(2026)),
-      Wallet(id: 'w-usd', name: 'ادخار', type: WalletType.savings,
-          opening: const Money(0, 'USD'), createdAt: DateTime(2026)),
+      Wallet(
+          id: 'w-sar',
+          name: 'الراجحي',
+          type: WalletType.bank,
+          opening: const Money(0, 'SAR'),
+          createdAt: DateTime(2026)),
+      Wallet(
+          id: 'w-cash',
+          name: 'كاش',
+          type: WalletType.cash,
+          opening: const Money(0, 'SAR'),
+          createdAt: DateTime(2026)),
+      Wallet(
+          id: 'w-usd',
+          name: 'ادخار',
+          type: WalletType.savings,
+          opening: const Money(0, 'USD'),
+          createdAt: DateTime(2026)),
     ];
     QuickEntry q(String s) => QuickEntryParser.parse(s,
         today: today, wallets: wallets, defaultWalletId: 'w-sar')!;
@@ -231,8 +255,8 @@ void main() {
         expect(cur('هدية 50 ${c.nameAr}', c.code), c.code, reason: c.nameAr);
         expect(cur('gift 50 ${c.nameEn}', c.code), c.code, reason: c.nameEn);
         expect(cur('gift 50 ${c.code}', c.code), c.code, reason: c.code);
-        if (c.symbol.length > 1 || !RegExp(r'^\p{L}$', unicode: true)
-            .hasMatch(c.symbol)) {
+        if (c.symbol.length > 1 ||
+            !RegExp(r'^\p{L}$', unicode: true).hasMatch(c.symbol)) {
           expect(cur('gift 50 ${c.symbol}', c.code), c.code, reason: c.symbol);
         }
       }
@@ -284,5 +308,42 @@ void main() {
       expect(e.type, TransactionType.income, reason: s);
     }
     expect(p('freelance 500').category, 'عمل حر');
+  });
+
+  test('personal care, electronics, gifts, occasions and pets', () {
+    const Map<String, List<String>> words = <String, List<String>>{
+      'العناية الشخصية والتجميل': <String>[
+        'حلاق 500',
+        'haircut 20',
+        'friseur 30',
+        '美容院 200'
+      ],
+      'الإلكترونيات والأجهزة': <String>[
+        'لابتوب 90000',
+        'laptop 800',
+        'ноутбук 50000',
+        'パソコン 120000'
+      ],
+      'الهدايا': <String>['هدية 3000', 'gift 25', 'cadeau 40', '선물 30000'],
+      'المناسبات الاجتماعية': <String>[
+        'عرس 20000',
+        'wedding 100',
+        'düğün 500',
+        '축의금 100000'
+      ],
+      'الحيوانات الأليفة': <String>[
+        'بيطري 2500',
+        'cat food 15',
+        'tierarzt 60',
+        'ペット 3000'
+      ],
+    };
+    words.forEach((String category, List<String> inputs) {
+      for (final String s in inputs) {
+        final QuickEntry e = p(s);
+        expect(e.category, category, reason: s);
+        expect(e.type, TransactionType.expense, reason: s);
+      }
+    });
   });
 }
