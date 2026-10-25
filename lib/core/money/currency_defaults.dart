@@ -38,6 +38,8 @@ abstract final class CurrencyDefaults {
     AppLang.bs: 'BAM',
     AppLang.sq: 'ALL',
     AppLang.ru: 'RUB',
+    AppLang.sw: 'KES',
+    AppLang.ha: 'NGN',
   };
 
   /// The currency of [country] (ISO 3166-1 alpha-2), or null when the app

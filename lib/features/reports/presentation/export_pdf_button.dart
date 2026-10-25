@@ -113,13 +113,13 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
       }
       // Only where letters are missing, to keep files small: Tajawal for the
       // digits and Latin of Urdu reports and any Arabic in Russian ones,
-      // Inter for Turkish ğ ş İ and Bosnian č ć đ.
+      // Inter for Turkish ğ ş İ, Bosnian č ć đ and Hausa ɓ ɗ ƙ ƴ.
       final List<pw.Font> fallback = switch (lang) {
         AppLang.ur || AppLang.ru => <pw.Font>[
             pw.Font.ttf(
                 await rootBundle.load('assets/fonts/Tajawal-Regular.ttf'))
           ],
-        AppLang.tr || AppLang.bs => <pw.Font>[
+        AppLang.tr || AppLang.bs || AppLang.ha => <pw.Font>[
             pw.Font.ttf(await rootBundle
                 .load('assets/google_fonts/Inter-Regular.ttf'))
           ],
@@ -158,7 +158,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
         return lang.pick('الربع $s', 'Q$s',
             fr: 'T$s', id: 'K$s', es: 'T$s', tr: '$s. Çeyrek', ms: 'Suku $s', ur: 'سہ ماہی $s',
             de: 'Q$s', pt: '$sº tri',
-            it: 'T$s', nl: 'K$s', bs: 'K$s', sq: 'T$s', ru: '$s кв.');
+            it: 'T$s', nl: 'K$s', bs: 'K$s', sq: 'T$s', ru: '$s кв.', sw: 'Robo $s', ha: 'Kwata $s');
       case ReportPeriod.halfYearly:
         return s == 2 ? l.half2 : l.half1;
       case ReportPeriod.yearly:

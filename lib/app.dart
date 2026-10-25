@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/l10n/app_lang.dart';
+import 'package:smartbudget/core/localization/fallback_localizations.dart';
 import 'package:smartbudget/core/localization/locale_controller.dart';
 import 'package:smartbudget/core/router/app_router.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -80,7 +81,10 @@ class SmartBudgetApp extends ConsumerWidget {
       themeMode: themeMode,
       locale: locale,
       supportedLocales: SupportedLocales.all,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+        ...AppLocalizations.localizationsDelegates,
+        ...fallbackLocalizationsDelegates,
+      ],
       routerConfig: router,
       builder: (BuildContext context, Widget? child) =>
           AnnotatedRegion<SystemUiOverlayStyle>(

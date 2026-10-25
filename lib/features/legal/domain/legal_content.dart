@@ -88,18 +88,28 @@ abstract final class LegalContent {
       ? 'по адресу ${AppConfig.supportEmail}'
       : 'через страницу «Помощь и поддержка» в приложении';
 
+  static String get _reachSw => AppConfig.hasSupportEmail
+      ? 'kupitia ${AppConfig.supportEmail}'
+      : 'kupitia ukurasa wa Msaada kwenye programu';
+
+  static String get _reachHa => AppConfig.hasSupportEmail
+      ? 'ta ${AppConfig.supportEmail}'
+      : 'ta shafin Taimako a cikin manhajar';
+
   static List<LegalSection> sections(LegalDoc doc, {required AppLang lang}) =>
       switch (doc) {
         LegalDoc.privacy => lang.pick(_privacyAr, _privacyEn,
             fr: _privacyFr, id: _privacyId, es: _privacyEs,
             tr: _privacyTr, ms: _privacyMs, ur: _privacyUr, de: _privacyDe,
             pt: _privacyPt, it: _privacyIt, nl: _privacyNl,
-            bs: _privacyBs, sq: _privacySq, ru: _privacyRu),
+            bs: _privacyBs, sq: _privacySq, ru: _privacyRu,
+            sw: _privacySw, ha: _privacyHa),
         LegalDoc.terms => lang.pick(_termsAr, _termsEn,
             fr: _termsFr, id: _termsId, es: _termsEs,
             tr: _termsTr, ms: _termsMs, ur: _termsUr, de: _termsDe,
             pt: _termsPt, it: _termsIt, nl: _termsNl,
-            bs: _termsBs, sq: _termsSq, ru: _termsRu),
+            bs: _termsBs, sq: _termsSq, ru: _termsRu,
+            sw: _termsSw, ha: _termsHa),
       };
 
   // ---- Privacy (English) ----
@@ -4440,6 +4450,566 @@ abstract final class LegalContent {
           'Мы можем обновлять эти условия и указывать дату последней версии; '
               'продолжение использования после обновления означает согласие с '
               'новыми условиями. По вопросам свяжитесь с нами $_reachRu.',
+        ),
+      ];
+
+  // ---- Privacy (Swahili) ----
+  static List<LegalSection> get _privacySw => <LegalSection>[
+        LegalSection(
+          'Muhtasari',
+          'Sera hii inaeleza $_app inahifadhi nini, inahifadhiwa wapi na '
+              'chaguo ulizonazo. Kwa ufupi: data yako ya fedha ni yako, '
+              'inahifadhiwa kwanza kwenye kifaa chako, na hatuiuzi kamwe, '
+              'hatukuonyeshi matangazo wala kukufuatilia. Vipengele vichache vya '
+              'hiari (kuingia na kulinganisha, DGOTIX AI, uchanganuzi wa risiti '
+              'mtandaoni na vifurushi vya kulipia) vinatuma data maalum kwa '
+              'huduma fulani pale tu unapovitumia, kama ilivyoelezwa hapa chini.',
+        ),
+        const LegalSection(
+          'Tunachohifadhi',
+          'Taarifa unazoandika mwenyewe: mapato, matumizi, bajeti, malengo, '
+              'madeni, pochi, kategoria zako na mapendeleo ya mwonekano '
+              '(mandhari, lugha, sarafu kuu). Ukifungua akaunti tunahifadhi pia '
+              'barua pepe yako, kifurushi chako na hali ya usajili, na idadi ya '
+              'matumizi ya DGOTIX AI na uchanganuzi wa risiti mtandaoni kwa kila '
+              'kipindi — kwa ajili ya kutumia vikomo vya kifurushi chako tu. '
+              'Hatuhifadhi maswali yako kwa DGOTIX AI wala picha za risiti zako; '
+              'ukiripoti jibu la AI, tunahifadhi jibu hilo na dokezo lako la '
+              'hiari ili tulikague.',
+        ),
+        const LegalSection(
+          'Data yako inakaa wapi',
+          'Kila kitu kinahifadhiwa kwanza kwenye kifaa chako (kwenye programu, '
+              'au kwenye kivinjari chako kwa toleo la wavuti), kwa hiyo programu '
+              'inafanya kazi hata bila akaunti au mtandao. Ukiingia, data yako '
+              'pia inalinganishwa yenyewe kati ya vifaa vyako: nakala '
+              'inahifadhiwa kwenye hifadhidata yetu (inayohifadhiwa na Supabase),'
+              ' imefungwa kwenye akaunti yako na kutengwa ili ni wewe tu '
+              'unayeweza kuisoma. Unaweza kuzima ulinganishaji kwenye Mipangilio;'
+              ' data yako basi inabaki kwenye kifaa hiki tu.',
+        ),
+        const LegalSection(
+          'Akaunti yako na barua pepe',
+          'Barua pepe yako inatumika kukuingiza na kutuma barua za akaunti, '
+              'kama uthibitisho wa anwani na kuweka upya nenosiri (zinatumwa '
+              'kupitia Brevo). Haitumiki kamwe kwa matangazo wala kushirikiwa kwa'
+              ' masoko. Unapojisajili au kuingia, ukaguzi mfupi wa binadamu '
+              '(Cloudflare Turnstile) unazuia matumizi mabaya ya kiotomatiki.',
+        ),
+        const LegalSection(
+          'DGOTIX AI',
+          'DGOTIX AI ni ya hiari. Unapouliza swali, maandishi ya swali hilo na '
+              'muhtasari wa tarakimu zako (jumla kwa mwezi na kategoria hadi '
+              'miezi 12, bajeti, salio la pochi, malengo, miamala inayojirudia, '
+              'bajeti za misimu na mizunguko ya akiba — viasi na tarehe tu, kamwe '
+              'si maelezo, madokezo au majina unayovipa vitu) vinatumwa kupitia '
+              'seva yetu salama kwa mtoa huduma wa AI (Google Gemini, OpenAI au '
+              'Anthropic) ili kutengeneza jibu. Seva yetu inatumia funguo zetu '
+              'wenyewe na inarekodi data ya matumizi tu, kamwe si swali lako wala'
+              ' tarakimu zako. Hatutumii data yako kufundisha modeli yoyote. '
+              'Majibu yanatengenezwa kiotomatiki, kwa hiyo kagua tarakimu muhimu '
+              'kabla ya kuchukua hatua.',
+        ),
+        const LegalSection(
+          'Uchanganuzi wa risiti',
+          'Kwenye Android, risiti zinaweza kusomwa kabisa kwenye kifaa chako. '
+              'Uchanganuzi wa mtandaoni unatuma picha ya risiti kupitia seva yetu '
+              'salama kwa mtoa huduma wa AI kwa ajili ya kusoma mfanyabiashara, '
+              'tarehe, kiasi, bidhaa na kategoria tu; picha haihifadhiwi.',
+        ),
+        const LegalSection(
+          'Malipo na usajili',
+          'Vifurushi vya kulipia ni vya hiari. Unalipa kwenye ukurasa salama wa '
+              'malipo wa Whop (whop.com), mtoa huduma wetu wa malipo, au kwa '
+              'PayPal ukiichagua. Wanakusanya taarifa za malipo wanazohitaji '
+              '(kama jina, barua pepe, nchi na njia ya malipo) chini ya sera zao '
+              'za faragha; hatuoni wala kuhifadhi taarifa kamili za kadi yako. '
+              'Tunahifadhi kifurushi chako, hali ya usajili, tarehe ya kujirudia '
+              'na vitambulisho vya usajili vya mtoa huduma wa malipo ili tukupe '
+              'ufikiaji sahihi, pamoja na rekodi ya msimbo wowote wa ofa '
+              'unaoutumia.',
+        ),
+        const LegalSection(
+          'Watoa huduma',
+          'Kulingana na vipengele unavyotumia: Supabase (akaunti, ulinganishaji '
+              'na kazi za seva yetu); Whop na PayPal (malipo); Brevo (barua za '
+              'akaunti); Cloudflare Turnstile (ukaguzi wa binadamu wakati wa '
+              'kuingia); GitHub Pages (kuhifadhi tovuti yetu na programu ya '
+              'wavuti); Google, OpenAI na Anthropic (DGOTIX AI na uchanganuzi wa '
+              'risiti mtandaoni); na vyanzo vya umma vya data za soko kwa '
+              'thamani za sasa — viwango vya sarafu (open.er-api.com) na bei za '
+              'crypto (CoinGecko) — ambavyo maombi yake yana alama za sarafu au '
+              'mali tu, kamwe si data yako binafsi au ya fedha. Kila mtoa huduma '
+              'anashughulikia data kwa ajili ya kutoa sehemu yake ya huduma tu.',
+        ),
+        const LegalSection(
+          'Usalama',
+          'Miunganisho kwenye huduma zetu imesimbwa (HTTPS). Kwenye hifadhidata '
+              'yetu, rekodi za kila mtumiaji zimetengwa ili akaunti moja isiweze '
+              'kamwe kusoma ya nyingine. Funguo za seva hazifiki kamwe kwenye '
+              'programu, arifa za malipo zinathibitishwa kabla ya kubadilisha '
+              'chochote, na unaweza kuongeza kufuli ya programu (PIN au alama ya '
+              'kidole) kwenye kifaa chako.',
+        ),
+        const LegalSection(
+          'Tusichofanya',
+          'Hatuuzi wala kukodisha data yako, hatuonyeshi matangazo, wala '
+              'hatufuatilii tabia au kuchambua shughuli zako za fedha.',
+        ),
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
+          const LegalSection(
+            'Hesabu zisizo na utambulisho',
+            'Unapounda safari, programu inatuma maneno “safari imepangwa” tu, '
+                'na seva yetu inaongeza moja kwenye jumla ya siku hiyo. Hakuna '
+                'kingine kinachotumwa wala kuhifadhiwa nayo — hakuna akaunti, '
+                'kifaa, mahali wala kiasi — kwa hiyo jumla haziwezi kuhusishwa '
+                'nawe. Tunazitumia tu kujua programu inatumika kiasi gani na '
+                'kuwaonyesha washirika takwimu za jumla. Unaweza kuzima hili '
+                'kwenye Mipangilio, chini ya Faragha.',
+          ),
+        const LegalSection(
+          'Tunahifadhi data kwa muda gani',
+          'Data kwenye kifaa chako inabaki hadi uifute au uondoe programu. '
+              'Akaunti yako, data iliyolinganishwa, idadi ya matumizi na data ya '
+              'maombi vinahifadhiwa wakati akaunti yako ipo — kwa ajili ya '
+              'kuendesha huduma na kutumia vikomo vya kifurushi chako tu — na '
+              'vinafutwa kabisa unapoifuta. Whop na PayPal wanahifadhi rekodi za '
+              'malipo wanazotakiwa kisheria kuhifadhi.',
+        ),
+        LegalSection(
+          'Haki zako na udhibiti',
+          'Unaweza kuona na kusahihisha data yako kwenye programu wakati wowote,'
+              ' kuchukua nakala kamili, kuzima ulinganishaji, kutoka, na kufuta '
+              'akaunti yako pamoja na data yake yote (tazama hapa chini). Unaweza'
+              ' kughairi usajili wa kulipia wakati wowote (tazama Masharti). Kwa '
+              'ombi lingine lolote kuhusu data yako binafsi — ikiwemo kuiona, '
+              'kuisahihisha, kuifuta au kupinga — wasiliana nasi $_reachSw na '
+              'tutajibu haraka.',
+        ),
+        const LegalSection(
+          'Kufuta akaunti yako na data',
+          'Kwenye programu au toleo la wavuti, kwenye kifaa chochote, fungua '
+              'Mipangilio, kisha Akaunti, kisha "Futa akaunti yangu". Hii inafuta '
+              'kabisa akaunti yako na kila kitu kilichohifadhiwa kwa ajili yake '
+              'kwenye seva zetu (wasifu, data iliyolinganishwa, rekodi ya usajili '
+              'na idadi ya matumizi), na inafuta data yako kwenye kifaa hicho. '
+              'Ghairi usajili wowote wa kulipia kwanza. Kufuta hakuwezi '
+              'kutenduliwa, kwa hiyo chukua nakala kabla ikiwa huenda ukahitaji '
+              'data yako baadaye.',
+        ),
+        LegalSection(
+          'Umri',
+          '$_app imekusudiwa watu wenye umri wa miaka 16 na zaidi. Hatukusanyi '
+              'kwa makusudi data ya watoto wadogo zaidi; ukiamini mtoto amefungua'
+              ' akaunti, wasiliana nasi $_reachSw na tutaifuta.',
+        ),
+        LegalSection(
+          'Mabadiliko na mawasiliano',
+          'Tunaweza kusasisha sera hii; tarehe iliyo hapo juu inaonyesha toleo '
+              'la karibuni. Kwa maswali ya faragha, wasiliana nasi $_reachSw.',
+        ),
+      ];
+
+  // ---- Terms (Swahili) ----
+  static List<LegalSection> get _termsSw => <LegalSection>[
+        LegalSection(
+          'Kukubali',
+          'Kwa kutumia $_app unakubali masharti haya. Ikiwa hukubali, tafadhali '
+              'usitumie programu.',
+        ),
+        LegalSection(
+          'Nani anaweza kuitumia',
+          'Lazima uwe na umri wa angalau miaka 16 kutumia $_app. Ukifungua '
+              'akaunti, linda taarifa zako za kuingia; unawajibika kwa shughuli '
+              'kwenye akaunti yako.',
+        ),
+        const LegalSection(
+          'Huduma ni nini',
+          'Zana ya bajeti binafsi na upangaji kwa kufuatilia mapato, matumizi, '
+              'bajeti, malengo na maarifa yanayohusiana, pamoja na msaada wa AI '
+              'wa hiari, uchanganuzi wa risiti, ulinganishaji kati ya vifaa na '
+              'vifurushi vya kulipia.',
+        ),
+        const LegalSection(
+          'Zana za kupanga, si ushauri wa kitaalamu',
+          'Bajeti, makadirio, kukokotoa Zaka na majibu ya DGOTIX AI ni zana za '
+              'kupanga zinazokusaidia kuamua. Si ushauri wa kitaalamu wa fedha, '
+              'kodi au dini. Kwa wajibu wa kidini kama Zaka, thibitisha na '
+              'mwanazuoni mwenye sifa; kwa maamuzi makubwa ya fedha, shauriana na'
+              ' mshauri mwenye sifa.',
+        ),
+        const LegalSection(
+          'Vipengele vya AI',
+          'DGOTIX AI na uchanganuzi wa risiti mtandaoni vinatoa matokeo ya '
+              'kiotomatiki ili kukuokolea muda; kagua tarakimu muhimu kabla ya '
+              'kuchukua hatua. Vipengele hivi vimejumuishwa ndani ya vikomo vya '
+              'matumizi ya haki vinavyotegemea kifurushi chako, na vinaweza '
+              'kurekebishwa ili huduma ibaki ya haraka na ya kuaminika kwa wote.',
+        ),
+        const LegalSection(
+          'Usajili, malipo na kujirudia',
+          'Programu ya msingi ni bure. Vifurushi vya kulipia (Pro) vinafungua '
+              'vikomo vikubwa zaidi na vipengele vya ziada kwa bei zinazoonyeshwa'
+              ' kwenye programu. Kifurushi cha kulipia kinajirudia chenyewe kila '
+              'kipindi (mwezi au mwaka) hadi ukighairi. Malipo yanashughulikiwa '
+              'na Whop, mtoa huduma wetu wa malipo (au PayPal ukiichagua); kodi '
+              'zinazohusika zinaweza kuongezwa na zinaonyeshwa daima kwenye '
+              'ukurasa wa malipo kabla ya kulipa. Unaweza kughairi wakati wowote '
+              'na kubaki na ufikiaji hadi mwisho wa kipindi ulichokwisha lipia. '
+              'Bei au vipengele vya vifurushi vikibadilika, masharti ya sasa '
+              'yanaonyeshwa daima kabla ya kujisajili.',
+        ),
+        const LegalSection(
+          'Mtoa huduma wetu wa malipo: Whop',
+          'SmartBudget inauzwa na DGOTIX. Malipo na ankara yanashughulikiwa na '
+              'Whop (whop.com), inayoshughulikia malipo kwenye ukurasa wake salama,'
+              ' inaonyesha bei kamili pamoja na kodi kabla ya kulipa, na kukutumia'
+              ' risiti. Unaweza kusimamia au kughairi usajili wako kutoka kwenye '
+              'programu (Vifurushi → Simamia).',
+        ),
+        LegalSection(
+          'Sera ya kurejesha pesa',
+          'Isipokuwa pale sheria inapotaka, malipo kwa kawaida hayarejeshwi '
+              'kipindi kikishaanza, kwa kuwa unabaki na ufikiaji hadi mwisho wake.'
+              ' Unaweza kughairi wakati wowote kusimamisha marudio yajayo. Kwa '
+              'ombi la kurejeshewa pesa au swali lolote kuhusu malipo, wasiliana '
+              'nasi $_reachSw: tunakagua kila ombi chini ya sheria ya walaji '
+              'inayohusika na kurejesha pesa zilizoidhinishwa kupitia Whop (au '
+              'PayPal).',
+        ),
+        const LegalSection(
+          'Misimbo ya ofa',
+          'Kuponi na misimbo ya punguzo ni za hiari na zinabadilisha bei ya '
+              'malipo tu (au kutoa kipindi cha majaribio). Kila msimbo una '
+              'masharti yake (muda wa uhalali, vikomo vya matumizi, mmoja kwa kila'
+              ' mteja) na unaweza kuondolewa au kuisha muda. Hazina thamani ya '
+              'pesa taslimu na haziwezi kuunganishwa isipokuwa imeelezwa.',
+        ),
+        const LegalSection(
+          'Data yako na nakala',
+          'Unawajibika kwa usahihi wa data unayoandika. Ili kuweka data yako '
+              'salama kwenye vifaa vyote, ingia ili kuilinganisha, au chukua '
+              'nakala mara kwa mara kutoka Mipangilio.',
+        ),
+        LegalSection(
+          'Upatikanaji',
+          'Tunajitahidi kuweka $_app ikipatikana na ya kuaminika. Kwa kiwango '
+              'kinachoruhusiwa na sheria, programu inatolewa "kama ilivyo", bila '
+              'dhamana za aina yoyote. Data za soko za sasa, AI na malipo '
+              'vinategemea huduma za wahusika wengine na mara chache vinaweza '
+              'kuchelewa au kutopatikana; usumbufu kama huo hautakuzuia kamwe '
+              'kutumia zana za msingi za bajeti, ambazo pia zinafanya kazi bila '
+              'mtandao. Vipengele vinaweza kubadilika kadiri muda unavyokwenda.',
+        ),
+        const LegalSection(
+          'Ukomo wa dhima',
+          'Kwa kiwango kinachoruhusiwa na sheria, hatuwajibiki kwa hasara '
+              'zisizo za moja kwa moja au zinazotokana, wala kwa maamuzi '
+              'unayofanya kulingana na tarakimu za programu. Hakuna chochote '
+              'katika masharti haya kinachopunguza haki ulizonazo chini ya sheria'
+              ' ya walaji ambazo haziwezi kuondolewa.',
+        ),
+        const LegalSection(
+          'Matumizi yanayokubalika',
+          'Usitumie huduma vibaya, usijaribu kuvunja au kukwepa usalama wake au '
+              'vikomo vya vifurushi, wala kuitumia kwa madhumuni yoyote '
+              'yasiyo halali.',
+        ),
+        LegalSection(
+          'Kuacha kutumia',
+          'Unaweza kuacha kutumia $_app na kufuta akaunti yako wakati wowote. '
+              'Tunaweza kusimamisha akaunti inayovunja masharti haya au '
+              'inayohatarisha huduma au watumiaji wengine.',
+        ),
+        LegalSection(
+          'Chapa na umiliki',
+          'Jina la $_app, chapa ya $_brand, pamoja na muundo na msimbo wa '
+              'programu vinabaki mali ya mmiliki wake. Data yako inabaki kuwa '
+              'yako.',
+        ),
+        LegalSection(
+          'Mabadiliko na mawasiliano',
+          'Tunaweza kusasisha masharti haya na kuonyesha tarehe ya toleo la '
+              'karibuni; kuendelea kutumia baada ya sasisho kunamaanisha '
+              'unakubali masharti yaliyorekebishwa. Kwa maswali, wasiliana nasi '
+              '$_reachSw.',
+        ),
+      ];
+
+  // ---- Privacy (Hausa) ----
+  static List<LegalSection> get _privacyHa => <LegalSection>[
+        LegalSection(
+          'Taƙaitawa',
+          'Wannan manufa tana bayyana abin da $_app ke ajiyewa, inda ake '
+              'ajiye shi, da zaɓuɓɓukan da kake da su. A taƙaice: bayanan '
+              'kuɗinka naka ne, ana ajiye su a na\'urarka da farko, kuma ba mu '
+              'taɓa sayar da su ba, ba ma nuna maka talla ko bin diddiginka. '
+              'Wasu fasaloli na zaɓi (shiga da daidaitawa, DGOTIX AI, karatun '
+              'rasit a intanet da tsare-tsaren biya) suna aika takamaiman '
+              'bayanai zuwa wani sabis ne kawai lokacin da ka yi amfani da su, '
+              'kamar yadda aka bayyana a ƙasa.',
+        ),
+        const LegalSection(
+          'Abin da muke ajiyewa',
+          'Bayanan da kake rubutawa da kanka: kuɗin shiga, kashe kuɗi, kasafi, '
+              'buri, basussuka, jakunkuna, rukunonin naka da zaɓin kamanni (jigo,'
+              ' harshe, babban kuɗi). Idan ka buɗe asusu muna kuma ajiye imel '
+              'ɗinka, tsarinka da matsayin biyan kuɗinka, da ƙididdigar amfani da '
+              'DGOTIX AI da karatun rasit a intanet a kowane lokaci — don aiwatar '
+              'da iyakokin tsarinka kawai. Ba ma ajiye tambayoyinka ga DGOTIX AI '
+              'ko hotunan rasit ɗinka; idan ka kai rahoton amsar AI, muna ajiye '
+              'amsar da bayaninka na zaɓi don mu duba ta.',
+        ),
+        const LegalSection(
+          'Inda bayananka suke',
+          'Ana ajiye komai a na\'urarka da farko (a cikin manhajar, ko a mai '
+              'binciken ka don sigar yanar gizo), don haka manhajar tana aiki ko '
+              'ba tare da asusu ko intanet ba. Idan ka shiga, bayananka ana '
+              'daidaita su kai tsaye tsakanin na\'urorinka: ana ajiye kwafi a '
+              'ma\'ajiyarmu (wadda Supabase ke ɗauka), an haɗa shi da asusunka '
+              'kuma an keɓe shi ta yadda kai kaɗai za ka iya karanta shi. Za ka '
+              'iya kashe daidaitawa a Saituna; bayananka za su zauna a wannan '
+              'na\'ura kawai.',
+        ),
+        const LegalSection(
+          'Asusunka da imel',
+          'Ana amfani da imel ɗinka don shigar da kai da aika saƙonnin asusu, '
+              'kamar tabbatar da adireshi da sake saita kalmar sirri (ana aika su'
+              ' ta Brevo). Ba a taɓa amfani da shi don talla ko raba shi don '
+              'kasuwanci ba. Lokacin da ka yi rajista ko ka shiga, gajeren '
+              'binciken mutum (Cloudflare Turnstile) yana hana cin zarafi na '
+              'na\'ura.',
+        ),
+        const LegalSection(
+          'DGOTIX AI',
+          'DGOTIX AI zaɓi ce. Lokacin da ka yi tambaya, rubutun tambayar da '
+              'taƙaitaccen lambobinka (jimilla bisa wata da rukuni har zuwa watanni'
+              ' 12, kasafi, ma\'aunin jakunkuna, buri, ma\'amaloli masu '
+              'maimaituwa, kasafin lokuta da adashe — adadi da kwanan wata kawai,'
+              ' ba bayanai, bayanan kula ko sunayen da ka ba abubuwa ba) ana aika'
+              ' su ta sabarmu mai tsaro zuwa mai ba da sabis na AI (Google '
+              'Gemini, OpenAI ko Anthropic) don ƙirƙirar amsar. Sabarmu tana '
+              'amfani da maɓallanmu kuma tana rubuta bayanan amfani kawai, ba '
+              'tambayarka ko lambobinka ba. Ba ma amfani da bayananka don horar '
+              'da kowane samfuri. Ana ƙirƙirar amsoshi kai tsaye, don haka duba '
+              'muhimman lambobi kafin ka ɗauki mataki.',
+        ),
+        const LegalSection(
+          'Karatun rasit',
+          'A Android, ana iya karanta rasit gaba ɗaya a na\'urarka. Karatu a '
+              'intanet yana aika hoton rasit ta sabarmu mai tsaro zuwa mai ba da '
+              'sabis na AI don karanta sunan mai sayarwa, kwanan wata, adadi, '
+              'kayayyaki da rukuni kawai; ba a ajiye hoton.',
+        ),
+        const LegalSection(
+          'Biya da biyan kuɗi na lokaci',
+          'Tsare-tsaren biya zaɓi ne. Kana biya a shafin biya mai tsaro na '
+              'Whop (whop.com), mai ba mu sabis na biya, ko da PayPal idan ka '
+              'zaɓe shi. Suna tattara bayanan biya da suke buƙata (kamar suna, '
+              'imel, ƙasa da hanyar biya) ƙarƙashin manufofin sirrinsu; ba mu '
+              'taɓa gani ko ajiye cikakkun bayanan katinka ba. Muna ajiye '
+              'tsarinka, matsayin biyan kuɗi, ranar sabuntawa da lambobin '
+              'shaidar biyan kuɗi na mai ba da sabis na biya don ba ka damar da '
+              'ta dace, tare da rikodin kowace lambar tayi da ka yi amfani da ita.',
+        ),
+        const LegalSection(
+          'Masu ba da sabis',
+          'Bisa fasalolin da kake amfani da su: Supabase (asusu, daidaitawa da '
+              'ayyukan sabarmu); Whop da PayPal (biya); Brevo (saƙonnin asusu); '
+              'Cloudflare Turnstile (binciken mutum lokacin shiga); GitHub Pages '
+              '(ɗaukar shafinmu da manhajar yanar gizo); Google, OpenAI da '
+              'Anthropic (DGOTIX AI da karatun rasit a intanet); da majiyoyin '
+              'jama\'a na bayanan kasuwa don ƙimomin yanzu — farashin kuɗaɗe '
+              '(open.er-api.com) da farashin crypto (CoinGecko) — waɗanda '
+              'buƙatunsu ke ƙunshe da alamomin kuɗi ko kadara kawai, ba bayananka'
+              ' na sirri ko na kuɗi ba. Kowane mai ba da sabis yana sarrafa '
+              'bayanai ne kawai don isar da ɓangarensa na sabis.',
+        ),
+        const LegalSection(
+          'Tsaro',
+          'Haɗin kai da ayyukanmu an ɓoye shi (HTTPS). A ma\'ajiyarmu, bayanan '
+              'kowane mai amfani an keɓe su ta yadda wani asusu ba zai taɓa '
+              'karanta na wani ba. Maɓallan sabar ba sa taɓa kaiwa ga manhajar, '
+              'ana tabbatar da sanarwar biya kafin su canza komai, kuma za ka iya'
+              ' ƙara kullen manhaja (PIN ko zanen yatsa) a na\'urarka.',
+        ),
+        const LegalSection(
+          'Abin da ba ma yi',
+          'Ba ma sayar ko ba da hayar bayananka, ba ma nuna talla, kuma ba ma '
+              'bin ɗabi\'unka ko nazarin ayyukanka na kuɗi.',
+        ),
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
+          const LegalSection(
+            'Ƙididdiga ba tare da suna ba',
+            'Lokacin da ka ƙirƙiri tafiya, manhajar tana aika kalmomin “an '
+                'tsara tafiya” kawai, kuma sabarmu tana ƙara ɗaya ga jimillar '
+                'ranar. Ba a aika ko ajiye wani abu tare da shi — babu asusu, '
+                'na\'ura, wuri ko adadi — don haka ba za a iya haɗa jimillar da '
+                'kai ba. Muna amfani da su ne kawai don sanin yawan amfani da '
+                'manhajar da nuna wa abokan hulɗa lambobin gaba ɗaya. Za ka iya '
+                'kashe wannan a Saituna, ƙarƙashin Sirri.',
+          ),
+        const LegalSection(
+          'Tsawon lokacin ajiye bayanai',
+          'Bayanai a na\'urarka suna nan har sai ka share su ko ka cire '
+              'manhajar. Asusunka, bayanan da aka daidaita, ƙididdigar amfani da '
+              'bayanan buƙatu ana ajiye su muddin asusunka yana nan — don gudanar'
+              ' da sabis da aiwatar da iyakokin tsarinka kawai — kuma ana goge su'
+              ' gaba ɗaya idan ka share shi. Whop da PayPal suna ajiye bayanan '
+              'biya da doka ta tilasta musu ajiyewa.',
+        ),
+        LegalSection(
+          'Haƙƙoƙinka da iko',
+          'Za ka iya gani da gyara bayananka a manhajar a kowane lokaci, fitar '
+              'da cikakken kwafi, kashe daidaitawa, fita, da share asusunka tare '
+              'da duk bayanansa (duba ƙasa). Za ka iya soke biyan kuɗi a kowane '
+              'lokaci (duba Sharuɗɗa). Don kowace buƙata game da bayananka na '
+              'sirri — har da gani, gyara, share ko ƙin amincewa — tuntuɓe mu '
+              '$_reachHa kuma za mu amsa da sauri.',
+        ),
+        const LegalSection(
+          'Share asusunka da bayanai',
+          'A manhajar ko sigar yanar gizo, a kowace na\'ura, buɗe Saituna, sannan'
+              ' Asusu, sannan "Share asusuna". Wannan yana share asusunka gaba '
+              'ɗaya da duk abin da aka ajiye masa a sabobinmu (bayanin martaba, '
+              'bayanan da aka daidaita, rikodin biyan kuɗi da ƙididdigar amfani), '
+              'kuma yana goge bayananka a wannan na\'ura. Soke duk wani biyan '
+              'kuɗi tukuna. Ba za a iya soke share ba, don haka ka fitar da kwafi '
+              'tukuna idan za ka iya buƙatar bayananka daga baya.',
+        ),
+        LegalSection(
+          'Shekaru',
+          '$_app an yi ta ne don mutane masu shekaru 16 zuwa sama. Ba mu da '
+              'niyyar tattara bayanan ƙananan yara; idan kana ganin yaro ya buɗe '
+              'asusu, tuntuɓe mu $_reachHa kuma za mu share shi.',
+        ),
+        LegalSection(
+          'Canje-canje da tuntuɓa',
+          'Za mu iya sabunta wannan manufa; kwanan watan da ke sama yana nuna '
+              'sigar ƙarshe. Don tambayoyi game da sirri, tuntuɓe mu $_reachHa.',
+        ),
+      ];
+
+  // ---- Terms (Hausa) ----
+  static List<LegalSection> get _termsHa => <LegalSection>[
+        LegalSection(
+          'Amincewa',
+          'Ta amfani da $_app ka amince da waɗannan sharuɗɗa. Idan ba ka '
+              'amince ba, da fatan kada ka yi amfani da manhajar.',
+        ),
+        LegalSection(
+          'Wa zai iya amfani da ita',
+          'Dole ka kasance aƙalla shekaru 16 don amfani da $_app. Idan ka buɗe '
+              'asusu, kare bayanan shigarka; kai ne ke da alhakin ayyuka a '
+              'asusunka.',
+        ),
+        const LegalSection(
+          'Menene sabis ɗin',
+          'Kayan aikin kasafi da tsari na kai don bin kuɗin shiga, kashe kuɗi, '
+              'kasafi, buri da bayanai masu alaƙa, tare da taimakon AI na zaɓi, '
+              'karatun rasit, daidaitawa tsakanin na\'urori da tsare-tsaren biya.',
+        ),
+        const LegalSection(
+          'Kayan aikin tsari, ba shawarar ƙwararru ba',
+          'Kasafi, hasashe, lissafin Zakka da amsoshin DGOTIX AI kayan aikin '
+              'tsari ne don taimaka maka yanke shawara. Ba shawarar ƙwararru ta '
+              'kuɗi, haraji ko addini ba ne. Don wajibai na addini kamar Zakka, '
+              'tabbatar da malami mai ilimi; don manyan shawarwarin kuɗi, '
+              'tuntuɓi ƙwararren mai ba da shawara.',
+        ),
+        const LegalSection(
+          'Fasalolin AI',
+          'DGOTIX AI da karatun rasit a intanet suna ba da sakamako kai tsaye '
+              'don adana maka lokaci; duba muhimman lambobi kafin ka ɗauki mataki.'
+              ' Waɗannan fasaloli suna cikin iyakokin amfani na adalci da suka '
+              'dogara da tsarinka, kuma ana iya daidaita su don sabis ya kasance '
+              'mai sauri da aminci ga kowa.',
+        ),
+        const LegalSection(
+          'Biyan kuɗi, biya da sabuntawa',
+          'Manhajar asali kyauta ce. Tsare-tsaren biya (Pro) suna buɗe iyakoki '
+              'mafi girma da ƙarin fasaloli a farashin da aka nuna a manhajar. '
+              'Tsarin biya yana sabunta kansa a kowane lokaci (wata ko shekara) '
+              'har sai ka soke shi. Whop ne ke sarrafa biya, mai ba mu sabis na '
+              'biya (ko PayPal idan ka zaɓe shi); ana iya ƙara harajin da ya '
+              'dace kuma ana nuna shi koyaushe a shafin biya kafin ka biya. Za ka'
+              ' iya soke a kowane lokaci ka ci gaba da samun dama har ƙarshen '
+              'lokacin da ka riga ka biya. Idan farashi ko fasalolin tsari sun '
+              'canza, ana nuna sharuɗɗan yanzu koyaushe kafin ka yi rajista.',
+        ),
+        const LegalSection(
+          'Mai ba mu sabis na biya: Whop',
+          'DGOTIX ne ke sayar da SmartBudget. Whop (whop.com) ne ke kula da biya '
+              'da takardun kuɗi: yana sarrafa biya a shafinsa mai tsaro, yana '
+              'nuna cikakken farashi tare da haraji kafin ka biya, kuma yana aiko'
+              ' maka da rasit. Za ka iya sarrafa ko soke biyan kuɗinka daga '
+              'manhajar (Tsare-tsare → Sarrafa).',
+        ),
+        LegalSection(
+          'Manufar mayar da kuɗi',
+          'Sai dai inda doka ta buƙata, yawanci ba a mayar da kuɗi bayan lokacin'
+              ' biya ya fara, tunda kana da dama har ƙarshensa. Za ka iya soke a '
+              'kowane lokaci don dakatar da sabuntawa na gaba. Don buƙatar mayar '
+              'da kuɗi ko kowace tambaya game da cire kuɗi, tuntuɓe mu $_reachHa:'
+              ' muna duba kowace buƙata bisa dokar masu sayayya da ta dace kuma '
+              'muna mayar da kuɗin da aka amince ta Whop (ko PayPal).',
+        ),
+        const LegalSection(
+          'Lambobin tayi',
+          'Kuponi da lambobin rangwame zaɓi ne kuma suna canza farashin biya '
+              'kawai (ko ba da lokacin gwaji). Kowace lamba tana da sharuɗɗanta '
+              '(wa\'adin aiki, iyakar amfani, ɗaya ga kowane abokin ciniki) kuma '
+              'ana iya janye ta ko wa\'adinta ya ƙare. Ba su da ƙimar tsabar kuɗi '
+              'kuma ba za a haɗa su ba sai an faɗa.',
+        ),
+        const LegalSection(
+          'Bayananka da kwafi',
+          'Kai ne ke da alhakin daidaiton bayanan da kake rubutawa. Don kiyaye '
+              'bayananka a duk na\'urori, shiga don daidaita su, ko ka riƙa '
+              'fitar da kwafi daga Saituna.',
+        ),
+        LegalSection(
+          'Samuwa',
+          'Muna ƙoƙari don $_app ta kasance a samu kuma mai aminci. Gwargwadon '
+              'yadda doka ta ba da dama, ana ba da manhajar "yadda take", ba '
+              'tare da kowace irin garanti ba. Bayanan kasuwa na yanzu, AI da '
+              'biya sun dogara da ayyukan wasu kuma lokaci-lokaci suna iya '
+              'jinkiri ko rashin samuwa; irin wannan katsewa ba ta taɓa hana ka '
+              'amfani da kayan aikin kasafi na asali, waɗanda ke aiki ko ba '
+              'intanet. Fasaloli na iya canzawa a tsawon lokaci.',
+        ),
+        const LegalSection(
+          'Iyakance alhaki',
+          'Gwargwadon yadda doka ta ba da dama, ba mu da alhakin asarar da ba '
+              'kai tsaye ba ko wadda ta biyo baya, ko shawarwarin da ka yanke '
+              'bisa lambobin manhajar. Babu wani abu a waɗannan sharuɗɗa da ke '
+              'iyakance haƙƙoƙin da kake da su ƙarƙashin dokar masu sayayya da '
+              'ba za a iya yafe su ba.',
+        ),
+        const LegalSection(
+          'Amfani mai karɓuwa',
+          'Kada ka yi amfani da sabis ba daidai ba, kada ka yi ƙoƙarin karya ko '
+              'tsallake tsaronsa ko iyakokin tsare-tsare, ko amfani da shi don '
+              'wata manufa da ta saɓa wa doka.',
+        ),
+        LegalSection(
+          'Daina amfani',
+          'Za ka iya daina amfani da $_app ka share asusunka a kowane lokaci. '
+              'Za mu iya dakatar da asusun da ya karya waɗannan sharuɗɗa ko ya '
+              'jefa sabis ko sauran masu amfani cikin haɗari.',
+        ),
+        LegalSection(
+          'Alama da mallaka',
+          'Sunan $_app, alamar $_brand, da ƙira da lambar manhajar suna zama '
+              'mallakar mai su. Bayananka suna zama naka.',
+        ),
+        LegalSection(
+          'Canje-canje da tuntuɓa',
+          'Za mu iya sabunta waɗannan sharuɗɗa mu nuna kwanan watan sigar '
+              'ƙarshe; ci gaba da amfani bayan sabuntawa yana nufin ka amince da '
+              'sharuɗɗan da aka gyara. Don tambayoyi, tuntuɓe mu $_reachHa.',
         ),
       ];
 }

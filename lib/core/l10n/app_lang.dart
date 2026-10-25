@@ -21,7 +21,9 @@ enum AppLang {
   nl('nl', 'Nederlands', hidden: true),
   bs('bs', 'Bosanski', hidden: true),
   sq('sq', 'Shqip', hidden: true),
-  ru('ru', 'Русский', hidden: true);
+  ru('ru', 'Русский', hidden: true),
+  sw('sw', 'Kiswahili', hidden: true),
+  ha('ha', 'Hausa', hidden: true);
 
   const AppLang(this.code, this.nativeName,
       {this.rtl = false, this.hidden = false});
@@ -70,7 +72,7 @@ enum AppLang {
   /// back to English (names of currencies, markets…), so a new language can
   /// ship before every long text is translated.
   T pick<T>(T ar, T en,
-          {T? fr, T? id, T? es, T? tr, T? ms, T? ur, T? de, T? pt, T? it, T? nl, T? bs, T? sq, T? ru}) =>
+          {T? fr, T? id, T? es, T? tr, T? ms, T? ur, T? de, T? pt, T? it, T? nl, T? bs, T? sq, T? ru, T? sw, T? ha}) =>
       switch (this) {
         AppLang.ar => ar,
         AppLang.en => en,
@@ -87,5 +89,7 @@ enum AppLang {
         AppLang.bs => bs ?? en,
         AppLang.sq => sq ?? en,
         AppLang.ru => ru ?? en,
+        AppLang.sw => sw ?? en,
+        AppLang.ha => ha ?? en,
       };
 }

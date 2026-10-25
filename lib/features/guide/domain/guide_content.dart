@@ -29,14 +29,14 @@ abstract final class GuideContent {
           fr: _startFr, id: _startId, es: _startEs,
           tr: _startTr, ms: _startMs, ur: _startUr, de: _startDe,
           pt: _startPt, it: _startIt, nl: _startNl, bs: _startBs,
-          sq: _startSq, ru: _startRu);
+          sq: _startSq, ru: _startRu, sw: _startSw, ha: _startHa);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
       lang.pick(_topicsAr, _topicsEn,
           fr: _topicsFr, id: _topicsId, es: _topicsEs,
           tr: _topicsTr, ms: _topicsMs, ur: _topicsUr, de: _topicsDe,
           pt: _topicsPt, it: _topicsIt, nl: _topicsNl, bs: _topicsBs,
-          sq: _topicsSq, ru: _topicsRu);
+          sq: _topicsSq, ru: _topicsRu, sw: _topicsSw, ha: _topicsHa);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -3060,6 +3060,405 @@ abstract final class GuideContent {
             'экспортируйте полную копию; после входа данные автоматически '
             'синхронизируются между устройствами (в том числе после работы без '
             'сети), и это можно выключить.',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Swahili) ----
+  static const List<String> _startSw = <String>[
+    'Fungua Mipangilio uchague lugha, mandhari na sarafu kuu — kila jumla '
+        'kwenye programu inaonyeshwa kwa sarafu hiyo.',
+    'Ongeza mapato na matumizi yako (au changanua risiti) — kila kitu kingine '
+        'kinakokotolewa kutoka kwake.',
+    'Weka bajeti ya mwezi ili programu ikuambie kiasi kilichobaki cha '
+        'kutumia.',
+    'Angalia Muhtasari na Afya ya kifedha ujue ulipo, kisha ongeza malengo na '
+        'madeni taratibu.',
+  ];
+
+  // ---- Topics (Swahili) ----
+  static const List<GuideTopic> _topicsSw = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'Muhtasari',
+      summary: 'Mwezi wako kwa mtazamo mmoja: mapato, matumizi, akiba na pesa '
+          'zilikokwenda.',
+      steps: <String>[
+        'Vigae vinaonyesha jumla za mwezi huu kwa sarafu yako kuu.',
+        'Gusa kipande kwenye uchambuzi wa matumizi kuangazia kategoria hiyo.',
+        'Arifa zinakuonyesha kinachohitaji umakini, kama kategoria iliyozidi '
+            'bajeti au lengo la haraka.',
+        'Bila data bado, vigae vinaonyesha “—” — hakuna kinachobuniwa kamwe.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'Mapato na matumizi',
+      summary: 'Rekodi kila mwendo wa pesa — msingi wa kila hesabu kwenye '
+          'programu.',
+      steps: <String>[
+        'Tumia kitufe cha kuongeza haraka kurekodi mapato au matumizi kwa '
+            'kiasi, kategoria, tarehe na dokezo.',
+        'Mapato na Matumizi kila moja ina skrini yake; Miamala inaonyesha zote '
+            'pamoja.',
+        'Tafuta kwenye orodha kupata rekodi yoyote, na uiguse kuihariri au '
+            'kuifuta.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'Miamala inayojirudia',
+      summary: 'Mshahara, kodi ya nyumba na usajili vinaongezwa vyenyewe kwenye '
+          'tarehe yake.',
+      steps: <String>[
+        'Unapoongeza mapato au matumizi, weka "Rudia" kila wiki, mwezi, miezi '
+            '3, miezi 6 au mwaka.',
+        'Kwa bonasi au kamisheni yenye kiasi kinachobadilika, washa "Kiasi '
+            'kinabadilika kila mara": kila tarehe programu inauliza kiasi halisi '
+            'badala ya kuongeza makisio.',
+        'Kila tarehe inapofika, programu inaiongeza kama muamala wa kawaida — '
+            'hata kama hukuwepo, inafidia utakapoifungua tena.',
+        'Kwenye skrini ya Yanayojirudia, simamisha, endelea, badilisha kiasi '
+            'au acha kurudia. Miamala iliyokwisha ongezwa haibadilishwi kamwe.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'Changanua risiti',
+      summary: 'Geuza picha ya risiti kuwa matumizi tayari kuhifadhiwa.',
+      steps: <String>[
+        'Kwenye skrini ya Matumizi, gusa "Changanua risiti" na upige au '
+            'uchague picha.',
+        'Programu inajaza mfanyabiashara, tarehe, kiasi na kategoria — '
+            'vikague kabla ya kuhifadhi.',
+        'Uchanganuzi wa mtandaoni unategemea kifurushi chako; risiti '
+            'isiposomeka, andika matumizi kwa mkono.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'Bajeti ya mwezi',
+      summary: 'Panga kiasi unachotaka kutumia kwa kila kategoria, mwezi kwa '
+          'mwezi.',
+      steps: <String>[
+        'Chagua mwaka na mwezi juu — skrini moja inahusu kila mwezi.',
+        'Weka kikomo kwa kila kategoria unayotaka kudhibiti.',
+        'Mipau ya maendeleo inajaa unavyotumia; kategoria iliyozidi kikomo '
+            'inawekewa alama.',
+        'Kwenye kifurushi cha kulipia, "Pendekeza mgawanyo" inagawa mapato yako '
+            'kwenye kategoria kulingana na matumizi yako ya karibuni — ikague, '
+            'kisha uitumie.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'Malengo na akiba',
+      summary: 'Weka akiba kwa jambo maalum na uone umekaribia kiasi gani.',
+      steps: <String>[
+        'Unda lengo lenye kiasi kinacholengwa na, ukipenda, tarehe ya mwisho.',
+        'Rekodi michango unapoweka akiba; maendeleo yanasasishwa yenyewe.',
+        'Malengo yaliyo karibu na tarehe yake yanaangaziwa kwenye Muhtasari.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'Madeni na mikopo',
+      summary: 'Fuatilia unachodaiwa na unachodai wengine.',
+      steps: <String>[
+        'Ongeza kila deni au mkopo pamoja na kiasi na mtu au upande.',
+        'Sasisha kiasi kilicholipwa hadi sasa uone kilichobaki.',
+        'Madeni yanaathiri alama yako ya Afya ya kifedha.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'Miradi',
+      summary: 'Panga miradi mikubwa katika sehemu za muda mfupi, wa kati na '
+          'mrefu.',
+      steps: <String>[
+        'Ongeza miradi na uweke kila mmoja kwenye muda wake.',
+        'Ufadhili unajaza sehemu kwa mpangilio, kwa hiyo unaona miradi ipi '
+            'akiba yako inaweza kuifadhili kwanza.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'Afya ya kifedha',
+      summary: 'Alama inayojumlisha jinsi fedha zako zilivyo na afya, na kwa '
+          'nini.',
+      steps: <String>[
+        'Alama inakokotolewa kwenye kifaa chako kutoka data yako mwenyewe.',
+        'Mambo makuu yanaonyesha kinachosaidia au kudhuru — boresha hayo '
+            'kwanza.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'Ripoti na uchambuzi',
+      summary: 'Ona mienendo ya mwaka na pesa zako zinakokwenda.',
+      steps: <String>[
+        'Chagua mwaka kulinganisha mapato na matumizi mwezi kwa mwezi.',
+        'Tumia uchambuzi kugundua kategoria zinazoongezeka kadiri muda '
+            'unavyokwenda.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'Zaka',
+      summary: 'Kadiria Zaka inayopaswa kwenye mali yako na ufuatilie Hauli.',
+      steps: <String>[
+        'Andika mali zinazotolewa Zaka upate makadirio.',
+        'Weka tarehe ambayo mali yako ilifikia nisabu ili kufuata kuhesabu '
+            'mwaka wa mwezi, unaoonyeshwa kwa Hijria.',
+        'Huu ni msaada wa kupanga — thibitisha wajibu wako na mwanazuoni '
+            'mwenye sifa.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'Viwango vya ubadilishaji na masoko',
+      summary: 'Viwango vya sarafu na bei za crypto za sasa kutoka vyanzo vya '
+          'umma.',
+      steps: <String>[
+        'Viwango vinapatikana moja kwa moja; kila mstari unaonyesha chanzo '
+            'chake.',
+        'Soko lisilo na chanzo cha kuaminika linasema "haipatikani" — kamwe '
+            'si namba ya kubuni.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'Msaidizi wa DGOTIX AI',
+      summary: 'Uliza maswali kuhusu fedha zako kwa lugha rahisi.',
+      steps: <String>[
+        'Andika swali au gusa pendekezo; msaidizi anajibu kwa kutumia '
+            'muhtasari mfupi wa tarakimu zako.',
+        'Idadi ya majibu inategemea kifurushi chako; utaona dokezo ukikaribia '
+            'kikomo.',
+        'Majibu yanatengenezwa kiotomatiki — hakiki maamuzi muhimu. Maarifa '
+            'ya kanuni chini ya mazungumzo yanafanya kazi daima, hata bila AI.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'Vifurushi na usajili',
+      summary: 'Linganisha Bure na Pro, na usimamie usajili wako.',
+      steps: <String>[
+        'Zana za msingi za bajeti ni bure milele.',
+        'Vifurushi vya kulipia vinaongeza vikomo vya AI na uchanganuzi wa '
+            'mtandaoni na kuongeza vipengele.',
+        'Ukijisajili, kifurushi chako cha sasa na tarehe ya kujirudia '
+            'vinaonekana juu, pamoja na kitufe cha kusimamia au kughairi.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'Mipangilio, data na nakala',
+      summary: 'Ifanye programu iwe yako na uweke data yako salama.',
+      steps: <String>[
+        'Lugha, mandhari na sarafu kuu viko chini ya Mwonekano na Eneo.',
+        'Simamia kategoria zako za mapato na matumizi.',
+        'Chini ya Data na nakala, chukua nakala kamili wakati wowote; ukiwa '
+            'umeingia, data yako inalinganishwa yenyewe kati ya vifaa vyako '
+            '(pia baada ya kufanya kazi bila mtandao), na unaweza kuzima hilo.',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Hausa) ----
+  static const List<String> _startHa = <String>[
+    'Buɗe Saituna ka zaɓi harshe, jigo da babban kuɗi — kowace jimilla a '
+        'manhajar ana nuna ta da wannan kuɗin.',
+    'Ƙara kuɗin shiga da kashe kuɗinka (ko ka karanta rasit) — duk sauran ana '
+        'lissafa su daga gare su.',
+    'Saita kasafin wata don manhajar ta gaya maka nawa ya rage na kashewa.',
+    'Duba Taƙaitawa da Lafiyar kuɗi don sanin matsayinka, sannan ka riƙa '
+        'ƙara buri da basussuka.',
+  ];
+
+  // ---- Topics (Hausa) ----
+  static const List<GuideTopic> _topicsHa = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'Taƙaitawa',
+      summary: 'Watanka a kallo ɗaya: kuɗin shiga, kashe kuɗi, tanadi da inda '
+          'kuɗin suka tafi.',
+      steps: <String>[
+        'Akwatuna suna nuna jimillar wannan wata a babban kuɗinka.',
+        'Taɓa wani yanki a rarraba kashe kuɗi don haskaka wannan rukuni.',
+        'Faɗakarwa suna nuna maka abin da ke buƙatar kulawa, kamar rukunin da '
+            'ya wuce kasafi ko burin gaggawa.',
+        'Idan babu bayanai tukuna, akwatuna suna nuna “—” — ba a taɓa ƙirƙirar '
+            'komai ba.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'Kuɗin shiga da kashe kuɗi',
+      summary: 'Rubuta kowane motsin kuɗi — tushen kowane lissafi a manhajar.',
+      steps: <String>[
+        'Yi amfani da maɓallin ƙara da sauri don rubuta kuɗin shiga ko kashe '
+            'kuɗi tare da adadi, rukuni, kwanan wata da bayani.',
+        'Kuɗin shiga da Kashe kuɗi kowanne yana da allonsa; Ma\'amaloli suna '
+            'nuna su tare.',
+        'Nema a cikin jerin don samun kowane rikodi, ka taɓa shi don gyarawa '
+            'ko sharewa.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'Ma\'amaloli masu maimaituwa',
+      summary: 'Albashi, haya da biyan kuɗi na wata ana ƙara su kai tsaye a '
+          'ranarsu.',
+      steps: <String>[
+        'Lokacin ƙara kuɗin shiga ko kashe kuɗi, saita "Maimaita" kowane mako, '
+            'wata, wata 3, wata 6 ko shekara.',
+        'Don kyauta ko kwamishan da adadinsa ke canzawa, kunna "Adadin yana '
+            'canzawa kowane lokaci": a kowace rana manhajar tana tambayar '
+            'ainihin adadi maimakon ƙara kimantawa.',
+        'Duk lokacin da lokacinsa ya yi, manhajar tana ƙara shi a matsayin '
+            'ma\'amala ta yau da kullum — ko da ba ka nan, tana cike gibi '
+            'idan ka sake buɗe ta.',
+        'A allon Masu maimaituwa, dakatar, ci gaba, canza adadi ko daina '
+            'maimaitawa. Ma\'amalolin da aka riga aka ƙara ba sa canzawa.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'Karanta rasit',
+      summary: 'Mayar da hoton rasit ya zama kashe kuɗi shirye don ajiyewa.',
+      steps: <String>[
+        'A allon Kashe kuɗi, taɓa "Karanta rasit" ka ɗauki ko zaɓi hoto.',
+        'Manhajar tana cike mai sayarwa, kwanan wata, adadi da rukuni — duba '
+            'su kafin ajiyewa.',
+        'Karatu a intanet ya dogara da tsarinka; idan ba a iya karanta rasit '
+            'ba, rubuta kashe kuɗin da hannu.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'Kasafin wata',
+      summary: 'Tsara nawa kake son kashewa a kowane rukuni, wata bayan wata.',
+      steps: <String>[
+        'Zaɓi shekara da wata a sama — allo ɗaya yana ɗaukar kowane wata.',
+        'Saita iyaka ga kowane rukunin da kake son sarrafawa.',
+        'Sandunan ci gaba suna cika yayin da kake kashewa; rukunin da ya wuce '
+            'iyakarsa ana yi masa alama.',
+        'A tsarin biya, "Ba da shawarar rabo" tana raba kuɗin shigarka a '
+            'rukunoni bisa kashe-kashenka na baya-bayan nan — duba ta, sannan ka '
+            'yi amfani da ita.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'Buri da tanadi',
+      summary: 'Yi tanadi don wani abu na musamman ka ga yadda ka kusa.',
+      steps: <String>[
+        'Ƙirƙiri buri mai adadin da ake nema kuma, idan kana so, ranar ƙarshe.',
+        'Rubuta gudummawa yayin da kake tanadi; ci gaba yana sabuntawa kai '
+            'tsaye.',
+        'Burin da lokacinsu ya kusa ana haskaka su a Taƙaitawa.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'Basussuka da lamuni',
+      summary: 'Bi abin da kake bi da abin da wasu ke binka.',
+      steps: <String>[
+        'Ƙara kowane bashi ko lamuni tare da adadinsa da mutum ko ɓangare.',
+        'Sabunta adadin da aka biya zuwa yanzu don ganin saura.',
+        'Basussuka suna shafar makin Lafiyar kuɗinka.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'Ayyuka',
+      summary: 'Tsara manyan ayyuka a ɓangarorin gajeren, matsakaici da dogon '
+          'lokaci.',
+      steps: <String>[
+        'Ƙara ayyuka ka sanya kowanne a lokacinsa.',
+        'Ɗaukar nauyi yana cike ɓangarori bisa tsari, don haka kana ganin '
+            'ayyukan da tanadinka zai fara ɗauka.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'Lafiyar kuɗi',
+      summary: 'Maki da ke taƙaita yadda kuɗinka ke da lafiya, da dalili.',
+      steps: <String>[
+        'Ana lissafa makin a na\'urarka daga bayananka.',
+        'Manyan abubuwa suna nuna abin da ke taimakawa ko cutarwa — fara '
+            'inganta su.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'Rahotanni da nazari',
+      summary: 'Ga yanayin shekara da inda kuɗinka ke tafiya.',
+      steps: <String>[
+        'Zaɓi shekara don kwatanta kuɗin shiga da kashe kuɗi wata bayan wata.',
+        'Yi amfani da rarrabuwa don gano rukunonin da ke ƙaruwa a tsawon '
+            'lokaci.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'Zakka',
+      summary: 'Kimanta Zakkar da ta wajaba a dukiyarka ka bi Shekara.',
+      steps: <String>[
+        'Rubuta kadarorin da ake fitar wa Zakka don samun kimantawa.',
+        'Saita ranar da dukiyarka ta kai nisabi don bin ƙidayar shekarar '
+            'wata, da ake nunawa a Hijira.',
+        'Wannan taimakon tsari ne — tabbatar da wajibinka da malami mai ilimi.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'Farashin musaya da kasuwanni',
+      summary: 'Farashin kuɗaɗe da na crypto na yanzu daga majiyoyin jama\'a.',
+      steps: <String>[
+        'Ana samun farashi kai tsaye; kowane layi yana nuna majiyarsa.',
+        'Idan kasuwa ba ta da majiya mai aminci ana rubuta "babu" — ba lambar '
+            'ƙirƙira ba.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'Mataimakin DGOTIX AI',
+      summary: 'Yi tambayoyi game da kuɗinka cikin sauƙaƙan harshe.',
+      steps: <String>[
+        'Rubuta tambaya ko taɓa shawara; mataimakin yana amsawa ta amfani da '
+            'gajeren taƙaitaccen lambobinka.',
+        'Yawan amsoshi ya dogara da tsarinka; za ka ga sanarwa idan ka kusa '
+            'iyaka.',
+        'Ana ƙirƙirar amsoshi kai tsaye — sake duba muhimman shawarwari. '
+            'Bayanai na ƙa\'ida da ke ƙasan tattaunawa suna aiki koyaushe, ko '
+            'ba AI.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'Tsare-tsare da biyan kuɗi',
+      summary: 'Kwatanta Kyauta da Pro, ka sarrafa biyan kuɗinka.',
+      steps: <String>[
+        'Kayan aikin kasafi na asali kyauta ne har abada.',
+        'Tsare-tsaren biya suna ƙara iyakokin AI da karatun intanet kuma suna '
+            'ƙara fasaloli.',
+        'Idan ka yi rajista, tsarinka na yanzu da ranar sabuntawa suna '
+            'bayyana a sama, tare da maɓallin sarrafawa ko sokewa.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'Saituna, bayanai da kwafi',
+      summary: 'Mayar da manhajar taka ka kiyaye bayananka.',
+      steps: <String>[
+        'Harshe, jigo da babban kuɗi suna ƙarƙashin Kamanni da Yanki.',
+        'Sarrafa rukunonin kuɗin shiga da kashe kuɗi naka.',
+        'A ƙarƙashin Bayanai da kwafi, fitar da cikakken kwafi a kowane lokaci;'
+            ' idan ka shiga, bayananka ana daidaita su kai tsaye tsakanin '
+            'na\'urorinka (har bayan aiki ba intanet), kuma za ka iya kashe '
+            'hakan.',
       ],
     ),
   ];

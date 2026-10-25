@@ -132,12 +132,24 @@ class HijriDate {
     'Зуль-хиджа',
   ];
 
+  static const List<String> monthsSw = <String>[
+    'Muharram', 'Safar', 'Rabiul Awwal', 'Rabiul Akhir', 'Jumadal Ula',
+    'Jumadal Akhira', 'Rajab', 'Shaaban', 'Ramadhani', 'Shawwal',
+    'Dhul Qaada', 'Dhul Hijja',
+  ];
+
+  static const List<String> monthsHa = <String>[
+    'Muharram', 'Safar', 'Rabi\'ul Awwal', 'Rabi\'ul Akhir', 'Jimada Ula',
+    'Jimada Akhir', 'Rajab', 'Sha\'aban', 'Ramadan', 'Shawwal', 'Zul Ƙida',
+    'Zul Hajji',
+  ];
+
   String monthName({required AppLang lang}) => (month >= 1 && month <= 12)
       ? lang.pick(monthsAr, monthsEn,
           fr: monthsFr, id: monthsId, es: monthsEs,
           tr: monthsTr, ms: monthsMs, ur: monthsUr, de: monthsDe,
           pt: monthsPt, it: monthsIt,
-          nl: monthsNl, bs: monthsBs, sq: monthsSq, ru: monthsRu)[month - 1]
+          nl: monthsNl, bs: monthsBs, sq: monthsSq, ru: monthsRu, sw: monthsSw, ha: monthsHa)[month - 1]
       : '';
 
   /// Formats as `day month year هـ`, e.g. "12 رمضان 1446 هـ".
@@ -156,7 +168,9 @@ class HijriDate {
       nl: '$day ${monthName(lang: lang)} $year H.',
       bs: '$day. ${monthName(lang: lang)} $year. h. g.',
       sq: '$day ${monthName(lang: lang)} $year H.',
-      ru: '$day ${monthName(lang: lang)} $year г. х.');
+      ru: '$day ${monthName(lang: lang)} $year г. х.',
+      sw: '$day ${monthName(lang: lang)} $year H',
+      ha: '$day ${monthName(lang: lang)} $year H');
 
   /// Julian Day Number for this Hijri date (tabular civil calendar).
   int toJdn() =>
