@@ -1414,5 +1414,12 @@
   "offerNoticeTitle": "Ortağa gitmeden önce",
   "offerNoticeContinue": "Devam",
   "offerThePartner": "ortak",
-  "offerNoticeBody": "Rezervasyon ve ödeme doğrudan {partner} ile, onun koşullarında ve senin sorumluluğunda yapılır. SmartBudget bu hizmetleri satmaz veya garanti etmez; bunlar SmartBudget aboneliğinin ya da Pro planının parçası değildir; Pro ayrıcalıklarını ortak sunar."
+  "offerNoticeBody": "Rezervasyon ve ödeme doğrudan {partner} ile, onun koşullarında ve senin sorumluluğunda yapılır. SmartBudget bu hizmetleri satmaz veya garanti etmez; bunlar SmartBudget aboneliğinin ya da Pro planının parçası değildir; Pro ayrıcalıklarını ortak sunar.",
+  "reminderTitle": "Günlük hatırlatma",
+  "reminderEnable": "Harcamalarımı kaydetmemi hatırlat",
+  "reminderHint": "Seçtiğiniz saatte, yalnızca henüz bir şey kaydetmediğiniz günlerde nazik bir hatırlatma. Dokunun, saniyeler içinde ekleyin.",
+  "reminderTime": "Saat",
+  "reminderNotifTitle": "Bugün harcamaların nasıldı?",
+  "reminderNotifBody": "Bugün henüz bir şey kaydetmediniz. Birkaç saniyede ekleyin.",
+  "reminderPermissionDenied": "SmartBudget bildirimleri kapalı. Telefonun ayarlarından açın."
 }

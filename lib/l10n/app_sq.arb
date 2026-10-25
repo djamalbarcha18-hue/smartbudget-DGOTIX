@@ -1414,5 +1414,12 @@
   "offerNoticeTitle": "Para se të shkosh te partneri",
   "offerNoticeContinue": "Vazhdo",
   "offerThePartner": "partnerin",
-  "offerNoticeBody": "Rezervimi dhe pagesa bëhen drejtpërdrejt me {partner}, sipas kushteve të tyre dhe me përgjegjësinë tënde. SmartBudget nuk i shet dhe nuk i garanton këto shërbime, dhe ato nuk janë pjesë e abonimit tënd SmartBudget apo e paketës Pro; çdo përfitim Pro ofrohet nga partneri."
+  "offerNoticeBody": "Rezervimi dhe pagesa bëhen drejtpërdrejt me {partner}, sipas kushteve të tyre dhe me përgjegjësinë tënde. SmartBudget nuk i shet dhe nuk i garanton këto shërbime, dhe ato nuk janë pjesë e abonimit tënd SmartBudget apo e paketës Pro; çdo përfitim Pro ofrohet nga partneri.",
+  "reminderTitle": "Kujtesë ditore",
+  "reminderEnable": "Më kujto të regjistroj shpenzimet",
+  "reminderHint": "Një kujtesë e butë në orën që zgjedh, vetëm në ditët kur ende s’ke regjistruar asgjë. Prek atë dhe shto në pak sekonda.",
+  "reminderTime": "Ora",
+  "reminderNotifTitle": "Si shkuan shpenzimet sot?",
+  "reminderNotifBody": "Sot ende s’ke regjistruar asgjë. Shtoje në pak sekonda.",
+  "reminderPermissionDenied": "Njoftimet për SmartBudget janë të fikura. Ndizi te cilësimet e telefonit."
 }

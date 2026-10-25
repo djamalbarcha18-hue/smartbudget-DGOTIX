@@ -1665,5 +1665,12 @@
   "offerNoticeContinue": "Continue",
   "offerThePartner": "the partner",
   "offerNoticeBody": "Booking and payment are made directly with {partner}, on their terms and at your own responsibility. SmartBudget doesn’t sell or guarantee these services, and they are not part of your SmartBudget subscription or the Pro plan; any Pro perk is offered by the partner.",
-  "@offerNoticeBody": {"placeholders": {"partner": {"type": "String"}}}
+  "@offerNoticeBody": {"placeholders": {"partner": {"type": "String"}}},
+  "reminderTitle": "Daily reminder",
+  "reminderEnable": "Remind me to record my spending",
+  "reminderHint": "A gentle nudge at the time you choose, only on days you haven't recorded anything yet. Tap it to add in seconds.",
+  "reminderTime": "Time",
+  "reminderNotifTitle": "How was your spending today?",
+  "reminderNotifBody": "Nothing recorded yet today. Add it in a few seconds.",
+  "reminderPermissionDenied": "Notifications are off for SmartBudget. Turn them on in your phone's settings."
 }

@@ -1414,5 +1414,12 @@
   "offerNoticeTitle": "Prima di andare dal partner",
   "offerNoticeContinue": "Continua",
   "offerThePartner": "il partner",
-  "offerNoticeBody": "Prenotazione e pagamento avvengono direttamente con {partner}, alle sue condizioni e sotto la tua responsabilità. SmartBudget non vende né garantisce questi servizi, e non fanno parte del tuo abbonamento SmartBudget né del piano Pro; eventuali vantaggi Pro sono offerti dal partner."
+  "offerNoticeBody": "Prenotazione e pagamento avvengono direttamente con {partner}, alle sue condizioni e sotto la tua responsabilità. SmartBudget non vende né garantisce questi servizi, e non fanno parte del tuo abbonamento SmartBudget né del piano Pro; eventuali vantaggi Pro sono offerti dal partner.",
+  "reminderTitle": "Promemoria giornaliero",
+  "reminderEnable": "Ricordami di registrare le spese",
+  "reminderHint": "Un promemoria discreto all'ora che scegli, solo nei giorni in cui non hai ancora registrato nulla. Toccalo per aggiungere in pochi secondi.",
+  "reminderTime": "Ora",
+  "reminderNotifTitle": "Com’è andata con le spese oggi?",
+  "reminderNotifBody": "Oggi non hai ancora registrato nulla. Aggiungilo in pochi secondi.",
+  "reminderPermissionDenied": "Le notifiche di SmartBudget sono disattivate. Attivale nelle impostazioni del telefono."
 }

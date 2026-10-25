@@ -1614,5 +1614,12 @@
   "offerNoticeTitle": "قبل الانتقال إلى الشريك",
   "offerNoticeContinue": "متابعة",
   "offerThePartner": "الشريك",
-  "offerNoticeBody": "الحجز والدفع يتمّان مباشرة مع {partner}، بشروطه وعلى مسؤوليتك. SmartBudget لا يبيع هذه الخدمات ولا يضمنها، وهي ليست جزءًا من اشتراكك في SmartBudget ولا من خطة Pro؛ وأي ميزة لمشتركي Pro يقدّمها الشريك نفسه."
+  "offerNoticeBody": "الحجز والدفع يتمّان مباشرة مع {partner}، بشروطه وعلى مسؤوليتك. SmartBudget لا يبيع هذه الخدمات ولا يضمنها، وهي ليست جزءًا من اشتراكك في SmartBudget ولا من خطة Pro؛ وأي ميزة لمشتركي Pro يقدّمها الشريك نفسه.",
+  "reminderTitle": "تذكير يومي",
+  "reminderEnable": "ذكّرني بتسجيل مصاريفي",
+  "reminderHint": "تنبيه لطيف في الوقت الذي تختاره، فقط في الأيام التي لم تسجّل فيها شيئاً بعد. اضغط عليه لتضيف في ثوانٍ.",
+  "reminderTime": "الوقت",
+  "reminderNotifTitle": "كيف كانت مصاريفك اليوم؟",
+  "reminderNotifBody": "لم تسجّل شيئاً اليوم بعد. أضفه في ثوانٍ.",
+  "reminderPermissionDenied": "الإشعارات متوقفة لـ SmartBudget. فعّلها من إعدادات الهاتف."
 }

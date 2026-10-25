@@ -1414,5 +1414,12 @@
   "offerNoticeTitle": "Prije nego odeš kod partnera",
   "offerNoticeContinue": "Nastavi",
   "offerThePartner": "partnera",
-  "offerNoticeBody": "Rezervacija i plaćanje se obavljaju direktno kod {partner}, po njihovim uslovima i na tvoju odgovornost. SmartBudget ne prodaje niti garantuje ove usluge i one nisu dio tvoje SmartBudget pretplate ni Pro paketa; Pro pogodnosti nudi partner."
+  "offerNoticeBody": "Rezervacija i plaćanje se obavljaju direktno kod {partner}, po njihovim uslovima i na tvoju odgovornost. SmartBudget ne prodaje niti garantuje ove usluge i one nisu dio tvoje SmartBudget pretplate ni Pro paketa; Pro pogodnosti nudi partner.",
+  "reminderTitle": "Dnevni podsjetnik",
+  "reminderEnable": "Podsjeti me da upišem troškove",
+  "reminderHint": "Blag podsjetnik u vrijeme koje izabereš, samo danima kada još ništa nisi upisao. Dodirni ga i dodaj za par sekundi.",
+  "reminderTime": "Vrijeme",
+  "reminderNotifTitle": "Kakvi su ti bili troškovi danas?",
+  "reminderNotifBody": "Danas još ništa nije upisano. Dodaj za par sekundi.",
+  "reminderPermissionDenied": "Obavijesti za SmartBudget su isključene. Uključi ih u postavkama telefona."
 }

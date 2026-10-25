@@ -1414,5 +1414,12 @@
   "offerNoticeTitle": "Bevor du zum Partner gehst",
   "offerNoticeContinue": "Weiter",
   "offerThePartner": "dem Partner",
-  "offerNoticeBody": "Buchung und Zahlung erfolgen direkt bei {partner}, zu dessen Bedingungen und auf deine eigene Verantwortung. SmartBudget verkauft oder garantiert diese Leistungen nicht, und sie sind nicht Teil deines SmartBudget-Abos oder des Pro-Tarifs; etwaige Pro-Vorteile bietet der Partner an."
+  "offerNoticeBody": "Buchung und Zahlung erfolgen direkt bei {partner}, zu dessen Bedingungen und auf deine eigene Verantwortung. SmartBudget verkauft oder garantiert diese Leistungen nicht, und sie sind nicht Teil deines SmartBudget-Abos oder des Pro-Tarifs; etwaige Pro-Vorteile bietet der Partner an.",
+  "reminderTitle": "Tägliche Erinnerung",
+  "reminderEnable": "Erinnere mich, meine Ausgaben einzutragen",
+  "reminderHint": "Ein sanfter Hinweis zu deiner Wunschzeit, nur an Tagen, an denen du noch nichts eingetragen hast. Antippen und in Sekunden erfassen.",
+  "reminderTime": "Uhrzeit",
+  "reminderNotifTitle": "Wie waren deine Ausgaben heute?",
+  "reminderNotifBody": "Heute noch nichts eingetragen. In wenigen Sekunden erledigt.",
+  "reminderPermissionDenied": "Benachrichtigungen für SmartBudget sind aus. Schalte sie in den Telefoneinstellungen ein."
 }

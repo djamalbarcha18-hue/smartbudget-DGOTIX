@@ -36,6 +36,8 @@ import 'package:smartbudget/features/portfolio/application/portfolio_controller.
 import 'package:smartbudget/features/account/presentation/delete_account_section.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_section.dart';
 import 'package:smartbudget/features/install/presentation/install_widgets.dart';
+import 'package:smartbudget/features/reminders/data/reminder_notifications.dart';
+import 'package:smartbudget/features/reminders/presentation/reminder_section.dart';
 import 'package:smartbudget/features/settings/presentation/language_picker.dart';
 import 'package:smartbudget/features/offers/application/offers_controller.dart';
 import 'package:smartbudget/features/offers/presentation/partner_offer_card.dart';
@@ -161,6 +163,16 @@ class SettingsPage extends ConsumerWidget {
                 child: const PrivacySection(),
               ),
               const SizedBox(height: DsSpacing.lg),
+
+              // The daily reminder to record spending (Android app only).
+              if (ReminderNotifications.supported) ...<Widget>[
+                _SettingsSection(
+                  icon: Icons.notifications_active_outlined,
+                  title: l.reminderTitle,
+                  child: const ReminderSection(),
+                ),
+                const SizedBox(height: DsSpacing.lg),
+              ],
 
               // Pro: partners' booking suggestions for trips (no ads).
               if (AppEnv.smartTrip &&

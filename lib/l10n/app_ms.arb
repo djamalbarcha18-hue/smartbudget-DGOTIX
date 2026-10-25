@@ -1414,5 +1414,12 @@
   "offerNoticeTitle": "Sebelum ke rakan kongsi",
   "offerNoticeContinue": "Teruskan",
   "offerThePartner": "rakan kongsi",
-  "offerNoticeBody": "Tempahan dan bayaran dibuat terus dengan {partner}, mengikut syaratnya dan atas tanggungjawab anda. SmartBudget tidak menjual atau menjamin perkhidmatan ini, dan ia bukan sebahagian daripada langganan SmartBudget atau pelan Pro; sebarang kelebihan Pro ditawarkan oleh rakan kongsi."
+  "offerNoticeBody": "Tempahan dan bayaran dibuat terus dengan {partner}, mengikut syaratnya dan atas tanggungjawab anda. SmartBudget tidak menjual atau menjamin perkhidmatan ini, dan ia bukan sebahagian daripada langganan SmartBudget atau pelan Pro; sebarang kelebihan Pro ditawarkan oleh rakan kongsi.",
+  "reminderTitle": "Peringatan harian",
+  "reminderEnable": "Ingatkan saya merekod perbelanjaan",
+  "reminderHint": "Peringatan lembut pada masa pilihan anda, hanya pada hari anda belum merekod apa-apa. Ketik untuk menambah dalam beberapa saat.",
+  "reminderTime": "Masa",
+  "reminderNotifTitle": "Bagaimana perbelanjaan anda hari ini?",
+  "reminderNotifBody": "Belum ada rekod hari ini. Tambah dalam beberapa saat.",
+  "reminderPermissionDenied": "Pemberitahuan SmartBudget dimatikan. Hidupkan dalam tetapan telefon."
 }

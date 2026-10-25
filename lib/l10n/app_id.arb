@@ -1414,5 +1414,12 @@
   "offerNoticeTitle": "Sebelum ke mitra",
   "offerNoticeContinue": "Lanjutkan",
   "offerThePartner": "mitra",
-  "offerNoticeBody": "Pemesanan dan pembayaran dilakukan langsung dengan {partner}, sesuai ketentuannya dan atas tanggung jawab Anda. SmartBudget tidak menjual atau menjamin layanan ini, dan bukan bagian dari langganan SmartBudget atau paket Pro; keuntungan Pro apa pun diberikan oleh mitra."
+  "offerNoticeBody": "Pemesanan dan pembayaran dilakukan langsung dengan {partner}, sesuai ketentuannya dan atas tanggung jawab Anda. SmartBudget tidak menjual atau menjamin layanan ini, dan bukan bagian dari langganan SmartBudget atau paket Pro; keuntungan Pro apa pun diberikan oleh mitra.",
+  "reminderTitle": "Pengingat harian",
+  "reminderEnable": "Ingatkan saya mencatat pengeluaran",
+  "reminderHint": "Pengingat ringan pada jam pilihan Anda, hanya di hari Anda belum mencatat apa pun. Ketuk untuk menambah dalam hitungan detik.",
+  "reminderTime": "Jam",
+  "reminderNotifTitle": "Bagaimana pengeluaran Anda hari ini?",
+  "reminderNotifBody": "Belum ada catatan hari ini. Tambahkan dalam hitungan detik.",
+  "reminderPermissionDenied": "Notifikasi SmartBudget dimatikan. Aktifkan di pengaturan ponsel."
 }

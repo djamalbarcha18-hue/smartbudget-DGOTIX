@@ -14,6 +14,7 @@ import 'package:smartbudget/core/time/network_time.dart';
 import 'package:smartbudget/features/app_lock/application/app_lock_controller.dart';
 import 'package:smartbudget/features/app_lock/data/lock_store.dart';
 import 'package:smartbudget/features/app_lock/domain/lock_config.dart';
+import 'package:smartbudget/features/reminders/data/reminder_notifications.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +36,11 @@ Future<void> main() async {
       url: AppEnv.supabaseUrl,
       anonKey: AppEnv.supabaseAnonKey,
     );
+  }
+
+  // Notes a tap on the daily reminder that opened the app.
+  if (ReminderNotifications.supported) {
+    ReminderNotifications.instance.init().ignore();
   }
 
   AppRestart.register(_start);
