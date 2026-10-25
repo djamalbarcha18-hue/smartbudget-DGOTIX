@@ -98,7 +98,7 @@ void main() {
     expect(c.read(baseCurrencyProvider.notifier).isChosen, isTrue);
   });
 
-  test('African, New Zealand and Belarusian phones get their own currency', () {
+  test('phones in newly added countries get their own currency', () {
     for (final (String country, String code) in <(String, String)>[
       ('ng', 'NGN'),
       ('ke', 'KES'),
@@ -109,6 +109,12 @@ void main() {
       ('ga', 'XAF'),
       ('nz', 'NZD'),
       ('by', 'BYN'),
+      ('vn', 'VND'),
+      ('th', 'THB'),
+      ('ph', 'PHP'),
+      ('pl', 'PLN'),
+      ('cz', 'CZK'),
+      ('hu', 'HUF'),
     ]) {
       expect(CurrencyDefaults.forCountry(country), code, reason: country);
     }

@@ -99,6 +99,13 @@ abstract final class Currencies {
     Currency(code: 'SGD', symbol: 'S\$', nameEn: 'Singapore Dollar', nameAr: 'الدولار السنغافوري', country: 'sg'),
     Currency(code: 'KRW', symbol: '₩', nameEn: 'South Korean Won', nameAr: 'الوون الكوري الجنوبي', country: 'kr', decimals: 0),
     Currency(code: 'SEK', symbol: 'kr', nameEn: 'Swedish Krona', nameAr: 'الكرونة السويدية', country: 'se'),
+    Currency(code: 'PLN', symbol: 'zł', nameEn: 'Polish Zloty', nameAr: 'الزلوتي البولندي', country: 'pl'),
+    Currency(code: 'CZK', symbol: 'Kč', nameEn: 'Czech Koruna', nameAr: 'الكرونة التشيكية', country: 'cz'),
+    // Prices are whole forints; ISO keeps two decimals nobody uses.
+    Currency(code: 'HUF', symbol: 'Ft', nameEn: 'Hungarian Forint', nameAr: 'الفورنت المجري', country: 'hu', decimals: 0),
+    Currency(code: 'VND', symbol: '₫', nameEn: 'Vietnamese Dong', nameAr: 'الدونغ الفيتنامي', country: 'vn', decimals: 0),
+    Currency(code: 'THB', symbol: '฿', nameEn: 'Thai Baht', nameAr: 'البات التايلاندي', country: 'th'),
+    Currency(code: 'PHP', symbol: '₱', nameEn: 'Philippine Peso', nameAr: 'البيزو الفلبيني', country: 'ph'),
     Currency(code: 'BAM', symbol: 'KM', nameEn: 'Convertible Mark', nameAr: 'المارك البوسني القابل للتحويل', country: 'ba'),
     // Like the rupiah: ISO lists 2 minor units, but prices are whole lek.
     Currency(code: 'ALL', symbol: 'L', nameEn: 'Albanian Lek', nameAr: 'الليك الألباني', country: 'al', decimals: 0),

@@ -113,18 +113,21 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
       }
       // Only where letters are missing, to keep files small: Tajawal for the
       // digits and Latin of Urdu reports and any Arabic in Russian ones,
-      // Inter for Turkish ğ ş İ, Bosnian č ć đ and Hausa ɓ ɗ ƙ ƴ.
-      final List<pw.Font> fallback = switch (lang) {
-        AppLang.ur || AppLang.ru => <pw.Font>[
-            pw.Font.ttf(
-                await rootBundle.load('assets/fonts/Tajawal-Regular.ttf'))
-          ],
-        AppLang.tr || AppLang.bs || AppLang.ha => <pw.Font>[
-            pw.Font.ttf(await rootBundle
-                .load('assets/google_fonts/Inter-Regular.ttf'))
-          ],
-        _ => const <pw.Font>[],
+      // Inter for Turkish ğ ş İ, Bosnian č ć đ, Hausa ɓ ɗ ƙ ƴ and currency
+      // signs Tajawal lacks (₹ ₺ ₦ ₫ ฿ ₱ Kč…).
+      final bool interLetters = switch (lang) {
+        AppLang.tr || AppLang.bs || AppLang.ha => true,
+        _ => false,
       };
+      final List<pw.Font> fallback = <pw.Font>[
+        if (lang == AppLang.ur || lang == AppLang.ru)
+          pw.Font.ttf(
+              await rootBundle.load('assets/fonts/Tajawal-Regular.ttf')),
+        if (lang != AppLang.ru &&
+            (interLetters || _needsInter(s.income.currency.symbol)))
+          pw.Font.ttf(
+              await rootBundle.load('assets/google_fonts/Inter-Regular.ttf')),
+      ];
       final Uint8List bytes = await ReportPdfBuilder.build(data,
           base: base, bold: bold, fallback: fallback);
       await Printing.layoutPdf(
@@ -137,6 +140,10 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
       if (mounted) setState(() => _busy = false);
     }
   }
+
+  /// A currency sign with a character beyond Latin-1, Arabic and €.
+  static bool _needsInter(String symbol) => symbol.runes.any((int r) =>
+      r > 0xFF && (r < 0x0600 || r > 0x06FF) && r != 0x20AC);
 
   List<ReportRow> _rows(List<CategoryTotal> totals, AppLang lang) => totals
       .map((CategoryTotal t) =>
