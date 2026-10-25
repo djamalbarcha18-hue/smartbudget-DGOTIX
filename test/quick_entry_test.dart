@@ -269,4 +269,20 @@ void main() {
       expect(all.map((QuickEntry e) => e.currency), <String?>['USD', null]);
     });
   });
+
+  test('part-time work is its own income, apart from freelance', () {
+    for (final String s in <String>[
+      'دوام جزئي 15000',
+      'part-time 800',
+      'подработка 20000',
+      '兼职 3000',
+      'アルバイト 80000',
+      '아르바이트 500000',
+    ]) {
+      final QuickEntry e = p(s);
+      expect(e.category, 'عمل بدوام جزئي', reason: s);
+      expect(e.type, TransactionType.income, reason: s);
+    }
+    expect(p('freelance 500').category, 'عمل حر');
+  });
 }
