@@ -1423,5 +1423,7 @@
   "reminderNotifBody": "आज अभी कुछ दर्ज नहीं हुआ। कुछ ही सेकंड में जोड़ें।",
   "reminderPermissionDenied": "SmartBudget की सूचनाएँ बंद हैं। फ़ोन की सेटिंग्स में इन्हें चालू करें।",
   "dateFieldHint": "yyyy/mm/dd",
-  "dateInvalid": "ग़लत तारीख़, जैसे 2026/10/25"
+  "dateInvalid": "ग़लत तारीख़, जैसे 2026/10/25",
+  "numberStyleTitle": "संख्या का रूप",
+  "numberStyleHint": "रक़म कैसे लिखी जाए: हज़ार और दशमलव के चिह्न।"
 }

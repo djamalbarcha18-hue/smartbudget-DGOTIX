@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/l10n/date_text.dart';
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
@@ -88,7 +89,7 @@ class _Frame extends StatelessWidget {
 
 String _plain(int minor, String currency) {
   final double v = Money(minor, currency).asDouble;
-  return v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toString();
+  return AmountInput.text(v);
 }
 
 // ---------------------------------------------------------------------------
@@ -144,7 +145,7 @@ class _WalletEditorSheetState extends ConsumerState<WalletEditorSheet> {
     final String raw = _opening.text.trim();
     final double opening = raw.isEmpty
         ? 0
-        : double.tryParse(raw.replaceAll(' ', '').replaceAll(',', '.')) ??
+        : AmountInput.parse(raw) ??
             double.nan;
     if (opening.isNaN) {
       setState(() => _error = l.valAmountInvalid);
@@ -528,7 +529,7 @@ class _ReconcileSheetState extends ConsumerState<ReconcileSheet> {
     final String raw = _actual.text.trim();
     if (raw.isEmpty) return null;
     final double? v =
-        double.tryParse(raw.replaceAll(' ', '').replaceAll(',', '.'));
+        AmountInput.parse(raw);
     return v == null
         ? null
         : Money.fromDouble(v, widget.wallet.currency).minorUnits;

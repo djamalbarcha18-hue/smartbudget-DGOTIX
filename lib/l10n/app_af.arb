@@ -1423,5 +1423,7 @@
   "reminderNotifBody": "Nog niks vandag aangeteken nie. Voeg dit binne ’n paar sekondes by.",
   "reminderPermissionDenied": "Kennisgewings vir SmartBudget is af. Skakel dit aan in jou foon se instellings.",
   "dateFieldHint": "jjjj/mm/dd",
-  "dateInvalid": "Ongeldige datum, bv. 2026/10/25"
+  "dateInvalid": "Ongeldige datum, bv. 2026/10/25",
+  "numberStyleTitle": "Getalformaat",
+  "numberStyleHint": "Hoe bedrae geskryf word: skeiding van duisende en desimale."
 }

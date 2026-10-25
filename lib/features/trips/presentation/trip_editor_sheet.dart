@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -106,7 +107,7 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
 
   static String _plain(Money m) {
     final double v = m.asDouble;
-    return v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toString();
+    return AmountInput.text(v);
   }
 
   @override

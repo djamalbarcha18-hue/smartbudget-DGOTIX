@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/l10n/date_text.dart';
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -87,7 +88,7 @@ class _SeasonEditorSheetState extends ConsumerState<SeasonEditorSheet> {
 
   static String _plain(Money m) {
     final double v = m.asDouble;
-    return v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toString();
+    return AmountInput.text(v);
   }
 
   bool get _editing => widget.existing != null;

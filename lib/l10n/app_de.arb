@@ -1423,5 +1423,7 @@
   "reminderNotifBody": "Heute noch nichts eingetragen. In wenigen Sekunden erledigt.",
   "reminderPermissionDenied": "Benachrichtigungen für SmartBudget sind aus. Schalte sie in den Telefoneinstellungen ein.",
   "dateFieldHint": "jjjj/mm/tt",
-  "dateInvalid": "Ungültiges Datum, z. B. 2026/10/25"
+  "dateInvalid": "Ungültiges Datum, z. B. 2026/10/25",
+  "numberStyleTitle": "Zahlenformat",
+  "numberStyleHint": "Wie Beträge geschrieben werden: Tausender- und Dezimaltrennzeichen."
 }

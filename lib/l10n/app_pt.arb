@@ -1423,5 +1423,7 @@
   "reminderNotifBody": "Nada registrado hoje ainda. Adicione em poucos segundos.",
   "reminderPermissionDenied": "As notificações do SmartBudget estão desativadas. Ative-as nas configurações do celular.",
   "dateFieldHint": "aaaa/mm/dd",
-  "dateInvalid": "Data inválida. Ex.: 2026/10/25"
+  "dateInvalid": "Data inválida. Ex.: 2026/10/25",
+  "numberStyleTitle": "Formato dos números",
+  "numberStyleHint": "Como os valores são escritos: separador de milhares e de decimais."
 }

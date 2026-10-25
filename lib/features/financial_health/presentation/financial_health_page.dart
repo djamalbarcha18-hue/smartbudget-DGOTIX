@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -438,7 +439,7 @@ class _EmergencyCardState extends ConsumerState<_EmergencyCard> {
 
   void _apply() {
     final String s = _ctrl.text.trim().replaceAll(',', '.');
-    ref.read(emergencySavingsProvider.notifier).set(double.tryParse(s));
+    ref.read(emergencySavingsProvider.notifier).set(AmountInput.parse(s));
   }
 
   @override

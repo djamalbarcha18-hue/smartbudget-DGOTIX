@@ -1423,5 +1423,7 @@
   "reminderNotifBody": "今日はまだ記録がありません。数秒で追加できます。",
   "reminderPermissionDenied": "SmartBudget の通知がオフになっています。スマホの設定でオンにしてください。",
   "dateFieldHint": "yyyy/mm/dd",
-  "dateInvalid": "無効な日付です（例：2026/10/25）"
+  "dateInvalid": "無効な日付です（例：2026/10/25）",
+  "numberStyleTitle": "数値の形式",
+  "numberStyleHint": "金額の書き方：桁区切りと小数点。"
 }

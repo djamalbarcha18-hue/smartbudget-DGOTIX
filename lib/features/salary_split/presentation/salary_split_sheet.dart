@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
@@ -48,7 +49,7 @@ class _SalarySplitSheetState extends ConsumerState<SalarySplitSheet> {
   }
 
   Money get _incomeMoney {
-    final double v = double.tryParse(_income.text.trim()) ?? 0;
+    final double v = AmountInput.parse(_income.text) ?? 0;
     return Money.fromDouble(
         v < 0 ? 0 : v, _inputs.defaultIncome.currencyCode);
   }
@@ -124,7 +125,7 @@ class _SalarySplitSheetState extends ConsumerState<SalarySplitSheet> {
                     const TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: <TextInputFormatter>[
                   const LatinDigitsFormatter(),
-                  FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9., ]')),
                 ],
                 onChanged: (_) => setState(() {}),
                 decoration: InputDecoration(

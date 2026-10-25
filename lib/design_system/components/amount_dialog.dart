@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/design_system/components/currency_suffix.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -43,7 +44,7 @@ Future<double?> showAmountDialog(
     ),
   );
   final double n =
-      double.tryParse(amount.text.trim().replaceAll(',', '.')) ?? 0;
+      AmountInput.parse(amount.text) ?? 0;
   amount.dispose();
   return ok == true && n > 0 ? n : null;
 }
@@ -51,9 +52,9 @@ Future<double?> showAmountDialog(
 /// Parses a user-typed amount ("1 250,5" → 1250.5); null when not positive.
 double? parseAmount(String raw) {
   final double? n =
-      double.tryParse(raw.trim().replaceAll(' ', '').replaceAll(',', '.'));
+      AmountInput.parse(raw);
   return n != null && n > 0 ? n : null;
 }
 
 String _plain(double v) =>
-    v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toString();
+    AmountInput.text(v);

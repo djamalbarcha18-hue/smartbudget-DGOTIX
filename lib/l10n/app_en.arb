@@ -1676,5 +1676,7 @@
   "dateFieldHint": "yyyy/mm/dd",
   "dateInvalid": "Not a real date. E.g. 2026/10/25",
   "@dateFieldHint": {"description": "Placeholder of a typed date: year/month/day in the language's letters."},
-  "@dateInvalid": {"description": "Shown under a typed date that is not a real date. One short line: the field cuts longer text."}
+  "@dateInvalid": {"description": "Shown under a typed date that is not a real date. One short line: the field cuts longer text."},
+  "numberStyleTitle": "Number format",
+  "numberStyleHint": "How amounts are written: thousands and decimal separators."
 }

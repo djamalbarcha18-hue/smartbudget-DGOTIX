@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -273,7 +274,7 @@ class _GoalCard extends ConsumerWidget {
     );
     if (ok == true) {
       final double n =
-          double.tryParse(amount.text.trim().replaceAll(',', '.')) ?? 0;
+          AmountInput.parse(amount.text) ?? 0;
       if (n > 0) {
         await ref
             .read(goalActionsProvider)

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
@@ -30,7 +31,7 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
   late final TextEditingController _metals;
   late final TextEditingController _investments;
 
-  static String _fmt(double v) => v == 0 ? '' : v.toString();
+  static String _fmt(double v) => v == 0 ? '' : AmountInput.text(v);
 
   @override
   void initState() {
@@ -54,7 +55,7 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
   }
 
   double _num(TextEditingController c) =>
-      double.tryParse(c.text.trim().replaceAll(',', '.')) ?? 0;
+      AmountInput.parse(c.text) ?? 0;
 
   void _apply({ZakatStandard? standard}) {
     final ZakatInputs cur = ref.read(zakatInputsProvider);

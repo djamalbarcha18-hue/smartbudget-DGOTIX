@@ -1423,5 +1423,7 @@
   "reminderNotifBody": "Vandaag nog niets genoteerd. Voeg het in een paar seconden toe.",
   "reminderPermissionDenied": "Meldingen voor SmartBudget staan uit. Zet ze aan in de instellingen van je telefoon.",
   "dateFieldHint": "jjjj/mm/dd",
-  "dateInvalid": "Ongeldige datum, bijv. 2026/10/25"
+  "dateInvalid": "Ongeldige datum, bijv. 2026/10/25",
+  "numberStyleTitle": "Getalnotatie",
+  "numberStyleHint": "Hoe bedragen worden geschreven: scheidingsteken voor duizendtallen en decimalen."
 }

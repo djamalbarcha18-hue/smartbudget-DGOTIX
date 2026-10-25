@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/l10n/date_text.dart';
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -53,7 +54,7 @@ class _GoalEditorSheetState extends ConsumerState<GoalEditorSheet> {
     final Goal? e = widget.existing;
     _name = TextEditingController(text: e?.name ?? '');
     _target = TextEditingController(
-        text: e == null ? '' : e.target.asDouble.toString());
+        text: e == null ? '' : AmountInput.text(e.target.asDouble));
     _deadline = e?.deadline;
   }
 
@@ -69,7 +70,7 @@ class _GoalEditorSheetState extends ConsumerState<GoalEditorSheet> {
     setState(() => _saving = true);
     final String currency = ref.read(baseCurrencyProvider);
     final double target =
-        double.tryParse(_target.text.trim().replaceAll(',', '.')) ?? 0;
+        AmountInput.parse(_target.text) ?? 0;
     final Goal? e = widget.existing;
     final Goal goal = Goal(
       id: e?.id ?? GoalActions.newId(),
@@ -145,8 +146,7 @@ class _GoalEditorSheetState extends ConsumerState<GoalEditorSheet> {
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
                     validator: (String? v) {
-                      final double n = double.tryParse(
-                              (v ?? '').trim().replaceAll(',', '.')) ??
+                      final double n = AmountInput.parse((v ?? '')) ??
                           0;
                       return n > 0 ? null : l.valAmountInvalid;
                     },

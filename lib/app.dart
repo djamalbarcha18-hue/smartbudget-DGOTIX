@@ -9,7 +9,9 @@ import 'package:smartbudget/core/l10n/app_lang.dart';
 import 'package:smartbudget/core/localization/fallback_localizations.dart';
 import 'package:smartbudget/core/localization/locale_controller.dart';
 import 'package:smartbudget/core/router/app_router.dart';
+import 'package:smartbudget/core/money/number_style.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/settings/number_style_controller.dart';
 import 'package:smartbudget/core/theme/theme_controller.dart';
 import 'package:smartbudget/core/theme/theme_reveal.dart';
 import 'package:smartbudget/core/time/clock_sync_controller.dart';
@@ -59,6 +61,9 @@ class SmartBudgetApp extends ConsumerWidget {
             .followLanguage(AppLang.fromCode(next.languageCode));
       }
     });
+    // Amounts follow the number style chosen in Settings.
+    ref.listen(numberStyleProvider,
+        (_, NumberStyle next) => applyNumberStyle(next));
     // The daily reminder (Android): scheduled again whenever its plan changes
     // (settings, language, or something recorded today).
     ref.listen(reminderPlanProvider, (_, ReminderPlan? next) {

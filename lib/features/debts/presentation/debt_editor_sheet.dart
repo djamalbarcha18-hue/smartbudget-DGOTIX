@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/l10n/date_text.dart';
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -55,9 +56,9 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
     final Debt? e = widget.existing;
     _party = TextEditingController(text: e?.party ?? '');
     _original =
-        TextEditingController(text: e == null ? '' : e.original.asDouble.toString());
+        TextEditingController(text: e == null ? '' : AmountInput.text(e.original.asDouble));
     _paid = TextEditingController(
-        text: e == null || e.paid.isZero ? '' : e.paid.asDouble.toString());
+        text: e == null || e.paid.isZero ? '' : AmountInput.text(e.paid.asDouble));
     _type = e?.type ?? DebtType.borrowed;
     _dueDate = e?.dueDate;
   }
@@ -75,9 +76,9 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
     setState(() => _saving = true);
     final String currency = ref.read(baseCurrencyProvider);
     final double original =
-        double.tryParse(_original.text.trim().replaceAll(',', '.')) ?? 0;
+        AmountInput.parse(_original.text) ?? 0;
     final double paid =
-        double.tryParse(_paid.text.trim().replaceAll(',', '.')) ?? 0;
+        AmountInput.parse(_paid.text) ?? 0;
     final Debt debt = Debt(
       id: widget.existing?.id ?? DebtActions.newId(),
       party: _party.text.trim(),
@@ -158,8 +159,7 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
                     validator: (String? v) {
-                      final double n = double.tryParse(
-                              (v ?? '').trim().replaceAll(',', '.')) ??
+                      final double n = AmountInput.parse((v ?? '')) ??
                           0;
                       return n > 0 ? null : l.valAmountInvalid;
                     },

@@ -1423,5 +1423,7 @@
   "reminderNotifBody": "آج ابھی تک کچھ درج نہیں ہوا۔ چند سیکنڈ میں درج کریں۔",
   "reminderPermissionDenied": "SmartBudget کی اطلاعات بند ہیں۔ فون کی ترتیبات سے انہیں آن کریں۔",
   "dateFieldHint": "yyyy/mm/dd",
-  "dateInvalid": "غلط تاریخ، جیسے 2026/10/25"
+  "dateInvalid": "غلط تاریخ، جیسے 2026/10/25",
+  "numberStyleTitle": "نمبروں کی شکل",
+  "numberStyleHint": "رقم لکھنے کا طریقہ: ہزار اور اعشاریہ کا نشان۔"
 }

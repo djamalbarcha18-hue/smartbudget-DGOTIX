@@ -1423,5 +1423,7 @@
   "reminderNotifBody": "Belum ada rekod hari ini. Tambah dalam beberapa saat.",
   "reminderPermissionDenied": "Pemberitahuan SmartBudget dimatikan. Hidupkan dalam tetapan telefon.",
   "dateFieldHint": "tttt/bb/hh",
-  "dateInvalid": "Tarikh tidak sah. Cth. 2026/10/25"
+  "dateInvalid": "Tarikh tidak sah. Cth. 2026/10/25",
+  "numberStyleTitle": "Format nombor",
+  "numberStyleHint": "Cara amaun ditulis: pemisah ribu dan perpuluhan."
 }

@@ -1423,5 +1423,7 @@
   "reminderNotifBody": "امروز هنوز چیزی ثبت نکرده‌اید. در چند ثانیه اضافه‌اش کنید.",
   "reminderPermissionDenied": "اعلان‌های SmartBudget خاموش است. آن‌ها را در تنظیمات گوشی روشن کنید.",
   "dateFieldHint": "yyyy/mm/dd",
-  "dateInvalid": "تاریخ نادرست، مثلاً 2026/10/25"
+  "dateInvalid": "تاریخ نادرست، مثلاً 2026/10/25",
+  "numberStyleTitle": "قالب اعداد",
+  "numberStyleHint": "شیوهٔ نوشتن مبلغ‌ها: جداکنندهٔ هزارگان و اعشار."
 }

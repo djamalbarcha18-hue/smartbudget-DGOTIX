@@ -1423,5 +1423,7 @@
   "reminderNotifBody": "Sot ende s’ke regjistruar asgjë. Shtoje në pak sekonda.",
   "reminderPermissionDenied": "Njoftimet për SmartBudget janë të fikura. Ndizi te cilësimet e telefonit.",
   "dateFieldHint": "vvvv/mm/dd",
-  "dateInvalid": "Datë e pavlefshme, p.sh. 2026/10/25"
+  "dateInvalid": "Datë e pavlefshme, p.sh. 2026/10/25",
+  "numberStyleTitle": "Formati i numrave",
+  "numberStyleHint": "Si shkruhen shumat: ndarësi i mijësheve dhe i dhjetësheve."
 }

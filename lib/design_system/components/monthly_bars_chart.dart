@@ -378,7 +378,10 @@ class _BarsPainter extends CustomPainter {
       canvas.drawLine(Offset(layout.left, y), Offset(size.width, y),
           v == 0 ? (Paint()..color = axis.withValues(alpha: 0.45)) : gridPaint);
       // v == 0 is spelled out: on the web `-0` survives and prints as "-0".
-      _text(canvas, v == 0 ? '0' : _compact.format(Money(v, currency).asDouble),
+      _text(canvas, v == 0
+              ? '0'
+              : MoneyFormatter.style
+                  .apply(_compact.format(Money(v, currency).asDouble)),
           Offset(layout.left - 8, y), TextAlign.right);
     }
 

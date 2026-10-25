@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/l10n/date_text.dart';
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
@@ -157,7 +158,7 @@ class _TransactionEditorSheetState
     final TransactionDraft? p = e == null ? widget.prefill : null;
     _amount = TextEditingController(
       text: e != null
-          ? e.amount.asDouble.toString()
+          ? AmountInput.text(e.amount.asDouble)
           : (p?.amount != null ? p!.amount.toString() : ''),
     );
     _description =
@@ -206,7 +207,7 @@ class _TransactionEditorSheetState
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     final double amount =
-        double.tryParse(_amount.text.trim().replaceAll(',', '.')) ?? 0;
+        AmountInput.parse(_amount.text) ?? 0;
 
     setState(() => _saving = true);
     final String currency = _currency();
@@ -319,8 +320,7 @@ class _TransactionEditorSheetState
                       decimal: true,
                     ),
                     validator: (String? v) {
-                      final double n = double.tryParse(
-                              (v ?? '').trim().replaceAll(',', '.')) ??
+                      final double n = AmountInput.parse((v ?? '')) ??
                           0;
                       return n > 0 ? null : l.valAmountInvalid;
                     },
@@ -330,8 +330,7 @@ class _TransactionEditorSheetState
                     ValueListenableBuilder<TextEditingValue>(
                       valueListenable: _amount,
                       builder: (BuildContext context, TextEditingValue v, _) {
-                        final double n = double.tryParse(
-                                v.text.trim().replaceAll(',', '.')) ??
+                        final double n = AmountInput.parse(v.text) ??
                             0;
                         final Money? eq = WalletMath.convert(
                             Money.fromDouble(n, cur.code),

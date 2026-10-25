@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -91,7 +92,7 @@ class GoalsFundingCard extends ConsumerWidget {
     final String currency = ref.read(baseCurrencyProvider);
     final int current = ref.read(portfolioCapacityProvider);
     final TextEditingController ctrl = TextEditingController(
-      text: current == 0 ? '' : Money(current, currency).asDouble.toString(),
+      text: current == 0 ? '' : AmountInput.text(Money(current, currency).asDouble),
     );
     final bool? ok = await showDialog<bool>(
       context: context,
@@ -117,7 +118,7 @@ class GoalsFundingCard extends ConsumerWidget {
     );
     if (ok == true) {
       final double n =
-          double.tryParse(ctrl.text.trim().replaceAll(',', '.')) ?? 0;
+          AmountInput.parse(ctrl.text) ?? 0;
       await ref
           .read(portfolioCapacityProvider.notifier)
           .set(Money.fromDouble(n, currency).minorUnits);

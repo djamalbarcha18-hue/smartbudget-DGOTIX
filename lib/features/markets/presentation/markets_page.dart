@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -214,7 +215,7 @@ class _CustomRateFieldState extends ConsumerState<_CustomRateField> {
             ),
             onChanged: (String v) => ref
                 .read(customRateProvider.notifier)
-                .set(double.tryParse(v.trim().replaceAll(',', '.'))),
+                .set(AmountInput.parse(v)),
           ),
         ),
       ],
@@ -303,7 +304,7 @@ class _CountrySection extends ConsumerWidget {
         TextEditingController(text: existing?.sell?.toString() ?? '');
 
     double? parse(String s) =>
-        double.tryParse(s.trim().replaceAll(',', '.'));
+        AmountInput.parse(s);
 
     await showDialog<void>(
       context: context,

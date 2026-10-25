@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
@@ -55,7 +56,7 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
     final List<Currency> currencies = ref.watch(currenciesByStrengthProvider);
 
     final double amount =
-        double.tryParse(_amount.text.trim().replaceAll(',', '.')) ?? 0;
+        AmountInput.parse(_amount.text) ?? 0;
     final double converted = ExchangeRateCalculator.convert(
       amount: amount,
       from: _from,
@@ -240,7 +241,7 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
   ) async {
     final AppLocalizations l = AppLocalizations.of(context);
     final TextEditingController ctrl =
-        TextEditingController(text: current.toString());
+        TextEditingController(text: AmountInput.text(current));
     final bool? ok = await showDialog<bool>(
       context: context,
       builder: (BuildContext ctx) => AlertDialog(
@@ -264,7 +265,7 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
       ),
     );
     if (ok == true) {
-      final double n = double.tryParse(ctrl.text.trim().replaceAll(',', '.')) ?? 0;
+      final double n = AmountInput.parse(ctrl.text) ?? 0;
       if (n > 0) await ref.read(ratesProvider.notifier).setRate(cur.code, n);
     }
     ctrl.dispose();
@@ -370,7 +371,7 @@ class _RateRow extends StatelessWidget {
               ],
             ),
           ),
-          Text(rate.toString(),
+          Text(MoneyFormatter.style.apply(rate.toString()),
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     color: c.textPrimary,
                   )),

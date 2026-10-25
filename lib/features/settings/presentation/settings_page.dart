@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/money/currency.dart';
+import 'package:smartbudget/core/money/number_style.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/core/settings/number_style_controller.dart';
 import 'package:smartbudget/core/theme/theme_controller.dart';
 import 'package:smartbudget/core/theme/theme_reveal.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
@@ -132,25 +134,32 @@ class SettingsPage extends ConsumerWidget {
               _SettingsSection(
                 icon: Icons.attach_money_outlined,
                 title: l.settingsRegion,
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(l.baseCurrency,
-                              style: Theme.of(context).textTheme.titleSmall),
-                          Text(l.baseCurrencyHint,
-                              style: Theme.of(context).textTheme.bodySmall),
-                        ],
-                      ),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(l.baseCurrency,
+                                  style: Theme.of(context).textTheme.titleSmall),
+                              Text(l.baseCurrencyHint,
+                                  style: Theme.of(context).textTheme.bodySmall),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: DsSpacing.md),
+                        _CurrencyDropdown(
+                          value: base,
+                          onChanged: (String v) =>
+                              changeBaseCurrency(context, ref, v),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: DsSpacing.md),
-                    _CurrencyDropdown(
-                      value: base,
-                      onChanged: (String v) =>
-                          changeBaseCurrency(context, ref, v),
-                    ),
+                    const SizedBox(height: DsSpacing.lg),
+                    const _NumberStyleField(),
                   ],
                 ),
               ),
@@ -1218,6 +1227,39 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
                 ),
             ],
           ),
+      ],
+    );
+  }
+}
+
+/// The three ways of writing amounts, each shown as it looks.
+class _NumberStyleField extends ConsumerWidget {
+  const _NumberStyleField();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final NumberStyle current = ref.watch(numberStyleProvider);
+    final TextTheme t = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(l.numberStyleTitle, style: t.titleSmall),
+        Text(l.numberStyleHint, style: t.bodySmall),
+        const SizedBox(height: DsSpacing.sm),
+        Wrap(
+          spacing: DsSpacing.sm,
+          runSpacing: DsSpacing.sm,
+          children: <Widget>[
+            for (final NumberStyle s in NumberStyle.values)
+              ChoiceChip(
+                label: Text(s.sample, textDirection: TextDirection.ltr),
+                selected: s == current,
+                onSelected: (_) =>
+                    ref.read(numberStyleProvider.notifier).set(s),
+              ),
+          ],
+        ),
       ],
     );
   }

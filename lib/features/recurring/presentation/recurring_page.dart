@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/l10n/date_text.dart';
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -386,7 +387,7 @@ class _ConfirmAmountDialog extends ConsumerStatefulWidget {
 class _ConfirmAmountDialogState extends ConsumerState<_ConfirmAmountDialog> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late final TextEditingController _amount = TextEditingController(
-      text: widget.pending.rule.amount.asDouble.toString());
+      text: AmountInput.text(widget.pending.rule.amount.asDouble));
   bool _saving = false;
 
   @override
@@ -402,7 +403,7 @@ class _ConfirmAmountDialogState extends ConsumerState<_ConfirmAmountDialog> {
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     final RecurringRule rule = widget.pending.rule;
     final double amount =
-        double.tryParse(_amount.text.trim().replaceAll(',', '.')) ?? 0;
+        AmountInput.parse(_amount.text) ?? 0;
     await ref.read(recurringActionsProvider).confirmAmount(
           rule,
           widget.pending.date,
@@ -436,7 +437,7 @@ class _ConfirmAmountDialogState extends ConsumerState<_ConfirmAmountDialog> {
                     const TextInputType.numberWithOptions(decimal: true),
                 validator: (String? v) {
                   final double n =
-                      double.tryParse((v ?? '').trim().replaceAll(',', '.')) ??
+                      AmountInput.parse((v ?? '')) ??
                           0;
                   return n > 0 ? null : l.valAmountInvalid;
                 },
@@ -483,7 +484,7 @@ class _RuleEditDialog extends ConsumerStatefulWidget {
 class _RuleEditDialogState extends ConsumerState<_RuleEditDialog> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late final TextEditingController _amount =
-      TextEditingController(text: widget.rule.amount.asDouble.toString());
+      TextEditingController(text: AmountInput.text(widget.rule.amount.asDouble));
   late final TextEditingController _description =
       TextEditingController(text: widget.rule.description);
   bool _saving = false;
@@ -499,7 +500,7 @@ class _RuleEditDialogState extends ConsumerState<_RuleEditDialog> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     final double amount =
-        double.tryParse(_amount.text.trim().replaceAll(',', '.')) ?? 0;
+        AmountInput.parse(_amount.text) ?? 0;
     await ref.read(recurringActionsProvider).editTemplate(
           widget.rule,
           amount: Money.fromDouble(amount, widget.rule.amount.currencyCode),
@@ -531,7 +532,7 @@ class _RuleEditDialogState extends ConsumerState<_RuleEditDialog> {
                     const TextInputType.numberWithOptions(decimal: true),
                 validator: (String? v) {
                   final double n =
-                      double.tryParse((v ?? '').trim().replaceAll(',', '.')) ??
+                      AmountInput.parse((v ?? '')) ??
                           0;
                   return n > 0 ? null : l.valAmountInvalid;
                 },
