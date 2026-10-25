@@ -1421,5 +1421,7 @@
   "reminderTime": "时间",
   "reminderNotifTitle": "今天花得怎么样？",
   "reminderNotifBody": "今天还没有记录。几秒钟就能添加。",
-  "reminderPermissionDenied": "SmartBudget 的通知已关闭。请在手机设置中开启。"
+  "reminderPermissionDenied": "SmartBudget 的通知已关闭。请在手机设置中开启。",
+  "dateFieldHint": "yyyy/mm/dd",
+  "dateInvalid": "请按 年/月/日 格式输入有效日期，例如 2026/10/25。"
 }

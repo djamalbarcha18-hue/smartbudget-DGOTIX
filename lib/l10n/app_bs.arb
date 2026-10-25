@@ -1421,5 +1421,7 @@
   "reminderTime": "Vrijeme",
   "reminderNotifTitle": "Kakvi su ti bili troškovi danas?",
   "reminderNotifBody": "Danas još ništa nije upisano. Dodaj za par sekundi.",
-  "reminderPermissionDenied": "Obavijesti za SmartBudget su isključene. Uključi ih u postavkama telefona."
+  "reminderPermissionDenied": "Obavijesti za SmartBudget su isključene. Uključi ih u postavkama telefona.",
+  "dateFieldHint": "gggg/mm/dd",
+  "dateInvalid": "Unesite ispravan datum u formatu GGGG/MM/DD, npr. 2026/10/25."
 }

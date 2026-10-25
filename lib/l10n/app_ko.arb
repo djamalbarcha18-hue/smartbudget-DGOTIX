@@ -1421,5 +1421,7 @@
   "reminderTime": "시간",
   "reminderNotifTitle": "오늘 지출은 어땠나요?",
   "reminderNotifBody": "오늘은 아직 기록이 없어요. 몇 초면 추가할 수 있어요.",
-  "reminderPermissionDenied": "SmartBudget 알림이 꺼져 있어요. 휴대폰 설정에서 켜 주세요."
+  "reminderPermissionDenied": "SmartBudget 알림이 꺼져 있어요. 휴대폰 설정에서 켜 주세요.",
+  "dateFieldHint": "yyyy/mm/dd",
+  "dateInvalid": "올바른 날짜를 연/월/일 형식으로 입력하세요(예: 2026/10/25)."
 }

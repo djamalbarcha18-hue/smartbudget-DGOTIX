@@ -1421,5 +1421,7 @@
   "reminderTime": "وقت",
   "reminderNotifTitle": "آج آپ کے اخراجات کیسے رہے؟",
   "reminderNotifBody": "آج ابھی تک کچھ درج نہیں ہوا۔ چند سیکنڈ میں درج کریں۔",
-  "reminderPermissionDenied": "SmartBudget کی اطلاعات بند ہیں۔ فون کی ترتیبات سے انہیں آن کریں۔"
+  "reminderPermissionDenied": "SmartBudget کی اطلاعات بند ہیں۔ فون کی ترتیبات سے انہیں آن کریں۔",
+  "dateFieldHint": "yyyy/mm/dd",
+  "dateInvalid": "درست تاریخ سال/مہینہ/دن کی شکل میں لکھیں، جیسے 2026/10/25۔"
 }

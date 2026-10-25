@@ -1421,5 +1421,7 @@
   "reminderTime": "Saat",
   "reminderNotifTitle": "Bugün harcamaların nasıldı?",
   "reminderNotifBody": "Bugün henüz bir şey kaydetmediniz. Birkaç saniyede ekleyin.",
-  "reminderPermissionDenied": "SmartBudget bildirimleri kapalı. Telefonun ayarlarından açın."
+  "reminderPermissionDenied": "SmartBudget bildirimleri kapalı. Telefonun ayarlarından açın.",
+  "dateFieldHint": "yyyy/aa/gg",
+  "dateInvalid": "Geçerli bir tarihi YYYY/AA/GG biçiminde girin, ör. 2026/10/25."
 }

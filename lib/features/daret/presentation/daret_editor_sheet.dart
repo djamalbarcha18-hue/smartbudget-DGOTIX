@@ -3,11 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/amount_dialog.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
+import 'package:smartbudget/design_system/components/ds_date_picker.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -241,10 +243,10 @@ class _DaretEditorSheetState extends ConsumerState<DaretEditorSheet> {
                   OutlinedButton.icon(
                     icon: const Icon(Icons.event_outlined, size: 18),
                     label: Text(
-                        '${l.daretStart}: \u2066${_start.year}-${_start.month.toString().padLeft(2, '0')}-${_start.day.toString().padLeft(2, '0')}\u2069'),
+                        '${l.daretStart}: ${dayText(Localizations.localeOf(context), _start)}'),
                     onPressed: () async {
-                      final DateTime? d = await showDatePicker(
-                        context: context,
+                      final DateTime? d = await showDsDatePicker(
+                        context,
                         initialDate: _start,
                         firstDate: _today.subtract(const Duration(days: 730)),
                         lastDate: _today.add(const Duration(days: 730)),

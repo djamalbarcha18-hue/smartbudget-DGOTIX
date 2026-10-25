@@ -1421,5 +1421,7 @@
   "reminderTime": "Время",
   "reminderNotifTitle": "Как прошли расходы сегодня?",
   "reminderNotifBody": "Сегодня ещё ничего не записано. Добавьте за пару секунд.",
-  "reminderPermissionDenied": "Уведомления SmartBudget отключены. Включите их в настройках телефона."
+  "reminderPermissionDenied": "Уведомления SmartBudget отключены. Включите их в настройках телефона.",
+  "dateFieldHint": "гггг/мм/дд",
+  "dateInvalid": "Введите правильную дату в формате ГГГГ/ММ/ДД, например 2026/10/25."
 }

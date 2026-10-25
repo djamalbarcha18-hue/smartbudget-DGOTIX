@@ -1421,5 +1421,7 @@
   "reminderTime": "ساعت",
   "reminderNotifTitle": "خرج‌های امروزتان چطور بود؟",
   "reminderNotifBody": "امروز هنوز چیزی ثبت نکرده‌اید. در چند ثانیه اضافه‌اش کنید.",
-  "reminderPermissionDenied": "اعلان‌های SmartBudget خاموش است. آن‌ها را در تنظیمات گوشی روشن کنید."
+  "reminderPermissionDenied": "اعلان‌های SmartBudget خاموش است. آن‌ها را در تنظیمات گوشی روشن کنید.",
+  "dateFieldHint": "yyyy/mm/dd",
+  "dateInvalid": "تاریخ معتبر را به شکل سال/ماه/روز وارد کنید، مثلاً 2026/10/25."
 }

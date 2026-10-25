@@ -1421,5 +1421,7 @@
   "reminderTime": "Tyd",
   "reminderNotifTitle": "Hoe was jou uitgawes vandag?",
   "reminderNotifBody": "Nog niks vandag aangeteken nie. Voeg dit binne ’n paar sekondes by.",
-  "reminderPermissionDenied": "Kennisgewings vir SmartBudget is af. Skakel dit aan in jou foon se instellings."
+  "reminderPermissionDenied": "Kennisgewings vir SmartBudget is af. Skakel dit aan in jou foon se instellings.",
+  "dateFieldHint": "jjjj/mm/dd",
+  "dateInvalid": "Voer ’n geldige datum in as JJJJ/MM/DD, bv. 2026/10/25."
 }

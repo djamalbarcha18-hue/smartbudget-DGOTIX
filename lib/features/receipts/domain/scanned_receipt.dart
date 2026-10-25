@@ -1,3 +1,4 @@
+import 'package:smartbudget/core/time/date_input.dart';
 import 'package:smartbudget/features/receipts/domain/invoice_reading.dart';
 
 /// Structured data extracted from a receipt image (by the cloud engine now,
@@ -100,6 +101,11 @@ class ScannedReceipt {
 
   static DateTime? _parseIsoDate(String? s) {
     if (s == null || s.isEmpty) return null;
+    // A day alone must be a real one: DateTime.tryParse turns "2026-02-30"
+    // into 2 March.
+    if (RegExp(r'^\s*\d{4}-\d{1,2}-\d{1,2}\s*$').hasMatch(s)) {
+      return DateInput.parse(s);
+    }
     return DateTime.tryParse(s);
   }
 }

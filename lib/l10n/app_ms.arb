@@ -1421,5 +1421,7 @@
   "reminderTime": "Masa",
   "reminderNotifTitle": "Bagaimana perbelanjaan anda hari ini?",
   "reminderNotifBody": "Belum ada rekod hari ini. Tambah dalam beberapa saat.",
-  "reminderPermissionDenied": "Pemberitahuan SmartBudget dimatikan. Hidupkan dalam tetapan telefon."
+  "reminderPermissionDenied": "Pemberitahuan SmartBudget dimatikan. Hidupkan dalam tetapan telefon.",
+  "dateFieldHint": "tttt/bb/hh",
+  "dateInvalid": "Masukkan tarikh yang sah dalam format TTTT/BB/HH, cth. 2026/10/25."
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -8,6 +9,7 @@ import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/amount_dialog.dart';
 import 'package:smartbudget/design_system/components/currency_suffix.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
+import 'package:smartbudget/design_system/components/ds_date_picker.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -111,8 +113,8 @@ class _SeasonEditorSheetState extends ConsumerState<SeasonEditorSheet> {
   }
 
   Future<void> _pickDate({required bool start}) async {
-    final DateTime? d = await showDatePicker(
-      context: context,
+    final DateTime? d = await showDsDatePicker(
+      context,
       initialDate: start ? _customStart : _customEnd,
       firstDate: _today.subtract(const Duration(days: 365)),
       lastDate: _today.add(const Duration(days: 365 * 3)),
@@ -237,7 +239,7 @@ class _SeasonEditorSheetState extends ConsumerState<SeasonEditorSheet> {
                     Expanded(
                       child: OutlinedButton.icon(
                         icon: const Icon(Icons.event_outlined, size: 18),
-                        label: Text('${l.seasonFrom} ${_ymd(_customStart)}'),
+                        label: Text('${l.seasonFrom} ${_ymd(context, _customStart)}'),
                         onPressed: _editing ? null : () => _pickDate(start: true),
                       ),
                     ),
@@ -246,7 +248,7 @@ class _SeasonEditorSheetState extends ConsumerState<SeasonEditorSheet> {
                       child: OutlinedButton.icon(
                         icon: const Icon(Icons.event_available_outlined,
                             size: 18),
-                        label: Text('${l.seasonTo} ${_ymd(_customEnd)}'),
+                        label: Text('${l.seasonTo} ${_ymd(context, _customEnd)}'),
                         onPressed:
                             _editing ? null : () => _pickDate(start: false),
                       ),
@@ -267,7 +269,7 @@ class _SeasonEditorSheetState extends ConsumerState<SeasonEditorSheet> {
                       const SizedBox(width: DsSpacing.md),
                       Expanded(
                         child: Text(
-                          '${seasonDateLabel(l, _kind, w)}\n${_ymd(w.start)} – ${_ymd(w.end)}',
+                          '${seasonDateLabel(l, _kind, w)}\n${_ymd(context, w.start)} – ${_ymd(context, w.end)}',
                           style: t.bodySmall?.copyWith(height: 1.5),
                         ),
                       ),
@@ -329,8 +331,8 @@ class _SeasonEditorSheetState extends ConsumerState<SeasonEditorSheet> {
 
 /// A date as yyyy-MM-dd, isolated left-to-right so Arabic text around it
 /// can't reorder its parts.
-String _ymd(DateTime d) =>
-    '\u2066${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}\u2069';
+String _ymd(BuildContext context, DateTime d) =>
+    dayText(Localizations.localeOf(context), d);
 
 /// "Ramadan 1448 AH" for Hijri seasons, the Gregorian year otherwise.
 String seasonDateLabel(AppLocalizations l, SeasonKind k, SeasonWindow w) =>

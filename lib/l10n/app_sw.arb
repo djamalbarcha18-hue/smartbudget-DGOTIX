@@ -1421,5 +1421,7 @@
   "reminderTime": "Saa",
   "reminderNotifTitle": "Matumizi yako yalikuwaje leo?",
   "reminderNotifBody": "Bado hujarekodi chochote leo. Ongeza kwa sekunde chache.",
-  "reminderPermissionDenied": "Arifa za SmartBudget zimezimwa. Ziwashe kwenye mipangilio ya simu."
+  "reminderPermissionDenied": "Arifa za SmartBudget zimezimwa. Ziwashe kwenye mipangilio ya simu.",
+  "dateFieldHint": "yyyy/mm/dd",
+  "dateInvalid": "Weka tarehe sahihi kwa mpangilio mwaka/mwezi/siku, mfano 2026/10/25."
 }

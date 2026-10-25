@@ -1421,5 +1421,7 @@
   "reminderTime": "Ora",
   "reminderNotifTitle": "Si shkuan shpenzimet sot?",
   "reminderNotifBody": "Sot ende s’ke regjistruar asgjë. Shtoje në pak sekonda.",
-  "reminderPermissionDenied": "Njoftimet për SmartBudget janë të fikura. Ndizi te cilësimet e telefonit."
+  "reminderPermissionDenied": "Njoftimet për SmartBudget janë të fikura. Ndizi te cilësimet e telefonit.",
+  "dateFieldHint": "vvvv/mm/dd",
+  "dateInvalid": "Shkruani një datë të vlefshme si VVVV/MM/DD, p.sh. 2026/10/25."
 }

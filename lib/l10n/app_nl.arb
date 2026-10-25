@@ -1421,5 +1421,7 @@
   "reminderTime": "Tijd",
   "reminderNotifTitle": "Hoe waren je uitgaven vandaag?",
   "reminderNotifBody": "Vandaag nog niets genoteerd. Voeg het in een paar seconden toe.",
-  "reminderPermissionDenied": "Meldingen voor SmartBudget staan uit. Zet ze aan in de instellingen van je telefoon."
+  "reminderPermissionDenied": "Meldingen voor SmartBudget staan uit. Zet ze aan in de instellingen van je telefoon.",
+  "dateFieldHint": "jjjj/mm/dd",
+  "dateInvalid": "Voer een geldige datum in als JJJJ/MM/DD, bijv. 2026/10/25."
 }

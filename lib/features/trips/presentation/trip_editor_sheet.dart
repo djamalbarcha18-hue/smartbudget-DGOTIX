@@ -10,6 +10,7 @@ import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/amount_dialog.dart';
 import 'package:smartbudget/design_system/components/currency_suffix.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
+import 'package:smartbudget/design_system/components/ds_date_picker.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -119,8 +120,8 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
   }
 
   Future<void> _pickStart() async {
-    final DateTime? d = await showDatePicker(
-      context: context,
+    final DateTime? d = await showDsDatePicker(
+      context,
       initialDate: _start,
       firstDate: _today.subtract(const Duration(days: 365 * 5)),
       lastDate: _today.add(const Duration(days: 365 * 3)),

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
+import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
+import 'package:smartbudget/design_system/components/ds_date_picker.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -176,8 +177,8 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
                   _DueDateField(
                     date: _dueDate,
                     onPick: () async {
-                      final DateTime? p = await showDatePicker(
-                        context: context,
+                      final DateTime? p = await showDsDatePicker(
+                        context,
                         initialDate: _dueDate ?? AppClock.now(),
                         firstDate: DateTime(2015),
                         lastDate: DateTime(2100),
@@ -280,7 +281,9 @@ class _DueDateField extends StatelessWidget {
                 const SizedBox(width: DsSpacing.md),
                 Expanded(
                   child: Text(
-                    date == null ? '—' : DateFormat('yyyy-MM-dd').format(date!),
+                    date == null
+                        ? '—'
+                        : dayText(Localizations.localeOf(context), date!),
                     style: t.bodyMedium?.copyWith(color: c.textPrimary),
                   ),
                 ),

@@ -1421,5 +1421,7 @@
   "reminderTime": "Hora",
   "reminderNotifTitle": "¿Qué tal tus gastos hoy?",
   "reminderNotifBody": "Hoy aún no has anotado nada. Añádelo en unos segundos.",
-  "reminderPermissionDenied": "Las notificaciones de SmartBudget están desactivadas. Actívalas en los ajustes del teléfono."
+  "reminderPermissionDenied": "Las notificaciones de SmartBudget están desactivadas. Actívalas en los ajustes del teléfono.",
+  "dateFieldHint": "aaaa/mm/dd",
+  "dateInvalid": "Introduce una fecha válida con el formato AAAA/MM/DD, p. ej. 2026/10/25."
 }

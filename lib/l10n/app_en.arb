@@ -1672,5 +1672,9 @@
   "reminderTime": "Time",
   "reminderNotifTitle": "How was your spending today?",
   "reminderNotifBody": "Nothing recorded yet today. Add it in a few seconds.",
-  "reminderPermissionDenied": "Notifications are off for SmartBudget. Turn them on in your phone's settings."
+  "reminderPermissionDenied": "Notifications are off for SmartBudget. Turn them on in your phone's settings.",
+  "dateFieldHint": "yyyy/mm/dd",
+  "dateInvalid": "Enter a real date as YYYY/MM/DD, e.g. 2026/10/25.",
+  "@dateFieldHint": {"description": "Placeholder of a typed date: year/month/day in the language's letters."},
+  "@dateInvalid": {"description": "Shown under a typed date that is not a real date."}
 }

@@ -1421,5 +1421,7 @@
   "reminderTime": "Heure",
   "reminderNotifTitle": "Comment se sont passées vos dépenses aujourd'hui ?",
   "reminderNotifBody": "Rien de noté aujourd'hui. Ajoutez-le en quelques secondes.",
-  "reminderPermissionDenied": "Les notifications sont désactivées pour SmartBudget. Activez-les dans les réglages du téléphone."
+  "reminderPermissionDenied": "Les notifications sont désactivées pour SmartBudget. Activez-les dans les réglages du téléphone.",
+  "dateFieldHint": "aaaa/mm/jj",
+  "dateInvalid": "Saisissez une date valide au format AAAA/MM/JJ, par ex. 2026/10/25."
 }

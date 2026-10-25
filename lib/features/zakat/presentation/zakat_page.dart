@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/design_system/components/ds_date_picker.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -278,8 +279,8 @@ class _HawlCard extends ConsumerWidget {
 
   Future<void> _pick(BuildContext context, WidgetRef ref, DateTime? current) async {
     final DateTime now = AppClock.now();
-    final DateTime? picked = await showDatePicker(
-      context: context,
+    final DateTime? picked = await showDsDatePicker(
+      context,
       initialDate: current ?? now,
       firstDate: DateTime(2015),
       lastDate: now,

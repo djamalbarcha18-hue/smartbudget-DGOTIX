@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
@@ -9,6 +10,7 @@ import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/amount_dialog.dart';
 import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
+import 'package:smartbudget/design_system/components/ds_date_picker.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -473,10 +475,10 @@ class _TransferSheetState extends ConsumerState<TransferSheet> {
           child: TextButton.icon(
             icon: const Icon(Icons.event_outlined, size: 18),
             label: Text(
-                '${l.fieldDate}: \u2066${_date.year}-${_date.month.toString().padLeft(2, '0')}-${_date.day.toString().padLeft(2, '0')}\u2069'),
+                '${l.fieldDate}: ${dayText(Localizations.localeOf(context), _date)}'),
             onPressed: () async {
-              final DateTime? d = await showDatePicker(
-                context: context,
+              final DateTime? d = await showDsDatePicker(
+                context,
                 initialDate: _date,
                 firstDate: DateTime(2015),
                 lastDate: DateTime(2100),

@@ -1421,5 +1421,7 @@
   "reminderTime": "Jam",
   "reminderNotifTitle": "Bagaimana pengeluaran Anda hari ini?",
   "reminderNotifBody": "Belum ada catatan hari ini. Tambahkan dalam hitungan detik.",
-  "reminderPermissionDenied": "Notifikasi SmartBudget dimatikan. Aktifkan di pengaturan ponsel."
+  "reminderPermissionDenied": "Notifikasi SmartBudget dimatikan. Aktifkan di pengaturan ponsel.",
+  "dateFieldHint": "tttt/bb/hh",
+  "dateInvalid": "Masukkan tanggal yang benar dengan format TTTT/BB/HH, misalnya 2026/10/25."
 }

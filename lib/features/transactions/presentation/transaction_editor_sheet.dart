@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
+import 'package:smartbudget/design_system/components/ds_date_picker.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -193,8 +194,8 @@ class _TransactionEditorSheetState
   }
 
   Future<void> _pickDate() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
+    final DateTime? picked = await showDsDatePicker(
+      context,
       initialDate: _date,
       firstDate: DateTime(2015),
       lastDate: DateTime(2100),
@@ -378,6 +379,9 @@ class _TransactionEditorSheetState
                   ),
                   const SizedBox(height: DsSpacing.lg),
                   _DateField(label: l.fieldDate, date: _date, onTap: _pickDate),
+                  _DateShortcuts(
+                      date: _date,
+                      onPick: (DateTime d) => setState(() => _date = d)),
                   if (widget.existing == null) ...<Widget>[
                     const SizedBox(height: DsSpacing.lg),
                     _RepeatDropdown(
@@ -457,6 +461,40 @@ class _TransactionEditorSheetState
   }
 }
 
+/// Today and Yesterday, the two days most entries are for.
+class _DateShortcuts extends StatelessWidget {
+  const _DateShortcuts({required this.date, required this.onPick});
+  final DateTime date;
+  final ValueChanged<DateTime> onPick;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DateTime now = AppClock.now();
+    final DateTime today = DateUtils.dateOnly(now);
+    final DateTime yesterday = DateTime(now.year, now.month, now.day - 1);
+    final DateTime day = DateUtils.dateOnly(date);
+    return Padding(
+      padding: const EdgeInsets.only(top: DsSpacing.sm),
+      child: Wrap(
+        spacing: DsSpacing.sm,
+        children: <Widget>[
+          ChoiceChip(
+            label: Text(l.quickToday),
+            selected: day == today,
+            onSelected: (_) => onPick(now),
+          ),
+          ChoiceChip(
+            label: Text(l.quickYesterday),
+            selected: day == yesterday,
+            onSelected: (_) => onPick(yesterday),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _DateField extends StatelessWidget {
   const _DateField(
       {required this.label, required this.date, required this.onTap});
@@ -489,7 +527,7 @@ class _DateField extends StatelessWidget {
                     size: 18, color: c.textMuted),
                 const SizedBox(width: DsSpacing.md),
                 Text(
-                  DateFormat('yyyy-MM-dd').format(date),
+                  dayText(Localizations.localeOf(context), date),
                   style: t.bodyMedium?.copyWith(color: c.textPrimary),
                 ),
               ],
