@@ -30,7 +30,7 @@ abstract final class GuideContent {
           tr: _startTr, ms: _startMs, ur: _startUr, de: _startDe,
           pt: _startPt, it: _startIt, nl: _startNl, bs: _startBs,
           sq: _startSq, ru: _startRu, sw: _startSw, ha: _startHa,
-          af: _startAf, fa: _startFa, hi: _startHi, zh: _startZh);
+          af: _startAf, fa: _startFa, hi: _startHi, zh: _startZh, ja: _startJa);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
       lang.pick(_topicsAr, _topicsEn,
@@ -38,7 +38,7 @@ abstract final class GuideContent {
           tr: _topicsTr, ms: _topicsMs, ur: _topicsUr, de: _topicsDe,
           pt: _topicsPt, it: _topicsIt, nl: _topicsNl, bs: _topicsBs,
           sq: _topicsSq, ru: _topicsRu, sw: _topicsSw, ha: _topicsHa,
-          af: _topicsAf, fa: _topicsFa, hi: _topicsHi, zh: _topicsZh);
+          af: _topicsAf, fa: _topicsFa, hi: _topicsHi, zh: _topicsZh, ja: _topicsJa);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -4207,6 +4207,197 @@ abstract final class GuideContent {
         '管理你自己的收入和支出类别。',
         '在“数据与备份”中随时导出完整备份；登录后，你的数据会在你的'
             '设备之间自动同步（离线使用后也会），你也可以关闭同步。',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Japanese) ----
+  static const List<String> _startJa = <String>[
+    '設定を開き、言語、テーマ、基本通貨を選びましょう——アプリの'
+        'すべての合計はこの通貨で表示されます。',
+    '収入と支出を追加しましょう（またはレシートをスキャン）——他'
+        'のすべてはそこから計算されます。',
+    '月間予算を設定すると、今いくら使えるかをアプリが教えてくれま'
+        'す。',
+    'ダッシュボードと家計の健康度で現状を確認し、少しずつ目標や借'
+        '金を追加しましょう。',
+  ];
+
+  // ---- Topics (Japanese) ----
+  static const List<GuideTopic> _topicsJa = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'ダッシュボード',
+      summary: '今月がひと目で分かります：収入、支出、貯金、そしてお金の行き'
+          '先。',
+      steps: <String>[
+        'カードには今月の合計が基本通貨で表示されます。',
+        '支出の内訳の一部をタップすると、そのカテゴリが強調されます。',
+        'お知らせが、予算オーバーのカテゴリや急ぎの目標など、注意が必'
+            '要なことを伝えます。',
+        'データがないときカードは「—」と表示します——何もでっち上げ'
+            'ません。',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: '収入と支出',
+      summary: 'お金の動きをすべて記録——アプリのすべての計算の土台です。',
+      steps: <String>[
+        'クイック追加ボタンで、収入か支出を金額、カテゴリ、日付、メモ'
+            'とともに記録します。',
+        '収入と支出にはそれぞれの画面があり、「取引」には両方が表示さ'
+            'れます。',
+        'リストを検索してどの記録も見つけられ、タップすると編集・削除'
+            'できます。',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: '定期取引',
+      summary: '給料、家賃、サブスクは期日に自動で追加されます。',
+      steps: <String>[
+        '収入や支出を追加するとき、「繰り返し」を毎週、毎月、3 か月'
+            'ごと、6 か月ごと、毎年に設定します。',
+        '金額が変わるボーナスや歩合給には「金額が毎回変わる」をオンに：'
+            '期日ごとに、見積もりを入れる代わりに実際の金額を尋ねます。',
+        '期日ごとに通常の取引と同じように追加されます——しばらく開か'
+            'なくても、次に開いたときに追いつきます。',
+        '「定期取引」画面で一時停止、再開、金額の変更、繰り返しの停止'
+            'ができます。追加済みの取引は変わりません。',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'レシートをスキャン',
+      summary: 'レシートの写真を、すぐ保存できる支出に変えます。',
+      steps: <String>[
+        '「支出」画面で「レシートをスキャン」をタップし、写真を撮るか'
+            '選びます。',
+        'アプリが店名、日付、金額、カテゴリを入力します——保存前に確'
+            '認してください。',
+        'クラウドスキャンはプランによります。レシートが読み取れない場'
+            '合は支出を手で入力してください。',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: '月間予算',
+      summary: 'カテゴリごとにいくら使うかを、月ごとに決めます。',
+      steps: <String>[
+        '上で年と月を選びます——同じ画面ですべての月を見られます。',
+        '管理したいカテゴリに上限を設定します。',
+        '支出に合わせてバーが伸び、上限を超えたカテゴリには印が付きま'
+            'す。',
+        '有料プランでは「配分を提案」が最近の支出をもとに収入をカテゴ'
+            'リに分けます——確認してから適用してください。',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: '目標と貯金',
+      summary: '何か特定のもののために貯金し、どれだけ近づいたかを確認します。',
+      steps: <String>[
+        '目標金額と、必要なら期限を決めて目標を作ります。',
+        '貯金するたびに入金を記録すると、進捗が自動で更新されます。',
+        '期限が近い目標はダッシュボードで目立つように表示されます。',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: '借金と貸付',
+      summary: 'あなたが借りているお金と、貸しているお金を管理します。',
+      steps: <String>[
+        '借金や貸付を、金額と相手とともに追加します。',
+        'これまでに返した額を更新すると、残りが分かります。',
+        '借金は家計の健康スコアに反映されます。',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'プロジェクトのポートフォリオ',
+      summary: '大きなプロジェクトを短期・中期・長期の枠に分けます。',
+      steps: <String>[
+        'プロジェクトを追加し、それぞれ期間を選びます。',
+        '資金は枠に順番に充てられるので、貯金で先に完成するプロジェク'
+            'トが分かります。',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: '家計の健康度',
+      summary: '家計の状態とその理由を示すスコア。',
+      steps: <String>[
+        'スコアはあなた自身のデータから端末上で計算されます。',
+        '主な要因が、何が助けになり何が足を引っ張っているかを示します——'
+            'まずそこを改善しましょう。',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'レポートと分析',
+      summary: '1 年の推移とお金の行き先を確認します。',
+      steps: <String>[
+        '年を選んで、月ごとに収入と支出を比べます。',
+        '内訳で、時間とともに増えているカテゴリを見つけましょう。',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'ザカート',
+      summary: '資産のザカートを見積もり、ハウルを追跡します。',
+      steps: <String>[
+        'ザカート対象の資産を入力して見積もります。',
+        '資産がニサーブに達した日を設定すると、ヒジュラ暦で太陰暦の '
+            '1 年のカウントダウンが表示されます。',
+        'これは計画のツールです——義務は資格のある学者に確認してくだ'
+            'さい。',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: '為替レートと市場',
+      summary: '公開データによる現在の為替レートと暗号資産の価格。',
+      steps: <String>[
+        'レートはリアルタイムで取得され、各行に出典が表示されます。',
+        '信頼できる出典がない市場は「データなし」と表示します——数字'
+            'をでっち上げることはありません。',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'DGOTIX AI アシスタント',
+      summary: 'お金について、ふだんの言葉で質問できます。',
+      steps: <String>[
+        '質問を入力するか提案をタップすると、アシスタントがあなたの数'
+            '字の短い要約から答えます。',
+        '回答の回数はプランによります。上限が近づくとお知らせします。',
+        '回答は自動生成です——重要な判断は再確認してください。会話の'
+            '下にあるルールに基づく分析は、AI なしでいつでも使えます。',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'プランとサブスクリプション',
+      summary: '無料と Pro を比べ、サブスクリプションを管理します。',
+      steps: <String>[
+        '基本の家計ツールはずっと無料です。',
+        '有料プランは AI とクラウドスキャンの上限を上げ、追加機能'
+            'を加えます。',
+        '申し込むと、上に現在のプランと更新日が、管理・解約のボタンと'
+            'ともに表示されます。',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: '設定、データ、バックアップ',
+      summary: 'アプリを自分好みにし、データを安全に保ちます。',
+      steps: <String>[
+        '言語、テーマ、基本通貨は「外観」と「地域」にあります。',
+        '独自の収入・支出カテゴリを管理できます。',
+        '「データとバックアップ」でいつでも完全なバックアップを書き出'
+            'せます。ログインすると、データは端末間で自動的に同期され（オ'
+            'フラインで使った後も）、オフにもできます。',
       ],
     ),
   ];

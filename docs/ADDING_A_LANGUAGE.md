@@ -20,7 +20,7 @@ there. `test/languages_test.dart` fails until the required pieces exist.
 
 ## Ready but not yet offered
 
-Pass `hidden: true` to the `AppLang` entry (as German, Portuguese, Italian, Dutch, Bosnian, Albanian, Russian, Swahili, Hausa, Afrikaans, Persian, Hindi and Chinese are): the language is
+Pass `hidden: true` to the `AppLang` entry (as German, Portuguese, Italian, Dutch, Bosnian, Albanian, Russian, Swahili, Hausa, Afrikaans, Persian, Hindi, Chinese and Japanese are): the language is
 built and tested but stays out of the menus, Settings and the supported
 locales, so a phone in that language gets the default. Preview it with
 `--dart-define=NEW_LANGS=true`; remove `hidden: true` to release it.

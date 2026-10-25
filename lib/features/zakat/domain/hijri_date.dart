@@ -168,13 +168,19 @@ class HijriDate {
     '赖买丹月', '闪瓦鲁月', '都尔喀尔德月', '都尔黑哲月',
   ];
 
+  static const List<String> monthsJa = <String>[
+    'ムハッラム', 'サファル', 'ラビーウ・アウワル', 'ラビーウ・サーニー',
+    'ジュマーダー・ウーラー', 'ジュマーダー・アーヒラ', 'ラジャブ', 'シャアバーン',
+    'ラマダーン', 'シャウワール', 'ズー・アル＝カアダ', 'ズー・アル＝ヒッジャ',
+  ];
+
   String monthName({required AppLang lang}) => (month >= 1 && month <= 12)
       ? lang.pick(monthsAr, monthsEn,
           fr: monthsFr, id: monthsId, es: monthsEs,
           tr: monthsTr, ms: monthsMs, ur: monthsUr, de: monthsDe,
           pt: monthsPt, it: monthsIt,
           nl: monthsNl, bs: monthsBs, sq: monthsSq, ru: monthsRu, sw: monthsSw, ha: monthsHa,
-          af: monthsAf, fa: monthsFa, hi: monthsHi, zh: monthsZh)[month - 1]
+          af: monthsAf, fa: monthsFa, hi: monthsHi, zh: monthsZh, ja: monthsJa)[month - 1]
       : '';
 
   /// Formats as `day month year هـ`, e.g. "12 رمضان 1446 هـ".
@@ -199,7 +205,8 @@ class HijriDate {
       af: '$day ${monthName(lang: lang)} $year H.',
       fa: '$day ${monthName(lang: lang)} $year ق',
       hi: '$day ${monthName(lang: lang)} $year हि.',
-      zh: '伊斯兰历$year年${monthName(lang: lang)}$day日');
+      zh: '伊斯兰历$year年${monthName(lang: lang)}$day日',
+      ja: 'ヒジュラ暦$year年${monthName(lang: lang)}$day日');
 
   /// Julian Day Number for this Hijri date (tabular civil calendar).
   int toJdn() =>
