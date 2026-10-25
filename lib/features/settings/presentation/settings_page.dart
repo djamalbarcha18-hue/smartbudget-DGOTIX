@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/core/env/app_env.dart';
@@ -943,6 +944,11 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
               icon: Icons.upload_file_outlined,
               label: l.importJson,
               onTap: _busy ? null : _import,
+            ),
+            _ActionButton(
+              icon: Icons.grid_on_outlined,
+              label: l.importStatement,
+              onTap: _busy ? null : () => context.go('/import'),
             ),
           ],
         ),

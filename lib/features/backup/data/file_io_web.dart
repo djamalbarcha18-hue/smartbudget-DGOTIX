@@ -61,3 +61,26 @@ Future<String?> pickTextFile() async {
   final Object? result = reader.result;
   return result is String ? result : null;
 }
+
+/// Prompts the user to choose a spreadsheet (Excel or CSV) and returns its
+/// name and bytes, or null when nothing was chosen.
+Future<({String name, Uint8List bytes})?> pickDataFile() async {
+  final html.FileUploadInputElement input = html.FileUploadInputElement()
+    ..accept = '.csv,.xlsx,.xls,.tsv,.txt,text/csv,'
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  input.click();
+
+  await input.onChange.first;
+  final List<html.File>? files = input.files;
+  if (files == null || files.isEmpty) return null;
+
+  final html.FileReader reader = html.FileReader()
+    ..readAsArrayBuffer(files.first);
+  await reader.onLoadEnd.first;
+  final Object? result = reader.result;
+  if (result is ByteBuffer) {
+    return (name: files.first.name, bytes: result.asUint8List());
+  }
+  if (result is Uint8List) return (name: files.first.name, bytes: result);
+  return null;
+}

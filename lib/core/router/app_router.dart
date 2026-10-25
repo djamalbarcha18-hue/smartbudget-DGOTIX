@@ -36,6 +36,7 @@ import 'package:smartbudget/features/shell/app_shell.dart';
 import 'package:smartbudget/features/shell/nav_destinations.dart';
 import 'package:smartbudget/features/shell/placeholder_page.dart';
 import 'package:smartbudget/features/shell/splash_page.dart';
+import 'package:smartbudget/features/statement_import/presentation/statement_import_page.dart';
 import 'package:smartbudget/features/support/presentation/support_page.dart';
 import 'package:smartbudget/features/transactions/presentation/transactions_page.dart';
 import 'package:smartbudget/features/wallets/presentation/wallets_page.dart';
@@ -178,6 +179,11 @@ GoRouter buildRouter(Ref ref) {
             path: '/health',
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const NoTransitionPage<void>(child: FinancialHealthPage()),
+          ),
+          GoRoute(
+            path: '/import',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const NoTransitionPage<void>(child: StatementImportPage()),
           ),
           GoRoute(
             path: '/exchange-rates',

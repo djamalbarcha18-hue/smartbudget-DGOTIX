@@ -45,3 +45,15 @@ Future<String?> pickTextFile() async {
     return null;
   }
 }
+
+/// Lets the user choose a file and returns its name and bytes (null when
+/// cancelled). Any type is offered: phones label CSV files inconsistently.
+Future<({String name, Uint8List bytes})?> pickDataFile() async {
+  try {
+    final PlatformFile? f = await FilePicker.pickFile();
+    if (f == null) return null;
+    return (name: f.name, bytes: await f.readAsBytes());
+  } catch (_) {
+    return null;
+  }
+}

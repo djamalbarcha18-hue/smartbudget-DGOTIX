@@ -73,6 +73,10 @@ dependencies:
   share_plus: ^13.3.0
   local_auth: ^3.0.2
   file_picker: ^13.1.0
+  # Reading bank statements saved from Excel (.xlsx is a zip of XML sheets).
+  # Already pulled in by other packages; declared because the app uses them.
+  archive: ^4.0.0
+  xml: ^7.0.1
   google_mlkit_text_recognition: ^0.17.1
   # Cloudflare Turnstile check before sign-in on Android (web/turnstile.html
   # in a WebView); on the web the same page is framed through package:web.

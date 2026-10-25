@@ -90,6 +90,19 @@ abstract final class BankMessageParser {
             (String s) => _amount(_withoutNoise(s), spoken: false) != null);
   }
 
+  /// Whether [text] («Credit», «إيداع», «入金») says money came in (true)
+  /// or went out (false); null when it says neither.
+  static bool? directionOf(String text) {
+    final String lower = _words(_clean(text));
+    final int inAt = _firstIndex(lower, _incomeWords);
+    final int outAt = _firstIndex(lower, _expenseWords);
+    if (inAt < 0 && outAt < 0) return null;
+    return inAt >= 0 && (outAt < 0 || inAt <= outAt);
+  }
+
+  /// [text] with Latin digits (also from full-width and Devanagari ones).
+  static String digits(String text) => _clean(text);
+
   /// Latin digits (also full-width and Devanagari ones), plain colons.
   static String _clean(String text) {
     final StringBuffer b = StringBuffer();

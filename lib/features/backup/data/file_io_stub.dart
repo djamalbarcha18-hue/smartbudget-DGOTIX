@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 /// Non-web stub for backup file IO. These are no-ops: the app ships to the web,
 /// and this file only exists so the Dart VM (test runner) can compile.
 
@@ -17,3 +19,7 @@ Future<void> downloadBytes({
 
 /// Prompts the user to choose a file and returns its text. Always null off web.
 Future<String?> pickTextFile() async => null;
+
+/// Prompts the user to choose a file and returns its name and bytes. Always
+/// null off web.
+Future<({String name, Uint8List bytes})?> pickDataFile() async => null;
