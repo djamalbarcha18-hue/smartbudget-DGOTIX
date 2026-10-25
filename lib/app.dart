@@ -16,6 +16,7 @@ import 'package:smartbudget/core/time/clock_sync_controller.dart';
 import 'package:smartbudget/design_system/theme/ds_theme.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_gate.dart';
 import 'package:smartbudget/features/privacy/presentation/money_privacy_host.dart';
+import 'package:smartbudget/features/reminders/application/reminder_controller.dart';
 import 'package:smartbudget/features/settings/presentation/language_picker.dart';
 import 'package:smartbudget/features/shell/offline_banner.dart';
 import 'package:smartbudget/features/sync/application/sync_controller.dart';
@@ -57,6 +58,11 @@ class SmartBudgetApp extends ConsumerWidget {
             .read(baseCurrencyProvider.notifier)
             .followLanguage(AppLang.fromCode(next.languageCode));
       }
+    });
+    // The daily reminder (Android): scheduled again whenever its plan changes
+    // (settings, language, or something recorded today).
+    ref.listen(reminderPlanProvider, (_, ReminderPlan? next) {
+      if (next != null) applyReminderPlan(next).ignore();
     });
     ref.listen(transactionsProvider, (_, AsyncValue<List<Transaction>> next) {
       if (next.valueOrNull?.isNotEmpty ?? false) {

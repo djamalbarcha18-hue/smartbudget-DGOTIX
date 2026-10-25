@@ -1414,5 +1414,12 @@
   "offerNoticeTitle": "Voordat je naar de partner gaat",
   "offerNoticeContinue": "Doorgaan",
   "offerThePartner": "de partner",
-  "offerNoticeBody": "Boeken en betalen gaan rechtstreeks via {partner}, volgens hun voorwaarden en op eigen verantwoordelijkheid. SmartBudget verkoopt of garandeert deze diensten niet, en ze maken geen deel uit van je SmartBudget-abonnement of het Pro-abonnement; eventuele Pro-voordelen worden door de partner aangeboden."
+  "offerNoticeBody": "Boeken en betalen gaan rechtstreeks via {partner}, volgens hun voorwaarden en op eigen verantwoordelijkheid. SmartBudget verkoopt of garandeert deze diensten niet, en ze maken geen deel uit van je SmartBudget-abonnement of het Pro-abonnement; eventuele Pro-voordelen worden door de partner aangeboden.",
+  "reminderTitle": "Dagelijkse herinnering",
+  "reminderEnable": "Herinner me eraan mijn uitgaven te noteren",
+  "reminderHint": "Een zachte herinnering op het tijdstip dat je kiest, alleen op dagen waarop je nog niets hebt genoteerd. Tik erop en voeg het in seconden toe.",
+  "reminderTime": "Tijd",
+  "reminderNotifTitle": "Hoe waren je uitgaven vandaag?",
+  "reminderNotifBody": "Vandaag nog niets genoteerd. Voeg het in een paar seconden toe.",
+  "reminderPermissionDenied": "Meldingen voor SmartBudget staan uit. Zet ze aan in de instellingen van je telefoon."
 }

@@ -1414,5 +1414,12 @@
   "offerNoticeTitle": "Voordat jy na die vennoot gaan",
   "offerNoticeContinue": "Gaan voort",
   "offerThePartner": "die vennoot",
-  "offerNoticeBody": "Bespreking en betaling word direk by {partner} gedoen, op hul voorwaardes en op jou eie verantwoordelikheid. SmartBudget verkoop of waarborg nie hierdie dienste nie, en hulle is nie deel van jou SmartBudget-intekening of die Pro-plan nie; enige Pro-voordeel word deur die vennoot aangebied."
+  "offerNoticeBody": "Bespreking en betaling word direk by {partner} gedoen, op hul voorwaardes en op jou eie verantwoordelikheid. SmartBudget verkoop of waarborg nie hierdie dienste nie, en hulle is nie deel van jou SmartBudget-intekening of die Pro-plan nie; enige Pro-voordeel word deur die vennoot aangebied.",
+  "reminderTitle": "Daaglikse herinnering",
+  "reminderEnable": "Herinner my om my uitgawes aan te teken",
+  "reminderHint": "’n Sagte herinnering op die tyd wat jy kies, net op dae wanneer jy nog niks aangeteken het nie. Tik daarop en voeg dit binne sekondes by.",
+  "reminderTime": "Tyd",
+  "reminderNotifTitle": "Hoe was jou uitgawes vandag?",
+  "reminderNotifBody": "Nog niks vandag aangeteken nie. Voeg dit binne ’n paar sekondes by.",
+  "reminderPermissionDenied": "Kennisgewings vir SmartBudget is af. Skakel dit aan in jou foon se instellings."
 }

@@ -1414,5 +1414,12 @@
   "offerNoticeTitle": "Kabla ya kwenda kwa mshirika",
   "offerNoticeContinue": "Endelea",
   "offerThePartner": "mshirika",
-  "offerNoticeBody": "Uwekaji nafasi na malipo vinafanywa moja kwa moja na {partner}, kwa masharti yake na kwa jukumu lako mwenyewe. SmartBudget haiuzi wala haidhamini huduma hizi, na si sehemu ya usajili wako wa SmartBudget wala kifurushi cha Pro; manufaa yoyote ya Pro yanatolewa na mshirika."
+  "offerNoticeBody": "Uwekaji nafasi na malipo vinafanywa moja kwa moja na {partner}, kwa masharti yake na kwa jukumu lako mwenyewe. SmartBudget haiuzi wala haidhamini huduma hizi, na si sehemu ya usajili wako wa SmartBudget wala kifurushi cha Pro; manufaa yoyote ya Pro yanatolewa na mshirika.",
+  "reminderTitle": "Kikumbusho cha kila siku",
+  "reminderEnable": "Nikumbushe kurekodi matumizi yangu",
+  "reminderHint": "Kikumbusho kidogo kwa saa unayochagua, siku ambazo bado hujarekodi chochote tu. Kiguse uongeze kwa sekunde chache.",
+  "reminderTime": "Saa",
+  "reminderNotifTitle": "Matumizi yako yalikuwaje leo?",
+  "reminderNotifBody": "Bado hujarekodi chochote leo. Ongeza kwa sekunde chache.",
+  "reminderPermissionDenied": "Arifa za SmartBudget zimezimwa. Ziwashe kwenye mipangilio ya simu."
 }

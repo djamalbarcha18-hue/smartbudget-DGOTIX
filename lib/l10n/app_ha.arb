@@ -1414,5 +1414,12 @@
   "offerNoticeTitle": "Kafin ka tafi wurin abokin hulɗa",
   "offerNoticeContinue": "Ci gaba",
   "offerThePartner": "abokin hulɗa",
-  "offerNoticeBody": "Ajiyar wuri da biya ana yin su kai tsaye da {partner}, bisa sharuɗɗansa kuma a kan alhakinka. SmartBudget ba ta sayar ko ba da tabbacin waɗannan ayyuka, kuma ba sa cikin biyan kuɗinka na SmartBudget ko tsarin Pro; duk wata fa'idar Pro abokin hulɗa ne ke bayarwa."
+  "offerNoticeBody": "Ajiyar wuri da biya ana yin su kai tsaye da {partner}, bisa sharuɗɗansa kuma a kan alhakinka. SmartBudget ba ta sayar ko ba da tabbacin waɗannan ayyuka, kuma ba sa cikin biyan kuɗinka na SmartBudget ko tsarin Pro; duk wata fa'idar Pro abokin hulɗa ne ke bayarwa.",
+  "reminderTitle": "Tunatarwa ta kullum",
+  "reminderEnable": "Tunatar da ni in rubuta kashe kuɗina",
+  "reminderHint": "Ƙaramar tunatarwa a lokacin da ka zaɓa, sai a ranakun da ba ka rubuta komai ba tukuna. Taɓa ta ka ƙara cikin daƙiƙu.",
+  "reminderTime": "Lokaci",
+  "reminderNotifTitle": "Yaya kashe kuɗinka ya kasance yau?",
+  "reminderNotifBody": "Ba a rubuta komai ba yau tukuna. Ƙara shi cikin daƙiƙu.",
+  "reminderPermissionDenied": "An kashe sanarwar SmartBudget. Kunna ta a saitunan wayarka."
 }
