@@ -105,7 +105,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
             await rootBundle.load('assets/google_fonts/Inter-SemiBold.ttf'));
       } else {
         final String family =
-            lang == AppLang.ur ? 'NotoNaskhArabic' : 'Tajawal';
+            lang.naskh ? 'NotoNaskhArabic' : 'Tajawal';
         base = pw.Font.ttf(
             await rootBundle.load('assets/fonts/$family-Regular.ttf'));
         bold = pw.Font.ttf(
@@ -120,7 +120,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
         _ => false,
       };
       final List<pw.Font> fallback = <pw.Font>[
-        if (lang == AppLang.ur || lang == AppLang.ru)
+        if (lang.naskh || lang == AppLang.ru)
           pw.Font.ttf(
               await rootBundle.load('assets/fonts/Tajawal-Regular.ttf')),
         if (lang != AppLang.ru &&
@@ -128,7 +128,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
           pw.Font.ttf(
               await rootBundle.load('assets/google_fonts/Inter-Regular.ttf')),
         // The rial and afghani signs are only in Noto Naskh.
-        if (lang != AppLang.ur && _needsNaskh(s.income.currency.symbol))
+        if (!lang.naskh && _needsNaskh(s.income.currency.symbol))
           pw.Font.ttf(await rootBundle
               .load('assets/fonts/NotoNaskhArabic-Regular.ttf')),
       ];
@@ -177,7 +177,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
             fr: 'T$s', id: 'K$s', es: 'T$s', tr: '$s. Çeyrek', ms: 'Suku $s', ur: 'سہ ماہی $s',
             de: 'Q$s', pt: '$sº tri',
             it: 'T$s', nl: 'K$s', bs: 'K$s', sq: 'T$s', ru: '$s кв.', sw: 'Robo $s', ha: 'Kwata $s',
-            af: 'K$s');
+            af: 'K$s', fa: 'فصل $s');
       case ReportPeriod.halfYearly:
         return s == 2 ? l.half2 : l.half1;
       case ReportPeriod.yearly:

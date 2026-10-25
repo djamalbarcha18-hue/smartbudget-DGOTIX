@@ -8,9 +8,9 @@ import 'package:smartbudget/core/l10n/app_lang.dart';
 /// Tajawal is used as the primary family: it renders Arabic beautifully and
 /// keeps Latin digits/letters clean, so a single family works for both
 /// LTR (English) and RTL (Arabic) without a font swap on locale change.
-/// Urdu needs letters Tajawal lacks, so it gets Noto Naskh Arabic (Arabic
-/// script only: its digits and Latin come from Tajawal); Inter fills in Latin
-/// letters Tajawal lacks (Turkish ğ ş İ).
+/// Urdu and Persian need letters Tajawal lacks, so they get Noto Naskh Arabic
+/// (Arabic script only: its digits and Latin come from Tajawal); Inter fills
+/// in Latin letters Tajawal lacks (Turkish ğ ş İ).
 abstract final class DsTypography {
   /// Fallback for characters missing from the primary family (pubspec fonts).
   /// Inter for Latin, Cyrillic and most currency signs; Noto Naskh for the
@@ -18,7 +18,7 @@ abstract final class DsTypography {
   static const List<String> fallback = <String>['SbInter', 'SbNaskh'];
   static const List<String> _urduFallback = <String>['SbTajawal', 'SbInter'];
 
-  /// The primary family for Urdu (pubspec fonts).
+  /// The primary family for Urdu and Persian (pubspec fonts).
   static const String urduFamily = 'SbNaskh';
 
   static TextTheme textTheme({
@@ -26,7 +26,7 @@ abstract final class DsTypography {
     required Color muted,
     AppLang lang = AppLang.en,
   }) {
-    final TextTheme base = lang == AppLang.ur
+    final TextTheme base = lang.naskh
         ? ThemeData.light().textTheme.apply(fontFamily: urduFamily)
         : GoogleFonts.tajawalTextTheme();
 
@@ -38,7 +38,7 @@ abstract final class DsTypography {
         color: color ?? primary,
         height: height,
         letterSpacing: spacing,
-        fontFamilyFallback: lang == AppLang.ur ? _urduFallback : fallback,
+        fontFamilyFallback: lang.naskh ? _urduFallback : fallback,
       );
     }
 

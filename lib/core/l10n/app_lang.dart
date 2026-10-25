@@ -24,7 +24,8 @@ enum AppLang {
   ru('ru', 'Русский', hidden: true),
   sw('sw', 'Kiswahili', hidden: true),
   ha('ha', 'Hausa', hidden: true),
-  af('af', 'Afrikaans', hidden: true);
+  af('af', 'Afrikaans', hidden: true),
+  fa('fa', 'فارسی', rtl: true, hidden: true);
 
   const AppLang(this.code, this.nativeName,
       {this.rtl = false, this.hidden = false});
@@ -65,6 +66,10 @@ enum AppLang {
 
   bool get isAr => this == AppLang.ar;
 
+  /// Written with letters Tajawal lacks (Urdu ٹ ڈ ں ے, Persian گ چ ژ ی ک):
+  /// set in Noto Naskh Arabic instead.
+  bool get naskh => this == AppLang.ur || this == AppLang.fa;
+
   /// Upper case with this language's rules: Turkish i becomes İ, not I.
   String upper(String s) =>
       (this == AppLang.tr ? s.replaceAll('i', 'İ') : s).toUpperCase();
@@ -73,7 +78,7 @@ enum AppLang {
   /// back to English (names of currencies, markets…), so a new language can
   /// ship before every long text is translated.
   T pick<T>(T ar, T en,
-          {T? fr, T? id, T? es, T? tr, T? ms, T? ur, T? de, T? pt, T? it, T? nl, T? bs, T? sq, T? ru, T? sw, T? ha, T? af}) =>
+          {T? fr, T? id, T? es, T? tr, T? ms, T? ur, T? de, T? pt, T? it, T? nl, T? bs, T? sq, T? ru, T? sw, T? ha, T? af, T? fa}) =>
       switch (this) {
         AppLang.ar => ar,
         AppLang.en => en,
@@ -93,5 +98,6 @@ enum AppLang {
         AppLang.sw => sw ?? en,
         AppLang.ha => ha ?? en,
         AppLang.af => af ?? en,
+        AppLang.fa => fa ?? en,
       };
 }

@@ -9,10 +9,10 @@ abstract final class LanguageNames {
       (_names[inLang.code] ?? _names['en']!)[lang.code] ?? lang.nativeName;
 
   // Rows follow [AppLang] order: ar en fr id es tr ms ur de pt it nl bs sq
-  // ru sw ha af.
+  // ru sw ha af fa.
   static const List<String> _codes = <String>[
     'ar', 'en', 'fr', 'id', 'es', 'tr', 'ms', 'ur', 'de', 'pt', 'it', 'nl', //
-    'bs', 'sq', 'ru', 'sw', 'ha', 'af',
+    'bs', 'sq', 'ru', 'sw', 'ha', 'af', 'fa',
   ];
 
   static final Map<String, Map<String, String>> _names =
@@ -43,6 +43,7 @@ abstract final class LanguageNames {
       'السواحيلية',
       'الهوسا',
       'الأفريكانية',
+      'الفارسية',
     ],
     'en': <String>[
       'Arabic',
@@ -63,6 +64,7 @@ abstract final class LanguageNames {
       'Swahili',
       'Hausa',
       'Afrikaans',
+      'Persian',
     ],
     'fr': <String>[
       'Arabe',
@@ -83,6 +85,7 @@ abstract final class LanguageNames {
       'Swahili',
       'Haoussa',
       'Afrikaans',
+      'Persan',
     ],
     'id': <String>[
       'Arab',
@@ -103,6 +106,7 @@ abstract final class LanguageNames {
       'Swahili',
       'Hausa',
       'Afrikaans',
+      'Persia',
     ],
     'es': <String>[
       'Árabe',
@@ -123,6 +127,7 @@ abstract final class LanguageNames {
       'Suajili',
       'Hausa',
       'Afrikáans',
+      'Persa',
     ],
     'tr': <String>[
       'Arapça',
@@ -143,6 +148,7 @@ abstract final class LanguageNames {
       'Svahili',
       'Hausa',
       'Afrikaanca',
+      'Farsça',
     ],
     'ms': <String>[
       'Arab',
@@ -163,6 +169,7 @@ abstract final class LanguageNames {
       'Swahili',
       'Hausa',
       'Afrikaans',
+      'Parsi',
     ],
     'ur': <String>[
       'عربی',
@@ -183,6 +190,7 @@ abstract final class LanguageNames {
       'سواحلی',
       'ہاؤسا',
       'افریکانز',
+      'فارسی',
     ],
     'de': <String>[
       'Arabisch',
@@ -203,6 +211,7 @@ abstract final class LanguageNames {
       'Suaheli',
       'Hausa',
       'Afrikaans',
+      'Persisch',
     ],
     'pt': <String>[
       'Árabe',
@@ -223,6 +232,7 @@ abstract final class LanguageNames {
       'Suaíli',
       'Hauçá',
       'Africâner',
+      'Persa',
     ],
     'it': <String>[
       'Arabo',
@@ -243,6 +253,7 @@ abstract final class LanguageNames {
       'Swahili',
       'Hausa',
       'Afrikaans',
+      'Persiano',
     ],
     'nl': <String>[
       'Arabisch',
@@ -263,6 +274,7 @@ abstract final class LanguageNames {
       'Swahili',
       'Hausa',
       'Afrikaans',
+      'Perzisch',
     ],
     'bs': <String>[
       'Arapski',
@@ -283,6 +295,7 @@ abstract final class LanguageNames {
       'Svahili',
       'Hausa',
       'Afrikans',
+      'Perzijski',
     ],
     'sq': <String>[
       'Arabisht',
@@ -303,6 +316,7 @@ abstract final class LanguageNames {
       'Suahilisht',
       'Hausisht',
       'Afrikanisht',
+      'Persisht',
     ],
     'ru': <String>[
       'Арабский',
@@ -323,6 +337,7 @@ abstract final class LanguageNames {
       'Суахили',
       'Хауса',
       'Африкаанс',
+      'Персидский',
     ],
     'sw': <String>[
       'Kiarabu',
@@ -343,6 +358,7 @@ abstract final class LanguageNames {
       'Kiswahili',
       'Kihausa',
       'Kiafrikana',
+      'Kiajemi',
     ],
     'ha': <String>[
       'Larabci',
@@ -363,6 +379,7 @@ abstract final class LanguageNames {
       'Harshen Swahili',
       'Hausa',
       'Harshen Afirkanci',
+      'Farisanci',
     ],
     'af': <String>[
       'Arabies',
@@ -383,6 +400,28 @@ abstract final class LanguageNames {
       'Swahili',
       'Hausa',
       'Afrikaans',
+      'Persies',
+    ],
+    'fa': <String>[
+      'عربی',
+      'انگلیسی',
+      'فرانسوی',
+      'اندونزیایی',
+      'اسپانیایی',
+      'ترکی',
+      'مالایی',
+      'اردو',
+      'آلمانی',
+      'پرتغالی',
+      'ایتالیایی',
+      'هلندی',
+      'بوسنیایی',
+      'آلبانیایی',
+      'روسی',
+      'سواحیلی',
+      'هوسا',
+      'آفریکانس',
+      'فارسی',
     ],
   };
 }
