@@ -1423,5 +1423,5 @@
   "reminderNotifBody": "Bugün henüz bir şey kaydetmediniz. Birkaç saniyede ekleyin.",
   "reminderPermissionDenied": "SmartBudget bildirimleri kapalı. Telefonun ayarlarından açın.",
   "dateFieldHint": "yyyy/aa/gg",
-  "dateInvalid": "Geçerli bir tarihi YYYY/AA/GG biçiminde girin, ör. 2026/10/25."
+  "dateInvalid": "Geçersiz tarih. Ör. 2026/10/25"
 }

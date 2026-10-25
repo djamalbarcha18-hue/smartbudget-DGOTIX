@@ -1623,5 +1623,5 @@
   "reminderNotifBody": "لم تسجّل شيئاً اليوم بعد. أضفه في ثوانٍ.",
   "reminderPermissionDenied": "الإشعارات متوقفة لـ SmartBudget. فعّلها من إعدادات الهاتف.",
   "dateFieldHint": "yyyy/mm/dd",
-  "dateInvalid": "أدخل تاريخاً صحيحاً بصيغة سنة/شهر/يوم، مثل 2026/10/25."
+  "dateInvalid": "تاريخ غير صحيح، مثل 2026/10/25"
 }

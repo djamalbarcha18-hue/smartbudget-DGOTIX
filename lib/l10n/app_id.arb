@@ -1423,5 +1423,5 @@
   "reminderNotifBody": "Belum ada catatan hari ini. Tambahkan dalam hitungan detik.",
   "reminderPermissionDenied": "Notifikasi SmartBudget dimatikan. Aktifkan di pengaturan ponsel.",
   "dateFieldHint": "tttt/bb/hh",
-  "dateInvalid": "Masukkan tanggal yang benar dengan format TTTT/BB/HH, misalnya 2026/10/25."
+  "dateInvalid": "Tanggal salah, mis. 2026/10/25"
 }

@@ -1423,5 +1423,5 @@
   "reminderNotifBody": "Belum ada rekod hari ini. Tambah dalam beberapa saat.",
   "reminderPermissionDenied": "Pemberitahuan SmartBudget dimatikan. Hidupkan dalam tetapan telefon.",
   "dateFieldHint": "tttt/bb/hh",
-  "dateInvalid": "Masukkan tarikh yang sah dalam format TTTT/BB/HH, cth. 2026/10/25."
+  "dateInvalid": "Tarikh tidak sah. Cth. 2026/10/25"
 }

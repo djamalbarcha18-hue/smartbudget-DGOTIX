@@ -1423,5 +1423,5 @@
   "reminderNotifBody": "Hoy aún no has anotado nada. Añádelo en unos segundos.",
   "reminderPermissionDenied": "Las notificaciones de SmartBudget están desactivadas. Actívalas en los ajustes del teléfono.",
   "dateFieldHint": "aaaa/mm/dd",
-  "dateInvalid": "Introduce una fecha válida con el formato AAAA/MM/DD, p. ej. 2026/10/25."
+  "dateInvalid": "Fecha no válida. Ej.: 2026/10/25"
 }

@@ -1423,5 +1423,5 @@
   "reminderNotifBody": "Oggi non hai ancora registrato nulla. Aggiungilo in pochi secondi.",
   "reminderPermissionDenied": "Le notifiche di SmartBudget sono disattivate. Attivale nelle impostazioni del telefono.",
   "dateFieldHint": "aaaa/mm/gg",
-  "dateInvalid": "Inserisci una data valida nel formato AAAA/MM/GG, ad es. 2026/10/25."
+  "dateInvalid": "Data non valida. Es. 2026/10/25"
 }

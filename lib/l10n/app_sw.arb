@@ -1423,5 +1423,5 @@
   "reminderNotifBody": "Bado hujarekodi chochote leo. Ongeza kwa sekunde chache.",
   "reminderPermissionDenied": "Arifa za SmartBudget zimezimwa. Ziwashe kwenye mipangilio ya simu.",
   "dateFieldHint": "yyyy/mm/dd",
-  "dateInvalid": "Weka tarehe sahihi kwa mpangilio mwaka/mwezi/siku, mfano 2026/10/25."
+  "dateInvalid": "Tarehe si sahihi, mfano 2026/10/25"
 }

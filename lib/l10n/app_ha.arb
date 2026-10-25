@@ -1423,5 +1423,5 @@
   "reminderNotifBody": "Ba a rubuta komai ba yau tukuna. Ƙara shi cikin daƙiƙu.",
   "reminderPermissionDenied": "An kashe sanarwar SmartBudget. Kunna ta a saitunan wayarka.",
   "dateFieldHint": "yyyy/mm/dd",
-  "dateInvalid": "Shigar da kwanan wata mai inganci a tsarin shekara/wata/rana, misali 2026/10/25."
+  "dateInvalid": "Kwanan wata ba daidai ba: 2026/10/25"
 }
