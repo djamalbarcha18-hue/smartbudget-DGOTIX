@@ -23,6 +23,7 @@ class Transaction {
     this.notes,
     this.walletId,
     this.tripId,
+    this.splitId,
     this.baseAmount,
     required this.createdAt,
   });
@@ -41,6 +42,11 @@ class Transaction {
 
   /// The trip it was spent on, if any (SmartTrip).
   final String? tripId;
+
+  /// One receipt split across categories (food, cleaning, a gift): its
+  /// lines are separate transactions sharing this id, so every category's
+  /// total and budget stays right.
+  final String? splitId;
 
   /// For an amount in a foreign currency: its value in the base currency at
   /// the rate of the day it was recorded, so reports can include it without
@@ -68,6 +74,7 @@ class Transaction {
       notes: notes,
       walletId: walletId,
       tripId: tripId,
+      splitId: splitId,
       createdAt: createdAt,
     );
   }
@@ -99,6 +106,7 @@ class Transaction {
       notes: notes ?? this.notes,
       walletId: clearWallet ? null : walletId ?? this.walletId,
       tripId: clearTrip ? null : tripId ?? this.tripId,
+      splitId: splitId,
       baseAmount: clearBase ? null : baseAmount ?? this.baseAmount,
       createdAt: createdAt,
     );
@@ -116,6 +124,7 @@ class Transaction {
         'notes': notes,
         if (walletId != null) 'walletId': walletId,
         if (tripId != null) 'tripId': tripId,
+        if (splitId != null) 'splitId': splitId,
         if (baseAmount != null) 'baseMinor': baseAmount!.minorUnits,
         if (baseAmount != null) 'baseCurrency': baseAmount!.currencyCode,
         'createdAt': createdAt.toIso8601String(),
@@ -140,6 +149,7 @@ class Transaction {
       walletId: json['walletId'] as String?,
       // Absent in records made before trips: they simply have none.
       tripId: json['tripId'] as String?,
+      splitId: json['splitId'] as String?,
       baseAmount: json['baseMinor'] == null
           ? null
           : Money((json['baseMinor'] as num).toInt(),

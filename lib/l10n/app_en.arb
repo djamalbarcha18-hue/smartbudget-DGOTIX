@@ -1711,5 +1711,13 @@
   "importNothing": "Nothing new to add: everything in this file is already recorded.",
   "importMore": "… and {count} more",
   "@importMore": {"placeholders": {"count": {"type": "int"}}},
-  "importOnDevice": "The file is read on this device only. Nothing is uploaded."
+  "importOnDevice": "The file is read on this device only. Nothing is uploaded.",
+  "splitAction": "Split across categories",
+  "splitRest": "Left for the category above",
+  "splitTooMuch": "The other categories add up to the whole amount or more.",
+  "splitAddLine": "Add a category",
+  "splitCancel": "Don't split",
+  "splitPartOf": "Part of a receipt split across {count} categories",
+  "@splitPartOf": {"placeholders": {"count": {"type": "int"}}},
+  "splitBadge": "Part of a split receipt"
 }

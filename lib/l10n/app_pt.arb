@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{Adicionar 1 transação} other{Adicionar {count} transações}}",
   "importNothing": "Nada de novo: tudo neste ficheiro já está registado.",
   "importMore": "… e mais {count}",
-  "importOnDevice": "O ficheiro é lido apenas neste dispositivo. Nada é enviado."
+  "importOnDevice": "O ficheiro é lido apenas neste dispositivo. Nada é enviado.",
+  "splitAction": "Dividir por várias categorias",
+  "splitRest": "O que sobra para a categoria acima",
+  "splitTooMuch": "As outras categorias somam o valor total ou mais.",
+  "splitAddLine": "Adicionar uma categoria",
+  "splitCancel": "Não dividir",
+  "splitPartOf": "Parte de um recibo dividido por {count} categorias",
+  "splitBadge": "Parte de um recibo dividido"
 }

@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{Dodaj 1 transakciju} other{Dodaj transakcije: {count}}}",
   "importNothing": "Ništa novo: sve iz ove datoteke je već evidentirano.",
   "importMore": "… i još {count}",
-  "importOnDevice": "Datoteka se čita samo na ovom uređaju. Ništa se ne šalje."
+  "importOnDevice": "Datoteka se čita samo na ovom uređaju. Ništa se ne šalje.",
+  "splitAction": "Podijeli na više kategorija",
+  "splitRest": "Ostatak za kategoriju iznad",
+  "splitTooMuch": "Ostale kategorije dostižu ili premašuju cijeli iznos.",
+  "splitAddLine": "Dodaj kategoriju",
+  "splitCancel": "Ne dijeli",
+  "splitPartOf": "Dio računa podijeljenog na kategorije: {count}",
+  "splitBadge": "Dio podijeljenog računa"
 }

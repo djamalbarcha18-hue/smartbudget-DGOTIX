@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{Ajouter 1 transaction} other{Ajouter {count} transactions}}",
   "importNothing": "Rien de nouveau : tout ce fichier est déjà enregistré.",
   "importMore": "… et {count} de plus",
-  "importOnDevice": "Le fichier est lu sur cet appareil uniquement. Rien n'est envoyé."
+  "importOnDevice": "Le fichier est lu sur cet appareil uniquement. Rien n'est envoyé.",
+  "splitAction": "Répartir sur plusieurs catégories",
+  "splitRest": "Reste pour la catégorie ci-dessus",
+  "splitTooMuch": "Les autres catégories atteignent ou dépassent le montant total.",
+  "splitAddLine": "Ajouter une catégorie",
+  "splitCancel": "Ne pas répartir",
+  "splitPartOf": "Partie d'un ticket réparti sur {count} catégories",
+  "splitBadge": "Partie d'un ticket réparti"
 }

@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{1 Buchung hinzufügen} other{{count} Buchungen hinzufügen}}",
   "importNothing": "Nichts Neues: alles in dieser Datei ist bereits erfasst.",
   "importMore": "… und {count} weitere",
-  "importOnDevice": "Die Datei wird nur auf diesem Gerät gelesen. Nichts wird hochgeladen."
+  "importOnDevice": "Die Datei wird nur auf diesem Gerät gelesen. Nichts wird hochgeladen.",
+  "splitAction": "Auf mehrere Kategorien aufteilen",
+  "splitRest": "Rest für die Kategorie oben",
+  "splitTooMuch": "Die anderen Kategorien ergeben den ganzen Betrag oder mehr.",
+  "splitAddLine": "Kategorie hinzufügen",
+  "splitCancel": "Nicht aufteilen",
+  "splitPartOf": "Teil eines Belegs, aufgeteilt auf {count} Kategorien",
+  "splitBadge": "Teil eines aufgeteilten Belegs"
 }

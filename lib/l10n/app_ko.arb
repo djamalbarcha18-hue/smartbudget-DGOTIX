@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{거래 1건 추가} other{거래 {count}건 추가}}",
   "importNothing": "새로운 거래가 없어요. 이 파일의 내용은 모두 기록되어 있어요.",
   "importMore": "… 외 {count}건",
-  "importOnDevice": "파일은 이 기기에서만 읽고, 아무것도 업로드하지 않아요."
+  "importOnDevice": "파일은 이 기기에서만 읽고, 아무것도 업로드하지 않아요.",
+  "splitAction": "여러 카테고리로 나누기",
+  "splitRest": "나머지는 위 카테고리로",
+  "splitTooMuch": "다른 카테고리의 합계가 총액과 같거나 더 커요.",
+  "splitAddLine": "카테고리 추가",
+  "splitCancel": "나누지 않기",
+  "splitPartOf": "{count}개 카테고리로 나눈 영수증의 일부",
+  "splitBadge": "나눈 영수증의 일부"
 }

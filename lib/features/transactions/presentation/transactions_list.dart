@@ -231,6 +231,14 @@ class TransactionTile extends ConsumerWidget {
                     const SizedBox(height: 2),
                     Row(
                       children: <Widget>[
+                        if (txn.splitId != null) ...<Widget>[
+                          Tooltip(
+                            message: l.splitBadge,
+                            child: Icon(Icons.call_split_rounded,
+                                size: 12, color: c.textFaint),
+                          ),
+                          const SizedBox(width: 4),
+                        ],
                         if (RecurrenceEngine.isRecurring(txn)) ...<Widget>[
                           Tooltip(
                             message: l.recurringBadge,

@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{Aggiungi 1 transazione} other{Aggiungi {count} transazioni}}",
   "importNothing": "Niente di nuovo: tutto il file è già registrato.",
   "importMore": "… e altre {count}",
-  "importOnDevice": "Il file viene letto solo su questo dispositivo. Non viene caricato nulla."
+  "importOnDevice": "Il file viene letto solo su questo dispositivo. Non viene caricato nulla.",
+  "splitAction": "Dividi su più categorie",
+  "splitRest": "Resta per la categoria sopra",
+  "splitTooMuch": "Le altre categorie arrivano all'importo totale o lo superano.",
+  "splitAddLine": "Aggiungi una categoria",
+  "splitCancel": "Non dividere",
+  "splitPartOf": "Parte di uno scontrino diviso su {count} categorie",
+  "splitBadge": "Parte di uno scontrino diviso"
 }

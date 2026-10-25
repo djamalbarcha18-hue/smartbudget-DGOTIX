@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{Shto 1 transaksion} other{Shto {count} transaksione}}",
   "importNothing": "Asgjë e re: gjithçka në këtë skedar është regjistruar.",
   "importMore": "… dhe {count} të tjera",
-  "importOnDevice": "Skedari lexohet vetëm në këtë pajisje. Asgjë nuk ngarkohet."
+  "importOnDevice": "Skedari lexohet vetëm në këtë pajisje. Asgjë nuk ngarkohet.",
+  "splitAction": "Ndaje në disa kategori",
+  "splitRest": "Mbetja për kategorinë më sipër",
+  "splitTooMuch": "Kategoritë e tjera arrijnë ose kalojnë shumën e plotë.",
+  "splitAddLine": "Shto një kategori",
+  "splitCancel": "Mos e ndaj",
+  "splitPartOf": "Pjesë e një fature të ndarë në {count} kategori",
+  "splitBadge": "Pjesë e një fature të ndarë"
 }

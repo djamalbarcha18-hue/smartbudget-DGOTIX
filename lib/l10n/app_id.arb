@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{Tambahkan 1 transaksi} other{Tambahkan {count} transaksi}}",
   "importNothing": "Tidak ada yang baru: semua isi file ini sudah tercatat.",
   "importMore": "… dan {count} lainnya",
-  "importOnDevice": "File hanya dibaca di perangkat ini. Tidak ada yang diunggah."
+  "importOnDevice": "File hanya dibaca di perangkat ini. Tidak ada yang diunggah.",
+  "splitAction": "Bagi ke beberapa kategori",
+  "splitRest": "Sisa untuk kategori di atas",
+  "splitTooMuch": "Kategori lain sudah mencapai atau melebihi jumlah total.",
+  "splitAddLine": "Tambah kategori",
+  "splitCancel": "Jangan dibagi",
+  "splitPartOf": "Bagian dari struk yang dibagi ke {count} kategori",
+  "splitBadge": "Bagian dari struk yang dibagi"
 }

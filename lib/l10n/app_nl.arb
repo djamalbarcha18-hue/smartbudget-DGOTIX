@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{1 transactie toevoegen} other{{count} transacties toevoegen}}",
   "importNothing": "Niets nieuws: alles in dit bestand is al geregistreerd.",
   "importMore": "… en nog {count}",
-  "importOnDevice": "Het bestand wordt alleen op dit apparaat gelezen. Er wordt niets geüpload."
+  "importOnDevice": "Het bestand wordt alleen op dit apparaat gelezen. Er wordt niets geüpload.",
+  "splitAction": "Verdelen over categorieën",
+  "splitRest": "Rest voor de categorie hierboven",
+  "splitTooMuch": "De andere categorieën komen op het hele bedrag of meer.",
+  "splitAddLine": "Categorie toevoegen",
+  "splitCancel": "Niet verdelen",
+  "splitPartOf": "Deel van een bon verdeeld over {count} categorieën",
+  "splitBadge": "Deel van een verdeelde bon"
 }

@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{1 işlem ekle} other{{count} işlem ekle}}",
   "importNothing": "Yeni bir şey yok: bu dosyadaki her şey zaten kayıtlı.",
   "importMore": "… ve {count} tane daha",
-  "importOnDevice": "Dosya yalnızca bu cihazda okunur. Hiçbir şey yüklenmez."
+  "importOnDevice": "Dosya yalnızca bu cihazda okunur. Hiçbir şey yüklenmez.",
+  "splitAction": "Birkaç kategoriye böl",
+  "splitRest": "Yukarıdaki kategoriye kalan",
+  "splitTooMuch": "Diğer kategoriler toplam tutara ulaşıyor veya aşıyor.",
+  "splitAddLine": "Kategori ekle",
+  "splitCancel": "Bölme",
+  "splitPartOf": "{count} kategoriye bölünmüş bir fişin parçası",
+  "splitBadge": "Bölünmüş bir fişin parçası"
 }

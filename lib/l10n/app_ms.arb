@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{Tambah 1 transaksi} other{Tambah {count} transaksi}}",
   "importNothing": "Tiada yang baharu: semua dalam fail ini sudah direkod.",
   "importMore": "… dan {count} lagi",
-  "importOnDevice": "Fail dibaca pada peranti ini sahaja. Tiada apa-apa dimuat naik."
+  "importOnDevice": "Fail dibaca pada peranti ini sahaja. Tiada apa-apa dimuat naik.",
+  "splitAction": "Bahagikan kepada beberapa kategori",
+  "splitRest": "Baki untuk kategori di atas",
+  "splitTooMuch": "Kategori lain sudah mencapai atau melebihi jumlah penuh.",
+  "splitAddLine": "Tambah kategori",
+  "splitCancel": "Jangan bahagikan",
+  "splitPartOf": "Sebahagian daripada resit yang dibahagikan kepada {count} kategori",
+  "splitBadge": "Sebahagian daripada resit yang dibahagikan"
 }

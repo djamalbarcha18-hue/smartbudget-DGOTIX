@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{Ƙara ma'amala 1} other{Ƙara ma'amaloli {count}}}",
   "importNothing": "Babu sabon abu: komai a wannan fayil an riga an rubuta shi.",
   "importMore": "… da ƙarin {count}",
-  "importOnDevice": "Ana karanta fayil ɗin a wannan na'urar kaɗai. Ba a ɗora komai ba."
+  "importOnDevice": "Ana karanta fayil ɗin a wannan na'urar kaɗai. Ba a ɗora komai ba.",
+  "splitAction": "Raba zuwa rukunoni da yawa",
+  "splitRest": "Ragowar ta rukunin da ke sama",
+  "splitTooMuch": "Sauran rukunonin sun kai ko sun wuce adadin gaba ɗaya.",
+  "splitAddLine": "Ƙara rukuni",
+  "splitCancel": "Kada a raba",
+  "splitPartOf": "Wani ɓangare na rasit da aka raba zuwa rukunoni {count}",
+  "splitBadge": "Wani ɓangare na rasit da aka raba"
 }

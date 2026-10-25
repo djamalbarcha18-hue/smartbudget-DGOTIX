@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{Ongeza muamala 1} other{Ongeza miamala {count}}}",
   "importNothing": "Hakuna jipya: kila kitu katika faili hii kimerekodiwa tayari.",
   "importMore": "… na {count} zaidi",
-  "importOnDevice": "Faili inasomwa kwenye kifaa hiki tu. Hakuna kinachopakiwa."
+  "importOnDevice": "Faili inasomwa kwenye kifaa hiki tu. Hakuna kinachopakiwa.",
+  "splitAction": "Gawanya kwenye aina kadhaa",
+  "splitRest": "Kilichobaki kwa aina iliyo juu",
+  "splitTooMuch": "Aina nyingine zinafika au kuzidi kiasi chote.",
+  "splitAddLine": "Ongeza aina",
+  "splitCancel": "Usigawanye",
+  "splitPartOf": "Sehemu ya risiti iliyogawanywa kwenye aina {count}",
+  "splitBadge": "Sehemu ya risiti iliyogawanywa"
 }

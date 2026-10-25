@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{Voeg 1 transaksie by} other{Voeg {count} transaksies by}}",
   "importNothing": "Niks nuuts nie: alles in hierdie lêer is reeds aangeteken.",
   "importMore": "… en nog {count}",
-  "importOnDevice": "Die lêer word net op hierdie toestel gelees. Niks word opgelaai nie."
+  "importOnDevice": "Die lêer word net op hierdie toestel gelees. Niks word opgelaai nie.",
+  "splitAction": "Verdeel oor kategorieë",
+  "splitRest": "Res vir die kategorie hierbo",
+  "splitTooMuch": "Die ander kategorieë tel op tot die hele bedrag of meer.",
+  "splitAddLine": "Voeg 'n kategorie by",
+  "splitCancel": "Moenie verdeel nie",
+  "splitPartOf": "Deel van 'n strokie verdeel oor {count} kategorieë",
+  "splitBadge": "Deel van 'n verdeelde strokie"
 }

@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{取引を 1 件追加} other{取引を {count} 件追加}}",
   "importNothing": "新しい取引はありません。このファイルの内容はすべて登録済みです。",
   "importMore": "… ほか {count} 件",
-  "importOnDevice": "ファイルはこの端末内でのみ読み取られ、アップロードはされません。"
+  "importOnDevice": "ファイルはこの端末内でのみ読み取られ、アップロードはされません。",
+  "splitAction": "複数のカテゴリに分ける",
+  "splitRest": "残りは上のカテゴリに",
+  "splitTooMuch": "ほかのカテゴリの合計が総額に達しているか、超えています。",
+  "splitAddLine": "カテゴリを追加",
+  "splitCancel": "分けない",
+  "splitPartOf": "{count} カテゴリに分けたレシートの一部",
+  "splitBadge": "分けたレシートの一部"
 }

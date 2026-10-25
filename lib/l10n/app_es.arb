@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{Añadir 1 movimiento} other{Añadir {count} movimientos}}",
   "importNothing": "Nada nuevo que añadir: todo este archivo ya está registrado.",
   "importMore": "… y {count} más",
-  "importOnDevice": "El archivo se lee solo en este dispositivo. No se sube nada."
+  "importOnDevice": "El archivo se lee solo en este dispositivo. No se sube nada.",
+  "splitAction": "Dividir en varias categorías",
+  "splitRest": "Lo que queda para la categoría de arriba",
+  "splitTooMuch": "Las otras categorías suman el importe total o más.",
+  "splitAddLine": "Añadir una categoría",
+  "splitCancel": "No dividir",
+  "splitPartOf": "Parte de un recibo dividido en {count} categorías",
+  "splitBadge": "Parte de un recibo dividido"
 }

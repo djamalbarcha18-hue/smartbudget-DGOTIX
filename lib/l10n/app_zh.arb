@@ -1451,5 +1451,12 @@
   "importAdd": "{count, plural, =1{添加 1 笔交易} other{添加 {count} 笔交易}}",
   "importNothing": "没有新内容：此文件中的所有交易都已记录。",
   "importMore": "… 还有 {count} 笔",
-  "importOnDevice": "文件仅在此设备上读取，不会上传任何内容。"
+  "importOnDevice": "文件仅在此设备上读取，不会上传任何内容。",
+  "splitAction": "拆分到多个类别",
+  "splitRest": "剩余计入上方类别",
+  "splitTooMuch": "其他类别的合计已达到或超过总金额。",
+  "splitAddLine": "添加类别",
+  "splitCancel": "不拆分",
+  "splitPartOf": "拆分为 {count} 个类别的小票的一部分",
+  "splitBadge": "拆分小票的一部分"
 }

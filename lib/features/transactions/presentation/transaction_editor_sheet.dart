@@ -132,6 +132,15 @@ class _TransactionEditorSheetState
   String? _tripChoice;
   bool _tripTouched = false;
 
+  /// A receipt split across categories: the other categories and their
+  /// amounts. The first category ([_category]) takes what's left of the
+  /// total. Null when not split.
+  List<_SplitLine>? _split;
+
+  /// A new expense, once only, can be split.
+  bool get _canSplit =>
+      widget.existing == null && !_isIncome && _repeat == null;
+
   bool get _isIncome => widget.type == TransactionType.income;
 
   /// The linked trip's kind (its items: flights and stay, or a package).
@@ -176,6 +185,36 @@ class _TransactionEditorSheetState
       _tripChoice = p!.tripId;
     }
     _initialWallet = _walletId;
+    // The rest of a split follows the total.
+    _amount.addListener(_splitChanged);
+  }
+
+  void _splitChanged() {
+    if (_split != null && mounted) setState(() {});
+  }
+
+  void _addSplitLine() {
+    final _SplitLine line = _SplitLine()..amount.addListener(_splitChanged);
+    setState(() => (_split ??= <_SplitLine>[]).add(line));
+  }
+
+  void _removeSplitLine(_SplitLine line) {
+    setState(() {
+      _split!.remove(line);
+      if (_split!.isEmpty) _split = null;
+    });
+    line.amount.dispose();
+  }
+
+  /// What the first category keeps: the total less the other lines.
+  Money _splitRest(String currency) {
+    final Money total =
+        Money.fromDouble(AmountInput.parse(_amount.text) ?? 0, currency);
+    return (_split ?? const <_SplitLine>[]).fold<Money>(
+        total,
+        (Money m, _SplitLine line) => m -
+            Money.fromDouble(AmountInput.parse(line.amount.text) ?? 0,
+                currency));
   }
 
   /// The wallet's currency; an edited transaction keeps its own currency
@@ -191,6 +230,9 @@ class _TransactionEditorSheetState
     _amount.dispose();
     _description.dispose();
     _notes.dispose();
+    for (final _SplitLine line in _split ?? const <_SplitLine>[]) {
+      line.amount.dispose();
+    }
     super.dispose();
   }
 
@@ -208,8 +250,14 @@ class _TransactionEditorSheetState
     if (!_formKey.currentState!.validate()) return;
     final double amount =
         AmountInput.parse(_amount.text) ?? 0;
+    final List<_SplitLine>? split = _split;
+    if (split != null && _splitRest(_currency()).minorUnits <= 0) return;
 
     setState(() => _saving = true);
+    if (split != null) {
+      await _saveSplit(split);
+      return;
+    }
     final String currency = _currency();
     final String base = ref.read(baseCurrencyProvider);
     final Money money = Money.fromDouble(amount, currency);
@@ -246,6 +294,51 @@ class _TransactionEditorSheetState
       await actions.add(txn);
     } else {
       await actions.update(txn);
+    }
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  /// Saves a split receipt as one expense per category, sharing a
+  /// [Transaction.splitId], the day, wallet, description and notes.
+  Future<void> _saveSplit(List<_SplitLine> split) async {
+    final String currency = _currency();
+    final String base = ref.read(baseCurrencyProvider);
+    final Map<String, double> rates = ref.read(ratesProvider);
+    final String group = TransactionActions.newId();
+    final String? tripId =
+        _tripId(ref.read(tripsProvider).valueOrNull ?? const <Trip>[]);
+    final List<(String, Money)> parts = <(String, Money)>[
+      (
+        _category ?? Catalog.categoriesFor(widget.type).last,
+        _splitRest(currency)
+      ),
+      for (final _SplitLine line in split)
+        (
+          line.category!,
+          Money.fromDouble(AmountInput.parse(line.amount.text) ?? 0, currency)
+        ),
+    ];
+    final TransactionActions actions = ref.read(transactionActionsProvider);
+    final DateTime now = AppClock.now();
+    for (int i = 0; i < parts.length; i++) {
+      final (String category, Money money) = parts[i];
+      await actions.add(Transaction(
+        id: '$group-$i',
+        date: _date,
+        type: widget.type,
+        category: category,
+        amount: money,
+        baseAmount: WalletMath.baseValue(money, base, rates),
+        description: _description.text.trim(),
+        paymentMethod: _paymentMethod,
+        notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),
+        walletId: _walletId == null || _walletId == Wallet.generalId
+            ? null
+            : _walletId,
+        tripId: tripId,
+        splitId: group,
+        createdAt: now,
+      ));
     }
     if (mounted) Navigator.of(context).pop();
   }
@@ -310,6 +403,31 @@ class _TransactionEditorSheetState
                       ),
                     ],
                   ),
+                  if (widget.existing?.splitId != null) ...<Widget>[
+                    const SizedBox(height: DsSpacing.sm),
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.call_split_rounded,
+                            size: 16, color: c.textMuted),
+                        const SizedBox(width: DsSpacing.xs),
+                        Expanded(
+                          child: Text(
+                            l.splitPartOf((ref
+                                        .watch(transactionsProvider)
+                                        .valueOrNull ??
+                                    const <Transaction>[])
+                                .where((Transaction t) =>
+                                    t.splitId == widget.existing!.splitId)
+                                .length),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(color: c.textMuted),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                   const SizedBox(height: DsSpacing.lg),
                   DsTextField(
                     label: l.fieldAmount,
@@ -376,12 +494,37 @@ class _TransactionEditorSheetState
                     validator: (String? v) =>
                         v == null ? l.selectCategory : null,
                   ),
+                  if (_split != null)
+                    _SplitSection(
+                      lines: _split!,
+                      rest: _splitRest(cur.code),
+                      categories: ref.watch(categoriesForProvider(widget.type)),
+                      onAdd: _addSplitLine,
+                      onRemove: _removeSplitLine,
+                      onCategory: (_SplitLine line, String? v) =>
+                          setState(() => line.category = v),
+                      onCancel: () {
+                        for (final _SplitLine line in _split!) {
+                          line.amount.dispose();
+                        }
+                        setState(() => _split = null);
+                      },
+                    )
+                  else if (_canSplit)
+                    Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: TextButton.icon(
+                        onPressed: _addSplitLine,
+                        icon: const Icon(Icons.call_split_rounded, size: 18),
+                        label: Text(l.splitAction),
+                      ),
+                    ),
                   const SizedBox(height: DsSpacing.lg),
                   _DateField(label: l.fieldDate, date: _date, onTap: _pickDate),
                   _DateShortcuts(
                       date: _date,
                       onPick: (DateTime d) => setState(() => _date = d)),
-                  if (widget.existing == null) ...<Widget>[
+                  if (widget.existing == null && _split == null) ...<Widget>[
                     const SizedBox(height: DsSpacing.lg),
                     _RepeatDropdown(
                       value: _repeat,
@@ -645,7 +788,7 @@ class _RepeatDropdown extends StatelessWidget {
 
 class _CategoryDropdown extends StatelessWidget {
   const _CategoryDropdown({
-    required this.label,
+    this.label,
     required this.hint,
     required this.value,
     required this.items,
@@ -653,7 +796,8 @@ class _CategoryDropdown extends StatelessWidget {
     this.validator,
   });
 
-  final String label;
+  /// Shown above; none inside a split line.
+  final String? label;
   final String hint;
   final String? value;
   final List<String> items;
@@ -668,8 +812,10 @@ class _CategoryDropdown extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(label, style: t.labelMedium?.copyWith(color: c.textMuted)),
-        const SizedBox(height: 6),
+        if (label != null) ...<Widget>[
+          Text(label!, style: t.labelMedium?.copyWith(color: c.textMuted)),
+          const SizedBox(height: 6),
+        ],
         DropdownButtonFormField<String>(
           // Follows a value set from outside (a trip item).
           key: ValueKey<String?>(value),
@@ -867,6 +1013,136 @@ class _TripItemChips extends StatelessWidget {
                     color: selected == i ? c.onBrand : c.textPrimary),
                 onSelected: (_) => onPick(i),
               ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// One more category of a split receipt and its amount.
+class _SplitLine {
+  String? category;
+  final TextEditingController amount = TextEditingController();
+}
+
+/// The other categories of a split receipt, what's left for the first
+/// one, and adding or removing a category.
+class _SplitSection extends StatelessWidget {
+  const _SplitSection({
+    required this.lines,
+    required this.rest,
+    required this.categories,
+    required this.onAdd,
+    required this.onRemove,
+    required this.onCategory,
+    required this.onCancel,
+  });
+
+  final List<_SplitLine> lines;
+  final Money rest;
+  final List<String> categories;
+  final VoidCallback onAdd;
+  final ValueChanged<_SplitLine> onRemove;
+  final void Function(_SplitLine line, String? category) onCategory;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final AppLocalizations l = AppLocalizations.of(context);
+    final bool over = rest.minorUnits <= 0;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        const SizedBox(height: DsSpacing.xs),
+        // What the first category keeps.
+        Row(
+          children: <Widget>[
+            Icon(Icons.subdirectory_arrow_right_rounded,
+                size: 16, color: over ? c.expense : c.textMuted),
+            const SizedBox(width: DsSpacing.xs),
+            Expanded(
+              child: Text(l.splitRest,
+                  style: t.labelMedium?.copyWith(color: c.textMuted)),
+            ),
+            Text(MoneyFormatter.format(rest),
+                style: t.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: over ? c.expense : c.textPrimary)),
+          ],
+        ),
+        if (over)
+          Padding(
+            padding: const EdgeInsets.only(top: DsSpacing.xs),
+            child: Text(l.splitTooMuch,
+                style: t.labelSmall?.copyWith(color: c.expense)),
+          ),
+        const SizedBox(height: DsSpacing.md),
+        for (final _SplitLine line in lines)
+          Padding(
+            padding: const EdgeInsets.only(bottom: DsSpacing.sm),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  flex: 3,
+                  child: _CategoryDropdown(
+                    hint: l.selectCategory,
+                    value: line.category,
+                    items: categories,
+                    onChanged: (String? v) => onCategory(line, v),
+                    validator: (String? v) =>
+                        v == null ? l.selectCategory : null,
+                  ),
+                ),
+                const SizedBox(width: DsSpacing.sm),
+                Expanded(
+                  flex: 2,
+                  child: TextFormField(
+                    controller: line.amount,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    style: t.bodyMedium?.copyWith(color: c.textPrimary),
+                    decoration: InputDecoration(
+                      hintText: l.fieldAmount,
+                      filled: true,
+                      fillColor: c.surfaceMuted,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: DsRadius.brMd,
+                        borderSide: BorderSide(color: c.border),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: DsRadius.brMd,
+                        borderSide: BorderSide(color: c.brand),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 14),
+                    ),
+                    validator: (String? v) =>
+                        (AmountInput.parse(v ?? '') ?? 0) > 0
+                            ? null
+                            : l.valAmountInvalid,
+                  ),
+                ),
+                IconButton(
+                  tooltip: l.delete,
+                  onPressed: () => onRemove(line),
+                  icon: Icon(Icons.close_rounded, color: c.textMuted),
+                ),
+              ],
+            ),
+          ),
+        Wrap(
+          spacing: DsSpacing.sm,
+          children: <Widget>[
+            TextButton.icon(
+              onPressed: onAdd,
+              icon: const Icon(Icons.add_rounded, size: 18),
+              label: Text(l.splitAddLine),
+            ),
+            TextButton(onPressed: onCancel, child: Text(l.splitCancel)),
           ],
         ),
       ],
