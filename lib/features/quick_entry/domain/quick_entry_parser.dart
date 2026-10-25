@@ -527,6 +527,12 @@ abstract final class QuickEntryParser {
     ('روپیہ', 'PKR'),
     ('روپیے', 'PKR'),
     ('rs', 'PKR'),
+    ('ksh', 'KES'),
+    ('cedis', 'GHS'),
+    ('cfa', 'XOF'),
+    ('fcfa', 'XOF'),
+    ('fcfa', 'XAF'),
+    ('naira', 'NGN'),
     // Russian names, in the forms that follow a number.
     ('доллар', 'USD'),
     ('доллара', 'USD'),

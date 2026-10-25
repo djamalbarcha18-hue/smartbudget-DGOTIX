@@ -48,7 +48,7 @@ void main() {
     // A country the app has no currency for: the language's.
     expect(
         CurrencyDefaults.suggest(AppLang.en,
-            country: 'NZ', deviceLanguage: 'en'),
+            country: 'IS', deviceLanguage: 'en'),
         'USD');
   });
 
@@ -96,5 +96,26 @@ void main() {
     });
     expect(c.read(baseCurrencyProvider), 'USD');
     expect(c.read(baseCurrencyProvider.notifier).isChosen, isTrue);
+  });
+
+  test('African, New Zealand and Belarusian phones get their own currency', () {
+    for (final (String country, String code) in <(String, String)>[
+      ('ng', 'NGN'),
+      ('ke', 'KES'),
+      ('gh', 'GHS'),
+      ('sn', 'XOF'),
+      ('ci', 'XOF'),
+      ('cm', 'XAF'),
+      ('ga', 'XAF'),
+      ('nz', 'NZD'),
+      ('by', 'BYN'),
+    ]) {
+      expect(CurrencyDefaults.forCountry(country), code, reason: country);
+    }
+    // A French-speaking phone in Senegal counts in CFA francs, not euros.
+    expect(
+        CurrencyDefaults.suggest(AppLang.fr,
+            country: 'SN', deviceLanguage: 'fr'),
+        'XOF');
   });
 }

@@ -12,6 +12,14 @@ abstract final class CurrencyDefaults {
     'lt', 'lu', 'lv', 'mt', 'nl', 'pt', 'si', 'sk', 'xk', 'me',
   };
 
+  /// The West African (XOF) and Central African (XAF) CFA franc countries.
+  static const Set<String> _westAfricanCfa = <String>{
+    'bj', 'bf', 'ci', 'gw', 'ml', 'ne', 'sn', 'tg',
+  };
+  static const Set<String> _centralAfricanCfa = <String>{
+    'cm', 'cf', 'td', 'cg', 'gq', 'ga',
+  };
+
   /// With no usable region: the language's largest market, or the dollar
   /// where no single country stands for the language.
   static const Map<AppLang, String> _byLanguage = <AppLang, String>{
@@ -38,6 +46,8 @@ abstract final class CurrencyDefaults {
     final String c = (country ?? '').toLowerCase();
     if (c.isEmpty) return null;
     if (_euroArea.contains(c)) return 'EUR';
+    if (_westAfricanCfa.contains(c)) return 'XOF';
+    if (_centralAfricanCfa.contains(c)) return 'XAF';
     for (final Currency cur in Currencies.all) {
       if (cur.country == c) return cur.code;
     }

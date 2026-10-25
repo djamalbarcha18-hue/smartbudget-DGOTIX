@@ -8,7 +8,9 @@ import 'package:flutter/foundation.dart';
 /// currency is required for correct money math.
 ///
 /// `country` is the ISO 3166-1 alpha-2 code (lowercase) used to resolve the
-/// bundled flag asset for quick visual switching.
+/// bundled flag asset for quick visual switching; a currency shared by several
+/// countries uses its region instead ('eu', and 'xof' / 'xaf' for the CFA
+/// francs).
 @immutable
 class Currency {
   const Currency({
@@ -107,6 +109,16 @@ abstract final class Currencies {
     Currency(code: 'KGS', symbol: 'сом', nameEn: 'Kyrgyzstani Som', nameAr: 'السوم القيرغيزي', country: 'kg'),
     Currency(code: 'TJS', symbol: 'SM', nameEn: 'Tajikistani Somoni', nameAr: 'السوموني الطاجيكي', country: 'tj'),
     Currency(code: 'AZN', symbol: '₼', nameEn: 'Azerbaijani Manat', nameAr: 'المانات الأذربيجاني', country: 'az'),
+    Currency(code: 'BYN', symbol: 'Br', nameEn: 'Belarusian Ruble', nameAr: 'الروبل البيلاروسي', country: 'by'),
+    Currency(code: 'NZD', symbol: 'NZ\$', nameEn: 'New Zealand Dollar', nameAr: 'الدولار النيوزيلندي', country: 'nz'),
+    // Africa.
+    Currency(code: 'NGN', symbol: '₦', nameEn: 'Nigerian Naira', nameAr: 'النيرة النيجيرية', country: 'ng'),
+    Currency(code: 'KES', symbol: 'KSh', nameEn: 'Kenyan Shilling', nameAr: 'الشلن الكيني', country: 'ke'),
+    Currency(code: 'GHS', symbol: 'GH₵', nameEn: 'Ghanaian Cedi', nameAr: 'السيدي الغاني', country: 'gh'),
+    // The two CFA francs, both written FCFA (the wallets held tell them
+    // apart); ISO lists no minor units.
+    Currency(code: 'XOF', symbol: 'FCFA', nameEn: 'West African CFA Franc', nameAr: 'فرنك غرب أفريقيا', country: 'xof', decimals: 0),
+    Currency(code: 'XAF', symbol: 'FCFA', nameEn: 'Central African CFA Franc', nameAr: 'فرنك وسط أفريقيا', country: 'xaf', decimals: 0),
     Currency(code: 'MXN', symbol: 'Mex\$', nameEn: 'Mexican Peso', nameAr: 'البيزو المكسيكي', country: 'mx'),
     Currency(code: 'ARS', symbol: 'AR\$', nameEn: 'Argentine Peso', nameAr: 'البيزو الأرجنتيني', country: 'ar'),
     Currency(code: 'COP', symbol: 'COL\$', nameEn: 'Colombian Peso', nameAr: 'البيزو الكولومبي', country: 'co'),
