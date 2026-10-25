@@ -545,6 +545,8 @@ abstract final class QuickEntryParser {
     ('fcfa', 'XOF'),
     ('fcfa', 'XAF'),
     ('naira', 'NGN'),
+    ('افغانی', 'AFN'),
+    ('ntd', 'TWD'),
     ('zlotych', 'PLN'),
     ('zl', 'PLN'),
     ('korun', 'CZK'),

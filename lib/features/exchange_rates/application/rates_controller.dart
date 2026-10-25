@@ -185,6 +185,10 @@ class RatesController extends Notifier<Map<String, double>> {
     'PEN': 3.75,
     'MYR': 4.2,
     'PKR': 281.0,
+    'IRR': 42000.0, // official rate; the street rate is far higher
+    'AFN': 70.0,
+    'HKD': 7.8, // pegged to the dollar
+    'TWD': 32.0,
   };
 
   @override

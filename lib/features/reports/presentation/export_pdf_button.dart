@@ -127,6 +127,10 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
             (interLetters || _needsInter(s.income.currency.symbol)))
           pw.Font.ttf(
               await rootBundle.load('assets/google_fonts/Inter-Regular.ttf')),
+        // The rial and afghani signs are only in Noto Naskh.
+        if (lang != AppLang.ur && _needsNaskh(s.income.currency.symbol))
+          pw.Font.ttf(await rootBundle
+              .load('assets/fonts/NotoNaskhArabic-Regular.ttf')),
       ];
       final Uint8List bytes = await ReportPdfBuilder.build(data,
           base: base, bold: bold, fallback: fallback);
@@ -143,7 +147,14 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
 
   /// A currency sign with a character beyond Latin-1, Arabic and €.
   static bool _needsInter(String symbol) => symbol.runes.any((int r) =>
-      r > 0xFF && (r < 0x0600 || r > 0x06FF) && r != 0x20AC);
+      r > 0xFF &&
+      (r < 0x0600 || r > 0x06FF) &&
+      r != 0x20AC &&
+      !_needsNaskh(String.fromCharCode(r)));
+
+  /// The rial (﷼) and afghani (؋) signs, which Tajawal and Inter lack.
+  static bool _needsNaskh(String symbol) =>
+      symbol.contains('\uFDFC') || symbol.contains('\u060B');
 
   List<ReportRow> _rows(List<CategoryTotal> totals, AppLang lang) => totals
       .map((CategoryTotal t) =>

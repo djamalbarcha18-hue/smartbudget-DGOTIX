@@ -113,7 +113,11 @@ insert into currencies (code, name_ar, name_en, symbol, decimals) values
   ('CLP', 'البيزو التشيلي', 'Chilean Peso', 'CLP$', 0),
   ('PEN', 'السول البيروفي', 'Peruvian Sol', 'S/', 2),
   ('MYR', 'الرينغيت الماليزي', 'Malaysian Ringgit', 'RM', 2),
-  ('PKR', 'الروبية الباكستانية', 'Pakistani Rupee', 'Rs', 0)
+  ('PKR', 'الروبية الباكستانية', 'Pakistani Rupee', 'Rs', 0),
+  ('IRR', 'الريال الإيراني', 'Iranian Rial', '﷼', 0),
+  ('AFN', 'الأفغاني', 'Afghan Afghani', '؋', 0),
+  ('HKD', 'دولار هونغ كونغ', 'Hong Kong Dollar', 'HK$', 2),
+  ('TWD', 'الدولار التايواني', 'New Taiwan Dollar', 'NT$', 2)
 on conflict (code) do update set
   name_ar = excluded.name_ar, name_en = excluded.name_en,
   symbol = excluded.symbol, decimals = excluded.decimals;

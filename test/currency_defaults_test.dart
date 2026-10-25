@@ -115,6 +115,10 @@ void main() {
       ('pl', 'PLN'),
       ('cz', 'CZK'),
       ('hu', 'HUF'),
+      ('ir', 'IRR'),
+      ('af', 'AFN'),
+      ('hk', 'HKD'),
+      ('tw', 'TWD'),
     ]) {
       expect(CurrencyDefaults.forCountry(country), code, reason: country);
     }

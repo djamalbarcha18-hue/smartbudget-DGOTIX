@@ -20,6 +20,12 @@ abstract final class CurrencyDefaults {
     'cm', 'cf', 'td', 'cg', 'gq', 'ga',
   };
 
+  /// Currencies shown with a badge instead of a flag, by country.
+  static const Map<String, String> _badged = <String, String>{
+    'af': 'AFN',
+    'tw': 'TWD',
+  };
+
   /// With no usable region: the language's largest market, or the dollar
   /// where no single country stands for the language.
   static const Map<AppLang, String> _byLanguage = <AppLang, String>{
@@ -51,6 +57,7 @@ abstract final class CurrencyDefaults {
     if (_euroArea.contains(c)) return 'EUR';
     if (_westAfricanCfa.contains(c)) return 'XOF';
     if (_centralAfricanCfa.contains(c)) return 'XAF';
+    if (_badged[c] case final String code) return code;
     for (final Currency cur in Currencies.all) {
       if (cur.country == c) return cur.code;
     }

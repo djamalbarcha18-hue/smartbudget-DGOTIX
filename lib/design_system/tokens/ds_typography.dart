@@ -13,7 +13,9 @@ import 'package:smartbudget/core/l10n/app_lang.dart';
 /// letters Tajawal lacks (Turkish ğ ş İ).
 abstract final class DsTypography {
   /// Fallback for characters missing from the primary family (pubspec fonts).
-  static const List<String> fallback = <String>['SbInter'];
+  /// Inter for Latin, Cyrillic and most currency signs; Noto Naskh for the
+  /// rial and afghani signs (﷼ ؋).
+  static const List<String> fallback = <String>['SbInter', 'SbNaskh'];
   static const List<String> _urduFallback = <String>['SbTajawal', 'SbInter'];
 
   /// The primary family for Urdu (pubspec fonts).

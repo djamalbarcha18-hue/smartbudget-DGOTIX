@@ -134,6 +134,12 @@ abstract final class Currencies {
     Currency(code: 'MYR', symbol: 'RM', nameEn: 'Malaysian Ringgit', nameAr: 'الرينغيت الماليزي', country: 'my'),
     // Like the rupiah: ISO lists 2 minor units, but prices are whole rupees.
     Currency(code: 'PKR', symbol: 'Rs', nameEn: 'Pakistani Rupee', nameAr: 'الروبية الباكستانية', country: 'pk', decimals: 0),
+    // Prices are whole rials and afghanis. The afghani and the Taiwan dollar
+    // show a badge of their sign rather than a flag (see CurrencyDefaults).
+    Currency(code: 'IRR', symbol: '﷼', nameEn: 'Iranian Rial', nameAr: 'الريال الإيراني', country: 'ir', decimals: 0),
+    Currency(code: 'AFN', symbol: '؋', nameEn: 'Afghan Afghani', nameAr: 'الأفغاني', country: 'afn', decimals: 0),
+    Currency(code: 'HKD', symbol: 'HK\$', nameEn: 'Hong Kong Dollar', nameAr: 'دولار هونغ كونغ', country: 'hk'),
+    Currency(code: 'TWD', symbol: 'NT\$', nameEn: 'New Taiwan Dollar', nameAr: 'الدولار التايواني', country: 'twd'),
   ];
 
   static Currency byCode(String code) =>
