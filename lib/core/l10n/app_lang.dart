@@ -25,7 +25,8 @@ enum AppLang {
   sw('sw', 'Kiswahili', hidden: true),
   ha('ha', 'Hausa', hidden: true),
   af('af', 'Afrikaans', hidden: true),
-  fa('fa', 'فارسی', rtl: true, hidden: true);
+  fa('fa', 'فارسی', rtl: true, hidden: true),
+  hi('hi', 'हिन्दी', hidden: true);
 
   const AppLang(this.code, this.nativeName,
       {this.rtl = false, this.hidden = false});
@@ -70,6 +71,10 @@ enum AppLang {
   /// set in Noto Naskh Arabic instead.
   bool get naskh => this == AppLang.ur || this == AppLang.fa;
 
+  /// PDF reports are written in English: the PDF library can't join
+  /// Devanagari letters.
+  bool get pdfInEnglish => this == AppLang.hi;
+
   /// Upper case with this language's rules: Turkish i becomes İ, not I.
   String upper(String s) =>
       (this == AppLang.tr ? s.replaceAll('i', 'İ') : s).toUpperCase();
@@ -78,7 +83,7 @@ enum AppLang {
   /// back to English (names of currencies, markets…), so a new language can
   /// ship before every long text is translated.
   T pick<T>(T ar, T en,
-          {T? fr, T? id, T? es, T? tr, T? ms, T? ur, T? de, T? pt, T? it, T? nl, T? bs, T? sq, T? ru, T? sw, T? ha, T? af, T? fa}) =>
+          {T? fr, T? id, T? es, T? tr, T? ms, T? ur, T? de, T? pt, T? it, T? nl, T? bs, T? sq, T? ru, T? sw, T? ha, T? af, T? fa, T? hi}) =>
       switch (this) {
         AppLang.ar => ar,
         AppLang.en => en,
@@ -99,5 +104,6 @@ enum AppLang {
         AppLang.ha => ha ?? en,
         AppLang.af => af ?? en,
         AppLang.fa => fa ?? en,
+        AppLang.hi => hi ?? en,
       };
 }

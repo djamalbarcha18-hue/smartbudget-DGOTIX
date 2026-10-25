@@ -58,9 +58,15 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
   }
 
   Future<void> _export() async {
-    final AppLocalizations l = AppLocalizations.of(context);
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    final AppLang lang = appLangOf(context);
+    final String failed = AppLocalizations.of(context).reportPdfFailed;
+    final AppLang ui = appLangOf(context);
+    // Some scripts can't be set in the PDF (AppLang.pdfInEnglish): those
+    // reports, and only they, are written in English.
+    final AppLang lang = ui.pdfInEnglish ? AppLang.en : ui;
+    final AppLocalizations l = lang == ui
+        ? AppLocalizations.of(context)
+        : lookupAppLocalizations(const Locale('en'));
 
     setState(() => _busy = true);
     try {
@@ -139,7 +145,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
         onLayout: (PdfPageFormat format) async => bytes,
       );
     } catch (_) {
-      messenger.showSnackBar(SnackBar(content: Text(l.reportPdfFailed)));
+      messenger.showSnackBar(SnackBar(content: Text(failed)));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -177,7 +183,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
             fr: 'T$s', id: 'K$s', es: 'T$s', tr: '$s. Çeyrek', ms: 'Suku $s', ur: 'سہ ماہی $s',
             de: 'Q$s', pt: '$sº tri',
             it: 'T$s', nl: 'K$s', bs: 'K$s', sq: 'T$s', ru: '$s кв.', sw: 'Robo $s', ha: 'Kwata $s',
-            af: 'K$s', fa: 'فصل $s');
+            af: 'K$s', fa: 'فصل $s', hi: 'तिमाही $s');
       case ReportPeriod.halfYearly:
         return s == 2 ? l.half2 : l.half1;
       case ReportPeriod.yearly:

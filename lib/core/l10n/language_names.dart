@@ -9,10 +9,10 @@ abstract final class LanguageNames {
       (_names[inLang.code] ?? _names['en']!)[lang.code] ?? lang.nativeName;
 
   // Rows follow [AppLang] order: ar en fr id es tr ms ur de pt it nl bs sq
-  // ru sw ha af fa.
+  // ru sw ha af fa hi.
   static const List<String> _codes = <String>[
     'ar', 'en', 'fr', 'id', 'es', 'tr', 'ms', 'ur', 'de', 'pt', 'it', 'nl', //
-    'bs', 'sq', 'ru', 'sw', 'ha', 'af', 'fa',
+    'bs', 'sq', 'ru', 'sw', 'ha', 'af', 'fa', 'hi',
   ];
 
   static final Map<String, Map<String, String>> _names =
@@ -44,6 +44,7 @@ abstract final class LanguageNames {
       'الهوسا',
       'الأفريكانية',
       'الفارسية',
+      'الهندية',
     ],
     'en': <String>[
       'Arabic',
@@ -65,6 +66,7 @@ abstract final class LanguageNames {
       'Hausa',
       'Afrikaans',
       'Persian',
+      'Hindi',
     ],
     'fr': <String>[
       'Arabe',
@@ -86,6 +88,7 @@ abstract final class LanguageNames {
       'Haoussa',
       'Afrikaans',
       'Persan',
+      'Hindi',
     ],
     'id': <String>[
       'Arab',
@@ -107,6 +110,7 @@ abstract final class LanguageNames {
       'Hausa',
       'Afrikaans',
       'Persia',
+      'Hindi',
     ],
     'es': <String>[
       'Árabe',
@@ -128,6 +132,7 @@ abstract final class LanguageNames {
       'Hausa',
       'Afrikáans',
       'Persa',
+      'Hindi',
     ],
     'tr': <String>[
       'Arapça',
@@ -149,6 +154,7 @@ abstract final class LanguageNames {
       'Hausa',
       'Afrikaanca',
       'Farsça',
+      'Hintçe',
     ],
     'ms': <String>[
       'Arab',
@@ -170,6 +176,7 @@ abstract final class LanguageNames {
       'Hausa',
       'Afrikaans',
       'Parsi',
+      'Hindi',
     ],
     'ur': <String>[
       'عربی',
@@ -191,6 +198,7 @@ abstract final class LanguageNames {
       'ہاؤسا',
       'افریکانز',
       'فارسی',
+      'ہندی',
     ],
     'de': <String>[
       'Arabisch',
@@ -212,6 +220,7 @@ abstract final class LanguageNames {
       'Hausa',
       'Afrikaans',
       'Persisch',
+      'Hindi',
     ],
     'pt': <String>[
       'Árabe',
@@ -233,6 +242,7 @@ abstract final class LanguageNames {
       'Hauçá',
       'Africâner',
       'Persa',
+      'Hindi',
     ],
     'it': <String>[
       'Arabo',
@@ -254,6 +264,7 @@ abstract final class LanguageNames {
       'Hausa',
       'Afrikaans',
       'Persiano',
+      'Hindi',
     ],
     'nl': <String>[
       'Arabisch',
@@ -275,6 +286,7 @@ abstract final class LanguageNames {
       'Hausa',
       'Afrikaans',
       'Perzisch',
+      'Hindi',
     ],
     'bs': <String>[
       'Arapski',
@@ -296,6 +308,7 @@ abstract final class LanguageNames {
       'Hausa',
       'Afrikans',
       'Perzijski',
+      'Hindi',
     ],
     'sq': <String>[
       'Arabisht',
@@ -317,6 +330,7 @@ abstract final class LanguageNames {
       'Hausisht',
       'Afrikanisht',
       'Persisht',
+      'Hindisht',
     ],
     'ru': <String>[
       'Арабский',
@@ -338,6 +352,7 @@ abstract final class LanguageNames {
       'Хауса',
       'Африкаанс',
       'Персидский',
+      'Хинди',
     ],
     'sw': <String>[
       'Kiarabu',
@@ -359,6 +374,7 @@ abstract final class LanguageNames {
       'Kihausa',
       'Kiafrikana',
       'Kiajemi',
+      'Kihindi',
     ],
     'ha': <String>[
       'Larabci',
@@ -380,6 +396,7 @@ abstract final class LanguageNames {
       'Hausa',
       'Harshen Afirkanci',
       'Farisanci',
+      'Harshen Hindi',
     ],
     'af': <String>[
       'Arabies',
@@ -401,6 +418,7 @@ abstract final class LanguageNames {
       'Hausa',
       'Afrikaans',
       'Persies',
+      'Hindi',
     ],
     'fa': <String>[
       'عربی',
@@ -422,6 +440,29 @@ abstract final class LanguageNames {
       'هوسا',
       'آفریکانس',
       'فارسی',
+      'هندی',
+    ],
+    'hi': <String>[
+      'अरबी',
+      'अंग्रेज़ी',
+      'फ़्रेंच',
+      'इंडोनेशियाई',
+      'स्पेनिश',
+      'तुर्की',
+      'मलय',
+      'उर्दू',
+      'जर्मन',
+      'पुर्तगाली',
+      'इतालवी',
+      'डच',
+      'बोस्नियाई',
+      'अल्बानियाई',
+      'रूसी',
+      'स्वाहिली',
+      'हौसा',
+      'अफ़्रीकान्स',
+      'फ़ारसी',
+      'हिन्दी',
     ],
   };
 }

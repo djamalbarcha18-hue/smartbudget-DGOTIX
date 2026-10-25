@@ -37,8 +37,8 @@ class QuickEntry {
 
 /// Turns short free text into transactions, entirely on the device: Arabic,
 /// English, French, Indonesian, Spanish, Turkish, Malay, Urdu, German,
-/// Portuguese, Italian, Dutch, Bosnian, Albanian, Russian, Swahili, Hausa, Afrikaans and
-/// Persian keywords map
+/// Portuguese, Italian, Dutch, Bosnian, Albanian, Russian, Swahili, Hausa, Afrikaans, Persian and
+/// Hindi keywords map
 /// to the catalog categories; income is detected from income words or a leading "+";
 /// a named currency ("12 دولار") picks the wallet that holds it.
 abstract final class QuickEntryParser {
@@ -262,6 +262,8 @@ abstract final class QuickEntryParser {
         b.writeCharCode(0x30 + r - 0x0660);
       } else if (r >= 0x06F0 && r <= 0x06F9) {
         b.writeCharCode(0x30 + r - 0x06F0);
+      } else if (r >= 0x0966 && r <= 0x096F) {
+        b.writeCharCode(0x30 + r - 0x0966); // Devanagari
       } else if (r == 0x066B) {
         b.write('.');
       } else if (r == 0x066C) {
@@ -314,6 +316,9 @@ abstract final class QuickEntryParser {
       'ё': 'е',
       // Persian: the zero-width non-joiner («می‌خرم») is often left out.
       '\u200c': '',
+      // Hindi: the nukta (ज़ फ़ क़) is often left out too.
+      '\u093c': '', 'क़': 'क', 'ख़': 'ख', 'ग़': 'ग', 'ज़': 'ज', 'ड़': 'ड',
+      'ढ़': 'ढ', 'फ़': 'फ', 'य़': 'य',
       // Hausa hooked letters, often typed plain.
       'ɓ': 'b', 'ɗ': 'd', 'ƙ': 'k', 'ƴ': 'y',
       // Turkish (and the dot İ leaves after toLowerCase).
@@ -439,6 +444,9 @@ abstract final class QuickEntryParser {
     ('پریروز', 2),
     ('دیروز', 1),
     ('امروز', 0),
+    ('परसों', 2),
+    ('कल', 1),
+    ('आज', 0),
   ];
 
   /// Every currency the app supports, the US dollar first so a bare «دولار»
@@ -588,6 +596,7 @@ abstract final class QuickEntryParser {
     'taslimu', 'tsabar kudi',
     'kontant',
     'نقدی',
+    'नकद', 'कैश में',
   ];
 
   static const List<String> _incomeMarkers = <String>[
@@ -602,6 +611,7 @@ abstract final class QuickEntryParser {
     'nimepokea', 'nimelipwa', 'na karba', 'na samu',
     'ontvang', 'inkomste', 'verdien',
     'دریافت', 'درآمد', 'گرفتم', 'واریز',
+    'मिला', 'मिले', 'प्राप्त', 'आमदनी', 'आय',
   ];
 
   static const List<_Rule> _rules = <_Rule>[
@@ -623,12 +633,14 @@ abstract final class QuickEntryParser {
       'salaristjek', 'maandsalaris',
       // Persian.
       'حقوق', 'دستمزد', 'حقوقم',
+      // Hindi.
+      'वेतन', 'तनख़्वाह', 'सैलरी', 'पगार',
     ]),
-    _Rule.income('مكافآت وحوافز', <String>['مكافاه', 'حوافز', 'بريم', 'prime', 'bonus', 'thr', 'insentif', 'bono', 'aguinaldo', 'prima', 'ikramiye', 'prim', 'elaun', 'بونس', 'prämie', 'weihnachtsgeld', 'urlaubsgeld', 'bônus', 'décimo terceiro', 'plr', 'premio', 'tredicesima', 'quattordicesima', 'vakantiegeld', 'dertiende maand', 'bonus plata', 'stimulacija', 'regres', 'shpërblim', 'bonusi', 'премия', 'премию', 'бонус', 'тринадцатая зарплата', 'bonasi', 'posho', 'alawus', 'bonusse', 'dertiende tjek', 'پاداش', 'عیدی']),
-    _Rule.income('معاش تقاعدي', <String>['تقاعد', 'retraite', 'pension', 'jubilacion', 'emekli', 'emekli maaşı', 'pencen', 'پنشن', 'rente', 'aposentadoria', 'inss', 'pensione', 'aow', 'penzija', 'pensioni', 'пенсия', 'пенсию', 'pensheni', 'mafao', 'fansho', 'pensioen', 'ouderdomspensioen', 'مستمری', 'بازنشستگی']),
-    _Rule.income('عمل حر', <String>['فريلانس', 'عمل حر', 'freelance', 'client', 'serbest', 'kerja bebas', 'فری لانس', 'freiberuflich', 'honorar', 'freela', 'autônomo', 'partita iva', 'fattura emessa', 'zzp', 'opdracht', 'honorar', 'punë e lirë', 'фриланс', 'подработка', 'самозанятость', 'kazi huru', 'kibarua', 'aikin kai', 'vryskut', 'los werk', 'فریلنس', 'پروژه']),
-    _Rule.income('عمولات', <String>['عموله', 'commission', 'comision', 'komisyon', 'komisen', 'کمیشن', 'provision', 'comissão', 'provvigione', 'provisie', 'provizija', 'komisioni', 'комиссионные', 'процент с продаж', 'kamisheni', 'kwamishan', 'kommissie', 'پورسانت', 'کمیسیون']),
-    _Rule.income('بيع أصول أو ممتلكات', <String>['بعت', 'بيع', 'vente', 'vendu', 'sold', 'jual', 'terjual', 'venta', 'vendi', 'sattım', 'satış', 'بیچا', 'فروخت', 'becha', 'verkauft', 'verkauf', 'vendi', 'venda', 'venduto', 'vendita', 'verkocht', 'marktplaats', 'prodao', 'prodaja', 'olx', 'shita', 'shitje', 'продал', 'продала', 'продажа', 'авито', 'olx kz', 'nimeuza', 'mauzo', 'na sayar', 'verkoop', 'gumtree', 'فروختم', 'فروش']),
+    _Rule.income('مكافآت وحوافز', <String>['مكافاه', 'حوافز', 'بريم', 'prime', 'bonus', 'thr', 'insentif', 'bono', 'aguinaldo', 'prima', 'ikramiye', 'prim', 'elaun', 'بونس', 'prämie', 'weihnachtsgeld', 'urlaubsgeld', 'bônus', 'décimo terceiro', 'plr', 'premio', 'tredicesima', 'quattordicesima', 'vakantiegeld', 'dertiende maand', 'bonus plata', 'stimulacija', 'regres', 'shpërblim', 'bonusi', 'премия', 'премию', 'бонус', 'тринадцатая зарплата', 'bonasi', 'posho', 'alawus', 'bonusse', 'dertiende tjek', 'پاداش', 'عیدی', 'बोनस', 'इनाम']),
+    _Rule.income('معاش تقاعدي', <String>['تقاعد', 'retraite', 'pension', 'jubilacion', 'emekli', 'emekli maaşı', 'pencen', 'پنشن', 'rente', 'aposentadoria', 'inss', 'pensione', 'aow', 'penzija', 'pensioni', 'пенсия', 'пенсию', 'pensheni', 'mafao', 'fansho', 'pensioen', 'ouderdomspensioen', 'مستمری', 'بازنشستگی', 'पेंशन']),
+    _Rule.income('عمل حر', <String>['فريلانس', 'عمل حر', 'freelance', 'client', 'serbest', 'kerja bebas', 'فری لانس', 'freiberuflich', 'honorar', 'freela', 'autônomo', 'partita iva', 'fattura emessa', 'zzp', 'opdracht', 'honorar', 'punë e lirë', 'фриланс', 'подработка', 'самозанятость', 'kazi huru', 'kibarua', 'aikin kai', 'vryskut', 'los werk', 'فریلنس', 'پروژه', 'फ़्रीलांस', 'फ्रीलांस']),
+    _Rule.income('عمولات', <String>['عموله', 'commission', 'comision', 'komisyon', 'komisen', 'کمیشن', 'provision', 'comissão', 'provvigione', 'provisie', 'provizija', 'komisioni', 'комиссионные', 'процент с продаж', 'kamisheni', 'kwamishan', 'kommissie', 'پورسانت', 'کمیسیون', 'कमीशन']),
+    _Rule.income('بيع أصول أو ممتلكات', <String>['بعت', 'بيع', 'vente', 'vendu', 'sold', 'jual', 'terjual', 'venta', 'vendi', 'sattım', 'satış', 'بیچا', 'فروخت', 'becha', 'verkauft', 'verkauf', 'vendi', 'venda', 'venduto', 'vendita', 'verkocht', 'marktplaats', 'prodao', 'prodaja', 'olx', 'shita', 'shitje', 'продал', 'продала', 'продажа', 'авито', 'olx kz', 'nimeuza', 'mauzo', 'na sayar', 'verkoop', 'gumtree', 'فروختم', 'فروش', 'बेचा', 'बिक्री']),
     _Rule.income('استرداد أو تعويض', <String>[
       'استرجاع', 'تعويض', 'استرداد', 'remboursement', 'refund', 'reembolso', 'devolucion',
       'iade', 'bayaran balik', 'واپسی', 'ریفنڈ',
@@ -645,9 +657,11 @@ abstract final class QuickEntryParser {
       'terugbetaal',
       // Persian.
       'بازپرداخت', 'برگشت پول', 'غرامت',
+      // Hindi.
+      'रिफ़ंड', 'रिफंड', 'मुआवज़ा',
     ]),
-    _Rule.income('منحة أو إعانة', <String>['منحه', 'اعانه', 'bourse', 'allocation', 'grant', 'burs', 'biasiswa', 'bantuan', 'وظیفہ', 'امداد', 'kindergeld', 'stipendium', 'bafög', 'zuschuss', 'auxílio', 'bolsa família', 'bolsa de estudos', 'borsa di studio', 'assegno unico', 'sussidio', 'toeslag', 'kinderbijslag', 'zorgtoeslag', 'huurtoeslag', 'studiefinanciering', 'uitkering', 'stipendija', 'dječiji dodatak', 'socijalna pomoć', 'bursa', 'ndihmë ekonomike', 'стипендия', 'пособие', 'детские', 'материнский капитал', 'субсидия', 'ruzuku', 'tallafi', 'toelae', 'toelaag', 'sassa', 'studiebeurs', 'kindertoelae', 'یارانه', 'کمک هزینه', 'بورسیه']),
-    _Rule.income('إيجارات', <String>['مداخيل الكراء', 'rent income', 'loyer recu', 'kira geliri', 'sewa diterima', 'کرایہ ملا', 'mieteinnahme', 'mieteinnahmen', 'aluguel recebido', 'affitto incassato', 'huurinkomsten', 'kirija primljena', 'qira e marrë', 'доход от аренды', 'арендная плата получена', 'kodi niliyopokea', 'kudin haya da na karba', 'huurinkomste', 'huur ontvang', 'اجاره گرفتم', 'اجاره دریافتی']),
+    _Rule.income('منحة أو إعانة', <String>['منحه', 'اعانه', 'bourse', 'allocation', 'grant', 'burs', 'biasiswa', 'bantuan', 'وظیفہ', 'امداد', 'kindergeld', 'stipendium', 'bafög', 'zuschuss', 'auxílio', 'bolsa família', 'bolsa de estudos', 'borsa di studio', 'assegno unico', 'sussidio', 'toeslag', 'kinderbijslag', 'zorgtoeslag', 'huurtoeslag', 'studiefinanciering', 'uitkering', 'stipendija', 'dječiji dodatak', 'socijalna pomoć', 'bursa', 'ndihmë ekonomike', 'стипендия', 'пособие', 'детские', 'материнский капитал', 'субсидия', 'ruzuku', 'tallafi', 'toelae', 'toelaag', 'sassa', 'studiebeurs', 'kindertoelae', 'یارانه', 'کمک هزینه', 'بورسیه', 'अनुदान', 'छात्रवृत्ति', 'सब्सिडी']),
+    _Rule.income('إيجارات', <String>['مداخيل الكراء', 'rent income', 'loyer recu', 'kira geliri', 'sewa diterima', 'کرایہ ملا', 'mieteinnahme', 'mieteinnahmen', 'aluguel recebido', 'affitto incassato', 'huurinkomsten', 'kirija primljena', 'qira e marrë', 'доход от аренды', 'арендная плата получена', 'kodi niliyopokea', 'kudin haya da na karba', 'huurinkomste', 'huur ontvang', 'اجاره گرفتم', 'اجاره دریافتی', 'किराया मिला']),
     // ---- Expenses
     _Rule.expense('الطعام', <String>[
       'خضر', 'خضره', 'خضار', 'فواكه', 'فاكهه', 'لحم', 'دجاج', 'حوت', 'سمك',
@@ -673,6 +687,8 @@ abstract final class QuickEntryParser {
       'kruideniersware', 'kruideniers', 'vleis', 'vrugte', 'eiers', 'suiker', 'mieliemeel',
       // Persian.
       'خواربار', 'سوپرمارکت', 'میوه', 'سبزی', 'گوشت', 'مرغ', 'نان', 'شیر', 'برنج', 'تخم مرغ', 'بقالی', 'میوه فروشی',
+      // Hindi.
+      'राशन', 'किराना', 'सब्ज़ी', 'सब्जी', 'फल', 'दूध', 'आटा', 'चावल', 'अंडे', 'दाल', 'मीट', 'चिकन', 'ब्रेड',
     ]),
     _Rule.expense('المطاعم', <String>[
       'مطعم', 'قهوه', 'كافيه', 'كافي', 'بيتزا', 'شاورما', 'كرانتيكا',
@@ -698,6 +714,8 @@ abstract final class QuickEntryParser {
       'middagete', 'aandete', 'ontbyt', 'uiteet', 'wegneemete',
       // Persian.
       'رستوران', 'کافه', 'قهوه', 'ناهار', 'شام', 'صبحانه', 'پیتزا', 'ساندویچ', 'فست فود', 'اسنپ فود', 'چای',
+      // Hindi.
+      'चाय', 'कॉफ़ी', 'कॉफी', 'रेस्टोरेंट', 'होटल में खाना', 'नाश्ता', 'लंच', 'डिनर', 'खाना', 'समोसा', 'पिज़्ज़ा', 'स्विगी', 'ज़ोमैटो',
     ]),
     _Rule.expense('النقل', <String>[
       'تاكسي', 'طاكسي', 'حافله', 'باص', 'ترامواي', 'ميترو', 'مترو', 'قطار',
@@ -721,6 +739,8 @@ abstract final class QuickEntryParser {
       'parkering', 'tolgeld', 'kaartjie', 'myciti',
       // Persian.
       'تاکسی', 'اسنپ', 'تپسی', 'مترو', 'اتوبوس', 'بلیت مترو', 'پارکینگ', 'عوارض',
+      // Hindi.
+      'टैक्सी', 'ऑटो', 'रिक्शा', 'बस', 'मेट्रो', 'ट्रेन', 'किराया ऑटो', 'ओला', 'उबर', 'पार्किंग', 'टोल',
     ]),
     _Rule.expense('الوقود', <String>[
       'بنزين', 'وقود', 'مازوت', 'ليصانص', 'essence', 'carburant', 'gasoil',
@@ -740,8 +760,10 @@ abstract final class QuickEntryParser {
       'brandstof',
       // Persian.
       'بنزین', 'گازوئیل', 'سوخت', 'پمپ بنزین', 'سی ان جی',
+      // Hindi.
+      'पेट्रोल', 'डीज़ल', 'डीजल', 'सीएनजी',
     ]),
-    _Rule.expense('السكن', <String>['كراء', 'ايجار', 'loyer', 'rent', 'kos', 'kost', 'kontrakan', 'sewa rumah', 'alquiler', 'renta', 'arriendo', 'kira', 'aidat', 'sewa', 'sewa bilik', 'مکان کا کرایہ', 'کرایہ مکان', 'kiraya', 'miete', 'aluguel', 'condomínio', 'affitto', 'condominio', 'mutuo casa', 'huur', 'hypotheek', 'kirija', 'stanarina', 'qira', 'qiraja', 'аренда', 'аренда квартиры', 'квартплата', 'съем жилья', 'kodi ya nyumba', 'pango', 'haya', 'kudin haya', 'verband', 'losies', 'woonstel', 'اجاره', 'اجاره خانه', 'رهن', 'شارژ ساختمان']),
+    _Rule.expense('السكن', <String>['كراء', 'ايجار', 'loyer', 'rent', 'kos', 'kost', 'kontrakan', 'sewa rumah', 'alquiler', 'renta', 'arriendo', 'kira', 'aidat', 'sewa', 'sewa bilik', 'مکان کا کرایہ', 'کرایہ مکان', 'kiraya', 'miete', 'aluguel', 'condomínio', 'affitto', 'condominio', 'mutuo casa', 'huur', 'hypotheek', 'kirija', 'stanarina', 'qira', 'qiraja', 'аренда', 'аренда квартиры', 'квартплата', 'съем жилья', 'kodi ya nyumba', 'pango', 'haya', 'kudin haya', 'verband', 'losies', 'woonstel', 'اجاره', 'اجاره خانه', 'رهن', 'شارژ ساختمان', 'किराया', 'मकान किराया', 'घर का किराया']),
     _Rule.expense('الفواتير', <String>[
       'فاتوره', 'كهرباء', 'ضو', 'ماء', 'غاز', 'سونلغاز', 'سيال', 'facture',
       'electricite', 'eau', 'gaz', 'listrik', 'pln', 'pdam', 'token listrik', 'luz', 'agua', 'factura',
@@ -762,6 +784,8 @@ abstract final class QuickEntryParser {
       'elektrisiteit', 'krag', 'munisipale rekening', 'kragtokens',
       // Persian.
       'قبض', 'قبض برق', 'قبض آب', 'قبض گاز', 'برق',
+      // Hindi.
+      'बिजली', 'बिजली का बिल', 'पानी का बिल', 'गैस', 'सिलेंडर', 'बिल',
     ]),
     _Rule.expense('الاتصالات والإنترنت', <String>[
       'انترنت', 'فليكسي', 'رصيد', 'هاتف', 'موبيليس', 'جيزي', 'اوريدو',
@@ -784,6 +808,8 @@ abstract final class QuickEntryParser {
       'lugtyd', 'selfoon', 'foonrekening',
       // Persian.
       'شارژ', 'شارژ موبایل', 'اینترنت', 'بسته اینترنت', 'موبایل',
+      // Hindi.
+      'रिचार्ज', 'मोबाइल रिचार्ज', 'इंटरनेट', 'वाई-फ़ाई', 'डेटा पैक',
     ]),
     _Rule.expense('الصحة', <String>[
       'صيدليه', 'دواء', 'ادويه', 'طبيب', 'دكتور', 'مستشفى', 'عياده',
@@ -805,6 +831,8 @@ abstract final class QuickEntryParser {
       'apteek', 'hospitaal', 'medisyne', 'mediese fonds', 'kliniek',
       // Persian.
       'داروخانه', 'دارو', 'دکتر', 'پزشک', 'بیمارستان', 'دندانپزشک', 'آزمایش',
+      // Hindi.
+      'दवा', 'दवाई', 'डॉक्टर', 'अस्पताल', 'मेडिकल', 'दवाखाना', 'टेस्ट',
     ]),
     _Rule.expense('التعليم', <String>[
       'مدرسه', 'جامعه', 'دروس', 'كتب', 'كتاب', 'كورس', 'دوره تدريبيه', 'كراريس', 'ادوات مدرسيه', 'تسجيل',
@@ -825,6 +853,8 @@ abstract final class QuickEntryParser {
       'skool', 'skoolfonds', 'universiteit', 'boeke', 'klasgeld', 'kursus',
       // Persian.
       'مدرسه', 'دانشگاه', 'شهریه', 'کتاب', 'کلاس', 'آموزشگاه',
+      // Hindi.
+      'स्कूल', 'फ़ीस', 'फीस', 'कॉलेज', 'किताब', 'किताबें', 'ट्यूशन', 'कोचिंग',
     ]),
     _Rule.expense('الأطفال والعائلة', <String>[
       'حفاظات', 'حليب اطفال', 'روضه', 'حضانه', 'creche', 'couches', 'diapers',
@@ -843,6 +873,8 @@ abstract final class QuickEntryParser {
       'doeke', 'kleuterskool', 'speelgoed', 'babakos',
       // Persian.
       'پوشک', 'مهدکودک', 'شیر خشک', 'اسباب بازی',
+      // Hindi.
+      'डायपर', 'खिलौने', 'बेबी फ़ूड',
     ]),
     _Rule.expense('الملابس', <String>[
       'ملابس', 'حذاء', 'صباط', 'سروال', 'قميص', 'جاكيت', 'vetements',
@@ -861,9 +893,11 @@ abstract final class QuickEntryParser {
       'klere', 'skoene', 'baadjie', 'hemp',
       // Persian.
       'لباس', 'کفش', 'مانتو', 'شلوار', 'پیراهن',
+      // Hindi.
+      'कपड़े', 'जूते', 'शर्ट', 'साड़ी', 'कुर्ता',
     ]),
-    _Rule.expense('التسوق', <String>['تسوق', 'مشتريات', 'jumia', 'amazon', 'shopping', 'aliexpress', 'shopee', 'tokopedia', 'lazada', 'belanja online', 'compras', 'mercado libre', 'trendyol', 'hepsiburada', 'alışveriş', 'beli-belah', 'شاپنگ', 'خریداری', 'daraz', 'onlineshop', 'online bestellung', 'compras', 'shopee', 'mercado livre', 'magalu', 'acquisti online', 'zalando', 'winkelen', 'bol com', 'webshop', 'kupovina', 'šoping', 'blerje', 'pazar', 'покупки', 'озон', 'ozon', 'wildberries', 'вайлдберриз', 'валберис', 'алиэкспресс', 'kaspi магазин', 'manunuzi', 'sayayya', 'inkopies', 'takealot', 'دیجی کالا', 'خرید اینترنتی']),
-    _Rule.expense('الترفيه', <String>['سينما', 'ترفيه', 'نزهه', 'cinema', 'sortie', 'games', 'concert', 'bioskop', 'nonton', 'cine', 'salida', 'fiesta', 'sinema', 'konser', 'eğlence', 'wayang', 'سنیما', 'تفریح', 'kino', 'konzert', 'ausflug', 'freizeit', 'cinema', 'show', 'passeio', 'balada', 'cinema', 'concerto', 'uscita', 'svago', 'bioscoop', 'concert', 'uitje', 'kino', 'koncert', 'izlazak', 'kinema', 'koncert', 'dalje', 'кино', 'кинотеатр', 'концерт', 'театр', 'развлечения', 'боулинг', 'sinema', 'burudani', 'sinima', 'nishadi', 'fliek', 'flieks', 'konsert', 'uitstappie', 'vermaak', 'سینما', 'تفریح', 'کنسرت', 'گردش']),
+    _Rule.expense('التسوق', <String>['تسوق', 'مشتريات', 'jumia', 'amazon', 'shopping', 'aliexpress', 'shopee', 'tokopedia', 'lazada', 'belanja online', 'compras', 'mercado libre', 'trendyol', 'hepsiburada', 'alışveriş', 'beli-belah', 'شاپنگ', 'خریداری', 'daraz', 'onlineshop', 'online bestellung', 'compras', 'shopee', 'mercado livre', 'magalu', 'acquisti online', 'zalando', 'winkelen', 'bol com', 'webshop', 'kupovina', 'šoping', 'blerje', 'pazar', 'покупки', 'озон', 'ozon', 'wildberries', 'вайлдберриз', 'валберис', 'алиэкспресс', 'kaspi магазин', 'manunuzi', 'sayayya', 'inkopies', 'takealot', 'دیجی کالا', 'خرید اینترنتی', 'शॉपिंग', 'ऑनलाइन ख़रीदारी', 'अमेज़न', 'फ्लिपकार्ट']),
+    _Rule.expense('الترفيه', <String>['سينما', 'ترفيه', 'نزهه', 'cinema', 'sortie', 'games', 'concert', 'bioskop', 'nonton', 'cine', 'salida', 'fiesta', 'sinema', 'konser', 'eğlence', 'wayang', 'سنیما', 'تفریح', 'kino', 'konzert', 'ausflug', 'freizeit', 'cinema', 'show', 'passeio', 'balada', 'cinema', 'concerto', 'uscita', 'svago', 'bioscoop', 'concert', 'uitje', 'kino', 'koncert', 'izlazak', 'kinema', 'koncert', 'dalje', 'кино', 'кинотеатр', 'концерт', 'театр', 'развлечения', 'боулинг', 'sinema', 'burudani', 'sinima', 'nishadi', 'fliek', 'flieks', 'konsert', 'uitstappie', 'vermaak', 'سینما', 'تفریح', 'کنسرت', 'گردش', 'फ़िल्म', 'फिल्म', 'सिनेमा', 'मनोरंजन']),
     _Rule.expense('الاشتراكات', <String>[
       'اشتراك', 'netflix', 'spotify', 'youtube', 'abonnement', 'subscription',
       'shahid', 'شاهد', 'langganan', 'suscripcion',
@@ -881,16 +915,18 @@ abstract final class QuickEntryParser {
       'intekening', 'subskripsie', 'lidmaatskap',
       // Persian.
       'اشتراک', 'فیلیمو', 'نماوا',
+      // Hindi.
+      'सदस्यता', 'सब्सक्रिप्शन',
     ]),
-    _Rule.expense('الرياضة واللياقة', <String>['جيم', 'نادي رياضي', 'رياضه', 'gym', 'salle de sport', 'fitness', 'spor salonu', 'gim', 'جم', 'fitnessstudio', 'academia', 'smart fit', 'palestra', 'sportschool', 'teretana', 'palestër', 'palestra', 'спортзал', 'фитнес', 'тренажерный зал', 'качалка', 'бассейн', 'mazoezi', 'gimnasium', 'باشگاه', 'ورزش', 'استخر']),
-    _Rule.expense('السفر', <String>['سفر', 'فندق', 'طياره', 'طيران', 'hotel', 'flight', 'voyage', 'travel', 'billet avion', 'tiket pesawat', 'liburan', 'viaje', 'vuelo', 'vacaciones', 'otel', 'uçak', 'uçak bileti', 'tatil', 'seyahat', 'percutian', 'tiket kapal terbang', 'ٹکٹ', 'reise', 'urlaub', 'flug', 'viagem', 'hotel', 'passagem aérea', 'voo', 'férias', 'viaggio', 'vacanza', 'volo', 'albergo', 'reis', 'vakantie', 'vlucht', 'vliegticket', 'putovanje', 'avionska karta', 'odmor', 'udhëtim', 'pushime', 'avion', 'hotel', 'отель', 'гостиница', 'авиабилет', 'авиабилеты', 'перелет', 'отпуск', 'путешествие', 'турпоездка', 'safari', 'tiketi ya ndege', 'tafiya', 'otal', 'tikitin jirgi', 'vakansie', 'vlug', 'vliegkaartjie', 'gastehuis', 'سفر', 'هتل', 'بلیط هواپیما', 'بلیت هواپیما', 'بلیط قطار']),
-    _Rule.expense('الصيانة والإصلاح', <String>['تصليح', 'صيانه', 'ميكانيكي', 'بلومبي', 'reparation', 'repair', 'mecanicien', 'plombier', 'servis', 'bengkel', 'reparacion', 'mecanico', 'taller', 'tamir', 'tamirat', 'usta', 'baiki', 'مرمت', 'مستری', 'mechanic', 'reparatur', 'werkstatt', 'handwerker', 'conserto', 'manutenção', 'mecânico', 'oficina', 'encanador', 'riparazione', 'meccanico', 'idraulico', 'manutenzione', 'reparatie', 'garage', 'monteur', 'loodgieter', 'popravka', 'servis auta', 'majstor', 'vodoinstalater', 'riparim', 'mekanik', 'hidraulik', 'servis', 'ремонт', 'сантехник', 'электрик', 'автосервис', 'шиномонтаж', 'мастер', 'fundi', 'matengenezo', 'gyaran mota', 'makanike', 'herstel', 'herstelwerk', 'werktuigkundige', 'motorhawe', 'تعمیر', 'تعمیرات', 'مکانیک', 'لوله کش']),
-    _Rule.expense('الأثاث والمنزل', <String>['اثاث', 'مفروشات', 'تجهيزات منزليه', 'meubles', 'furniture', 'mobilya', 'perabot', 'فرنیچر', 'möbel', 'ikea', 'móveis', 'móvel', 'mobili', 'arredamento', 'meubels', 'ikea', 'namještaj', 'mobilje', 'orendi', 'мебель', 'икеа', 'диван', 'товары для дома', 'samani', 'fanicha', 'kujeru', 'gado', 'meubelment', 'huisware', 'مبلمان', 'لوازم خانگی', 'فرش']),
-    _Rule.expense('صدقة وتبرّعات', <String>['صدقه', 'تبرع', 'don', 'charity', 'donation', 'sadaqa', 'sedekah', 'infak', 'donasi', 'donativo', 'limosna', 'caridad', 'sadaka', 'bağış', 'derma', 'صدقہ', 'خیرات', 'عطیہ', 'sadqa', 'khairat', 'spende', 'spenden', 'doação', 'caridade', 'dízimo', 'donazione', 'beneficenza', 'donatie', 'goed doel', 'sadaka', 'donacija', 'sadaka', 'lëmoshë', 'dhurim', 'садака', 'пожертвование', 'благотворительность', 'милостыня', 'mchango', 'skenking', 'liefdadigheid', 'tiende', 'kollekte', 'صدقه', 'خیریه', 'نذر', 'کمک']),
+    _Rule.expense('الرياضة واللياقة', <String>['جيم', 'نادي رياضي', 'رياضه', 'gym', 'salle de sport', 'fitness', 'spor salonu', 'gim', 'جم', 'fitnessstudio', 'academia', 'smart fit', 'palestra', 'sportschool', 'teretana', 'palestër', 'palestra', 'спортзал', 'фитнес', 'тренажерный зал', 'качалка', 'бассейн', 'mazoezi', 'gimnasium', 'باشگاه', 'ورزش', 'استخر', 'जिम', 'योग']),
+    _Rule.expense('السفر', <String>['سفر', 'فندق', 'طياره', 'طيران', 'hotel', 'flight', 'voyage', 'travel', 'billet avion', 'tiket pesawat', 'liburan', 'viaje', 'vuelo', 'vacaciones', 'otel', 'uçak', 'uçak bileti', 'tatil', 'seyahat', 'percutian', 'tiket kapal terbang', 'ٹکٹ', 'reise', 'urlaub', 'flug', 'viagem', 'hotel', 'passagem aérea', 'voo', 'férias', 'viaggio', 'vacanza', 'volo', 'albergo', 'reis', 'vakantie', 'vlucht', 'vliegticket', 'putovanje', 'avionska karta', 'odmor', 'udhëtim', 'pushime', 'avion', 'hotel', 'отель', 'гостиница', 'авиабилет', 'авиабилеты', 'перелет', 'отпуск', 'путешествие', 'турпоездка', 'safari', 'tiketi ya ndege', 'tafiya', 'otal', 'tikitin jirgi', 'vakansie', 'vlug', 'vliegkaartjie', 'gastehuis', 'سفر', 'هتل', 'بلیط هواپیما', 'بلیت هواپیما', 'بلیط قطار', 'यात्रा', 'होटल', 'फ़्लाइट', 'फ्लाइट', 'टिकट', 'छुट्टी']),
+    _Rule.expense('الصيانة والإصلاح', <String>['تصليح', 'صيانه', 'ميكانيكي', 'بلومبي', 'reparation', 'repair', 'mecanicien', 'plombier', 'servis', 'bengkel', 'reparacion', 'mecanico', 'taller', 'tamir', 'tamirat', 'usta', 'baiki', 'مرمت', 'مستری', 'mechanic', 'reparatur', 'werkstatt', 'handwerker', 'conserto', 'manutenção', 'mecânico', 'oficina', 'encanador', 'riparazione', 'meccanico', 'idraulico', 'manutenzione', 'reparatie', 'garage', 'monteur', 'loodgieter', 'popravka', 'servis auta', 'majstor', 'vodoinstalater', 'riparim', 'mekanik', 'hidraulik', 'servis', 'ремонт', 'сантехник', 'электрик', 'автосервис', 'шиномонтаж', 'мастер', 'fundi', 'matengenezo', 'gyaran mota', 'makanike', 'herstel', 'herstelwerk', 'werktuigkundige', 'motorhawe', 'تعمیر', 'تعمیرات', 'مکانیک', 'لوله کش', 'मरम्मत', 'रिपेयर', 'मिस्त्री', 'प्लंबर', 'सर्विसिंग']),
+    _Rule.expense('الأثاث والمنزل', <String>['اثاث', 'مفروشات', 'تجهيزات منزليه', 'meubles', 'furniture', 'mobilya', 'perabot', 'فرنیچر', 'möbel', 'ikea', 'móveis', 'móvel', 'mobili', 'arredamento', 'meubels', 'ikea', 'namještaj', 'mobilje', 'orendi', 'мебель', 'икеа', 'диван', 'товары для дома', 'samani', 'fanicha', 'kujeru', 'gado', 'meubelment', 'huisware', 'مبلمان', 'لوازم خانگی', 'فرش', 'फ़र्नीचर', 'फर्नीचर', 'घरेलू सामान']),
+    _Rule.expense('صدقة وتبرّعات', <String>['صدقه', 'تبرع', 'don', 'charity', 'donation', 'sadaqa', 'sedekah', 'infak', 'donasi', 'donativo', 'limosna', 'caridad', 'sadaka', 'bağış', 'derma', 'صدقہ', 'خیرات', 'عطیہ', 'sadqa', 'khairat', 'spende', 'spenden', 'doação', 'caridade', 'dízimo', 'donazione', 'beneficenza', 'donatie', 'goed doel', 'sadaka', 'donacija', 'sadaka', 'lëmoshë', 'dhurim', 'садака', 'пожертвование', 'благотворительность', 'милостыня', 'mchango', 'skenking', 'liefdadigheid', 'tiende', 'kollekte', 'صدقه', 'خیریه', 'نذر', 'کمک', 'दान', 'सदक़ा', 'चंदा']),
     _Rule.expense('زكاة', <String>['زكاه', 'zakat', 'zekat', 'زکوٰۃ', 'zekat', 'zekat', 'закят', 'zaka', 'zakka']),
-    _Rule.expense('التأمين', <String>['تامين', 'assurance', 'insurance', 'asuransi', 'seguro', 'sigorta', 'kasko', 'insurans', 'takaful', 'بیمہ', 'انشورنس', 'versicherung', 'haftpflicht', 'krankenversicherung', 'seguro', 'assicurazione', 'rc auto', 'verzekering', 'zorgverzekering', 'autoverzekering', 'osiguranje', 'sigurim', 'siguracion', 'страховка', 'страхование', 'осаго', 'каско', 'bima', 'inshora', 'versekering', 'motorversekering', 'lewensversekering', 'بیمه', 'بیمه ماشین', 'بیمه درمان']),
-    _Rule.expense('الضرائب والرسوم', <String>['ضريبه', 'رسوم', 'طابع', 'impot', 'taxe', 'tax', 'fees', 'timbre', 'pajak', 'impuesto', 'impuestos', 'vergi', 'harç', 'cukai', 'ٹیکس', 'steuer', 'steuern', 'gebühr', 'gebühren', 'imposto', 'taxa', 'ipva', 'darf', 'tasse', 'imu', 'tari', 'bollo auto', 'f24', 'belasting', 'belastingdienst', 'heffing', 'porez', 'taksa', 'taksë', 'tatim', 'налог', 'налоги', 'пошлина', 'госпошлина', 'штраф', 'сбор', 'ushuru', 'kodi ya mapato', 'haraji', 'sars', 'boete', 'lisensie', 'مالیات', 'عوارض شهرداری', 'جریمه']),
-    _Rule.expense('الأقساط والقروض', <String>['قسط', 'قرض', 'loan', 'installment', 'mensualite', 'cicilan', 'kredit', 'paylater', 'prestamo', 'cuota', 'mensualidad', 'kredi', 'taksit', 'borç', 'pinjaman', 'ansuran', 'ptptn', 'darlehen', 'ratenzahlung', 'parcela', 'empréstimo', 'financiamento', 'consignado', 'rata', 'prestito', 'finanziamento', 'mutuo', 'lening', 'aflossing', 'afbetaling', 'rata', 'kredit rata', 'pozajmica', 'kredi', 'këst', 'hua', 'кредит', 'рассрочка', 'ипотека', 'платеж по кредиту', 'долг', 'займ', 'mkopo', 'deni', 'marejesho ya mkopo', 'bashi', 'rance', 'lamuni', 'paaiement', 'skuld', 'lenings', 'قسط', 'وام', 'بدهی', 'اقساط']),
+    _Rule.expense('التأمين', <String>['تامين', 'assurance', 'insurance', 'asuransi', 'seguro', 'sigorta', 'kasko', 'insurans', 'takaful', 'بیمہ', 'انشورنس', 'versicherung', 'haftpflicht', 'krankenversicherung', 'seguro', 'assicurazione', 'rc auto', 'verzekering', 'zorgverzekering', 'autoverzekering', 'osiguranje', 'sigurim', 'siguracion', 'страховка', 'страхование', 'осаго', 'каско', 'bima', 'inshora', 'versekering', 'motorversekering', 'lewensversekering', 'بیمه', 'بیمه ماشین', 'بیمه درمان', 'बीमा', 'इंश्योरेंस']),
+    _Rule.expense('الضرائب والرسوم', <String>['ضريبه', 'رسوم', 'طابع', 'impot', 'taxe', 'tax', 'fees', 'timbre', 'pajak', 'impuesto', 'impuestos', 'vergi', 'harç', 'cukai', 'ٹیکس', 'steuer', 'steuern', 'gebühr', 'gebühren', 'imposto', 'taxa', 'ipva', 'darf', 'tasse', 'imu', 'tari', 'bollo auto', 'f24', 'belasting', 'belastingdienst', 'heffing', 'porez', 'taksa', 'taksë', 'tatim', 'налог', 'налоги', 'пошлина', 'госпошлина', 'штраф', 'сбор', 'ushuru', 'kodi ya mapato', 'haraji', 'sars', 'boete', 'lisensie', 'مالیات', 'عوارض شهرداری', 'جریمه', 'टैक्स', 'कर', 'जुर्माना', 'शुल्क']),
+    _Rule.expense('الأقساط والقروض', <String>['قسط', 'قرض', 'loan', 'installment', 'mensualite', 'cicilan', 'kredit', 'paylater', 'prestamo', 'cuota', 'mensualidad', 'kredi', 'taksit', 'borç', 'pinjaman', 'ansuran', 'ptptn', 'darlehen', 'ratenzahlung', 'parcela', 'empréstimo', 'financiamento', 'consignado', 'rata', 'prestito', 'finanziamento', 'mutuo', 'lening', 'aflossing', 'afbetaling', 'rata', 'kredit rata', 'pozajmica', 'kredi', 'këst', 'hua', 'кредит', 'рассрочка', 'ипотека', 'платеж по кредиту', 'долг', 'займ', 'mkopo', 'deni', 'marejesho ya mkopo', 'bashi', 'rance', 'lamuni', 'paaiement', 'skuld', 'lenings', 'قسط', 'وام', 'بدهی', 'اقساط', 'किस्त', 'ईएमआई', 'लोन', 'क़र्ज़', 'कर्ज']),
   ];
 }
 
