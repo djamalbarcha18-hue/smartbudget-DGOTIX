@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/l10n/app_lang.dart';
 import 'package:smartbudget/core/localization/locale_controller.dart';
 import 'package:smartbudget/core/theme/theme_controller.dart';
+import 'package:smartbudget/core/theme/theme_reveal.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/features/settings/presentation/language_picker.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// Light/Dark toggle — flips theme instantly (no reload) and persists.
+/// Light/Dark toggle — the new theme spreads from the button (no reload) and
+/// persists.
 class ThemeToggleButton extends ConsumerWidget {
   const ThemeToggleButton({super.key});
 
@@ -22,7 +25,15 @@ class ThemeToggleButton extends ConsumerWidget {
 
     return IconButton(
       tooltip: l.themeToggleTooltip,
-      onPressed: () => ref.read(themeModeProvider.notifier).toggle(),
+      onPressed: () => ThemeReveal.run(
+          context,
+          to: themeColors(
+                  AppEnv.proThemes
+                      ? ref.read(themeStyleProvider)
+                      : AppThemeStyle.classic,
+                  dark: !isDark)
+              .bgPage,
+          () => ref.read(themeModeProvider.notifier).toggle()),
       icon: Icon(
         isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
         color: c.brand,

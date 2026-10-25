@@ -11,6 +11,7 @@ import 'package:smartbudget/core/localization/locale_controller.dart';
 import 'package:smartbudget/core/router/app_router.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/theme/theme_controller.dart';
+import 'package:smartbudget/core/theme/theme_reveal.dart';
 import 'package:smartbudget/core/time/clock_sync_controller.dart';
 import 'package:smartbudget/design_system/theme/ds_theme.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_gate.dart';
@@ -80,6 +81,9 @@ class SmartBudgetApp extends ConsumerWidget {
           ? DsTheme.black(lang: lang)
           : DsTheme.dark(lang: lang),
       themeMode: themeMode,
+      // Theme changes are shown by ThemeReveal; a lerp under it would show
+      // half-mixed colours as the circle passes.
+      themeAnimationDuration: Duration.zero,
       locale: locale,
       supportedLocales: SupportedLocales.all,
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
@@ -90,12 +94,14 @@ class SmartBudgetApp extends ConsumerWidget {
       builder: (BuildContext context, Widget? child) =>
           AnnotatedRegion<SystemUiOverlayStyle>(
         value: _systemBars(Theme.of(context).brightness),
-        child: LanguageSwitchCurtain(
-          child: AppLockGate(
-              child: MoneyPrivacyHost(
-                  child: OfflineBanner(
-                      child: UpdateBanner(
-                          child: child ?? const SizedBox.shrink())))),
+        child: ThemeRevealHost(
+          child: LanguageSwitchCurtain(
+            child: AppLockGate(
+                child: MoneyPrivacyHost(
+                    child: OfflineBanner(
+                        child: UpdateBanner(
+                            child: child ?? const SizedBox.shrink())))),
+          ),
         ),
       ),
     );

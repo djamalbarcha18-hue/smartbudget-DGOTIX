@@ -7,6 +7,7 @@ import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/theme/theme_controller.dart';
+import 'package:smartbudget/core/theme/theme_reveal.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
@@ -93,8 +94,20 @@ class SettingsPage extends ConsumerWidget {
                         _Segment<ThemeMode>(ThemeMode.system, l.themeSystem,
                             Icons.brightness_auto_outlined),
                       ],
-                      onChanged: (ThemeMode m) =>
-                          ref.read(themeModeProvider.notifier).set(m),
+                      onChanged: (ThemeMode m, BuildContext from) =>
+                          ThemeReveal.run(
+                              from,
+                              to: themeColors(
+                                      AppEnv.proThemes
+                                          ? ref.read(themeStyleProvider)
+                                          : AppThemeStyle.classic,
+                                      dark: m == ThemeMode.dark ||
+                                          (m == ThemeMode.system &&
+                                              MediaQuery.platformBrightnessOf(
+                                                      context) ==
+                                                  Brightness.dark))
+                                  .bgPage,
+                              () => ref.read(themeModeProvider.notifier).set(m)),
                     ),
                     if (AppEnv.proThemes) ...<Widget>[
                       const SizedBox(height: DsSpacing.lg),
@@ -324,125 +337,23 @@ class _ThemeStylePicker extends ConsumerWidget {
     final TextTheme t = Theme.of(context).textTheme;
     final AppThemeStyle current = ref.watch(themeStyleProvider);
 
-    void choose(AppThemeStyle style) {
+    void choose(AppThemeStyle style, BuildContext from) {
       if (style == current) return;
       final bool pro = style != AppThemeStyle.classic;
       if (pro && !PlanLimits.allow(context, Feature.proThemes)) return;
-      ref.read(themeStyleProvider.notifier).set(style);
-      // Black is a dark theme, the other Pro themes are light: show it.
-      if (style == AppThemeStyle.black) {
-        if (mode != ThemeMode.dark) {
-          ref.read(themeModeProvider.notifier).set(ThemeMode.dark);
+      final bool dark = style == AppThemeStyle.black ||
+          (!pro && Theme.of(context).brightness == Brightness.dark);
+      ThemeReveal.run(from, to: themeColors(style, dark: dark).bgPage, () {
+        ref.read(themeStyleProvider.notifier).set(style);
+        // Black is a dark theme, the other Pro themes are light: show it.
+        if (style == AppThemeStyle.black) {
+          if (mode != ThemeMode.dark) {
+            ref.read(themeModeProvider.notifier).set(ThemeMode.dark);
+          }
+        } else if (pro && mode == ThemeMode.dark) {
+          ref.read(themeModeProvider.notifier).set(ThemeMode.light);
         }
-      } else if (pro && mode == ThemeMode.dark) {
-        ref.read(themeModeProvider.notifier).set(ThemeMode.light);
-      }
-    }
-
-    Widget option(AppThemeStyle style, double width) {
-      final bool selected = style == current;
-      final DsColors preview = _preview(style);
-      final String label = _label(l, style);
-      return SizedBox(
-        width: width,
-        child: Semantics(
-          button: true,
-          selected: selected,
-          label: label,
-          child: InkWell(
-            borderRadius: DsRadius.brMd,
-            onTap: () => choose(style),
-            child: Container(
-              padding: const EdgeInsets.all(DsSpacing.sm),
-              decoration: BoxDecoration(
-                borderRadius: DsRadius.brMd,
-                border: Border.all(
-                    color: selected ? c.brand : c.border,
-                    width: selected ? 2 : 1),
-              ),
-              child: Column(
-                children: <Widget>[
-                  // A miniature: page, card, accent, income and expense; the
-                  // Pro themes carry the Pro badge in its corner.
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: <Widget>[
-                  Container(
-                    height: 44,
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: preview.bgPage,
-                      borderRadius: DsRadius.brSm,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsetsDirectional.symmetric(
-                          horizontal: 6),
-                      decoration: BoxDecoration(
-                        color: preview.surface,
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: preview.border),
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          for (final Color dot in <Color>[
-                            preview.brand,
-                            preview.income,
-                            preview.expense,
-                          ]) ...<Widget>[
-                            Container(
-                              width: 9,
-                              height: 9,
-                              decoration: BoxDecoration(
-                                  color: dot, shape: BoxShape.circle),
-                            ),
-                            const SizedBox(width: 3),
-                          ],
-                          const Spacer(),
-                          Container(
-                              width: 14, height: 4, color: preview.textMuted),
-                        ],
-                      ),
-                    ),
-                  ),
-                      // The chosen one is ticked in the other corner, so
-                      // the name below keeps its full width.
-                      if (selected)
-                        PositionedDirectional(
-                          top: -6,
-                          start: -6,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: c.surface, shape: BoxShape.circle),
-                            child: Icon(Icons.check_circle_rounded,
-                                size: 20, color: c.brand),
-                          ),
-                        ),
-                      if (style != AppThemeStyle.classic)
-                        PositionedDirectional(
-                          top: -6,
-                          end: -6,
-                          child: Container(
-                            padding: const EdgeInsets.all(2),
-                            decoration: BoxDecoration(
-                                color: c.surface, shape: BoxShape.circle),
-                            child: Icon(Icons.workspace_premium_rounded,
-                                size: 16, color: c.warning),
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: DsSpacing.xs),
-                  Text(label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: t.bodyMedium),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
+      });
     }
 
     return Column(
@@ -463,7 +374,16 @@ class _ThemeStylePicker extends ConsumerWidget {
               runSpacing: DsSpacing.md,
               children: <Widget>[
                 for (final AppThemeStyle s in AppThemeStyle.values)
-                  option(s, width),
+                  SizedBox(
+                    width: width,
+                    child: _ThemeOption(
+                      preview: _preview(s),
+                      label: _label(l, s),
+                      pro: s != AppThemeStyle.classic,
+                      selected: s == current,
+                      onTap: (BuildContext from) => choose(s, from),
+                    ),
+                  ),
               ],
             );
           },
@@ -472,6 +392,176 @@ class _ThemeStylePicker extends ConsumerWidget {
         Text(l.settingsThemeStyleHint,
             style: t.bodySmall?.copyWith(color: c.textFaint)),
       ],
+    );
+  }
+}
+
+/// One theme in the picker: a miniature of its page, card and colours. It
+/// dips under the finger; when chosen its frame lights up, the tick springs
+/// in and its colours swell gently.
+class _ThemeOption extends StatefulWidget {
+  const _ThemeOption({
+    required this.preview,
+    required this.label,
+    required this.pro,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final DsColors preview;
+  final String label;
+  final bool pro;
+  final bool selected;
+  final ValueChanged<BuildContext> onTap;
+
+  @override
+  State<_ThemeOption> createState() => _ThemeOptionState();
+}
+
+class _ThemeOptionState extends State<_ThemeOption> {
+  bool _down = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final DsColors p = widget.preview;
+    final bool selected = widget.selected;
+    final bool still = MediaQuery.disableAnimationsOf(context);
+    Duration d(int ms) => still ? Duration.zero : Duration(milliseconds: ms);
+
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: widget.label,
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _down = true),
+        onTapUp: (_) => setState(() => _down = false),
+        onTapCancel: () => setState(() => _down = false),
+        onTap: () => widget.onTap(context),
+        child: AnimatedScale(
+          scale: _down ? 0.94 : 1,
+          duration: d(120),
+          curve: Curves.easeOut,
+          child: AnimatedContainer(
+            duration: d(260),
+            curve: Curves.easeOutCubic,
+            padding: const EdgeInsets.all(DsSpacing.sm),
+            decoration: BoxDecoration(
+              borderRadius: DsRadius.brMd,
+              color: selected
+                  ? c.brand.withValues(alpha: 0.06)
+                  : Colors.transparent,
+              border: Border.all(
+                  color: selected ? c.brand : c.border,
+                  width: selected ? 2 : 1),
+              boxShadow: <BoxShadow>[
+                if (selected)
+                  BoxShadow(
+                      color: c.brand.withValues(alpha: 0.18),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4)),
+              ],
+            ),
+            child: Column(
+              children: <Widget>[
+                // A miniature: page, card, accent, income and expense; the
+                // Pro themes carry the Pro badge in its corner.
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: <Widget>[
+                    Container(
+                      height: 44,
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: p.bgPage,
+                        borderRadius: DsRadius.brSm,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsetsDirectional.symmetric(
+                            horizontal: 6),
+                        decoration: BoxDecoration(
+                          color: p.surface,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: p.border),
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            for (final (int i, Color dot) in <Color>[
+                              p.brand,
+                              p.income,
+                              p.expense,
+                            ].indexed) ...<Widget>[
+                              // The colours swell a little, in turn, when
+                              // chosen.
+                              AnimatedScale(
+                                scale: selected ? 1.12 : 1,
+                                duration: d(260 + 60 * i),
+                                curve: Curves.easeOutCubic,
+                                child: Container(
+                                  width: 9,
+                                  height: 9,
+                                  decoration: BoxDecoration(
+                                      color: dot, shape: BoxShape.circle),
+                                ),
+                              ),
+                              const SizedBox(width: 3),
+                            ],
+                            const Spacer(),
+                            Container(width: 14, height: 4, color: p.textMuted),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // The chosen one is ticked in the other corner, so the
+                    // name below keeps its full width.
+                    PositionedDirectional(
+                      top: -6,
+                      start: -6,
+                      child: AnimatedScale(
+                        scale: selected ? 1 : 0,
+                        duration: d(selected ? 420 : 160),
+                        curve: selected ? Curves.elasticOut : Curves.easeIn,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: c.surface, shape: BoxShape.circle),
+                          child: Icon(Icons.check_circle_rounded,
+                              size: 20, color: c.brand),
+                        ),
+                      ),
+                    ),
+                    if (widget.pro)
+                      PositionedDirectional(
+                        top: -6,
+                        end: -6,
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                              color: c.surface, shape: BoxShape.circle),
+                          child: Icon(Icons.workspace_premium_rounded,
+                              size: 16, color: c.warning),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: DsSpacing.xs),
+                AnimatedDefaultTextStyle(
+                  duration: d(200),
+                  style: (Theme.of(context).textTheme.bodyMedium ??
+                          const TextStyle())
+                      .copyWith(
+                          color: selected ? c.brand : c.textPrimary,
+                          fontWeight:
+                              selected ? FontWeight.w700 : FontWeight.w400),
+                  child: Text(widget.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -526,7 +616,9 @@ class _SegmentedRow<T> extends StatelessWidget {
 
   final T value;
   final List<_Segment<T>> options;
-  final ValueChanged<T> onChanged;
+
+  /// With the tapped chip's context, for effects that start from it.
+  final void Function(T value, BuildContext from) onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -540,7 +632,7 @@ class _SegmentedRow<T> extends StatelessWidget {
             label: opt.label,
             icon: opt.icon,
             selected: opt.value == value,
-            onTap: () => onChanged(opt.value),
+            onTap: (BuildContext from) => onChanged(opt.value, from),
             colors: c,
           ),
       ],
@@ -560,7 +652,7 @@ class _SegmentChip extends StatelessWidget {
   final String label;
   final IconData? icon;
   final bool selected;
-  final VoidCallback onTap;
+  final ValueChanged<BuildContext> onTap;
   final DsColors colors;
 
   @override
@@ -569,7 +661,7 @@ class _SegmentChip extends StatelessWidget {
       color: selected ? colors.brand : colors.surfaceMuted,
       borderRadius: DsRadius.brPill,
       child: InkWell(
-        onTap: onTap,
+        onTap: () => onTap(context),
         borderRadius: DsRadius.brPill,
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -712,7 +804,7 @@ class _DeveloperSectionState extends ConsumerState<_DeveloperSection> {
               for (final Plan p in Plan.values)
                 _Segment<Plan>(p, planName(l, p), null),
             ],
-            onChanged: (Plan p) => ref
+            onChanged: (Plan p, _) => ref
                 .read(entitlementProvider.notifier)
                 .hydrate(Entitlement(
                     plan: p, period: ref.read(entitlementProvider).period)),
@@ -727,7 +819,7 @@ class _DeveloperSectionState extends ConsumerState<_DeveloperSection> {
               _Segment<BillingPeriod>(
                   BillingPeriod.yearly, l.periodYearly, null),
             ],
-            onChanged: (BillingPeriod b) => ref
+            onChanged: (BillingPeriod b, _) => ref
                 .read(entitlementProvider.notifier)
                 .hydrate(ref.read(entitlementProvider).copyWith(period: b)),
           ),

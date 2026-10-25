@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/design_system/tokens/ds_colors.dart';
+
 /// Controls the active [ThemeMode] and persists it per viewer.
 ///
 /// Dark mode is the default (primary premium experience). The choice is stored
@@ -9,6 +11,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// every read/write is guarded so a storage failure can never break the app.
 /// The colours of the light theme: Classic (free) or a Pro theme.
 enum AppThemeStyle { classic, beige, sage, pomegranate, black }
+
+/// The colours a theme shows, as app.dart builds it: Black Gold is the dark
+/// Pro theme (its light side stays classic), the others are light.
+DsColors themeColors(AppThemeStyle style, {required bool dark}) => dark
+    ? (style == AppThemeStyle.black ? DsColors.black : DsColors.dark)
+    : switch (style) {
+        AppThemeStyle.beige => DsColors.beige,
+        AppThemeStyle.sage => DsColors.sage,
+        AppThemeStyle.pomegranate => DsColors.pomegranate,
+        AppThemeStyle.classic || AppThemeStyle.black => DsColors.light,
+      };
 
 /// The chosen light-theme colours (see AppEnv.proThemes). Stored on the
 /// device only.
