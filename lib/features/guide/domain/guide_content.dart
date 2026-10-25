@@ -30,7 +30,7 @@ abstract final class GuideContent {
           tr: _startTr, ms: _startMs, ur: _startUr, de: _startDe,
           pt: _startPt, it: _startIt, nl: _startNl, bs: _startBs,
           sq: _startSq, ru: _startRu, sw: _startSw, ha: _startHa,
-          af: _startAf, fa: _startFa, hi: _startHi);
+          af: _startAf, fa: _startFa, hi: _startHi, zh: _startZh);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
       lang.pick(_topicsAr, _topicsEn,
@@ -38,7 +38,7 @@ abstract final class GuideContent {
           tr: _topicsTr, ms: _topicsMs, ur: _topicsUr, de: _topicsDe,
           pt: _topicsPt, it: _topicsIt, nl: _topicsNl, bs: _topicsBs,
           sq: _topicsSq, ru: _topicsRu, sw: _topicsSw, ha: _topicsHa,
-          af: _topicsAf, fa: _topicsFa, hi: _topicsHi);
+          af: _topicsAf, fa: _topicsFa, hi: _topicsHi, zh: _topicsZh);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -4037,6 +4037,176 @@ abstract final class GuideContent {
         'डेटा और बैकअप में कभी भी पूरा बैकअप निकालें; साइन इन होने पर आपका डेटा'
             ' आपके डिवाइसों के बीच अपने आप सिंक होता है (ऑफ़लाइन काम के बाद भी),'
             ' और आप इसे बंद कर सकते हैं।',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Chinese) ----
+  static const List<String> _startZh = <String>[
+    '打开设置，选择你的语言、主题和基础货币——应用中的所有合计都'
+        '以这个货币显示。',
+    '添加你的收入和支出（或扫描收据）——其他一切都由它们计算得出。',
+    '设定月度预算，应用就会告诉你现在还能花多少。',
+    '查看总览和财务健康，了解自己的状况，然后逐步添加目标和借款。',
+  ];
+
+  // ---- Topics (Chinese) ----
+  static const List<GuideTopic> _topicsZh = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: '总览',
+      summary: '一眼看清你的这个月：收入、支出、储蓄以及钱花到了哪里。',
+      steps: <String>[
+        '卡片以你的基础货币显示本月的合计。',
+        '点击支出分布中的某一块，突出显示该类别。',
+        '提醒会告诉你需要关注的事项，比如超出预算的类别或紧迫的目标。',
+        '没有数据时卡片显示“—”——绝不编造任何内容。',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: '收入与支出',
+      summary: '记录每一笔资金往来——应用所有计算的基础。',
+      steps: <String>[
+        '用快速添加按钮记录收入或支出，包括金额、类别、日期和备注。',
+        '收入和支出各有自己的页面；“交易”页面同时显示两者。',
+        '在列表中搜索任意记录，点击即可编辑或删除。',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: '定期交易',
+      summary: '工资、房租和订阅会在日期到时自动添加。',
+      steps: <String>[
+        '添加收入或支出时，把“重复”设为每周、每月、每 3 个月、每'
+            ' 6 个月或每年。',
+        '对于金额会变的奖金或佣金，开启“每次金额不同”：每到日期，应'
+            '用都会询问实际金额，而不是加入估算值。',
+        '每到期一次，应用就会像普通交易一样添加——即使你一段时间没打'
+            '开，再次打开时也会补上。',
+        '在“定期交易”页面暂停、继续、修改金额或停止重复。已添加的交'
+            '易绝不会改变。',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: '扫描收据',
+      summary: '把收据照片变成一笔可以直接保存的支出。',
+      steps: <String>[
+        '在“支出”页面点击“扫描收据”，拍照或选择一张照片。',
+        '应用会填好商家、日期、金额和类别——保存前请检查。',
+        '云端扫描取决于你的方案；如果收据读不出来，请手动输入支出。',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: '月度预算',
+      summary: '逐月设定每个类别打算花多少。',
+      steps: <String>[
+        '在顶部选择年份和月份——同一个页面可以查看每个月。',
+        '为你想控制的类别设定上限。',
+        '进度条随支出增长；超出上限的类别会被标出。',
+        '在付费方案中，“建议一个分配”会根据你最近的支出把收入分配到'
+            '各类别——检查后再应用。',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: '目标与储蓄',
+      summary: '为某件具体的事存钱，并看看离目标还有多远。',
+      steps: <String>[
+        '创建一个目标，填写目标金额，也可以设定截止日期。',
+        '存钱时记录存入的金额；进度会自动更新。',
+        '临近截止日期的目标会在总览中突出显示。',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: '借款与贷款',
+      summary: '跟踪你欠别人的和别人欠你的。',
+      steps: <String>[
+        '添加每一笔借款或贷款，填写金额和对方。',
+        '更新已还金额，查看剩余部分。',
+        '借款会计入你的财务健康评分。',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: '项目组合',
+      summary: '把大项目放进短期、中期和长期的分组中。',
+      steps: <String>[
+        '添加项目，并为每个项目选择一个期限。',
+        '资金按顺序填充各分组，让你看到储蓄会先完成哪些项目。',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: '财务健康',
+      summary: '一个评分，告诉你的财务状况如何以及原因。',
+      steps: <String>[
+        '评分在你的设备上根据你自己的数据计算。',
+        '主要因素显示哪些有帮助、哪些有拖累——先改善它们。',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: '报告与分析',
+      summary: '查看全年的趋势以及钱花在了哪里。',
+      steps: <String>[
+        '选择一个年份，逐月对比收入和支出。',
+        '用明细找出随时间增长的类别。',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: '天课',
+      summary: '估算你财富的天课，并跟踪满年。',
+      steps: <String>[
+        '输入应缴天课的资产进行估算。',
+        '设定财富达到尼萨布的日期，伊斯兰历中就会显示太阴年的倒计时。',
+        '这是一个规划工具——请向合格的学者确认你的义务。',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: '汇率与市场',
+      summary: '来自公开数据源的当前汇率和加密货币价格。',
+      steps: <String>[
+        '汇率实时获取；每一行都显示其来源。',
+        '没有可靠来源的市场会显示“不可用”——绝不编造数字。',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'DGOTIX AI 助手',
+      summary: '用日常语言询问关于你的钱的问题。',
+      steps: <String>[
+        '输入问题或点击一个建议；助手会根据你数字的简短摘要来回答。',
+        '回答次数取决于你的方案；接近上限时会有提示。',
+        '回答是自动生成的——重要决定请再次核实。对话下方基于规则的洞'
+            '察始终可用，不需要 AI。',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: '方案与订阅',
+      summary: '对比免费版和 Pro，并管理你的订阅。',
+      steps: <String>[
+        '基础预算工具永久免费。',
+        '付费方案提高 AI 和云端扫描的额度，并增加更多功能。',
+        '订阅后，顶部会显示你当前的方案和续订日期，以及管理或取消的按'
+            '钮。',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: '设置、数据与备份',
+      summary: '让应用更合你心意，并保护好你的数据。',
+      steps: <String>[
+        '语言、主题和基础货币在“外观”和“地区”中。',
+        '管理你自己的收入和支出类别。',
+        '在“数据与备份”中随时导出完整备份；登录后，你的数据会在你的'
+            '设备之间自动同步（离线使用后也会），你也可以关闭同步。',
       ],
     ),
   ];

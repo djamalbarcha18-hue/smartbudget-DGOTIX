@@ -203,7 +203,7 @@ class ReportsPage extends ConsumerWidget {
             fr: 'T$s', id: 'K$s', es: 'T$s', tr: '$s. Çeyrek', ms: 'Suku $s', ur: 'سہ ماہی $s',
             de: 'Q$s', pt: '$sº tri',
             it: 'T$s', nl: 'K$s', bs: 'K$s', sq: 'T$s', ru: '$s кв.', sw: 'Robo $s', ha: 'Kwata $s',
-            af: 'K$s', fa: 'فصل $s', hi: 'तिमाही $s');
+            af: 'K$s', fa: 'فصل $s', hi: 'तिमाही $s', zh: '第$s季度');
       case ReportPeriod.halfYearly:
         return s == 2 ? l.half2 : l.half1;
       case ReportPeriod.yearly:

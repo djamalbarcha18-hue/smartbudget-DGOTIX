@@ -9,10 +9,10 @@ abstract final class LanguageNames {
       (_names[inLang.code] ?? _names['en']!)[lang.code] ?? lang.nativeName;
 
   // Rows follow [AppLang] order: ar en fr id es tr ms ur de pt it nl bs sq
-  // ru sw ha af fa hi.
+  // ru sw ha af fa hi zh.
   static const List<String> _codes = <String>[
     'ar', 'en', 'fr', 'id', 'es', 'tr', 'ms', 'ur', 'de', 'pt', 'it', 'nl', //
-    'bs', 'sq', 'ru', 'sw', 'ha', 'af', 'fa', 'hi',
+    'bs', 'sq', 'ru', 'sw', 'ha', 'af', 'fa', 'hi', 'zh',
   ];
 
   static final Map<String, Map<String, String>> _names =
@@ -45,6 +45,7 @@ abstract final class LanguageNames {
       'الأفريكانية',
       'الفارسية',
       'الهندية',
+      'الصينية',
     ],
     'en': <String>[
       'Arabic',
@@ -67,6 +68,7 @@ abstract final class LanguageNames {
       'Afrikaans',
       'Persian',
       'Hindi',
+      'Chinese',
     ],
     'fr': <String>[
       'Arabe',
@@ -89,6 +91,7 @@ abstract final class LanguageNames {
       'Afrikaans',
       'Persan',
       'Hindi',
+      'Chinois',
     ],
     'id': <String>[
       'Arab',
@@ -111,6 +114,7 @@ abstract final class LanguageNames {
       'Afrikaans',
       'Persia',
       'Hindi',
+      'Tionghoa',
     ],
     'es': <String>[
       'Árabe',
@@ -133,6 +137,7 @@ abstract final class LanguageNames {
       'Afrikáans',
       'Persa',
       'Hindi',
+      'Chino',
     ],
     'tr': <String>[
       'Arapça',
@@ -155,6 +160,7 @@ abstract final class LanguageNames {
       'Afrikaanca',
       'Farsça',
       'Hintçe',
+      'Çince',
     ],
     'ms': <String>[
       'Arab',
@@ -177,6 +183,7 @@ abstract final class LanguageNames {
       'Afrikaans',
       'Parsi',
       'Hindi',
+      'Cina',
     ],
     'ur': <String>[
       'عربی',
@@ -199,6 +206,7 @@ abstract final class LanguageNames {
       'افریکانز',
       'فارسی',
       'ہندی',
+      'چینی',
     ],
     'de': <String>[
       'Arabisch',
@@ -221,6 +229,7 @@ abstract final class LanguageNames {
       'Afrikaans',
       'Persisch',
       'Hindi',
+      'Chinesisch',
     ],
     'pt': <String>[
       'Árabe',
@@ -243,6 +252,7 @@ abstract final class LanguageNames {
       'Africâner',
       'Persa',
       'Hindi',
+      'Chinês',
     ],
     'it': <String>[
       'Arabo',
@@ -265,6 +275,7 @@ abstract final class LanguageNames {
       'Afrikaans',
       'Persiano',
       'Hindi',
+      'Cinese',
     ],
     'nl': <String>[
       'Arabisch',
@@ -287,6 +298,7 @@ abstract final class LanguageNames {
       'Afrikaans',
       'Perzisch',
       'Hindi',
+      'Chinees',
     ],
     'bs': <String>[
       'Arapski',
@@ -309,6 +321,7 @@ abstract final class LanguageNames {
       'Afrikans',
       'Perzijski',
       'Hindi',
+      'Kineski',
     ],
     'sq': <String>[
       'Arabisht',
@@ -331,6 +344,7 @@ abstract final class LanguageNames {
       'Afrikanisht',
       'Persisht',
       'Hindisht',
+      'Kinezisht',
     ],
     'ru': <String>[
       'Арабский',
@@ -353,6 +367,7 @@ abstract final class LanguageNames {
       'Африкаанс',
       'Персидский',
       'Хинди',
+      'Китайский',
     ],
     'sw': <String>[
       'Kiarabu',
@@ -375,6 +390,7 @@ abstract final class LanguageNames {
       'Kiafrikana',
       'Kiajemi',
       'Kihindi',
+      'Kichina',
     ],
     'ha': <String>[
       'Larabci',
@@ -397,6 +413,7 @@ abstract final class LanguageNames {
       'Harshen Afirkanci',
       'Farisanci',
       'Harshen Hindi',
+      'Harshen Sinanci',
     ],
     'af': <String>[
       'Arabies',
@@ -419,6 +436,7 @@ abstract final class LanguageNames {
       'Afrikaans',
       'Persies',
       'Hindi',
+      'Chinees',
     ],
     'fa': <String>[
       'عربی',
@@ -441,6 +459,7 @@ abstract final class LanguageNames {
       'آفریکانس',
       'فارسی',
       'هندی',
+      'چینی',
     ],
     'hi': <String>[
       'अरबी',
@@ -463,6 +482,30 @@ abstract final class LanguageNames {
       'अफ़्रीकान्स',
       'फ़ारसी',
       'हिन्दी',
+      'चीनी',
+    ],
+    'zh': <String>[
+      '阿拉伯语',
+      '英语',
+      '法语',
+      '印度尼西亚语',
+      '西班牙语',
+      '土耳其语',
+      '马来语',
+      '乌尔都语',
+      '德语',
+      '葡萄牙语',
+      '意大利语',
+      '荷兰语',
+      '波斯尼亚语',
+      '阿尔巴尼亚语',
+      '俄语',
+      '斯瓦希里语',
+      '豪萨语',
+      '南非荷兰语',
+      '波斯语',
+      '印地语',
+      '简体中文',
     ],
   };
 }
