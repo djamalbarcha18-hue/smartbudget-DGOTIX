@@ -46,6 +46,7 @@ abstract final class CurrencyDefaults {
     AppLang.ru: 'RUB',
     AppLang.sw: 'KES',
     AppLang.ha: 'NGN',
+    AppLang.ko: 'KRW',
     AppLang.ja: 'JPY',
     AppLang.zh: 'CNY',
     AppLang.hi: 'INR',

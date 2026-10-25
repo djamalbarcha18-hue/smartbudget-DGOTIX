@@ -9,10 +9,10 @@ abstract final class LanguageNames {
       (_names[inLang.code] ?? _names['en']!)[lang.code] ?? lang.nativeName;
 
   // Rows follow [AppLang] order: ar en fr id es tr ms ur de pt it nl bs sq
-  // ru sw ha af fa hi zh ja.
+  // ru sw ha af fa hi zh ja ko.
   static const List<String> _codes = <String>[
     'ar', 'en', 'fr', 'id', 'es', 'tr', 'ms', 'ur', 'de', 'pt', 'it', 'nl', //
-    'bs', 'sq', 'ru', 'sw', 'ha', 'af', 'fa', 'hi', 'zh', 'ja',
+    'bs', 'sq', 'ru', 'sw', 'ha', 'af', 'fa', 'hi', 'zh', 'ja', 'ko',
   ];
 
   static final Map<String, Map<String, String>> _names =
@@ -47,6 +47,7 @@ abstract final class LanguageNames {
       'الهندية',
       'الصينية',
       'اليابانية',
+      'الكورية',
     ],
     'en': <String>[
       'Arabic',
@@ -71,6 +72,7 @@ abstract final class LanguageNames {
       'Hindi',
       'Chinese',
       'Japanese',
+      'Korean',
     ],
     'fr': <String>[
       'Arabe',
@@ -95,6 +97,7 @@ abstract final class LanguageNames {
       'Hindi',
       'Chinois',
       'Japonais',
+      'Coréen',
     ],
     'id': <String>[
       'Arab',
@@ -119,6 +122,7 @@ abstract final class LanguageNames {
       'Hindi',
       'Tionghoa',
       'Jepang',
+      'Korea',
     ],
     'es': <String>[
       'Árabe',
@@ -143,6 +147,7 @@ abstract final class LanguageNames {
       'Hindi',
       'Chino',
       'Japonés',
+      'Coreano',
     ],
     'tr': <String>[
       'Arapça',
@@ -167,6 +172,7 @@ abstract final class LanguageNames {
       'Hintçe',
       'Çince',
       'Japonca',
+      'Korece',
     ],
     'ms': <String>[
       'Arab',
@@ -191,6 +197,7 @@ abstract final class LanguageNames {
       'Hindi',
       'Cina',
       'Jepun',
+      'Korea',
     ],
     'ur': <String>[
       'عربی',
@@ -215,6 +222,7 @@ abstract final class LanguageNames {
       'ہندی',
       'چینی',
       'جاپانی',
+      'کوریائی',
     ],
     'de': <String>[
       'Arabisch',
@@ -239,6 +247,7 @@ abstract final class LanguageNames {
       'Hindi',
       'Chinesisch',
       'Japanisch',
+      'Koreanisch',
     ],
     'pt': <String>[
       'Árabe',
@@ -263,6 +272,7 @@ abstract final class LanguageNames {
       'Hindi',
       'Chinês',
       'Japonês',
+      'Coreano',
     ],
     'it': <String>[
       'Arabo',
@@ -287,6 +297,7 @@ abstract final class LanguageNames {
       'Hindi',
       'Cinese',
       'Giapponese',
+      'Coreano',
     ],
     'nl': <String>[
       'Arabisch',
@@ -311,6 +322,7 @@ abstract final class LanguageNames {
       'Hindi',
       'Chinees',
       'Japans',
+      'Koreaans',
     ],
     'bs': <String>[
       'Arapski',
@@ -335,6 +347,7 @@ abstract final class LanguageNames {
       'Hindi',
       'Kineski',
       'Japanski',
+      'Korejski',
     ],
     'sq': <String>[
       'Arabisht',
@@ -359,6 +372,7 @@ abstract final class LanguageNames {
       'Hindisht',
       'Kinezisht',
       'Japonisht',
+      'Koreanisht',
     ],
     'ru': <String>[
       'Арабский',
@@ -383,6 +397,7 @@ abstract final class LanguageNames {
       'Хинди',
       'Китайский',
       'Японский',
+      'Корейский',
     ],
     'sw': <String>[
       'Kiarabu',
@@ -407,6 +422,7 @@ abstract final class LanguageNames {
       'Kihindi',
       'Kichina',
       'Kijapani',
+      'Kikorea',
     ],
     'ha': <String>[
       'Larabci',
@@ -431,6 +447,7 @@ abstract final class LanguageNames {
       'Harshen Hindi',
       'Harshen Sinanci',
       'Harshen Japan',
+      'Harshen Koriya',
     ],
     'af': <String>[
       'Arabies',
@@ -455,6 +472,7 @@ abstract final class LanguageNames {
       'Hindi',
       'Chinees',
       'Japannees',
+      'Koreaans',
     ],
     'fa': <String>[
       'عربی',
@@ -479,6 +497,7 @@ abstract final class LanguageNames {
       'هندی',
       'چینی',
       'ژاپنی',
+      'کره‌ای',
     ],
     'hi': <String>[
       'अरबी',
@@ -503,6 +522,7 @@ abstract final class LanguageNames {
       'हिन्दी',
       'चीनी',
       'जापानी',
+      'कोरियाई',
     ],
     'zh': <String>[
       '阿拉伯语',
@@ -527,6 +547,7 @@ abstract final class LanguageNames {
       '印地语',
       '简体中文',
       '日语',
+      '韩语',
     ],
     'ja': <String>[
       'アラビア語',
@@ -551,6 +572,32 @@ abstract final class LanguageNames {
       'ヒンディー語',
       '中国語（簡体字）',
       '日本語',
+      '韓国語',
+    ],
+    'ko': <String>[
+      '아랍어',
+      '영어',
+      '프랑스어',
+      '인도네시아어',
+      '스페인어',
+      '튀르키예어',
+      '말레이어',
+      '우르두어',
+      '독일어',
+      '포르투갈어',
+      '이탈리아어',
+      '네덜란드어',
+      '보스니아어',
+      '알바니아어',
+      '러시아어',
+      '스와힐리어',
+      '하우사어',
+      '아프리칸스어',
+      '페르시아어',
+      '힌디어',
+      '중국어(간체)',
+      '일본어',
+      '한국어',
     ],
   };
 }

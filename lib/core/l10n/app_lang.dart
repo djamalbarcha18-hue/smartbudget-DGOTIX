@@ -28,7 +28,8 @@ enum AppLang {
   fa('fa', 'فارسی', rtl: true, hidden: true),
   hi('hi', 'हिन्दी', hidden: true),
   zh('zh', '简体中文', hidden: true),
-  ja('ja', '日本語', hidden: true);
+  ja('ja', '日本語', hidden: true),
+  ko('ko', '한국어', hidden: true);
 
   const AppLang(this.code, this.nativeName,
       {this.rtl = false, this.hidden = false});
@@ -74,10 +75,12 @@ enum AppLang {
   bool get naskh => this == AppLang.ur || this == AppLang.fa;
 
   /// PDF reports are written in English: the PDF library can't join
-  /// Devanagari letters, and Chinese and Japanese fonts are too large to
-  /// bundle.
-  bool get pdfInEnglish =>
-      this == AppLang.hi || this == AppLang.zh || this == AppLang.ja;
+  /// Devanagari letters, and Chinese, Japanese and Korean fonts are too
+  /// large to bundle.
+  bool get pdfInEnglish => switch (this) {
+        AppLang.hi || AppLang.zh || AppLang.ja || AppLang.ko => true,
+        _ => false,
+      };
 
   /// Upper case with this language's rules: Turkish i becomes İ, not I.
   String upper(String s) =>
@@ -87,7 +90,7 @@ enum AppLang {
   /// back to English (names of currencies, markets…), so a new language can
   /// ship before every long text is translated.
   T pick<T>(T ar, T en,
-          {T? fr, T? id, T? es, T? tr, T? ms, T? ur, T? de, T? pt, T? it, T? nl, T? bs, T? sq, T? ru, T? sw, T? ha, T? af, T? fa, T? hi, T? zh, T? ja}) =>
+          {T? fr, T? id, T? es, T? tr, T? ms, T? ur, T? de, T? pt, T? it, T? nl, T? bs, T? sq, T? ru, T? sw, T? ha, T? af, T? fa, T? hi, T? zh, T? ja, T? ko}) =>
       switch (this) {
         AppLang.ar => ar,
         AppLang.en => en,
@@ -111,5 +114,6 @@ enum AppLang {
         AppLang.hi => hi ?? en,
         AppLang.zh => zh ?? en,
         AppLang.ja => ja ?? en,
+        AppLang.ko => ko ?? en,
       };
 }

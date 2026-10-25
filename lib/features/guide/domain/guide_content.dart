@@ -30,7 +30,7 @@ abstract final class GuideContent {
           tr: _startTr, ms: _startMs, ur: _startUr, de: _startDe,
           pt: _startPt, it: _startIt, nl: _startNl, bs: _startBs,
           sq: _startSq, ru: _startRu, sw: _startSw, ha: _startHa,
-          af: _startAf, fa: _startFa, hi: _startHi, zh: _startZh, ja: _startJa);
+          af: _startAf, fa: _startFa, hi: _startHi, zh: _startZh, ja: _startJa, ko: _startKo);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
       lang.pick(_topicsAr, _topicsEn,
@@ -38,7 +38,7 @@ abstract final class GuideContent {
           tr: _topicsTr, ms: _topicsMs, ur: _topicsUr, de: _topicsDe,
           pt: _topicsPt, it: _topicsIt, nl: _topicsNl, bs: _topicsBs,
           sq: _topicsSq, ru: _topicsRu, sw: _topicsSw, ha: _topicsHa,
-          af: _topicsAf, fa: _topicsFa, hi: _topicsHi, zh: _topicsZh, ja: _topicsJa);
+          af: _topicsAf, fa: _topicsFa, hi: _topicsHi, zh: _topicsZh, ja: _topicsJa, ko: _topicsKo);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -4398,6 +4398,208 @@ abstract final class GuideContent {
         '「データとバックアップ」でいつでも完全なバックアップを書き出'
             'せます。ログインすると、データは端末間で自動的に同期され（オ'
             'フラインで使った後も）、オフにもできます。',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Korean) ----
+  static const List<String> _startKo = <String>[
+    '설정을 열고 언어, 테마, 기준 통화를 고르세요 — 앱'
+        '의 모든 합계가 이 통화로 표시돼요.',
+    '수입과 지출을 추가하세요(또는 영수증 스캔) — 나머지'
+        '는 모두 여기서 계산돼요.',
+    '월 예산을 정하면 지금 얼마를 쓸 수 있는지 앱이 알려'
+        ' 줘요.',
+    '대시보드와 재무 건강에서 현재 상태를 확인하고, 조금씩'
+        ' 목표와 빚을 추가하세요.',
+  ];
+
+  // ---- Topics (Korean) ----
+  static const List<GuideTopic> _topicsKo = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: '대시보드',
+      summary: '이번 달을 한눈에: 수입, 지출, 저축, 그리고 돈이 '
+          '어디로 갔는지.',
+      steps: <String>[
+        '카드에 이번 달 합계가 기준 통화로 표시돼요.',
+        '지출 분포의 조각을 누르면 그 카테고리가 강조돼요.',
+        '알림이 예산을 넘은 카테고리나 급한 목표처럼 신경 쓸 '
+            '일을 알려 줘요.',
+        '데이터가 없으면 카드에 “—”가 표시돼요 — 아무것도 '
+            '지어내지 않아요.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: '수입과 지출',
+      summary: '모든 돈의 움직임을 기록하세요 — 앱의 모든 계산의 기'
+          '초예요.',
+      steps: <String>[
+        '빠른 추가 버튼으로 수입이나 지출을 금액, 카테고리, '
+            '날짜, 메모와 함께 기록하세요.',
+        '수입과 지출에는 각각의 화면이 있고, “거래”에는 둘 '
+            '다 표시돼요.',
+        '목록에서 검색해 어떤 기록이든 찾고, 누르면 수정하거나'
+            ' 삭제할 수 있어요.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: '반복 거래',
+      summary: '월급, 월세, 구독은 날짜가 되면 자동으로 추가돼요.',
+      steps: <String>[
+        '수입이나 지출을 추가할 때 “반복”을 매주, 매월, 3'
+            '개월마다, 6개월마다, 매년으로 정하세요.',
+        '금액이 바뀌는 보너스나 수수료에는 “금액이 매번 달라요”'
+            '를 켜세요: 날짜마다 예상 금액을 넣는 대신 실제 금액'
+            '을 물어봐요.',
+        '기한마다 일반 거래처럼 추가돼요 — 한동안 앱을 열지 '
+            '않아도 다시 열면 따라잡아요.',
+        '“반복 거래” 화면에서 일시 중지, 다시 시작, 금액 '
+            '변경, 반복 멈추기를 할 수 있어요. 이미 추가된 거래'
+            '는 바뀌지 않아요.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: '영수증 스캔',
+      summary: '영수증 사진을 바로 저장할 수 있는 지출로 바꿔요.',
+      steps: <String>[
+        '“지출” 화면에서 “영수증 스캔”을 누르고 사진을 찍거'
+            '나 고르세요.',
+        '앱이 가게, 날짜, 금액, 카테고리를 채워요 — 저장하'
+            '기 전에 확인하세요.',
+        '클라우드 스캔은 플랜에 따라 달라요. 영수증을 읽지 못'
+            '하면 지출을 직접 입력하세요.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: '월 예산',
+      summary: '카테고리마다 얼마를 쓸지 달마다 정하세요.',
+      steps: <String>[
+        '위에서 연도와 월을 고르세요 — 같은 화면에서 모든 달'
+            '을 볼 수 있어요.',
+        '관리하고 싶은 카테고리에 한도를 정하세요.',
+        '지출에 따라 막대가 차오르고, 한도를 넘은 카테고리는 '
+            '표시돼요.',
+        '유료 플랜에서는 “배분 제안”이 최근 지출을 바탕으로 '
+            '수입을 카테고리에 나눠요 — 확인한 뒤 적용하세요.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: '목표와 저축',
+      summary: '특정한 것을 위해 저축하고 얼마나 가까워졌는지 확인하세'
+          '요.',
+      steps: <String>[
+        '목표 금액과, 원하면 기한을 정해 목표를 만드세요.',
+        '저축할 때마다 기록하면 진행 상황이 자동으로 업데이트돼'
+            '요.',
+        '기한이 가까운 목표는 대시보드에서 눈에 띄게 표시돼요.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: '빌린 돈과 빌려준 돈',
+      summary: '갚을 돈과 받을 돈을 관리하세요.',
+      steps: <String>[
+        '빚이나 빌려준 돈을 금액, 상대방과 함께 추가하세요.',
+        '지금까지 갚은 금액을 업데이트하면 남은 금액을 볼 수 '
+            '있어요.',
+        '빚은 재무 건강 점수에 반영돼요.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: '프로젝트 포트폴리오',
+      summary: '큰 프로젝트를 단기, 중기, 장기로 나눠 담으세요.',
+      steps: <String>[
+        '프로젝트를 추가하고 각각 기간을 고르세요.',
+        '자금이 순서대로 채워지므로, 저축으로 어떤 프로젝트가 '
+            '먼저 끝나는지 볼 수 있어요.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: '재무 건강',
+      summary: '재무 상태가 어떤지, 그리고 그 이유를 보여 주는 점수'
+          '.',
+      steps: <String>[
+        '점수는 사용자의 데이터로 기기에서 계산돼요.',
+        '주요 요인이 무엇이 도움이 되고 무엇이 발목을 잡는지 '
+            '보여 줘요 — 먼저 그것부터 개선하세요.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: '보고서와 분석',
+      summary: '한 해의 추이와 돈이 어디로 가는지 확인하세요.',
+      steps: <String>[
+        '연도를 골라 달마다 수입과 지출을 비교하세요.',
+        '내역으로 시간이 지나며 늘어나는 카테고리를 찾아보세요.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: '자카트',
+      summary: '자산의 자카트를 추정하고 하울을 추적하세요.',
+      steps: <String>[
+        '자카트 대상 자산을 입력해 추정하세요.',
+        '자산이 니삽에 도달한 날을 정하면 히즈라력으로 태음년 '
+            '카운트다운이 표시돼요.',
+        '계획 도구예요 — 의무는 자격 있는 학자에게 확인하세요'
+            '.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: '환율과 시장',
+      summary: '공개 데이터의 현재 환율과 암호화폐 가격.',
+      steps: <String>[
+        '환율은 실시간으로 가져오며, 각 줄에 출처가 표시돼요.',
+        '믿을 만한 출처가 없는 시장은 “데이터 없음”으로 표시'
+            '돼요 — 숫자를 지어내지 않아요.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'DGOTIX AI 도우미',
+      summary: '돈에 대해 평소 말투로 질문하세요.',
+      steps: <String>[
+        '질문을 입력하거나 추천 질문을 누르면, 도우미가 숫자의'
+            ' 짧은 요약으로 답해요.',
+        '답변 횟수는 플랜에 따라 달라요. 한도에 가까워지면 알'
+            '려 드려요.',
+        '답변은 자동으로 생성돼요 — 중요한 결정은 다시 확인하'
+            '세요. 대화 아래의 규칙 기반 인사이트는 AI 없이도 '
+            '언제나 작동해요.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: '플랜과 구독',
+      summary: '무료와 Pro를 비교하고 구독을 관리하세요.',
+      steps: <String>[
+        '기본 예산 도구는 언제나 무료예요.',
+        '유료 플랜은 AI와 클라우드 스캔 한도를 늘리고 추가 '
+            '기능을 더해요.',
+        '구독하면 위에 현재 플랜과 갱신일이 관리·해지 버튼과 '
+            '함께 표시돼요.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: '설정, 데이터, 백업',
+      summary: '앱을 내게 맞추고 데이터를 안전하게 지키세요.',
+      steps: <String>[
+        '언어, 테마, 기준 통화는 “화면”과 “지역”에 있어요'
+            '.',
+        '나만의 수입·지출 카테고리를 관리하세요.',
+        '“데이터와 백업”에서 언제든 전체 백업을 내보낼 수 있'
+            '어요. 로그인하면 데이터가 기기 사이에서 자동으로 동기'
+            '화되고(오프라인으로 쓴 뒤에도), 끌 수도 있어요.',
       ],
     ),
   ];
