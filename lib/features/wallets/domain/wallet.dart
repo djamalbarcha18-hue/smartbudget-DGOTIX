@@ -278,6 +278,27 @@ abstract final class WalletSuggestions {
         'SAR' => const <(WalletType, String)>[
             (WalletType.ewallet, 'STC Pay'),
           ],
+        'NGN' => const <(WalletType, String)>[
+            (WalletType.ewallet, 'OPay'),
+            (WalletType.ewallet, 'PalmPay'),
+            (WalletType.bank, 'Moniepoint'),
+          ],
+        'KES' => const <(WalletType, String)>[
+            (WalletType.ewallet, 'M-Pesa'),
+            (WalletType.ewallet, 'Airtel Money'),
+          ],
+        'ZAR' => const <(WalletType, String)>[
+            (WalletType.bank, 'Capitec'),
+            (WalletType.bank, 'FNB'),
+          ],
+        'GHS' || 'XAF' => const <(WalletType, String)>[
+            (WalletType.ewallet, 'MTN MoMo'),
+            (WalletType.ewallet, 'Orange Money'),
+          ],
+        'XOF' => const <(WalletType, String)>[
+            (WalletType.ewallet, 'Wave'),
+            (WalletType.ewallet, 'Orange Money'),
+          ],
         'EUR' || 'USD' || 'GBP' => const <(WalletType, String)>[
             (WalletType.bank, 'Revolut'),
             (WalletType.ewallet, 'PayPal'),

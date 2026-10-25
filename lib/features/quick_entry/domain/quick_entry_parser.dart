@@ -620,6 +620,8 @@ abstract final class QuickEntryParser {
       'namirnice', 'market', 'pekara', 'hljeb', 'mlijeko', 'meso', 'voće', 'povrće', 'bingo', 'konzum', 'amko',
       'ushqime', 'market', 'dyqan', 'bukë', 'qumësht', 'mish', 'fruta', 'perime', 'spar', 'conad',
       'продукты', 'продуктов', 'супермаркет', 'магазин продуктов', 'хлеб', 'молоко', 'мясо', 'овощи', 'фрукты', 'рынок', 'базар', 'пятерочка', 'магнит', 'ашан', 'лента', 'перекресток', 'magnum', 'galmart', 'korzinka',
+      // Nigeria, Kenya, South Africa.
+      'shoprite', 'pick n pay', 'checkers', 'woolworths', 'naivas', 'quickmart', 'unga', 'garri',
     ]),
     _Rule.expense('المطاعم', <String>[
       'مطعم', 'قهوه', 'كافيه', 'كافي', 'بيتزا', 'شاورما', 'كرانتيكا',
@@ -637,6 +639,8 @@ abstract final class QuickEntryParser {
       'kafa', 'kahva', 'ćevapi', 'burek', 'ručak', 'večera', 'doručak', 'restoran', 'pizza',
       'kafe', 'byrek', 'drekë', 'darkë', 'mëngjes', 'restorant', 'pica', 'sufllaqe', 'qofte',
       'кофе', 'кафе', 'кофейня', 'ресторан', 'обед', 'ужин', 'завтрак', 'пицца', 'шаурма', 'бургер', 'плов', 'самса', 'доставка еды', 'яндекс еда', 'столовая',
+      // Nigeria, Kenya, South Africa.
+      'suya', 'jollof', 'chapati', 'nyama choma', 'mandazi', 'chicken republic',
     ]),
     _Rule.expense('النقل', <String>[
       'تاكسي', 'طاكسي', 'حافله', 'باص', 'ترامواي', 'ميترو', 'مترو', 'قطار',
@@ -652,6 +656,8 @@ abstract final class QuickEntryParser {
       'autobus', 'tramvaj', 'taksi', 'gradski prevoz', 'parking', 'putarina',
       'autobus', 'furgon', 'taksi', 'parking', 'biletë',
       'такси', 'автобус', 'метро', 'маршрутка', 'проезд', 'электричка', 'поезд', 'трамвай', 'троллейбус', 'яндекс такси', 'парковка', 'каршеринг',
+      // Nigeria, Kenya, South Africa.
+      'danfo', 'okada', 'keke', 'matatu', 'boda boda', 'bolt', 'fare', 'gautrain', 'minibus taxi',
     ]),
     _Rule.expense('الوقود', <String>[
       'بنزين', 'وقود', 'مازوت', 'ليصانص', 'essence', 'carburant', 'gasoil',
@@ -679,6 +685,8 @@ abstract final class QuickEntryParser {
       'struja', 'voda', 'grijanje', 'komunalije', 'režije', 'račun za struju',
       'dritat', 'energji', 'ujë', 'faturë', 'oshee', 'kesco',
       'коммуналка', 'коммунальные', 'коммунальные услуги', 'жкх', 'электричество', 'свет', 'вода', 'газ', 'отопление', 'квитанция',
+      // Nigeria, Kenya, South Africa.
+      'nepa', 'phcn', 'prepaid meter', 'kplc', 'tokens', 'eskom', 'prepaid electricity', 'municipal rates',
     ]),
     _Rule.expense('الاتصالات والإنترنت', <String>[
       'انترنت', 'فليكسي', 'رصيد', 'هاتف', 'موبيليس', 'جيزي', 'اوريدو',
@@ -693,6 +701,8 @@ abstract final class QuickEntryParser {
       'mobitel', 'kredit za mobitel', 'bh telecom', 'm tel', 'eronet',
       'telefon', 'rimbushje', 'vodafone', 'ipko', 'vala',
       'интернет', 'мобильная связь', 'связь', 'пополнение телефона', 'билайн', 'мтс', 'мегафон', 'теле2', 'beeline', 'kcell', 'activ', 'ucell', 'мегаком', 'tcell',
+      // Nigeria, Kenya, South Africa.
+      'airtime', 'data bundle', 'data bundles', 'mtn', 'glo', 'airtel', 'safaricom', 'vodacom', 'telkom', 'cell c',
     ]),
     _Rule.expense('الصحة', <String>[
       'صيدليه', 'دواء', 'ادويه', 'طبيب', 'دكتور', 'مستشفى', 'عياده',
@@ -760,6 +770,8 @@ abstract final class QuickEntryParser {
       'pretplata', 'članarina',
       'abonim', 'abonimi',
       'подписка', 'подписку', 'кинопоиск', 'яндекс плюс', 'ivi',
+      // Nigeria, Kenya, South Africa.
+      'dstv', 'gotv', 'showmax', 'startimes',
     ]),
     _Rule.expense('الرياضة واللياقة', <String>['جيم', 'نادي رياضي', 'رياضه', 'gym', 'salle de sport', 'fitness', 'spor salonu', 'gim', 'جم', 'fitnessstudio', 'academia', 'smart fit', 'palestra', 'sportschool', 'teretana', 'palestër', 'palestra', 'спортзал', 'фитнес', 'тренажерный зал', 'качалка', 'бассейн']),
     _Rule.expense('السفر', <String>['سفر', 'فندق', 'طياره', 'طيران', 'hotel', 'flight', 'voyage', 'travel', 'billet avion', 'tiket pesawat', 'liburan', 'viaje', 'vuelo', 'vacaciones', 'otel', 'uçak', 'uçak bileti', 'tatil', 'seyahat', 'percutian', 'tiket kapal terbang', 'ٹکٹ', 'reise', 'urlaub', 'flug', 'viagem', 'hotel', 'passagem aérea', 'voo', 'férias', 'viaggio', 'vacanza', 'volo', 'albergo', 'reis', 'vakantie', 'vlucht', 'vliegticket', 'putovanje', 'avionska karta', 'odmor', 'udhëtim', 'pushime', 'avion', 'hotel', 'отель', 'гостиница', 'авиабилет', 'авиабилеты', 'перелет', 'отпуск', 'путешествие', 'турпоездка']),
