@@ -40,6 +40,7 @@ abstract final class CurrencyDefaults {
     AppLang.ru: 'RUB',
     AppLang.sw: 'KES',
     AppLang.ha: 'NGN',
+    AppLang.af: 'ZAR',
   };
 
   /// The currency of [country] (ISO 3166-1 alpha-2), or null when the app

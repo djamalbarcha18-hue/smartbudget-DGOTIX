@@ -96,6 +96,10 @@ abstract final class LegalContent {
       ? 'ta ${AppConfig.supportEmail}'
       : 'ta shafin Taimako a cikin manhajar';
 
+  static String get _reachAf => AppConfig.hasSupportEmail
+      ? 'via ${AppConfig.supportEmail}'
+      : 'via die Hulp en ondersteuning-bladsy in die app';
+
   static List<LegalSection> sections(LegalDoc doc, {required AppLang lang}) =>
       switch (doc) {
         LegalDoc.privacy => lang.pick(_privacyAr, _privacyEn,
@@ -103,13 +107,13 @@ abstract final class LegalContent {
             tr: _privacyTr, ms: _privacyMs, ur: _privacyUr, de: _privacyDe,
             pt: _privacyPt, it: _privacyIt, nl: _privacyNl,
             bs: _privacyBs, sq: _privacySq, ru: _privacyRu,
-            sw: _privacySw, ha: _privacyHa),
+            sw: _privacySw, ha: _privacyHa, af: _privacyAf),
         LegalDoc.terms => lang.pick(_termsAr, _termsEn,
             fr: _termsFr, id: _termsId, es: _termsEs,
             tr: _termsTr, ms: _termsMs, ur: _termsUr, de: _termsDe,
             pt: _termsPt, it: _termsIt, nl: _termsNl,
             bs: _termsBs, sq: _termsSq, ru: _termsRu,
-            sw: _termsSw, ha: _termsHa),
+            sw: _termsSw, ha: _termsHa, af: _termsAf),
       };
 
   // ---- Privacy (English) ----
@@ -5010,6 +5014,292 @@ abstract final class LegalContent {
           'Za mu iya sabunta waɗannan sharuɗɗa mu nuna kwanan watan sigar '
               'ƙarshe; ci gaba da amfani bayan sabuntawa yana nufin ka amince da '
               'sharuɗɗan da aka gyara. Don tambayoyi, tuntuɓe mu $_reachHa.',
+        ),
+      ];
+
+  // ---- Privacy (Afrikaans) ----
+  static List<LegalSection> get _privacyAf => <LegalSection>[
+        LegalSection(
+          'Oorsig',
+          'Hierdie beleid verduidelik wat $_app stoor, waar dit gestoor word en '
+              'watter keuses jy het. Kortliks: jou finansiële data is joune, dit '
+              'word eers op jou toestel gestoor, en ons verkoop dit nooit, wys vir'
+              ' jou geen advertensies nie en volg jou nie. \'n Paar opsionele '
+              'funksies (aanmelding en sinchronisasie, DGOTIX AI, '
+              'strokie-skandering in die wolk en betaalde planne) stuur sekere '
+              'data na \'n diens slegs wanneer jy hulle gebruik, soos hieronder '
+              'beskryf.',
+        ),
+        const LegalSection(
+          'Wat ons stoor',
+          'Die inligting wat jy self invoer: inkomste, uitgawes, begrotings, '
+              'doelwitte, skuld, beursies, eie kategorieë en jou '
+              'vertoonvoorkeure (tema, taal, basisgeldeenheid). As jy \'n rekening '
+              'skep, hou ons ook jou e-posadres, jou plan en sy status, en '
+              'gebruikstellers per tydperk vir DGOTIX AI en strokie-skandering in '
+              'die wolk — slegs om jou plan se perke toe te pas. Ons hou nie jou '
+              'vrae aan DGOTIX AI of jou strokiefoto\'s nie; as jy \'n KI-antwoord '
+              'rapporteer, hou ons daardie antwoord en jou opsionele nota om dit '
+              'na te gaan.',
+        ),
+        const LegalSection(
+          'Waar jou data is',
+          'Alles word eers op jou toestel gestoor (in die app, of vir die '
+              'webweergawe in jou blaaier), sodat die app ook sonder \'n rekening '
+              'of verbinding werk. As jy aanmeld, word jou data ook outomaties '
+              'tussen jou toestelle gesinchroniseer: \'n kopie is in ons databasis '
+              '(aangebied deur Supabase), gekoppel aan jou rekening en so '
+              'afgeskerm dat net jy dit kan lees. Jy kan sinchronisasie in '
+              'Instellings afskakel; dan bly jou data net op hierdie toestel.',
+        ),
+        const LegalSection(
+          'Jou rekening en e-posse',
+          'Jou e-posadres word gebruik om jou aan te meld en om '
+              'rekening-e-posse te stuur, soos die bevestiging van jou adres en '
+              'die terugstel van jou wagwoord (gestuur via Brevo). Dit word nooit '
+              'vir advertensies gebruik of vir bemarking gedeel nie. By '
+              'registrasie en aanmelding hou \'n kort toets of jy \'n mens is '
+              '(Cloudflare Turnstile) outomatiese misbruik uit.',
+        ),
+        const LegalSection(
+          'DGOTIX AI',
+          'DGOTIX AI is opsioneel. Wanneer jy \'n vraag vra, word die teks van '
+              'daardie vraag en \'n opsomming van jou syfers (totale per maand en '
+              'kategorie tot 12 maande, begrotings, beursiesaldo\'s, doelwitte, '
+              'herhalende transaksies, seisoenbegrotings en spaarkringe — slegs '
+              'bedrae en datums, nooit beskrywings, notas of die name wat jy '
+              'dinge gee nie) via ons beveiligde bediener na \'n KI-verskaffer '
+              '(Google Gemini, OpenAI of Anthropic) gestuur om die antwoord te '
+              'maak. Ons bediener gebruik ons eie sleutels en teken slegs '
+              'gebruiksmetadata aan, nooit jou vraag of jou syfers nie. Ons '
+              'gebruik nie jou data om modelle op te lei nie. Antwoorde word '
+              'outomaties gemaak, dus kontroleer belangrike syfers voordat jy '
+              'daarvolgens optree.',
+        ),
+        const LegalSection(
+          'Strokie-skandering',
+          'Op Android kan strokies heeltemal op jou toestel gelees word. '
+              'Skandering in die wolk stuur die foto van die strokie via ons '
+              'beveiligde bediener na \'n KI-verskaffer, slegs om die winkel, '
+              'datum, bedrag, items en kategorie te lees; die foto word nie '
+              'gehou nie.',
+        ),
+        const LegalSection(
+          'Betalings en intekeninge',
+          'Betaalde planne is opsioneel. Jy betaal via die beveiligde '
+              'betaalblad van Whop (whop.com), ons betaalvennoot, of met PayPal as'
+              ' jy dit kies. Hulle versamel die faktuurbesonderhede wat hulle '
+              'nodig het (soos naam, e-pos, land en betaalmetode) volgens hul eie '
+              'privaatheidsbeleid; ons sien of stoor nooit jou volle '
+              'kaartbesonderhede nie. Ons hou jou plan, sy status, die '
+              'hernuwingsdatum en die betaalvennoot se intekeningsverwysings om '
+              'jou die regte toegang te gee, plus \'n rekord van koepons wat jy '
+              'gebruik.',
+        ),
+        const LegalSection(
+          'Diensverskaffers',
+          'Afhangende van die funksies wat jy gebruik: Supabase (rekeninge, '
+              'sinchronisasie en ons bedienerfunksies); Whop en PayPal '
+              '(betalings); Brevo (rekening-e-posse); Cloudflare Turnstile (die '
+              'toets by aanmelding); GitHub Pages (aanbieding van ons webwerf en '
+              'web-app); Google, OpenAI en Anthropic (DGOTIX AI en '
+              'strokie-skandering in die wolk); en openbare bronne vir markdata '
+              'vir lewendige syfers — wisselkoerse (open.er-api.com) en '
+              'kriptopryse (CoinGecko) — waarvan die versoeke slegs geldeenheid- '
+              'of batesimbole bevat, nooit jou persoonlike of finansiële data '
+              'nie. Elke verskaffer verwerk data slegs om sy deel van die diens '
+              'te lewer.',
+        ),
+        const LegalSection(
+          'Sekuriteit',
+          'Verbindings met ons dienste is geïnkripteer (HTTPS). In ons databasis '
+              'is elke gebruiker se data so afgeskerm dat een rekening nooit \'n '
+              'ander s\'n kan lees nie. Bedienersleutels kom nooit in die app nie, '
+              'betaalkennisgewings word nagegaan voordat hulle iets verander, en '
+              'jy kan \'n appslot op jou toestel opstel (PIN of vingerafdruk).',
+        ),
+        const LegalSection(
+          'Wat ons nie doen nie',
+          'Ons verkoop of verhuur nie jou data nie, wys geen advertensies nie en '
+              'doen nie gedragsopsporing of ontledings van jou finansiële '
+              'aktiwiteit nie.',
+        ),
+        // Only while the totals are on (and trips are only in SmartTrip).
+        if (AppEnv.anonStats && AppEnv.smartTrip)
+          const LegalSection(
+            'Anonieme tellings',
+            'Wanneer jy \'n reis skep, stuur die app slegs die woorde “\'n reis '
+                'is beplan”, en ons bediener tel een by daardie dag se totaal. '
+                'Niks anders word saam gestuur of gehou nie — geen rekening, '
+                'toestel, bestemming of bedrag nie — dus kan die totale nie aan '
+                'jou gekoppel word nie. Ons gebruik hulle slegs om te weet hoeveel'
+                ' die app gebruik word en om vennote totale syfers te wys. Jy kan '
+                'dit in Instellings, onder Privaatheid, afskakel.',
+          ),
+        const LegalSection(
+          'Hoe lank ons data hou',
+          'Data op jou toestel bly totdat jy dit skrap of die app verwyder. Jou '
+              'rekening, gesinchroniseerde data, gebruikstellers en '
+              'versoekmetadata word gehou solank jou rekening bestaan — slegs om '
+              'die diens te laat werk en jou plan se perke toe te pas — en vir '
+              'altyd uitgevee wanneer jy dit skrap. Whop en PayPal hou die '
+              'faktuurrekords wat hulle wetlik moet hou.',
+        ),
+        LegalSection(
+          'Jou regte en instellings',
+          'Jy kan jou data altyd in die app bekyk en regstel, \'n volledige '
+              'rugsteun uitvoer, sinchronisasie afskakel, afmeld en jou rekening '
+              'met al sy data skrap (sien hieronder). Jy kan \'n betaalde plan '
+              'enige tyd kanselleer (sien die Diensbepalings). Vir enige ander '
+              'versoek oor jou persoonlike data — soos insae, regstelling, '
+              'skrapping of beswaar — kontak ons $_reachAf en ons antwoord '
+              'vinnig.',
+        ),
+        const LegalSection(
+          'Skrap jou rekening en data',
+          'Maak in die app of die webweergawe, op enige toestel, Instellings '
+              'oop, dan Rekening, dan “Skrap my rekening”. Dit skrap jou rekening '
+              'en alles wat daarvoor op ons bedieners is (profiel, '
+              'gesinchroniseerde data, intekeningsrekords en gebruikstellers) vir '
+              'altyd, en vee jou data op daardie toestel uit. Kanselleer eers '
+              '\'n betaalde plan. Skrapping kan nie ontdoen word nie, dus voer '
+              'vooraf \'n rugsteun uit as jy jou data later dalk wil hê.',
+        ),
+        LegalSection(
+          'Ouderdom',
+          '$_app is bedoel vir mense van 16 jaar en ouer. Ons versamel nie '
+              'doelbewus data van jonger kinders nie; as jy dink \'n kind het \'n '
+              'rekening geskep, kontak ons $_reachAf en ons skrap dit.',
+        ),
+        LegalSection(
+          'Veranderinge en kontak',
+          'Ons kan hierdie beleid bywerk; die datum hierbo is dié van die '
+              'nuutste weergawe. Kontak ons vir vrae oor privaatheid $_reachAf.',
+        ),
+      ];
+
+  // ---- Terms (Afrikaans) ----
+  static List<LegalSection> get _termsAf => <LegalSection>[
+        LegalSection(
+          'Aanvaarding',
+          'Deur $_app te gebruik, stem jy in tot hierdie bepalings. As jy nie '
+              'instem nie, moet asseblief nie die app gebruik nie.',
+        ),
+        LegalSection(
+          'Wie dit mag gebruik',
+          'Jy moet ten minste 16 jaar oud wees om $_app te gebruik. As jy \'n '
+              'rekening skep, hou jou aanmeldbesonderhede veilig; jy is '
+              'verantwoordelik vir wat met jou rekening gebeur.',
+        ),
+        const LegalSection(
+          'Wat die diens is',
+          '\'n Persoonlike hulpmiddel vir begroting en beplanning om inkomste, '
+              'uitgawes, begrotings, doelwitte en verwante insigte te volg, met '
+              'opsionele KI-hulp, strokie-skandering, sinchronisasie tussen '
+              'toestelle en betaalde planne.',
+        ),
+        const LegalSection(
+          'Beplanningshulpmiddels, nie professionele advies nie',
+          'Begrotings, vooruitskattings, die zakat-berekening en die antwoorde '
+              'van DGOTIX AI is beplanningshulpmiddels om jou te help besluit. '
+              'Hulle is nie professionele finansiële, belasting- of godsdienstige '
+              'advies nie. Laat godsdienstige verpligtinge soos zakat deur \'n '
+              'gekwalifiseerde geleerde bevestig; raadpleeg \'n gekwalifiseerde '
+              'adviseur vir groot finansiële besluite.',
+        ),
+        const LegalSection(
+          'KI-funksies',
+          'DGOTIX AI en strokie-skandering in die wolk gee outomatiese '
+              'resultate om jou tyd te spaar; kontroleer belangrike syfers voordat'
+              ' jy daarvolgens optree. Hierdie funksies is ingesluit binne '
+              'redelike gebruiksperke wat van jou plan afhang, en kan aangepas '
+              'word om die diens vinnig en betroubaar vir almal te hou.',
+        ),
+        const LegalSection(
+          'Planne, fakturering en hernuwing',
+          'Die basiese app is gratis. Betaalde planne (Pro) ontsluit hoër perke '
+              'en ekstra funksies teen die pryse wat in die app gewys word. \'n '
+              'Betaalde plan hernu outomaties elke faktuurtydperk (maandeliks of '
+              'jaarliks) totdat jy kanselleer. Betalings word verwerk deur Whop, '
+              'ons betaalvennoot (of deur PayPal as jy dit kies); enige toepaslike'
+              ' belasting kan bygevoeg word en word altyd by die betaalblad gewys '
+              'voordat jy betaal. Jy kan enige tyd kanselleer en behou toegang '
+              'tot die einde van die tydperk wat jy reeds betaal het. As pryse of '
+              'funksies verander, word die huidige bepalings altyd gewys voordat '
+              'jy inteken.',
+        ),
+        const LegalSection(
+          'Ons betaalvennoot: Whop',
+          'SmartBudget word deur DGOTIX verkoop. Betaling en fakturering word '
+              'deur Whop (whop.com) hanteer, wat die betaling via sy eie '
+              'beveiligde betaalblad verwerk, die volle prys insluitend belasting '
+              'wys voordat jy betaal, en vir jou die kwitansie stuur. Jy kan jou '
+              'intekening in die app bestuur of kanselleer (Planne → Bestuur).',
+        ),
+        LegalSection(
+          'Terugbetalingsbeleid',
+          'Behalwe waar die wet dit vereis, word betalings in beginsel nie '
+              'terugbetaal sodra \'n faktuurtydperk begin het nie, omdat jy '
+              'toegang tot die einde daarvan behou. Jy kan enige tyd kanselleer om'
+              ' toekomstige hernuwings te stop. Vir \'n terugbetalingsversoek of '
+              '\'n vraag oor \'n heffing, kontak ons $_reachAf: ons oorweeg elke '
+              'versoek volgens die toepaslike verbruikersreg en betaal goedgekeurde'
+              ' bedrae terug via Whop (of PayPal).',
+        ),
+        const LegalSection(
+          'Koepons',
+          'Koepons is opsioneel en verander slegs die prys by betaling (of gee '
+              '\'n proeftydperk). Elke kode het sy eie voorwaardes (geldigheid, '
+              'gebruiksperke, een per klant) en kan teruggetrek word of verval. '
+              'Hulle het geen kontantwaarde nie en kan nie gekombineer word nie, '
+              'tensy anders vermeld.',
+        ),
+        const LegalSection(
+          'Jou data en rugsteun',
+          'Jy is verantwoordelik vir die akkuraatheid van die data wat jy '
+              'invoer. Om jou data veilig tussen toestelle te hou, meld aan om dit'
+              ' te sinchroniseer, of voer gereeld \'n rugsteun vanuit Instellings '
+              'uit.',
+        ),
+        LegalSection(
+          'Beskikbaarheid',
+          'Ons werk daaraan om $_app beskikbaar en betroubaar te hou. Sover die '
+              'wet dit toelaat, word die app “soos dit is” verskaf, sonder enige '
+              'waarborge. Lewendige markdata, KI en betalings hang af van dienste '
+              'van derde partye en kan soms vertraag of onbeskikbaar wees; so \'n '
+              'onderbreking keer jou nooit om die basiese begrotingshulpmiddels '
+              'te gebruik nie, wat ook vanlyn werk. Funksies kan mettertyd '
+              'verander.',
+        ),
+        const LegalSection(
+          'Beperking van aanspreeklikheid',
+          'Sover die wet dit toelaat, is ons nie aanspreeklik vir indirekte of '
+              'gevolglike skade nie, of vir besluite wat jy neem op grond van die '
+              'syfers in die app nie. Niks in hierdie bepalings beperk regte wat '
+              'jy as verbruiker het en waarvan nie afgewyk kan word nie.',
+        ),
+        const LegalSection(
+          'Aanvaarbare gebruik',
+          'Moenie die diens misbruik nie, moenie probeer om die sekuriteit of '
+              'planperke te breek of te omseil nie, en moenie dit vir onwettige '
+              'doeleindes gebruik nie.',
+        ),
+        LegalSection(
+          'Ophou gebruik',
+          'Jy kan enige tyd ophou om $_app te gebruik en jou rekening skrap. Ons'
+              ' kan \'n rekening opskort wat hierdie bepalings oortree of die diens'
+              ' of ander gebruikers in gevaar stel.',
+        ),
+        LegalSection(
+          'Handelsmerk en eiendom',
+          'Die naam $_app, die handelsmerk $_brand en die app se ontwerp en kode '
+              'bly die eiendom van hul eienaar. Jou data bly joune.',
+        ),
+        LegalSection(
+          'Veranderinge en kontak',
+          'Ons kan hierdie bepalings bywerk en die datum van die nuutste '
+              'weergawe wys; as jy die app ná \'n bywerking aanhou gebruik, stem '
+              'jy in tot die hersiene bepalings. Kontak ons vir vrae $_reachAf.',
         ),
       ];
 }

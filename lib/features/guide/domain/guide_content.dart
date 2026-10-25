@@ -29,14 +29,16 @@ abstract final class GuideContent {
           fr: _startFr, id: _startId, es: _startEs,
           tr: _startTr, ms: _startMs, ur: _startUr, de: _startDe,
           pt: _startPt, it: _startIt, nl: _startNl, bs: _startBs,
-          sq: _startSq, ru: _startRu, sw: _startSw, ha: _startHa);
+          sq: _startSq, ru: _startRu, sw: _startSw, ha: _startHa,
+          af: _startAf);
 
   static List<GuideTopic> topics({required AppLang lang}) =>
       lang.pick(_topicsAr, _topicsEn,
           fr: _topicsFr, id: _topicsId, es: _topicsEs,
           tr: _topicsTr, ms: _topicsMs, ur: _topicsUr, de: _topicsDe,
           pt: _topicsPt, it: _topicsIt, nl: _topicsNl, bs: _topicsBs,
-          sq: _topicsSq, ru: _topicsRu, sw: _topicsSw, ha: _topicsHa);
+          sq: _topicsSq, ru: _topicsRu, sw: _topicsSw, ha: _topicsHa,
+          af: _topicsAf);
 
   // ---- Getting started ----
   static const List<String> _startEn = <String>[
@@ -3459,6 +3461,209 @@ abstract final class GuideContent {
             ' idan ka shiga, bayananka ana daidaita su kai tsaye tsakanin '
             'na\'urorinka (har bayan aiki ba intanet), kuma za ka iya kashe '
             'hakan.',
+      ],
+    ),
+  ];
+
+  // ---- Getting started (Afrikaans) ----
+  static const List<String> _startAf = <String>[
+    'Maak Instellings oop en kies jou taal, tema en basisgeldeenheid — elke '
+        'totaal in die app word in daardie geldeenheid gewys.',
+    'Voeg jou inkomste en uitgawes by (of skandeer \'n strokie) — alles anders '
+        'word daaruit bereken.',
+    'Stel \'n maandbegroting sodat die app vir jou sê hoeveel jy nog kan '
+        'spandeer.',
+    'Kyk na die Oorsig en Finansiële gesondheid om te sien waar jy staan, en '
+        'voeg dan mettertyd doelwitte en skuld by.',
+  ];
+
+  // ---- Topics (Afrikaans) ----
+  static const List<GuideTopic> _topicsAf = <GuideTopic>[
+    GuideTopic(
+      route: '/dashboard',
+      title: 'Oorsig',
+      summary: 'Jou maand in een oogopslag: inkomste, uitgawes, spaargeld en '
+          'waarheen die geld gegaan het.',
+      steps: <String>[
+        'Die teëls wys hierdie maand se totale in jou basisgeldeenheid.',
+        'Tik op \'n deel van die uitgaweverdeling om daardie kategorie uit te '
+            'lig.',
+        'Waarskuwings wys jou wat aandag nodig het, soos \'n kategorie oor '
+            'begroting of \'n dringende doel.',
+        'Sonder data wys die teëls “—” — niks word ooit versin nie.',
+      ],
+    ),
+    GuideTopic(
+      route: '/transactions',
+      title: 'Inkomste en uitgawes',
+      summary: 'Teken elke geldbeweging aan — die basis van elke berekening in '
+          'die app.',
+      steps: <String>[
+        'Gebruik die vinnig-byvoeg-knoppie om inkomste of \'n uitgawe met '
+            'bedrag, kategorie, datum en nota aan te teken.',
+        'Inkomste en Uitgawes het elk hul eie skerm; Transaksies wys hulle '
+            'saam.',
+        'Deursoek die lys om enige inskrywing te vind, en tik daarop om dit te '
+            'wysig of te skrap.',
+      ],
+    ),
+    GuideTopic(
+      route: '/recurring',
+      title: 'Herhalende transaksies',
+      summary: 'Salaris, huur en intekeninge word outomaties op hul datum '
+          'bygevoeg.',
+      steps: <String>[
+        'Wanneer jy inkomste of \'n uitgawe byvoeg, stel “Herhaal” op elke '
+            'week, maand, 3 maande, 6 maande of jaar.',
+        'Vir \'n bonus of kommissie wat wissel, skakel “Die bedrag verander '
+            'elke keer” aan: op elke datum vra die app die werklike bedrag in '
+            'plaas daarvan om \'n skatting by te voeg.',
+        'Elke keer as dit betaalbaar is, voeg die app dit as \'n gewone '
+            'transaksie by — selfs as jy weg was, haal dit in sodra jy die app '
+            'weer oopmaak.',
+        'Op die Herhalend-skerm kan jy onderbreek, hervat, die bedrag verander '
+            'of die herhaling stop. Reeds bygevoegde transaksies verander nooit '
+            'nie.',
+      ],
+    ),
+    GuideTopic(
+      route: '/expenses',
+      title: 'Skandeer \'n strokie',
+      summary: 'Maak van \'n foto van \'n strokie \'n uitgawe wat gereed is om '
+          'te stoor.',
+      steps: <String>[
+        'Tik op die Uitgawes-skerm op “Skandeer strokie” en neem of kies \'n '
+            'foto.',
+        'Die app vul die handelaar, datum, bedrag en kategorie in — gaan hulle '
+            'na voordat jy stoor.',
+        'Skandering in die wolk hang van jou plan af; as \'n strokie nie '
+            'gelees kan word nie, voer die uitgawe self in.',
+      ],
+    ),
+    GuideTopic(
+      route: '/budget',
+      title: 'Maandbegroting',
+      summary: 'Beplan hoeveel jy per kategorie wil spandeer, maand na maand.',
+      steps: <String>[
+        'Kies die jaar en maand bo-aan — een skerm dek elke maand.',
+        'Stel \'n limiet vir elke kategorie wat jy wil beheer.',
+        'Vorderingsbalke vul soos jy spandeer; \'n kategorie oor sy limiet word '
+            'gemerk.',
+        'Op \'n betaalde plan verdeel “Stel \'n verdeling voor” jou inkomste '
+            'oor die kategorieë op grond van jou eie onlangse uitgawes — gaan '
+            'dit na, en pas dit dan toe.',
+      ],
+    ),
+    GuideTopic(
+      route: '/goals',
+      title: 'Doelwitte en spaar',
+      summary: 'Spaar vir iets spesifieks en sien hoe naby jy is.',
+      steps: <String>[
+        'Skep \'n doel met \'n teikenbedrag en, as jy wil, \'n sperdatum.',
+        'Teken bydraes aan soos jy spaar; die vordering word outomaties '
+            'bygewerk.',
+        'Doelwitte naby hul sperdatum word in die Oorsig uitgelig.',
+      ],
+    ),
+    GuideTopic(
+      route: '/debts',
+      title: 'Skuld en lenings',
+      summary: 'Hou dop wat jy skuld en wat ander jou skuld.',
+      steps: <String>[
+        'Voeg elke skuld of lening by met sy bedrag en die persoon of party.',
+        'Werk die bedrag wat reeds betaal is by om te sien wat oorbly.',
+        'Skuld tel mee in jou finansiële gesondheidstelling.',
+      ],
+    ),
+    GuideTopic(
+      route: '/portfolio',
+      title: 'Projekportefeulje',
+      summary: 'Beplan groter projekte in vakke vir kort-, medium- en '
+          'langtermyn.',
+      steps: <String>[
+        'Voeg projekte by en plaas elkeen in \'n termyn.',
+        'Die befondsing vul die vakke in volgorde, sodat jy sien watter '
+            'projekte jou spaargeld eerste dek.',
+      ],
+    ),
+    GuideTopic(
+      route: '/health',
+      title: 'Finansiële gesondheid',
+      summary: '\'n Telling wat opsom hoe gesond jou finansies is, en hoekom.',
+      steps: <String>[
+        'Die telling word op jou toestel uit jou eie data bereken.',
+        'Die belangrikste faktore wys wat help of skade doen — verbeter hulle '
+            'eerste.',
+      ],
+    ),
+    GuideTopic(
+      route: '/reports',
+      title: 'Verslae en ontledings',
+      summary: 'Sien die tendense oor die jaar en waarheen jou geld gaan.',
+      steps: <String>[
+        'Kies \'n jaar om inkomste en uitgawes maand vir maand te vergelyk.',
+        'Gebruik die ontledings om kategorieë raak te sien wat mettertyd '
+            'groei.',
+      ],
+    ),
+    GuideTopic(
+      route: '/zakat',
+      title: 'Zakat',
+      summary: 'Skat die zakat op jou rykdom en volg die hawl.',
+      steps: <String>[
+        'Voer jou zakat-pligtige bates in om \'n skatting te kry.',
+        'Stel die datum waarop jou rykdom die nisab bereik het om die aftelling'
+            ' van die maanjaar te volg, gewys in die Hijri-kalender.',
+        'Dit is \'n beplanningshulpmiddel — laat jou verpligting deur \'n '
+            'gekwalifiseerde geleerde bevestig.',
+      ],
+    ),
+    GuideTopic(
+      route: '/markets',
+      title: 'Wisselkoerse en markte',
+      summary: 'Huidige wisselkoerse en kriptopryse uit openbare bronne.',
+      steps: <String>[
+        'Koerse word lewendig gehaal; elke reël wys sy bron.',
+        'As \'n mark geen betroubare bron het nie, staan daar “onbeskikbaar” — '
+            'nooit \'n versinde getal nie.',
+      ],
+    ),
+    GuideTopic(
+      route: '/assistant',
+      title: 'KI-assistent DGOTIX AI',
+      summary: 'Vra vrae oor jou finansies in gewone taal.',
+      steps: <String>[
+        'Tik \'n vraag of tik op \'n voorstel; die assistent antwoord met '
+            '\'n kort opsomming van jou syfers.',
+        'Die aantal antwoorde hang van jou plan af; jy sien \'n kennisgewing '
+            'wanneer jy naby die limiet is.',
+        'Antwoorde word outomaties gemaak — kontroleer belangrike besluite. '
+            'Die reëlgebaseerde insigte onder die gesprek werk altyd, selfs '
+            'sonder KI.',
+      ],
+    ),
+    GuideTopic(
+      route: '/plans',
+      title: 'Planne en intekeninge',
+      summary: 'Vergelyk Gratis en Pro, en bestuur jou intekening.',
+      steps: <String>[
+        'Die basiese begrotingshulpmiddels is vir altyd gratis.',
+        'Betaalde planne verhoog die perke vir KI en wolkskandering en voeg '
+            'ekstra funksies by.',
+        'As jy inteken, verskyn jou huidige plan en hernuwingsdatum bo-aan, '
+            'met \'n knoppie om te bestuur of te kanselleer.',
+      ],
+    ),
+    GuideTopic(
+      route: '/settings',
+      title: 'Instellings, data en rugsteun',
+      summary: 'Maak die app joune en hou jou data veilig.',
+      steps: <String>[
+        'Taal, tema en basisgeldeenheid is onder Voorkoms en Streek.',
+        'Bestuur jou eie inkomste- en uitgawekategorieë.',
+        'Onder Data en rugsteun voer jy enige tyd \'n volledige rugsteun uit; '
+            'as jy aangemeld is, word jou data outomaties tussen jou toestelle '
+            'gesinchroniseer (ook ná vanlyn werk), en jy kan dit afskakel.',
       ],
     ),
   ];

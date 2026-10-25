@@ -1192,6 +1192,75 @@ abstract final class Catalog {
     'أخرى': 'Wani',
   };
 
+  /// Afrikaans display labels, keyed like [_en].
+  static const Map<String, String> _af = <String, String>{
+    // Income
+    'راتب أساسي': 'Salaris',
+    'مكافآت وحوافز': 'Bonusse en aansporings',
+    'مكافأة نهاية الخدمة': 'Diensbeëindigingsvoordeel',
+    'معاش تقاعدي': 'Pensioen',
+    'عمل حر': 'Vryskutwerk',
+    'عمولات': 'Kommissie',
+    'أرباح تجارية': 'Besigheidswins',
+    'دخل استثماري': 'Beleggingsinkomste',
+    'أرباح أسهم وتوزيعات': 'Dividende',
+    'أرباح العملات الرقمية': 'Kriptowins',
+    'إيجارات': 'Huurinkomste',
+    'تأجير قصير الأمد': 'Korttermynverhuring',
+    'تجارة إلكترونية': 'Aanlyn verkope',
+    'بيع أصول أو ممتلكات': 'Verkoop van bates',
+    'محتوى رقمي وإبداعي': 'Digitale en kreatiewe inhoud',
+    'استرجاع نقدي ومكافآت': 'Kontant terug en belonings',
+    'منحة أو إعانة': 'Toelae of toelaag',
+    'ميراث': 'Erfenis',
+    'استرداد أو تعويض': 'Terugbetaling of vergoeding',
+    'هدايا': 'Geskenke',
+    'زكاة أو صدقة مستلمة': 'Ontvangde zakat of sadaqa',
+    // Expenses
+    'الطعام': 'Kruideniersware',
+    'المطاعم': 'Uiteet',
+    'النقل': 'Vervoer',
+    'السكن': 'Behuising',
+    'الفواتير': 'Rekeninge',
+    'الاتصالات والإنترنت': 'Foon en internet',
+    'الصحة': 'Gesondheid',
+    'التعليم': 'Onderwys',
+    'الأطفال والعائلة': 'Kinders en gesin',
+    'التسوق': 'Inkopies',
+    'الملابس': 'Klere',
+    'الترفيه': 'Vermaak',
+    'الرياضة واللياقة': 'Sport en fiksheid',
+    'الاشتراكات': 'Intekeninge',
+    'السفر': 'Reis',
+    'الأقساط والقروض': 'Lenings en paaiemente',
+    'التأمين': 'Versekering',
+    'الضرائب والرسوم': 'Belasting en fooie',
+    'الصيانة والإصلاح': 'Onderhoud en herstel',
+    'الأثاث والمنزل': 'Huis en meubels',
+    'الوقود': 'Brandstof',
+    'الخدمات المهنية والقانونية': 'Professionele en regsdienste',
+    'البرمجيات والأدوات الرقمية': 'Sagteware en digitale gereedskap',
+    'الحج والعمرة': 'Hadj en Oemra',
+    'صدقة وتبرّعات': 'Sadaqa en skenkings',
+    'زكاة': 'Zakat',
+    'الادخار والاستثمار': 'Spaar en belê',
+    'الطوارئ': 'Noodgevalle',
+    // Payment methods
+    'نقداً': 'Kontant',
+    'بطاقة بنكية': 'Debietkaart',
+    'بطاقة ائتمان': 'Kredietkaart',
+    'محفظة إلكترونية': 'E-beursie',
+    'تحويل الكتروني': 'Elektroniese oordrag (EFT)',
+    'تحويل بنكي فوري': 'Kitsbetaling',
+    'الدفع عند الاستلام': 'Betaal by aflewering',
+    'محفظة عملات رقمية': 'Kriptobeursie',
+    'أموال عبر الهاتف': 'Selfoongeld',
+    'شيك': 'Tjek',
+    'بطاقة هدايا أو قسيمة': 'Geskenkkaart of koopbewys',
+    // Shared
+    'أخرى': 'Ander',
+  };
+
   /// Localized display label for a stored category/payment value.
   static String label(String value, {required AppLang lang}) =>
       lang.pick(value, _en[value] ?? value,
@@ -1209,5 +1278,6 @@ abstract final class Catalog {
           sq: _sq[value] ?? _en[value] ?? value,
           ru: _ru[value] ?? _en[value] ?? value,
           sw: _sw[value] ?? _en[value] ?? value,
-          ha: _ha[value] ?? _en[value] ?? value);
+          ha: _ha[value] ?? _en[value] ?? value,
+          af: _af[value] ?? _en[value] ?? value);
 }

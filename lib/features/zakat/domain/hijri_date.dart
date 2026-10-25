@@ -144,12 +144,19 @@ class HijriDate {
     'Zul Hajji',
   ];
 
+  static const List<String> monthsAf = <String>[
+    'Moeharram', 'Safar', 'Rabi al-Awwal', 'Rabi al-Thani', 'Djoemada al-Oela',
+    'Djoemada al-Thania', 'Radjab', 'Sjaban', 'Ramadan', 'Sjawwal',
+    'Dhoel-Qada', 'Dhoel-Hidja',
+  ];
+
   String monthName({required AppLang lang}) => (month >= 1 && month <= 12)
       ? lang.pick(monthsAr, monthsEn,
           fr: monthsFr, id: monthsId, es: monthsEs,
           tr: monthsTr, ms: monthsMs, ur: monthsUr, de: monthsDe,
           pt: monthsPt, it: monthsIt,
-          nl: monthsNl, bs: monthsBs, sq: monthsSq, ru: monthsRu, sw: monthsSw, ha: monthsHa)[month - 1]
+          nl: monthsNl, bs: monthsBs, sq: monthsSq, ru: monthsRu, sw: monthsSw, ha: monthsHa,
+          af: monthsAf)[month - 1]
       : '';
 
   /// Formats as `day month year هـ`, e.g. "12 رمضان 1446 هـ".
@@ -170,7 +177,8 @@ class HijriDate {
       sq: '$day ${monthName(lang: lang)} $year H.',
       ru: '$day ${monthName(lang: lang)} $year г. х.',
       sw: '$day ${monthName(lang: lang)} $year H',
-      ha: '$day ${monthName(lang: lang)} $year H');
+      ha: '$day ${monthName(lang: lang)} $year H',
+      af: '$day ${monthName(lang: lang)} $year H.');
 
   /// Julian Day Number for this Hijri date (tabular civil calendar).
   int toJdn() =>
