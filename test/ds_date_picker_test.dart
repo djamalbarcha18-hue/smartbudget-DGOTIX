@@ -5,6 +5,8 @@ import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/l10n/latin_digits.dart';
 import 'package:smartbudget/core/localization/fallback_localizations.dart';
 import 'package:smartbudget/design_system/components/ds_date_picker.dart';
+import 'package:smartbudget/design_system/theme/ds_theme.dart';
+import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Opens the picker in [locale] and returns what OK gives: [typed] in the
@@ -190,5 +192,23 @@ void main() {
         allOf(contains('أكتوبر'), contains('2026')));
     // A language without date data falls back to English.
     expect(dayText(const Locale('ha'), d), isNotEmpty);
+  });
+
+  test('the picker takes the theme\'s colours', () {
+    for (final (ThemeData theme, DsColors c) in <(ThemeData, DsColors)>[
+      (DsTheme.light(), DsColors.light),
+      (DsTheme.dark(), DsColors.dark),
+      (DsTheme.black(), DsColors.black),
+      (DsTheme.beige(), DsColors.beige),
+    ]) {
+      final DatePickerThemeData d = theme.datePickerTheme;
+      expect(d.headerBackgroundColor, c.brand);
+      expect(d.headerForegroundColor, c.onBrand);
+      expect(d.backgroundColor, c.bgElevated);
+      expect(d.dayBackgroundColor?.resolve(<WidgetState>{WidgetState.selected}),
+          c.brand);
+      expect(d.dayForegroundColor?.resolve(<WidgetState>{}), c.textPrimary);
+      expect(d.todayBorder?.color, c.brand);
+    }
   });
 }

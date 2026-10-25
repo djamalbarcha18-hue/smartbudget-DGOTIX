@@ -114,7 +114,82 @@ abstract final class DsTheme {
         ),
         textStyle: textTheme.bodySmall?.copyWith(color: colors.textPrimary),
       ),
+      datePickerTheme: _datePicker(colors, textTheme),
       extensions: <ThemeExtension<dynamic>>[colors, glass],
+    );
+  }
+
+  /// The date picker in the theme's colours: a header in the accent, the
+  /// chosen day filled with it, today ringed, the typed-date field like the
+  /// app's own fields.
+  static DatePickerThemeData _datePicker(DsColors c, TextTheme t) {
+    Color? on(Set<WidgetState> s, Color selected, Color? rest) =>
+        s.contains(WidgetState.disabled)
+            ? c.textFaint
+            : s.contains(WidgetState.selected)
+                ? selected
+                : rest;
+    OutlineInputBorder border(Color color, [double width = 1]) =>
+        OutlineInputBorder(
+          borderRadius: DsRadius.brMd,
+          borderSide: BorderSide(color: color, width: width),
+        );
+    return DatePickerThemeData(
+      backgroundColor: c.bgElevated,
+      surfaceTintColor: Colors.transparent,
+      shadowColor: c.shadow,
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: DsRadius.brXl,
+        side: BorderSide(color: c.border),
+      ),
+      headerBackgroundColor: c.brand,
+      headerForegroundColor: c.onBrand,
+      headerHeadlineStyle:
+          t.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+      headerHelpStyle: t.labelLarge,
+      subHeaderForegroundColor: c.textPrimary,
+      weekdayStyle: t.labelMedium
+          ?.copyWith(color: c.textMuted, fontWeight: FontWeight.w600),
+      dayStyle: t.bodyMedium,
+      dayForegroundColor: WidgetStateProperty.resolveWith(
+          (Set<WidgetState> s) => on(s, c.onBrand, c.textPrimary)),
+      dayBackgroundColor: WidgetStateProperty.resolveWith(
+          (Set<WidgetState> s) =>
+              s.contains(WidgetState.selected) ? c.brand : null),
+      dayOverlayColor:
+          WidgetStatePropertyAll<Color>(c.brand.withValues(alpha: 0.12)),
+      todayForegroundColor: WidgetStateProperty.resolveWith(
+          (Set<WidgetState> s) => on(s, c.onBrand, c.brand)),
+      todayBackgroundColor: WidgetStateProperty.resolveWith(
+          (Set<WidgetState> s) =>
+              s.contains(WidgetState.selected) ? c.brand : null),
+      todayBorder: BorderSide(color: c.brand, width: 1.5),
+      yearStyle: t.bodyLarge,
+      yearForegroundColor: WidgetStateProperty.resolveWith(
+          (Set<WidgetState> s) => on(s, c.onBrand, c.textPrimary)),
+      yearBackgroundColor: WidgetStateProperty.resolveWith(
+          (Set<WidgetState> s) =>
+              s.contains(WidgetState.selected) ? c.brand : null),
+      yearOverlayColor:
+          WidgetStatePropertyAll<Color>(c.brand.withValues(alpha: 0.12)),
+      dividerColor: c.border,
+      cancelButtonStyle: TextButton.styleFrom(foregroundColor: c.textMuted),
+      confirmButtonStyle: TextButton.styleFrom(
+        backgroundColor: c.brand,
+        foregroundColor: c.onBrand,
+        shape: const StadiumBorder(),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: c.surfaceMuted,
+        border: border(c.border),
+        enabledBorder: border(c.border),
+        focusedBorder: border(c.brand, 1.5),
+        errorBorder: border(c.expense),
+        focusedErrorBorder: border(c.expense, 1.5),
+      ),
     );
   }
 }
