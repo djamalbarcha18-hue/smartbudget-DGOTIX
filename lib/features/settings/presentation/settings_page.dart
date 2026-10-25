@@ -2,10 +2,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:smartbudget/core/l10n/app_lang.dart';
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/core/env/app_env.dart';
-import 'package:smartbudget/core/localization/locale_controller.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/theme/theme_controller.dart';
@@ -37,6 +35,7 @@ import 'package:smartbudget/features/portfolio/application/portfolio_controller.
 import 'package:smartbudget/features/account/presentation/delete_account_section.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_section.dart';
 import 'package:smartbudget/features/install/presentation/install_widgets.dart';
+import 'package:smartbudget/features/settings/presentation/language_picker.dart';
 import 'package:smartbudget/features/offers/application/offers_controller.dart';
 import 'package:smartbudget/features/offers/presentation/partner_offer_card.dart';
 import 'package:smartbudget/features/settings/presentation/base_currency_change.dart';
@@ -63,7 +62,6 @@ class SettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final ThemeMode mode = ref.watch(themeModeProvider);
-    final Locale locale = ref.watch(localeProvider);
     final String base = ref.watch(baseCurrencyProvider);
 
     return SingleChildScrollView(
@@ -111,16 +109,7 @@ class SettingsPage extends ConsumerWidget {
               _SettingsSection(
                 icon: Icons.translate_outlined,
                 title: l.settingsLanguage,
-                child: _SegmentedRow<String>(
-                  value: locale.languageCode,
-                  options: <_Segment<String>>[
-                    for (final AppLang lang in AppLang.offered)
-                      _Segment<String>(lang.code, lang.nativeName, null),
-                  ],
-                  onChanged: (String code) => ref
-                      .read(localeProvider.notifier)
-                      .set(Locale(code)),
-                ),
+                child: const LanguagePickerField(),
               ),
               const SizedBox(height: DsSpacing.lg),
 

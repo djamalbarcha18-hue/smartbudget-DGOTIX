@@ -15,6 +15,7 @@ import 'package:smartbudget/core/time/clock_sync_controller.dart';
 import 'package:smartbudget/design_system/theme/ds_theme.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_gate.dart';
 import 'package:smartbudget/features/privacy/presentation/money_privacy_host.dart';
+import 'package:smartbudget/features/settings/presentation/language_picker.dart';
 import 'package:smartbudget/features/shell/offline_banner.dart';
 import 'package:smartbudget/features/sync/application/sync_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
@@ -89,11 +90,13 @@ class SmartBudgetApp extends ConsumerWidget {
       builder: (BuildContext context, Widget? child) =>
           AnnotatedRegion<SystemUiOverlayStyle>(
         value: _systemBars(Theme.of(context).brightness),
-        child: AppLockGate(
-            child: MoneyPrivacyHost(
-                child: OfflineBanner(
-                    child: UpdateBanner(
-                        child: child ?? const SizedBox.shrink())))),
+        child: LanguageSwitchCurtain(
+          child: AppLockGate(
+              child: MoneyPrivacyHost(
+                  child: OfflineBanner(
+                      child: UpdateBanner(
+                          child: child ?? const SizedBox.shrink())))),
+        ),
       ),
     );
   }

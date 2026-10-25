@@ -5,6 +5,8 @@ import 'package:smartbudget/core/l10n/app_lang.dart';
 import 'package:smartbudget/core/localization/locale_controller.dart';
 import 'package:smartbudget/core/theme/theme_controller.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
+import 'package:smartbudget/design_system/tokens/ds_radius.dart';
+import 'package:smartbudget/features/settings/presentation/language_picker.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Light/Dark toggle — flips theme instantly (no reload) and persists.
@@ -30,8 +32,8 @@ class ThemeToggleButton extends ConsumerWidget {
   }
 }
 
-/// Language picker, listing every [AppLang]: switches the locale (and RTL/LTR)
-/// instantly and persists. Shows the current language's own name.
+/// The current language's own name; opens [LanguagePicker], which switches
+/// the locale (and RTL/LTR) smoothly and persists it.
 class LanguageToggleButton extends ConsumerWidget {
   const LanguageToggleButton({super.key});
 
@@ -42,19 +44,12 @@ class LanguageToggleButton extends ConsumerWidget {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
     final String current = ref.watch(localeProvider).languageCode;
-    return PopupMenuButton<String>(
-      tooltip: l.settingsLanguage,
-      initialValue: current,
-      onSelected: (String code) =>
-          ref.read(localeProvider.notifier).set(Locale(code)),
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        for (final AppLang lang in AppLang.offered)
-          PopupMenuItem<String>(
-            value: lang.code,
-            child: Text(lang.nativeName),
-          ),
-      ],
-      child: Padding(
+    return InkWell(
+      borderRadius: DsRadius.brMd,
+      onTap: () => LanguagePicker.show(context),
+      child: Tooltip(
+        message: l.settingsLanguage,
+        child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -64,6 +59,7 @@ class LanguageToggleButton extends ConsumerWidget {
             Text(nativeName(current), style: TextStyle(color: c.textMuted)),
           ],
         ),
+      ),
       ),
     );
   }
