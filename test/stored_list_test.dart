@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/storage/account_keys.dart';
 import 'package:smartbudget/core/storage/stored_list.dart';
 import 'package:smartbudget/features/transactions/data/fake_transaction_repository.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -38,8 +39,8 @@ void main() {
   test('text that is not JSON at all is kept aside, not lost', () async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     final SharedPreferences p = await SharedPreferences.getInstance();
-    expect(StoredList.read(p, 'k', '[{"id":"a",', Transaction.fromJson),
-        isEmpty);
+    expect(
+        StoredList.read(p, 'k', '[{"id":"a",', Transaction.fromJson), isEmpty);
     expect(p.getString(StoredList.asideKey('k')), '[{"id":"a",');
   });
 
@@ -51,15 +52,13 @@ void main() {
     expect(p.getString(StoredList.asideKey('k')), isNull);
   });
 
-  test('saving after a bad record keeps every readable transaction',
-      () async {
+  test('saving after a bad record keeps every readable transaction', () async {
     final String raw = jsonEncode(<Object?>[
       good('a'),
       <String, dynamic>{'oops': true},
       good('b'),
     ]);
-    SharedPreferences.setMockInitialValues(
-        <String, Object>{'sb_txns_u1': raw});
+    SharedPreferences.setMockInitialValues(<String, Object>{'sb_txns_u1': raw});
     final FakeTransactionRepository repo =
         FakeTransactionRepository(userId: 'u1');
     await repo.add(Transaction.fromJson(good('c')));
@@ -70,5 +69,11 @@ void main() {
         <String>{'a', 'b', 'c'});
     expect(p.getString(StoredList.asideKey('sb_txns_u1')), raw);
     repo.dispose();
+  });
+
+  test('the copy set aside belongs to the same account', () {
+    const String account = '0b5c1e2a-1111-4222-8333-944455556666';
+    expect(
+        AccountKeys.ownerOf(StoredList.asideKey('sb_txns_$account')), account);
   });
 }

@@ -17,6 +17,9 @@ import 'package:smartbudget/features/billing/domain/plan.dart';
 /// truth), persists the last known entitlement so the UI is stable across
 /// restarts, and exposes [hydrate] for the server/billing layer to push the
 /// authoritative value in. It never *grants* a paid plan on its own.
+///
+/// The cache belongs to the account it was saved for: another account
+/// signing in on the same device starts on FREE until the server answers.
 final entitlementProvider =
     NotifierProvider<EntitlementController, Entitlement>(
         EntitlementController.new);
@@ -24,19 +27,31 @@ final entitlementProvider =
 class EntitlementController extends Notifier<Entitlement> {
   static const String _key = 'sb_entitlement';
 
+  /// Set once a plan was pushed in, so the cache read at start can't
+  /// replace it.
+  bool _pushed = false;
+
   @override
   Entitlement build() {
-    _load();
+    final String? account = ref.watch(currentAccountIdProvider);
+    _pushed = false;
+    _load(account);
     return Entitlement.free;
   }
 
-  Future<void> _load() async {
+  Future<void> _load(String? account) async {
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();
       final String? raw = p.getString(_key);
       if (raw == null || raw.isEmpty) return;
-      state = Entitlement.fromJson(
-          (jsonDecode(raw) as Map).cast<String, dynamic>());
+      final Map<String, dynamic> json =
+          (jsonDecode(raw) as Map).cast<String, dynamic>();
+      // Another account's plan (or one saved before the cache named its
+      // account) is never taken over.
+      if (json['account'] != account) return;
+      // A plan pushed meanwhile (the server's answer) is newer than this.
+      if (_pushed) return;
+      state = Entitlement.fromJson(json);
     } catch (_) {
       // Corrupt cache ⇒ stay on the safe FREE default.
     }
@@ -44,12 +59,14 @@ class EntitlementController extends Notifier<Entitlement> {
 
   /// Push the authoritative entitlement from the server/billing layer.
   void hydrate(Entitlement e) {
+    _pushed = true;
     state = e;
     _persist();
   }
 
   /// Reset to FREE (e.g. on sign-out). Does not touch the user's data.
   void clear() {
+    _pushed = true;
     state = Entitlement.free;
     _persistClear();
   }
@@ -57,7 +74,12 @@ class EntitlementController extends Notifier<Entitlement> {
   Future<void> _persist() async {
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();
-      await p.setString(_key, jsonEncode(state.toJson()));
+      await p.setString(
+          _key,
+          jsonEncode(<String, dynamic>{
+            ...state.toJson(),
+            'account': ref.read(currentAccountIdProvider),
+          }));
     } catch (_) {
       // Non-fatal.
     }

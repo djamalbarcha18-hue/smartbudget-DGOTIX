@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// An entry that can't be read is left out on its own, instead of the whole
 /// list being dropped. And when anything couldn't be read, the stored text
-/// is first copied aside (`<key>.unreadable`, the first such copy is kept),
+/// is first copied aside ([asideKey]; the first such copy is kept),
 /// so the next save of the readable part can't destroy the only copy of the
 /// rest.
 abstract final class StoredList {
@@ -41,8 +41,12 @@ abstract final class StoredList {
     return out;
   }
 
-  /// The key the unreadable copy of [key] is kept under.
-  static String asideKey(String key) => '$key.unreadable';
+  /// The key the unreadable copy of [key] is kept under. It keeps the
+  /// account suffix (`sb_unreadable_txns_<account>`), so deleting the
+  /// account from the device removes it too (AccountKeys.ownerOf).
+  static String asideKey(String key) => key.startsWith('sb_')
+      ? 'sb_unreadable_${key.substring(3)}'
+      : '$key.unreadable';
 
   static void keepAside(SharedPreferences prefs, String key, String raw) {
     final String aside = asideKey(key);
