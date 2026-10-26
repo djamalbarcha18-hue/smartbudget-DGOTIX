@@ -367,4 +367,29 @@ void main() {
       expect(p(s).type, TransactionType.income, reason: s);
     }
   });
+
+  test('cleaning and household supplies', () {
+    for (final String s in <String>[
+      'منظفات 350',
+      'مسحوق غسيل 200',
+      'ورق تواليت 150',
+      'detergent 12',
+      'toilet paper 8',
+      'lessive 9',
+      'deterjan 120',
+      'waschmittel 7',
+      'стиральный порошок 400',
+      'sabuni 300',
+      'پودر لباسشویی 500000',
+      'डिटर्जेंट 150',
+      '洗衣液 40',
+      '洗剤 500',
+      '세제 8000',
+    ]) {
+      expect(p(s).category, 'المنظفات ومستلزمات المنزل', reason: s);
+      expect(p(s).type, TransactionType.expense, reason: s);
+    }
+    // Furniture stays furniture.
+    expect(p('اثاث 9000').category, 'الأثاث والمنزل');
+  });
 }
