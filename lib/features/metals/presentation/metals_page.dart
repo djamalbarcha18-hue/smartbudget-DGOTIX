@@ -60,13 +60,9 @@ class MetalsPage extends ConsumerWidget {
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                MetalBar(metal: Metal.palladium, width: 60),
-                SizedBox(width: DsSpacing.xs),
-                MetalBar(metal: Metal.silver, width: 70),
-                SizedBox(width: DsSpacing.xs),
-                MetalBar(metal: Metal.gold, width: 84),
-                SizedBox(width: DsSpacing.xs),
-                MetalBar(metal: Metal.platinum, width: 70),
+                MetalBar(metal: Metal.silver, width: 80),
+                SizedBox(width: DsSpacing.sm),
+                MetalBar(metal: Metal.gold, width: 96),
               ],
             ),
             const SizedBox(height: DsSpacing.lg),
@@ -311,14 +307,14 @@ class _PricesCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
-    final TextTheme t = Theme.of(context).textTheme;
     final Map<Metal, MetalPrice> prices = ref.watch(metalPricesProvider);
     final String currency = ref.watch(baseCurrencyProvider);
     final Map<Metal, MetalAlert> alerts = <Metal, MetalAlert>{
       for (final MetalAlert a in ref.watch(metalAlertsProvider))
         if (a.currency == currency) a.metal: a,
     };
-    final Locale locale = Localizations.localeOf(context);
+    final List<MetalHolding> holdings =
+        ref.watch(metalHoldingsProvider).valueOrNull ?? const <MetalHolding>[];
     return GlassCard(
       hoverable: false,
       child: Column(
@@ -327,121 +323,139 @@ class _PricesCard extends ConsumerWidget {
           DsSectionHeader(
               title: l.metalsPrices, icon: Icons.show_chart_rounded),
           const SizedBox(height: DsSpacing.sm),
-          for (final Metal m in Metal.values)
-            Padding(
-              padding: const EdgeInsets.only(bottom: DsSpacing.sm),
-              child: MetalPlate(
-                metal: m,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: DsSpacing.md, vertical: DsSpacing.sm),
-                onTap: () => _setPrice(context, ref, m, prices[m]),
-                child: Row(
-                  children: <Widget>[
-                    MetalBar(metal: m, width: 60),
-                    const SizedBox(width: DsSpacing.md),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                              '${MetalText.name(l, m)} · ${MetalText.purity(l, m, m == Metal.gold ? 24 : 999)}',
-                              style: t.titleSmall?.copyWith(
-                                  color: MetalPalette.of(m).ink,
-                                  fontWeight: FontWeight.w800)),
-                          const SizedBox(height: 2),
-                          Text(
-                            prices[m] == null
-                                ? '—'
-                                : l.metalsPerGram(MoneyFormatter.format(
-                                    Money.fromDouble(prices[m]!.perGram,
-                                        prices[m]!.currency))),
-                            style: t.titleMedium?.copyWith(
-                                color: MetalPalette.of(m).ink,
-                                fontWeight: FontWeight.w900),
-                          ),
-                          Text(
-                            switch (prices[m]?.source) {
-                              null => l.metalsNoPriceShort,
-                              MetalPriceSource.mine => l.metalsSourceMine,
-                              MetalPriceSource.market =>
-                                l.metalsSourceMarket(prices[m]!.updatedAt ==
-                                        null
-                                    ? '—'
-                                    : '${dayText(locale, prices[m]!.updatedAt!.toLocal())} '
-                                        '${_hm(prices[m]!.updatedAt!.toLocal())}'),
-                            },
-                            style: t.labelSmall?.copyWith(
-                                color: MetalPalette.of(m)
-                                    .ink
-                                    .withValues(alpha: 0.75),
-                                fontWeight:
-                                    prices[m]?.source == MetalPriceSource.mine
-                                        ? FontWeight.w800
-                                        : null),
-                          ),
-                          if (alerts[m] case final MetalAlert a) ...<Widget>[
-                            const SizedBox(height: 2),
-                            Row(
-                              children: <Widget>[
-                                Icon(
-                                    a.above
-                                        ? Icons.trending_up_rounded
-                                        : Icons.trending_down_rounded,
-                                    size: 14,
-                                    color: MetalPalette.of(m).ink),
-                                const SizedBox(width: 4),
-                                Flexible(
-                                  child: Text(
-                                    (a.above
-                                            ? l.metalsAlertAbove
-                                            : l.metalsAlertBelow)(
-                                        MoneyFormatter.format(Money.fromDouble(
-                                            a.target, a.currency))),
-                                    style: t.labelSmall?.copyWith(
-                                        color: MetalPalette.of(m).ink,
-                                        fontWeight: FontWeight.w800),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
+          for (final Metal m in _precious)
+            _plate(context, ref, m, prices, alerts),
+          _IndustrialFold(
+            open: _industrial.any((Metal m) =>
+                alerts.containsKey(m) ||
+                holdings.any((MetalHolding h) => h.metal == m)),
+            children: <Widget>[
+              for (final Metal m in _industrial)
+                _plate(context, ref, m, prices, alerts),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Gold and silver, shown first; platinum and palladium are industrial
+  /// metals, folded under their own heading.
+  static const List<Metal> _precious = <Metal>[Metal.gold, Metal.silver];
+  static const List<Metal> _industrial = <Metal>[
+    Metal.platinum,
+    Metal.palladium,
+  ];
+
+  Widget _plate(BuildContext context, WidgetRef ref, Metal m,
+      Map<Metal, MetalPrice> prices, Map<Metal, MetalAlert> alerts) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final TextTheme t = Theme.of(context).textTheme;
+    final Locale locale = Localizations.localeOf(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: DsSpacing.sm),
+      child: MetalPlate(
+        metal: m,
+        padding: const EdgeInsets.symmetric(
+            horizontal: DsSpacing.md, vertical: DsSpacing.sm),
+        onTap: () => _setPrice(context, ref, m, prices[m]),
+        child: Row(
+          children: <Widget>[
+            MetalBar(metal: m, width: 60),
+            const SizedBox(width: DsSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                      '${MetalText.name(l, m)} · ${MetalText.purity(l, m, m == Metal.gold ? 24 : 999)}',
+                      style: t.titleSmall?.copyWith(
+                          color: MetalPalette.of(m).ink,
+                          fontWeight: FontWeight.w800)),
+                  const SizedBox(height: 2),
+                  Text(
+                    prices[m] == null
+                        ? '—'
+                        : l.metalsPerGram(MoneyFormatter.format(
+                            Money.fromDouble(
+                                prices[m]!.perGram, prices[m]!.currency))),
+                    style: t.titleMedium?.copyWith(
+                        color: MetalPalette.of(m).ink,
+                        fontWeight: FontWeight.w900),
+                  ),
+                  Text(
+                    switch (prices[m]?.source) {
+                      null => l.metalsNoPriceShort,
+                      MetalPriceSource.mine => l.metalsSourceMine,
+                      MetalPriceSource.market => l.metalsSourceMarket(prices[m]!
+                                  .updatedAt ==
+                              null
+                          ? '—'
+                          : '${dayText(locale, prices[m]!.updatedAt!.toLocal())} '
+                              '${_hm(prices[m]!.updatedAt!.toLocal())}'),
+                    },
+                    style: t.labelSmall?.copyWith(
+                        color: MetalPalette.of(m).ink.withValues(alpha: 0.75),
+                        fontWeight: prices[m]?.source == MetalPriceSource.mine
+                            ? FontWeight.w800
+                            : null),
+                  ),
+                  if (alerts[m] case final MetalAlert a) ...<Widget>[
+                    const SizedBox(height: 2),
+                    Row(
                       children: <Widget>[
-                        IconButton(
-                          tooltip: l.metalsAlert,
-                          visualDensity: VisualDensity.compact,
-                          onPressed: () =>
-                              _setAlert(context, ref, m, prices[m], alerts[m]),
-                          icon: Icon(
-                              alerts[m] == null
-                                  ? Icons.notifications_none_rounded
-                                  : Icons.notifications_active_rounded,
-                              size: 20,
-                              color: MetalPalette.of(m).ink.withValues(
-                                  alpha: alerts[m] == null ? 0.7 : 1)),
-                        ),
-                        IconButton(
-                          tooltip: l.metalsSetPrice,
-                          visualDensity: VisualDensity.compact,
-                          onPressed: () =>
-                              _setPrice(context, ref, m, prices[m]),
-                          icon: Icon(Icons.edit_outlined,
-                              size: 18,
-                              color: MetalPalette.of(m)
-                                  .ink
-                                  .withValues(alpha: 0.7)),
+                        Icon(
+                            a.above
+                                ? Icons.trending_up_rounded
+                                : Icons.trending_down_rounded,
+                            size: 14,
+                            color: MetalPalette.of(m).ink),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(
+                            (a.above ? l.metalsAlertAbove : l.metalsAlertBelow)(
+                                MoneyFormatter.format(
+                                    Money.fromDouble(a.target, a.currency))),
+                            style: t.labelSmall?.copyWith(
+                                color: MetalPalette.of(m).ink,
+                                fontWeight: FontWeight.w800),
+                          ),
                         ),
                       ],
                     ),
                   ],
-                ),
+                ],
               ),
             ),
-        ],
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                IconButton(
+                  tooltip: l.metalsAlert,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () =>
+                      _setAlert(context, ref, m, prices[m], alerts[m]),
+                  icon: Icon(
+                      alerts[m] == null
+                          ? Icons.notifications_none_rounded
+                          : Icons.notifications_active_rounded,
+                      size: 20,
+                      color: MetalPalette.of(m)
+                          .ink
+                          .withValues(alpha: alerts[m] == null ? 0.7 : 1)),
+                ),
+                IconButton(
+                  tooltip: l.metalsSetPrice,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () => _setPrice(context, ref, m, prices[m]),
+                  icon: Icon(Icons.edit_outlined,
+                      size: 18,
+                      color: MetalPalette.of(m).ink.withValues(alpha: 0.7)),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -592,6 +606,92 @@ class _AmountDialogState extends State<_AmountDialog> {
           TextButton(
               onPressed: () => Navigator.of(context).pop((key, _ctrl.text)),
               child: Text(label)),
+      ],
+    );
+  }
+}
+
+/// Platinum and palladium: industrial metals, folded under their heading so
+/// gold and silver stay in front. Open when the user keeps some or watches
+/// their price.
+class _IndustrialFold extends StatefulWidget {
+  const _IndustrialFold({required this.open, required this.children});
+  final bool open;
+  final List<Widget> children;
+
+  @override
+  State<_IndustrialFold> createState() => _IndustrialFoldState();
+}
+
+class _IndustrialFoldState extends State<_IndustrialFold> {
+  late bool _open = widget.open;
+
+  @override
+  void didUpdateWidget(_IndustrialFold old) {
+    super.didUpdateWidget(old);
+    // Holdings and alerts load a moment after the page: open then too.
+    if (widget.open && !old.open) _open = true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Material(
+          color: c.surfaceMuted,
+          borderRadius: DsRadius.brMd,
+          child: InkWell(
+            borderRadius: DsRadius.brMd,
+            onTap: () => setState(() => _open = !_open),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: DsSpacing.md, vertical: DsSpacing.sm),
+              child: Row(
+                children: <Widget>[
+                  const MetalBar(metal: Metal.platinum, width: 34),
+                  const SizedBox(width: 2),
+                  const MetalBar(metal: Metal.palladium, width: 34),
+                  const SizedBox(width: DsSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(l.tabIndustrialMetals, style: t.titleSmall),
+                        Text(
+                          '${MetalText.name(l, Metal.platinum)} · ${MetalText.name(l, Metal.palladium)}',
+                          style: t.labelSmall?.copyWith(color: c.textMuted),
+                        ),
+                      ],
+                    ),
+                  ),
+                  AnimatedRotation(
+                    turns: _open ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(Icons.expand_more_rounded, color: c.textMuted),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+          alignment: Alignment.topCenter,
+          child: _open
+              ? Padding(
+                  padding: const EdgeInsets.only(top: DsSpacing.sm),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: widget.children,
+                  ),
+                )
+              : const SizedBox(width: double.infinity),
+        ),
       ],
     );
   }

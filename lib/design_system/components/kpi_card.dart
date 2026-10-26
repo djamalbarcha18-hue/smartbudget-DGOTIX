@@ -242,7 +242,6 @@ class _KpiCardState extends State<KpiCard> {
   }
 }
 
-/// The small eye in a KPI card's corner: hides or shows all figures.
 /// The eye that hides or shows money figures (see [MoneyPrivacy]). [color]
 /// replaces the theme colours on a coloured surface.
 class PrivacyEyeButton extends StatelessWidget {

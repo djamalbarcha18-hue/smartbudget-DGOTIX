@@ -225,8 +225,9 @@ abstract final class SmartAlertEngine {
       _byCategory(txns.where((Transaction t) => _inMonth(t, y, m)))
           .forEach((String c, int v) => history[c] = (history[c] ?? 0) + v);
     }
-    final Map<String, int> current = _byCategory(txns.where((Transaction t) =>
-        _inMonth(t, now.year, now.month) && !_day(t.date).isAfter(_day(now))));
+    final Map<String, int> current = _byCategory(txns.where(
+        (Transaction t) => _inMonth(t, now.year, now.month) &&
+            !_day(t.date).isAfter(_day(now))));
 
     final List<({String cat, int now, int avg})> hits =
         <({String cat, int now, int avg})>[];
@@ -303,8 +304,9 @@ abstract final class SmartAlertEngine {
   ) {
     if (now.day > monthlyDigestDays) return null;
     final DateTime pm = DateTime(now.year, now.month - 1, 1);
-    final List<Transaction> month =
-        txns.where((Transaction t) => _inMonth(t, pm.year, pm.month)).toList();
+    final List<Transaction> month = txns
+        .where((Transaction t) => _inMonth(t, pm.year, pm.month))
+        .toList();
     if (month.isEmpty) return null;
     int income = 0;
     for (final Transaction t in month) {

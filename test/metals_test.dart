@@ -196,6 +196,13 @@ void main() {
     await tester.tap(find.text(l.save));
     await tester.pumpAndSettle();
 
+    // Platinum and palladium wait folded under industrial metals.
+    expect(find.text(l.tabIndustrialMetals), findsOneWidget);
+    expect(find.text('${l.metalPlatinum} · 999'), findsNothing);
+    await tester.tap(find.text(l.tabIndustrialMetals));
+    await tester.pumpAndSettle();
+    expect(find.text('${l.metalPlatinum} · 999'), findsOneWidget);
+
     final MetalHolding saved = c.read(metalHoldingsProvider).value!.single;
     expect(saved.grams, 50);
     expect(saved.purity, 21);

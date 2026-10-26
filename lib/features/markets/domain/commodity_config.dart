@@ -39,10 +39,13 @@ abstract final class CommodityConfig {
     // ---- Precious metals (live: gold-api.com, USD per troy ounce) ----
     CommoditySpec(code: 'XAU', nameEn: 'Gold', nameAr: 'الذهب', category: MarketCategory.preciousMetals, unitLabel: 'USD/oz', providerId: 'gold_api', apiSymbol: 'XAU'),
     CommoditySpec(code: 'XAG', nameEn: 'Silver', nameAr: 'الفضة', category: MarketCategory.preciousMetals, unitLabel: 'USD/oz', providerId: 'gold_api', apiSymbol: 'XAG'),
-    CommoditySpec(code: 'XPT', nameEn: 'Platinum', nameAr: 'البلاتين', category: MarketCategory.preciousMetals, unitLabel: 'USD/oz', providerId: 'gold_api', apiSymbol: 'XPT'),
-    CommoditySpec(code: 'XPD', nameEn: 'Palladium', nameAr: 'البلاديوم', category: MarketCategory.preciousMetals, unitLabel: 'USD/oz', providerId: 'gold_api', apiSymbol: 'XPD'),
 
-    // ---- Industrial / base metals (LME reference — licensed → backend) ----
+    // ---- Industrial metals ----
+    // Platinum and palladium are mostly used by industry (catalysts,
+    // electronics); their price is live from the free precious-metals source.
+    CommoditySpec(code: 'XPT', nameEn: 'Platinum', nameAr: 'البلاتين', category: MarketCategory.industrialMetals, unitLabel: 'USD/oz', providerId: 'gold_api', apiSymbol: 'XPT'),
+    CommoditySpec(code: 'XPD', nameEn: 'Palladium', nameAr: 'البلاديوم', category: MarketCategory.industrialMetals, unitLabel: 'USD/oz', providerId: 'gold_api', apiSymbol: 'XPD'),
+    // Base metals (LME reference — licensed → backend).
     CommoditySpec(code: 'XCU', nameEn: 'Copper', nameAr: 'النحاس', category: MarketCategory.industrialMetals, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'LME'),
     CommoditySpec(code: 'ALU', nameEn: 'Aluminium', nameAr: 'الألمنيوم', category: MarketCategory.industrialMetals, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'LME'),
     CommoditySpec(code: 'ZNC', nameEn: 'Zinc', nameAr: 'الزنك', category: MarketCategory.industrialMetals, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'LME'),

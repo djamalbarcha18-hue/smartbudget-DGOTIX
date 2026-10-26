@@ -11,6 +11,7 @@ import 'package:smartbudget/features/markets/data/gold_api_metals_repository.dar
 import 'package:smartbudget/features/markets/data/market_http.dart';
 import 'package:smartbudget/features/markets/data/open_erapi_fx_repository.dart';
 import 'package:smartbudget/features/markets/data/rate_cache.dart';
+import 'package:smartbudget/features/markets/data/split_market_provider.dart';
 import 'package:smartbudget/features/markets/data/square_dz_repository.dart';
 import 'package:smartbudget/features/markets/data/unavailable_market_provider.dart';
 import 'package:smartbudget/features/markets/domain/commodity_config.dart';
@@ -91,11 +92,18 @@ final marketProvidersProvider =
           http: http, cache: cache)
       : UnavailableMarketProvider(category);
 
+  final GoldApiMetalsRepository goldApi =
+      GoldApiMetalsRepository(http: http, cache: cache);
   return <MarketCategory, MarketDataProvider>{
     // Precious metals: live free source (gold-api.com).
-    MarketCategory.preciousMetals:
-        GoldApiMetalsRepository(http: http, cache: cache),
-    MarketCategory.industrialMetals: deferred(MarketCategory.industrialMetals),
+    MarketCategory.preciousMetals: goldApi,
+    // Industrial metals: platinum and palladium live from the same source,
+    // the base metals from the owner's proxy when there is one.
+    MarketCategory.industrialMetals: SplitMarketProvider(
+      MarketCategory.industrialMetals,
+      byProvider: <String, MarketDataProvider>{'gold_api': goldApi},
+      fallback: deferred(MarketCategory.industrialMetals),
+    ),
     MarketCategory.steelIron: deferred(MarketCategory.steelIron),
     MarketCategory.energy: deferred(MarketCategory.energy),
     MarketCategory.agriculture: deferred(MarketCategory.agriculture),

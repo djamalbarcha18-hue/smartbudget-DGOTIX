@@ -125,13 +125,17 @@ class MyMetalPricesController extends Notifier<MyMetalPrices> {
   }
 }
 
-/// The world quotes for gold, silver, platinum and palladium (cached, never fetched on
-/// every open; the last ones are kept offline).
+/// The world quotes for gold and silver (precious metals) and platinum and
+/// palladium (industrial metals) — cached, never fetched on every open; the
+/// last ones are kept offline.
 final metalQuotesProvider = Provider<Map<Metal, CommodityQuote>>((ref) {
-  final List<CommodityQuote> quotes = ref
-          .watch(commodityQuotesProvider(MarketCategory.preciousMetals))
-          .valueOrNull ??
-      const <CommodityQuote>[];
+  final List<CommodityQuote> quotes = <CommodityQuote>[
+    for (final MarketCategory c in <MarketCategory>[
+      MarketCategory.preciousMetals,
+      MarketCategory.industrialMetals,
+    ])
+      ...?ref.watch(commodityQuotesProvider(c)).valueOrNull,
+  ];
   return <Metal, CommodityQuote>{
     for (final Metal m in Metal.values)
       for (final CommodityQuote q in quotes)

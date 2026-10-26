@@ -119,8 +119,8 @@ class _InsightRow extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(top: DsSpacing.xxs),
-            child:
-                Text(v.message, style: Theme.of(context).textTheme.bodyMedium),
+            child: Text(v.message,
+                style: Theme.of(context).textTheme.bodyMedium),
           ),
         ),
       ],

@@ -57,7 +57,8 @@ final scopedExpenseCategoryTotalsProvider =
 });
 
 /// Income category totals for the active scope.
-final scopedIncomeCategoryTotalsProvider = Provider<List<CategoryTotal>>((ref) {
+final scopedIncomeCategoryTotalsProvider =
+    Provider<List<CategoryTotal>>((ref) {
   final String currency = ref.watch(baseCurrencyProvider);
   return FinanceCalculator.categoryTotals(
       ref.watch(scopedTransactionsProvider), TransactionType.income, currency);

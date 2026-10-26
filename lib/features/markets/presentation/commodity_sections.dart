@@ -267,12 +267,83 @@ class CommodityCategorySection extends ConsumerWidget {
     return quotes.when(
       loading: () => const _Loading(),
       error: (Object e, StackTrace _) => _ErrorText(message: l.marketUnavailable),
-      data: (List<CommodityQuote> list) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      // Live prices first, each on its own card; the ones still waiting for
+      // a data source together on one, so they don't crowd the page.
+      data: (List<CommodityQuote> list) {
+        final List<CommodityQuote> live = <CommodityQuote>[
+          for (final CommodityQuote q in list)
+            if (q.priceUsd != null) q,
+        ];
+        final List<CommodityQuote> waiting = <CommodityQuote>[
+          for (final CommodityQuote q in list)
+            if (q.priceUsd == null) q,
+        ];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            for (final CommodityQuote q in live) ...<Widget>[
+              _CommodityCard(quote: q, base: base, usdToBase: usdToBase),
+              const SizedBox(height: DsSpacing.md),
+            ],
+            if (waiting.isNotEmpty) _WaitingCard(quotes: waiting),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// Commodities with no data source yet, named on one card.
+class _WaitingCard extends StatelessWidget {
+  const _WaitingCard({required this.quotes});
+  final List<CommodityQuote> quotes;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final AppLang lang = appLangOf(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final Set<String> benchmarks = <String>{
+      for (final CommodityQuote q in quotes)
+        if (q.benchmark != null) q.benchmark!,
+    };
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          for (final CommodityQuote q in list) ...<Widget>[
-            _CommodityCard(quote: q, base: base, usdToBase: usdToBase),
-            const SizedBox(height: DsSpacing.md),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(l.marketUnavailable,
+                    style: t.titleSmall?.copyWith(color: c.textMuted)),
+              ),
+              const QualityBadge(quality: PriceQuality.unavailable),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.sm),
+          Wrap(
+            spacing: DsSpacing.sm,
+            runSpacing: DsSpacing.sm,
+            children: <Widget>[
+              for (final CommodityQuote q in quotes)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: DsSpacing.md, vertical: DsSpacing.xs),
+                  decoration: BoxDecoration(
+                    color: c.surfaceMuted,
+                    borderRadius: DsRadius.brPill,
+                    border: Border.all(color: c.border),
+                  ),
+                  child: Text('${lang.isAr ? q.nameAr : q.nameEn} · ${q.code}',
+                      style: t.labelMedium),
+                ),
+            ],
+          ),
+          if (benchmarks.isNotEmpty) ...<Widget>[
+            const SizedBox(height: DsSpacing.sm),
+            Text('${l.benchmarkLabel}: ${benchmarks.join(' · ')}',
+                style: t.labelSmall?.copyWith(color: c.textFaint)),
           ],
         ],
       ),
@@ -326,6 +397,15 @@ class _CommodityCard extends StatelessWidget {
                       ?.copyWith(color: context.dsColors.textMuted)),
             ],
           ),
+          // Priced by the troy ounce (platinum, palladium): the gram too.
+          if (quote.priceUsd != null && quote.unitLabel == 'USD/oz')
+            Padding(
+              padding: const EdgeInsets.only(top: DsSpacing.xs),
+              child: Text(
+                '${l.perGram}: ${_fmt(MetalsCalculator.perGram(quote.priceUsd!) * (usdToBase ?? 1))} ${local ? base : 'USD'}',
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+            ),
           if (quote.benchmark != null || quote.region != null) ...<Widget>[
             const SizedBox(height: DsSpacing.xs),
             Text(
