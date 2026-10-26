@@ -151,7 +151,7 @@ class _KpiCardState extends State<KpiCard> {
                 ),
               ),
               if (privacy != null)
-                _EyeButton(
+                PrivacyEyeButton(
                   hidden: privacy.masked,
                   tooltip:
                       privacy.masked ? privacy.showLabel : privacy.hideLabel,
@@ -243,12 +243,31 @@ class _KpiCardState extends State<KpiCard> {
 }
 
 /// The small eye in a KPI card's corner: hides or shows all figures.
-class _EyeButton extends StatelessWidget {
-  const _EyeButton(
-      {required this.hidden, required this.tooltip, required this.onTap});
+/// The eye that hides or shows money figures (see [MoneyPrivacy]). [color]
+/// replaces the theme colours on a coloured surface.
+class PrivacyEyeButton extends StatelessWidget {
+  const PrivacyEyeButton(
+      {super.key,
+      required this.hidden,
+      required this.tooltip,
+      required this.onTap,
+      this.color});
   final bool hidden;
   final String tooltip;
   final VoidCallback onTap;
+  final Color? color;
+
+  /// The eye for the [MoneyPrivacy] above [context], or nothing without one.
+  static Widget of(BuildContext context, {Color? color}) {
+    final MoneyPrivacy? p = MoneyPrivacy.maybeOf(context);
+    if (p == null) return const SizedBox.shrink();
+    return PrivacyEyeButton(
+      hidden: p.masked,
+      tooltip: p.masked ? p.showLabel : p.hideLabel,
+      onTap: p.onToggle,
+      color: color,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +292,8 @@ class _EyeButton extends StatelessWidget {
                     : Icons.visibility_outlined,
                 key: ValueKey<bool>(hidden),
                 size: 16,
-                color: hidden ? c.brand : c.textFaint,
+                color: color?.withValues(alpha: hidden ? 1 : 0.6) ??
+                    (hidden ? c.brand : c.textFaint),
               ),
             ),
           ),

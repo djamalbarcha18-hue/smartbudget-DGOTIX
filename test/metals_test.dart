@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/localization/fallback_localizations.dart';
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/design_system/components/money_privacy.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_glass.dart';
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
@@ -306,7 +307,8 @@ void main() {
 
   group('home card', () {
     Future<ProviderContainer> pump(
-        WidgetTester tester, List<MetalHolding> holdings) async {
+        WidgetTester tester, List<MetalHolding> holdings,
+        {bool masked = false}) async {
       SharedPreferences.setMockInitialValues(<String, Object>{
         'sb_base_currency': 'SAR',
       });
@@ -332,7 +334,16 @@ void main() {
             DsColors.light,
             DsGlass.light,
           ]),
-          home: const Scaffold(body: MetalsHomeCard()),
+          home: Scaffold(
+            body: MoneyPrivacy(
+              masked: masked,
+              onToggle: () {},
+              hideLabel: 'hide',
+              showLabel: 'show',
+              peekHint: 'peek',
+              child: const MetalsHomeCard(),
+            ),
+          ),
         ),
       ));
       await tester.pumpAndSettle();
@@ -353,6 +364,20 @@ void main() {
       expect(find.byType(MetalPlate), findsOneWidget);
       expect(find.textContaining('3,000.00'), findsOneWidget);
       expect(find.textContaining('+20.0%'), findsOneWidget);
+    });
+
+    testWidgets('amounts hidden: the mask, no value, no change',
+        (WidgetTester tester) async {
+      await pump(
+          tester,
+          <MetalHolding>[
+            h('a', Metal.gold, 10, 24, paid: const Money(250000, 'SAR')),
+          ],
+          masked: true);
+      expect(find.text(MoneyPrivacy.mask), findsOneWidget);
+      expect(find.textContaining('3,000.00'), findsNothing);
+      expect(find.textContaining('+20.0%'), findsNothing);
+      expect(find.byTooltip('show'), findsOneWidget);
     });
   });
 }

@@ -8,6 +8,7 @@ import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_section_header.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/money_privacy.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
@@ -38,6 +39,7 @@ class _MetalHistoryCardState extends ConsumerState<MetalHistoryCard> {
         ref.watch(baseCurrencyProvider),
         AppClock.now(),
         days: _days);
+    final bool masked = MoneyPrivacy.maybeOf(context)?.masked ?? false;
     final double? change = series.length < 2 || series.first.minor <= 0
         ? null
         : (series.last.minor - series.first.minor) / series.first.minor;
@@ -68,7 +70,7 @@ class _MetalHistoryCardState extends ConsumerState<MetalHistoryCard> {
                 ),
             ],
           ),
-          if (change != null) ...<Widget>[
+          if (change != null && !masked) ...<Widget>[
             const SizedBox(height: DsSpacing.sm),
             Text(
               l.metalsHistoryChange(
@@ -92,6 +94,7 @@ class _MetalHistoryCardState extends ConsumerState<MetalHistoryCard> {
                   grid: c.border,
                   label: c.textMuted,
                   locale: Localizations.localeOf(context),
+                  masked: masked,
                   direction: Directionality.of(context),
                 ),
                 size: Size.infinite,
@@ -116,6 +119,7 @@ class _ChartPainter extends CustomPainter {
     required this.label,
     required this.locale,
     required this.direction,
+    required this.masked,
   });
 
   final List<MetalPoint> points;
@@ -125,6 +129,9 @@ class _ChartPainter extends CustomPainter {
   final Color label;
   final Locale locale;
   final TextDirection direction;
+
+  /// Amounts hidden: the line keeps its shape, the figures show the mask.
+  final bool masked;
 
   TextPainter _text(String s, {double size = 10.5}) => TextPainter(
         text: TextSpan(text: s, style: TextStyle(fontSize: size, color: label)),
@@ -167,8 +174,9 @@ class _ChartPainter extends CustomPainter {
       for (double gx = 0; gx < w; gx += 8) {
         canvas.drawLine(Offset(gx, gy), Offset(gx + 4, gy), guide);
       }
-      final TextPainter tp =
-          _text('\u2066${MoneyFormatter.format(Money(v, cur))}\u2069');
+      final TextPainter tp = _text(masked
+          ? MoneyPrivacy.mask
+          : '\u2066${MoneyFormatter.format(Money(v, cur))}\u2069');
       final double tx = direction == TextDirection.rtl ? w - tp.width : 0;
       // The highest above its line, the lowest under it: the curve never
       // goes there.
@@ -230,5 +238,6 @@ class _ChartPainter extends CustomPainter {
       old.points != points ||
       old.line != line ||
       old.grid != grid ||
-      old.direction != direction;
+      old.direction != direction ||
+      old.masked != masked;
 }

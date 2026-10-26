@@ -9,6 +9,8 @@ import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_section_header.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/kpi_card.dart';
+import 'package:smartbudget/design_system/components/money_privacy.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -97,6 +99,15 @@ class MetalsPage extends ConsumerWidget {
   }
 }
 
+/// [m], or the privacy mask while amounts are hidden.
+String _money(BuildContext context, Money m) =>
+    (MoneyPrivacy.maybeOf(context)?.masked ?? false)
+        ? MoneyPrivacy.mask
+        : MoneyFormatter.format(m);
+
+bool _masked(BuildContext context) =>
+    MoneyPrivacy.maybeOf(context)?.masked ?? false;
+
 String _percent(double r) {
   final String s = (r * 100).toStringAsFixed(1);
   return '\u2066${r >= 0 ? '+' : ''}$s%\u2069';
@@ -117,12 +128,21 @@ class _SummaryCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(l.metalsWorthToday,
-              style: t.labelLarge?.copyWith(color: c.textMuted)),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(l.metalsWorthToday,
+                    style: t.labelLarge?.copyWith(color: c.textMuted)),
+              ),
+              PrivacyEyeButton.of(context),
+            ],
+          ),
           const SizedBox(height: DsSpacing.xs),
-          Text(MoneyFormatter.format(summary.total),
+          Text(_money(context, summary.total),
               style: t.headlineMedium?.copyWith(fontWeight: FontWeight.w800)),
-          if (paid != null && paid.paid.minorUnits > 0) ...<Widget>[
+          if (paid != null &&
+              paid.paid.minorUnits > 0 &&
+              !_masked(context)) ...<Widget>[
             const SizedBox(height: DsSpacing.xs),
             Text(
               l.metalsSinceBought(_percent(
@@ -168,7 +188,7 @@ class _SummaryCard extends StatelessWidget {
                         child: Text(
                           summary.byMetal[m] == null
                               ? '—'
-                              : MoneyFormatter.format(summary.byMetal[m]!),
+                              : _money(context, summary.byMetal[m]!),
                           textAlign: TextAlign.end,
                           style: t.titleMedium?.copyWith(
                               color: MetalPalette.of(m).ink,
@@ -237,7 +257,7 @@ class _HoldingTile extends ConsumerWidget {
                 ),
               ),
               Flexible(
-                child: Text(value == null ? '—' : MoneyFormatter.format(value),
+                child: Text(value == null ? '—' : _money(context, value),
                     textAlign: TextAlign.end,
                     style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
               ),

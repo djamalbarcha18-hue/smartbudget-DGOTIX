@@ -6,6 +6,7 @@ import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/design_system/components/kpi_card.dart';
 import 'package:smartbudget/design_system/components/money_privacy.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
@@ -67,10 +68,19 @@ class MetalsHomeCard extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(l.navMetals,
-                      style: t.labelLarge?.copyWith(
-                          color: ink.withValues(alpha: 0.8),
-                          fontWeight: FontWeight.w700)),
+                  Row(
+                    children: <Widget>[
+                      Flexible(
+                        child: Text(l.navMetals,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: t.labelLarge?.copyWith(
+                                color: ink.withValues(alpha: 0.8),
+                                fontWeight: FontWeight.w700)),
+                      ),
+                      PrivacyEyeButton.of(context, color: ink),
+                    ],
+                  ),
                   Text(
                     masked || s.unpriced.length == held.length
                         ? (masked ? MoneyPrivacy.mask : '—')
