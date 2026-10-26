@@ -8,9 +8,10 @@ abstract final class MetalText {
         Metal.gold => l.metalGold,
         Metal.silver => l.metalSilver,
         Metal.platinum => l.metalPlatinum,
+        Metal.palladium => l.metalPalladium,
       };
 
-  /// «21 karat» for gold, «925» for silver and platinum.
+  /// «21 karat» for gold, «925» for the others.
   static String purity(AppLocalizations l, Metal m, int p) =>
       m == Metal.gold ? l.metalKarat(p) : '$p';
 

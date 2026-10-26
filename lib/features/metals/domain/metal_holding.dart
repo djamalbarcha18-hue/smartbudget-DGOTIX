@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:smartbudget/core/money/money.dart';
 
 /// The precious metals a user can keep savings in.
-enum Metal { gold, silver, platinum }
+enum Metal { gold, silver, platinum, palladium }
 
 extension MetalX on Metal {
   /// The market symbol its price is quoted under (USD per troy ounce).
@@ -11,19 +11,22 @@ extension MetalX on Metal {
         Metal.gold => 'XAU',
         Metal.silver => 'XAG',
         Metal.platinum => 'XPT',
+        Metal.palladium => 'XPD',
       };
 
-  /// Gold in karats (24 = pure); silver and platinum in parts per thousand.
+  /// Gold in karats (24 = pure); the others in parts per thousand.
   List<int> get purities => switch (this) {
         Metal.gold => const <int>[24, 22, 21, 18, 14, 12, 10, 9],
         Metal.silver => const <int>[999, 958, 925, 900, 800],
         Metal.platinum => const <int>[999, 950, 900, 850],
+        Metal.palladium => const <int>[999, 950, 500],
       };
 
   int get defaultPurity => switch (this) {
         Metal.gold => 21,
         Metal.silver => 925,
         Metal.platinum => 950,
+        Metal.palladium => 950,
       };
 
   /// The share of pure metal in [purity] (21 karat = 0.875, 925 = 0.925).

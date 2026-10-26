@@ -49,6 +49,14 @@ class MetalPalette {
             edge: Color(0xFF5E6E7C),
             ink: Color(0xFF1C2A36),
           ),
+        Metal.palladium => const MetalPalette(
+            shine: Color(0xFFFAF7F2),
+            light: Color(0xFFE3DED6),
+            mid: Color(0xFFBDB5A9),
+            dark: Color(0xFF857C70),
+            edge: Color(0xFF6E665B),
+            ink: Color(0xFF2C2620),
+          ),
       };
 
   /// A polished face catching the light from the top corner.
@@ -66,12 +74,14 @@ abstract final class MetalStamp {
         Metal.gold => 'Au',
         Metal.silver => 'Ag',
         Metal.platinum => 'Pt',
+        Metal.palladium => 'Pd',
       };
 
   static String fineness(Metal m) => switch (m) {
         Metal.gold => '999.9',
         Metal.silver => '999.0',
         Metal.platinum => '999.5',
+        Metal.palladium => '999.5',
       };
 }
 
@@ -226,7 +236,7 @@ class _BarPainter extends CustomPainter {
 
 /// A card polished in the colours of [metal] and engraved with its own
 /// pattern: a rosette for gold, waves for silver, a fine lattice for
-/// platinum. Its [child] is written in the metal's ink.
+/// platinum, a honeycomb for palladium. Its [child] is written in the metal's ink.
 class MetalPlate extends StatelessWidget {
   const MetalPlate({
     super.key,
@@ -336,6 +346,26 @@ class _EngravingPainter extends CustomPainter {
                 Offset(d + size.height, size.height + dy), paint);
             canvas.drawLine(Offset(d + size.height, dy),
                 Offset(d, size.height + dy), paint);
+          }
+        }
+      case Metal.palladium:
+        // A honeycomb of small hexagons.
+        const double r = 7;
+        final double hx = r * math.sqrt(3);
+        int row = 0;
+        for (double y = -r; y < size.height + r; y += r * 1.5, row++) {
+          for (double x = (row.isOdd ? hx / 2 : 0) - hx;
+              x < size.width + hx;
+              x += hx) {
+            final Path hex = Path();
+            for (int k = 0; k < 6; k++) {
+              final double a = math.pi / 6 + k * math.pi / 3;
+              final Offset o = Offset(x + r * math.cos(a), y + r * math.sin(a));
+              k == 0 ? hex.moveTo(o.dx, o.dy) : hex.lineTo(o.dx, o.dy);
+            }
+            hex.close();
+            canvas.drawPath(hex.shift(const Offset(0, 0.8)), lip);
+            canvas.drawPath(hex, cut);
           }
         }
     }

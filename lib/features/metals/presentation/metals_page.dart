@@ -24,7 +24,7 @@ import 'package:smartbudget/features/metals/presentation/metal_history_chart.dar
 import 'package:smartbudget/features/metals/presentation/metal_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// Gold, silver and platinum kept as savings: each piece or bar, what it is
+/// Gold, silver, platinum and palladium kept as savings: each piece or bar, what it is
 /// worth at today's price, and the price per gram used.
 class MetalsPage extends ConsumerWidget {
   const MetalsPage({super.key});
@@ -60,11 +60,13 @@ class MetalsPage extends ConsumerWidget {
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                MetalBar(metal: Metal.silver, width: 72),
-                SizedBox(width: DsSpacing.sm),
-                MetalBar(metal: Metal.gold, width: 88),
-                SizedBox(width: DsSpacing.sm),
-                MetalBar(metal: Metal.platinum, width: 72),
+                MetalBar(metal: Metal.palladium, width: 60),
+                SizedBox(width: DsSpacing.xs),
+                MetalBar(metal: Metal.silver, width: 70),
+                SizedBox(width: DsSpacing.xs),
+                MetalBar(metal: Metal.gold, width: 84),
+                SizedBox(width: DsSpacing.xs),
+                MetalBar(metal: Metal.platinum, width: 70),
               ],
             ),
             const SizedBox(height: DsSpacing.lg),

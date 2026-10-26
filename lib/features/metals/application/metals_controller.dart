@@ -125,7 +125,7 @@ class MyMetalPricesController extends Notifier<MyMetalPrices> {
   }
 }
 
-/// The world quotes for gold, silver and platinum (cached, never fetched on
+/// The world quotes for gold, silver, platinum and palladium (cached, never fetched on
 /// every open; the last ones are kept offline).
 final metalQuotesProvider = Provider<Map<Metal, CommodityQuote>>((ref) {
   final List<CommodityQuote> quotes = ref
@@ -183,11 +183,23 @@ abstract class _AccountList<T> extends Notifier<List<T>> {
   T? decode(Object? j);
   Object encode(T v);
 
+  /// Done once the saved list is read: changes wait for it, so a change
+  /// made at start-up never replaces what was saved.
+  late Future<void> _ready;
+
   @override
   List<T> build() {
     final String? account = ref.watch(currentAccountIdProvider);
-    _load(account);
+    _ready = _load(account);
     return <T>[];
+  }
+
+  /// Applies [edit] to the list once it is loaded, and saves the result
+  /// (nothing when [edit] returns null).
+  Future<void> change(List<T>? Function(List<T> now) edit) async {
+    await _ready;
+    final List<T>? next = edit(state);
+    if (next != null) await save(next);
   }
 
   Future<void> _load(String? account) async {
@@ -243,23 +255,28 @@ class MetalHistoryController extends _AccountList<MetalPoint> {
         day: DateTime(now.year, now.month, now.day),
         minor: s.total.minorUnits,
         currency: s.total.currencyCode);
-    final List<MetalPoint> next = MetalHistory.record(state, today);
-    if (state.isNotEmpty &&
-        state.last.day == today.day &&
-        state.last.minor == today.minor &&
-        state.last.currency == today.currency) {
-      return;
-    }
-    await save(next);
+    await change((List<MetalPoint> now) => now.isNotEmpty &&
+            now.last.day == today.day &&
+            now.last.minor == today.minor &&
+            now.last.currency == today.currency
+        ? null
+        : MetalHistory.record(now, today));
   }
 }
 
 /// Watched where the value is shown: notes today's value in the history.
 final metalHistoryRecorderProvider = Provider<void>((ref) {
-  void note(MetalsSummary s) => ref.read(metalHistoryProvider.notifier).record(
-      s,
-      (ref.read(metalHoldingsProvider).valueOrNull ?? const <MetalHolding>[])
-          .length);
+  bool alive = true;
+  ref.onDispose(() => alive = false);
+  // Noted just after, never while providers are being built.
+  void note(MetalsSummary s) => Future<void>.microtask(() {
+        if (!alive) return;
+        ref.read(metalHistoryProvider.notifier).record(
+            s,
+            (ref.read(metalHoldingsProvider).valueOrNull ??
+                    const <MetalHolding>[])
+                .length);
+      });
   ref.listen<MetalsSummary>(
       metalsSummaryProvider, (_, MetalsSummary s) => note(s),
       fireImmediately: true);
@@ -283,16 +300,16 @@ class MetalAlertsController extends _AccountList<MetalAlert> {
   /// [current], else when it falls to it.
   Future<void> set(Metal m, double? target, String currency,
       {double? current}) {
-    return save(<MetalAlert>[
-      for (final MetalAlert a in state)
-        if (a.metal != m) a,
-      if (target != null && target > 0)
-        MetalAlert(
-            metal: m,
-            target: target,
-            currency: currency,
-            above: current == null || target >= current),
-    ]);
+    return change((List<MetalAlert> now) => <MetalAlert>[
+          for (final MetalAlert a in now)
+            if (a.metal != m) a,
+          if (target != null && target > 0)
+            MetalAlert(
+                metal: m,
+                target: target,
+                currency: currency,
+                above: current == null || target >= current),
+        ]);
   }
 }
 

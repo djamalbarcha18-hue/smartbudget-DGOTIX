@@ -142,8 +142,8 @@ class DashboardPage extends ConsumerWidget {
           //    on a phone.
           KpiGrid(children: kpis),
           const SizedBox(height: gap),
-          // Gold, silver and platinum kept as savings (only when there are
-          // some), apart from the money in the wallets.
+          // Gold and silver today, and the metals kept as savings (apart
+          // from the money in the wallets); a tap opens all four metals.
           const MetalsHomeCard(),
           // SmartTrip (hidden until it launches): the trip closest in time.
           if (AppEnv.smartTrip) ...const <Widget>[

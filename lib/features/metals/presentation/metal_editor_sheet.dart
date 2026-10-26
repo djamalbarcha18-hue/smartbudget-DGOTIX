@@ -18,7 +18,7 @@ import 'package:smartbudget/features/metals/presentation/metal_art.dart';
 import 'package:smartbudget/features/metals/presentation/metal_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// Adds or edits one piece or bar of gold, silver or platinum.
+/// Adds or edits one piece or bar of gold, silver, platinum or palladium.
 class MetalEditorSheet extends ConsumerStatefulWidget {
   const MetalEditorSheet({super.key, this.existing});
   final MetalHolding? existing;

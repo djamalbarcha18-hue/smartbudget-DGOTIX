@@ -41,6 +41,8 @@ void main() {
       expect(Metal.gold.fraction(21), 0.875);
       expect(Metal.gold.fraction(18), 0.75);
       expect(Metal.silver.fraction(925), 0.925);
+      expect(Metal.palladium.fraction(950), 0.95);
+      expect(Metal.palladium.symbol, 'XPD');
       expect(h('a', Metal.gold, 40, 18).pureGrams, 30);
     });
 
@@ -246,6 +248,32 @@ void main() {
       expect(MetalHistory.series(all, 'SAR', DateTime(2026, 10, 26)).length, 2);
     });
 
+    test('noted at start-up, before the saved days are read: none is lost',
+        () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        'sb_metal_history_guest': '[{"d":"2026-01-01","v":500,"c":"SAR"}]',
+      });
+      final ProviderContainer c = ProviderContainer();
+      addTearDown(c.dispose);
+      c.read(metalHistoryProvider); // starts loading
+      await c.read(metalHistoryProvider.notifier).record(
+          MetalsValuation.summarize(
+              <MetalHolding>[h('a', Metal.gold, 1, 24)],
+              const <Metal, MetalPrice>{
+                Metal.gold: MetalPrice(
+                    perGram: 300,
+                    currency: 'SAR',
+                    source: MetalPriceSource.market),
+              },
+              'SAR',
+              const <String, double>{}),
+          1);
+      expect(c.read(metalHistoryProvider).map((MetalPoint p) => p.minor),
+          <int>[500, 30000]);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString('sb_metal_history_guest'), contains('500'));
+    });
+
     test('about two years are kept', () {
       List<MetalPoint> list = const <MetalPoint>[];
       for (int i = 0; i < MetalHistory.keep + 5; i++) {
@@ -308,17 +336,18 @@ void main() {
   group('home card', () {
     Future<ProviderContainer> pump(
         WidgetTester tester, List<MetalHolding> holdings,
-        {bool masked = false}) async {
+        {bool masked = false,
+        Map<Metal, MetalPrice> prices = const <Metal, MetalPrice>{
+          Metal.gold: MetalPrice(
+              perGram: 300, currency: 'SAR', source: MetalPriceSource.market),
+        }}) async {
       SharedPreferences.setMockInitialValues(<String, Object>{
         'sb_base_currency': 'SAR',
       });
       final ProviderContainer c = ProviderContainer(overrides: <Override>[
         metalHoldingsProvider.overrideWith(
             (Ref ref) => Stream<List<MetalHolding>>.value(holdings)),
-        metalPricesProvider.overrideWithValue(const <Metal, MetalPrice>{
-          Metal.gold: MetalPrice(
-              perGram: 300, currency: 'SAR', source: MetalPriceSource.market),
-        }),
+        metalPricesProvider.overrideWithValue(prices),
       ]);
       addTearDown(c.dispose);
       await tester.pumpWidget(UncontrolledProviderScope(
@@ -350,9 +379,18 @@ void main() {
       return c;
     }
 
-    testWidgets('nothing for someone who keeps no metal',
+    testWidgets('no metal kept: gold and silver of today, a way in',
         (WidgetTester tester) async {
       await pump(tester, const <MetalHolding>[]);
+      expect(find.byType(MetalPlate), findsOneWidget);
+      expect(find.textContaining('300.00'), findsOneWidget);
+      expect(find.byTooltip('hide'), findsNothing); // nothing of theirs
+    });
+
+    testWidgets('nothing at all without prices or metals',
+        (WidgetTester tester) async {
+      await pump(tester, const <MetalHolding>[],
+          prices: const <Metal, MetalPrice>{});
       expect(find.byType(MetalPlate), findsNothing);
     });
 

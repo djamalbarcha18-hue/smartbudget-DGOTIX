@@ -14,42 +14,46 @@ import 'package:smartbudget/features/metals/domain/metal_history.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
 import 'package:smartbudget/features/metals/domain/metals_valuation.dart';
 import 'package:smartbudget/features/metals/presentation/metal_art.dart';
+import 'package:smartbudget/features/metals/presentation/metal_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// On the home page, for someone who keeps gold, silver or platinum: what it
-/// is worth today, how it has moved, and a way into the metals page. Kept
-/// apart from the wallets: it is not money in hand. Nothing shows for
-/// someone who keeps none.
+/// On the home page: gold and silver on its face — today's price of a gram,
+/// and for someone who keeps metals, what all of them are worth and how it
+/// has moved. A tap opens the page of the four metals. Kept apart from the
+/// wallets: it is not money in hand.
 class MetalsHomeCard extends ConsumerWidget {
   const MetalsHomeCard({super.key, this.bottomGap = DsSpacing.gridGap});
 
   final double bottomGap;
 
+  static const List<Metal> _face = <Metal>[Metal.gold, Metal.silver];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final List<MetalHolding> holdings =
         ref.watch(metalHoldingsProvider).valueOrNull ?? const <MetalHolding>[];
-    if (holdings.isEmpty) return const SizedBox.shrink();
-    ref.watch(metalHistoryRecorderProvider);
+    final Map<Metal, MetalPrice> prices = ref.watch(metalPricesProvider);
+    final bool keeps = holdings.isNotEmpty;
+    if (!keeps && !_face.any(prices.containsKey)) {
+      return const SizedBox.shrink();
+    }
+    if (keeps) ref.watch(metalHistoryRecorderProvider);
 
     final AppLocalizations l = AppLocalizations.of(context);
     final TextTheme t = Theme.of(context).textTheme;
     final MetalsSummary s = ref.watch(metalsSummaryProvider);
-    final List<Metal> held = <Metal>[
-      for (final Metal m in Metal.values)
-        if (holdings.any((MetalHolding h) => h.metal == m)) m,
-    ];
-    final Metal face = held.first;
-    final Color ink = MetalPalette.of(face).ink;
+    final Color ink = MetalPalette.of(Metal.gold).ink;
     final bool masked = MoneyPrivacy.maybeOf(context)?.masked ?? false;
-    final List<double> line = <double>[
-      for (final MetalPoint p in MetalHistory.series(
-          ref.watch(metalHistoryProvider),
-          ref.watch(baseCurrencyProvider),
-          AppClock.now(),
-          days: 30))
-        p.minor.toDouble(),
-    ];
+    final List<double> line = !keeps
+        ? const <double>[]
+        : <double>[
+            for (final MetalPoint p in MetalHistory.series(
+                ref.watch(metalHistoryProvider),
+                ref.watch(baseCurrencyProvider),
+                AppClock.now(),
+                days: 30))
+              p.minor.toDouble(),
+          ];
     final ({Money paid, Money value})? paid = s.paidTotal;
     final double? gain = paid == null || paid.paid.minorUnits <= 0
         ? null
@@ -58,64 +62,140 @@ class MetalsHomeCard extends ConsumerWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: bottomGap),
       child: MetalPlate(
-        metal: face,
+        metal: Metal.gold,
         onTap: () => context.go('/metals'),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            _BarStack(held),
-            const SizedBox(width: DsSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
+            Row(
+              children: <Widget>[
+                const _BarStack(_face),
+                const SizedBox(width: DsSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Flexible(
-                        child: Text(l.navMetals,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: t.labelLarge?.copyWith(
-                                color: ink.withValues(alpha: 0.8),
-                                fontWeight: FontWeight.w700)),
+                      Row(
+                        children: <Widget>[
+                          Flexible(
+                            child: Text(l.navMetals,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: t.titleSmall?.copyWith(
+                                    color: ink, fontWeight: FontWeight.w800)),
+                          ),
+                          if (keeps) PrivacyEyeButton.of(context, color: ink),
+                        ],
                       ),
-                      PrivacyEyeButton.of(context, color: ink),
+                      if (keeps) ...<Widget>[
+                        Text(
+                          masked
+                              ? MoneyPrivacy.mask
+                              : s.unpriced.isNotEmpty && s.total.minorUnits == 0
+                                  ? '—'
+                                  : MoneyFormatter.format(s.total),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: t.titleLarge?.copyWith(
+                              color: ink, fontWeight: FontWeight.w900),
+                        ),
+                        if (gain != null && !masked)
+                          Text(
+                            l.metalsSinceBought(
+                                '\u2066${gain >= 0 ? '+' : ''}${(gain * 100).toStringAsFixed(1)}%\u2069'),
+                            style: t.labelMedium?.copyWith(
+                                color: ink, fontWeight: FontWeight.w700),
+                          ),
+                      ],
                     ],
                   ),
-                  Text(
-                    masked || s.unpriced.length == held.length
-                        ? (masked ? MoneyPrivacy.mask : '—')
-                        : MoneyFormatter.format(s.total),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: t.titleLarge
-                        ?.copyWith(color: ink, fontWeight: FontWeight.w900),
-                  ),
-                  if (gain != null && !masked)
-                    Text(
-                      l.metalsSinceBought(
-                          '\u2066${gain >= 0 ? '+' : ''}${(gain * 100).toStringAsFixed(1)}%\u2069'),
-                      style: t.labelMedium
-                          ?.copyWith(color: ink, fontWeight: FontWeight.w700),
-                    ),
-                ],
-              ),
-            ),
-            if (line.length >= 2 && !masked)
-              Padding(
-                padding: const EdgeInsetsDirectional.only(start: DsSpacing.sm),
-                child: SizedBox(
-                  width: 64,
-                  height: 30,
-                  child: CustomPaint(
-                    painter: _LinePainter(line, ink,
-                        rtl: Directionality.of(context) == TextDirection.rtl),
-                  ),
                 ),
-              ),
-            Icon(Icons.chevron_right_rounded,
-                color: ink.withValues(alpha: 0.6)),
+                if (line.length >= 2 && !masked)
+                  Padding(
+                    padding:
+                        const EdgeInsetsDirectional.only(start: DsSpacing.sm),
+                    child: SizedBox(
+                      width: 64,
+                      height: 30,
+                      child: CustomPaint(
+                        painter: _LinePainter(line, ink,
+                            rtl: Directionality.of(context) ==
+                                TextDirection.rtl),
+                      ),
+                    ),
+                  ),
+                Icon(Icons.chevron_right_rounded,
+                    color: ink.withValues(alpha: 0.6)),
+              ],
+            ),
+            const SizedBox(height: DsSpacing.sm),
+            Row(
+              children: <Widget>[
+                for (final Metal m in _face) ...<Widget>[
+                  if (m != _face.first) const SizedBox(width: DsSpacing.sm),
+                  Expanded(child: _PriceChip(metal: m, price: prices[m])),
+                ],
+              ],
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Today's price of a gram of the pure metal, on a small plate of it.
+class _PriceChip extends StatelessWidget {
+  const _PriceChip({required this.metal, required this.price});
+  final Metal metal;
+  final MetalPrice? price;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final TextTheme t = Theme.of(context).textTheme;
+    final Color ink = MetalPalette.of(metal).ink;
+    final MetalPrice? p = price;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        gradient: MetalPalette.of(metal).polish,
+        border: Border.all(
+            color: MetalPalette.of(metal).edge.withValues(alpha: 0.7)),
+      ),
+      child: Row(
+        children: <Widget>[
+          MetalBar(metal: metal, width: 30),
+          const SizedBox(width: DsSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                    '${MetalText.name(l, metal)} · ${MetalText.purity(l, metal, metal == Metal.gold ? 24 : 999)}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: t.labelSmall?.copyWith(
+                        color: ink.withValues(alpha: 0.8),
+                        fontWeight: FontWeight.w700)),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    p == null
+                        ? '—'
+                        : l.metalsPerGram(MoneyFormatter.format(
+                            Money.fromDouble(p.perGram, p.currency))),
+                    maxLines: 1,
+                    style: t.titleSmall
+                        ?.copyWith(color: ink, fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

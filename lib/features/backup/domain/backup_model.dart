@@ -62,7 +62,7 @@ class BackupData {
   final List<WalletMove> walletMoves;
   final List<Trip> trips;
 
-  /// Gold, silver and platinum kept as savings.
+  /// Gold, silver, platinum and palladium kept as savings.
   final List<MetalHolding> metals;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
