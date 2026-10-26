@@ -1527,5 +1527,9 @@
   "marketVsPrevDay": "较前一日 {change}",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "或",
-  "authContinueGoogle": "使用 Google 继续"
+  "authContinueGoogle": "使用 Google 继续",
+  "loadingLabel": "正在加载",
+  "loadingSlow": "加载时间比平时长。",
+  "loadRetry": "重试",
+  "loadFailed": "加载失败。请检查网络后重试。"
 }

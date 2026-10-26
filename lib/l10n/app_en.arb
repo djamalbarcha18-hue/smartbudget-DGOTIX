@@ -1795,5 +1795,9 @@
   "marketVsPrevDay": "{change} vs the day before",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "or",
-  "authContinueGoogle": "Continue with Google"
+  "authContinueGoogle": "Continue with Google",
+  "loadingLabel": "Loading",
+  "loadingSlow": "This is taking longer than usual.",
+  "loadRetry": "Try again",
+  "loadFailed": "Couldn't load. Check your connection and try again."
 }

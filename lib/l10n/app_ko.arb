@@ -1527,5 +1527,9 @@
   "marketVsPrevDay": "전일 대비 {change}",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "또는",
-  "authContinueGoogle": "Google로 계속하기"
+  "authContinueGoogle": "Google로 계속하기",
+  "loadingLabel": "불러오는 중",
+  "loadingSlow": "평소보다 오래 걸리고 있습니다.",
+  "loadRetry": "다시 시도",
+  "loadFailed": "불러오지 못했습니다. 연결을 확인하고 다시 시도하세요."
 }

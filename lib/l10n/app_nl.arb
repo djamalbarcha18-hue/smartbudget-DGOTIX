@@ -1527,5 +1527,9 @@
   "marketVsPrevDay": "{change} t.o.v. de vorige dag",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "of",
-  "authContinueGoogle": "Doorgaan met Google"
+  "authContinueGoogle": "Doorgaan met Google",
+  "loadingLabel": "Laden",
+  "loadingSlow": "Dit duurt langer dan normaal.",
+  "loadRetry": "Opnieuw proberen",
+  "loadFailed": "Laden mislukt. Controleer de verbinding en probeer het opnieuw."
 }

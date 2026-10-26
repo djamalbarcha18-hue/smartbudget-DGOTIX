@@ -44,6 +44,9 @@ import 'package:smartbudget/features/transactions/presentation/transactions_list
 import 'package:smartbudget/features/trips/presentation/trip_home_card.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/design_system/components/ds_skeleton.dart';
+import 'package:smartbudget/features/sync/application/data_loading.dart';
+import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
 
 /// Live dashboard: KPIs and breakdowns computed from the user's transactions
 /// via [FinanceCalculator] (the SmartBudget rules). With no data, tiles show a
@@ -59,6 +62,11 @@ class DashboardPage extends ConsumerWidget {
     final DashboardScope scope = ref.watch(dashboardScopeProvider);
     final FinanceSummary summary = ref.watch(scopedSummaryProvider);
     final bool hasData = summary.count > 0;
+    // Nothing on the device yet but it is on its way (the device's copy being
+    // read, or a new device waiting for the cloud copy): the figures and
+    // panels show their skeletons instead of empty states.
+    final bool waiting = awaitingData(ref.watch(transactionsProvider),
+        cloudPending: ref.watch(firstCloudCopyPendingProvider));
 
     // Period-over-period comparison (previous month, or previous year).
     final FinanceSummary prev = ref.watch(scopedPreviousSummaryProvider);
@@ -94,6 +102,7 @@ class DashboardPage extends ConsumerWidget {
             ? _pctDelta(context, incomeChange, positiveWhenUp: true)
             : null,
         caption: hasData ? vsPrev : null,
+        loading: waiting,
       ),
       KpiCard(
         label: l.kpiTotalExpenses,
@@ -104,6 +113,7 @@ class DashboardPage extends ConsumerWidget {
             ? _pctDelta(context, expenseChange, positiveWhenUp: false)
             : null,
         caption: hasData ? vsPrev : null,
+        loading: waiting,
       ),
       KpiCard(
         label: l.kpiNetProfit,
@@ -113,6 +123,7 @@ class DashboardPage extends ConsumerWidget {
             ? _pctDelta(context, netChange, positiveWhenUp: true)
             : null,
         caption: hasData ? vsPrev : null,
+        loading: waiting,
       ),
       KpiCard(
         label: l.kpiSavingsRate,
@@ -123,6 +134,7 @@ class DashboardPage extends ConsumerWidget {
                 context, summary.savingsRate, prev.savingsRate, hasPrev)
             : null,
         caption: hasData ? vsPrev : null,
+        loading: waiting,
       ),
     ];
 
@@ -139,7 +151,13 @@ class DashboardPage extends ConsumerWidget {
           const InstallBanner(),
 
           // ① The four headline figures: one row on wide screens, two pairs
-          //    on a phone.
+          //    on a phone. ②–④ below keep their heights while loading.
+          if (waiting) ...<Widget>[
+            DsShimmerScope(child: KpiGrid(children: kpis)),
+            const SizedBox(height: gap),
+            const MetalsHomeCard(),
+            const PageSkeleton(child: _LoadingPanels()),
+          ] else ...<Widget>[
           KpiGrid(children: kpis),
           const SizedBox(height: gap),
           // Gold and silver today, and the metals kept as savings (apart
@@ -194,6 +212,7 @@ class DashboardPage extends ConsumerWidget {
           ),
           const SizedBox(height: gap),
 
+          ],
           // ⑤ DGOTIX AI insights, then live global markets at the bottom.
           const DgotixInsightsSection(),
           const SizedBox(height: gap),
@@ -205,6 +224,55 @@ class DashboardPage extends ConsumerWidget {
 }
 
 /// Compact month/year period switcher for the dashboard overview.
+/// ②–④ while the data is on its way: each panel row at its real height,
+/// with skeleton cards.
+class _LoadingPanels extends StatelessWidget {
+  const _LoadingPanels();
+
+  @override
+  Widget build(BuildContext context) {
+    const double gap = DsSpacing.gridGap;
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        _EqualRow(
+          height: 150,
+          children: <Widget>[
+            DsSkeletonCard(lines: 2),
+            DsSkeletonCard(lines: 2),
+            DsSkeletonCard(lines: 2),
+          ],
+        ),
+        SizedBox(height: gap),
+        _EqualRow(
+          height: 360,
+          narrowHeight: 420,
+          minRowWidth: 880,
+          children: <Widget>[
+            DsSkeletonChart(height: 360, bars: 6),
+            DsSkeletonChart(height: 360, bars: 6),
+          ],
+        ),
+        SizedBox(height: gap),
+        _PanelRow(
+          height: 380,
+          main: DsSkeletonChart(height: 380, bars: 12),
+          side: DsSkeletonCard(lines: 4),
+          sideNarrowHeight: 300,
+        ),
+        SizedBox(height: gap),
+        _PanelRow(
+          height: 392,
+          main: GlassCard(hoverable: false, child: DsSkeletonList(count: 5)),
+          side: DsSkeletonCard(lines: 4, progress: true),
+          sideNarrowHeight: 300,
+        ),
+        SizedBox(height: gap),
+      ],
+    );
+  }
+}
+
 class _ScopeToggle extends ConsumerWidget {
   const _ScopeToggle({required this.scope});
   final DashboardScope scope;

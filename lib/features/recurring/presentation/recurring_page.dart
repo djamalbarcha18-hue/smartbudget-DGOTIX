@@ -24,6 +24,8 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/design_system/components/ds_skeleton.dart';
+import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
 
 /// Lists the user's recurring transactions with their next date and lets them
 /// pause, resume, edit or stop each one.
@@ -52,9 +54,10 @@ class RecurringPage extends ConsumerWidget {
       ),
     ];
 
-    return async.when(
-      loading: () => const DsLoading(),
-      error: (Object e, _) => DsError(message: e.toString()),
+    return AsyncListBody<RecurringRule>(
+      value: async,
+      onRetry: () => ref.invalidate(recurringRulesProvider),
+      skeleton: const Padding(padding: EdgeInsets.all(DsSpacing.pageGutter), child: DsSkeletonList(count: 6, gap: DsSpacing.sm, framed: true)),
       data: (List<RecurringRule> rules) => ListView(
         padding: const EdgeInsets.all(DsSpacing.pageGutter),
         children: <Widget>[

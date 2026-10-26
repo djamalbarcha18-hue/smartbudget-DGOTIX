@@ -12,6 +12,9 @@ import 'package:smartbudget/features/recurring/domain/recurrence_engine.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/design_system/components/ds_skeleton.dart';
+import 'package:smartbudget/features/sync/application/data_loading.dart';
+import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
@@ -51,52 +54,63 @@ class _TransactionsListViewState extends ConsumerState<TransactionsListView> {
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
     final AsyncValue<List<Transaction>> async = ref.watch(transactionsProvider);
+    if (async.hasError && !async.hasValue) {
+      return PageLoadError(
+          onRetry: () => ref.invalidate(transactionsProvider));
+    }
+    // Rows on the device show at once; the skeleton only stands in while
+    // they are still being read, or on a new device until the cloud copy
+    // arrives.
+    final bool waiting = awaitingData(async,
+        cloudPending: ref.watch(firstCloudCopyPendingProvider));
+    final List<Transaction> all = async.valueOrNull ?? const <Transaction>[];
+    final TransactionType? effective = widget.type ?? _filter;
+    final String q = _search.text.trim().toLowerCase();
+    final List<Transaction> items = all.where((Transaction t) {
+      if (effective != null && t.type != effective) return false;
+      if (q.isEmpty) return true;
+      return t.description.toLowerCase().contains(q) ||
+          t.category.toLowerCase().contains(q);
+    }).toList();
 
-    return async.when(
-      loading: () => const DsLoading(),
-      error: (Object e, _) => DsError(message: e.toString()),
-      data: (List<Transaction> all) {
-        final TransactionType? effective = widget.type ?? _filter;
-        final String q = _search.text.trim().toLowerCase();
-        final List<Transaction> items = all.where((Transaction t) {
-          if (effective != null && t.type != effective) return false;
-          if (q.isEmpty) return true;
-          return t.description.toLowerCase().contains(q) ||
-              t.category.toLowerCase().contains(q);
-        }).toList();
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            _SearchBar(controller: _search, onChanged: (_) => setState(() {})),
-            if (widget.type == null) ...<Widget>[
-              const SizedBox(height: DsSpacing.md),
-              _FilterChips(
-                value: _filter,
-                onChanged: (TransactionType? v) => setState(() => _filter = v),
-              ),
-            ],
-            const SizedBox(height: DsSpacing.md),
-            Expanded(
-              child: items.isEmpty
-                  ? DsEmpty(
-                      title: all.isEmpty
-                          ? l.emptyTransactionsTitle
-                          : l.noResults,
-                      message: all.isEmpty ? l.emptyTransactionsMessage : null,
-                      icon: Icons.receipt_long_outlined,
-                    )
-                  : ListView.separated(
-                      itemCount: items.length,
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(height: DsSpacing.sm),
-                      itemBuilder: (BuildContext context, int i) =>
-                          TransactionTile(txn: items[i]),
-                    ),
-            ),
-          ],
-        );
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        _SearchBar(controller: _search, onChanged: (_) => setState(() {})),
+        if (widget.type == null) ...<Widget>[
+          const SizedBox(height: DsSpacing.md),
+          _FilterChips(
+            value: _filter,
+            onChanged: (TransactionType? v) => setState(() => _filter = v),
+          ),
+        ],
+        const SizedBox(height: DsSpacing.md),
+        Expanded(
+          child: waiting
+              ? const SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(),
+                  child: PageSkeleton(
+                    child: DsSkeletonList(
+                        count: 8, gap: DsSpacing.sm, framed: true),
+                  ),
+                )
+              : items.isEmpty
+              ? DsEmpty(
+                  title: all.isEmpty
+                      ? l.emptyTransactionsTitle
+                      : l.noResults,
+                  message: all.isEmpty ? l.emptyTransactionsMessage : null,
+                  icon: Icons.receipt_long_outlined,
+                )
+              : ListView.separated(
+                  itemCount: items.length,
+                  separatorBuilder: (_, __) =>
+                      const SizedBox(height: DsSpacing.sm),
+                  itemBuilder: (BuildContext context, int i) =>
+                      TransactionTile(txn: items[i]),
+                ),
+        ),
+      ],
     );
   }
 }

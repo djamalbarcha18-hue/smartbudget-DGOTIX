@@ -22,6 +22,8 @@ import 'package:smartbudget/features/billing/application/feature_gate_provider.d
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/design_system/components/ds_skeleton.dart';
+import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
 
 /// "Exchange Rates & Markets" — official + parallel FIAT markets and a crypto
 /// section. Every number is fetched live from a keyless public source; when a
@@ -531,12 +533,12 @@ class _CryptoSection extends ConsumerWidget {
           ),
           const SizedBox(height: DsSpacing.md),
           crypto.when(
-            loading: () => const Padding(
-              padding: EdgeInsets.symmetric(vertical: DsSpacing.lg),
-              child: Center(child: CircularProgressIndicator()),
+            loading: () => PageSkeleton(
+              onRetry: () => ref.invalidate(cryptoQuotesProvider),
+              child: const DsSkeletonList(count: 4, tileHeight: 52),
             ),
-            error: (Object e, StackTrace _) => Text(l.marketUnavailable,
-                style: Theme.of(context).textTheme.bodySmall),
+            error: (Object e, StackTrace _) =>
+                PageLoadError(onRetry: () => ref.invalidate(cryptoQuotesProvider)),
             data: (List<CryptoQuote> quotes) => Column(
               children: <Widget>[
                 for (final CryptoQuote q in quotes)

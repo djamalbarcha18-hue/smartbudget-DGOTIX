@@ -1527,5 +1527,9 @@
   "marketVsPrevDay": "Önceki güne göre {change}",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "veya",
-  "authContinueGoogle": "Google ile devam et"
+  "authContinueGoogle": "Google ile devam et",
+  "loadingLabel": "Yükleniyor",
+  "loadingSlow": "Bu her zamankinden uzun sürüyor.",
+  "loadRetry": "Tekrar dene",
+  "loadFailed": "Yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin."
 }

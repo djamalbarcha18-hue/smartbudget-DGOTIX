@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:smartbudget/design_system/components/glass_card.dart';
+import 'package:smartbudget/design_system/components/ds_skeleton.dart';
 import 'package:smartbudget/design_system/components/money_privacy.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -54,10 +55,15 @@ class KpiCard extends StatefulWidget {
     this.accent,
     this.caption,
     this.sparkline,
+    this.loading = false,
   });
 
   final String label;
   final String? value;
+
+  /// The figure is on its way: a shimmering bone of the figure's height
+  /// stands in for it (inside a [DsShimmerScope] it sweeps).
+  final bool loading;
   final IconData? icon;
 
   /// A custom glyph (e.g. `Icon(SbIcons.moneyBox)`) rendered inside the icon chip in
@@ -162,6 +168,24 @@ class _KpiCardState extends State<KpiCard> {
           SizedBox(height: compact ? DsSpacing.sm : DsSpacing.md),
           // The figure is the hero: large, tabular, never clipped (it scales
           // down instead on narrow tiles).
+          if (widget.loading)
+            Stack(
+              alignment: AlignmentDirectional.centerStart,
+              children: <Widget>[
+                // Invisible text of the figure's style keeps its height.
+                Opacity(
+                  opacity: 0,
+                  child: Text('0',
+                      style: DsTypography.mono(
+                        t.headlineMedium ?? const TextStyle(),
+                      ).copyWith(
+                          fontSize: compact ? 22 : 28,
+                          fontWeight: FontWeight.w800)),
+                ),
+                DsBone(width: compact ? 88 : 120, height: compact ? 18 : 22),
+              ],
+            )
+          else
           _maybePeekable(
             privacy,
             FittedBox(

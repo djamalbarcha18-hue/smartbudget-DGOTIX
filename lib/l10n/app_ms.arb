@@ -1527,5 +1527,9 @@
   "marketVsPrevDay": "{change} berbanding hari sebelumnya",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "atau",
-  "authContinueGoogle": "Teruskan dengan Google"
+  "authContinueGoogle": "Teruskan dengan Google",
+  "loadingLabel": "Memuatkan",
+  "loadingSlow": "Ini mengambil masa lebih lama daripada biasa.",
+  "loadRetry": "Cuba lagi",
+  "loadFailed": "Gagal dimuatkan. Semak sambungan dan cuba lagi."
 }

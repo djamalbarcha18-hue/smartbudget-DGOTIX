@@ -28,6 +28,9 @@ import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/design_system/components/ds_skeleton.dart';
+import 'package:smartbudget/features/sync/application/data_loading.dart';
+import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
 
 /// Monthly Budget: one screen with year + month selectors — not 12 pages.
 class MonthlyBudgetPage extends ConsumerWidget {
@@ -40,6 +43,8 @@ class MonthlyBudgetPage extends ConsumerWidget {
     final FinanceSummary summary = ref.watch(monthlySummaryProvider);
     final List<Transaction> monthTxns = ref.watch(monthTransactionsProvider);
     final bool hasData = summary.count > 0;
+    final bool waiting = awaitingData(ref.watch(transactionsProvider),
+        cloudPending: ref.watch(firstCloudCopyPendingProvider));
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(DsSpacing.pageGutter),
@@ -49,13 +54,15 @@ class MonthlyBudgetPage extends ConsumerWidget {
           Text(l.pageMonthlyBudget,
               style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: DsSpacing.xl),
-          KpiGrid(
-            children: <Widget>[
-              _kpi(l.kpiTotalIncome, hasData ? MoneyFormatter.format(summary.income) : null, c.income, Icons.south_west_outlined),
-              _kpi(l.kpiTotalExpenses, hasData ? MoneyFormatter.format(summary.expense) : null, c.expense, Icons.north_east_outlined),
-              _kpi(l.kpiNetProfit, hasData ? MoneyFormatter.format(summary.net) : null, c.net, null, iconChild: const Icon(SbIcons.moneyBox)),
-              _kpi(l.kpiSavingsRate, hasData ? MoneyFormatter.percent(summary.savingsRate) : null, c.saving, null, iconChild: const Icon(SbIcons.moneyBox)),
-            ],
+          DsShimmerScope(
+            child: KpiGrid(
+              children: <Widget>[
+                _kpi(l.kpiTotalIncome, hasData ? MoneyFormatter.format(summary.income) : null, c.income, Icons.south_west_outlined, loading: waiting),
+                _kpi(l.kpiTotalExpenses, hasData ? MoneyFormatter.format(summary.expense) : null, c.expense, Icons.north_east_outlined, loading: waiting),
+                _kpi(l.kpiNetProfit, hasData ? MoneyFormatter.format(summary.net) : null, c.net, null, iconChild: const Icon(SbIcons.moneyBox), loading: waiting),
+                _kpi(l.kpiSavingsRate, hasData ? MoneyFormatter.percent(summary.savingsRate) : null, c.saving, null, iconChild: const Icon(SbIcons.moneyBox), loading: waiting),
+              ],
+            ),
           ),
           const SizedBox(height: DsSpacing.xxl),
           const SalarySplitCard(),
@@ -65,7 +72,11 @@ class MonthlyBudgetPage extends ConsumerWidget {
           Text(l.monthTransactions,
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: DsSpacing.md),
-          if (monthTxns.isEmpty)
+          if (waiting)
+            const PageSkeleton(
+              child: DsSkeletonList(count: 4, gap: DsSpacing.sm, framed: true),
+            )
+          else if (monthTxns.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: DsSpacing.xxl),
               child: Center(
@@ -88,13 +99,14 @@ class MonthlyBudgetPage extends ConsumerWidget {
   }
 
   Widget _kpi(String label, String? value, Color accent, IconData? icon,
-          {Widget? iconChild}) =>
+          {Widget? iconChild, bool loading = false}) =>
       KpiCard(
           label: label,
           value: value,
           accent: accent,
           icon: icon,
-          iconChild: iconChild);
+          iconChild: iconChild,
+          loading: loading);
 }
 
 /// Planned (budget) vs actual per expense category for the selected month.

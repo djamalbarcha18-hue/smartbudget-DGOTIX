@@ -1527,5 +1527,9 @@
   "marketVsPrevDay": "{change} к прошлому дню",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "или",
-  "authContinueGoogle": "Продолжить с Google"
+  "authContinueGoogle": "Продолжить с Google",
+  "loadingLabel": "Загрузка",
+  "loadingSlow": "Загрузка занимает больше времени, чем обычно.",
+  "loadRetry": "Повторить",
+  "loadFailed": "Не удалось загрузить. Проверьте подключение и повторите."
 }

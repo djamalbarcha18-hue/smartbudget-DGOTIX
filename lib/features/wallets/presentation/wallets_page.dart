@@ -21,6 +21,9 @@ import 'package:smartbudget/features/wallets/presentation/wallet_sheets.dart';
 import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/design_system/components/ds_skeleton.dart';
+import 'package:smartbudget/features/sync/application/data_loading.dart';
+import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
 
 String _ymd(DateTime d) =>
     '\u2066${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}\u2069';
@@ -42,6 +45,10 @@ class WalletsPage extends ConsumerWidget {
     final ({int total, List<String> missing}) totalInfo =
         ref.watch(walletTotalProvider);
     final int total = totalInfo.total;
+    // Balances come from the transactions: while those are still on their
+    // way, the total and the wallet cards show skeletons, not a 0.
+    final bool waiting = awaitingData(ref.watch(transactionsProvider),
+        cloudPending: ref.watch(firstCloudCopyPendingProvider));
     final bool mixed = wallets.any((Wallet w) => w.currency != currency);
 
     final bool wide = !context.isMobile;
@@ -129,6 +136,21 @@ class WalletsPage extends ConsumerWidget {
                     children: <Widget>[
                       Text(l.walletTotal,
                           style: t.labelLarge?.copyWith(color: c.textMuted)),
+                      if (waiting)
+                        DsShimmerScope(
+                          child: Stack(
+                            alignment: AlignmentDirectional.centerStart,
+                            children: <Widget>[
+                              Opacity(
+                                  opacity: 0,
+                                  child: Text('0',
+                                      style: t.headlineMedium?.copyWith(
+                                          fontWeight: FontWeight.w800))),
+                              const DsBone(width: 150, height: 24),
+                            ],
+                          ),
+                        )
+                      else
                       Text(
                           '${mixed ? '≈ ' : ''}${MoneyFormatter.format(Money(total, currency))}',
                           style: t.headlineMedium?.copyWith(
@@ -153,6 +175,14 @@ class WalletsPage extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: DsSpacing.xl),
+          if (waiting)
+            PageSkeleton(
+              child: grid(<Widget>[
+                for (int i = 0; i < (wallets.length < 2 ? 2 : wallets.length); i++)
+                  const DsSkeletonCard(lines: 1),
+              ]),
+            )
+          else
           grid(<Widget>[
             for (final Wallet w in wallets)
               _WalletCard(wallet: w, balance: balances[w.id] ?? 0),

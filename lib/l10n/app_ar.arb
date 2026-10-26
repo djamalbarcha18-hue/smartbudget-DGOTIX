@@ -1727,5 +1727,9 @@
   "marketVsPrevDay": "{change} عن اليوم السابق",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "أو",
-  "authContinueGoogle": "المتابعة بحساب Google"
+  "authContinueGoogle": "المتابعة بحساب Google",
+  "loadingLabel": "جارٍ التحميل",
+  "loadingSlow": "يستغرق التحميل وقتًا أطول من المعتاد.",
+  "loadRetry": "أعد المحاولة",
+  "loadFailed": "تعذّر التحميل. تحقّق من الاتصال وأعد المحاولة."
 }

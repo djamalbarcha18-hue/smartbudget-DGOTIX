@@ -7,6 +7,7 @@ import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/components/currency_suffix.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
+import 'package:smartbudget/design_system/components/ds_skeleton.dart';
 import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/latin_digits_formatter.dart';
@@ -22,6 +23,7 @@ import 'package:smartbudget/features/goals/presentation/goal_editor_sheet.dart';
 import 'package:smartbudget/features/goals/presentation/goals_funding_card.dart';
 import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
+import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 class GoalsPage extends ConsumerWidget {
@@ -64,9 +66,10 @@ class GoalsPage extends ConsumerWidget {
             ),
           const SizedBox(height: DsSpacing.lg),
           Expanded(
-            child: async.when(
-              loading: () => const DsLoading(),
-              error: (Object e, _) => DsError(message: e.toString()),
+            child: AsyncListBody<Goal>(
+              value: async,
+              onRetry: () => ref.invalidate(goalsProvider),
+              skeleton: const DsSkeletonCards(count: 3, lines: 1, progress: true),
               data: (List<Goal> goals) => goals.isEmpty
                   ? DsEmpty(
                       title: l.emptyGoalsTitle,

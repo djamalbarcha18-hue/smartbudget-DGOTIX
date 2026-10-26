@@ -1527,5 +1527,9 @@
   "marketVsPrevDay": "{change} par rapport à la veille",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "ou",
-  "authContinueGoogle": "Continuer avec Google"
+  "authContinueGoogle": "Continuer avec Google",
+  "loadingLabel": "Chargement",
+  "loadingSlow": "Le chargement prend plus de temps que d'habitude.",
+  "loadRetry": "Réessayer",
+  "loadFailed": "Chargement impossible. Vérifiez la connexion et réessayez."
 }

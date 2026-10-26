@@ -1527,5 +1527,9 @@
   "marketVsPrevDay": "前日比 {change}",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "または",
-  "authContinueGoogle": "Google で続行"
+  "authContinueGoogle": "Google で続行",
+  "loadingLabel": "読み込み中",
+  "loadingSlow": "いつもより時間がかかっています。",
+  "loadRetry": "再試行",
+  "loadFailed": "読み込めませんでした。接続を確認して再試行してください。"
 }

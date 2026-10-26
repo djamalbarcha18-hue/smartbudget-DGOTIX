@@ -1527,5 +1527,9 @@
   "marketVsPrevDay": "پچھلے دن کے مقابلے میں {change}",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "یا",
-  "authContinueGoogle": "Google کے ساتھ جاری رکھیں"
+  "authContinueGoogle": "Google کے ساتھ جاری رکھیں",
+  "loadingLabel": "لوڈ ہو رہا ہے",
+  "loadingSlow": "معمول سے زیادہ وقت لگ رہا ہے۔",
+  "loadRetry": "دوبارہ کوشش کریں",
+  "loadFailed": "لوڈ نہیں ہو سکا۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔"
 }

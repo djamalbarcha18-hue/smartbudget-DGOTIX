@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
+import 'package:smartbudget/design_system/components/ds_skeleton.dart';
 import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
 import 'package:smartbudget/design_system/components/kpi_grid.dart';
@@ -15,6 +16,7 @@ import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
 import 'package:smartbudget/features/debts/presentation/debt_editor_sheet.dart';
+import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 class DebtsPage extends ConsumerWidget {
@@ -77,9 +79,10 @@ class DebtsPage extends ConsumerWidget {
           ),
           const SizedBox(height: DsSpacing.lg),
           Expanded(
-            child: async.when(
-              loading: () => const DsLoading(),
-              error: (Object e, _) => DsError(message: e.toString()),
+            child: AsyncListBody<Debt>(
+              value: async,
+              onRetry: () => ref.invalidate(debtsProvider),
+              skeleton: const DsSkeletonList(count: 5, gap: DsSpacing.sm, framed: true),
               data: (List<Debt> debts) => debts.isEmpty
                   ? DsEmpty(
                       title: l.emptyDebtsTitle,

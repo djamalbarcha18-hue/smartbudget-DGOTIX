@@ -1527,5 +1527,9 @@
   "marketVsPrevDay": "{change} idan aka kwatanta da ranar da ta gabata",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "ko",
-  "authContinueGoogle": "Ci gaba da Google"
+  "authContinueGoogle": "Ci gaba da Google",
+  "loadingLabel": "Ana lodawa",
+  "loadingSlow": "Yana ɗaukar lokaci fiye da yadda aka saba.",
+  "loadRetry": "Sake gwadawa",
+  "loadFailed": "Ba a iya lodawa ba. Duba haɗin intanet sannan ka sake gwadawa."
 }

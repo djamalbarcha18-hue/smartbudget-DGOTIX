@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/design_system/components/ds_skeleton.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -14,6 +15,7 @@ import 'package:smartbudget/features/markets/domain/commodity_models.dart';
 import 'package:smartbudget/features/markets/domain/market_category.dart';
 import 'package:smartbudget/features/markets/domain/market_models.dart';
 import 'package:smartbudget/features/markets/domain/metals_calculator.dart';
+import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
@@ -106,17 +108,18 @@ class PreciousMetalsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AppLocalizations l = AppLocalizations.of(context);
     final String base = ref.watch(baseCurrencyProvider);
     final double? usdToBase = ref
         .watch(fxSnapshotProvider)
         .whenOrNull(data: (FxSnapshot s) => s.cross('USD', base));
     final AsyncValue<List<CommodityQuote>> quotes =
         ref.watch(commodityQuotesProvider(MarketCategory.preciousMetals));
+    void retry() =>
+        ref.invalidate(commodityQuotesProvider(MarketCategory.preciousMetals));
 
     return quotes.when(
-      loading: () => const _Loading(),
-      error: (Object e, StackTrace _) => _ErrorText(message: l.marketUnavailable),
+      loading: () => _Loading(onRetry: retry),
+      error: (Object e, StackTrace _) => PageLoadError(onRetry: retry),
       data: (List<CommodityQuote> list) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -257,17 +260,17 @@ class CommodityCategorySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AppLocalizations l = AppLocalizations.of(context);
     final String base = ref.watch(baseCurrencyProvider);
     final double? usdToBase = ref
         .watch(fxSnapshotProvider)
         .whenOrNull(data: (FxSnapshot s) => s.cross('USD', base));
     final AsyncValue<List<CommodityQuote>> quotes =
         ref.watch(commodityQuotesProvider(category));
+    void retry() => ref.invalidate(commodityQuotesProvider(category));
 
     return quotes.when(
-      loading: () => const _Loading(),
-      error: (Object e, StackTrace _) => _ErrorText(message: l.marketUnavailable),
+      loading: () => _Loading(onRetry: retry),
+      error: (Object e, StackTrace _) => PageLoadError(onRetry: retry),
       // Live prices first, each on its own card; the ones still waiting for
       // a data source together on one, so they don't crowd the page.
       data: (List<CommodityQuote> list) {
@@ -544,22 +547,17 @@ class _SourceLine extends StatelessWidget {
   }
 }
 
+/// While quotes are fetched: three quote cards as skeletons.
 class _Loading extends StatelessWidget {
-  const _Loading();
+  const _Loading({required this.onRetry});
+  final VoidCallback onRetry;
   @override
-  Widget build(BuildContext context) => const Padding(
-        padding: EdgeInsets.symmetric(vertical: DsSpacing.xxl),
-        child: Center(child: CircularProgressIndicator()),
+  Widget build(BuildContext context) => PageSkeleton(
+        onRetry: onRetry,
+        child: const DsSkeletonCards(count: 3, lines: 2),
       );
 }
 
-class _ErrorText extends StatelessWidget {
-  const _ErrorText({required this.message});
-  final String message;
-  @override
-  Widget build(BuildContext context) =>
-      Text(message, style: Theme.of(context).textTheme.bodySmall);
-}
 
 String _fmt(double v) {
   final int dp = v >= 100 ? 2 : (v >= 1 ? 3 : 4);

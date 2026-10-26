@@ -1527,5 +1527,9 @@
   "marketVsPrevDay": "{change} ukilinganisha na siku iliyopita",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "au",
-  "authContinueGoogle": "Endelea na Google"
+  "authContinueGoogle": "Endelea na Google",
+  "loadingLabel": "Inapakia",
+  "loadingSlow": "Inachukua muda mrefu kuliko kawaida.",
+  "loadRetry": "Jaribu tena",
+  "loadFailed": "Imeshindwa kupakia. Angalia muunganisho kisha jaribu tena."
 }

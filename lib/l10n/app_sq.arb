@@ -1527,5 +1527,9 @@
   "marketVsPrevDay": "{change} krahasuar me ditën e kaluar",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "ose",
-  "authContinueGoogle": "Vazhdo me Google"
+  "authContinueGoogle": "Vazhdo me Google",
+  "loadingLabel": "Po ngarkohet",
+  "loadingSlow": "Po zgjat më shumë se zakonisht.",
+  "loadRetry": "Provo sërish",
+  "loadFailed": "Ngarkimi dështoi. Kontrolloni lidhjen dhe provoni sërish."
 }

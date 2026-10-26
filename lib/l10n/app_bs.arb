@@ -1527,5 +1527,9 @@
   "marketVsPrevDay": "{change} u odnosu na prethodni dan",
   "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
   "authOr": "ili",
-  "authContinueGoogle": "Nastavi s Googleom"
+  "authContinueGoogle": "Nastavi s Googleom",
+  "loadingLabel": "Učitavanje",
+  "loadingSlow": "Ovo traje duže nego obično.",
+  "loadRetry": "Pokušaj ponovo",
+  "loadFailed": "Učitavanje nije uspjelo. Provjerite vezu i pokušajte ponovo."
 }

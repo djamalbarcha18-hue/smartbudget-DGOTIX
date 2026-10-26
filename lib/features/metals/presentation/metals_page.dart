@@ -8,6 +8,7 @@ import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_section_header.dart';
+import 'package:smartbudget/design_system/components/ds_skeleton.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
 import 'package:smartbudget/design_system/components/money_privacy.dart';
@@ -22,6 +23,8 @@ import 'package:smartbudget/features/metals/presentation/metal_art.dart';
 import 'package:smartbudget/features/metals/presentation/metal_editor_sheet.dart';
 import 'package:smartbudget/features/metals/presentation/metal_history_chart.dart';
 import 'package:smartbudget/features/metals/presentation/metal_text.dart';
+import 'package:smartbudget/features/sync/application/data_loading.dart';
+import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Gold, silver, platinum and palladium kept as savings: each piece or bar, what it is
@@ -34,8 +37,12 @@ class MetalsPage extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
+    final AsyncValue<List<MetalHolding>> holdingsAsync =
+        ref.watch(metalHoldingsProvider);
     final List<MetalHolding> holdings =
-        ref.watch(metalHoldingsProvider).valueOrNull ?? const <MetalHolding>[];
+        holdingsAsync.valueOrNull ?? const <MetalHolding>[];
+    final bool waiting = awaitingData(holdingsAsync,
+        cloudPending: ref.watch(firstCloudCopyPendingProvider));
     final MetalsSummary summary = ref.watch(metalsSummaryProvider);
     final Map<Metal, MetalPrice> prices = ref.watch(metalPricesProvider);
     ref.watch(metalHistoryRecorderProvider);
@@ -55,7 +62,11 @@ class MetalsPage extends ConsumerWidget {
             onPressed: () => MetalEditorSheet.show(context),
           ),
           const SizedBox(height: DsSpacing.lg),
-          if (holdings.isEmpty) ...<Widget>[
+          if (waiting)
+            const PageSkeleton(
+              child: DsSkeletonCards(count: 2, lines: 2),
+            )
+          else if (holdings.isEmpty) ...<Widget>[
             const SizedBox(height: DsSpacing.md),
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
