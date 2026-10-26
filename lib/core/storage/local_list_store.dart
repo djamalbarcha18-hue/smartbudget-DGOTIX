@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/storage/stored_list.dart';
+
 /// A small per-key list persisted in the browser (SharedPreferences), with a
 /// live stream. Items are identified by [idOf]; order is kept by [compare].
 class LocalListStore<T> {
@@ -42,11 +44,10 @@ class LocalListStore<T> {
       final SharedPreferences p = await SharedPreferences.getInstance();
       final String? raw = p.getString(key);
       if (raw != null && raw.isNotEmpty) {
+        // Unreadable entries are skipped, never the whole list.
         _items
           ..clear()
-          ..addAll((jsonDecode(raw) as List<dynamic>)
-              .whereType<Map<String, dynamic>>()
-              .map(fromJson));
+          ..addAll(StoredList.read(p, key, raw, fromJson));
         _sort();
       }
     } catch (_) {

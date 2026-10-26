@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/storage/stored_list.dart';
+
 import 'package:smartbudget/features/portfolio/domain/project.dart';
 import 'package:smartbudget/features/portfolio/domain/project_repository.dart';
 
@@ -38,11 +40,10 @@ class FakeProjectRepository implements ProjectRepository {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? raw = prefs.getString(_key);
       if (raw != null && raw.isNotEmpty) {
-        final List<dynamic> list = jsonDecode(raw) as List<dynamic>;
+        // Unreadable entries are skipped, never the whole list.
         _items
           ..clear()
-          ..addAll(list.map(
-              (dynamic e) => Project.fromJson(e as Map<String, dynamic>)));
+          ..addAll(StoredList.read(prefs, _key, raw, Project.fromJson));
         _sort();
       }
     } catch (_) {

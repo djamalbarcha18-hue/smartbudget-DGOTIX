@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/storage/stored_list.dart';
+
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
@@ -40,11 +42,10 @@ class FakeBudgetRepository implements BudgetRepository {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? raw = prefs.getString(_key);
       if (raw != null && raw.isNotEmpty) {
-        final List<dynamic> list = jsonDecode(raw) as List<dynamic>;
+        // Unreadable entries are skipped, never the whole list.
         _items
           ..clear()
-          ..addAll(list.map(
-              (dynamic e) => BudgetTarget.fromJson(e as Map<String, dynamic>)));
+          ..addAll(StoredList.read(prefs, _key, raw, BudgetTarget.fromJson));
       }
     } catch (_) {
       // Start empty.

@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/storage/stored_list.dart';
+
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/domain/transaction_repository.dart';
 
@@ -43,11 +45,10 @@ class FakeTransactionRepository implements TransactionRepository {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? raw = prefs.getString(_key);
       if (raw != null && raw.isNotEmpty) {
-        final List<dynamic> list = jsonDecode(raw) as List<dynamic>;
+        // Unreadable entries are skipped, never the whole list.
         _items
           ..clear()
-          ..addAll(list.map((dynamic e) =>
-              Transaction.fromJson(e as Map<String, dynamic>)));
+          ..addAll(StoredList.read(prefs, _key, raw, Transaction.fromJson));
         _sort();
       }
     } catch (_) {
