@@ -44,7 +44,8 @@ class GlobalMarketsSection extends ConsumerWidget {
     final AppLang lang = appLangOf(context);
 
     final AsyncValue<FxSnapshot> fx = ref.watch(fxSnapshotProvider);
-    final AsyncValue<List<CryptoQuote>> crypto = ref.watch(cryptoQuotesProvider);
+    final AsyncValue<List<CryptoQuote>> crypto =
+        ref.watch(cryptoQuotesProvider);
     final AsyncValue<List<CommodityQuote>> metals =
         ref.watch(commodityQuotesProvider(MarketCategory.preciousMetals));
 
@@ -96,8 +97,8 @@ class GlobalMarketsSection extends ConsumerWidget {
 
   _Indicator _metal(
       AsyncValue<List<CommodityQuote>> async, String code, AppLang lang) {
-    final CommodityQuote? q = async.whenOrNull(
-        data: (List<CommodityQuote> list) {
+    final CommodityQuote? q =
+        async.whenOrNull(data: (List<CommodityQuote> list) {
       for (final CommodityQuote c in list) {
         if (c.code == code) return c;
       }
@@ -113,8 +114,7 @@ class GlobalMarketsSection extends ConsumerWidget {
   }
 
   _Indicator _crypto(AsyncValue<List<CryptoQuote>> async, String symbol) {
-    final CryptoQuote? q = async.whenOrNull(
-        data: (List<CryptoQuote> list) {
+    final CryptoQuote? q = async.whenOrNull(data: (List<CryptoQuote> list) {
       for (final CryptoQuote c in list) {
         if (c.symbol == symbol) return c;
       }
@@ -129,9 +129,10 @@ class GlobalMarketsSection extends ConsumerWidget {
     );
   }
 
-  _Indicator _fx(AsyncValue<FxSnapshot> async, String code, AppLocalizations l) {
-    final double? rate = async.whenOrNull(
-        data: (FxSnapshot s) => s.ratesPerUsd[code]);
+  _Indicator _fx(
+      AsyncValue<FxSnapshot> async, String code, AppLocalizations l) {
+    final double? rate =
+        async.whenOrNull(data: (FxSnapshot s) => s.ratesPerUsd[code]);
     return _Indicator(
       label: code,
       value: rate == null ? '—' : _fmtNum(rate),

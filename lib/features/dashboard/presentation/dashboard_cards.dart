@@ -107,8 +107,9 @@ class _PulseCard extends StatelessWidget {
               value: (progress ?? 0).clamp(0.0, 1.0),
               minHeight: 6,
               backgroundColor: c.surfaceMuted,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                  progress == null ? Colors.transparent : (progressColor ?? c.brand)),
+              valueColor: AlwaysStoppedAnimation<Color>(progress == null
+                  ? Colors.transparent
+                  : (progressColor ?? c.brand)),
             ),
           ),
         ],
@@ -126,7 +127,8 @@ class BudgetPulseCard extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final String currency = ref.watch(baseCurrencyProvider);
-    final Map<String, Money> planned = ref.watch(monthPlannedByCategoryProvider);
+    final Map<String, Money> planned =
+        ref.watch(monthPlannedByCategoryProvider);
     int plannedMinor = 0;
     for (final Money m in planned.values) {
       if (m.currencyCode == currency) plannedMinor += m.minorUnits;
@@ -333,8 +335,8 @@ class HealthDetailsDialog extends ConsumerWidget {
                 Text(label, style: t.labelSmall),
                 const SizedBox(height: 2),
                 Text(value,
-                    style: t.titleMedium?.copyWith(
-                        color: color, fontWeight: FontWeight.w800)),
+                    style: t.titleMedium
+                        ?.copyWith(color: color, fontWeight: FontWeight.w800)),
               ],
             ),
           ),
@@ -416,8 +418,7 @@ class HealthDetailsDialog extends ConsumerWidget {
                                   '${l.healthWeight} ${(p.weight * 100).round()}%',
                                   style: t.labelSmall),
                               const SizedBox(width: DsSpacing.md),
-                              Text(
-                                  p.available ? '${p.score.round()}' : '—',
+                              Text(p.available ? '${p.score.round()}' : '—',
                                   style: t.titleSmall?.copyWith(
                                       color: color,
                                       fontWeight: FontWeight.w800)),
@@ -438,8 +439,8 @@ class HealthDetailsDialog extends ConsumerWidget {
                           if (!p.available) ...<Widget>[
                             const SizedBox(height: 4),
                             Text(l.healthUnavailable,
-                                style: t.labelSmall
-                                    ?.copyWith(color: c.textFaint)),
+                                style:
+                                    t.labelSmall?.copyWith(color: c.textFaint)),
                           ],
                         ],
                       );
@@ -477,14 +478,14 @@ class UpcomingPulseCard extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final AppLang lang = appLangOf(context);
     final List<RecurringRule> rules =
-        ref.watch(recurringRulesProvider).valueOrNull ?? const <RecurringRule>[];
+        ref.watch(recurringRulesProvider).valueOrNull ??
+            const <RecurringRule>[];
     final DateTime today = RecurrenceEngine.dateOnly(AppClock.now());
     final DateTime limit = DateTime(today.year, today.month, today.day + days);
 
     final List<(RecurringRule, DateTime)> due = <(RecurringRule, DateTime)>[
       for (final RecurringRule r in rules)
-        if (r.active)
-          (r, RecurrenceEngine.nextOccurrence(r)),
+        if (r.active) (r, RecurrenceEngine.nextOccurrence(r)),
     ]
         .where(((RecurringRule, DateTime) e) =>
             !e.$2.isBefore(today) && !e.$2.isAfter(limit))
@@ -498,8 +499,7 @@ class UpcomingPulseCard extends ConsumerWidget {
       final String name = r.description.isNotEmpty
           ? r.description
           : Catalog.label(r.category, lang: lang);
-      caption = l.upcomingNext(
-          name, isoDate(due.first.$2));
+      caption = l.upcomingNext(name, isoDate(due.first.$2));
     }
     return _PulseCard(
       title: l.upcomingTitle,
@@ -598,7 +598,8 @@ class _AlertRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(v.title,
-                      style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+                      style:
+                          t.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
                   Text(v.description,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -672,11 +673,9 @@ class PlansCard extends ConsumerWidget {
                 _PlanRow(
                   icon: Icons.mosque_outlined,
                   title: l.sectionZakat,
-                  value: zakat.obligatory
-                      ? MoneyFormatter.format(zakat.due)
-                      : '—',
-                  caption:
-                      zakat.obligatory ? l.zakatObligatory : l.zakatNotDue,
+                  value:
+                      zakat.obligatory ? MoneyFormatter.format(zakat.due) : '—',
+                  caption: zakat.obligatory ? l.zakatObligatory : l.zakatNotDue,
                   route: '/zakat',
                 ),
               ],

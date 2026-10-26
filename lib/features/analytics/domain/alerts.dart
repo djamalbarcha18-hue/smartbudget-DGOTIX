@@ -52,6 +52,9 @@ enum AlertKind {
 
   /// It's the user's turn to collect the daret pot soon.
   daretPayout,
+
+  /// A metal's price per gram reached the level the user asked to hear of.
+  metalPrice,
 }
 
 /// A derived, data-backed alert. Never fabricated: every instance comes from a

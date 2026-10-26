@@ -8,11 +8,17 @@ import 'package:smartbudget/core/localization/fallback_localizations.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_glass.dart';
+import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/backup/domain/backup_model.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
+import 'package:smartbudget/features/metals/domain/metal_alert.dart';
+import 'package:smartbudget/features/metals/domain/metal_history.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
 import 'package:smartbudget/features/metals/domain/metals_valuation.dart';
+import 'package:smartbudget/features/metals/presentation/metal_art.dart';
+import 'package:smartbudget/features/metals/presentation/metals_home_card.dart';
 import 'package:smartbudget/features/metals/presentation/metals_page.dart';
+import 'package:smartbudget/features/notifications/domain/notification_feed.dart';
 import 'package:smartbudget/features/sync/domain/sync_merge.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -191,5 +197,162 @@ void main() {
     expect(saved.grams, 50);
     expect(saved.purity, 21);
     expect(find.textContaining('13,125.00'), findsWidgets);
+
+    // Today's value is noted for the chart.
+    await tester.pumpAndSettle();
+    final MetalPoint today = c.read(metalHistoryProvider).single;
+    expect(today.minor, 1312500);
+    expect(today.currency, 'SAR');
+
+    // A price alert on gold: 290 is below today's 300, so it waits for a fall.
+    await tester.tap(find.byTooltip(l.metalsAlert).first);
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).last, '290');
+    await tester.tap(find.text(l.save));
+    await tester.pumpAndSettle();
+    final MetalAlert alert = c.read(metalAlertsProvider).single;
+    expect(alert.metal, Metal.gold);
+    expect(alert.above, isFalse);
+    expect(find.textContaining(l.metalsAlertBelow('')), findsOneWidget);
+    expect(c.read(metalAlertNoticesProvider), isEmpty);
+  });
+
+  group('history', () {
+    MetalPoint p(int day, int v, [String c = 'SAR']) =>
+        MetalPoint(day: DateTime(2026, 10, day), minor: v, currency: c);
+
+    test('one point a day, the latest wins, oldest first', () {
+      List<MetalPoint> list =
+          MetalHistory.record(const <MetalPoint>[], p(3, 10));
+      list = MetalHistory.record(list, p(1, 5));
+      list = MetalHistory.record(list, p(3, 12));
+      expect(list.map((MetalPoint x) => x.minor), <int>[5, 12]);
+      expect(
+          MetalPoint.fromJson(list.last.toJson())!.day, DateTime(2026, 10, 3));
+      expect(MetalPoint.fromJson(<String, Object>{'d': 'x', 'v': 1}), isNull);
+    });
+
+    test('a range keeps its own currency and days', () {
+      final List<MetalPoint> all = <MetalPoint>[
+        p(1, 1),
+        p(20, 2, 'USD'),
+        p(25, 3),
+      ];
+      expect(
+          MetalHistory.series(all, 'SAR', DateTime(2026, 10, 26), days: 10)
+              .map((MetalPoint x) => x.minor),
+          <int>[3]);
+      expect(MetalHistory.series(all, 'SAR', DateTime(2026, 10, 26)).length, 2);
+    });
+
+    test('about two years are kept', () {
+      List<MetalPoint> list = const <MetalPoint>[];
+      for (int i = 0; i < MetalHistory.keep + 5; i++) {
+        list = MetalHistory.record(
+            list,
+            MetalPoint(
+                day: DateTime(2024, 1, 1 + i), minor: i, currency: 'SAR'));
+      }
+      expect(list.length, MetalHistory.keep);
+      expect(list.first.minor, 5);
+    });
+  });
+
+  group('price alerts', () {
+    const MetalPrice at300 = MetalPrice(
+        perGram: 300, currency: 'SAR', source: MetalPriceSource.market);
+
+    test('met when the price rises or falls to the target, in its currency',
+        () {
+      const MetalAlert up = MetalAlert(
+          metal: Metal.gold, target: 300, currency: 'SAR', above: true);
+      const MetalAlert down = MetalAlert(
+          metal: Metal.gold, target: 290, currency: 'SAR', above: false);
+      expect(up.metBy(at300), isTrue);
+      expect(down.metBy(at300), isFalse);
+      expect(
+          up.metBy(const MetalPrice(
+              perGram: 900, currency: 'AED', source: MetalPriceSource.market)),
+          isFalse);
+      expect(MetalAlert.fromJson(up.toJson())!.above, isTrue);
+      expect(MetalAlert.fromJson(<String, Object>{'metal': 'gold'}), isNull);
+    });
+
+    test('a met alert rings the bell once, and only while it holds', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      final ProviderContainer c = ProviderContainer(overrides: <Override>[
+        metalPricesProvider
+            .overrideWithValue(const <Metal, MetalPrice>{Metal.gold: at300}),
+      ]);
+      addTearDown(c.dispose);
+      expect(c.read(metalAlertNoticesProvider), isEmpty);
+      await c
+          .read(metalAlertsProvider.notifier)
+          .set(Metal.gold, 295, 'SAR', current: 280);
+      final List<AppAlert> notices = c.read(metalAlertNoticesProvider);
+      expect(notices.single.kind, AlertKind.metalPrice);
+      expect(notices.single.route, '/metals');
+      expect(notices.single.subject, 'metal:gold');
+      expect(notices.single.compareAmount, const Money(29500, 'SAR'));
+      final String id = NotificationFeed.idFor(notices.single, DateTime(2026));
+      expect(NotificationFeed.idFor(notices.single, DateTime(2027)), id);
+
+      // Only one alert per metal; removing it quiets the bell.
+      await c.read(metalAlertsProvider.notifier).set(Metal.gold, null, 'SAR');
+      expect(c.read(metalAlertsProvider), isEmpty);
+      expect(c.read(metalAlertNoticesProvider), isEmpty);
+    });
+  });
+
+  group('home card', () {
+    Future<ProviderContainer> pump(
+        WidgetTester tester, List<MetalHolding> holdings) async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        'sb_base_currency': 'SAR',
+      });
+      final ProviderContainer c = ProviderContainer(overrides: <Override>[
+        metalHoldingsProvider.overrideWith(
+            (Ref ref) => Stream<List<MetalHolding>>.value(holdings)),
+        metalPricesProvider.overrideWithValue(const <Metal, MetalPrice>{
+          Metal.gold: MetalPrice(
+              perGram: 300, currency: 'SAR', source: MetalPriceSource.market),
+        }),
+      ]);
+      addTearDown(c.dispose);
+      await tester.pumpWidget(UncontrolledProviderScope(
+        container: c,
+        child: MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+            ...AppLocalizations.localizationsDelegates,
+            ...fallbackLocalizationsDelegates,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: ThemeData(extensions: const <ThemeExtension<dynamic>>[
+            DsColors.light,
+            DsGlass.light,
+          ]),
+          home: const Scaffold(body: MetalsHomeCard()),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      return c;
+    }
+
+    testWidgets('nothing for someone who keeps no metal',
+        (WidgetTester tester) async {
+      await pump(tester, const <MetalHolding>[]);
+      expect(find.byType(MetalPlate), findsNothing);
+    });
+
+    testWidgets("today's value and the change since bought",
+        (WidgetTester tester) async {
+      await pump(tester, <MetalHolding>[
+        h('a', Metal.gold, 10, 24, paid: const Money(250000, 'SAR')),
+      ]);
+      expect(find.byType(MetalPlate), findsOneWidget);
+      expect(find.textContaining('3,000.00'), findsOneWidget);
+      expect(find.textContaining('+20.0%'), findsOneWidget);
+    });
   });
 }

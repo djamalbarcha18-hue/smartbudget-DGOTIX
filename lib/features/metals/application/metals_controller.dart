@@ -3,15 +3,19 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/storage/account_keys.dart';
 import 'package:smartbudget/core/storage/local_list_store.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/markets/application/markets_controllers.dart';
 import 'package:smartbudget/features/markets/domain/commodity_models.dart';
 import 'package:smartbudget/features/markets/domain/market_category.dart';
+import 'package:smartbudget/features/metals/domain/metal_alert.dart';
+import 'package:smartbudget/features/metals/domain/metal_history.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
 import 'package:smartbudget/features/metals/domain/metals_valuation.dart';
 
@@ -172,3 +176,144 @@ final metalsSummaryProvider =
           ref.watch(baseCurrencyProvider),
           ref.watch(ratesProvider),
         ));
+
+/// A list of [T] kept in the preferences of the signed-in account.
+abstract class _AccountList<T> extends Notifier<List<T>> {
+  String get base;
+  T? decode(Object? j);
+  Object encode(T v);
+
+  @override
+  List<T> build() {
+    final String? account = ref.watch(currentAccountIdProvider);
+    _load(account);
+    return <T>[];
+  }
+
+  Future<void> _load(String? account) async {
+    try {
+      final SharedPreferences p = await SharedPreferences.getInstance();
+      final String? raw = p.getString(AccountKeys.of(base, account));
+      if (raw == null || raw.isEmpty) return;
+      if (ref.read(currentAccountIdProvider) != account) return;
+      final Object? list = jsonDecode(raw);
+      if (list is! List) return;
+      state = <T>[
+        for (final Object? j in list)
+          if (decode(j) case final T v) v,
+      ];
+    } catch (_) {
+      // Unreadable: starts empty.
+    }
+  }
+
+  Future<void> save(List<T> next) async {
+    state = next;
+    try {
+      final SharedPreferences p = await SharedPreferences.getInstance();
+      await p.setString(
+          AccountKeys.of(base, ref.read(currentAccountIdProvider)),
+          jsonEncode(<Object>[for (final T v in next) encode(v)]));
+    } catch (_) {
+      // Non-fatal: kept for this session.
+    }
+  }
+}
+
+/// What the user's metals were worth, day by day.
+final metalHistoryProvider =
+    NotifierProvider<MetalHistoryController, List<MetalPoint>>(
+        MetalHistoryController.new);
+
+class MetalHistoryController extends _AccountList<MetalPoint> {
+  @override
+  String get base => 'sb_metal_history';
+  @override
+  MetalPoint? decode(Object? j) => MetalPoint.fromJson(j);
+  @override
+  Object encode(MetalPoint v) => v.toJson();
+
+  /// Keeps today's value of [s], when every holding has a price.
+  Future<void> record(MetalsSummary s, int holdings) async {
+    if (holdings == 0 || s.unpriced.isNotEmpty || s.total.minorUnits <= 0) {
+      return;
+    }
+    final DateTime now = AppClock.now();
+    final MetalPoint today = MetalPoint(
+        day: DateTime(now.year, now.month, now.day),
+        minor: s.total.minorUnits,
+        currency: s.total.currencyCode);
+    final List<MetalPoint> next = MetalHistory.record(state, today);
+    if (state.isNotEmpty &&
+        state.last.day == today.day &&
+        state.last.minor == today.minor &&
+        state.last.currency == today.currency) {
+      return;
+    }
+    await save(next);
+  }
+}
+
+/// Watched where the value is shown: notes today's value in the history.
+final metalHistoryRecorderProvider = Provider<void>((ref) {
+  void note(MetalsSummary s) => ref.read(metalHistoryProvider.notifier).record(
+      s,
+      (ref.read(metalHoldingsProvider).valueOrNull ?? const <MetalHolding>[])
+          .length);
+  ref.listen<MetalsSummary>(
+      metalsSummaryProvider, (_, MetalsSummary s) => note(s),
+      fireImmediately: true);
+});
+
+/// The user's price alerts: at most one per metal.
+final metalAlertsProvider =
+    NotifierProvider<MetalAlertsController, List<MetalAlert>>(
+        MetalAlertsController.new);
+
+class MetalAlertsController extends _AccountList<MetalAlert> {
+  @override
+  String get base => 'sb_metal_alerts';
+  @override
+  MetalAlert? decode(Object? j) => MetalAlert.fromJson(j);
+  @override
+  Object encode(MetalAlert v) => v.toJson();
+
+  /// Sets the alert of [m] at [target] per gram of pure metal (or with null,
+  /// removes it). It fires when the price rises to [target] if that is above
+  /// [current], else when it falls to it.
+  Future<void> set(Metal m, double? target, String currency,
+      {double? current}) {
+    return save(<MetalAlert>[
+      for (final MetalAlert a in state)
+        if (a.metal != m) a,
+      if (target != null && target > 0)
+        MetalAlert(
+            metal: m,
+            target: target,
+            currency: currency,
+            above: current == null || target >= current),
+    ]);
+  }
+}
+
+/// The alerts met by today's prices, for the notifications bell. Prices are
+/// only looked up when the user has set an alert.
+final metalAlertNoticesProvider = Provider<List<AppAlert>>((ref) {
+  final List<MetalAlert> alerts = ref.watch(metalAlertsProvider);
+  if (alerts.isEmpty) return const <AppAlert>[];
+  final Map<Metal, MetalPrice> prices = ref.watch(metalPricesProvider);
+  return <AppAlert>[
+    for (final MetalAlert a in alerts)
+      if (prices[a.metal] case final MetalPrice p when a.metBy(p))
+        AppAlert(
+          kind: AlertKind.metalPrice,
+          severity: AlertSeverity.info,
+          subject: 'metal:${a.metal.name}',
+          amount: Money.fromDouble(p.perGram, p.currency),
+          compareAmount: Money.fromDouble(a.target, a.currency),
+          route: '/metals',
+          focusKey: '${a.metal.name}:${a.above ? 'up' : 'down'}:'
+              '${Money.fromDouble(a.target, a.currency).minorUnits}${a.currency}',
+        ),
+  ];
+});

@@ -38,6 +38,8 @@ abstract final class NotificationFeed {
         return '${a.kind.name}:${a.focusKey}@${_dayKey(d)}';
       case AlertKind.backupDue:
         return 'backupDue@${periodKey(now)}';
+      case AlertKind.metalPrice:
+        return 'metalPrice:${a.focusKey}';
       case AlertKind.unusualExpense:
         return 'unusualExpense:${a.focusKey}';
       case AlertKind.weeklyDigest:

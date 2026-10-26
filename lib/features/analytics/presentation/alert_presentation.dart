@@ -6,6 +6,8 @@ import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
+import 'package:smartbudget/features/metals/domain/metal_holding.dart';
+import 'package:smartbudget/features/metals/presentation/metal_text.dart';
 import 'package:smartbudget/features/seasons/presentation/season_text.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -49,7 +51,10 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
       ? ''
       : a.subject.startsWith('season:')
           ? seasonName(l, seasonKindFromKey(a.subject), '')
-          : Catalog.label(a.subject, lang: lang);
+          : a.subject.startsWith('metal:')
+              ? MetalText.name(
+                  l, MetalX.byName(a.subject.substring(6)) ?? Metal.gold)
+              : Catalog.label(a.subject, lang: lang);
   final String amount = MoneyFormatter.format(a.amount);
   final DateTime now = AppClock.now();
   final DateTime? when = a.date;
@@ -79,6 +84,7 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     AlertKind.seasonApproaching => l.alertTitleSeason,
     AlertKind.daretPayment => l.alertTitleDaretPayment,
     AlertKind.daretPayout => l.alertTitleDaretPayout,
+    AlertKind.metalPrice => l.alertTitleMetalPrice(subject),
   };
   final String description = switch (a.kind) {
     AlertKind.budgetOver => l.alertBudgetOver(subject, amount),
@@ -115,6 +121,7 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     AlertKind.daretPayout => tomorrow
         ? l.alertDaretPayoutTomorrow(amount, subject)
         : l.alertDaretPayout(amount, subject, date),
+    AlertKind.metalPrice => l.alertMetalPrice(subject, amount, typical),
   };
   final String action = switch (a.route) {
     '/budget' => l.actionViewBudget,
@@ -125,6 +132,7 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     '/transactions' => l.actionViewTransactions,
     '/seasons' => l.actionViewSeasons,
     '/daret' => l.actionViewDaret,
+    '/metals' => l.actionViewMetals,
     _ => l.actionViewReport,
   };
 

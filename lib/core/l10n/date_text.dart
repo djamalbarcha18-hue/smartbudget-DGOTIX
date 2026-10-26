@@ -19,3 +19,15 @@ String dayText(Locale locale, DateTime d) {
           : 'en';
   return DateFormat.yMMMd(use).format(d);
 }
+
+/// A day of the month without the year ("25 Oct", «25 أكتوبر»), for chart
+/// axes.
+String shortDayText(Locale locale, DateTime d) {
+  final String name = locale.toString();
+  final String use = DateFormat.localeExists(name)
+      ? name
+      : DateFormat.localeExists(locale.languageCode)
+          ? locale.languageCode
+          : 'en';
+  return DateFormat.MMMd(use).format(d);
+}

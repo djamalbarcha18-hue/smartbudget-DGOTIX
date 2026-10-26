@@ -22,6 +22,7 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/design_system/tokens/ds_typography.dart';
+import 'package:smartbudget/features/metals/presentation/metals_home_card.dart';
 import 'package:smartbudget/features/analytics/domain/kpi_math.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/backup/presentation/backup_reminder_card.dart';
@@ -141,6 +142,9 @@ class DashboardPage extends ConsumerWidget {
           //    on a phone.
           KpiGrid(children: kpis),
           const SizedBox(height: gap),
+          // Gold, silver and platinum kept as savings (only when there are
+          // some), apart from the money in the wallets.
+          const MetalsHomeCard(),
           // SmartTrip (hidden until it launches): the trip closest in time.
           if (AppEnv.smartTrip) ...const <Widget>[
             TripHomeCard(),
@@ -213,12 +217,11 @@ class _ScopeToggle extends ConsumerWidget {
     Widget seg(String label, DashboardScope value) {
       final bool sel = scope == value;
       return GestureDetector(
-        onTap: () =>
-            ref.read(dashboardScopeProvider.notifier).state = value,
+        onTap: () => ref.read(dashboardScopeProvider.notifier).state = value,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(
-              horizontal: DsSpacing.md, vertical: 6),
+          padding:
+              const EdgeInsets.symmetric(horizontal: DsSpacing.md, vertical: 6),
           decoration: BoxDecoration(
             color: sel ? c.brand : Colors.transparent,
             borderRadius: DsRadius.brPill,
@@ -328,14 +331,14 @@ class _Header extends ConsumerWidget {
         label: l.addIncome,
         icon: Icons.south_west_rounded,
         variant: DsButtonVariant.secondary,
-        onPressed: () => TransactionEditorSheet.show(context,
-            type: TransactionType.income),
+        onPressed: () =>
+            TransactionEditorSheet.show(context, type: TransactionType.income),
       ),
       DsButton(
         label: l.addExpense,
         icon: Icons.north_east_rounded,
-        onPressed: () => TransactionEditorSheet.show(context,
-            type: TransactionType.expense),
+        onPressed: () =>
+            TransactionEditorSheet.show(context, type: TransactionType.expense),
       ),
     ];
 
@@ -409,8 +412,8 @@ class _MonthlyComparisonCard extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final List<MonthPoint> points = ref.watch(monthlyTrendProvider);
-    final bool hasData = points.any((MonthPoint p) =>
-        p.income.minorUnits > 0 || p.expense.minorUnits > 0);
+    final bool hasData = points.any(
+        (MonthPoint p) => p.income.minorUnits > 0 || p.expense.minorUnits > 0);
 
     final AppLang lang = appLangOf(context);
     final Widget legend = Wrap(
@@ -486,8 +489,8 @@ class _LegendDot extends StatelessWidget {
         Container(
           width: 10,
           height: 10,
-          decoration:
-              BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
+          decoration: BoxDecoration(
+              color: color, borderRadius: BorderRadius.circular(3)),
         ),
         const SizedBox(width: 6),
         Text(label, style: Theme.of(context).textTheme.labelSmall),
@@ -518,8 +521,8 @@ class _DistributionBody extends StatelessWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final AppLang lang = appLangOf(context);
-    final int totalMinor =
-        totals.fold<int>(0, (int s, CategoryTotal t) => s + t.amount.minorUnits);
+    final int totalMinor = totals.fold<int>(
+        0, (int s, CategoryTotal t) => s + t.amount.minorUnits);
 
     final List<DonutSegment> segments = <DonutSegment>[];
     final List<Widget> legend = <Widget>[];
@@ -558,8 +561,7 @@ class _DistributionBody extends StatelessWidget {
                 width: 10,
                 height: 10,
                 decoration: BoxDecoration(
-                    color: seg.color,
-                    borderRadius: BorderRadius.circular(3)),
+                    color: seg.color, borderRadius: BorderRadius.circular(3)),
               ),
               const SizedBox(width: DsSpacing.sm),
               Expanded(
@@ -618,8 +620,8 @@ class _DistributionBody extends StatelessWidget {
                             child: ConstrainedBox(
                               // Keep each share next to its category.
                               constraints: const BoxConstraints(maxWidth: 190),
-                              child: ListView(
-                                  shrinkWrap: true, children: legend),
+                              child:
+                                  ListView(shrinkWrap: true, children: legend),
                             ),
                           ),
                         ),
@@ -712,8 +714,8 @@ class _TransactionsTable extends StatelessWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final TextStyle? head =
-        t.labelMedium?.copyWith(color: c.textFaint, fontWeight: FontWeight.w700);
+    final TextStyle? head = t.labelMedium
+        ?.copyWith(color: c.textFaint, fontWeight: FontWeight.w700);
 
     Widget cell(int i, Widget child, {bool end = false}) => Expanded(
           flex: _flex[i],
@@ -788,8 +790,7 @@ class _TableRow extends StatelessWidget {
             cell(
               1,
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: tone.withValues(alpha: 0.12),
                   borderRadius: DsRadius.brPill,
@@ -832,8 +833,7 @@ class _TableRow extends StatelessWidget {
                     const SizedBox(width: 6),
                   ],
                   Flexible(
-                    child: Text(
-                        txn.description.isEmpty ? '—' : txn.description,
+                    child: Text(txn.description.isEmpty ? '—' : txn.description,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: t.bodySmall),

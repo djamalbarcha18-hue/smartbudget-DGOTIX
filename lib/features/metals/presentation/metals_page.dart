@@ -13,10 +13,12 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
+import 'package:smartbudget/features/metals/domain/metal_alert.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
 import 'package:smartbudget/features/metals/domain/metals_valuation.dart';
 import 'package:smartbudget/features/metals/presentation/metal_art.dart';
 import 'package:smartbudget/features/metals/presentation/metal_editor_sheet.dart';
+import 'package:smartbudget/features/metals/presentation/metal_history_chart.dart';
 import 'package:smartbudget/features/metals/presentation/metal_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -34,6 +36,7 @@ class MetalsPage extends ConsumerWidget {
         ref.watch(metalHoldingsProvider).valueOrNull ?? const <MetalHolding>[];
     final MetalsSummary summary = ref.watch(metalsSummaryProvider);
     final Map<Metal, MetalPrice> prices = ref.watch(metalPricesProvider);
+    ref.watch(metalHistoryRecorderProvider);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(DsSpacing.pageGutter),
@@ -79,6 +82,10 @@ class MetalsPage extends ConsumerWidget {
               ),
           ],
           const SizedBox(height: DsSpacing.lg),
+          if (holdings.isNotEmpty) ...<Widget>[
+            const MetalHistoryCard(),
+            const SizedBox(height: DsSpacing.lg),
+          ],
           const _PricesCard(),
           const SizedBox(height: DsSpacing.md),
           Text(l.metalsEstimate,
@@ -284,6 +291,11 @@ class _PricesCard extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final TextTheme t = Theme.of(context).textTheme;
     final Map<Metal, MetalPrice> prices = ref.watch(metalPricesProvider);
+    final String currency = ref.watch(baseCurrencyProvider);
+    final Map<Metal, MetalAlert> alerts = <Metal, MetalAlert>{
+      for (final MetalAlert a in ref.watch(metalAlertsProvider))
+        if (a.currency == currency) a.metal: a,
+    };
     final Locale locale = Localizations.localeOf(context);
     return GlassCard(
       hoverable: false,
@@ -345,12 +357,64 @@ class _PricesCard extends ConsumerWidget {
                                         ? FontWeight.w800
                                         : null),
                           ),
+                          if (alerts[m] case final MetalAlert a) ...<Widget>[
+                            const SizedBox(height: 2),
+                            Row(
+                              children: <Widget>[
+                                Icon(
+                                    a.above
+                                        ? Icons.trending_up_rounded
+                                        : Icons.trending_down_rounded,
+                                    size: 14,
+                                    color: MetalPalette.of(m).ink),
+                                const SizedBox(width: 4),
+                                Flexible(
+                                  child: Text(
+                                    (a.above
+                                            ? l.metalsAlertAbove
+                                            : l.metalsAlertBelow)(
+                                        MoneyFormatter.format(Money.fromDouble(
+                                            a.target, a.currency))),
+                                    style: t.labelSmall?.copyWith(
+                                        color: MetalPalette.of(m).ink,
+                                        fontWeight: FontWeight.w800),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ],
                       ),
                     ),
-                    Icon(Icons.edit_outlined,
-                        size: 18,
-                        color: MetalPalette.of(m).ink.withValues(alpha: 0.7)),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        IconButton(
+                          tooltip: l.metalsAlert,
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () =>
+                              _setAlert(context, ref, m, prices[m], alerts[m]),
+                          icon: Icon(
+                              alerts[m] == null
+                                  ? Icons.notifications_none_rounded
+                                  : Icons.notifications_active_rounded,
+                              size: 20,
+                              color: MetalPalette.of(m).ink.withValues(
+                                  alpha: alerts[m] == null ? 0.7 : 1)),
+                        ),
+                        IconButton(
+                          tooltip: l.metalsSetPrice,
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () =>
+                              _setPrice(context, ref, m, prices[m]),
+                          icon: Icon(Icons.edit_outlined,
+                              size: 18,
+                              color: MetalPalette.of(m)
+                                  .ink
+                                  .withValues(alpha: 0.7)),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -363,54 +427,150 @@ class _PricesCard extends ConsumerWidget {
   static String _hm(DateTime d) =>
       '\u2066${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}\u2069';
 
+  Future<void> _setAlert(BuildContext context, WidgetRef ref, Metal m,
+      MetalPrice? now, MetalAlert? existing) async {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final String currency = ref.read(baseCurrencyProvider);
+    final (String, String)? result = await showDialog<(String, String)>(
+      context: context,
+      builder: (BuildContext ctx) => _AmountDialog(
+        title: l.metalsAlert,
+        hint: l.metalsAlertHint(MetalText.name(l, m)),
+        label:
+            '${MetalText.name(l, m)} · ${MetalText.purity(l, m, m == Metal.gold ? 24 : 999)}',
+        helper: now == null
+            ? null
+            : l.metalsPerGram(MoneyFormatter.format(
+                Money.fromDouble(now.perGram, now.currency))),
+        note: l.metalsAlertNote,
+        currency: currency,
+        initial: existing == null ? '' : AmountInput.text(existing.target),
+        actions: <(String, String)>[
+          if (existing != null) ('remove', l.metalsAlertRemove),
+          ('save', l.save),
+        ],
+      ),
+    );
+    switch (result) {
+      case ('remove', _):
+        await ref.read(metalAlertsProvider.notifier).set(m, null, currency);
+      case ('save', final String text):
+        final double? target = AmountInput.parse(text);
+        if (target != null && target > 0) {
+          await ref.read(metalAlertsProvider.notifier).set(m, target, currency,
+              current: now?.currency == currency ? now!.perGram : null);
+        }
+      default:
+    }
+  }
+
   Future<void> _setPrice(
       BuildContext context, WidgetRef ref, Metal m, MetalPrice? now) async {
     final AppLocalizations l = AppLocalizations.of(context);
     final String currency = ref.read(baseCurrencyProvider);
-    final TextEditingController ctrl = TextEditingController(
-        text: now?.source == MetalPriceSource.mine
-            ? AmountInput.text(now!.perGram)
-            : '');
-    final String? result = await showDialog<String>(
+    final (String, String)? result = await showDialog<(String, String)>(
       context: context,
-      builder: (BuildContext ctx) => AlertDialog(
-        title: Text(l.metalsSetPrice),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(l.metalsSetPriceHint(MetalText.name(l, m))),
-            const SizedBox(height: DsSpacing.md),
-            TextField(
-              controller: ctrl,
-              autofocus: true,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                labelText:
-                    '${MetalText.name(l, m)} · ${MetalText.purity(l, m, m == Metal.gold ? 24 : 999)}',
-                suffixText: currency,
-              ),
-            ),
-          ],
-        ),
-        actions: <Widget>[
-          TextButton(
-              onPressed: () => Navigator.of(ctx).pop('market'),
-              child: Text(l.metalsUseMarket)),
-          TextButton(
-              onPressed: () => Navigator.of(ctx).pop('save'),
-              child: Text(l.save)),
+      builder: (BuildContext ctx) => _AmountDialog(
+        title: l.metalsSetPrice,
+        hint: l.metalsSetPriceHint(MetalText.name(l, m)),
+        label:
+            '${MetalText.name(l, m)} · ${MetalText.purity(l, m, m == Metal.gold ? 24 : 999)}',
+        currency: currency,
+        initial: now?.source == MetalPriceSource.mine
+            ? AmountInput.text(now!.perGram)
+            : '',
+        actions: <(String, String)>[
+          ('market', l.metalsUseMarket),
+          ('save', l.save),
         ],
       ),
     );
-    if (result == 'market') {
-      await ref.read(myMetalPricesProvider.notifier).set(m, null, currency);
-    } else if (result == 'save') {
-      await ref
-          .read(myMetalPricesProvider.notifier)
-          .set(m, AmountInput.parse(ctrl.text), currency);
+    switch (result) {
+      case ('market', _):
+        await ref.read(myMetalPricesProvider.notifier).set(m, null, currency);
+      case ('save', final String text):
+        await ref
+            .read(myMetalPricesProvider.notifier)
+            .set(m, AmountInput.parse(text), currency);
+      default:
     }
-    ctrl.dispose();
+  }
+}
+
+/// Asks for an amount per gram. Pops with the chosen action and the text
+/// typed; the text box lives and dies with the dialog.
+class _AmountDialog extends StatefulWidget {
+  const _AmountDialog({
+    required this.title,
+    required this.hint,
+    required this.label,
+    required this.currency,
+    required this.initial,
+    required this.actions,
+    this.helper,
+    this.note,
+  });
+
+  final String title;
+  final String hint;
+  final String label;
+  final String currency;
+  final String initial;
+  final List<(String, String)> actions;
+  final String? helper;
+  final String? note;
+
+  @override
+  State<_AmountDialog> createState() => _AmountDialogState();
+}
+
+class _AmountDialogState extends State<_AmountDialog> {
+  late final TextEditingController _ctrl =
+      TextEditingController(text: widget.initial);
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    return AlertDialog(
+      title: Text(widget.title),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(widget.hint),
+          const SizedBox(height: DsSpacing.md),
+          TextField(
+            controller: _ctrl,
+            autofocus: true,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: InputDecoration(
+              labelText: widget.label,
+              helperText: widget.helper,
+              suffixText: widget.currency,
+            ),
+          ),
+          if (widget.note != null) ...<Widget>[
+            const SizedBox(height: DsSpacing.sm),
+            Text(widget.note!,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: c.textFaint)),
+          ],
+        ],
+      ),
+      actions: <Widget>[
+        for (final (String key, String label) in widget.actions)
+          TextButton(
+              onPressed: () => Navigator.of(context).pop((key, _ctrl.text)),
+              child: Text(label)),
+      ],
+    );
   }
 }

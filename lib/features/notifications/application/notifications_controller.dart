@@ -14,6 +14,7 @@ import 'package:smartbudget/features/daret/application/daret_controller.dart';
 import 'package:smartbudget/features/daret/domain/daret.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/goals/domain/goal.dart';
+import 'package:smartbudget/features/metals/application/metals_controller.dart';
 import 'package:smartbudget/features/notifications/domain/notification_feed.dart';
 import 'package:smartbudget/features/notifications/domain/smart_alerts.dart';
 import 'package:smartbudget/features/recurring/application/recurring_controller.dart';
@@ -97,6 +98,7 @@ final notificationsProvider = Provider<List<FeedItem>>((ref) {
           now),
       ...DaretMath.alerts(
           ref.watch(daretsProvider).valueOrNull ?? const <Daret>[], now),
+      ...ref.watch(metalAlertNoticesProvider),
     ],
     backupDue: ref.watch(backupReminderDueProvider),
     currency: currency,

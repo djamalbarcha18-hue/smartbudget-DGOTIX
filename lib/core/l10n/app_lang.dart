@@ -90,7 +90,27 @@ enum AppLang {
   /// back to English (names of currencies, markets…), so a new language can
   /// ship before every long text is translated.
   T pick<T>(T ar, T en,
-          {T? fr, T? id, T? es, T? tr, T? ms, T? ur, T? de, T? pt, T? it, T? nl, T? bs, T? sq, T? ru, T? sw, T? ha, T? af, T? fa, T? hi, T? zh, T? ja, T? ko}) =>
+          {T? fr,
+          T? id,
+          T? es,
+          T? tr,
+          T? ms,
+          T? ur,
+          T? de,
+          T? pt,
+          T? it,
+          T? nl,
+          T? bs,
+          T? sq,
+          T? ru,
+          T? sw,
+          T? ha,
+          T? af,
+          T? fa,
+          T? hi,
+          T? zh,
+          T? ja,
+          T? ko}) =>
       switch (this) {
         AppLang.ar => ar,
         AppLang.en => en,

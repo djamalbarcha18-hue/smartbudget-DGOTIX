@@ -44,8 +44,8 @@ class _ExpenseBreakdownSectionState
         ref.watch(scopedExpenseCategoryTotalsProvider);
 
     // Aggregate to top 6 + "Other" — identical rule to the income donut.
-    final int grandTotal =
-        totals.fold<int>(0, (int s, CategoryTotal t) => s + t.amount.minorUnits);
+    final int grandTotal = totals.fold<int>(
+        0, (int s, CategoryTotal t) => s + t.amount.minorUnits);
     final List<DonutSegment> segments = <DonutSegment>[];
     if (totals.isNotEmpty) {
       const int topN = 6;
@@ -257,8 +257,8 @@ class _DetailStrip extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(s.valueLabel ?? '',
-                  style:
-                      t.titleSmall?.copyWith(color: s.color, fontWeight: FontWeight.w700)),
+                  style: t.titleSmall
+                      ?.copyWith(color: s.color, fontWeight: FontWeight.w700)),
               Text(l.ofTotalExpenses(pct),
                   style: t.labelSmall?.copyWith(color: c.textFaint)),
             ],
