@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "{price} تک گرے تو الرٹ",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "الرٹ ہٹائیں",
-  "metalsAlertNote": "ایپ کھلی ہونے پر قیمتیں چیک ہوتی ہیں۔"
+  "metalsAlertNote": "ایپ کھلی ہونے پر قیمتیں چیک ہوتی ہیں۔",
+  "marketMonthlyAvg": "{month} کا اوسط",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "{day} کی قیمت",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "پچھلے مہینے کے مقابلے میں {change}",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "پچھلے دن کے مقابلے میں {change}",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

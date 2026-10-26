@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "{price} तक गिरने पर अलर्ट",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "अलर्ट हटाएँ",
-  "metalsAlertNote": "ऐप खुला होने पर भाव जाँचे जाते हैं।"
+  "metalsAlertNote": "ऐप खुला होने पर भाव जाँचे जाते हैं।",
+  "marketMonthlyAvg": "{month} का औसत",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "{day} का भाव",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "पिछले महीने की तुलना में {change}",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "पिछले दिन की तुलना में {change}",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

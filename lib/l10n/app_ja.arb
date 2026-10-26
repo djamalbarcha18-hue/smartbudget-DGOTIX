@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "{price} まで下がったら通知",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "アラートを削除",
-  "metalsAlertNote": "価格はアプリを開いている間に確認されます。"
+  "metalsAlertNote": "価格はアプリを開いている間に確認されます。",
+  "marketMonthlyAvg": "{month}の平均",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "{day}の価格",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "前月比 {change}",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "前日比 {change}",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

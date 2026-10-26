@@ -40,4 +40,42 @@ void main() {
     expect(q.length, specs.length);
     expect(q.first.quality, PriceQuality.unavailable);
   });
+
+  test('a month\'s average keeps its month; a day\'s price its day', () {
+    final List<CommodityQuote> q = BackendMarketProvider.parse(
+        CommodityConfig.byCategory(MarketCategory.energy), <String, dynamic>{
+      'quotes': <dynamic>[
+        <String, dynamic>{
+          'code': 'BRENT',
+          'priceUsd': 81.5,
+          'previousUsd': 80.12,
+          'unit': 'USD/bbl',
+          'period': '2026-10-24',
+          'frequency': 'daily',
+          'source': 'U.S. EIA',
+          'quality': 'delayed',
+        },
+        <String, dynamic>{
+          'code': 'NGAS',
+          'priceUsd': 3.1,
+          'unit': 'USD/MMBtu',
+          'period': '2026-09',
+          'frequency': 'monthly',
+          'source': 'IMF',
+          'quality': 'indicative',
+        },
+      ],
+    });
+    final CommodityQuote brent =
+        q.firstWhere((CommodityQuote x) => x.code == 'BRENT');
+    expect(brent.period, '2026-10-24');
+    expect(brent.monthly, isFalse);
+    expect(brent.changePct, closeTo(1.72, 0.01));
+    final CommodityQuote gas =
+        q.firstWhere((CommodityQuote x) => x.code == 'NGAS');
+    expect(gas.monthly, isTrue);
+    expect(gas.quality, PriceQuality.indicative);
+    expect(q.firstWhere((CommodityQuote x) => x.code == 'WTI').hasPrice,
+        isFalse);
+  });
 }

@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "{price}까지 내리면 알림",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "알림 삭제",
-  "metalsAlertNote": "가격은 앱이 열려 있을 때 확인됩니다."
+  "metalsAlertNote": "가격은 앱이 열려 있을 때 확인됩니다.",
+  "marketMonthlyAvg": "{month} 평균",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "{day} 가격",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "전월 대비 {change}",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "전일 대비 {change}",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "Upozori ako padne na {price}",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "Ukloni upozorenje",
-  "metalsAlertNote": "Cijene se provjeravaju dok je aplikacija otvorena."
+  "metalsAlertNote": "Cijene se provjeravaju dok je aplikacija otvorena.",
+  "marketMonthlyAvg": "Prosjek za {month}",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "Cijena na dan {day}",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "{change} u odnosu na prethodni mjesec",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "{change} u odnosu na prethodni dan",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

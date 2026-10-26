@@ -31,3 +31,14 @@ String shortDayText(Locale locale, DateTime d) {
           : 'en';
   return DateFormat.MMMd(use).format(d);
 }
+
+/// A month and its year ("September 2026", «سبتمبر 2026»).
+String monthText(Locale locale, DateTime d) {
+  final String name = locale.toString();
+  final String use = DateFormat.localeExists(name)
+      ? name
+      : DateFormat.localeExists(locale.languageCode)
+          ? locale.languageCode
+          : 'en';
+  return DateFormat.yMMMM(use).format(d);
+}

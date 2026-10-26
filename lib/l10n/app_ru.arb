@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "Уведомить при падении до {price}",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "Удалить уведомление",
-  "metalsAlertNote": "Цены проверяются, пока приложение открыто."
+  "metalsAlertNote": "Цены проверяются, пока приложение открыто.",
+  "marketMonthlyAvg": "Среднее за {month}",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "Цена на {day}",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "{change} к прошлому месяцу",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "{change} к прошлому дню",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

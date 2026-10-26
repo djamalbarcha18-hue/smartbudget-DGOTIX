@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "跌到 {price} 时提醒",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "删除提醒",
-  "metalsAlertNote": "应用打开时会检查价格。"
+  "metalsAlertNote": "应用打开时会检查价格。",
+  "marketMonthlyAvg": "{month}平均价",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "{day}价格",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "较上月 {change}",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "较前一日 {change}",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "Alarm als het daalt tot {price}",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "Alarm verwijderen",
-  "metalsAlertNote": "Prijzen worden gecontroleerd zolang de app open is."
+  "metalsAlertNote": "Prijzen worden gecontroleerd zolang de app open is.",
+  "marketMonthlyAvg": "Gemiddelde {month}",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "Prijs op {day}",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "{change} t.o.v. de vorige maand",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "{change} t.o.v. de vorige dag",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "Amaran jika turun ke {price}",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "Buang amaran",
-  "metalsAlertNote": "Harga disemak semasa aplikasi dibuka."
+  "metalsAlertNote": "Harga disemak semasa aplikasi dibuka.",
+  "marketMonthlyAvg": "Purata {month}",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "Harga pada {day}",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "{change} berbanding bulan sebelumnya",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "{change} berbanding hari sebelumnya",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

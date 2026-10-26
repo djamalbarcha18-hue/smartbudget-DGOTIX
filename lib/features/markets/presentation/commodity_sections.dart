@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -293,6 +294,66 @@ class CommodityCategorySection extends ConsumerWidget {
   }
 }
 
+/// What the price is (a month's average or a day's price), where it comes
+/// from, and how it moved since the period before.
+class _PeriodLine extends StatelessWidget {
+  const _PeriodLine({required this.quote});
+  final CommodityQuote quote;
+
+  /// "2026-09" or "2026-10-24", else null.
+  static DateTime? _date(String p) {
+    final RegExpMatch? m = RegExp(r'^(\d{4})-(\d{2})(?:-(\d{2}))?').firstMatch(p);
+    if (m == null) return null;
+    return DateTime(int.parse(m[1]!), int.parse(m[2]!),
+        m[3] == null ? 1 : int.parse(m[3]!));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final Locale locale = Localizations.localeOf(context);
+    final DateTime? d = _date(quote.period!);
+    final String when = d == null
+        ? quote.period!
+        : quote.monthly
+            ? l.marketMonthlyAvg(monthText(locale, d))
+            : l.marketDayPrice(dayText(locale, d));
+    final double? pct = quote.changePct;
+    return Padding(
+      padding: const EdgeInsets.only(top: DsSpacing.xs),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          if (pct != null)
+            Row(
+              children: <Widget>[
+                Icon(
+                    pct >= 0
+                        ? Icons.arrow_upward_rounded
+                        : Icons.arrow_downward_rounded,
+                    size: 14,
+                    color: pct >= 0 ? c.income : c.expense),
+                const SizedBox(width: 2),
+                Flexible(
+                  child: Text(
+                    (quote.monthly ? l.marketVsPrevMonth : l.marketVsPrevDay)(
+                        '\u2066${pct >= 0 ? '+' : ''}${pct.toStringAsFixed(1)}%\u2069'),
+                    style: t.labelMedium
+                        ?.copyWith(color: pct >= 0 ? c.income : c.expense),
+                  ),
+                ),
+              ],
+            ),
+          Text('$when · ${l.marketSource}: ${quote.source}',
+              style: t.labelSmall?.copyWith(color: c.textFaint)),
+        ],
+      ),
+    );
+  }
+}
+
 /// Commodities with no data source yet, named on one card.
 class _WaitingCard extends StatelessWidget {
   const _WaitingCard({required this.quotes});
@@ -397,6 +458,8 @@ class _CommodityCard extends StatelessWidget {
                       ?.copyWith(color: context.dsColors.textMuted)),
             ],
           ),
+          if (quote.priceUsd != null && quote.period != null)
+            _PeriodLine(quote: quote),
           // Priced by the troy ounce (platinum, palladium): the gram too.
           if (quote.priceUsd != null && quote.unitLabel == 'USD/oz')
             Padding(

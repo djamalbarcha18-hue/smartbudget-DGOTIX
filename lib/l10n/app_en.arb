@@ -1785,5 +1785,13 @@
   "metalsAlertBelow": "Alert when it falls to {price}",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "Remove the alert",
-  "metalsAlertNote": "Prices are checked whenever the app is open."
+  "metalsAlertNote": "Prices are checked whenever the app is open.",
+  "marketMonthlyAvg": "Average for {month}",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "Price on {day}",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "{change} vs the month before",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "{change} vs the day before",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

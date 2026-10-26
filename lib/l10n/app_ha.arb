@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "Faɗakar idan ya sauka zuwa {price}",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "Cire faɗakarwa",
-  "metalsAlertNote": "Ana duba farashi idan manhajar a buɗe take."
+  "metalsAlertNote": "Ana duba farashi idan manhajar a buɗe take.",
+  "marketMonthlyAvg": "Matsakaicin {month}",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "Farashin {day}",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "{change} idan aka kwatanta da watan da ya gabata",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "{change} idan aka kwatanta da ranar da ta gabata",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

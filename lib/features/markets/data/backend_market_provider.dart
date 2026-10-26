@@ -111,6 +111,8 @@ class BackendMarketProvider implements MarketDataProvider {
         source: (r['source'] as String?) ?? 'proxy',
         updatedAt: updated,
         quality: _quality(r['quality']),
+        period: r['period'] is String ? r['period'] as String : null,
+        monthly: r['frequency'] == 'monthly',
       );
     }).toList();
   }

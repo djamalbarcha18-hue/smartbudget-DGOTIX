@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "هشدار وقتی تا {price} پایین بیاید",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "حذف هشدار",
-  "metalsAlertNote": "قیمت‌ها هنگام باز بودن برنامه بررسی می‌شوند."
+  "metalsAlertNote": "قیمت‌ها هنگام باز بودن برنامه بررسی می‌شوند.",
+  "marketMonthlyAvg": "میانگین {month}",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "قیمت روز {day}",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "{change} نسبت به ماه قبل",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "{change} نسبت به روز قبل",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

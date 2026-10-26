@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "Alarm, wenn er auf {price} fällt",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "Alarm entfernen",
-  "metalsAlertNote": "Preise werden geprüft, solange die App geöffnet ist."
+  "metalsAlertNote": "Preise werden geprüft, solange die App geöffnet ist.",
+  "marketMonthlyAvg": "Durchschnitt {month}",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "Preis am {day}",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "{change} gegenüber dem Vormonat",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "{change} gegenüber dem Vortag",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

@@ -62,6 +62,9 @@ jobs:
           DEFINES=""
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
             DEFINES="--dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
+            # Commodity prices (industrial metals, steel & iron, energy,
+            # agriculture) come through the project's market-proxy function.
+            DEFINES="$DEFINES --dart-define=MARKET_API_URL=${SUPABASE_URL%/}/functions/v1/market-proxy"
           fi
           if [ -n "$TURNSTILE_SITE_KEY" ]; then
             DEFINES="$DEFINES --dart-define=TURNSTILE_SITE_KEY=$TURNSTILE_SITE_KEY"

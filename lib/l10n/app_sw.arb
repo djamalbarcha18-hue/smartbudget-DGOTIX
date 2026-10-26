@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "Tahadhari ikishuka hadi {price}",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "Ondoa tahadhari",
-  "metalsAlertNote": "Bei hukaguliwa programu ikiwa imefunguliwa."
+  "metalsAlertNote": "Bei hukaguliwa programu ikiwa imefunguliwa.",
+  "marketMonthlyAvg": "Wastani wa {month}",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "Bei ya {day}",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "{change} ukilinganisha na mwezi uliopita",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "{change} ukilinganisha na siku iliyopita",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

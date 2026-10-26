@@ -20,24 +20,38 @@
 //   priceUsd — the proxy NEVER invents a number.
 //
 // PROVIDER CHOICE (owner-controlled)
-//   MARKET_PROVIDER selects the adapter. "none" (default) returns everything as
-//   unavailable, so the function is safe to deploy immediately with no keys.
-//   Add an adapter below and set MARKET_PROVIDER + its key when you choose one.
+//   MARKET_PROVIDER selects the adapter. "free" (default) needs no paid plan:
+//   IMF monthly averages for agriculture, iron ore, base metals and energy,
+//   and daily oil and gas from the U.S. EIA when EIA_API_KEY (free) is set.
+//   "none" returns everything as unavailable.
+
+import {
+  eiaQuotes,
+  eiaUrls,
+  IMF_ACCEPT,
+  imfQuotes,
+  imfUrl,
+  parseEia,
+  parseImf,
+  preferPriced,
+  type Quote,
+  type Spec,
+} from "../_shared/commodity_sources.ts";
 
 const ALLOWED_ORIGIN = Deno.env.get("ALLOWED_ORIGIN") ?? "*";
-const PROVIDER = (Deno.env.get("MARKET_PROVIDER") ?? "none").toLowerCase();
+const PROVIDER = (Deno.env.get("MARKET_PROVIDER") ?? "free").toLowerCase();
 
-// Which codes belong to each category, and the symbol a provider expects.
+// Which codes belong to each category.
 // Mirrors the Flutter CommodityConfig; extend here + there together.
-const CATALOG: Record<string, Array<{ code: string; unit: string; benchmark?: string; region?: string; symbol?: string }>> = {
+const CATALOG: Record<string, Spec[]> = {
   industrialMetals: [
-    { code: "XCU", unit: "USD/t", benchmark: "LME", symbol: "LME-XCU" },
-    { code: "ALU", unit: "USD/t", benchmark: "LME", symbol: "LME-ALU" },
-    { code: "ZNC", unit: "USD/t", benchmark: "LME", symbol: "LME-ZNC" },
-    { code: "NIK", unit: "USD/t", benchmark: "LME", symbol: "LME-NIK" },
-    { code: "LED", unit: "USD/t", benchmark: "LME", symbol: "LME-LED" },
-    { code: "TIN", unit: "USD/t", benchmark: "LME", symbol: "LME-TIN" },
-    { code: "COB", unit: "USD/t", benchmark: "LME", symbol: "LME-COB" },
+    { code: "XCU", unit: "USD/t", benchmark: "LME" },
+    { code: "ALU", unit: "USD/t", benchmark: "LME" },
+    { code: "ZNC", unit: "USD/t", benchmark: "LME" },
+    { code: "NIK", unit: "USD/t", benchmark: "LME" },
+    { code: "LED", unit: "USD/t", benchmark: "LME" },
+    { code: "TIN", unit: "USD/t", benchmark: "LME" },
+    { code: "COB", unit: "USD/t", benchmark: "LME" },
   ],
   steelIron: [
     { code: "IORE62", unit: "USD/dmt", benchmark: "Platts 62% Fe", region: "CFR China" },
@@ -48,37 +62,33 @@ const CATALOG: Record<string, Array<{ code: string; unit: string; benchmark?: st
     { code: "SCRAP", unit: "USD/t", benchmark: "Scrap" },
   ],
   energy: [
-    { code: "BRENT", unit: "USD/bbl", benchmark: "ICE Brent", symbol: "BRENTOIL" },
-    { code: "WTI", unit: "USD/bbl", benchmark: "NYMEX WTI", symbol: "WTIOIL" },
-    { code: "NGAS", unit: "USD/MMBtu", benchmark: "Henry Hub", symbol: "NG" },
+    { code: "BRENT", unit: "USD/bbl", benchmark: "ICE Brent" },
+    { code: "WTI", unit: "USD/bbl", benchmark: "NYMEX WTI" },
+    { code: "NGAS", unit: "USD/MMBtu", benchmark: "Henry Hub" },
   ],
   agriculture: [
-    { code: "WHEAT", unit: "USd/bu", benchmark: "CBOT", symbol: "WHEAT" },
-    { code: "CORN", unit: "USd/bu", benchmark: "CBOT", symbol: "CORN" },
-    { code: "SOYB", unit: "USd/bu", benchmark: "CBOT", symbol: "SOYBEAN" },
-    { code: "SUGAR", unit: "USd/lb", benchmark: "ICE", symbol: "SUGAR" },
-    { code: "COFFEE", unit: "USd/lb", benchmark: "ICE", symbol: "COFFEE" },
-    { code: "COCOA", unit: "USD/t", benchmark: "ICE", symbol: "COCOA" },
+    { code: "WHEAT", unit: "USD/t", benchmark: "Wheat" },
+    { code: "CORN", unit: "USD/t", benchmark: "Corn" },
+    { code: "RICE", unit: "USD/t", benchmark: "Rice" },
+    { code: "SOYB", unit: "USD/t", benchmark: "Soybeans" },
+    { code: "SUGAR", unit: "USD/lb", benchmark: "Sugar" },
+    { code: "COFFEE", unit: "USD/lb", benchmark: "Coffee" },
+    { code: "COCOA", unit: "USD/t", benchmark: "Cocoa" },
+    { code: "PALMOIL", unit: "USD/t", benchmark: "Palm oil" },
   ],
   preciousMetals: [
-    { code: "XAU", unit: "USD/oz", symbol: "XAU" },
-    { code: "XAG", unit: "USD/oz", symbol: "XAG" },
-    { code: "XPT", unit: "USD/oz", symbol: "XPT" },
-    { code: "XPD", unit: "USD/oz", symbol: "XPD" },
+    { code: "XAU", unit: "USD/oz" },
+    { code: "XAG", unit: "USD/oz" },
+    { code: "XPT", unit: "USD/oz" },
+    { code: "XPD", unit: "USD/oz" },
   ],
 };
 
-type Spec = { code: string; unit: string; benchmark?: string; region?: string; symbol?: string };
-type Quote = {
-  code: string;
-  unit: string;
-  benchmark?: string;
-  region?: string;
-  priceUsd?: number;
-  previousUsd?: number;
-  source: string;
-  updatedAt: string;
-  quality: "realtime" | "nearRealtime" | "delayed" | "indicative" | "unavailable";
+/** The symbols metalpriceapi.com expects, where they differ from our codes. */
+const METALPRICEAPI_SYMBOL: Record<string, string> = {
+  XCU: "LME-XCU", ALU: "LME-ALU", ZNC: "LME-ZNC", NIK: "LME-NIK",
+  LED: "LME-LED", TIN: "LME-TIN", COB: "LME-COB",
+  BRENT: "BRENTOIL", WTI: "WTIOIL", NGAS: "NG", SOYB: "SOYBEAN",
 };
 
 // A provider adapter maps specs -> quotes. Add your chosen provider here.
@@ -103,7 +113,7 @@ function unavailable(specs: Spec[], source = "requires data source"): Quote[] {
 const metalPriceApi: Adapter = async (_category, specs) => {
   const key = Deno.env.get("METALPRICEAPI_KEY");
   if (!key) return unavailable(specs, "metalpriceapi (no key)");
-  const symbols = specs.map((s) => s.symbol ?? s.code).join(",");
+  const symbols = specs.map((s) => METALPRICEAPI_SYMBOL[s.code] ?? s.code).join(",");
   try {
     const res = await fetch(
       `https://api.metalpriceapi.com/v1/latest?api_key=${key}&base=USD&currencies=${symbols}`,
@@ -113,7 +123,7 @@ const metalPriceApi: Adapter = async (_category, specs) => {
     const rates = (json?.rates ?? {}) as Record<string, number>;
     const now = new Date().toISOString();
     return specs.map((s) => {
-      const sym = s.symbol ?? s.code;
+      const sym = METALPRICEAPI_SYMBOL[s.code] ?? s.code;
       const perUsd = rates[sym];
       // metalpriceapi returns units-per-USD; invert to USD-per-unit.
       const priceUsd = typeof perUsd === "number" && perUsd > 0 ? 1 / perUsd : undefined;
@@ -133,14 +143,52 @@ const metalPriceApi: Adapter = async (_category, specs) => {
   }
 };
 
+/** Free sources: IMF monthly averages (keyless) for everything the IMF
+ *  covers; for energy, the EIA's daily prices first when EIA_API_KEY is set.
+ *  A source that fails leaves its codes to the next one, then unavailable. */
+const freeSources: Adapter = async (category, specs) => {
+  const now = new Date().toISOString();
+  const lists: Quote[][] = [];
+  const eiaKey = Deno.env.get("EIA_API_KEY");
+  if (category === "energy" && eiaKey) {
+    try {
+      const points = new Map();
+      for (const url of eiaUrls(specs.map((s) => s.code), eiaKey)) {
+        const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
+        if (!res.ok) continue;
+        for (const [k, v] of parseEia(await res.json())) points.set(k, v);
+      }
+      lists.push(eiaQuotes(specs, points, now));
+    } catch {
+      // Falls through to the IMF.
+    }
+  }
+  const url = imfUrl(specs.map((s) => s.code));
+  if (url) {
+    try {
+      const res = await fetch(url, {
+        headers: { Accept: IMF_ACCEPT },
+        signal: AbortSignal.timeout(20000),
+      });
+      if (res.ok) lists.push(imfQuotes(specs, parseImf(await res.json()), now));
+    } catch {
+      // Unavailable below.
+    }
+  }
+  return preferPriced(specs, lists, now);
+};
+
 const ADAPTERS: Record<string, Adapter> = {
   none: (_c, specs) => Promise.resolve(unavailable(specs)),
+  free: freeSources,
   metalpriceapi: metalPriceApi,
   // Add more owner-chosen adapters here (e.g. twelvedata, tradingeconomics…).
 };
 
-/** Quotes per category, kept for [CACHE_TTL_MS] (one entry per category). */
-const CACHE_TTL_MS = 10 * 60 * 1000;
+/** Quotes per category, kept for [CACHE_TTL_MS] (one entry per category).
+ *  A failed fetch is kept only briefly, so a source that comes back is seen. */
+const CACHE_TTL_MS = 60 * 60 * 1000;
+const FAILED_TTL_MS = 5 * 60 * 1000;
 const CACHE = new Map<string, { at: number; quotes: Quote[] }>();
 
 function cors(): HeadersInit {
@@ -170,7 +218,10 @@ Deno.serve(async (req: Request) => {
   const now = Date.now();
   const hit = CACHE.get(category);
   let quotes: Quote[];
-  if (hit && now - hit.at < CACHE_TTL_MS) {
+  const fresh = hit &&
+    now - hit.at <
+      (hit.quotes.some((q) => q.priceUsd !== undefined) ? CACHE_TTL_MS : FAILED_TTL_MS);
+  if (hit && fresh) {
     quotes = hit.quotes;
   } else {
     const adapter = ADAPTERS[PROVIDER] ?? ADAPTERS.none;

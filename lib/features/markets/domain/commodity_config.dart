@@ -55,7 +55,7 @@ abstract final class CommodityConfig {
     CommoditySpec(code: 'COB', nameEn: 'Cobalt', nameAr: 'الكوبالت', category: MarketCategory.industrialMetals, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'LME'),
 
     // ---- Steel & Iron (Platts/LME/SGX benchmarks — licensed → backend) ----
-    CommoditySpec(code: 'IORE62', nameEn: 'Iron Ore 62% Fe', nameAr: 'خام الحديد 62%', category: MarketCategory.steelIron, unitLabel: 'USD/dmt', providerId: 'unavailable', benchmark: 'Platts 62% Fe', region: 'CFR China'),
+    CommoditySpec(code: 'IORE62', nameEn: 'Iron Ore 62% Fe', nameAr: 'خام الحديد 62%', category: MarketCategory.steelIron, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'Platts 62% Fe', region: 'CFR China'),
     CommoditySpec(code: 'IORE58', nameEn: 'Iron Ore 58% Fe', nameAr: 'خام الحديد 58%', category: MarketCategory.steelIron, unitLabel: 'USD/dmt', providerId: 'unavailable', benchmark: 'Platts 58% Fe', region: 'CFR China'),
     CommoditySpec(code: 'HRC', nameEn: 'Steel HRC', nameAr: 'صلب HRC', category: MarketCategory.steelIron, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'HRC'),
     CommoditySpec(code: 'REBAR', nameEn: 'Steel Rebar', nameAr: 'حديد التسليح', category: MarketCategory.steelIron, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'Rebar'),
@@ -67,13 +67,15 @@ abstract final class CommodityConfig {
     CommoditySpec(code: 'WTI', nameEn: 'WTI Crude', nameAr: 'خام غرب تكساس', category: MarketCategory.energy, unitLabel: 'USD/bbl', providerId: 'unavailable', benchmark: 'NYMEX WTI'),
     CommoditySpec(code: 'NGAS', nameEn: 'Natural Gas', nameAr: 'الغاز الطبيعي', category: MarketCategory.energy, unitLabel: 'USD/MMBtu', providerId: 'unavailable', benchmark: 'Henry Hub'),
 
-    // ---- Agriculture (CBOT/ICE futures — licensed/keyed → backend) ----
-    CommoditySpec(code: 'WHEAT', nameEn: 'Wheat', nameAr: 'القمح', category: MarketCategory.agriculture, unitLabel: 'USd/bu', providerId: 'unavailable', benchmark: 'CBOT'),
-    CommoditySpec(code: 'CORN', nameEn: 'Corn', nameAr: 'الذرة', category: MarketCategory.agriculture, unitLabel: 'USd/bu', providerId: 'unavailable', benchmark: 'CBOT'),
-    CommoditySpec(code: 'SOYB', nameEn: 'Soybeans', nameAr: 'فول الصويا', category: MarketCategory.agriculture, unitLabel: 'USd/bu', providerId: 'unavailable', benchmark: 'CBOT'),
-    CommoditySpec(code: 'SUGAR', nameEn: 'Sugar', nameAr: 'السكر', category: MarketCategory.agriculture, unitLabel: 'USd/lb', providerId: 'unavailable', benchmark: 'ICE'),
-    CommoditySpec(code: 'COFFEE', nameEn: 'Coffee', nameAr: 'البن', category: MarketCategory.agriculture, unitLabel: 'USd/lb', providerId: 'unavailable', benchmark: 'ICE'),
-    CommoditySpec(code: 'COCOA', nameEn: 'Cocoa', nameAr: 'الكاكاو', category: MarketCategory.agriculture, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'ICE'),
+    // ---- Agriculture (monthly IMF averages through the proxy) ----
+    CommoditySpec(code: 'WHEAT', nameEn: 'Wheat', nameAr: 'القمح', category: MarketCategory.agriculture, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'Wheat'),
+    CommoditySpec(code: 'CORN', nameEn: 'Corn', nameAr: 'الذرة', category: MarketCategory.agriculture, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'Corn'),
+    CommoditySpec(code: 'RICE', nameEn: 'Rice', nameAr: 'الأرز', category: MarketCategory.agriculture, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'Rice'),
+    CommoditySpec(code: 'SOYB', nameEn: 'Soybeans', nameAr: 'فول الصويا', category: MarketCategory.agriculture, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'Soybeans'),
+    CommoditySpec(code: 'SUGAR', nameEn: 'Sugar', nameAr: 'السكر', category: MarketCategory.agriculture, unitLabel: 'USD/lb', providerId: 'unavailable', benchmark: 'Sugar'),
+    CommoditySpec(code: 'COFFEE', nameEn: 'Coffee', nameAr: 'البن', category: MarketCategory.agriculture, unitLabel: 'USD/lb', providerId: 'unavailable', benchmark: 'Coffee'),
+    CommoditySpec(code: 'COCOA', nameEn: 'Cocoa', nameAr: 'الكاكاو', category: MarketCategory.agriculture, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'Cocoa'),
+    CommoditySpec(code: 'PALMOIL', nameEn: 'Palm oil', nameAr: 'زيت النخيل', category: MarketCategory.agriculture, unitLabel: 'USD/t', providerId: 'unavailable', benchmark: 'Palm oil'),
   ];
 
   static List<CommoditySpec> byCategory(MarketCategory category) =>

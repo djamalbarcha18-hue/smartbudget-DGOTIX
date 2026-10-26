@@ -32,6 +32,8 @@ class CommodityQuote {
     this.changeYtd,
     this.high52w,
     this.low52w,
+    this.period,
+    this.monthly = false,
   });
 
   final String code; // XAU, XCU, BRENT, WHEAT…
@@ -60,6 +62,11 @@ class CommodityQuote {
   final String source;
   final DateTime updatedAt;
   final PriceQuality quality;
+
+  /// The day ("2026-10-24") or month ("2026-09") the price is for, when the
+  /// source says; [monthly] when it is that month's average.
+  final String? period;
+  final bool monthly;
 
   bool get hasPrice => priceUsd != null;
 

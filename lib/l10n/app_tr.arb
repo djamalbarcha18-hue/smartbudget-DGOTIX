@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "{price} fiyatına düşerse uyar",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "Uyarıyı kaldır",
-  "metalsAlertNote": "Fiyatlar uygulama açıkken kontrol edilir."
+  "metalsAlertNote": "Fiyatlar uygulama açıkken kontrol edilir.",
+  "marketMonthlyAvg": "{month} ortalaması",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "{day} fiyatı",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "Önceki aya göre {change}",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "Önceki güne göre {change}",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

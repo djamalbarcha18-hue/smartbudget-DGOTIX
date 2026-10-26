@@ -1517,5 +1517,13 @@
   "metalsAlertBelow": "Njofto nëse bie në {price}",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "Hiq njoftimin",
-  "metalsAlertNote": "Çmimet kontrollohen kur aplikacioni është i hapur."
+  "metalsAlertNote": "Çmimet kontrollohen kur aplikacioni është i hapur.",
+  "marketMonthlyAvg": "Mesatarja e {month}",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "Çmimi më {day}",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "{change} krahasuar me muajin e kaluar",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "{change} krahasuar me ditën e kaluar",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }

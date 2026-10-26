@@ -1717,5 +1717,13 @@
   "metalsAlertBelow": "تنبيه إذا نزل إلى {price}",
   "@metalsAlertBelow": {"placeholders": {"price": {"type": "String"}}},
   "metalsAlertRemove": "إلغاء التنبيه",
-  "metalsAlertNote": "يُفحص السعر كلما كان التطبيق مفتوحًا."
+  "metalsAlertNote": "يُفحص السعر كلما كان التطبيق مفتوحًا.",
+  "marketMonthlyAvg": "متوسط شهر {month}",
+  "@marketMonthlyAvg": {"placeholders": {"month": {"type": "String"}}},
+  "marketDayPrice": "سعر يوم {day}",
+  "@marketDayPrice": {"placeholders": {"day": {"type": "String"}}},
+  "marketVsPrevMonth": "{change} عن الشهر السابق",
+  "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
+  "marketVsPrevDay": "{change} عن اليوم السابق",
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
 }
