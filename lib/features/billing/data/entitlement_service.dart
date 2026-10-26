@@ -9,14 +9,15 @@ import 'package:smartbudget/features/billing/domain/plan.dart';
 ///
 /// The server is the source of truth; this only reads. RLS (see
 /// supabase/ai_gateway.sql) lets a user read only their own `ai_entitlements`
-/// row. Any failure returns [Entitlement.free] rather than throwing — an
-/// entitlement lookup must never block the app or degrade core features.
+/// row. It never throws: a lookup must never block the app. A failed lookup
+/// (offline, server down) gives null — not FREE — so a paying user keeps
+/// the last known plan instead of losing it until the next good answer.
 class EntitlementService {
   const EntitlementService();
 
   sb.SupabaseClient get _client => sb.Supabase.instance.client;
 
-  Future<Entitlement> fetch() async {
+  Future<Entitlement?> fetch() async {
     final String? uid = _client.auth.currentUser?.id;
     if (uid == null || uid.isEmpty) return Entitlement.free;
     try {
@@ -35,7 +36,7 @@ class EntitlementService {
         period: await _period(uid),
       );
     } catch (_) {
-      return Entitlement.free;
+      return null;
     }
   }
 

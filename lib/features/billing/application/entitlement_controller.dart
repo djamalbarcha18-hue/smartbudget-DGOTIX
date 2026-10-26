@@ -79,13 +79,16 @@ class EntitlementController extends Notifier<Entitlement> {
 /// - no backend at all (local demo) → null, meaning "no server answer", so
 ///   the local cache applies (which the developer plan preview can set).
 /// A successful fetch also refreshes the local cache so the next cold start
-/// shows the last-known plan instantly.
+/// shows the last-known plan instantly; a failed one returns null and leaves
+/// the cache as it was.
 final remoteEntitlementProvider = FutureProvider<Entitlement?>((ref) async {
   if (!AppEnv.hasSupabase) return null;
   if (!ref.watch(authControllerProvider).isAuthenticated) {
     return Entitlement.free;
   }
-  final Entitlement e = await ref.read(entitlementServiceProvider).fetch();
+  final Entitlement? e = await ref.read(entitlementServiceProvider).fetch();
+  // No answer (offline, server down): the last known plan stays in force.
+  if (e == null) return null;
   try {
     ref.read(entitlementProvider.notifier).hydrate(e);
   } catch (_) {

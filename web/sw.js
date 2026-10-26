@@ -112,12 +112,25 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(staleWhileRevalidate(req, RUNTIME));
 });
 
+// A message shared with the installed app (manifest share_target) arrives
+// in the address, ?share_text=... It is read by the app on the device and
+// must never reach the server, where it would sit in access logs: such a
+// page is answered from the stored app, or fetched without those fields.
+const SHARE_PARAMS = ['share_title', 'share_text', 'share_url'];
+
 // The page: network first (a few seconds), else the stored copy. Only the app
 // itself is stored as the offline page; the site's other pages (the sign-in
 // check, the payment page) just come from the network.
 async function page(req) {
   const shell = await caches.open(SHELL);
-  const path = new URL(req.url).pathname;
+  const url = new URL(req.url);
+  if (SHARE_PARAMS.some((p) => url.searchParams.has(p))) {
+    const stored = await shell.match('./');
+    if (stored) return stored;
+    SHARE_PARAMS.forEach((p) => url.searchParams.delete(p));
+    return fetch(url.href);
+  }
+  const path = url.pathname;
   const scope = new URL(self.registration.scope).pathname;
   const isApp = path === scope || path === scope + 'index.html';
   try {

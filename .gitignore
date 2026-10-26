@@ -14,3 +14,7 @@ lib/l10n/gen/
 # Env / secrets (never commit real project keys)
 .env
 dart_define.json
+# Android signing (never commit the keystore or its passwords)
+*.jks
+*.keystore
+android/key.properties
