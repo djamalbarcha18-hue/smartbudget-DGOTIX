@@ -1,0 +1,27 @@
+name: Probe price sources (temporary)
+on:
+  push:
+    branches: ["tmp/share-sms"]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe
+        run: |
+          set +e
+          get() { echo; echo "===== $1"; curl -sS -m 30 -w "\nHTTP %{http_code}\n" "$1" | head -c "${2:-2500}"; echo; }
+          get "https://api.db.nomics.world/v22/providers/IMF" 1500
+          get "https://api.db.nomics.world/v22/datasets/IMF/PCPS" 2500
+          get "https://api.db.nomics.world/v22/series/IMF/PCPS?q=wheat&observations=0&limit=10" 3000
+          get "https://api.db.nomics.world/v22/series/IMF/PCPS/M.W00.PWHEAMT.USD?observations=1" 3500
+          get "https://api.db.nomics.world/v22/series?series_ids=IMF/PCPS/M.W00.PWHEAMT.USD,IMF/PCPS/M.W00.PIORECR.USD&observations=1" 1500
+          for q in maize rice soybeans sugar coffee cocoa "palm oil" "iron ore" copper aluminum zinc nickel lead tin cobalt brent "west texas" "natural gas"; do
+            curl -sS -m 30 -G "https://api.db.nomics.world/v22/series/IMF/PCPS" --data-urlencode "q=$q" --data-urlencode "observations=0" --data-urlencode "limit=12" \
+              | jq -r --arg q "$q" '"== " + $q, (.series.docs[]? | [.series_code, .series_name] | @tsv)' 2>&1 | head -14
+          done
+          get "https://api.db.nomics.world/v22/series/WB/commodity_prices?q=iron&observations=0&limit=5" 1500
+          get "https://api.eia.gov/v2/petroleum/pri/spt/data/?frequency=daily&data[0]=value&facets[series][]=RBRTE&length=2" 800
+          get "https://api.eia.gov/v2/petroleum/pri/spt/" 800
+          get "https://api.imf.org/external/sdmx/2.1/dataflow/IMF.RES/PCPS" 600
