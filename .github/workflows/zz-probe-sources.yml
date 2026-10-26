@@ -11,11 +11,19 @@ jobs:
       - name: Probe
         run: |
           set +e
-          get() { echo; echo "===== $1"; curl -sS -g -m 40 -L -H "Accept: ${2:-application/json}" -w "\nHTTP %{http_code} %{content_type}\n" "$1" | head -c "${3:-1500}"; echo; }
-          get "https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.RES/PCPS/+/M.W00.PWHEAMT.USD?lastNObservations=2" "application/vnd.sdmx.data+json;version=2.0.0" 2500
-          get "https://api.imf.org/external/sdmx/2.1/data/IMF.RES,PCPS/M.W00.PWHEAMT.USD?lastNObservations=2" "application/vnd.sdmx.data+json;version=1.0.0" 2500
-          get "https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.RES/PCPS/+/W00.PWHEAMT.USD.M?lastNObservations=2" "application/json" 1500
-          get "https://api.imf.org/external/sdmx/3.0/structure/dataflow/IMF.RES/PCPS/+" "application/json" 2500
-          echo "== worldbank page links"
-          curl -sS -L -m 40 "https://www.worldbank.org/en/research/commodity-markets" | grep -oiE 'https?://[^"'"'"' ]+\.xlsx' | sort -u | head -20
-          curl -sS -L -m 40 "https://www.worldbank.org/en/research/commodity-markets" | grep -oiE 'href="[^"]*(pink|CMO)[^"]*"' | sort -u | head -20
+          A="application/vnd.sdmx.data+json;version=2.0.0"
+          B=https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.RES/PCPS/+
+          q() { echo; echo "===== $1"; curl -sS -g -m 60 -H "Accept: $A" "$B/$1" > r.json; echo "bytes $(wc -c < r.json)";
+            jq -c '.data.structures[0].dimensions.series[] | {id, values: [.values[] | [.id, .name] ]}' r.json | head -c 2500; echo
+            jq -c '.data.structures[0].dimensions.observation[0].values | [.[-3:][] | [.id, .start, .end]]' r.json | head -c 600; echo
+            jq -c '.data.dataSets[0].series | to_entries[:8][] | {k: .key, attrs: .value.attributes, obs: (.value.observations | to_entries | .[-2:])}' r.json | head -c 2500; echo
+            jq -c '.data.structures[0].attributes.dimensionGroup[]? | {id, values: [.values[]? | [.id, .name]]}' r.json | head -c 2500; echo
+            jq -c '.data.structures[0].attributes.series[]? | {id, values: [.values[]? | [.id, .name]]}' r.json | head -c 800; echo
+          }
+          q "*.PWHEAMT.*.M?lastNObservations=2"
+          q "*.PSUGAISA+PCOFFOTM+PIORECR+POILBRE+PNGASUS.*.M?lastNObservations=1"
+          echo "== codelists"
+          curl -sS -m 60 -H "Accept: application/vnd.sdmx.structure+json;version=2.0.0" "https://api.imf.org/external/sdmx/3.0/structure/datastructure/IMF.RES/DSD_PCPS/+?references=codelist&detail=full" > s.json
+          echo "bytes $(wc -c < s.json)"
+          jq -r '.data.codelists[]? | .id' s.json
+          jq -r '.data.codelists[]? | .id as $c | .codes[]? | "\($c)\t\(.id)\t\(.name)"' s.json | grep -iE "TRANSFORM|COUNTRY.*(G0|W0|World)|WHEA|MAIZ|RICE|SOYB\b|PSOYB|SUGAISA|COFFOTM|PCOCO|PPOIL|IORE|PCOPP|PALUM|PZINC|PNICK|PLEAD|PTIN|PCOBA|OILBRE|OILWTI|NGASUS" | head -90
