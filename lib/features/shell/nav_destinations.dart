@@ -11,6 +11,7 @@ enum AppSection {
   challenges,
   transactions,
   wallets,
+  metals,
   income,
   expenses,
   recurring,
@@ -62,6 +63,7 @@ class NavDestination {
         AppSection.challenges => l.navChallenges,
         AppSection.transactions => l.navTransactions,
         AppSection.wallets => l.navWallets,
+        AppSection.metals => l.navMetals,
         AppSection.income => l.navIncome,
         AppSection.expenses => l.navExpenses,
         AppSection.recurring => l.navRecurring,
@@ -129,6 +131,12 @@ abstract final class AppNav {
       route: '/wallets',
       icon: Icons.wallet_outlined,
       group: NavGroup.daily,
+    ),
+    NavDestination(
+      section: AppSection.metals,
+      route: '/metals',
+      icon: Icons.toll_outlined,
+      group: NavGroup.planning,
     ),
     // Plan & save: the month's budget and what it builds toward.
     NavDestination(
@@ -282,6 +290,7 @@ abstract final class AppMenu {
   static const Map<NavFold, List<AppSection>> folds = <NavFold, List<AppSection>>{
     NavFold.tools: <AppSection>[
       AppSection.wallets,
+      AppSection.metals,
       AppSection.recurring,
       AppSection.debts,
       AppSection.challenges,

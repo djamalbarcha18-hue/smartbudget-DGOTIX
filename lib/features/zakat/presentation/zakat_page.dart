@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/money/amount_input.dart';
+import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
@@ -16,6 +17,9 @@ import 'package:smartbudget/features/zakat/domain/hawl.dart';
 import 'package:smartbudget/features/zakat/domain/zakat_calculator.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/features/metals/application/metals_controller.dart';
+import 'package:smartbudget/features/metals/domain/metal_holding.dart';
+import 'package:smartbudget/features/metals/domain/metals_valuation.dart';
 
 class ZakatPage extends ConsumerStatefulWidget {
   const ZakatPage({super.key});
@@ -57,6 +61,26 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
   double _num(TextEditingController c) =>
       AmountInput.parse(c.text) ?? 0;
 
+  /// Today's gold and silver prices per gram (pure), and the value of the
+  /// gold and silver kept on the Gold & silver page.
+  void _fillFromMetals() {
+    final Map<Metal, MetalPrice> prices = ref.read(metalPricesProvider);
+    final MetalsSummary metals = ref.read(metalsSummaryProvider);
+    final MetalPrice? gold = prices[Metal.gold];
+    final MetalPrice? silver = prices[Metal.silver];
+    if (gold != null) _gold.text = _fmt(_round(gold.perGram));
+    if (silver != null) _silver.text = _fmt(_round(silver.perGram));
+    final int held = (metals.byMetal[Metal.gold]?.minorUnits ?? 0) +
+        (metals.byMetal[Metal.silver]?.minorUnits ?? 0);
+    if (held > 0) {
+      _metals.text =
+          _fmt(Money(held, ref.read(baseCurrencyProvider)).asDouble);
+    }
+    _apply();
+  }
+
+  static double _round(double v) => (v * 100).roundToDouble() / 100;
+
   void _apply({ZakatStandard? standard}) {
     final ZakatInputs cur = ref.read(zakatInputsProvider);
     ref.read(zakatInputsProvider.notifier).update(
@@ -78,6 +102,8 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
     final String base = ref.watch(baseCurrencyProvider);
     final ZakatResult r = ref.watch(zakatResultProvider);
     final HawlStatus? hawl = ref.watch(zakatHawlProvider);
+    // Keeps the gold & silver holdings loaded for «Fill in from my gold».
+    ref.watch(metalsSummaryProvider);
     final bool needsPrices =
         inputs.goldPricePerGram <= 0 && inputs.silverPricePerGram <= 0;
 
@@ -116,6 +142,17 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
                       const TextInputType.numberWithOptions(decimal: true),
                   onSubmitted: (_) => _apply(),
                 ),
+                if (ref.watch(metalPricesProvider).isNotEmpty) ...<Widget>[
+                  const SizedBox(height: DsSpacing.sm),
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: TextButton.icon(
+                      onPressed: _fillFromMetals,
+                      icon: const Icon(Icons.toll_outlined, size: 18),
+                      label: Text(l.zakatUseMetals),
+                    ),
+                  ),
+                ],
                 const SizedBox(height: DsSpacing.lg),
                 _StandardToggle(
                   value: inputs.standard,

@@ -36,6 +36,7 @@ import 'package:smartbudget/features/shell/app_shell.dart';
 import 'package:smartbudget/features/shell/nav_destinations.dart';
 import 'package:smartbudget/features/shell/placeholder_page.dart';
 import 'package:smartbudget/features/shell/splash_page.dart';
+import 'package:smartbudget/features/metals/presentation/metals_page.dart';
 import 'package:smartbudget/features/statement_import/presentation/statement_import_page.dart';
 import 'package:smartbudget/features/support/presentation/support_page.dart';
 import 'package:smartbudget/features/transactions/presentation/transactions_page.dart';
@@ -181,6 +182,11 @@ GoRouter buildRouter(Ref ref) {
                 const NoTransitionPage<void>(child: FinancialHealthPage()),
           ),
           GoRoute(
+            path: '/metals',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const NoTransitionPage<void>(child: MetalsPage()),
+          ),
+          GoRoute(
             path: '/import',
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const NoTransitionPage<void>(child: StatementImportPage()),
@@ -268,6 +274,7 @@ const Set<AppSection> _implementedSections = <AppSection>{
   AppSection.trips,
   AppSection.daret,
   AppSection.portfolio,
+  AppSection.metals,
   AppSection.debts,
   AppSection.financialHealth,
   AppSection.exchangeRates,

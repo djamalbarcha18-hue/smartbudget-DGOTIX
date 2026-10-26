@@ -10,6 +10,7 @@ import 'package:smartbudget/features/portfolio/domain/project.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/seasons/domain/season.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/metals/domain/metal_holding.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
 
@@ -36,6 +37,7 @@ class BackupData {
     this.wallets = const <Wallet>[],
     this.walletMoves = const <WalletMove>[],
     this.trips = const <Trip>[],
+    this.metals = const <MetalHolding>[],
   });
 
   /// Bump when the on-disk shape changes in a breaking way. Adding optional
@@ -60,6 +62,9 @@ class BackupData {
   final List<WalletMove> walletMoves;
   final List<Trip> trips;
 
+  /// Gold, silver and platinum kept as savings.
+  final List<MetalHolding> metals;
+
   Map<String, dynamic> toJson() => <String, dynamic>{
         'schemaVersion': schemaVersion,
         'app': 'SmartBudget',
@@ -78,6 +83,7 @@ class BackupData {
         'wallets': wallets.map((Wallet w) => w.toJson()).toList(),
         'walletMoves': walletMoves.map((WalletMove m) => m.toJson()).toList(),
         'trips': trips.map((Trip t) => t.toJson()).toList(),
+        'metals': metals.map((MetalHolding h) => h.toJson()).toList(),
         'customCategories': <String, dynamic>{
           'income': customIncome,
           'expense': customExpense,
@@ -110,6 +116,7 @@ class BackupData {
       wallets: _list<Wallet>(json['wallets'], Wallet.fromJson),
       walletMoves: _list<WalletMove>(json['walletMoves'], WalletMove.fromJson),
       trips: _list<Trip>(json['trips'], Trip.fromJson),
+      metals: _list<MetalHolding>(json['metals'], MetalHolding.fromJson),
     );
   }
 
@@ -150,6 +157,7 @@ abstract final class BackupCodec {
       'challenges',
       'wallets',
       'trips',
+      'metals',
     ];
     if (!sections.any(obj.containsKey)) {
       throw const FormatException('Backup file is missing expected data.');
