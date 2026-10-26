@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -23,10 +21,4 @@ abstract final class MetalText {
     s = s.replaceFirst(RegExp(r'\.?0+$'), '');
     return l.metalGrams(s.replaceAll('.', MoneyFormatter.style.decimal));
   }
-
-  static Color color(Metal m) => switch (m) {
-        Metal.gold => const Color(0xFFD4A72C),
-        Metal.silver => const Color(0xFF9EA4AE),
-        Metal.platinum => const Color(0xFF7F9BB3),
-      };
 }

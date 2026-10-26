@@ -8,7 +8,6 @@ import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_section_header.dart';
-import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -16,6 +15,7 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
 import 'package:smartbudget/features/metals/domain/metals_valuation.dart';
+import 'package:smartbudget/features/metals/presentation/metal_art.dart';
 import 'package:smartbudget/features/metals/presentation/metal_editor_sheet.dart';
 import 'package:smartbudget/features/metals/presentation/metal_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -50,13 +50,26 @@ class MetalsPage extends ConsumerWidget {
             onPressed: () => MetalEditorSheet.show(context),
           ),
           const SizedBox(height: DsSpacing.lg),
-          if (holdings.isEmpty)
-            DsEmpty(
-              title: l.metalsEmptyTitle,
-              message: l.metalsEmptyMessage,
-              icon: Icons.toll_outlined,
-            )
-          else ...<Widget>[
+          if (holdings.isEmpty) ...<Widget>[
+            const SizedBox(height: DsSpacing.md),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                MetalBar(metal: Metal.silver, width: 72),
+                SizedBox(width: DsSpacing.sm),
+                MetalBar(metal: Metal.gold, width: 88),
+                SizedBox(width: DsSpacing.sm),
+                MetalBar(metal: Metal.platinum, width: 72),
+              ],
+            ),
+            const SizedBox(height: DsSpacing.lg),
+            Text(l.metalsEmptyTitle,
+                style: t.titleMedium, textAlign: TextAlign.center),
+            const SizedBox(height: DsSpacing.xs),
+            Text(l.metalsEmptyMessage,
+                style: t.bodyMedium?.copyWith(color: c.textMuted),
+                textAlign: TextAlign.center),
+          ] else ...<Widget>[
             _SummaryCard(summary: summary),
             const SizedBox(height: DsSpacing.lg),
             for (final MetalHolding h in holdings)
@@ -118,24 +131,45 @@ class _SummaryCard extends StatelessWidget {
           for (final Metal m in Metal.values)
             if (summary.pureGrams.containsKey(m))
               Padding(
-                padding: const EdgeInsets.only(bottom: DsSpacing.xs),
-                child: Row(
-                  children: <Widget>[
-                    Icon(Icons.circle, size: 10, color: MetalText.color(m)),
-                    const SizedBox(width: DsSpacing.sm),
-                    Expanded(
-                      child: Text(
-                        '${MetalText.name(l, m)} · ${l.metalsPure(MetalText.grams(l, summary.pureGrams[m]!))}',
-                        style: t.bodyMedium,
+                padding: const EdgeInsets.only(bottom: DsSpacing.sm),
+                child: MetalPlate(
+                  metal: m,
+                  child: Row(
+                    children: <Widget>[
+                      MetalBar(metal: m, width: 72),
+                      const SizedBox(width: DsSpacing.md),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(MetalText.name(l, m),
+                                style: t.titleMedium?.copyWith(
+                                    color: MetalPalette.of(m).ink,
+                                    fontWeight: FontWeight.w800)),
+                            Text(
+                              l.metalsPure(
+                                  MetalText.grams(l, summary.pureGrams[m]!)),
+                              style: t.labelMedium?.copyWith(
+                                  color: MetalPalette.of(m)
+                                      .ink
+                                      .withValues(alpha: 0.75)),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Text(
-                      summary.byMetal[m] == null
-                          ? '—'
-                          : MoneyFormatter.format(summary.byMetal[m]!),
-                      style: t.titleSmall,
-                    ),
-                  ],
+                      Flexible(
+                        child: Text(
+                          summary.byMetal[m] == null
+                              ? '—'
+                              : MoneyFormatter.format(summary.byMetal[m]!),
+                          textAlign: TextAlign.end,
+                          style: t.titleMedium?.copyWith(
+                              color: MetalPalette.of(m).ink,
+                              fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
           if (summary.unpriced.isNotEmpty) ...<Widget>[
@@ -174,16 +208,7 @@ class _HoldingTile extends ConsumerWidget {
           padding: const EdgeInsets.all(DsSpacing.md),
           child: Row(
             children: <Widget>[
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  color: MetalText.color(h.metal).withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(Icons.toll_outlined,
-                    size: 20, color: MetalText.color(h.metal)),
-              ),
+              MetalBar(metal: h.metal, width: 52),
               const SizedBox(width: DsSpacing.md),
               Expanded(
                 child: Column(
@@ -204,8 +229,11 @@ class _HoldingTile extends ConsumerWidget {
                   ],
                 ),
               ),
-              Text(value == null ? '—' : MoneyFormatter.format(value),
-                  style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+              Flexible(
+                child: Text(value == null ? '—' : MoneyFormatter.format(value),
+                    textAlign: TextAlign.end,
+                    style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+              ),
               PopupMenuButton<String>(
                 icon:
                     Icon(Icons.more_vert_rounded, size: 18, color: c.textFaint),
@@ -254,7 +282,6 @@ class _PricesCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
-    final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final Map<Metal, MetalPrice> prices = ref.watch(metalPricesProvider);
     final Locale locale = Localizations.localeOf(context);
@@ -267,22 +294,37 @@ class _PricesCard extends ConsumerWidget {
               title: l.metalsPrices, icon: Icons.show_chart_rounded),
           const SizedBox(height: DsSpacing.sm),
           for (final Metal m in Metal.values)
-            InkWell(
-              borderRadius: DsRadius.brMd,
-              onTap: () => _setPrice(context, ref, m, prices[m]),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: DsSpacing.sm),
+            Padding(
+              padding: const EdgeInsets.only(bottom: DsSpacing.sm),
+              child: MetalPlate(
+                metal: m,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: DsSpacing.md, vertical: DsSpacing.sm),
+                onTap: () => _setPrice(context, ref, m, prices[m]),
                 child: Row(
                   children: <Widget>[
-                    Icon(Icons.circle, size: 10, color: MetalText.color(m)),
-                    const SizedBox(width: DsSpacing.sm),
+                    MetalBar(metal: m, width: 60),
+                    const SizedBox(width: DsSpacing.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
                               '${MetalText.name(l, m)} · ${MetalText.purity(l, m, m == Metal.gold ? 24 : 999)}',
-                              style: t.titleSmall),
+                              style: t.titleSmall?.copyWith(
+                                  color: MetalPalette.of(m).ink,
+                                  fontWeight: FontWeight.w800)),
+                          const SizedBox(height: 2),
+                          Text(
+                            prices[m] == null
+                                ? '—'
+                                : l.metalsPerGram(MoneyFormatter.format(
+                                    Money.fromDouble(prices[m]!.perGram,
+                                        prices[m]!.currency))),
+                            style: t.titleMedium?.copyWith(
+                                color: MetalPalette.of(m).ink,
+                                fontWeight: FontWeight.w900),
+                          ),
                           Text(
                             switch (prices[m]?.source) {
                               null => l.metalsNoPriceShort,
@@ -295,24 +337,20 @@ class _PricesCard extends ConsumerWidget {
                                         '${_hm(prices[m]!.updatedAt!.toLocal())}'),
                             },
                             style: t.labelSmall?.copyWith(
-                                color:
+                                color: MetalPalette.of(m)
+                                    .ink
+                                    .withValues(alpha: 0.75),
+                                fontWeight:
                                     prices[m]?.source == MetalPriceSource.mine
-                                        ? c.brand
+                                        ? FontWeight.w800
                                         : null),
                           ),
                         ],
                       ),
                     ),
-                    Text(
-                      prices[m] == null
-                          ? '—'
-                          : l.metalsPerGram(MoneyFormatter.format(
-                              Money.fromDouble(
-                                  prices[m]!.perGram, prices[m]!.currency))),
-                      style: t.titleSmall,
-                    ),
-                    const SizedBox(width: DsSpacing.xs),
-                    Icon(Icons.edit_outlined, size: 16, color: c.textFaint),
+                    Icon(Icons.edit_outlined,
+                        size: 18,
+                        color: MetalPalette.of(m).ink.withValues(alpha: 0.7)),
                   ],
                 ),
               ),

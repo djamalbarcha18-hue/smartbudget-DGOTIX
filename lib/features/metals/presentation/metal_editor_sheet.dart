@@ -14,6 +14,7 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
+import 'package:smartbudget/features/metals/presentation/metal_art.dart';
 import 'package:smartbudget/features/metals/presentation/metal_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -274,23 +275,34 @@ class _MetalChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
-    final Color tint = MetalText.color(metal);
+    final MetalPalette p = MetalPalette.of(metal);
     return InkWell(
       onTap: onTap,
       borderRadius: DsRadius.brMd,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: selected ? tint.withValues(alpha: 0.18) : c.surfaceMuted,
+          color: selected ? null : c.surfaceMuted,
+          gradient: selected ? p.polish : null,
           borderRadius: DsRadius.brMd,
-          border: Border.all(color: selected ? tint : c.border),
+          border: Border.all(
+              color: selected ? p.edge : c.border, width: selected ? 1.5 : 1),
         ),
-        child: Text(
-          MetalText.name(AppLocalizations.of(context), metal),
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: selected ? c.textPrimary : c.textMuted,
-              fontWeight: selected ? FontWeight.w700 : null),
+        child: Column(
+          children: <Widget>[
+            Opacity(
+              opacity: selected ? 1 : 0.6,
+              child: MetalBar(metal: metal, width: 44),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              MetalText.name(AppLocalizations.of(context), metal),
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: selected ? p.ink : c.textMuted,
+                  fontWeight: selected ? FontWeight.w800 : null),
+            ),
+          ],
         ),
       ),
     );
