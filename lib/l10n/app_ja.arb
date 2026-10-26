@@ -1525,5 +1525,7 @@
   "marketVsPrevMonth": "前月比 {change}",
   "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
   "marketVsPrevDay": "前日比 {change}",
-  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
+  "authOr": "または",
+  "authContinueGoogle": "Google で続行"
 }

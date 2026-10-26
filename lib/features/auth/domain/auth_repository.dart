@@ -30,6 +30,11 @@ abstract interface class AuthRepository {
     String? captchaToken,
   });
 
+  /// Opens Google's sign-in (a browser page). The session arrives later
+  /// through [authStateChanges] when the user comes back; a new Google user
+  /// gets an account then. Throws [AuthFailure] when the page can't open.
+  Future<void> signInWithGoogle();
+
   Future<void> signOut();
 
   /// Emails a one-time recovery code to [email]. Throws [AuthFailure] on

@@ -1525,5 +1525,7 @@
   "marketVsPrevMonth": "전월 대비 {change}",
   "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
   "marketVsPrevDay": "전일 대비 {change}",
-  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
+  "authOr": "또는",
+  "authContinueGoogle": "Google로 계속하기"
 }

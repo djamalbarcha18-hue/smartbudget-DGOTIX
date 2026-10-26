@@ -1525,5 +1525,7 @@
   "marketVsPrevMonth": "{change} teenoor die vorige maand",
   "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
   "marketVsPrevDay": "{change} teenoor die vorige dag",
-  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
+  "authOr": "of",
+  "authContinueGoogle": "Gaan voort met Google"
 }

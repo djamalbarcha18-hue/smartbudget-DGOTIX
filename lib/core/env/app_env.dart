@@ -77,6 +77,12 @@ abstract final class AppEnv {
   static const bool betaAllAccess =
       storeBuild || bool.fromEnvironment('BETA_ALL_ACCESS', defaultValue: true);
 
+  /// «Continue with Google» on the sign-in and sign-up pages: hidden in every
+  /// build until the owner sets up Google in Supabase (docs/GOOGLE_SIGN_IN.md)
+  /// and builds with `--dart-define=GOOGLE_SIGN_IN=true`.
+  static const bool googleSignIn =
+      bool.fromEnvironment('GOOGLE_SIGN_IN', defaultValue: false);
+
   /// SmartTrip (trips and their expenses), still in the works: shown in
   /// debug builds and in builds made with `--dart-define=SMART_TRIP=true`,
   /// hidden in every published build until it launches.

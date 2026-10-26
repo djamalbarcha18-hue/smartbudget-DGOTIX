@@ -51,6 +51,8 @@ class RecordingAuth implements AuthRepository {
   Future<void> resetPasswordWithCode(
       {required String email, required String code, required String newPassword}) async {}
   @override
+  Future<void> signInWithGoogle() async {}
+  @override
   Future<void> signOut() async {}
   @override
   void dispose() => _users.close();

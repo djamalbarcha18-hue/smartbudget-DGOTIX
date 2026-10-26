@@ -11,6 +11,7 @@ import 'package:smartbudget/features/auth/presentation/auth_helpers.dart';
 import 'package:smartbudget/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:smartbudget/features/auth/presentation/widgets/password_requirements.dart';
 import 'package:smartbudget/features/auth/presentation/captcha/captcha.dart';
+import 'package:smartbudget/features/auth/presentation/widgets/google_sign_in_button.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
@@ -118,6 +119,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             ],
           ),
         ),
+        const GoogleSignInSection(),
         const SizedBox(height: DsSpacing.lg),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

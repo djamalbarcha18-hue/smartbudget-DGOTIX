@@ -47,6 +47,15 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:mimeType="text/plain"/>
             </intent-filter>
+            <!-- Back from «Continue with Google» (hidden until GOOGLE_SIGN_IN
+                 is on): the browser returns here and Supabase finishes the
+                 sign-in. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="com.dgotix.smartbudget" android:host="login-callback"/>
+            </intent-filter>
         </activity>
         <!-- Show the daily reminder at its time, and keep it scheduled after
              a restart or an app update. -->

@@ -1525,5 +1525,7 @@
   "marketVsPrevMonth": "Önceki aya göre {change}",
   "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
   "marketVsPrevDay": "Önceki güne göre {change}",
-  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
+  "authOr": "veya",
+  "authContinueGoogle": "Google ile devam et"
 }

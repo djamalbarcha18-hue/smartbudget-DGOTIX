@@ -1525,5 +1525,7 @@
   "marketVsPrevMonth": "{change} berbanding bulan sebelumnya",
   "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
   "marketVsPrevDay": "{change} berbanding hari sebelumnya",
-  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
+  "authOr": "atau",
+  "authContinueGoogle": "Teruskan dengan Google"
 }

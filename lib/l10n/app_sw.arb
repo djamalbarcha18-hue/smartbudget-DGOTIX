@@ -1525,5 +1525,7 @@
   "marketVsPrevMonth": "{change} ukilinganisha na mwezi uliopita",
   "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
   "marketVsPrevDay": "{change} ukilinganisha na siku iliyopita",
-  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
+  "authOr": "au",
+  "authContinueGoogle": "Endelea na Google"
 }

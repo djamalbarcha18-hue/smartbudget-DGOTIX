@@ -1525,5 +1525,7 @@
   "marketVsPrevMonth": "پچھلے مہینے کے مقابلے میں {change}",
   "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
   "marketVsPrevDay": "پچھلے دن کے مقابلے میں {change}",
-  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
+  "authOr": "یا",
+  "authContinueGoogle": "Google کے ساتھ جاری رکھیں"
 }

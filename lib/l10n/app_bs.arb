@@ -1525,5 +1525,7 @@
   "marketVsPrevMonth": "{change} u odnosu na prethodni mjesec",
   "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
   "marketVsPrevDay": "{change} u odnosu na prethodni dan",
-  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
+  "authOr": "ili",
+  "authContinueGoogle": "Nastavi s Googleom"
 }

@@ -1725,5 +1725,7 @@
   "marketVsPrevMonth": "{change} عن الشهر السابق",
   "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
   "marketVsPrevDay": "{change} عن اليوم السابق",
-  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
+  "authOr": "أو",
+  "authContinueGoogle": "المتابعة بحساب Google"
 }

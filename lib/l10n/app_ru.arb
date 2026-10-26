@@ -1525,5 +1525,7 @@
   "marketVsPrevMonth": "{change} к прошлому месяцу",
   "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
   "marketVsPrevDay": "{change} к прошлому дню",
-  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
+  "authOr": "или",
+  "authContinueGoogle": "Продолжить с Google"
 }

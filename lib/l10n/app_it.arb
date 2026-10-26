@@ -1525,5 +1525,7 @@
   "marketVsPrevMonth": "{change} rispetto al mese precedente",
   "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
   "marketVsPrevDay": "{change} rispetto al giorno precedente",
-  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
+  "authOr": "oppure",
+  "authContinueGoogle": "Continua con Google"
 }

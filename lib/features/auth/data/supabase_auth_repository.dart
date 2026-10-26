@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
 import 'package:smartbudget/features/auth/domain/auth_failure.dart';
@@ -69,6 +70,32 @@ class SupabaseAuthRepository implements AuthRepository {
       return _map(created);
     } on sb.AuthException catch (e) {
       throw _failure(e);
+    } catch (e) {
+      throw AuthFailure(AuthFailureKind.unknown, e.toString());
+    }
+  }
+
+  /// Where Google sends the user back: the site itself on the web, the app
+  /// on Android (com.dgotix.smartbudget://login-callback, declared in the
+  /// AndroidManifest). Both must be listed in Supabase > Authentication >
+  /// URL Configuration > Redirect URLs.
+  static const String appCallback = 'com.dgotix.smartbudget://login-callback';
+
+  @override
+  Future<void> signInWithGoogle() async {
+    try {
+      final bool opened = await _client.auth.signInWithOAuth(
+        sb.OAuthProvider.google,
+        redirectTo: kIsWeb ? '${Uri.base.origin}/' : appCallback,
+        authScreenLaunchMode: kIsWeb
+            ? sb.LaunchMode.platformDefault
+            : sb.LaunchMode.externalApplication,
+      );
+      if (!opened) throw const AuthFailure(AuthFailureKind.network);
+    } on sb.AuthException catch (e) {
+      throw _failure(e);
+    } on AuthFailure {
+      rethrow;
     } catch (e) {
       throw AuthFailure(AuthFailureKind.unknown, e.toString());
     }

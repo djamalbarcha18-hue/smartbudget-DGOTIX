@@ -47,6 +47,10 @@ class AuthState {
 /// Holds auth state and exposes the auth actions to the UI. Actions throw
 /// [AuthFailure] on error; state itself is driven by the repository stream, so
 /// there is a single source of truth for "who is signed in".
+/// Whether «Continue with Google» is offered (see [AppEnv.googleSignIn]).
+final googleSignInEnabledProvider =
+    Provider<bool>((ref) => AppEnv.googleSignIn);
+
 final authControllerProvider =
     NotifierProvider<AuthController, AuthState>(AuthController.new);
 
@@ -103,6 +107,9 @@ class AuthController extends Notifier<AuthState> {
           displayName: displayName,
           captchaToken: captchaToken) !=
       null;
+
+  /// Opens Google's sign-in; the router follows once the session arrives.
+  Future<void> signInWithGoogle() => _repo.signInWithGoogle();
 
   Future<void> signOut() => _repo.signOut();
 

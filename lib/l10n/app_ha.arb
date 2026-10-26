@@ -1525,5 +1525,7 @@
   "marketVsPrevMonth": "{change} idan aka kwatanta da watan da ya gabata",
   "@marketVsPrevMonth": {"placeholders": {"change": {"type": "String"}}},
   "marketVsPrevDay": "{change} idan aka kwatanta da ranar da ta gabata",
-  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}}
+  "@marketVsPrevDay": {"placeholders": {"change": {"type": "String"}}},
+  "authOr": "ko",
+  "authContinueGoogle": "Ci gaba da Google"
 }
