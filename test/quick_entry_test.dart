@@ -392,4 +392,31 @@ void main() {
     // Furniture stays furniture.
     expect(p('اثاث 9000').category, 'الأثاث والمنزل');
   });
+
+  test('a car category, after fuel, repairs and insurance', () {
+    for (final String s in <String>[
+      'غسيل سيارة 30',
+      'مخالفة مرور 300',
+      'إطارات 1600',
+      'car wash 15',
+      'carte grise 120',
+      'vignette 2000',
+      'reifen 400',
+      'lastik 3000',
+      'шины 12000',
+      'cuci mobil 50000',
+      'کارواش 300000',
+      'कार वॉश 300',
+      '洗车 50',
+      '洗車 2000',
+      '세차 15000',
+    ]) {
+      expect(p(s).category, 'السيارة', reason: s);
+      expect(p(s).type, TransactionType.expense, reason: s);
+    }
+    expect(p('بنزين 500').category, 'الوقود');
+    expect(p('تأمين سيارة 3000').category, 'التأمين');
+    expect(p('ميكانيكي 2000').category, 'الصيانة والإصلاح');
+    expect(p('parking 5').category, 'النقل');
+  });
 }
