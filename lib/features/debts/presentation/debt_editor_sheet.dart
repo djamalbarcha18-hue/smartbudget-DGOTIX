@@ -72,9 +72,13 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
   }
 
   Future<void> _save() async {
+    if (_saving) return; // a second tap while saving
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
-    final String currency = ref.read(baseCurrencyProvider);
+    // An edited record keeps its own currency (it may predate a change of
+    // the base currency); a new one is in the base currency.
+    final String currency = widget.existing?.original.currencyCode ??
+        ref.read(baseCurrencyProvider);
     final double original =
         AmountInput.parse(_original.text) ?? 0;
     final double paid =
@@ -103,7 +107,9 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
-    final Currency cur = Currencies.byCode(ref.watch(baseCurrencyProvider));
+    final Currency cur = Currencies.byCode(
+        widget.existing?.original.currencyCode ??
+            ref.watch(baseCurrencyProvider));
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),

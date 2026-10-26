@@ -247,6 +247,7 @@ class _TransactionEditorSheetState
   }
 
   Future<void> _save() async {
+    if (_saving) return; // a second tap while saving
     if (!_formKey.currentState!.validate()) return;
     final double amount =
         AmountInput.parse(_amount.text) ?? 0;

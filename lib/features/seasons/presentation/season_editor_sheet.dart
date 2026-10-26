@@ -131,31 +131,43 @@ class _SeasonEditorSheetState extends ConsumerState<SeasonEditorSheet> {
     });
   }
 
+  /// Set while saving: a second tap can't save the same thing twice.
+  bool _saving = false;
+
   Future<void> _save(AppLocalizations l) async {
-    final double? budget = parseAmount(_budget.text);
-    if (budget == null) {
-      setState(() => _error = l.valAmountInvalid);
-      return;
+    if (_saving) return;
+    _saving = true;
+    try {
+      final double? budget = parseAmount(_budget.text);
+      if (budget == null) {
+        setState(() => _error = l.valAmountInvalid);
+        return;
+      }
+      if (_kind == SeasonKind.custom && _name.text.trim().isEmpty) {
+        setState(() => _error = l.valRequired);
+        return;
+      }
+      // An edited record keeps its own currency (it may predate a change of
+      // the base currency); a new one is in the base currency.
+      final String currency = widget.existing?.budget.currencyCode ??
+          ref.read(baseCurrencyProvider);
+      final double saved = parseAmount(_saved.text) ?? 0;
+      final SeasonWindow w = _window;
+      final SeasonPlan p = SeasonPlan(
+        id: widget.existing?.id ?? SeasonActions.newId(),
+        kind: _kind,
+        name: _kind == SeasonKind.custom ? _name.text.trim() : '',
+        start: w.start,
+        end: w.end,
+        budget: Money.fromDouble(budget, currency),
+        saved: Money.fromDouble(saved, currency),
+        createdAt: widget.existing?.createdAt ?? AppClock.now(),
+      );
+      await ref.read(seasonActionsProvider).save(p);
+      if (mounted) Navigator.of(context).pop();
+    } finally {
+      _saving = false;
     }
-    if (_kind == SeasonKind.custom && _name.text.trim().isEmpty) {
-      setState(() => _error = l.valRequired);
-      return;
-    }
-    final String currency = ref.read(baseCurrencyProvider);
-    final double saved = parseAmount(_saved.text) ?? 0;
-    final SeasonWindow w = _window;
-    final SeasonPlan p = SeasonPlan(
-      id: widget.existing?.id ?? SeasonActions.newId(),
-      kind: _kind,
-      name: _kind == SeasonKind.custom ? _name.text.trim() : '',
-      start: w.start,
-      end: w.end,
-      budget: Money.fromDouble(budget, currency),
-      saved: Money.fromDouble(saved, currency),
-      createdAt: widget.existing?.createdAt ?? AppClock.now(),
-    );
-    await ref.read(seasonActionsProvider).save(p);
-    if (mounted) Navigator.of(context).pop();
   }
 
   @override
@@ -163,7 +175,8 @@ class _SeasonEditorSheetState extends ConsumerState<SeasonEditorSheet> {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final String currency = ref.watch(baseCurrencyProvider);
+    final String currency = widget.existing?.budget.currencyCode ??
+        ref.watch(baseCurrencyProvider);
     final List<Transaction> txns =
         ref.watch(transactionsProvider).valueOrNull ?? const <Transaction>[];
     final SeasonWindow w = _window;

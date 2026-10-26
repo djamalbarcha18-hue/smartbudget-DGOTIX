@@ -130,38 +130,47 @@ class _TripEditorSheetState extends ConsumerState<TripEditorSheet> {
     if (d != null) setState(() => _start = d);
   }
 
+  /// Set while saving: a second tap can't save the same thing twice.
+  bool _saving = false;
+
   Future<void> _save(AppLocalizations l, DestinationCatalog catalog) async {
-    final String? place = _destination;
-    if (place == null || place.trim().isEmpty) {
-      setState(() => _needPlace = true);
-      return;
+    if (_saving) return;
+    _saving = true;
+    try {
+      final String? place = _destination;
+      if (place == null || place.trim().isEmpty) {
+        setState(() => _needPlace = true);
+        return;
+      }
+      final Money? old = widget.existing?.plannedBudget;
+      final String currency = old?.currencyCode ?? ref.read(baseCurrencyProvider);
+      final double? budget = parseAmount(_budget.text);
+      final String name = _name.text.trim().isNotEmpty
+          ? _name.text.trim()
+          : l.tripDefaultName(catalog.display(place, appLangOf(context)));
+      await ref.read(tripActionsProvider).save(Trip(
+            id: widget.existing?.id ?? TripActions.newId(),
+            name: name,
+            destination: place,
+            start: _start,
+            end: _end,
+            plannedBudget:
+                budget == null ? null : Money.fromDouble(budget, currency),
+            createdAt: widget.existing?.createdAt ?? AppClock.now(),
+            goalId: widget.existing?.goalId,
+            travelers: _travelers,
+            sharedAt: widget.existing?.sharedAt,
+            level: _level,
+            split: _split,
+            kind: _kind,
+            agency: _kind == TripKind.organized ? _text(_agency) : null,
+            airline: _text(_airline),
+            hotel: _text(_hotel),
+          ));
+      if (mounted) Navigator.of(context).pop();
+    } finally {
+      _saving = false;
     }
-    final Money? old = widget.existing?.plannedBudget;
-    final String currency = old?.currencyCode ?? ref.read(baseCurrencyProvider);
-    final double? budget = parseAmount(_budget.text);
-    final String name = _name.text.trim().isNotEmpty
-        ? _name.text.trim()
-        : l.tripDefaultName(catalog.display(place, appLangOf(context)));
-    await ref.read(tripActionsProvider).save(Trip(
-          id: widget.existing?.id ?? TripActions.newId(),
-          name: name,
-          destination: place,
-          start: _start,
-          end: _end,
-          plannedBudget:
-              budget == null ? null : Money.fromDouble(budget, currency),
-          createdAt: widget.existing?.createdAt ?? AppClock.now(),
-          goalId: widget.existing?.goalId,
-          travelers: _travelers,
-          sharedAt: widget.existing?.sharedAt,
-          level: _level,
-          split: _split,
-          kind: _kind,
-          agency: _kind == TripKind.organized ? _text(_agency) : null,
-          airline: _text(_airline),
-          hotel: _text(_hotel),
-        ));
-    if (mounted) Navigator.of(context).pop();
   }
 
   @override

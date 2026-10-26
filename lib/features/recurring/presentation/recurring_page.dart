@@ -397,6 +397,7 @@ class _ConfirmAmountDialogState extends ConsumerState<_ConfirmAmountDialog> {
   }
 
   Future<void> _save() async {
+    if (_saving) return; // a second tap while saving
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     final AppLocalizations l = AppLocalizations.of(context);
@@ -497,6 +498,7 @@ class _RuleEditDialogState extends ConsumerState<_RuleEditDialog> {
   }
 
   Future<void> _save() async {
+    if (_saving) return; // a second tap while saving
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     final double amount =

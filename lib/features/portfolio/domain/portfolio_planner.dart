@@ -121,7 +121,10 @@ abstract final class PortfolioPlanner {
     // Pre-compute per-project figures.
     final List<_Row> rows = projects.map((Project p) {
       final int months = effectiveMonths(p, t);
-      final Money required = _requiredMonthly(p, months, currency);
+      // In the project's own currency: a goal kept from before a base
+      // currency change is planned in its currency, never mixed in.
+      final Money required =
+          _requiredMonthly(p, months, p.target.currencyCode);
       final double progress = p.target.minorUnits == 0
           ? 0
           : p.saved.minorUnits / p.target.minorUnits;
@@ -134,8 +137,12 @@ abstract final class PortfolioPlanner {
     }).toList();
 
     // Waterfall: active projects, nearest deadline first, then smallest gap.
+    // The capacity is in [currency]: only projects in it share it.
     final List<_Row> active = rows
-        .where((_Row r) => r.project.remainingMinor > 0 && r.progress < 1)
+        .where((_Row r) =>
+            r.project.target.currencyCode == currency &&
+            r.project.remainingMinor > 0 &&
+            r.progress < 1)
         .toList()
       ..sort((_Row a, _Row b) {
         final int byMonths = a.months.compareTo(b.months);
@@ -158,8 +165,12 @@ abstract final class PortfolioPlanner {
     int allocatedTotal = 0;
 
     final List<ProjectPlan> plans = rows.map((_Row r) {
-      totalTarget += r.project.target.minorUnits;
-      totalSaved += r.project.saved.minorUnits;
+      final String own = r.project.target.currencyCode;
+      final bool counted = own == currency;
+      if (counted) {
+        totalTarget += r.project.target.minorUnits;
+        totalSaved += r.project.saved.minorUnits;
+      }
       final int alloc = allocated[r.project.id] ?? 0;
       allocatedTotal += alloc;
 
@@ -167,7 +178,7 @@ abstract final class PortfolioPlanner {
       if (r.progress >= 1 || r.project.remainingMinor <= 0) {
         status = ProjectFundStatus.completed;
       } else {
-        totalRequired += r.requiredMinor;
+        if (counted) totalRequired += r.requiredMinor;
         if (r.months <= 0) {
           status = ProjectFundStatus.overdue;
         } else if (alloc >= r.requiredMinor && r.requiredMinor > 0) {
@@ -186,8 +197,8 @@ abstract final class PortfolioPlanner {
       return ProjectPlan(
         project: r.project,
         monthsRemaining: r.months,
-        requiredMonthly: Money(r.requiredMinor, currency),
-        allocatedMonthly: Money(alloc, currency),
+        requiredMonthly: Money(r.requiredMinor, own),
+        allocatedMonthly: Money(alloc, own),
         progress: r.progress,
         status: status,
         monthsToCompleteAtPace: monthsToComplete,

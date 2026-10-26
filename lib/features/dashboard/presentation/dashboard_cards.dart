@@ -624,9 +624,13 @@ class PlansCard extends ConsumerWidget {
 
     final List<Goal> goals =
         ref.watch(goalsProvider).valueOrNull ?? const <Goal>[];
+    // Goals in the base currency: one kept from before a currency change
+    // can't be added to them unit for unit.
+    final String currency = ref.watch(baseCurrencyProvider);
     int saved = 0;
     int target = 0;
     for (final Goal g in goals) {
+      if (g.target.currencyCode != currency) continue;
       saved += g.saved.minorUnits;
       target += g.target.minorUnits;
     }

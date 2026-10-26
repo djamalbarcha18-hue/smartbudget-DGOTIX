@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
-import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/currency_suffix.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
@@ -246,7 +245,8 @@ class _GoalCard extends ConsumerWidget {
     AppLocalizations l,
   ) async {
     final TextEditingController amount = TextEditingController();
-    final String currency = ref.read(baseCurrencyProvider);
+    // In the goal's own currency, which may predate a base currency change.
+    final String currency = g.target.currencyCode;
     final bool? ok = await showDialog<bool>(
       context: context,
       builder: (BuildContext ctx) => AlertDialog(

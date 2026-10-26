@@ -116,4 +116,34 @@ void main() {
       expect(_byId(plan, 'late').status, ProjectFundStatus.overdue);
     });
   });
+
+  test('a goal in another currency is planned apart, never mixed in', () {
+    final Project jpy = Project(
+      id: 'jpy',
+      name: 'jpy',
+      target: const Money(300000, 'JPY'), // ¥300,000 (no minor units)
+      saved: const Money(0, 'JPY'),
+      horizon: ProjectHorizon.mid,
+      targetDate: DateTime(2026, 4, 1),
+      createdAt: now,
+    );
+    final PortfolioPlan plan = PortfolioPlanner.build(
+      projects: <Project>[
+        jpy,
+        _p(id: 'usd', target: 3000, date: DateTime(2026, 4, 1)),
+      ],
+      capacityMinor: 150000, // $1,500 a month
+      currency: usd,
+      now: now,
+    );
+    // The USD capacity goes to the USD goal only.
+    expect(_byId(plan, 'usd').allocatedMonthly, const Money(100000, usd));
+    expect(_byId(plan, 'jpy').allocatedMonthly, const Money(0, 'JPY'));
+    // The yen goal's need stays in yen.
+    expect(_byId(plan, 'jpy').requiredMonthly, const Money(100000, 'JPY'));
+    // Totals are dollars only.
+    expect(plan.totalTarget, const Money(300000, usd));
+    expect(plan.totalRequiredMonthly, const Money(100000, usd));
+    expect(plan.surplus, const Money(50000, usd));
+  });
 }

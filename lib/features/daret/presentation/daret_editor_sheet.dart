@@ -135,38 +135,50 @@ class _DaretEditorSheetState extends ConsumerState<DaretEditorSheet> {
     });
   }
 
+  /// Set while saving: a second tap can't save the same thing twice.
+  bool _saving = false;
+
   Future<void> _save(AppLocalizations l) async {
-    final double? amount = parseAmount(_amount.text);
-    if (_name.text.trim().isEmpty) {
-      setState(() => _error = l.valRequired);
-      return;
+    if (_saving) return;
+    _saving = true;
+    try {
+      final double? amount = parseAmount(_amount.text);
+      if (_name.text.trim().isEmpty) {
+        setState(() => _error = l.valRequired);
+        return;
+      }
+      if (amount == null) {
+        setState(() => _error = l.valAmountInvalid);
+        return;
+      }
+      if (_members.length < 2) {
+        setState(() => _error = l.daretNeedMembers);
+        return;
+      }
+      // An edited record keeps its own currency (it may predate a change of
+      // the base currency); a new one is in the base currency.
+      final String currency = widget.existing?.contribution.currencyCode ??
+          ref.read(baseCurrencyProvider);
+      final Daret? e = widget.existing;
+      final Daret d = Daret(
+        id: e?.id ?? DaretActions.newId(),
+        name: _name.text.trim(),
+        contribution: Money.fromDouble(amount, currency),
+        frequency: _freq,
+        start: _start,
+        members: List<String>.of(_members),
+        meIndex: _me.clamp(0, _members.length - 1),
+        paidRounds: (e?.paidRounds ?? const <int>{})
+            .where((int r) => r < _members.length)
+            .toSet(),
+        payoutReceived: e?.payoutReceived ?? false,
+        createdAt: e?.createdAt ?? AppClock.now(),
+      );
+      await ref.read(daretActionsProvider).save(d);
+      if (mounted) Navigator.of(context).pop();
+    } finally {
+      _saving = false;
     }
-    if (amount == null) {
-      setState(() => _error = l.valAmountInvalid);
-      return;
-    }
-    if (_members.length < 2) {
-      setState(() => _error = l.daretNeedMembers);
-      return;
-    }
-    final String currency = ref.read(baseCurrencyProvider);
-    final Daret? e = widget.existing;
-    final Daret d = Daret(
-      id: e?.id ?? DaretActions.newId(),
-      name: _name.text.trim(),
-      contribution: Money.fromDouble(amount, currency),
-      frequency: _freq,
-      start: _start,
-      members: List<String>.of(_members),
-      meIndex: _me.clamp(0, _members.length - 1),
-      paidRounds: (e?.paidRounds ?? const <int>{})
-          .where((int r) => r < _members.length)
-          .toSet(),
-      payoutReceived: e?.payoutReceived ?? false,
-      createdAt: e?.createdAt ?? AppClock.now(),
-    );
-    await ref.read(daretActionsProvider).save(d);
-    if (mounted) Navigator.of(context).pop();
   }
 
   @override
@@ -174,7 +186,8 @@ class _DaretEditorSheetState extends ConsumerState<DaretEditorSheet> {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final String currency = ref.watch(baseCurrencyProvider);
+    final String currency = widget.existing?.contribution.currencyCode ??
+        ref.watch(baseCurrencyProvider);
 
     return Container(
       decoration: BoxDecoration(

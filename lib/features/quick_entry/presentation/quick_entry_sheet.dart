@@ -114,44 +114,53 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
               e.walletId ?? ref.read(effectiveDefaultWalletProvider))) !=
           e.currency;
 
+  /// Set while saving: a second tap can't save the same thing twice.
+  bool _saving = false;
+
   Future<void> _save(AppLocalizations l) async {
-    if (_entries.isEmpty || _entries.any(_noWallet)) return;
-    final TransactionActions actions = ref.read(transactionActionsProvider);
-    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    final List<String> ids = <String>[];
-    final String fallbackWallet = ref.read(effectiveDefaultWalletProvider);
-    for (final QuickEntry e in _entries) {
-      final String wallet = e.walletId ?? fallbackWallet;
-      final String cur = ref.read(walletCurrencyProvider(wallet));
-      final Money money = Money.fromDouble(e.amount, cur);
-      final String id = '${TransactionActions.newId()}-${ids.length}';
-      ids.add(id);
-      await actions.add(Transaction(
-        id: id,
-        date: e.date,
-        type: e.type,
-        category: e.category,
-        amount: money,
-        baseAmount: WalletMath.baseValue(
-            money, ref.read(baseCurrencyProvider), ref.read(ratesProvider)),
-        description: e.description,
-        walletId: wallet == Wallet.generalId ? null : wallet,
-        createdAt: AppClock.now(),
+    if (_saving) return;
+    _saving = true;
+    try {
+      if (_entries.isEmpty || _entries.any(_noWallet)) return;
+      final TransactionActions actions = ref.read(transactionActionsProvider);
+      final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+      final List<String> ids = <String>[];
+      final String fallbackWallet = ref.read(effectiveDefaultWalletProvider);
+      for (final QuickEntry e in _entries) {
+        final String wallet = e.walletId ?? fallbackWallet;
+        final String cur = ref.read(walletCurrencyProvider(wallet));
+        final Money money = Money.fromDouble(e.amount, cur);
+        final String id = '${TransactionActions.newId()}-${ids.length}';
+        ids.add(id);
+        await actions.add(Transaction(
+          id: id,
+          date: e.date,
+          type: e.type,
+          category: e.category,
+          amount: money,
+          baseAmount: WalletMath.baseValue(
+              money, ref.read(baseCurrencyProvider), ref.read(ratesProvider)),
+          description: e.description,
+          walletId: wallet == Wallet.generalId ? null : wallet,
+          createdAt: AppClock.now(),
+        ));
+      }
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      messenger.showSnackBar(SnackBar(
+        content: Text(l.quickAdded(ids.length)),
+        action: SnackBarAction(
+          label: l.quickUndo,
+          onPressed: () {
+            for (final String id in ids) {
+              actions.delete(id);
+            }
+          },
+        ),
       ));
+    } finally {
+      _saving = false;
     }
-    if (!mounted) return;
-    Navigator.of(context).pop();
-    messenger.showSnackBar(SnackBar(
-      content: Text(l.quickAdded(ids.length)),
-      action: SnackBarAction(
-        label: l.quickUndo,
-        onPressed: () {
-          for (final String id in ids) {
-            actions.delete(id);
-          }
-        },
-      ),
-    ));
   }
 
   void _details() {

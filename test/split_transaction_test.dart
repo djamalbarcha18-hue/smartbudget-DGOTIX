@@ -10,6 +10,7 @@ import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_glass.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
+import 'package:smartbudget/features/transactions/data/fake_transaction_repository.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
@@ -20,13 +21,13 @@ void main() {
 
   String label(String category) => Catalog.label(category, lang: AppLang.en);
 
-  Future<(ProviderContainer, AppLocalizations)> open(
-      WidgetTester tester) async {
+  Future<(ProviderContainer, AppLocalizations)> open(WidgetTester tester,
+      {List<Override> overrides = const <Override>[]}) async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     tester.view.physicalSize = const Size(1170, 5000);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
-    final ProviderContainer c = ProviderContainer();
+    final ProviderContainer c = ProviderContainer(overrides: overrides);
     addTearDown(c.dispose);
     // Keep the list loaded, as the app's screens do.
     c.listen(transactionsProvider, (_, __) {});
@@ -151,4 +152,31 @@ void main() {
         }).splitId,
         isNull);
   });
+
+  testWidgets('a double tap on Save records the expense once',
+      (WidgetTester tester) async {
+    final _SlowRepository slow = _SlowRepository();
+    final (ProviderContainer c, AppLocalizations l) =
+        await open(tester, overrides: <Override>[
+      financeRepositoryProvider.overrideWithValue(slow),
+    ]);
+    await tester.enterText(find.byType(TextFormField).first, '12');
+    await pick(tester, dropdowns().first, 'الطعام');
+    await tester.tap(find.text(l.save));
+    await tester.tap(find.text(l.save), warnIfMissed: false);
+    await tester.pumpAndSettle(const Duration(milliseconds: 100));
+    expect(slow.current, hasLength(1));
+    expect(c.read(financeRepositoryProvider), same(slow));
+  });
+}
+
+/// A store that takes a moment to write, like the phone's storage.
+class _SlowRepository extends FakeTransactionRepository {
+  _SlowRepository() : super(userId: 'slow');
+
+  @override
+  Future<void> add(Transaction txn) async {
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    await super.add(txn);
+  }
 }

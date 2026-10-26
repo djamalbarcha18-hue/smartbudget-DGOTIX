@@ -134,34 +134,43 @@ class _WalletEditorSheetState extends ConsumerState<WalletEditorSheet> {
     super.dispose();
   }
 
+  /// Set while saving: a second tap can't save the same thing twice.
+  bool _saving = false;
+
   Future<void> _save(AppLocalizations l) async {
-    if (!_general && _name.text.trim().isEmpty) {
-      setState(() => _error = l.valRequired);
-      return;
+    if (_saving) return;
+    _saving = true;
+    try {
+      if (!_general && _name.text.trim().isEmpty) {
+        setState(() => _error = l.valRequired);
+        return;
+      }
+      final String currency = _general
+          ? ref.read(baseCurrencyProvider)
+          : _currency ?? ref.read(baseCurrencyProvider);
+      final String raw = _opening.text.trim();
+      final double opening = raw.isEmpty
+          ? 0
+          : AmountInput.parse(raw) ??
+              double.nan;
+      if (opening.isNaN) {
+        setState(() => _error = l.valAmountInvalid);
+        return;
+      }
+      final Wallet? e = widget.existing;
+      final Wallet w = Wallet(
+        id: e?.id ?? WalletActions.newWalletId(),
+        name: _general ? '' : _name.text.trim(),
+        type: _general ? WalletType.other : _type,
+        opening: Money.fromDouble(opening, currency),
+        createdAt: e?.createdAt ?? AppClock.now(),
+      );
+      await ref.read(walletActionsProvider).save(w);
+      if (_makeDefault) await ref.read(defaultWalletProvider.notifier).set(w.id);
+      if (mounted) Navigator.of(context).pop();
+    } finally {
+      _saving = false;
     }
-    final String currency = _general
-        ? ref.read(baseCurrencyProvider)
-        : _currency ?? ref.read(baseCurrencyProvider);
-    final String raw = _opening.text.trim();
-    final double opening = raw.isEmpty
-        ? 0
-        : AmountInput.parse(raw) ??
-            double.nan;
-    if (opening.isNaN) {
-      setState(() => _error = l.valAmountInvalid);
-      return;
-    }
-    final Wallet? e = widget.existing;
-    final Wallet w = Wallet(
-      id: e?.id ?? WalletActions.newWalletId(),
-      name: _general ? '' : _name.text.trim(),
-      type: _general ? WalletType.other : _type,
-      opening: Money.fromDouble(opening, currency),
-      createdAt: e?.createdAt ?? AppClock.now(),
-    );
-    await ref.read(walletActionsProvider).save(w);
-    if (_makeDefault) await ref.read(defaultWalletProvider.notifier).set(w.id);
-    if (mounted) Navigator.of(context).pop();
   }
 
   @override
@@ -349,32 +358,41 @@ class _TransferSheetState extends ConsumerState<TransferSheet> {
     _received.text = conv == null ? '' : _plain(conv.minorUnits, tc);
   }
 
+  /// Set while saving: a second tap can't save the same thing twice.
+  bool _saving = false;
+
   Future<void> _save(AppLocalizations l) async {
-    final double? amount = parseAmount(_amount.text);
-    if (_from == null || _to == null || _from == _to) {
-      setState(() => _error = l.walletTransferSame);
-      return;
+    if (_saving) return;
+    _saving = true;
+    try {
+      final double? amount = parseAmount(_amount.text);
+      if (_from == null || _to == null || _from == _to) {
+        setState(() => _error = l.walletTransferSame);
+        return;
+      }
+      if (amount == null) {
+        setState(() => _error = l.valAmountInvalid);
+        return;
+      }
+      final String fc = _cur(_from);
+      final String tc = _cur(_to);
+      final double? received = fc == tc ? null : parseAmount(_received.text);
+      if (fc != tc && received == null) {
+        setState(() => _error = l.walletReceivedRequired);
+        return;
+      }
+      await ref.read(walletActionsProvider).transfer(
+            fromId: _from!,
+            toId: _to!,
+            amount: Money.fromDouble(amount, fc),
+            toAmount: received == null ? null : Money.fromDouble(received, tc),
+            date: _date,
+            note: _note.text.trim(),
+          );
+      if (mounted) Navigator.of(context).pop();
+    } finally {
+      _saving = false;
     }
-    if (amount == null) {
-      setState(() => _error = l.valAmountInvalid);
-      return;
-    }
-    final String fc = _cur(_from);
-    final String tc = _cur(_to);
-    final double? received = fc == tc ? null : parseAmount(_received.text);
-    if (fc != tc && received == null) {
-      setState(() => _error = l.walletReceivedRequired);
-      return;
-    }
-    await ref.read(walletActionsProvider).transfer(
-          fromId: _from!,
-          toId: _to!,
-          amount: Money.fromDouble(amount, fc),
-          toAmount: received == null ? null : Money.fromDouble(received, tc),
-          date: _date,
-          note: _note.text.trim(),
-        );
-    if (mounted) Navigator.of(context).pop();
   }
 
   /// "1 EUR = 245.50 DZD", from what the user typed.
