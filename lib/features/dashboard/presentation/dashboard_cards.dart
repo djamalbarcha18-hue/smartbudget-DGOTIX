@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/design_system/motion/ds_motion.dart';
 import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
@@ -252,7 +253,10 @@ class HealthGauge extends StatelessWidget {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final double stroke = size * 0.09;
-    return SizedBox(
+    // The ring fills to the score, and the number counts up with it.
+    return DsEased(
+      value: score ?? 0,
+      builder: (BuildContext context, double shown) => SizedBox(
       width: size,
       height: size,
       child: Stack(
@@ -262,7 +266,7 @@ class HealthGauge extends StatelessWidget {
             width: size,
             height: size,
             child: CircularProgressIndicator(
-              value: score == null ? 0 : (score! / 100).clamp(0.0, 1.0),
+              value: score == null ? 0 : (shown / 100).clamp(0.0, 1.0),
               strokeWidth: stroke,
               strokeCap: StrokeCap.round,
               backgroundColor: c.surfaceMuted,
@@ -272,7 +276,7 @@ class HealthGauge extends StatelessWidget {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Text(score == null ? '—' : '${score!.round()}',
+              Text(score == null ? '—' : '${shown.round()}',
                   style: DsTypography.mono(
                           (size >= 100 ? t.headlineMedium : t.titleLarge) ??
                               const TextStyle())
@@ -283,6 +287,7 @@ class HealthGauge extends StatelessWidget {
             ],
           ),
         ],
+      ),
       ),
     );
   }

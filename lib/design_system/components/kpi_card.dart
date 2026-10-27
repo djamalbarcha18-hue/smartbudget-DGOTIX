@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:smartbudget/design_system/motion/ds_motion.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/ds_skeleton.dart';
 import 'package:smartbudget/design_system/components/money_privacy.dart';
@@ -191,11 +192,29 @@ class _KpiCardState extends State<KpiCard> {
             FittedBox(
               fit: BoxFit.scaleDown,
               alignment: AlignmentDirectional.centerStart,
+              // A new figure (another month, a new entry) comes in softly:
+              // the old one fades out first, then the new one rises in, so
+              // the two never overlap.
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 180),
+                duration: DsMotion.of(context, DsMotion.quick * 1.5),
+                transitionBuilder: (Widget child, Animation<double> a) {
+                  final Animation<double> second = CurvedAnimation(
+                      parent: a,
+                      curve: const Interval(0.5, 1, curve: Curves.easeOut));
+                  return FadeTransition(
+                    opacity: second,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                              begin: const Offset(0, 0.15), end: Offset.zero)
+                          .animate(second),
+                      child: child,
+                    ),
+                  );
+                },
                 child: Text(
                   masked ? MoneyPrivacy.mask : (value ?? '—'),
-                  key: ValueKey<bool>(masked),
+                  key: ValueKey<String>(
+                      masked ? MoneyPrivacy.mask : (value ?? '—')),
                   maxLines: 1,
                   semanticsLabel: masked ? privacy!.peekHint : null,
                   style: DsTypography.mono(

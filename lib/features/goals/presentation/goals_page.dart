@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/design_system/motion/ds_motion.dart';
 import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
@@ -178,11 +179,16 @@ class _GoalCard extends ConsumerWidget {
               Expanded(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(999),
-                  child: LinearProgressIndicator(
+                  // Fills to where the goal stands.
+                  child: DsEased(
                     value: progress.clamp(0.0, 1.0),
-                    minHeight: 9,
-                    backgroundColor: c.surfaceMuted,
-                    valueColor: AlwaysStoppedAnimation<Color>(barColor),
+                    builder: (BuildContext context, double v) =>
+                        LinearProgressIndicator(
+                      value: v,
+                      minHeight: 9,
+                      backgroundColor: c.surfaceMuted,
+                      valueColor: AlwaysStoppedAnimation<Color>(barColor),
+                    ),
                   ),
                 ),
               ),

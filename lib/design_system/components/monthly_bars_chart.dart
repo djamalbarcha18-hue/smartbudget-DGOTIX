@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show NumberFormat;
 
+import 'package:smartbudget/design_system/motion/ds_motion.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
@@ -165,7 +166,52 @@ class MonthlyBarsChart extends StatefulWidget {
   State<MonthlyBarsChart> createState() => _MonthlyBarsChartState();
 }
 
-class _MonthlyBarsChartState extends State<MonthlyBarsChart> {
+class _MonthlyBarsChartState extends State<MonthlyBarsChart>
+    with SingleTickerProviderStateMixin, DsFirstSight {
+  /// The bars rise from the baseline, month after month, when the chart
+  /// first shows and when its figures change; a tap doesn't replay it.
+  late final AnimationController _rise = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 900));
+  bool _started = false;
+
+  static String _figures(List<MonthPoint> p) => p
+      .map((MonthPoint m) =>
+          '${m.income.minorUnits}/${m.expense.minorUnits}/${m.net.minorUnits}')
+      .join(',');
+
+  void _replay() {
+    if (DsMotion.reduced(context)) {
+      _rise.value = 1;
+    } else {
+      _rise.forward(from: 0);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_started) {
+      _started = true;
+      // Drawn when it comes into view (further down a page, on scroll).
+      whenFirstSeen(_replay);
+    }
+  }
+
+  @override
+  void didUpdateWidget(MonthlyBarsChart old) {
+    super.didUpdateWidget(old);
+    if (firstSeen &&
+        _figures(old.points) != _figures(widget.points)) {
+      _replay();
+    }
+  }
+
+  @override
+  void dispose() {
+    _rise.dispose();
+    super.dispose();
+  }
+
   ({int month, int series})? _tapped;
   ({int month, int series})? _hover;
 
@@ -230,6 +276,7 @@ class _MonthlyBarsChartState extends State<MonthlyBarsChart> {
                   CustomPaint(
                     size: size,
                     painter: _BarsPainter(
+                      risen: _rise,
                       layout: layout,
                       income: widget.income,
                       expense: widget.expense,
@@ -321,6 +368,7 @@ class _BarTooltip extends StatelessWidget {
 
 class _BarsPainter extends CustomPainter {
   _BarsPainter({
+    required this.risen,
     required this.layout,
     required this.income,
     required this.expense,
@@ -331,7 +379,11 @@ class _BarsPainter extends CustomPainter {
     required this.labelStyle,
     this.monthLabels,
     this.selected,
-  });
+  }) : super(repaint: risen);
+
+  /// How far the bars have risen (0..1); each month starts a little after
+  /// the one before.
+  final Animation<double> risen;
 
   final _BarsLayout layout;
   final Color income;
@@ -397,8 +449,19 @@ class _BarsPainter extends CustomPainter {
     }
 
     const Radius r = Radius.circular(4);
+    // Month i starts at i * lag of the run and rises for [rise] of it.
+    final double lag = layout.count <= 1 ? 0 : 0.45 / (layout.count - 1);
+    const double rise = 0.55;
     for (final _BarHit b in layout.bars) {
       if (b.minor == 0) continue;
+      final double t = Curves.easeOutCubic.transform(
+          ((risen.value - b.month * lag) / rise).clamp(0.0, 1.0));
+      if (t <= 0) continue;
+      final Rect rect = b.minor > 0
+          ? Rect.fromLTRB(b.rect.left, b.rect.bottom - b.rect.height * t,
+              b.rect.right, b.rect.bottom)
+          : Rect.fromLTRB(b.rect.left, b.rect.top, b.rect.right,
+              b.rect.top + b.rect.height * t);
       final bool dim = selected != null &&
           (selected!.month != b.month || selected!.series != b.series);
       final Color col = _color(b.series).withValues(alpha: dim ? 0.28 : 1.0);
@@ -408,10 +471,10 @@ class _BarsPainter extends CustomPainter {
           begin: b.minor > 0 ? Alignment.topCenter : Alignment.bottomCenter,
           end: b.minor > 0 ? Alignment.bottomCenter : Alignment.topCenter,
           colors: <Color>[col, col.withValues(alpha: col.a * 0.35)],
-        ).createShader(b.rect);
+        ).createShader(rect);
       final RRect rr = b.minor > 0
-          ? RRect.fromRectAndCorners(b.rect, topLeft: r, topRight: r)
-          : RRect.fromRectAndCorners(b.rect, bottomLeft: r, bottomRight: r);
+          ? RRect.fromRectAndCorners(rect, topLeft: r, topRight: r)
+          : RRect.fromRectAndCorners(rect, bottomLeft: r, bottomRight: r);
       canvas.drawRRect(rr, paint);
     }
 
@@ -454,5 +517,6 @@ class _BarsPainter extends CustomPainter {
       old.grid != grid ||
       old.monthLabels != monthLabels ||
       old.labelStyle != labelStyle ||
-      old.selected != selected;
+      old.selected != selected ||
+      old.risen != risen;
 }

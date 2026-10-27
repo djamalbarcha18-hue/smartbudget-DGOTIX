@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import 'package:smartbudget/design_system/motion/ds_motion.dart';
+
 /// One slice of a [DonutChart].
 class DonutSegment {
   const DonutSegment({
@@ -63,9 +65,54 @@ class DonutChart extends StatefulWidget {
   State<DonutChart> createState() => _DonutChartState();
 }
 
-class _DonutChartState extends State<DonutChart> {
+class _DonutChartState extends State<DonutChart>
+    with SingleTickerProviderStateMixin, DsFirstSight {
   int? _tapped; // sticky selection (toggled by tap) — uncontrolled mode only
   int? _hover; // transient selection (pointer hover)
+
+  /// The ring draws itself clockwise when it first shows and when its
+  /// figures change (another month); choosing a slice doesn't redraw it.
+  late final AnimationController _draw =
+      AnimationController(vsync: this, duration: DsMotion.draw);
+  late final Animation<double> _drawn =
+      CurvedAnimation(parent: _draw, curve: DsMotion.ease);
+  bool _started = false;
+
+  static String _figures(List<DonutSegment> s) =>
+      s.map((DonutSegment e) => e.value).join(',');
+
+  void _redraw() {
+    if (DsMotion.reduced(context)) {
+      _draw.value = 1;
+    } else {
+      _draw.forward(from: 0);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_started) {
+      _started = true;
+      // Drawn when it comes into view (further down a page, on scroll).
+      whenFirstSeen(_redraw);
+    }
+  }
+
+  @override
+  void didUpdateWidget(DonutChart old) {
+    super.didUpdateWidget(old);
+    if (firstSeen &&
+        _figures(old.segments) != _figures(widget.segments)) {
+      _redraw();
+    }
+  }
+
+  @override
+  void dispose() {
+    _draw.dispose();
+    super.dispose();
+  }
 
   bool get _controlled => widget.onSelectionChanged != null;
   int? get _sticky => _controlled ? widget.selectedIndex : _tapped;
@@ -158,6 +205,7 @@ class _DonutChartState extends State<DonutChart> {
               selected: active,
               track: widget.trackColor ??
                   Theme.of(context).dividerColor.withValues(alpha: 0.25),
+              drawn: _drawn,
             ),
             // The center changes with a short fade, not a jump.
             child: center == null
@@ -215,13 +263,17 @@ class _DonutPainter extends CustomPainter {
     required this.segments,
     required this.thickness,
     required this.track,
+    required this.drawn,
     this.selected,
-  });
+  }) : super(repaint: drawn);
 
   final List<DonutSegment> segments;
   final double thickness;
   final Color track;
   final int? selected;
+
+  /// How much of the ring is drawn so far (0..1), clockwise from the top.
+  final Animation<double> drawn;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -240,11 +292,14 @@ class _DonutPainter extends CustomPainter {
     if (total <= 0) return;
 
     const double gap = 0.03; // small radian gap between slices
+    final double reach = -math.pi / 2 + 2 * math.pi * drawn.value;
     double start = -math.pi / 2;
     for (int i = 0; i < segments.length; i++) {
       final DonutSegment seg = segments[i];
-      final double sweep = (seg.value / total) * (2 * math.pi);
-      if (sweep <= 0) continue;
+      final double full = (seg.value / total) * (2 * math.pi);
+      if (full <= 0) continue;
+      if (start >= reach) break;
+      final double sweep = math.min(full, reach - start);
       final bool dim = selected != null && selected != i;
       final double stroke = selected == i ? thickness + 4 : thickness;
       final Paint p = Paint()
@@ -254,7 +309,7 @@ class _DonutPainter extends CustomPainter {
         ..strokeCap = StrokeCap.butt;
       final double drawSweep = sweep > gap ? sweep - gap : sweep;
       canvas.drawArc(rect, start, drawSweep, false, p);
-      start += sweep;
+      start += full;
     }
   }
 
@@ -263,5 +318,6 @@ class _DonutPainter extends CustomPainter {
       old.segments != segments ||
       old.thickness != thickness ||
       old.selected != selected ||
-      old.track != track;
+      old.track != track ||
+      old.drawn != drawn;
 }

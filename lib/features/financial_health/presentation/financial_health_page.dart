@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/design_system/motion/ds_motion.dart';
 import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_states.dart';
@@ -201,7 +202,10 @@ class _ScoreRing extends StatelessWidget {
   final Color color;
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    // Fills to the score as the number counts up.
+    return DsEased(
+      value: score,
+      builder: (BuildContext context, double shown) => SizedBox(
       width: 96,
       height: 96,
       child: Stack(
@@ -211,16 +215,17 @@ class _ScoreRing extends StatelessWidget {
             width: 96,
             height: 96,
             child: CircularProgressIndicator(
-              value: (score / 100).clamp(0.0, 1.0),
+              value: (shown / 100).clamp(0.0, 1.0),
               strokeWidth: 9,
               backgroundColor: context.dsColors.surfaceMuted,
               valueColor: AlwaysStoppedAnimation<Color>(color),
             ),
           ),
-          Text(score.toStringAsFixed(0),
+          Text(shown.toStringAsFixed(0),
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: color, fontWeight: FontWeight.w800)),
         ],
+      ),
       ),
     );
   }
