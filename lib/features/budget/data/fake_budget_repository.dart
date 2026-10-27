@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:smartbudget/core/storage/record_lists.dart';
 import 'package:smartbudget/core/storage/save_health.dart';
-import 'package:smartbudget/core/storage/stored_list.dart';
 
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
@@ -21,7 +18,7 @@ class FakeBudgetRepository implements BudgetRepository {
   final String userId;
   late final StreamController<List<BudgetTarget>> _controller;
   final List<BudgetTarget> _items = <BudgetTarget>[];
-  bool _loaded = false;
+  Future<void>? _loading;
 
   String get _key => 'sb_budgets_$userId';
 
@@ -36,17 +33,19 @@ class FakeBudgetRepository implements BudgetRepository {
     _emit();
   }
 
-  Future<void> _load() async {
-    if (_loaded) return;
-    _loaded = true;
+  /// Loads once; every caller waits for that same load, so none sees an
+  /// empty list while it runs (a sync round would take that for deletions).
+  Future<void> _load() => _loading ??= _loadNow();
+
+  Future<void> _loadNow() async {
     try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? raw = prefs.getString(_key);
-      if (raw != null && raw.isNotEmpty) {
-        // Unreadable entries are skipped, never the whole list.
+      // Unreadable entries are skipped, never the whole list.
+      final List<BudgetTarget> stored =
+          await RecordLists.current.load(_key, BudgetTarget.fromJson);
+      if (stored.isNotEmpty) {
         _items
           ..clear()
-          ..addAll(StoredList.read(prefs, _key, raw, BudgetTarget.fromJson));
+          ..addAll(stored);
       }
     } catch (_) {
       // Start empty.
@@ -154,12 +153,8 @@ class FakeBudgetRepository implements BudgetRepository {
 
   Future<void> _persist() async {
     try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final bool ok = await prefs.setString(
-        _key,
-        jsonEncode(_items.map((BudgetTarget b) => b.toJson()).toList()),
-      );
-      if (!ok) throw StateError('not stored');
+      await RecordLists.current.save(
+          _key, _items.map((BudgetTarget b) => b.toJson()).toList());
       SaveHealth.saved(_key);
     } catch (_) {
       // The user is told and can try again (SaveHealth).

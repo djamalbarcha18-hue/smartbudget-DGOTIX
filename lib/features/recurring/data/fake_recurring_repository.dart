@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:smartbudget/core/storage/record_lists.dart';
 import 'package:smartbudget/core/storage/save_health.dart';
-import 'package:smartbudget/core/storage/stored_list.dart';
 
 import 'package:smartbudget/features/recurring/domain/recurring_repository.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
@@ -20,7 +17,7 @@ class FakeRecurringRepository implements RecurringRepository {
   final String userId;
   late final StreamController<List<RecurringRule>> _controller;
   final List<RecurringRule> _items = <RecurringRule>[];
-  bool _loaded = false;
+  Future<void>? _loading;
 
   String get _key => 'sb_recurring_$userId';
 
@@ -35,17 +32,19 @@ class FakeRecurringRepository implements RecurringRepository {
     _emit();
   }
 
-  Future<void> _load() async {
-    if (_loaded) return;
-    _loaded = true;
+  /// Loads once; every caller waits for that same load, so none sees an
+  /// empty list while it runs (a sync round would take that for deletions).
+  Future<void> _load() => _loading ??= _loadNow();
+
+  Future<void> _loadNow() async {
     try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? raw = prefs.getString(_key);
-      if (raw != null && raw.isNotEmpty) {
-        // Unreadable entries are skipped, never the whole list.
+      // Unreadable entries are skipped, never the whole list.
+      final List<RecurringRule> stored =
+          await RecordLists.current.load(_key, RecurringRule.fromJson);
+      if (stored.isNotEmpty) {
         _items
           ..clear()
-          ..addAll(StoredList.read(prefs, _key, raw, RecurringRule.fromJson));
+          ..addAll(stored);
         _sort();
       }
     } catch (_) {
@@ -137,12 +136,8 @@ class FakeRecurringRepository implements RecurringRepository {
 
   Future<void> _persist() async {
     try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final bool ok = await prefs.setString(
-        _key,
-        jsonEncode(_items.map((RecurringRule r) => r.toJson()).toList()),
-      );
-      if (!ok) throw StateError('not stored');
+      await RecordLists.current.save(
+          _key, _items.map((RecurringRule r) => r.toJson()).toList());
       SaveHealth.saved(_key);
     } catch (_) {
       // The user is told and can try again (SaveHealth).

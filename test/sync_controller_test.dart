@@ -1,8 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:idb_shim/idb.dart' show IdbFactory;
+import 'package:idb_shim/idb_client_memory.dart' show newIdbFactoryMemory;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/network/connectivity.dart';
+import 'package:smartbudget/core/storage/local_db.dart';
+import 'package:smartbudget/core/storage/record_lists.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/backup/application/backup_controller.dart';
 import 'package:smartbudget/features/backup/domain/backup_model.dart';
@@ -41,15 +45,20 @@ class FakeRemote implements SyncRemote {
   }
 }
 
-/// One device: its own stored data (SharedPreferences), the shared cloud.
+/// One device: its own stored data (SharedPreferences, and its own device
+/// database when the tests run on it: SB_TEST_LOCAL_DB=1), the shared cloud.
 class Device {
   Device(this.remote);
   final FakeRemote remote;
   Map<String, Object> prefs = <String, Object>{};
+  final IdbFactory _db = newIdbFactoryMemory();
   ProviderContainer? _c;
 
   Future<ProviderContainer> open({bool online = true}) async {
     SharedPreferences.setMockInitialValues(prefs);
+    if (RecordLists.current is LocalDbRecordLists) {
+      RecordLists.current = LocalDbRecordLists(_db);
+    }
     final ProviderContainer c = ProviderContainer(overrides: <Override>[
       syncAvailableProvider.overrideWithValue(true),
       syncRemoteProvider.overrideWithValue(remote),
@@ -57,6 +66,8 @@ class Device {
       onlineProvider.overrideWith((_) => Stream<bool>.value(online)),
     ]);
     c.listen(syncControllerProvider, (_, __) {});
+    c.listen(transactionsProvider, (_, __) {});
+    await c.read(transactionsProvider.future);
     await Future<void>.delayed(const Duration(milliseconds: 50));
     return _c = c;
   }
@@ -66,6 +77,8 @@ class Device {
     final SharedPreferences p = await SharedPreferences.getInstance();
     prefs = <String, Object>{for (final String k in p.getKeys()) k: p.get(k)!};
     _c?.dispose();
+    final RecordLists lists = RecordLists.current;
+    if (lists is LocalDbRecordLists) await lists.close();
   }
 }
 
@@ -190,8 +203,10 @@ void main() {
     await c.read(syncEnabledProvider.notifier).set(false);
     await Future<void>.delayed(const Duration(milliseconds: 20));
     expect(c.read(syncControllerProvider).phase, SyncPhase.off);
+    // (A round may have run while it was still on.)
+    final int pulls = remote.pulls;
     await sync(c);
-    expect(remote.pulls, 0);
+    expect(remote.pulls, pulls);
     await a.close();
   });
 }

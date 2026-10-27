@@ -10,6 +10,7 @@ import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/l10n/latin_digits.dart';
 import 'package:smartbudget/core/storage/legacy_cleanup.dart';
 import 'package:smartbudget/core/storage/persistent_storage.dart';
+import 'package:smartbudget/core/storage/record_lists_setup.dart';
 import 'package:smartbudget/core/storage/save_health.dart';
 import 'package:smartbudget/core/storage/unload_guard.dart';
 import 'package:smartbudget/core/time/network_time.dart';
@@ -81,6 +82,10 @@ Future<void> _start() async {
 
   // On the web, warn before leaving while some changes couldn't be stored.
   guardUnload(() => SaveHealth.failing.value);
+
+  // Where the user's lists are kept (the device database is behind
+  // INDEXED_DB; docs/LOCAL_DATABASE.md). Before any of them is read.
+  await chooseRecordLists();
 
   // Read before the first frame so a locked app never shows its content.
   final LockConfig lock = await LockStore.load();

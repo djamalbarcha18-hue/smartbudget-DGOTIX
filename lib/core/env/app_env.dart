@@ -83,6 +83,12 @@ abstract final class AppEnv {
   static const bool googleSignIn =
       bool.fromEnvironment('GOOGLE_SIGN_IN', defaultValue: false);
 
+  /// The device database (IndexedDB) for the user's records on the web,
+  /// instead of one localStorage text per list: off in every build until
+  /// built with `--dart-define=INDEXED_DB=true` (docs/LOCAL_DATABASE.md).
+  static const bool indexedDb =
+      bool.fromEnvironment('INDEXED_DB', defaultValue: false);
+
   /// SmartTrip (trips and their expenses), still in the works: shown in
   /// debug builds and in builds made with `--dart-define=SMART_TRIP=true`,
   /// hidden in every published build until it launches.

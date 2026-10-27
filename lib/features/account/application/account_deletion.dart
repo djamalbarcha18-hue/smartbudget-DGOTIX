@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/storage/account_keys.dart';
+import 'package:smartbudget/core/storage/record_lists.dart';
 import 'package:smartbudget/features/app_lock/data/device_auth.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 
@@ -66,6 +67,9 @@ class AccountDeletion {
       final String? owner = AccountKeys.ownerOf(k);
       return owner != null && owner != userId;
     });
+    // The device database holds the same lists (when it is on).
+    await RecordLists.current.forget(
+        (String k) => !othersHere || AccountKeys.ownerOf(k) == userId);
     if (!othersHere) {
       await prefs.clear();
       return;

@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:smartbudget/core/storage/record_lists.dart';
 import 'package:smartbudget/core/storage/save_health.dart';
-import 'package:smartbudget/core/storage/stored_list.dart';
 
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/domain/transaction_repository.dart';
@@ -24,7 +21,7 @@ class FakeTransactionRepository implements TransactionRepository {
 
   late final StreamController<List<Transaction>> _controller;
   final List<Transaction> _items = <Transaction>[];
-  bool _loaded = false;
+  Future<void>? _loading;
 
   String get _key => 'sb_txns_$userId';
 
@@ -39,17 +36,19 @@ class FakeTransactionRepository implements TransactionRepository {
     _emit();
   }
 
-  Future<void> _load() async {
-    if (_loaded) return;
-    _loaded = true;
+  /// Loads once; every caller waits for that same load, so none sees an
+  /// empty list while it runs (a sync round would take that for deletions).
+  Future<void> _load() => _loading ??= _loadNow();
+
+  Future<void> _loadNow() async {
     try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? raw = prefs.getString(_key);
-      if (raw != null && raw.isNotEmpty) {
-        // Unreadable entries are skipped, never the whole list.
+      // Unreadable entries are skipped, never the whole list.
+      final List<Transaction> stored =
+          await RecordLists.current.load(_key, Transaction.fromJson);
+      if (stored.isNotEmpty) {
         _items
           ..clear()
-          ..addAll(StoredList.read(prefs, _key, raw, Transaction.fromJson));
+          ..addAll(stored);
         _sort();
       }
     } catch (_) {
@@ -151,12 +150,8 @@ class FakeTransactionRepository implements TransactionRepository {
 
   Future<void> _persist() async {
     try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String raw = jsonEncode(
-        _items.map((Transaction t) => t.toJson()).toList(),
-      );
-      final bool ok = await prefs.setString(_key, raw);
-      if (!ok) throw StateError('not stored');
+      await RecordLists.current.save(
+          _key, _items.map((Transaction t) => t.toJson()).toList());
       SaveHealth.saved(_key);
     } catch (_) {
       // The user is told and can try again (SaveHealth).

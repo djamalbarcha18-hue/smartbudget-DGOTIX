@@ -88,6 +88,10 @@ dependencies:
   # phone, no server. timezone gives the instants it is scheduled at.
   flutter_local_notifications: ^22.3.3
   timezone: ^0.11.2
+  # The device database (IndexedDB in the browser), behind INDEXED_DB (off
+  # by default; see docs/LOCAL_DATABASE.md). Pinned to releases at least two
+  # weeks old; BSD-2-Clause.
+  idb_shim: 2.10.0+1
 
 dev_dependencies:
   flutter_test:

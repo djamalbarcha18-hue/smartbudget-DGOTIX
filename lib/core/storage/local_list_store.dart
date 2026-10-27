@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:smartbudget/core/storage/record_lists.dart';
 import 'package:smartbudget/core/storage/save_health.dart';
-import 'package:smartbudget/core/storage/stored_list.dart';
 
-/// A small per-key list persisted in the browser (SharedPreferences), with a
-/// live stream. Items are identified by [idOf]; order is kept by [compare].
+/// A small per-key list kept on the device ([RecordLists]), with a live
+/// stream. Items are identified by [idOf]; order is kept by [compare].
 class LocalListStore<T> {
   LocalListStore({
     required this.key,
@@ -27,7 +24,7 @@ class LocalListStore<T> {
 
   late final StreamController<List<T>> _controller;
   final List<T> _items = <T>[];
-  bool _loaded = false;
+  Future<void>? _loading;
 
   List<T> get current => List<T>.unmodifiable(_items);
 
@@ -38,17 +35,18 @@ class LocalListStore<T> {
     _emit();
   }
 
-  Future<void> _load() async {
-    if (_loaded) return;
-    _loaded = true;
+  /// Loads once; every caller waits for that same load, so none sees an
+  /// empty list while it runs (a sync round would take that for deletions).
+  Future<void> _load() => _loading ??= _loadNow();
+
+  Future<void> _loadNow() async {
     try {
-      final SharedPreferences p = await SharedPreferences.getInstance();
-      final String? raw = p.getString(key);
-      if (raw != null && raw.isNotEmpty) {
-        // Unreadable entries are skipped, never the whole list.
+      // Unreadable entries are skipped, never the whole list.
+      final List<T> stored = await RecordLists.current.load(key, fromJson);
+      if (stored.isNotEmpty) {
         _items
           ..clear()
-          ..addAll(StoredList.read(p, key, raw, fromJson));
+          ..addAll(stored);
         _sort();
       }
     } catch (_) {
@@ -114,10 +112,7 @@ class LocalListStore<T> {
 
   Future<void> _write() async {
     try {
-      final SharedPreferences p = await SharedPreferences.getInstance();
-      final bool ok =
-          await p.setString(key, jsonEncode(_items.map(toJson).toList()));
-      if (!ok) throw StateError('not stored');
+      await RecordLists.current.save(key, _items.map(toJson).toList());
       SaveHealth.saved(key);
     } catch (_) {
       // The user is told and can try again (SaveHealth).

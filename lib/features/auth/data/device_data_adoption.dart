@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/storage/account_keys.dart';
+import 'package:smartbudget/core/storage/record_lists.dart';
 import 'package:smartbudget/features/auth/data/fake_auth_repository.dart';
 import 'package:smartbudget/features/auth/domain/auth_user.dart';
 
@@ -35,5 +36,7 @@ Future<void> adoptDeviceData(SharedPreferences prefs, AuthUser user) async {
     } else {
       await movePref(prefs, key, newKey);
     }
+    // The same in the device database (when it is on).
+    await RecordLists.current.move(key, newKey);
   }
 }
