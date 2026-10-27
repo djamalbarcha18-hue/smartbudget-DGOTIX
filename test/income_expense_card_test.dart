@@ -226,8 +226,9 @@ void main() {
               matching: find.byType(DefaultTextStyle))
           .first);
       expect(chosen.data, l.legendIncome);
-      expect(style.style.color, Colors.white);
+      // Bold, in the income colour (not white on a block of colour).
       expect(style.style.fontWeight, FontWeight.w700);
+      expect(style.style.color, isNot(Colors.white));
       final DefaultTextStyle other = tester.widget<DefaultTextStyle>(find
           .ancestor(
               of: find.text(l.legendExpenses).first,
@@ -238,8 +239,12 @@ void main() {
     });
   }
 
-  test('white text reads on every income and expense colour', () {
-    double contrast(Color c) => 1.05 / (c.computeLuminance() + 0.05);
+  test('the chosen tab reads well on its soft tint, in every theme', () {
+    double contrast(Color a, Color b) {
+      final double la = a.computeLuminance(), lb = b.computeLuminance();
+      return ((la > lb ? la : lb) + 0.05) / ((la > lb ? lb : la) + 0.05);
+    }
+
     for (final DsColors c in <DsColors>[
       DsColors.light,
       DsColors.dark,
@@ -248,12 +253,16 @@ void main() {
       DsColors.pomegranate,
       DsColors.black,
     ]) {
-      expect(contrast(readableFill(c.income)), greaterThanOrEqualTo(4.5));
-      expect(contrast(readableFill(c.expense)), greaterThanOrEqualTo(4.5));
+      for (final Color color in <Color>[c.income, c.expense]) {
+        final Color tint =
+            Color.alphaBlend(color.withValues(alpha: 0.14), c.surface);
+        expect(
+            contrast(readableOn(color, tint), tint), greaterThanOrEqualTo(4.5));
+      }
     }
-    // Already dark enough: unchanged.
+    // Already clear: unchanged.
     const Color deep = Color(0xFF1B5E20);
-    expect(readableFill(deep), deep);
+    expect(readableOn(deep, Colors.white), deep);
   });
 
   for (final double width in <double>[320, 1100]) {

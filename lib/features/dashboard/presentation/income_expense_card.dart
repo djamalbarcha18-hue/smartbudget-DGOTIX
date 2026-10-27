@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -159,8 +161,8 @@ class _IncomeExpenseCardState extends ConsumerState<IncomeExpenseCard> {
   }
 }
 
-/// A tab marked three ways when chosen: filled in its colour with bold
-/// white text, its arrow, and a line under it.
+/// A tab marked three ways when chosen, quietly: a soft tint of its colour,
+/// its name and arrow in that colour (bold), and a line under it.
 class _TypeTab extends StatelessWidget {
   const _TypeTab({
     required this.label,
@@ -181,7 +183,10 @@ class _TypeTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
-    final Color fill = readableFill(color);
+    // A tint, not a block of colour: calm, yet plain to see.
+    final Color tint =
+        Color.alphaBlend(color.withValues(alpha: 0.14), c.surface);
+    final Color ink = readableOn(color, tint);
     return Semantics(
       selected: selected,
       button: true,
@@ -194,7 +199,7 @@ class _TypeTab extends StatelessWidget {
             duration: _quick,
             curve: Curves.easeOut,
             decoration: BoxDecoration(
-              color: selected ? fill : c.surfaceMuted.withValues(alpha: 0.5),
+              color: selected ? tint : c.surfaceMuted.withValues(alpha: 0.5),
               borderRadius: DsRadius.brMd,
             ),
             child: Column(
@@ -205,9 +210,7 @@ class _TypeTab extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Icon(icon,
-                          size: 16,
-                          color: selected ? Colors.white : c.textFaint),
+                      Icon(icon, size: 16, color: selected ? ink : c.textFaint),
                       const SizedBox(width: 6),
                       Flexible(
                         child: AnimatedDefaultTextStyle(
@@ -215,7 +218,7 @@ class _TypeTab extends StatelessWidget {
                           style: (Theme.of(context).textTheme.labelLarge ??
                                   const TextStyle())
                               .copyWith(
-                            color: selected ? Colors.white : c.textMuted,
+                            color: selected ? ink : c.textMuted,
                             fontWeight:
                                 selected ? FontWeight.w700 : FontWeight.w400,
                           ),
@@ -244,13 +247,20 @@ class _TypeTab extends StatelessWidget {
   }
 }
 
-/// [color], darkened only as much as white bold text on it needs to read
-/// well (contrast 4.5:1); already dark enough, it is left as it is.
-Color readableFill(Color color) {
-  double contrastWithWhite(Color c) => 1.05 / (c.computeLuminance() + 0.05);
+/// [color] made just dark enough (on a light [background]) or light enough
+/// (on a dark one) for text to read well on it (contrast 4.5:1); already
+/// clear, it is left as it is.
+Color readableOn(Color color, Color background) {
+  double contrast(Color a, Color b) {
+    final double la = a.computeLuminance(), lb = b.computeLuminance();
+    return (math.max(la, lb) + 0.05) / (math.min(la, lb) + 0.05);
+  }
+
+  final Color toward =
+      background.computeLuminance() > 0.4 ? Colors.black : Colors.white;
   Color out = color;
-  for (int i = 0; i < 20 && contrastWithWhite(out) < 4.5; i++) {
-    out = Color.lerp(out, Colors.black, 0.06)!;
+  for (int i = 0; i < 20 && contrast(out, background) < 4.5; i++) {
+    out = Color.lerp(out, toward, 0.08)!;
   }
   return out;
 }
