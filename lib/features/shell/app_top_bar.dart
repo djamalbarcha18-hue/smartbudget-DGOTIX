@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -118,6 +119,15 @@ class AppTopBar extends StatelessWidget {
   }
 }
 
+/// The search shortcut as written on [platform]: "⌘ K" on a Mac,
+/// "Ctrl K" on Windows and Linux, none on phones and tablets.
+@visibleForTesting
+String? searchShortcutLabel(TargetPlatform platform) => switch (platform) {
+      TargetPlatform.macOS => '⌘ K',
+      TargetPlatform.windows || TargetPlatform.linux => 'Ctrl K',
+      _ => null,
+    };
+
 class _SearchField extends StatelessWidget {
   const _SearchField();
 
@@ -150,16 +160,21 @@ class _SearchField extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: c.bgElevated,
-                  borderRadius: DsRadius.brSm,
-                  border: Border.all(color: c.border),
+              // The keyboard shortcut, as this computer writes it; a
+              // touch screen (a tablet) has no keyboard to use it with.
+              if (searchShortcutLabel(defaultTargetPlatform) case final String k)
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: c.bgElevated,
+                    borderRadius: DsRadius.brSm,
+                    border: Border.all(color: c.border),
+                  ),
+                  child: Text(k,
+                      textDirection: TextDirection.ltr,
+                      style: Theme.of(context).textTheme.labelSmall),
                 ),
-                child: Text('Ctrl K',
-                    style: Theme.of(context).textTheme.labelSmall),
-              ),
             ],
           ),
         ),
