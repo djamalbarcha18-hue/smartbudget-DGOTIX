@@ -1537,5 +1537,16 @@
   "saveRetryDone": "Tersimpan",
   "dataWhereCloud": "Data Anda ada di perangkat ini dan di akun Anda, disinkronkan otomatis.",
   "dataWhereBrowser": "Data Anda hanya disimpan di browser ini. Menghapus data situs akan menghapusnya, jadi simpan cadangan.",
-  "dataWherePhone": "Data Anda hanya disimpan di ponsel ini. Menghapus data aplikasi atau mencopot aplikasinya akan menghapusnya, jadi simpan cadangan."
+  "dataWherePhone": "Data Anda hanya disimpan di ponsel ini. Menghapus data aplikasi atau mencopot aplikasinya akan menghapusnya, jadi simpan cadangan.",
+  "metalsGainSince": "{amount} ({percent}) sejak dibeli",
+  "metalsAvgVsNow": "Rata-rata Anda membayar {avg} per gram murni · hari ini {now}",
+  "metalsNoCost": "Tanpa harga beli",
+  "metalsByYear": "Menurut tahun beli",
+  "metalsYearPaid": "Dibayar {paid} · bernilai {value}",
+  "metalsNoCostNote": "{count, plural, other{{count} barang tanpa harga beli tidak dihitung dalam keuntungan.}}",
+  "metalsLegendWorth": "Nilai",
+  "metalsLegendPaid": "Dibayar",
+  "metalsPeriodGain": "Dari harga selama periode ini: {amount} ({percent})",
+  "metalsPeriodNote": "Pembelian baru tidak pernah dihitung sebagai keuntungan.",
+  "metalsChartNeedsCost": "Isi harga yang Anda bayar untuk tiap barang agar keuntungan tampil di grafik."
 }

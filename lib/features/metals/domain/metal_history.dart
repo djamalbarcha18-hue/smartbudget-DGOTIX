@@ -1,12 +1,20 @@
 /// What the user's metals were worth on one day, in one currency.
 class MetalPoint {
-  const MetalPoint(
-      {required this.day, required this.minor, required this.currency});
+  const MetalPoint({
+    required this.day,
+    required this.minor,
+    required this.currency,
+    this.paid,
+  });
 
   /// The day, at midnight.
   final DateTime day;
   final int minor;
   final String currency;
+
+  /// What had been paid for the metals held that day, when every piece had
+  /// a cost (else null): the line that the value is compared with.
+  final int? paid;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'd': '${day.year.toString().padLeft(4, '0')}-'
@@ -14,6 +22,7 @@ class MetalPoint {
             '${day.day.toString().padLeft(2, '0')}',
         'v': minor,
         'c': currency,
+        if (paid != null) 'p': paid,
       };
 
   static MetalPoint? fromJson(Object? j) {
@@ -21,9 +30,13 @@ class MetalPoint {
     final DateTime? d = DateTime.tryParse('${j['d']}');
     final Object? v = j['v'];
     final Object? c = j['c'];
+    final Object? p = j['p'];
     if (d == null || v is! int || c is! String || c.isEmpty) return null;
     return MetalPoint(
-        day: DateTime(d.year, d.month, d.day), minor: v, currency: c);
+        day: DateTime(d.year, d.month, d.day),
+        minor: v,
+        currency: c,
+        paid: p is int ? p : null);
   }
 }
 

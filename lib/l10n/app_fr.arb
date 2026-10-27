@@ -1537,5 +1537,16 @@
   "saveRetryDone": "Enregistré",
   "dataWhereCloud": "Vos données sont sur cet appareil et dans votre compte, synchronisées automatiquement.",
   "dataWhereBrowser": "Vos données sont enregistrées dans ce navigateur uniquement. Effacer les données du site les supprime : gardez une sauvegarde.",
-  "dataWherePhone": "Vos données sont enregistrées sur ce téléphone uniquement. Effacer les données de l'application ou la désinstaller les supprime : gardez une sauvegarde."
+  "dataWherePhone": "Vos données sont enregistrées sur ce téléphone uniquement. Effacer les données de l'application ou la désinstaller les supprime : gardez une sauvegarde.",
+  "metalsGainSince": "{amount} ({percent}) depuis l'achat",
+  "metalsAvgVsNow": "En moyenne, vous avez payé {avg} le gramme pur · aujourd'hui {now}",
+  "metalsNoCost": "Sans prix d'achat",
+  "metalsByYear": "Par année d'achat",
+  "metalsYearPaid": "Payé {paid} · vaut {value}",
+  "metalsNoCostNote": "{count, plural, =1{1 pièce n'a pas de prix d'achat et n'entre pas dans les gains.} other{{count} pièces n'ont pas de prix d'achat et n'entrent pas dans les gains.}}",
+  "metalsLegendWorth": "Vaut",
+  "metalsLegendPaid": "Payé",
+  "metalsPeriodGain": "Effet du prix sur cette période : {amount} ({percent})",
+  "metalsPeriodNote": "Les nouveaux achats ne comptent jamais comme des gains.",
+  "metalsChartNeedsCost": "Indiquez ce que vous avez payé pour chaque pièce pour voir vos gains sur le graphique."
 }

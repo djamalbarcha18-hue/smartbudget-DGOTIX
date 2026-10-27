@@ -1537,5 +1537,16 @@
   "saveRetryDone": "Sačuvano",
   "dataWhereCloud": "Vaši podaci su na ovom uređaju i na vašem računu i automatski se sinhronizuju.",
   "dataWhereBrowser": "Vaši podaci su sačuvani samo u ovom pregledniku. Brisanje podataka stranice ih briše, zato čuvajte rezervnu kopiju.",
-  "dataWherePhone": "Vaši podaci su sačuvani samo na ovom telefonu. Brisanje podataka aplikacije ili njena deinstalacija ih briše, zato čuvajte rezervnu kopiju."
+  "dataWherePhone": "Vaši podaci su sačuvani samo na ovom telefonu. Brisanje podataka aplikacije ili njena deinstalacija ih briše, zato čuvajte rezervnu kopiju.",
+  "metalsGainSince": "{amount} ({percent}) od kupovine",
+  "metalsAvgVsNow": "Prosječno ste platili {avg} po čistom gramu · danas {now}",
+  "metalsNoCost": "Bez kupovne cijene",
+  "metalsByYear": "Po godini kupovine",
+  "metalsYearPaid": "Plaćeno {paid} · vrijedi {value}",
+  "metalsNoCostNote": "{count, plural, =1{{count} komad nema kupovnu cijenu i ne ulazi u zaradu.} few{{count} komada nemaju kupovnu cijenu i ne ulaze u zaradu.} other{{count} komada nemaju kupovnu cijenu i ne ulaze u zaradu.}}",
+  "metalsLegendWorth": "Vrijedi",
+  "metalsLegendPaid": "Plaćeno",
+  "metalsPeriodGain": "Uticaj cijene u ovom periodu: {amount} ({percent})",
+  "metalsPeriodNote": "Nove kupovine se nikad ne računaju kao zarada.",
+  "metalsChartNeedsCost": "Unesite koliko ste platili za svaki komad da vidite zaradu na grafikonu."
 }

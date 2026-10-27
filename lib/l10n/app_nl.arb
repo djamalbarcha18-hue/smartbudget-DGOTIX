@@ -1537,5 +1537,16 @@
   "saveRetryDone": "Opgeslagen",
   "dataWhereCloud": "Je gegevens staan op dit apparaat en in je account en worden automatisch gesynchroniseerd.",
   "dataWhereBrowser": "Je gegevens staan alleen in deze browser. Als je de websitegegevens wist, zijn ze weg; bewaar dus een back-up.",
-  "dataWherePhone": "Je gegevens staan alleen op deze telefoon. Als je de app-gegevens wist of de app verwijdert, zijn ze weg; bewaar dus een back-up."
+  "dataWherePhone": "Je gegevens staan alleen op deze telefoon. Als je de app-gegevens wist of de app verwijdert, zijn ze weg; bewaar dus een back-up.",
+  "metalsGainSince": "{amount} ({percent}) sinds de aankoop",
+  "metalsAvgVsNow": "Gemiddeld betaalde je {avg} per gram zuiver · vandaag {now}",
+  "metalsNoCost": "Geen aankoopprijs",
+  "metalsByYear": "Per aankoopjaar",
+  "metalsYearPaid": "Betaald {paid} · waard {value}",
+  "metalsNoCostNote": "{count, plural, =1{1 stuk heeft geen aankoopprijs en telt niet mee in de winst.} other{{count} stukken hebben geen aankoopprijs en tellen niet mee in de winst.}}",
+  "metalsLegendWorth": "Waard",
+  "metalsLegendPaid": "Betaald",
+  "metalsPeriodGain": "Door de prijs in deze periode: {amount} ({percent})",
+  "metalsPeriodNote": "Nieuwe aankopen tellen nooit als winst.",
+  "metalsChartNeedsCost": "Vul voor elk stuk in wat je betaalde om je winst in de grafiek te zien."
 }

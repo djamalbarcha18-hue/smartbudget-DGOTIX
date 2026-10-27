@@ -1537,5 +1537,16 @@
   "saveRetryDone": "Gespeichert",
   "dataWhereCloud": "Deine Daten sind auf diesem Gerät und in deinem Konto und werden automatisch synchronisiert.",
   "dataWhereBrowser": "Deine Daten sind nur in diesem Browser gespeichert. Das Löschen der Websitedaten entfernt sie – bewahre eine Sicherung auf.",
-  "dataWherePhone": "Deine Daten sind nur auf diesem Telefon gespeichert. Das Löschen der App-Daten oder Deinstallieren der App entfernt sie – bewahre eine Sicherung auf."
+  "dataWherePhone": "Deine Daten sind nur auf diesem Telefon gespeichert. Das Löschen der App-Daten oder Deinstallieren der App entfernt sie – bewahre eine Sicherung auf.",
+  "metalsGainSince": "{amount} ({percent}) seit dem Kauf",
+  "metalsAvgVsNow": "Im Schnitt hast du {avg} pro Gramm Feinmetall bezahlt · heute {now}",
+  "metalsNoCost": "Ohne Kaufpreis",
+  "metalsByYear": "Nach Kaufjahr",
+  "metalsYearPaid": "Bezahlt {paid} · Wert {value}",
+  "metalsNoCostNote": "{count, plural, =1{1 Stück hat keinen Kaufpreis und zählt nicht zum Gewinn.} other{{count} Stücke haben keinen Kaufpreis und zählen nicht zum Gewinn.}}",
+  "metalsLegendWorth": "Wert",
+  "metalsLegendPaid": "Bezahlt",
+  "metalsPeriodGain": "Durch den Preis in diesem Zeitraum: {amount} ({percent})",
+  "metalsPeriodNote": "Neue Käufe zählen nie als Gewinn.",
+  "metalsChartNeedsCost": "Gib für jedes Stück an, was du bezahlt hast, um deinen Gewinn im Diagramm zu sehen."
 }

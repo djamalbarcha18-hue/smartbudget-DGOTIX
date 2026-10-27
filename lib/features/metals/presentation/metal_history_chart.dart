@@ -12,6 +12,7 @@ import 'package:smartbudget/design_system/components/money_privacy.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
+import 'package:smartbudget/features/metals/domain/metal_gains.dart';
 import 'package:smartbudget/features/metals/domain/metal_history.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
 import 'package:smartbudget/features/metals/presentation/metal_art.dart';
@@ -40,9 +41,13 @@ class _MetalHistoryCardState extends ConsumerState<MetalHistoryCard> {
         AppClock.now(),
         days: _days);
     final bool masked = MoneyPrivacy.maybeOf(context)?.masked ?? false;
-    final double? change = series.length < 2 || series.first.minor <= 0
-        ? null
-        : (series.last.minor - series.first.minor) / series.first.minor;
+    // What the price did, purchases left out (needs what was paid).
+    final Gain? period = MetalGains.overPeriod(series);
+    final bool showsPaid = series.any((MetalPoint p) => p.paid != null);
+    final int withoutCost = MetalGains.withoutCost(
+        ref.watch(metalHoldingsProvider).valueOrNull ??
+            const <MetalHolding>[]);
+    final Color paidColor = c.textMuted;
 
     return GlassCard(
       hoverable: false,
@@ -70,13 +75,17 @@ class _MetalHistoryCardState extends ConsumerState<MetalHistoryCard> {
                 ),
             ],
           ),
-          if (change != null && !masked) ...<Widget>[
+          if (period != null && !masked) ...<Widget>[
             const SizedBox(height: DsSpacing.sm),
             Text(
-              l.metalsHistoryChange(
-                  '\u2066${change >= 0 ? '+' : ''}${(change * 100).toStringAsFixed(1)}%\u2069'),
-              style: t.labelLarge
-                  ?.copyWith(color: change >= 0 ? c.income : c.expense),
+              l.metalsPeriodGain(
+                  '\u2066${period.amount.minorUnits >= 0 ? '+' : ''}'
+                      '${MoneyFormatter.format(period.amount)}\u2069',
+                  '\u2066${period.isGain ? '+' : ''}'
+                      '${((period.ratio ?? 0) * 100).toStringAsFixed(1)}%\u2069'),
+              style: t.labelLarge?.copyWith(
+                  color: period.isGain ? c.income : c.expense,
+                  fontWeight: FontWeight.w700),
             ),
           ],
           const SizedBox(height: DsSpacing.md),
@@ -93,6 +102,7 @@ class _MetalHistoryCardState extends ConsumerState<MetalHistoryCard> {
                   fill: MetalPalette.of(Metal.gold).mid,
                   grid: c.border,
                   label: c.textMuted,
+                  paid: paidColor,
                   locale: Localizations.localeOf(context),
                   masked: masked,
                   direction: Directionality.of(context),
@@ -100,8 +110,24 @@ class _MetalHistoryCardState extends ConsumerState<MetalHistoryCard> {
                 size: Size.infinite,
               ),
             ),
+            if (showsPaid) ...<Widget>[
+              const SizedBox(height: DsSpacing.sm),
+              Wrap(
+                spacing: DsSpacing.md,
+                children: <Widget>[
+                  _Key(color: MetalPalette.of(Metal.gold).dark,
+                      label: l.metalsLegendWorth),
+                  _Key(color: paidColor, label: l.metalsLegendPaid, dashed: true),
+                ],
+              ),
+            ],
             const SizedBox(height: DsSpacing.sm),
-            Text(l.metalsHistoryNote,
+            Text(
+                showsPaid
+                    ? l.metalsPeriodNote
+                    : withoutCost > 0
+                        ? l.metalsChartNeedsCost
+                        : l.metalsHistoryNote,
                 style: t.bodySmall?.copyWith(color: c.textFaint)),
           ],
         ],
@@ -117,6 +143,7 @@ class _ChartPainter extends CustomPainter {
     required this.fill,
     required this.grid,
     required this.label,
+    required this.paid,
     required this.locale,
     required this.direction,
     required this.masked,
@@ -127,6 +154,9 @@ class _ChartPainter extends CustomPainter {
   final Color fill;
   final Color grid;
   final Color label;
+
+  /// The «what was paid» line and the purchase marks.
+  final Color paid;
   final Locale locale;
   final TextDirection direction;
 
@@ -143,8 +173,10 @@ class _ChartPainter extends CustomPainter {
     int lo = points.first.minor;
     int hi = points.first.minor;
     for (final MetalPoint p in points) {
-      if (p.minor < lo) lo = p.minor;
-      if (p.minor > hi) hi = p.minor;
+      for (final int v in <int>[p.minor, if (p.paid != null) p.paid!]) {
+        if (v < lo) lo = v;
+        if (v > hi) hi = v;
+      }
     }
     // A little air above and below; a flat line sits in the middle.
     final double pad = hi == lo ? (hi == 0 ? 1 : hi * 0.05) : (hi - lo) * 0.18;
@@ -215,6 +247,27 @@ class _ChartPainter extends CustomPainter {
         ..color = line,
     );
 
+    // What had been paid: a dashed step line (it moves only on purchases),
+    // and a mark on the value line at each purchase.
+    final Paint paidPaint = Paint()
+      ..color = paid
+      ..strokeWidth = 1.6;
+    for (int i = 1; i < points.length; i++) {
+      final MetalPoint a = points[i - 1], b = points[i];
+      if (a.paid == null || b.paid == null) continue;
+      _dash(canvas, Offset(x(a), y(a.paid!)), Offset(x(b), y(a.paid!)),
+          paidPaint);
+      if (b.paid != a.paid) {
+        _dash(canvas, Offset(x(b), y(a.paid!)), Offset(x(b), y(b.paid!)),
+            paidPaint);
+      }
+      if (b.paid! > a.paid!) {
+        final Offset o = Offset(x(b), y(b.minor));
+        canvas.drawCircle(o, 4.5, Paint()..color = paid);
+        canvas.drawCircle(o, 2.2, Paint()..color = fill);
+      }
+    }
+
     // Today.
     final Offset end = Offset(x(points.last), y(points.last.minor));
     canvas.drawCircle(end, 6, Paint()..color = fill.withValues(alpha: 0.35));
@@ -233,11 +286,60 @@ class _ChartPainter extends CustomPainter {
     }
   }
 
+  static void _dash(Canvas canvas, Offset a, Offset b, Paint p) {
+    final double len = (b - a).distance;
+    if (len == 0) return;
+    final Offset step = (b - a) / len;
+    for (double d = 0; d < len; d += 7) {
+      final double e = d + 4 > len ? len : d + 4;
+      canvas.drawLine(a + step * d, a + step * e, p);
+    }
+  }
+
   @override
   bool shouldRepaint(_ChartPainter old) =>
       old.points != points ||
       old.line != line ||
       old.grid != grid ||
+      old.paid != paid ||
       old.direction != direction ||
       old.masked != masked;
+}
+
+/// A colour swatch and what it stands for, under the chart.
+class _Key extends StatelessWidget {
+  const _Key({required this.color, required this.label, this.dashed = false});
+  final Color color;
+  final String label;
+  final bool dashed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        SizedBox(
+          width: 18,
+          height: 3,
+          child: dashed
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    for (int i = 0; i < 3; i++)
+                      Container(width: 4, height: 2, color: color),
+                  ],
+                )
+              : DecoratedBox(
+                  decoration: BoxDecoration(
+                      color: color, borderRadius: BorderRadius.circular(2))),
+        ),
+        const SizedBox(width: DsSpacing.xs),
+        Text(label,
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall
+                ?.copyWith(color: context.dsColors.textMuted)),
+      ],
+    );
+  }
 }

@@ -1537,5 +1537,16 @@
   "saveRetryDone": "U ruajt",
   "dataWhereCloud": "Të dhënat tuaja janë në këtë pajisje dhe në llogarinë tuaj, të sinkronizuara automatikisht.",
   "dataWhereBrowser": "Të dhënat tuaja ruhen vetëm në këtë shfletues. Fshirja e të dhënave të faqes i fshin ato, prandaj mbani një kopje rezervë.",
-  "dataWherePhone": "Të dhënat tuaja ruhen vetëm në këtë telefon. Fshirja e të dhënave të aplikacionit ose çinstalimi i tij i fshin ato, prandaj mbani një kopje rezervë."
+  "dataWherePhone": "Të dhënat tuaja ruhen vetëm në këtë telefon. Fshirja e të dhënave të aplikacionit ose çinstalimi i tij i fshin ato, prandaj mbani një kopje rezervë.",
+  "metalsGainSince": "{amount} ({percent}) që nga blerja",
+  "metalsAvgVsNow": "Mesatarisht paguat {avg} për gram të pastër · sot {now}",
+  "metalsNoCost": "Pa çmim blerjeje",
+  "metalsByYear": "Sipas vitit të blerjes",
+  "metalsYearPaid": "Paguar {paid} · vlen {value}",
+  "metalsNoCostNote": "{count, plural, =1{1 copë pa çmim blerjeje nuk llogaritet në fitim.} other{{count} copë pa çmim blerjeje nuk llogariten në fitim.}}",
+  "metalsLegendWorth": "Vlen",
+  "metalsLegendPaid": "Paguar",
+  "metalsPeriodGain": "Ndikimi i çmimit në këtë periudhë: {amount} ({percent})",
+  "metalsPeriodNote": "Blerjet e reja nuk llogariten kurrë si fitim.",
+  "metalsChartNeedsCost": "Shtoni sa paguat për çdo copë që të shihni fitimin në grafik."
 }

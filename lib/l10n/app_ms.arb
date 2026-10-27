@@ -1537,5 +1537,16 @@
   "saveRetryDone": "Disimpan",
   "dataWhereCloud": "Data anda ada pada peranti ini dan dalam akaun anda, disegerakkan secara automatik.",
   "dataWhereBrowser": "Data anda hanya disimpan dalam pelayar ini. Mengosongkan data laman akan memadamnya, jadi simpan sandaran.",
-  "dataWherePhone": "Data anda hanya disimpan dalam telefon ini. Mengosongkan data aplikasi atau menyahpasangnya akan memadamnya, jadi simpan sandaran."
+  "dataWherePhone": "Data anda hanya disimpan dalam telefon ini. Mengosongkan data aplikasi atau menyahpasangnya akan memadamnya, jadi simpan sandaran.",
+  "metalsGainSince": "{amount} ({percent}) sejak dibeli",
+  "metalsAvgVsNow": "Secara purata anda membayar {avg} segram tulen · hari ini {now}",
+  "metalsNoCost": "Tiada harga beli",
+  "metalsByYear": "Mengikut tahun beli",
+  "metalsYearPaid": "Dibayar {paid} · bernilai {value}",
+  "metalsNoCostNote": "{count, plural, other{{count} barang tanpa harga beli tidak dikira dalam keuntungan.}}",
+  "metalsLegendWorth": "Nilai",
+  "metalsLegendPaid": "Dibayar",
+  "metalsPeriodGain": "Kesan harga dalam tempoh ini: {amount} ({percent})",
+  "metalsPeriodNote": "Pembelian baharu tidak pernah dikira sebagai keuntungan.",
+  "metalsChartNeedsCost": "Masukkan harga yang anda bayar bagi setiap barang untuk melihat keuntungan pada carta."
 }

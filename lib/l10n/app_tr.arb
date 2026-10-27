@@ -1537,5 +1537,16 @@
   "saveRetryDone": "Kaydedildi",
   "dataWhereCloud": "Verilerin bu cihazda ve hesabında, otomatik olarak eşitleniyor.",
   "dataWhereBrowser": "Verilerin yalnızca bu tarayıcıda saklanıyor. Site verilerini temizlemek onları siler; bir yedek sakla.",
-  "dataWherePhone": "Verilerin yalnızca bu telefonda saklanıyor. Uygulama verilerini temizlemek veya uygulamayı kaldırmak onları siler; bir yedek sakla."
+  "dataWherePhone": "Verilerin yalnızca bu telefonda saklanıyor. Uygulama verilerini temizlemek veya uygulamayı kaldırmak onları siler; bir yedek sakla.",
+  "metalsGainSince": "Alıştan bu yana {amount} ({percent})",
+  "metalsAvgVsNow": "Saf gramı ortalama {avg} ödedin · bugün {now}",
+  "metalsNoCost": "Alış fiyatı yok",
+  "metalsByYear": "Alış yılına göre",
+  "metalsYearPaid": "Ödenen {paid} · değeri {value}",
+  "metalsNoCostNote": "{count, plural, =1{1 parçanın alış fiyatı yok, kazanca katılmıyor.} other{{count} parçanın alış fiyatı yok, kazanca katılmıyor.}}",
+  "metalsLegendWorth": "Değeri",
+  "metalsLegendPaid": "Ödenen",
+  "metalsPeriodGain": "Bu dönemde fiyatın etkisi: {amount} ({percent})",
+  "metalsPeriodNote": "Yeni alışlar asla kazanç sayılmaz.",
+  "metalsChartNeedsCost": "Kazancını grafikte görmek için her parçaya ne ödediğini ekle."
 }

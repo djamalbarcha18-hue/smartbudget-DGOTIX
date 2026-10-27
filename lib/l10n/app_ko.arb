@@ -1537,5 +1537,16 @@
   "saveRetryDone": "저장됨",
   "dataWhereCloud": "데이터가 이 기기와 계정에 있으며 자동으로 동기화됩니다.",
   "dataWhereBrowser": "데이터가 이 브라우저에만 저장되어 있습니다. 사이트 데이터를 지우면 삭제되니 백업을 보관하세요.",
-  "dataWherePhone": "데이터가 이 휴대전화에만 저장되어 있습니다. 앱 데이터를 지우거나 앱을 삭제하면 사라지니 백업을 보관하세요."
+  "dataWherePhone": "데이터가 이 휴대전화에만 저장되어 있습니다. 앱 데이터를 지우거나 앱을 삭제하면 사라지니 백업을 보관하세요.",
+  "metalsGainSince": "구입 이후 {amount} ({percent})",
+  "metalsAvgVsNow": "순금속 1그램을 평균 {avg}에 구입 · 오늘 {now}",
+  "metalsNoCost": "구입가 없음",
+  "metalsByYear": "구입 연도별",
+  "metalsYearPaid": "지불 {paid} · 가치 {value}",
+  "metalsNoCostNote": "{count, plural, other{구입가가 없는 {count}개는 수익에 포함되지 않습니다.}}",
+  "metalsLegendWorth": "가치",
+  "metalsLegendPaid": "지불",
+  "metalsPeriodGain": "이 기간 가격의 영향: {amount} ({percent})",
+  "metalsPeriodNote": "새 구입은 절대 수익으로 계산되지 않습니다.",
+  "metalsChartNeedsCost": "차트에서 수익을 보려면 각 항목의 구입가를 입력하세요."
 }

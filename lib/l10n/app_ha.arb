@@ -1537,5 +1537,16 @@
   "saveRetryDone": "An adana",
   "dataWhereCloud": "Bayananka suna kan wannan na'ura da kuma asusunka, kuma suna daidaituwa kai tsaye.",
   "dataWhereBrowser": "An adana bayananka a wannan burauza kaɗai. Share bayanan shafin zai goge su, don haka ka riƙe kwafi.",
-  "dataWherePhone": "An adana bayananka a wannan waya kaɗai. Share bayanan manhajar ko cire ta zai goge su, don haka ka riƙe kwafi."
+  "dataWherePhone": "An adana bayananka a wannan waya kaɗai. Share bayanan manhajar ko cire ta zai goge su, don haka ka riƙe kwafi.",
+  "metalsGainSince": "{amount} ({percent}) tun da aka saya",
+  "metalsAvgVsNow": "A matsakaici ka biya {avg} kan gram tsantsa · yau {now}",
+  "metalsNoCost": "Babu farashin saye",
+  "metalsByYear": "Bisa shekarar saye",
+  "metalsYearPaid": "An biya {paid} · darajarsa {value}",
+  "metalsNoCostNote": "{count, plural, =1{Abu 1 ba shi da farashin saye, ba a ƙidaya shi cikin riba.} other{Abubuwa {count} ba su da farashin saye, ba a ƙidaya su cikin riba.}}",
+  "metalsLegendWorth": "Daraja",
+  "metalsLegendPaid": "An biya",
+  "metalsPeriodGain": "Tasirin farashi a wannan lokaci: {amount} ({percent})",
+  "metalsPeriodNote": "Sabbin sayayya ba a taɓa ƙidaya su riba ba.",
+  "metalsChartNeedsCost": "Shigar da abin da ka biya kan kowane abu don ganin ribarka a jadawali."
 }

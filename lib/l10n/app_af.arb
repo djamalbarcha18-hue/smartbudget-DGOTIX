@@ -1537,5 +1537,16 @@
   "saveRetryDone": "Gestoor",
   "dataWhereCloud": "Jou data is op hierdie toestel en in jou rekening en word outomaties gesinchroniseer.",
   "dataWhereBrowser": "Jou data word net in hierdie blaaier gestoor. As jy die werf se data uitvee, is dit weg; hou dus 'n rugsteun.",
-  "dataWherePhone": "Jou data word net op hierdie foon gestoor. As jy die app se data uitvee of die app verwyder, is dit weg; hou dus 'n rugsteun."
+  "dataWherePhone": "Jou data word net op hierdie foon gestoor. As jy die app se data uitvee of die app verwyder, is dit weg; hou dus 'n rugsteun.",
+  "metalsGainSince": "{amount} ({percent}) sedert aankoop",
+  "metalsAvgVsNow": "Gemiddeld het jy {avg} per gram suiwer betaal · vandag {now}",
+  "metalsNoCost": "Geen aankoopprys",
+  "metalsByYear": "Volgens aankoopjaar",
+  "metalsYearPaid": "Betaal {paid} · werd {value}",
+  "metalsNoCostNote": "{count, plural, =1{1 stuk het geen aankoopprys en tel nie in die wins nie.} other{{count} stukke het geen aankoopprys en tel nie in die wins nie.}}",
+  "metalsLegendWorth": "Werd",
+  "metalsLegendPaid": "Betaal",
+  "metalsPeriodGain": "Deur die prys in hierdie tydperk: {amount} ({percent})",
+  "metalsPeriodNote": "Nuwe aankope tel nooit as wins nie.",
+  "metalsChartNeedsCost": "Vul in wat jy vir elke stuk betaal het om jou wins op die grafiek te sien."
 }

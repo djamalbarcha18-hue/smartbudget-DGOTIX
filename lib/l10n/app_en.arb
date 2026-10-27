@@ -1805,5 +1805,21 @@
   "saveRetryDone": "Saved",
   "dataWhereCloud": "Your data is on this device and in your account, synced automatically.",
   "dataWhereBrowser": "Your data is stored in this browser only. Clearing the site's data deletes it, so keep a backup.",
-  "dataWherePhone": "Your data is stored on this phone only. Clearing the app's data or uninstalling it deletes it, so keep a backup."
+  "dataWherePhone": "Your data is stored on this phone only. Clearing the app's data or uninstalling it deletes it, so keep a backup.",
+  "metalsGainSince": "{amount} ({percent}) since bought",
+  "@metalsGainSince": {"placeholders": {"amount": {"type": "String"}, "percent": {"type": "String"}}},
+  "metalsAvgVsNow": "On average you paid {avg} a pure gram · today {now}",
+  "@metalsAvgVsNow": {"placeholders": {"avg": {"type": "String"}, "now": {"type": "String"}}},
+  "metalsNoCost": "No purchase price",
+  "metalsByYear": "By year bought",
+  "metalsYearPaid": "Paid {paid} · worth {value}",
+  "@metalsYearPaid": {"placeholders": {"paid": {"type": "String"}, "value": {"type": "String"}}},
+  "metalsNoCostNote": "{count, plural, =1{1 piece has no purchase price and isn't counted in the gains.} other{{count} pieces have no purchase price and aren't counted in the gains.}}",
+  "@metalsNoCostNote": {"placeholders": {"count": {"type": "int"}}},
+  "metalsLegendWorth": "Worth",
+  "metalsLegendPaid": "Paid",
+  "metalsPeriodGain": "From the price over this period: {amount} ({percent})",
+  "@metalsPeriodGain": {"placeholders": {"amount": {"type": "String"}, "percent": {"type": "String"}}},
+  "metalsPeriodNote": "New purchases are never counted as gains.",
+  "metalsChartNeedsCost": "Add what you paid for every piece to see your gains on the chart."
 }

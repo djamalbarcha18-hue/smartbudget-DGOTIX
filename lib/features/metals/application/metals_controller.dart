@@ -15,6 +15,7 @@ import 'package:smartbudget/features/markets/application/markets_controllers.dar
 import 'package:smartbudget/features/markets/domain/commodity_models.dart';
 import 'package:smartbudget/features/markets/domain/market_category.dart';
 import 'package:smartbudget/features/metals/domain/metal_alert.dart';
+import 'package:smartbudget/features/metals/domain/metal_gains.dart';
 import 'package:smartbudget/features/metals/domain/metal_history.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
 import 'package:smartbudget/features/metals/domain/metals_valuation.dart';
@@ -181,6 +182,26 @@ final metalsSummaryProvider =
           ref.watch(ratesProvider),
         ));
 
+/// Per metal, the average cost of a pure gram against today's price.
+final metalAveragesProvider = Provider<Map<Metal, MetalAverage>>(
+    (ref) => MetalGains.averages(
+          ref.watch(metalHoldingsProvider).valueOrNull ??
+              const <MetalHolding>[],
+          ref.watch(metalPricesProvider),
+          ref.watch(baseCurrencyProvider),
+          ref.watch(ratesProvider),
+        ));
+
+/// The gains grouped by the year the pieces were bought.
+final metalYearGainsProvider = Provider<List<YearGain>>(
+    (ref) => MetalGains.byYear(
+          ref.watch(metalHoldingsProvider).valueOrNull ??
+              const <MetalHolding>[],
+          ref.watch(metalPricesProvider),
+          ref.watch(baseCurrencyProvider),
+          ref.watch(ratesProvider),
+        ));
+
 /// A list of [T] kept in the preferences of the signed-in account.
 abstract class _AccountList<T> extends Notifier<List<T>> {
   String get base;
@@ -249,20 +270,29 @@ class MetalHistoryController extends _AccountList<MetalPoint> {
   @override
   Object encode(MetalPoint v) => v.toJson();
 
-  /// Keeps today's value of [s], when every holding has a price.
-  Future<void> record(MetalsSummary s, int holdings) async {
+  /// Keeps today's value of [s], when every holding has a price; and what
+  /// was paid for them, when every holding has a cost ([allCosted]).
+  Future<void> record(MetalsSummary s, int holdings,
+      {bool allCosted = false}) async {
     if (holdings == 0 || s.unpriced.isNotEmpty || s.total.minorUnits <= 0) {
       return;
     }
     final DateTime now = AppClock.now();
+    final int? paid = allCosted &&
+            s.paidTotal != null &&
+            s.paidTotal!.value.minorUnits == s.total.minorUnits
+        ? s.paidTotal!.paid.minorUnits
+        : null;
     final MetalPoint today = MetalPoint(
         day: DateTime(now.year, now.month, now.day),
         minor: s.total.minorUnits,
-        currency: s.total.currencyCode);
+        currency: s.total.currencyCode,
+        paid: paid);
     await change((List<MetalPoint> now) => now.isNotEmpty &&
             now.last.day == today.day &&
             now.last.minor == today.minor &&
-            now.last.currency == today.currency
+            now.last.currency == today.currency &&
+            now.last.paid == today.paid
         ? null
         : MetalHistory.record(now, today));
   }
@@ -275,11 +305,11 @@ final metalHistoryRecorderProvider = Provider<void>((ref) {
   // Noted just after, never while providers are being built.
   void note(MetalsSummary s) => Future<void>.microtask(() {
         if (!alive) return;
-        ref.read(metalHistoryProvider.notifier).record(
-            s,
-            (ref.read(metalHoldingsProvider).valueOrNull ??
-                    const <MetalHolding>[])
-                .length);
+        final List<MetalHolding> holdings =
+            ref.read(metalHoldingsProvider).valueOrNull ??
+                const <MetalHolding>[];
+        ref.read(metalHistoryProvider.notifier).record(s, holdings.length,
+            allCosted: MetalGains.withoutCost(holdings) == 0);
       });
   ref.listen<MetalsSummary>(
       metalsSummaryProvider, (_, MetalsSummary s) => note(s),

@@ -1537,5 +1537,16 @@
   "saveRetryDone": "已保存",
   "dataWhereCloud": "您的数据保存在此设备和您的账户中，并自动同步。",
   "dataWhereBrowser": "您的数据仅保存在此浏览器中。清除网站数据会将其删除，请保留备份。",
-  "dataWherePhone": "您的数据仅保存在此手机上。清除应用数据或卸载应用会将其删除，请保留备份。"
+  "dataWherePhone": "您的数据仅保存在此手机上。清除应用数据或卸载应用会将其删除，请保留备份。",
+  "metalsGainSince": "购买以来 {amount}（{percent}）",
+  "metalsAvgVsNow": "您平均每克纯金属支付 {avg} · 今天 {now}",
+  "metalsNoCost": "无购买价",
+  "metalsByYear": "按购买年份",
+  "metalsYearPaid": "已付 {paid} · 现值 {value}",
+  "metalsNoCostNote": "{count, plural, other{有 {count} 件没有购买价，不计入收益。}}",
+  "metalsLegendWorth": "现值",
+  "metalsLegendPaid": "已付",
+  "metalsPeriodGain": "此期间价格的影响：{amount}（{percent}）",
+  "metalsPeriodNote": "新购入永远不算作收益。",
+  "metalsChartNeedsCost": "为每件填写购买价，即可在图表上看到收益。"
 }

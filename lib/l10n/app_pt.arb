@@ -1537,5 +1537,16 @@
   "saveRetryDone": "Salvo",
   "dataWhereCloud": "Seus dados estão neste aparelho e na sua conta, sincronizados automaticamente.",
   "dataWhereBrowser": "Seus dados estão salvos apenas neste navegador. Limpar os dados do site os apaga, então mantenha um backup.",
-  "dataWherePhone": "Seus dados estão salvos apenas neste celular. Limpar os dados do app ou desinstalá-lo os apaga, então mantenha um backup."
+  "dataWherePhone": "Seus dados estão salvos apenas neste celular. Limpar os dados do app ou desinstalá-lo os apaga, então mantenha um backup.",
+  "metalsGainSince": "{amount} ({percent}) desde a compra",
+  "metalsAvgVsNow": "Em média você pagou {avg} por grama puro · hoje {now}",
+  "metalsNoCost": "Sem preço de compra",
+  "metalsByYear": "Por ano de compra",
+  "metalsYearPaid": "Pagou {paid} · vale {value}",
+  "metalsNoCostNote": "{count, plural, =1{1 peça não tem preço de compra e não entra nos ganhos.} other{{count} peças não têm preço de compra e não entram nos ganhos.}}",
+  "metalsLegendWorth": "Vale",
+  "metalsLegendPaid": "Pago",
+  "metalsPeriodGain": "Efeito do preço neste período: {amount} ({percent})",
+  "metalsPeriodNote": "Compras novas nunca contam como ganho.",
+  "metalsChartNeedsCost": "Informe quanto pagou por cada peça para ver seus ganhos no gráfico."
 }

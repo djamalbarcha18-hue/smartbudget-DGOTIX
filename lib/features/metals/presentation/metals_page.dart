@@ -16,7 +16,9 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/metals/domain/metal_alert.dart';
+import 'package:smartbudget/features/metals/domain/metal_gains.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
 import 'package:smartbudget/features/metals/domain/metals_valuation.dart';
 import 'package:smartbudget/features/metals/presentation/metal_art.dart';
@@ -91,6 +93,7 @@ class MetalsPage extends ConsumerWidget {
                 padding: const EdgeInsets.only(bottom: DsSpacing.sm),
                 child: _HoldingTile(holding: h, price: prices[h.metal]),
               ),
+            const _YearsCard(),
           ],
           const SizedBox(height: DsSpacing.lg),
           if (holdings.isNotEmpty) ...<Widget>[
@@ -114,6 +117,9 @@ String _money(BuildContext context, Money m) =>
         ? MoneyPrivacy.mask
         : MoneyFormatter.format(m);
 
+/// [m] kept in one piece inside a sentence (any writing direction).
+String _inline(Money m) => '\u2066${MoneyFormatter.format(m)}\u2069';
+
 bool _masked(BuildContext context) =>
     MoneyPrivacy.maybeOf(context)?.masked ?? false;
 
@@ -122,16 +128,110 @@ String _percent(double r) {
   return '\u2066${r >= 0 ? '+' : ''}$s%\u2069';
 }
 
-class _SummaryCard extends StatelessWidget {
+/// A gain or loss in its colour: [text] gets the signed amount and share
+/// (both hidden while amounts are).
+class _GainText extends StatelessWidget {
+  const _GainText(this.gain, this.text, {this.style});
+  final Gain gain;
+  final String Function(String amount, String percent) text;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final bool masked = _masked(context);
+    final Money a = gain.amount;
+    final String amount = masked
+        ? MoneyPrivacy.mask
+        : '\u2066${a.minorUnits >= 0 ? '+' : ''}${MoneyFormatter.format(a)}\u2069';
+    final String percent =
+        masked || gain.ratio == null ? '' : _percent(gain.ratio!);
+    return Text(
+      text(amount, percent),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      style: style?.copyWith(
+          color: masked
+              ? c.textMuted
+              : gain.isGain
+                  ? c.income
+                  : c.expense,
+          fontWeight: FontWeight.w700),
+    );
+  }
+}
+
+/// The purchases grouped by the year they were made: what was paid then,
+/// what it is worth now. Shown once there are two years or more.
+class _YearsCard extends ConsumerWidget {
+  const _YearsCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<YearGain> years = ref.watch(metalYearGainsProvider);
+    if (years.length < 2) return const SizedBox.shrink();
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(top: DsSpacing.sm),
+      child: GlassCard(
+        hoverable: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            DsSectionHeader(
+                title: l.metalsByYear, icon: Icons.calendar_month_rounded),
+            const SizedBox(height: DsSpacing.sm),
+            for (final YearGain y in years)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: DsSpacing.xs),
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(
+                      width: 52,
+                      child: Text('${y.year}',
+                          style: t.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w800)),
+                    ),
+                    Expanded(
+                      child: Text(
+                        _masked(context)
+                            ? l.metalsYearPaid(
+                                MoneyPrivacy.mask, MoneyPrivacy.mask)
+                            : l.metalsYearPaid(
+                                _inline(y.gain.paid), _inline(y.gain.value)),
+                        style: t.labelMedium?.copyWith(color: c.textMuted),
+                      ),
+                    ),
+                    const SizedBox(width: DsSpacing.sm),
+                    _GainText(y.gain, (String amount, String percent) =>
+                        percent.isEmpty ? amount : percent,
+                        style: t.labelLarge),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SummaryCard extends ConsumerWidget {
   const _SummaryCard({required this.summary});
   final MetalsSummary summary;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final ({Money paid, Money value})? paid = summary.paidTotal;
+    final Map<Metal, MetalAverage> averages = ref.watch(metalAveragesProvider);
+    final int withoutCost = MetalGains.withoutCost(
+        ref.watch(metalHoldingsProvider).valueOrNull ??
+            const <MetalHolding>[]);
     return GlassCard(
       hoverable: false,
       child: Column(
@@ -153,15 +253,15 @@ class _SummaryCard extends StatelessWidget {
               paid.paid.minorUnits > 0 &&
               !_masked(context)) ...<Widget>[
             const SizedBox(height: DsSpacing.xs),
-            Text(
-              l.metalsSinceBought(_percent(
-                  (paid.value.minorUnits - paid.paid.minorUnits) /
-                      paid.paid.minorUnits)),
-              style: t.labelLarge?.copyWith(
-                  color: paid.value.minorUnits >= paid.paid.minorUnits
-                      ? c.income
-                      : c.expense),
+            _GainText(
+              Gain(paid: paid.paid, value: paid.value),
+              (String amount, String percent) =>
+                  l.metalsGainSince(amount, percent),
+              style: t.labelLarge,
             ),
+            if (withoutCost > 0)
+              Text(l.metalsNoCostNote(withoutCost),
+                  style: t.bodySmall?.copyWith(color: c.textFaint)),
           ],
           const SizedBox(height: DsSpacing.md),
           for (final Metal m in Metal.values)
@@ -170,40 +270,56 @@ class _SummaryCard extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: DsSpacing.sm),
                 child: MetalPlate(
                   metal: m,
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      MetalBar(metal: m, width: 72),
-                      const SizedBox(width: DsSpacing.md),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(MetalText.name(l, m),
-                                style: t.titleMedium?.copyWith(
-                                    color: MetalPalette.of(m).ink,
-                                    fontWeight: FontWeight.w800)),
-                            Text(
-                              l.metalsPure(
-                                  MetalText.grams(l, summary.pureGrams[m]!)),
-                              style: t.labelMedium?.copyWith(
-                                  color: MetalPalette.of(m)
-                                      .ink
-                                      .withValues(alpha: 0.75)),
+                      Row(
+                        children: <Widget>[
+                          MetalBar(metal: m, width: 72),
+                          const SizedBox(width: DsSpacing.md),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(MetalText.name(l, m),
+                                    style: t.titleMedium?.copyWith(
+                                        color: MetalPalette.of(m).ink,
+                                        fontWeight: FontWeight.w800)),
+                                Text(
+                                  l.metalsPure(
+                                      MetalText.grams(l, summary.pureGrams[m]!)),
+                                  style: t.labelMedium?.copyWith(
+                                      color: MetalPalette.of(m)
+                                          .ink
+                                          .withValues(alpha: 0.75)),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                          Flexible(
+                            child: Text(
+                              summary.byMetal[m] == null
+                                  ? '—'
+                                  : _money(context, summary.byMetal[m]!),
+                              textAlign: TextAlign.end,
+                              style: t.titleMedium?.copyWith(
+                                  color: MetalPalette.of(m).ink,
+                                  fontWeight: FontWeight.w800),
+                            ),
+                          ),
+                        ],
                       ),
-                      Flexible(
-                        child: Text(
-                          summary.byMetal[m] == null
-                              ? '—'
-                              : _money(context, summary.byMetal[m]!),
-                          textAlign: TextAlign.end,
-                          style: t.titleMedium?.copyWith(
+                      // What a pure gram cost on average, against today's.
+                      if (averages[m] != null && !_masked(context)) ...<Widget>[
+                        const SizedBox(height: DsSpacing.sm),
+                        Text(
+                          l.metalsAvgVsNow(_inline(averages[m]!.paidPerGram),
+                              _inline(averages[m]!.todayPerGram)),
+                          style: t.labelMedium?.copyWith(
                               color: MetalPalette.of(m).ink,
-                              fontWeight: FontWeight.w800),
+                              fontWeight: FontWeight.w600),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 ),
@@ -232,8 +348,12 @@ class _HoldingTile extends ConsumerWidget {
     final MetalHolding h = holding;
     final Money? value =
         price == null ? null : MetalsValuation.value(h, price!);
+    final Gain? gain =
+        MetalGains.ofHolding(h, price, ref.watch(ratesProvider));
     final String title =
         h.name.isNotEmpty ? h.name : MetalText.name(l, h.metal);
+    final String bought =
+        monthText(Localizations.localeOf(context), MetalGains.boughtOn(h));
     return Material(
       color: c.surface,
       borderRadius: DsRadius.brMd,
@@ -262,13 +382,35 @@ class _HoldingTile extends ConsumerWidget {
                       ].join(' · '),
                       style: t.labelSmall,
                     ),
+                    if (gain != null)
+                      _GainText(
+                          gain,
+                          (String amount, String percent) => percent.isEmpty
+                              ? bought
+                              : '$bought · $percent',
+                          style: t.labelSmall)
+                    else
+                      Text(
+                          h.paid == null
+                              ? '$bought · ${l.metalsNoCost}'
+                              : bought,
+                          style: t.labelSmall?.copyWith(color: c.textFaint)),
                   ],
                 ),
               ),
               Flexible(
-                child: Text(value == null ? '—' : _money(context, value),
-                    textAlign: TextAlign.end,
-                    style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Text(value == null ? '—' : _money(context, value),
+                        textAlign: TextAlign.end,
+                        style: t.titleSmall
+                            ?.copyWith(fontWeight: FontWeight.w700)),
+                    if (gain != null)
+                      _GainText(gain, (String amount, String _) => amount,
+                          style: t.labelSmall),
+                  ],
+                ),
               ),
               PopupMenuButton<String>(
                 icon:
