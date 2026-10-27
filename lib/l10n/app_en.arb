@@ -1864,5 +1864,7 @@
   "@marketsByCountry": {"placeholders": {"count": {"type": "int"}}},
   "viewLess": "View less",
   "incomeNoneInPeriod": "No income in this period",
-  "expenseNoneInPeriod": "No expenses in this period"
+  "expenseNoneInPeriod": "No expenses in this period",
+  "errorPartTitle": "This part couldn't be shown",
+  "errorGoHome": "Back home"
 }

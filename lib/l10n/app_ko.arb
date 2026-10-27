@@ -1578,5 +1578,7 @@
   "marketsByCountry": "국가별 환율 ({count})",
   "viewLess": "접기",
   "incomeNoneInPeriod": "이 기간에 수입이 없어요",
-  "expenseNoneInPeriod": "이 기간에 지출이 없어요"
+  "expenseNoneInPeriod": "이 기간에 지출이 없어요",
+  "errorPartTitle": "이 부분을 표시할 수 없어요",
+  "errorGoHome": "홈으로"
 }

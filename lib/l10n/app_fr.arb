@@ -1578,5 +1578,7 @@
   "marketsByCountry": "Taux de change par pays ({count})",
   "viewLess": "Voir moins",
   "incomeNoneInPeriod": "Aucun revenu sur cette période",
-  "expenseNoneInPeriod": "Aucune dépense sur cette période"
+  "expenseNoneInPeriod": "Aucune dépense sur cette période",
+  "errorPartTitle": "Cette partie n'a pas pu s'afficher",
+  "errorGoHome": "Retour à l'accueil"
 }

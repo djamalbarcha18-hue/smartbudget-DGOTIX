@@ -1578,5 +1578,7 @@
   "marketsByCountry": "Ülkelere göre döviz kurları ({count})",
   "viewLess": "Daha az göster",
   "incomeNoneInPeriod": "Bu dönemde gelir yok",
-  "expenseNoneInPeriod": "Bu dönemde gider yok"
+  "expenseNoneInPeriod": "Bu dönemde gider yok",
+  "errorPartTitle": "Bu bölüm gösterilemedi",
+  "errorGoHome": "Ana sayfaya dön"
 }

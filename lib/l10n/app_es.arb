@@ -1578,5 +1578,7 @@
   "marketsByCountry": "Tipos de cambio por país ({count})",
   "viewLess": "Ver menos",
   "incomeNoneInPeriod": "Sin ingresos en este periodo",
-  "expenseNoneInPeriod": "Sin gastos en este periodo"
+  "expenseNoneInPeriod": "Sin gastos en este periodo",
+  "errorPartTitle": "No se pudo mostrar esta parte",
+  "errorGoHome": "Volver al inicio"
 }

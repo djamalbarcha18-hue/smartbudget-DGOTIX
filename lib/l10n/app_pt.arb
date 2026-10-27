@@ -1578,5 +1578,7 @@
   "marketsByCountry": "Câmbio por país ({count})",
   "viewLess": "Ver menos",
   "incomeNoneInPeriod": "Sem receitas neste período",
-  "expenseNoneInPeriod": "Sem despesas neste período"
+  "expenseNoneInPeriod": "Sem despesas neste período",
+  "errorPartTitle": "Não foi possível mostrar esta parte",
+  "errorGoHome": "Voltar ao início"
 }

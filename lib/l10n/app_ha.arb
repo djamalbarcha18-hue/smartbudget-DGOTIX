@@ -1578,5 +1578,7 @@
   "marketsByCountry": "Farashin musaya ta ƙasa ({count})",
   "viewLess": "Nuna kaɗan",
   "incomeNoneInPeriod": "Babu kuɗin shiga a wannan lokaci",
-  "expenseNoneInPeriod": "Babu kashe kuɗi a wannan lokaci"
+  "expenseNoneInPeriod": "Babu kashe kuɗi a wannan lokaci",
+  "errorPartTitle": "Ba a iya nuna wannan ɓangaren ba",
+  "errorGoHome": "Koma gida"
 }

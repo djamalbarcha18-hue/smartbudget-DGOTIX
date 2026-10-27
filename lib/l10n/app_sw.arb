@@ -1578,5 +1578,7 @@
   "marketsByCountry": "Viwango kwa nchi ({count})",
   "viewLess": "Onyesha machache",
   "incomeNoneInPeriod": "Hakuna mapato katika kipindi hiki",
-  "expenseNoneInPeriod": "Hakuna matumizi katika kipindi hiki"
+  "expenseNoneInPeriod": "Hakuna matumizi katika kipindi hiki",
+  "errorPartTitle": "Sehemu hii haikuweza kuonyeshwa",
+  "errorGoHome": "Rudi mwanzo"
 }

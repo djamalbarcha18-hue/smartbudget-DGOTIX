@@ -1578,5 +1578,7 @@
   "marketsByCountry": "各国汇率（{count}）",
   "viewLess": "收起",
   "incomeNoneInPeriod": "此期间没有收入",
-  "expenseNoneInPeriod": "此期间没有支出"
+  "expenseNoneInPeriod": "此期间没有支出",
+  "errorPartTitle": "无法显示此部分",
+  "errorGoHome": "返回首页"
 }

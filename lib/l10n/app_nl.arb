@@ -1578,5 +1578,7 @@
   "marketsByCountry": "Wisselkoersen per land ({count})",
   "viewLess": "Minder tonen",
   "incomeNoneInPeriod": "Geen inkomsten in deze periode",
-  "expenseNoneInPeriod": "Geen uitgaven in deze periode"
+  "expenseNoneInPeriod": "Geen uitgaven in deze periode",
+  "errorPartTitle": "Dit deel kon niet worden weergegeven",
+  "errorGoHome": "Terug naar start"
 }

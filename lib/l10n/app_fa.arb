@@ -1578,5 +1578,7 @@
   "marketsByCountry": "نرخ ارز بر اساس کشور ({count})",
   "viewLess": "نمایش کمتر",
   "incomeNoneInPeriod": "درآمدی در این دوره نیست",
-  "expenseNoneInPeriod": "هزینه‌ای در این دوره نیست"
+  "expenseNoneInPeriod": "هزینه‌ای در این دوره نیست",
+  "errorPartTitle": "نمایش این بخش ممکن نشد",
+  "errorGoHome": "بازگشت به خانه"
 }

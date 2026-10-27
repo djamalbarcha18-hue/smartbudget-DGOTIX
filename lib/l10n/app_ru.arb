@@ -1578,5 +1578,7 @@
   "marketsByCountry": "Курсы по странам ({count})",
   "viewLess": "Свернуть",
   "incomeNoneInPeriod": "Нет доходов за этот период",
-  "expenseNoneInPeriod": "Нет расходов за этот период"
+  "expenseNoneInPeriod": "Нет расходов за этот период",
+  "errorPartTitle": "Не удалось показать эту часть",
+  "errorGoHome": "На главную"
 }

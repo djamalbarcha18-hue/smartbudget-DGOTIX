@@ -1578,5 +1578,7 @@
   "marketsByCountry": "ملک وار شرح تبادلہ ({count})",
   "viewLess": "کم دکھائیں",
   "incomeNoneInPeriod": "اس مدت میں کوئی آمدنی نہیں",
-  "expenseNoneInPeriod": "اس مدت میں کوئی خرچ نہیں"
+  "expenseNoneInPeriod": "اس مدت میں کوئی خرچ نہیں",
+  "errorPartTitle": "یہ حصہ دکھایا نہیں جا سکا",
+  "errorGoHome": "ہوم پر واپس"
 }

@@ -1578,5 +1578,7 @@
   "marketsByCountry": "国別の為替レート（{count}）",
   "viewLess": "閉じる",
   "incomeNoneInPeriod": "この期間の収入はありません",
-  "expenseNoneInPeriod": "この期間の支出はありません"
+  "expenseNoneInPeriod": "この期間の支出はありません",
+  "errorPartTitle": "この部分を表示できませんでした",
+  "errorGoHome": "ホームに戻る"
 }

@@ -1578,5 +1578,7 @@
   "marketsByCountry": "Wisselkoerse per land ({count})",
   "viewLess": "Wys minder",
   "incomeNoneInPeriod": "Geen inkomste in hierdie tydperk",
-  "expenseNoneInPeriod": "Geen uitgawes in hierdie tydperk"
+  "expenseNoneInPeriod": "Geen uitgawes in hierdie tydperk",
+  "errorPartTitle": "Hierdie deel kon nie gewys word nie",
+  "errorGoHome": "Terug tuis"
 }

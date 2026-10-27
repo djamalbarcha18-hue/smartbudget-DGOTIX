@@ -1578,5 +1578,7 @@
   "marketsByCountry": "देश के अनुसार विनिमय दरें ({count})",
   "viewLess": "कम दिखाएँ",
   "incomeNoneInPeriod": "इस अवधि में कोई आय नहीं",
-  "expenseNoneInPeriod": "इस अवधि में कोई खर्च नहीं"
+  "expenseNoneInPeriod": "इस अवधि में कोई खर्च नहीं",
+  "errorPartTitle": "यह हिस्सा दिखाया नहीं जा सका",
+  "errorGoHome": "होम पर लौटें"
 }

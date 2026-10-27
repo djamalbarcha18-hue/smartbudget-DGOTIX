@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:smartbudget/app.dart';
 import 'package:smartbudget/core/app_restart.dart';
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/core/errors/app_error_view.dart';
 import 'package:smartbudget/core/l10n/latin_digits.dart';
 import 'package:smartbudget/core/storage/legacy_cleanup.dart';
 import 'package:smartbudget/core/storage/persistent_storage.dart';
@@ -21,6 +22,14 @@ import 'package:smartbudget/features/reminders/data/reminder_notifications.dart'
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // A part of the screen that fails to draw shows a short line and a way
+  // home, not the plain grey box that left the app looking stuck. (While
+  // developing, Flutter's own error screen stays, with the details.)
+  if (!kDebugMode) {
+    ErrorWidget.builder =
+        (FlutterErrorDetails details) => AppErrorView(details: details);
+  }
 
   // Every date (including the Arabic date picker) uses Latin digits 0-9.
   LatinDigits.enforce();

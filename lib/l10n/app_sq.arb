@@ -1578,5 +1578,7 @@
   "marketsByCountry": "Kurset sipas vendit ({count})",
   "viewLess": "Shfaq më pak",
   "incomeNoneInPeriod": "Asnjë e ardhur në këtë periudhë",
-  "expenseNoneInPeriod": "Asnjë shpenzim në këtë periudhë"
+  "expenseNoneInPeriod": "Asnjë shpenzim në këtë periudhë",
+  "errorPartTitle": "Kjo pjesë nuk mund të shfaqej",
+  "errorGoHome": "Kthehu në fillim"
 }

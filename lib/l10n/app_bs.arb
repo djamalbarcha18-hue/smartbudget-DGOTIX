@@ -1578,5 +1578,7 @@
   "marketsByCountry": "Kursevi po zemljama ({count})",
   "viewLess": "Prikaži manje",
   "incomeNoneInPeriod": "Nema prihoda u ovom periodu",
-  "expenseNoneInPeriod": "Nema troškova u ovom periodu"
+  "expenseNoneInPeriod": "Nema troškova u ovom periodu",
+  "errorPartTitle": "Ovaj dio se ne može prikazati",
+  "errorGoHome": "Nazad na početnu"
 }

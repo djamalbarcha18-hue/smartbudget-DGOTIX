@@ -1578,5 +1578,7 @@
   "marketsByCountry": "Kurs per negara ({count})",
   "viewLess": "Lihat lebih sedikit",
   "incomeNoneInPeriod": "Tidak ada pemasukan di periode ini",
-  "expenseNoneInPeriod": "Tidak ada pengeluaran di periode ini"
+  "expenseNoneInPeriod": "Tidak ada pengeluaran di periode ini",
+  "errorPartTitle": "Bagian ini tidak dapat ditampilkan",
+  "errorGoHome": "Kembali ke beranda"
 }
