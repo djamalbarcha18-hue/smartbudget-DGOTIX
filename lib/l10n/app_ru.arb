@@ -1575,5 +1575,6 @@
   "budgetMoreCategories": "Другие категории ({count})",
   "txnMoreDetails": "Подробнее (заметки, способ оплаты)",
   "marketsOtherCountries": "Другие страны ({count})",
-  "marketsByCountry": "Курсы по странам ({count})"
+  "marketsByCountry": "Курсы по странам ({count})",
+  "backAgainToExit": "Нажмите «Назад» ещё раз, чтобы выйти"
 }

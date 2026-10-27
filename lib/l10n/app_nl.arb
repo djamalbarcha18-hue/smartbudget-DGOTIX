@@ -1575,5 +1575,6 @@
   "budgetMoreCategories": "Andere categorieën ({count})",
   "txnMoreDetails": "Meer details (notities, betaalmethode)",
   "marketsOtherCountries": "Andere landen ({count})",
-  "marketsByCountry": "Wisselkoersen per land ({count})"
+  "marketsByCountry": "Wisselkoersen per land ({count})",
+  "backAgainToExit": "Druk nogmaals op terug om af te sluiten"
 }

@@ -1575,5 +1575,6 @@
   "budgetMoreCategories": "Kategori lain ({count})",
   "txnMoreDetails": "Detail lain (catatan, metode pembayaran)",
   "marketsOtherCountries": "Negara lain ({count})",
-  "marketsByCountry": "Kurs per negara ({count})"
+  "marketsByCountry": "Kurs per negara ({count})",
+  "backAgainToExit": "Tekan kembali sekali lagi untuk keluar"
 }

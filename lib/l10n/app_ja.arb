@@ -1575,5 +1575,6 @@
   "budgetMoreCategories": "その他のカテゴリー（{count}）",
   "txnMoreDetails": "詳細（メモ・支払い方法）",
   "marketsOtherCountries": "その他の国（{count}）",
-  "marketsByCountry": "国別の為替レート（{count}）"
+  "marketsByCountry": "国別の為替レート（{count}）",
+  "backAgainToExit": "もう一度戻るを押すと終了します"
 }

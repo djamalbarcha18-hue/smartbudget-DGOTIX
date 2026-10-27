@@ -1575,5 +1575,6 @@
   "budgetMoreCategories": "Kategoria nyingine ({count})",
   "txnMoreDetails": "Maelezo zaidi (maelezo, njia ya malipo)",
   "marketsOtherCountries": "Nchi nyingine ({count})",
-  "marketsByCountry": "Viwango kwa nchi ({count})"
+  "marketsByCountry": "Viwango kwa nchi ({count})",
+  "backAgainToExit": "Bonyeza nyuma tena ili kutoka"
 }

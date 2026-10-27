@@ -1575,5 +1575,6 @@
   "budgetMoreCategories": "其他类别（{count}）",
   "txnMoreDetails": "更多详情（备注、付款方式）",
   "marketsOtherCountries": "其他国家（{count}）",
-  "marketsByCountry": "各国汇率（{count}）"
+  "marketsByCountry": "各国汇率（{count}）",
+  "backAgainToExit": "再按一次返回键退出"
 }

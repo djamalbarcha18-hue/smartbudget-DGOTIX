@@ -1775,5 +1775,6 @@
   "budgetMoreCategories": "فئات أخرى ({count})",
   "txnMoreDetails": "تفاصيل أكثر (ملاحظات، طريقة الدفع)",
   "marketsOtherCountries": "دول أخرى ({count})",
-  "marketsByCountry": "أسعار الصرف حسب الدولة ({count})"
+  "marketsByCountry": "أسعار الصرف حسب الدولة ({count})",
+  "backAgainToExit": "اضغط رجوع مرة أخرى للخروج"
 }

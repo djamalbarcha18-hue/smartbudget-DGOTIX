@@ -9,6 +9,7 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/features/search/app_search.dart';
 import 'package:smartbudget/features/shell/app_footer.dart';
 import 'package:smartbudget/features/shell/app_top_bar.dart';
+import 'package:smartbudget/features/shell/back_steps.dart';
 import 'package:smartbudget/features/shell/nav_destinations.dart';
 import 'package:smartbudget/features/shell/nav_seen.dart';
 import 'package:smartbudget/features/shell/nav_sidebar.dart';
@@ -57,7 +58,7 @@ class AppShell extends StatelessWidget {
 
     // A tap on the daily reminder opens quick entry here, and a bank
     // message shared with the app opens a filled-in transaction.
-    Widget scene(Widget scaffold) => ReminderTapListener(
+    Widget sceneOnly(Widget scaffold) => ReminderTapListener(
           child: SharedTextListener(
             child: Stack(
               children: <Widget>[
@@ -66,6 +67,12 @@ class AppShell extends StatelessWidget {
               ],
             ),
           ),
+        );
+
+    // The phone's back button goes back a page at a time.
+    Widget scene(Widget scaffold) => BackSteps(
+          location: GoRouterState.of(context).uri.toString(),
+          child: sceneOnly(scaffold),
         );
 
     if (isMobile) {

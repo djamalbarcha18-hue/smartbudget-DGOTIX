@@ -1575,5 +1575,6 @@
   "budgetMoreCategories": "Kategori të tjera ({count})",
   "txnMoreDetails": "Më shumë detaje (shënime, mënyra e pagesës)",
   "marketsOtherCountries": "Vende të tjera ({count})",
-  "marketsByCountry": "Kurset sipas vendit ({count})"
+  "marketsByCountry": "Kurset sipas vendit ({count})",
+  "backAgainToExit": "Shtyp sërish mbrapa për të dalë"
 }

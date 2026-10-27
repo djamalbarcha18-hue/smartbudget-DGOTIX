@@ -1575,5 +1575,6 @@
   "budgetMoreCategories": "अन्य श्रेणियाँ ({count})",
   "txnMoreDetails": "और विवरण (नोट्स, भुगतान का तरीका)",
   "marketsOtherCountries": "अन्य देश ({count})",
-  "marketsByCountry": "देश के अनुसार विनिमय दरें ({count})"
+  "marketsByCountry": "देश के अनुसार विनिमय दरें ({count})",
+  "backAgainToExit": "बाहर निकलने के लिए फिर से वापस दबाएँ"
 }

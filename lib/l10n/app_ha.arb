@@ -1575,5 +1575,6 @@
   "budgetMoreCategories": "Sauran rukunoni ({count})",
   "txnMoreDetails": "Ƙarin bayani (bayanai, hanyar biya)",
   "marketsOtherCountries": "Sauran ƙasashe ({count})",
-  "marketsByCountry": "Farashin musaya ta ƙasa ({count})"
+  "marketsByCountry": "Farashin musaya ta ƙasa ({count})",
+  "backAgainToExit": "Danna baya sake don fita"
 }
