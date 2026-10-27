@@ -161,7 +161,7 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
                     label: l.fieldOriginal,
                     suffixText: cur.code,
                     controller: _original,
-                    prefixIcon: Icons.tag_rounded,
+                    prefixIcon: Icons.payments_outlined,
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
                     validator: (String? v) {

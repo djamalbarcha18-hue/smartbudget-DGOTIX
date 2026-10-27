@@ -147,7 +147,7 @@ class _GoalEditorSheetState extends ConsumerState<GoalEditorSheet> {
                     label: l.fieldTarget,
                     suffixText: cur.code,
                     controller: _target,
-                    prefixIcon: Icons.tag_rounded,
+                    prefixIcon: Icons.payments_outlined,
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
                     validator: (String? v) {

@@ -124,7 +124,7 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
                 DsTextField(
                   label: l.fieldAmount,
                   controller: _amount,
-                  prefixIcon: Icons.tag_rounded,
+                  prefixIcon: Icons.payments_outlined,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                 ),

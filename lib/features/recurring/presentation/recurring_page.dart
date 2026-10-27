@@ -436,7 +436,7 @@ class _ConfirmAmountDialogState extends ConsumerState<_ConfirmAmountDialog> {
                 label: l.fieldAmount,
                 suffixText: widget.pending.rule.amount.currencyCode,
                 controller: _amount,
-                prefixIcon: Icons.tag_rounded,
+                prefixIcon: Icons.payments_outlined,
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
                 validator: (String? v) {
@@ -532,7 +532,7 @@ class _RuleEditDialogState extends ConsumerState<_RuleEditDialog> {
                 label: l.fieldAmount,
                 suffixText: widget.rule.amount.currencyCode,
                 controller: _amount,
-                prefixIcon: Icons.tag_rounded,
+                prefixIcon: Icons.payments_outlined,
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
                 validator: (String? v) {

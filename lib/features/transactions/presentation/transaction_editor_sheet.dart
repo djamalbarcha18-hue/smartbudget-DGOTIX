@@ -442,7 +442,7 @@ class _TransactionEditorSheetState
                     // A new entry starts with the amount.
                     autofocus:
                         widget.existing == null && widget.prefill == null,
-                    prefixIcon: Icons.tag_rounded,
+                    prefixIcon: Icons.payments_outlined,
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
