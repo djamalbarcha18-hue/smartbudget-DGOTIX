@@ -48,7 +48,7 @@ extension PlanX on Plan {
   /// display only — the billing provider is authoritative at checkout.
   double? priceUsd(BillingPeriod period) => switch ((this, period)) {
         (Plan.free, _) => 0.0,
-        (Plan.pro, BillingPeriod.monthly) => 8.99,
+        (Plan.pro, BillingPeriod.monthly) => 9.99,
         (Plan.pro, BillingPeriod.yearly) => 59.99,
       };
 }

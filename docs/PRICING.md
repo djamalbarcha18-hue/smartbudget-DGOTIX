@@ -24,9 +24,9 @@ Status: **design locked** · Prices in **USD** · Last reviewed **2026-10**.
 
 | | **FREE** | **PRO** |
 |---|---|---|
-| Monthly | **$0** | **$8.99 / mo** |
+| Monthly | **$0** | **$9.99 / mo** |
 | Yearly | — | **$59.99 / yr** (≈ $5.00/mo) |
-| Yearly saving vs monthly | — | ~44% |
+| Yearly saving vs monthly | — | 50% |
 | Positioning | Build the habit | Every currency, sync, AI, full reports, no limits |
 
 **Regional prices** (planned — **not set up yet** with Whop, whose support
@@ -40,7 +40,8 @@ buyer's own price and currency.
 **Tax is included** in every price (Whop setting: tax type *inclusive*,
 collect and remit on). The buyer pays the price shown, wherever they live;
 the sales tax of their country comes out of it. The list price was raised from
-$7.99 / $49.99 to cover it: in a country with 20% VAT the yearly plan still
+$7.99 / $49.99 to cover it (monthly to $9.99, so the yearly plan reads as
+half price): in a country with 20% VAT the yearly plan still
 leaves $49.99 before fees.
 
 FREE is a **permanent free tier** (not a time-boxed trial). A new account MAY
@@ -266,8 +267,8 @@ To keep it from being abused (see "Limits against mass sign-ups"):
 
 Benchmarks (annual, list): YNAB ~$109/yr, Monarch ~$99.99/yr, Copilot ~$95/yr.
 SmartBudget is priced for Arab users, who compare it with what they already
-pay monthly (music, video): PRO at **$8.99** (tax included) stays under a
-streaming subscription, and **$59.99/yr** (≈ $5.00 a month, ~44% off) is the price the
+pay monthly (music, video): PRO at **$9.99** (tax included) stays under $10,
+and **$59.99/yr** (≈ $5.00 a month, half the monthly price) is the price the
 app leads with. The product sells what others
 don't: Arab currencies and parallel rates, zakat, seasons and darets, and the
 bilingual app. A 14-day PRO trial and showing the yearly price per month do
