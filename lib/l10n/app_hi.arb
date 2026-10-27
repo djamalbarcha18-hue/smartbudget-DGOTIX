@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "मुद्रा",
   "metalsPaidInBase": "आपकी मुद्रा में ({currency})",
   "metalsPaidInBaseHint": "आज की दर से निकाला; अगर खरीद के दिन दर अलग थी तो बदल दें।",
-  "metalsMetalOnly": "बनवाई के बिना {percent} · बनवाई {making}"
+  "metalsMetalOnly": "बनवाई के बिना {percent} · बनवाई {making}",
+  "metalsSell": "बेचें",
+  "metalsSellTitle": "{name} बेचें",
+  "metalsSellGrams": "कितने ग्राम बेचे?",
+  "metalsSellOf": "{grams} में से",
+  "metalsSellTooMany": "इस चीज़ में जितना है उससे ज़्यादा",
+  "metalsSellReceived": "कितने मिले?",
+  "metalsSellDate": "बिक्री की तारीख",
+  "metalsSellAsIncome": "रकम को आय के रूप में दर्ज करें",
+  "metalsSellPreview": "आपका असली मुनाफ़ा: {amount}",
+  "metalsRealized": "बिक्री से असली मुनाफ़ा: {amount}",
+  "metalsOnPaper": "जो आपके पास है उस पर कागज़ी {amount} ({percent})",
+  "metalsSoldTitle": "जो मैंने बेचा ({count})",
+  "metalsSoldOn": "{date} को बेचा",
+  "metalsUndoSale": "बिक्री वापस लें",
+  "metalsSaleIncome": "बिक्री {name}"
 }

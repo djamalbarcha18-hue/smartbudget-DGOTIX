@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "Valuta",
   "metalsPaidInBase": "Iznosi u vašoj valuti ({currency})",
   "metalsPaidInBaseHint": "Izračunato po današnjem kursu; promijenite ako je kurs na dan kupovine bio drugačiji.",
-  "metalsMetalOnly": "Bez izrade {percent} · izrada {making}"
+  "metalsMetalOnly": "Bez izrade {percent} · izrada {making}",
+  "metalsSell": "Prodaj",
+  "metalsSellTitle": "Prodaj {name}",
+  "metalsSellGrams": "Koliko ste grama prodali?",
+  "metalsSellOf": "od {grams}",
+  "metalsSellTooMany": "Više nego što ovaj komad ima",
+  "metalsSellReceived": "Koliko ste dobili?",
+  "metalsSellDate": "Datum prodaje",
+  "metalsSellAsIncome": "Zabilježi iznos kao prihod",
+  "metalsSellPreview": "Vaša ostvarena zarada: {amount}",
+  "metalsRealized": "Ostvareno prodajom: {amount}",
+  "metalsOnPaper": "{amount} ({percent}) na papiru, na onome što imate",
+  "metalsSoldTitle": "Šta sam prodao ({count})",
+  "metalsSoldOn": "Prodano {date}",
+  "metalsUndoSale": "Poništi prodaju",
+  "metalsSaleIncome": "Prodaja {name}"
 }

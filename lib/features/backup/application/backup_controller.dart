@@ -82,6 +82,7 @@ class BackupService {
       walletMoves: await _ref.read(walletMoveStoreProvider).all(),
       trips: await _ref.read(tripStoreProvider).all(),
       metals: await _ref.read(metalStoreProvider).all(),
+      metalSales: await _ref.read(metalSaleStoreProvider).all(),
       exportedAt: AppClock.now(),
       baseCurrency: _ref.read(baseCurrencyProvider),
       transactions: txns,
@@ -125,6 +126,7 @@ class BackupService {
     await _ref.read(walletMoveStoreProvider).replaceAll(data.walletMoves);
     await _ref.read(tripStoreProvider).replaceAll(data.trips);
     await _ref.read(metalStoreProvider).replaceAll(data.metals);
+    await _ref.read(metalSaleStoreProvider).replaceAll(data.metalSales);
     if (setBaseCurrency &&
         data.baseCurrency != _ref.read(baseCurrencyProvider)) {
       await _ref.read(baseCurrencyProvider.notifier).set(data.baseCurrency);
@@ -158,7 +160,8 @@ class BackupService {
             await _ref.read(walletStoreProvider).importMany(data.wallets) +
             await _ref.read(walletMoveStoreProvider).importMany(data.walletMoves) +
             await _ref.read(tripStoreProvider).importMany(data.trips) +
-            await _ref.read(metalStoreProvider).importMany(data.metals);
+            await _ref.read(metalStoreProvider).importMany(data.metals) +
+            await _ref.read(metalSaleStoreProvider).importMany(data.metalSales);
     return ImportResult(
       othersAdded: othersAdded,
       transactionsAdded: txAdded,

@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "Moneda",
   "metalsPaidInBase": "Equivale en tu moneda ({currency})",
   "metalsPaidInBaseHint": "Calculado al cambio de hoy; cámbialo si el cambio era distinto el día de la compra.",
-  "metalsMetalOnly": "Sin mano de obra {percent} · mano de obra {making}"
+  "metalsMetalOnly": "Sin mano de obra {percent} · mano de obra {making}",
+  "metalsSell": "Vender",
+  "metalsSellTitle": "Vender {name}",
+  "metalsSellGrams": "¿Cuántos gramos vendiste?",
+  "metalsSellOf": "de {grams}",
+  "metalsSellTooMany": "Más de lo que tiene esta pieza",
+  "metalsSellReceived": "¿Cuánto recibiste?",
+  "metalsSellDate": "Fecha de venta",
+  "metalsSellAsIncome": "Registrar el dinero como ingreso",
+  "metalsSellPreview": "Tu ganancia realizada: {amount}",
+  "metalsRealized": "Realizado con ventas: {amount}",
+  "metalsOnPaper": "{amount} ({percent}) sobre el papel, en lo que tienes",
+  "metalsSoldTitle": "Lo que vendí ({count})",
+  "metalsSoldOn": "Vendido el {date}",
+  "metalsUndoSale": "Deshacer la venta",
+  "metalsSaleIncome": "Venta {name}"
 }

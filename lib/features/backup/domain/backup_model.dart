@@ -11,6 +11,7 @@ import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/seasons/domain/season.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
+import 'package:smartbudget/features/metals/domain/metal_sale.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
 
@@ -38,6 +39,7 @@ class BackupData {
     this.walletMoves = const <WalletMove>[],
     this.trips = const <Trip>[],
     this.metals = const <MetalHolding>[],
+    this.metalSales = const <MetalSale>[],
   });
 
   /// Bump when the on-disk shape changes in a breaking way. Adding optional
@@ -64,6 +66,7 @@ class BackupData {
 
   /// Gold, silver, platinum and palladium kept as savings.
   final List<MetalHolding> metals;
+  final List<MetalSale> metalSales;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'schemaVersion': schemaVersion,
@@ -84,6 +87,7 @@ class BackupData {
         'walletMoves': walletMoves.map((WalletMove m) => m.toJson()).toList(),
         'trips': trips.map((Trip t) => t.toJson()).toList(),
         'metals': metals.map((MetalHolding h) => h.toJson()).toList(),
+        'metalSales': metalSales.map((MetalSale s) => s.toJson()).toList(),
         'customCategories': <String, dynamic>{
           'income': customIncome,
           'expense': customExpense,
@@ -117,6 +121,7 @@ class BackupData {
       walletMoves: _list<WalletMove>(json['walletMoves'], WalletMove.fromJson),
       trips: _list<Trip>(json['trips'], Trip.fromJson),
       metals: _list<MetalHolding>(json['metals'], MetalHolding.fromJson),
+      metalSales: _list<MetalSale>(json['metalSales'], MetalSale.fromJson),
     );
   }
 

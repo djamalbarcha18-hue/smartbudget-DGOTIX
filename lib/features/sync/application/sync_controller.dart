@@ -159,6 +159,7 @@ class SyncController extends Notifier<SyncStatus> {
       ref.read(walletMoveStoreProvider).watchAll(),
       ref.read(tripStoreProvider).watchAll(),
       ref.read(metalStoreProvider).watchAll(),
+      ref.read(metalSaleStoreProvider).watchAll(),
     ]) {
       _subs.add(s.listen((_) => changed()));
     }

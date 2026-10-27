@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "Валюта",
   "metalsPaidInBase": "В вашей валюте ({currency})",
   "metalsPaidInBaseHint": "Пересчитано по сегодняшнему курсу; измените, если в день покупки курс был другим.",
-  "metalsMetalOnly": "Без работы {percent} · работа {making}"
+  "metalsMetalOnly": "Без работы {percent} · работа {making}",
+  "metalsSell": "Продать",
+  "metalsSellTitle": "Продать {name}",
+  "metalsSellGrams": "Сколько граммов вы продали?",
+  "metalsSellOf": "из {grams}",
+  "metalsSellTooMany": "Больше, чем в этом предмете",
+  "metalsSellReceived": "Сколько вы получили?",
+  "metalsSellDate": "Дата продажи",
+  "metalsSellAsIncome": "Записать сумму как доход",
+  "metalsSellPreview": "Ваш реализованный доход: {amount}",
+  "metalsRealized": "Реализовано продажами: {amount}",
+  "metalsOnPaper": "{amount} ({percent}) на бумаге, по тому, что у вас есть",
+  "metalsSoldTitle": "Что я продал ({count})",
+  "metalsSoldOn": "Продано {date}",
+  "metalsUndoSale": "Отменить продажу",
+  "metalsSaleIncome": "Продажа: {name}"
 }

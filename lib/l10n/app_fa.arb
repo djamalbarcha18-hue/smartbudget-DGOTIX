@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "ارز",
   "metalsPaidInBase": "معادل به ارز شما ({currency})",
   "metalsPaidInBaseHint": "با نرخ امروز حساب شد؛ اگر نرخ روز خرید فرق داشت، آن را تغییر دهید.",
-  "metalsMetalOnly": "بدون اجرت {percent} · اجرت {making}"
+  "metalsMetalOnly": "بدون اجرت {percent} · اجرت {making}",
+  "metalsSell": "فروش",
+  "metalsSellTitle": "فروش {name}",
+  "metalsSellGrams": "چند گرم فروختید؟",
+  "metalsSellOf": "از {grams}",
+  "metalsSellTooMany": "بیشتر از این قطعه",
+  "metalsSellReceived": "چقدر دریافت کردید؟",
+  "metalsSellDate": "تاریخ فروش",
+  "metalsSellAsIncome": "ثبت مبلغ به‌عنوان درآمد",
+  "metalsSellPreview": "سود محقق شما: {amount}",
+  "metalsRealized": "محقق‌شده از فروش: {amount}",
+  "metalsOnPaper": "{amount} ({percent}) روی کاغذ، روی آنچه دارید",
+  "metalsSoldTitle": "آنچه فروختم ({count})",
+  "metalsSoldOn": "فروخته شده در {date}",
+  "metalsUndoSale": "لغو فروش",
+  "metalsSaleIncome": "فروش {name}"
 }

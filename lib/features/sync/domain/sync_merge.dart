@@ -49,6 +49,7 @@ abstract final class SyncMerge {
     'walletMoves',
     'trips',
     'metals',
+    'metalSales',
   ];
 
   /// Deletions are remembered this long, then forgotten.

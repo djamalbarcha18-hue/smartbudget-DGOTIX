@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "通貨",
   "metalsPaidInBase": "あなたの通貨で（{currency}）",
   "metalsPaidInBaseHint": "今日のレートで計算しました。購入日のレートが違えば修正してください。",
-  "metalsMetalOnly": "加工賃を除く {percent} · 加工賃 {making}"
+  "metalsMetalOnly": "加工賃を除く {percent} · 加工賃 {making}",
+  "metalsSell": "売却",
+  "metalsSellTitle": "{name}を売却",
+  "metalsSellGrams": "何グラム売りましたか？",
+  "metalsSellOf": "{grams} のうち",
+  "metalsSellTooMany": "この品の重さを超えています",
+  "metalsSellReceived": "いくら受け取りましたか？",
+  "metalsSellDate": "売却日",
+  "metalsSellAsIncome": "この金額を収入として記録",
+  "metalsSellPreview": "確定した利益：{amount}",
+  "metalsRealized": "売却で確定：{amount}",
+  "metalsOnPaper": "保有分の含み {amount}（{percent}）",
+  "metalsSoldTitle": "売ったもの（{count}）",
+  "metalsSoldOn": "{date} に売却",
+  "metalsUndoSale": "売却を取り消す",
+  "metalsSaleIncome": "売却 {name}"
 }

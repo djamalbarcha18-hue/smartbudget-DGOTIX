@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "货币",
   "metalsPaidInBase": "折合您的货币（{currency}）",
   "metalsPaidInBaseHint": "按今天的汇率计算；若购买当天汇率不同，请修改。",
-  "metalsMetalOnly": "不含加工费 {percent} · 加工费 {making}"
+  "metalsMetalOnly": "不含加工费 {percent} · 加工费 {making}",
+  "metalsSell": "卖出",
+  "metalsSellTitle": "卖出 {name}",
+  "metalsSellGrams": "卖了多少克？",
+  "metalsSellOf": "共 {grams}",
+  "metalsSellTooMany": "超过此件的重量",
+  "metalsSellReceived": "收到多少钱？",
+  "metalsSellDate": "卖出日期",
+  "metalsSellAsIncome": "将这笔钱记为收入",
+  "metalsSellPreview": "已实现收益：{amount}",
+  "metalsRealized": "卖出已实现：{amount}",
+  "metalsOnPaper": "持有部分账面 {amount}（{percent}）",
+  "metalsSoldTitle": "已卖出（{count}）",
+  "metalsSoldOn": "{date} 卖出",
+  "metalsUndoSale": "撤销卖出",
+  "metalsSaleIncome": "卖出 {name}"
 }

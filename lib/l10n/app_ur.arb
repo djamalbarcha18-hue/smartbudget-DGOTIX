@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "کرنسی",
   "metalsPaidInBase": "آپ کی کرنسی میں ({currency})",
   "metalsPaidInBaseHint": "آج کے نرخ پر حساب کیا؛ اگر خریداری کے دن نرخ مختلف تھا تو بدل دیں۔",
-  "metalsMetalOnly": "مزدوری کے بغیر {percent} · مزدوری {making}"
+  "metalsMetalOnly": "مزدوری کے بغیر {percent} · مزدوری {making}",
+  "metalsSell": "بیچیں",
+  "metalsSellTitle": "{name} بیچیں",
+  "metalsSellGrams": "کتنے گرام بیچے؟",
+  "metalsSellOf": "{grams} میں سے",
+  "metalsSellTooMany": "اس چیز سے زیادہ",
+  "metalsSellReceived": "کتنی رقم ملی؟",
+  "metalsSellDate": "فروخت کی تاریخ",
+  "metalsSellAsIncome": "رقم کو آمدنی کے طور پر درج کریں",
+  "metalsSellPreview": "آپ کا حقیقی منافع: {amount}",
+  "metalsRealized": "فروخت سے حقیقی منافع: {amount}",
+  "metalsOnPaper": "جو آپ کے پاس ہے اس پر کاغذی {amount} ({percent})",
+  "metalsSoldTitle": "جو میں نے بیچا ({count})",
+  "metalsSoldOn": "{date} کو بیچا",
+  "metalsUndoSale": "فروخت واپس لیں",
+  "metalsSaleIncome": "فروخت {name}"
 }

@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "통화",
   "metalsPaidInBase": "내 통화로 ({currency})",
   "metalsPaidInBaseHint": "오늘 환율로 계산했습니다. 구입일 환율이 달랐다면 바꾸세요.",
-  "metalsMetalOnly": "세공비 제외 {percent} · 세공비 {making}"
+  "metalsMetalOnly": "세공비 제외 {percent} · 세공비 {making}",
+  "metalsSell": "판매",
+  "metalsSellTitle": "{name} 판매",
+  "metalsSellGrams": "몇 그램을 팔았나요?",
+  "metalsSellOf": "{grams} 중",
+  "metalsSellTooMany": "이 항목보다 많습니다",
+  "metalsSellReceived": "얼마를 받았나요?",
+  "metalsSellDate": "판매일",
+  "metalsSellAsIncome": "금액을 수입으로 기록",
+  "metalsSellPreview": "실현 수익: {amount}",
+  "metalsRealized": "판매로 실현: {amount}",
+  "metalsOnPaper": "보유분 평가 {amount} ({percent})",
+  "metalsSoldTitle": "판매한 것 ({count})",
+  "metalsSoldOn": "{date} 판매",
+  "metalsUndoSale": "판매 취소",
+  "metalsSaleIncome": "판매 {name}"
 }

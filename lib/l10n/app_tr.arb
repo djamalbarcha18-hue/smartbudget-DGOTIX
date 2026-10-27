@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "Para birimi",
   "metalsPaidInBase": "Kendi para biriminde ({currency})",
   "metalsPaidInBaseHint": "Bugünkü kurla hesaplandı; alış günü kur farklıysa değiştir.",
-  "metalsMetalOnly": "İşçiliksiz {percent} · işçilik {making}"
+  "metalsMetalOnly": "İşçiliksiz {percent} · işçilik {making}",
+  "metalsSell": "Sat",
+  "metalsSellTitle": "{name} sat",
+  "metalsSellGrams": "Kaç gram sattın?",
+  "metalsSellOf": "{grams} içinden",
+  "metalsSellTooMany": "Bu parçada olandan fazla",
+  "metalsSellReceived": "Ne kadar aldın?",
+  "metalsSellDate": "Satış tarihi",
+  "metalsSellAsIncome": "Tutarı gelir olarak kaydet",
+  "metalsSellPreview": "Gerçekleşen kazancın: {amount}",
+  "metalsRealized": "Satışlardan gerçekleşen: {amount}",
+  "metalsOnPaper": "Elindekilerde kâğıt üzerinde {amount} ({percent})",
+  "metalsSoldTitle": "Sattıklarım ({count})",
+  "metalsSoldOn": "{date} tarihinde satıldı",
+  "metalsUndoSale": "Satışı geri al",
+  "metalsSaleIncome": "Satış: {name}"
 }

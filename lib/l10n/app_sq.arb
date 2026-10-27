@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "Monedha",
   "metalsPaidInBase": "Në monedhën tuaj ({currency})",
   "metalsPaidInBaseHint": "U llogarit me kursin e sotëm; ndryshojeni nëse kursi ishte ndryshe ditën e blerjes.",
-  "metalsMetalOnly": "Pa punimin {percent} · punimi {making}"
+  "metalsMetalOnly": "Pa punimin {percent} · punimi {making}",
+  "metalsSell": "Shit",
+  "metalsSellTitle": "Shit {name}",
+  "metalsSellGrams": "Sa gramë shitët?",
+  "metalsSellOf": "nga {grams}",
+  "metalsSellTooMany": "Më shumë se sa ka kjo copë",
+  "metalsSellReceived": "Sa morët?",
+  "metalsSellDate": "Data e shitjes",
+  "metalsSellAsIncome": "Regjistroje shumën si të ardhur",
+  "metalsSellPreview": "Fitimi juaj i realizuar: {amount}",
+  "metalsRealized": "Realizuar nga shitjet: {amount}",
+  "metalsOnPaper": "{amount} ({percent}) në letër, për sa keni",
+  "metalsSoldTitle": "Çfarë kam shitur ({count})",
+  "metalsSoldOn": "Shitur më {date}",
+  "metalsUndoSale": "Anulo shitjen",
+  "metalsSaleIncome": "Shitje {name}"
 }

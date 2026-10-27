@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "Sarafu",
   "metalsPaidInBase": "Kwa sarafu yako ({currency})",
   "metalsPaidInBaseHint": "Imehesabiwa kwa kiwango cha leo; ibadilishe kama kiwango kilikuwa tofauti siku ya kununua.",
-  "metalsMetalOnly": "Bila ufundi {percent} · ufundi {making}"
+  "metalsMetalOnly": "Bila ufundi {percent} · ufundi {making}",
+  "metalsSell": "Uza",
+  "metalsSellTitle": "Uza {name}",
+  "metalsSellGrams": "Uliuza gramu ngapi?",
+  "metalsSellOf": "kati ya {grams}",
+  "metalsSellTooMany": "Zaidi ya kilicho kwenye kipande hiki",
+  "metalsSellReceived": "Ulipokea kiasi gani?",
+  "metalsSellDate": "Tarehe ya kuuza",
+  "metalsSellAsIncome": "Andika kiasi kama mapato",
+  "metalsSellPreview": "Faida yako halisi: {amount}",
+  "metalsRealized": "Halisi kutokana na mauzo: {amount}",
+  "metalsOnPaper": "{amount} ({percent}) kwenye karatasi, kwa ulicho nacho",
+  "metalsSoldTitle": "Nilichouza ({count})",
+  "metalsSoldOn": "Kimeuzwa {date}",
+  "metalsUndoSale": "Tendua mauzo",
+  "metalsSaleIncome": "Mauzo {name}"
 }

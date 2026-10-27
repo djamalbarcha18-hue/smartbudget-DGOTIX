@@ -18,7 +18,11 @@ import 'package:smartbudget/features/metals/domain/metal_alert.dart';
 import 'package:smartbudget/features/metals/domain/metal_gains.dart';
 import 'package:smartbudget/features/metals/domain/metal_history.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
+import 'package:smartbudget/features/metals/domain/metal_sale.dart';
 import 'package:smartbudget/features/metals/domain/metals_valuation.dart';
+import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
+import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/transactions/domain/transaction_repository.dart';
 
 /// The user's metal holdings, kept on the device (in backups and sync).
 final metalStoreProvider = Provider<LocalListStore<MetalHolding>>((ref) {
@@ -38,15 +42,95 @@ final metalStoreProvider = Provider<LocalListStore<MetalHolding>>((ref) {
 final metalHoldingsProvider = StreamProvider<List<MetalHolding>>(
     (ref) => ref.watch(metalStoreProvider).watchAll());
 
-final metalActionsProvider = Provider<MetalActions>(
-    (ref) => MetalActions(ref.watch(metalStoreProvider)));
+/// What the user sold of their metals (in backups and sync).
+final metalSaleStoreProvider = Provider<LocalListStore<MetalSale>>((ref) {
+  final String userId = ref.watch(authControllerProvider).user?.id ?? 'guest';
+  final LocalListStore<MetalSale> store = LocalListStore<MetalSale>(
+    key: 'sb_metal_sales_$userId',
+    fromJson: MetalSale.fromJson,
+    toJson: (MetalSale s) => s.toJson(),
+    idOf: (MetalSale s) => s.id,
+    compare: (MetalSale a, MetalSale b) => b.soldOn.compareTo(a.soldOn),
+  );
+  ref.onDispose(store.dispose);
+  return store;
+});
+
+final metalSalesProvider = StreamProvider<List<MetalSale>>(
+    (ref) => ref.watch(metalSaleStoreProvider).watchAll());
+
+final metalActionsProvider = Provider<MetalActions>((ref) => MetalActions(
+      ref.watch(metalStoreProvider),
+      ref.watch(metalSaleStoreProvider),
+      ref.watch(financeRepositoryProvider),
+    ));
 
 class MetalActions {
-  MetalActions(this._store);
+  MetalActions(this._store, this._sales, this._transactions);
   final LocalListStore<MetalHolding> _store;
+  final LocalListStore<MetalSale> _sales;
+  final TransactionRepository _transactions;
 
   Future<void> save(MetalHolding h) => _store.upsert(h);
   Future<void> delete(String id) => _store.delete(id);
+
+  /// Sells [grams] of [h] for [received] on [soldOn]: the sale is noted
+  /// with its share of the cost, and the piece keeps the rest (or goes).
+  /// With [incomeLabel], the money is also recorded as income.
+  Future<MetalSale> sell(
+    MetalHolding h, {
+    required double grams,
+    required Money received,
+    required DateTime soldOn,
+    String? incomeLabel,
+  }) async {
+    final ({MetalHolding sold, MetalHolding? rest}) parts =
+        MetalSales.split(h, grams);
+    String? txnId;
+    if (incomeLabel != null) {
+      txnId = TransactionActions.newId();
+      await _transactions.add(Transaction(
+        id: txnId,
+        date: soldOn,
+        type: TransactionType.income,
+        category: saleIncomeCategory,
+        amount: received,
+        description: incomeLabel,
+        createdAt: AppClock.now(),
+      ));
+    }
+    final MetalSale sale = MetalSale(
+      id: 'sale-${AppClock.now().microsecondsSinceEpoch.toRadixString(36)}',
+      sold: parts.sold,
+      received: received,
+      soldOn: soldOn,
+      createdAt: AppClock.now(),
+      transactionId: txnId,
+    );
+    await _sales.upsert(sale);
+    if (parts.rest == null) {
+      await _store.delete(h.id);
+    } else {
+      await _store.upsert(parts.rest!);
+    }
+    return sale;
+  }
+
+  /// Undoes [s]: the part sold returns to its piece (or comes back as the
+  /// piece), and the income recorded with it goes.
+  Future<void> undoSale(MetalSale s) async {
+    final List<MetalHolding> held = await _store.all();
+    MetalHolding? rest;
+    for (final MetalHolding h in held) {
+      if (h.id == s.sold.id) rest = h;
+    }
+    await _store.upsert(MetalSales.rejoin(s, rest));
+    await _sales.delete(s.id);
+    if (s.transactionId != null) await _transactions.delete(s.transactionId!);
+  }
+
+  /// The income category a sale is recorded under.
+  static const String saleIncomeCategory = 'بيع أصول أو ممتلكات';
 
   static String newId() =>
       'metal-${AppClock.now().microsecondsSinceEpoch.toRadixString(36)}';
@@ -181,6 +265,14 @@ final metalsSummaryProvider =
           ref.watch(baseCurrencyProvider),
           ref.watch(ratesProvider),
         ));
+
+/// All that selling earned, in the user's currency (null with no sale of
+/// a piece whose cost is known).
+final metalRealizedProvider = Provider<Gain?>((ref) => MetalSales.total(
+      ref.watch(metalSalesProvider).valueOrNull ?? const <MetalSale>[],
+      ref.watch(baseCurrencyProvider),
+      ref.watch(ratesProvider),
+    ));
 
 /// Per metal, the average cost of a pure gram against today's price.
 final metalAveragesProvider = Provider<Map<Metal, MetalAverage>>(

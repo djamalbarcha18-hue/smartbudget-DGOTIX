@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "Mata uang",
   "metalsPaidInBase": "Setara dalam mata uang Anda ({currency})",
   "metalsPaidInBaseHint": "Dihitung dengan kurs hari ini; ubah jika kurs pada hari pembelian berbeda.",
-  "metalsMetalOnly": "Tanpa ongkos {percent} · ongkos {making}"
+  "metalsMetalOnly": "Tanpa ongkos {percent} · ongkos {making}",
+  "metalsSell": "Jual",
+  "metalsSellTitle": "Jual {name}",
+  "metalsSellGrams": "Berapa gram yang Anda jual?",
+  "metalsSellOf": "dari {grams}",
+  "metalsSellTooMany": "Lebih dari isi barang ini",
+  "metalsSellReceived": "Berapa yang Anda terima?",
+  "metalsSellDate": "Tanggal jual",
+  "metalsSellAsIncome": "Catat uangnya sebagai pemasukan",
+  "metalsSellPreview": "Keuntungan terealisasi: {amount}",
+  "metalsRealized": "Terealisasi dari penjualan: {amount}",
+  "metalsOnPaper": "{amount} ({percent}) di atas kertas, pada yang Anda miliki",
+  "metalsSoldTitle": "Yang sudah saya jual ({count})",
+  "metalsSoldOn": "Dijual {date}",
+  "metalsUndoSale": "Batalkan penjualan",
+  "metalsSaleIncome": "Jual {name}"
 }

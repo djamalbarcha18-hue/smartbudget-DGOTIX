@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "Geldeenheid",
   "metalsPaidInBase": "In jou geldeenheid ({currency})",
   "metalsPaidInBaseHint": "Teen vandag se koers bereken; verander dit as die koers op die aankoopdag anders was.",
-  "metalsMetalOnly": "Sonder vakmanskap {percent} · vakmanskap {making}"
+  "metalsMetalOnly": "Sonder vakmanskap {percent} · vakmanskap {making}",
+  "metalsSell": "Verkoop",
+  "metalsSellTitle": "Verkoop {name}",
+  "metalsSellGrams": "Hoeveel gram het jy verkoop?",
+  "metalsSellOf": "van {grams}",
+  "metalsSellTooMany": "Meer as wat hierdie stuk bevat",
+  "metalsSellReceived": "Hoeveel het jy gekry?",
+  "metalsSellDate": "Verkoopdatum",
+  "metalsSellAsIncome": "Teken die bedrag as inkomste aan",
+  "metalsSellPreview": "Jou gerealiseerde wins: {amount}",
+  "metalsRealized": "Gerealiseer uit verkope: {amount}",
+  "metalsOnPaper": "{amount} ({percent}) op papier, op wat jy besit",
+  "metalsSoldTitle": "Wat ek verkoop het ({count})",
+  "metalsSoldOn": "Verkoop {date}",
+  "metalsUndoSale": "Ontdoen die verkoop",
+  "metalsSaleIncome": "Verkoop {name}"
 }

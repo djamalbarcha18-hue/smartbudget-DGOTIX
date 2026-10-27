@@ -1755,5 +1755,20 @@
   "metalsPaidCurrency": "العملة",
   "metalsPaidInBase": "يعادل بعملتك ({currency})",
   "metalsPaidInBaseHint": "حسبناه بسعر صرف اليوم؛ عدّله إن كان سعر الصرف يوم الشراء مختلفًا.",
-  "metalsMetalOnly": "دون المصنعية {percent} · المصنعية {making}"
+  "metalsMetalOnly": "دون المصنعية {percent} · المصنعية {making}",
+  "metalsSell": "بيع",
+  "metalsSellTitle": "بيع {name}",
+  "metalsSellGrams": "كم غرامًا بعت؟",
+  "metalsSellOf": "من أصل {grams}",
+  "metalsSellTooMany": "أكثر مما في هذه القطعة",
+  "metalsSellReceived": "كم قبضت؟",
+  "metalsSellDate": "تاريخ البيع",
+  "metalsSellAsIncome": "سجّل المبلغ كدخل",
+  "metalsSellPreview": "ربحك المحقق: {amount}",
+  "metalsRealized": "ربحك المحقق من البيع: {amount}",
+  "metalsOnPaper": "{amount} ({percent}) على الورق، فيما تملكه",
+  "metalsSoldTitle": "ما بعته ({count})",
+  "metalsSoldOn": "بيع في {date}",
+  "metalsUndoSale": "تراجع عن البيع",
+  "metalsSaleIncome": "بيع {name}"
 }

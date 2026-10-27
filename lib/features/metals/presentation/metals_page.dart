@@ -20,10 +20,12 @@ import 'package:smartbudget/features/exchange_rates/application/rates_controller
 import 'package:smartbudget/features/metals/domain/metal_alert.dart';
 import 'package:smartbudget/features/metals/domain/metal_gains.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
+import 'package:smartbudget/features/metals/domain/metal_sale.dart';
 import 'package:smartbudget/features/metals/domain/metals_valuation.dart';
 import 'package:smartbudget/features/metals/presentation/metal_art.dart';
 import 'package:smartbudget/features/metals/presentation/metal_editor_sheet.dart';
 import 'package:smartbudget/features/metals/presentation/metal_history_chart.dart';
+import 'package:smartbudget/features/metals/presentation/metal_sale_sheet.dart';
 import 'package:smartbudget/features/metals/presentation/metal_text.dart';
 import 'package:smartbudget/features/sync/application/data_loading.dart';
 import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
@@ -95,6 +97,7 @@ class MetalsPage extends ConsumerWidget {
               ),
             const _YearsCard(),
           ],
+          const _SoldCard(),
           const SizedBox(height: DsSpacing.lg),
           if (holdings.isNotEmpty) ...<Widget>[
             const MetalHistoryCard(),
@@ -126,6 +129,112 @@ bool _masked(BuildContext context) =>
 String _percent(double r) {
   final String s = (r * 100).toStringAsFixed(1);
   return '\u2066${r >= 0 ? '+' : ''}$s%\u2069';
+}
+
+/// What was sold, folded: each sale with what it brought and earned, and a
+/// way to undo one entered by mistake.
+class _SoldCard extends ConsumerWidget {
+  const _SoldCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<MetalSale> sales =
+        ref.watch(metalSalesProvider).valueOrNull ?? const <MetalSale>[];
+    if (sales.isEmpty) return const SizedBox.shrink();
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final String currency = ref.watch(baseCurrencyProvider);
+    final Map<String, double> rates = ref.watch(ratesProvider);
+    final Locale locale = Localizations.localeOf(context);
+    return Padding(
+      padding: const EdgeInsets.only(top: DsSpacing.sm),
+      child: GlassCard(
+        hoverable: false,
+        padding: const EdgeInsets.symmetric(
+            horizontal: DsSpacing.lg, vertical: DsSpacing.xs),
+        child: Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            tilePadding: EdgeInsets.zero,
+            childrenPadding: const EdgeInsets.only(bottom: DsSpacing.sm),
+            leading: Icon(Icons.sell_outlined, color: c.textMuted),
+            title: Text(l.metalsSoldTitle(sales.length),
+                style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+            children: <Widget>[
+              for (final MetalSale s in sales)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: DsSpacing.xs),
+                  child: Row(
+                    children: <Widget>[
+                      MetalBar(metal: s.sold.metal, width: 36),
+                      const SizedBox(width: DsSpacing.md),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                                s.sold.name.isNotEmpty
+                                    ? s.sold.name
+                                    : MetalText.name(l, s.sold.metal),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: t.titleSmall),
+                            Text(
+                                '${MetalText.grams(l, s.sold.grams)} · '
+                                '${l.metalsSoldOn(dayText(locale, s.soldOn))}',
+                                style: t.labelSmall
+                                    ?.copyWith(color: c.textMuted)),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Text(_money(context, s.received),
+                              style: t.titleSmall
+                                  ?.copyWith(fontWeight: FontWeight.w700)),
+                          if (MetalSales.gain(s, currency, rates)
+                              case final Gain g)
+                            _GainText(g, (String amount, String _) => amount,
+                                style: t.labelSmall),
+                        ],
+                      ),
+                      IconButton(
+                        tooltip: l.metalsUndoSale,
+                        icon: Icon(Icons.undo_rounded,
+                            size: 18, color: c.textFaint),
+                        onPressed: () async {
+                          final bool? ok = await showDialog<bool>(
+                            context: context,
+                            builder: (BuildContext ctx) => AlertDialog(
+                              title: Text(l.metalsUndoSale),
+                              actions: <Widget>[
+                                TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(ctx).pop(false),
+                                    child: Text(l.cancel)),
+                                TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(ctx).pop(true),
+                                    child: Text(l.metalsUndoSale)),
+                              ],
+                            ),
+                          );
+                          if (ok == true) {
+                            await ref.read(metalActionsProvider).undoSale(s);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// A gain or loss in its colour: [text] gets the signed amount and share
@@ -232,6 +341,7 @@ class _SummaryCard extends ConsumerWidget {
     final int withoutCost = MetalGains.withoutCost(
         ref.watch(metalHoldingsProvider).valueOrNull ??
             const <MetalHolding>[]);
+    final Gain? realized = ref.watch(metalRealizedProvider);
     return GlassCard(
       hoverable: false,
       child: Column(
@@ -255,14 +365,20 @@ class _SummaryCard extends ConsumerWidget {
             const SizedBox(height: DsSpacing.xs),
             _GainText(
               Gain(paid: paid.paid, value: paid.value),
-              (String amount, String percent) =>
-                  l.metalsGainSince(amount, percent),
+              (String amount, String percent) => realized == null
+                  ? l.metalsGainSince(amount, percent)
+                  : l.metalsOnPaper(amount, percent),
               style: t.labelLarge,
             ),
             if (withoutCost > 0)
               Text(l.metalsNoCostNote(withoutCost),
                   style: t.bodySmall?.copyWith(color: c.textFaint)),
           ],
+          // What selling has already brought in, apart.
+          if (realized != null && !_masked(context))
+            _GainText(realized,
+                (String amount, String _) => l.metalsRealized(amount),
+                style: t.labelLarge),
           const SizedBox(height: DsSpacing.md),
           for (final Metal m in Metal.values)
             if (summary.pureGrams.containsKey(m))
@@ -425,7 +541,9 @@ class _HoldingTile extends ConsumerWidget {
                     Icon(Icons.more_vert_rounded, size: 18, color: c.textFaint),
                 color: c.bgElevated,
                 onSelected: (String v) async {
-                  if (v == 'edit') {
+                  if (v == 'sell') {
+                    await MetalSaleSheet.show(context, h);
+                  } else if (v == 'edit') {
                     await MetalEditorSheet.show(context, existing: h);
                   } else if (v == 'delete') {
                     final bool? ok = await showDialog<bool>(
@@ -448,6 +566,7 @@ class _HoldingTile extends ConsumerWidget {
                   }
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(value: 'sell', child: Text(l.metalsSell)),
                   PopupMenuItem<String>(value: 'edit', child: Text(l.edit)),
                   PopupMenuItem<String>(value: 'delete', child: Text(l.delete)),
                 ],

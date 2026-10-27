@@ -1555,5 +1555,20 @@
   "metalsPaidCurrency": "Kuɗi",
   "metalsPaidInBase": "Daidai da kuɗinka ({currency})",
   "metalsPaidInBaseHint": "An lissafa da farashin musaya na yau; canza idan ya bambanta ranar saye.",
-  "metalsMetalOnly": "Ba tare da kuɗin aiki ba {percent} · kuɗin aiki {making}"
+  "metalsMetalOnly": "Ba tare da kuɗin aiki ba {percent} · kuɗin aiki {making}",
+  "metalsSell": "Sayar",
+  "metalsSellTitle": "Sayar da {name}",
+  "metalsSellGrams": "Gram nawa ka sayar?",
+  "metalsSellOf": "daga {grams}",
+  "metalsSellTooMany": "Fiye da abin da ke cikin wannan abu",
+  "metalsSellReceived": "Nawa ka karɓa?",
+  "metalsSellDate": "Ranar sayarwa",
+  "metalsSellAsIncome": "Rubuta kuɗin a matsayin samun kuɗi",
+  "metalsSellPreview": "Ribar da ka samu: {amount}",
+  "metalsRealized": "An samu daga sayarwa: {amount}",
+  "metalsOnPaper": "{amount} ({percent}) a takarda, kan abin da kake da shi",
+  "metalsSoldTitle": "Abin da na sayar ({count})",
+  "metalsSoldOn": "An sayar {date}",
+  "metalsUndoSale": "Soke sayarwar",
+  "metalsSaleIncome": "Sayar da {name}"
 }
