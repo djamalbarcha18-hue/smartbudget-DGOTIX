@@ -395,6 +395,14 @@ class _HoldingTile extends ConsumerWidget {
                               ? '$bought · ${l.metalsNoCost}'
                               : bought,
                           style: t.labelSmall?.copyWith(color: c.textFaint)),
+                    // Jewellery: what the metal itself did, apart from the
+                    // workmanship paid.
+                    if (gain?.metalOnly?.ratio != null && !_masked(context))
+                      Text(
+                        l.metalsMetalOnly(_percent(gain!.metalOnly!.ratio!),
+                            _inline(gain.making!)),
+                        style: t.labelSmall?.copyWith(color: c.textMuted),
+                      ),
                   ],
                 ),
               ),

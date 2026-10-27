@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "Pagato",
   "metalsPeriodGain": "Effetto del prezzo in questo periodo: {amount} ({percent})",
   "metalsPeriodNote": "I nuovi acquisti non contano mai come guadagno.",
-  "metalsChartNeedsCost": "Inserisci quanto hai pagato per ogni pezzo per vedere i guadagni nel grafico."
+  "metalsChartNeedsCost": "Inserisci quanto hai pagato per ogni pezzo per vedere i guadagni nel grafico.",
+  "metalsAddMaking": "Di cui lavorazione?",
+  "metalsFieldMaking": "Lavorazione",
+  "metalsMakingTooHigh": "La lavorazione non può superare il prezzo pagato",
+  "metalsPaidCurrency": "Valuta",
+  "metalsPaidInBase": "Equivale nella tua valuta ({currency})",
+  "metalsPaidInBaseHint": "Calcolato al cambio di oggi; modificalo se il giorno dell'acquisto il cambio era diverso.",
+  "metalsMetalOnly": "Senza lavorazione {percent} · lavorazione {making}"
 }

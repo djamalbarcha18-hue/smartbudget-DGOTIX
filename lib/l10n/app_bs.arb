@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "Plaćeno",
   "metalsPeriodGain": "Uticaj cijene u ovom periodu: {amount} ({percent})",
   "metalsPeriodNote": "Nove kupovine se nikad ne računaju kao zarada.",
-  "metalsChartNeedsCost": "Unesite koliko ste platili za svaki komad da vidite zaradu na grafikonu."
+  "metalsChartNeedsCost": "Unesite koliko ste platili za svaki komad da vidite zaradu na grafikonu.",
+  "metalsAddMaking": "Uključuje izradu?",
+  "metalsFieldMaking": "Izrada",
+  "metalsMakingTooHigh": "Izrada ne može biti veća od plaćenog",
+  "metalsPaidCurrency": "Valuta",
+  "metalsPaidInBase": "Iznosi u vašoj valuti ({currency})",
+  "metalsPaidInBaseHint": "Izračunato po današnjem kursu; promijenite ako je kurs na dan kupovine bio drugačiji.",
+  "metalsMetalOnly": "Bez izrade {percent} · izrada {making}"
 }

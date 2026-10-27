@@ -1821,5 +1821,14 @@
   "metalsPeriodGain": "From the price over this period: {amount} ({percent})",
   "@metalsPeriodGain": {"placeholders": {"amount": {"type": "String"}, "percent": {"type": "String"}}},
   "metalsPeriodNote": "New purchases are never counted as gains.",
-  "metalsChartNeedsCost": "Add what you paid for every piece to see your gains on the chart."
+  "metalsChartNeedsCost": "Add what you paid for every piece to see your gains on the chart.",
+  "metalsAddMaking": "Includes workmanship?",
+  "metalsFieldMaking": "Workmanship",
+  "metalsMakingTooHigh": "Workmanship can't be more than you paid",
+  "metalsPaidCurrency": "Currency",
+  "metalsPaidInBase": "Came to, in your currency ({currency})",
+  "@metalsPaidInBase": {"placeholders": {"currency": {"type": "String"}}},
+  "metalsPaidInBaseHint": "Worked out at today's rate; change it if the rate was different on the day you bought.",
+  "metalsMetalOnly": "Without workmanship {percent} · workmanship {making}",
+  "@metalsMetalOnly": {"placeholders": {"percent": {"type": "String"}, "making": {"type": "String"}}}
 }

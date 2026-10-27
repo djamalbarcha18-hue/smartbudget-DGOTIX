@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "Заплачено",
   "metalsPeriodGain": "Влияние цены за этот период: {amount} ({percent})",
   "metalsPeriodNote": "Новые покупки никогда не считаются доходом.",
-  "metalsChartNeedsCost": "Укажите, сколько вы заплатили за каждый предмет, чтобы видеть доход на графике."
+  "metalsChartNeedsCost": "Укажите, сколько вы заплатили за каждый предмет, чтобы видеть доход на графике.",
+  "metalsAddMaking": "Включая работу?",
+  "metalsFieldMaking": "Работа",
+  "metalsMakingTooHigh": "Работа не может стоить больше, чем вы заплатили",
+  "metalsPaidCurrency": "Валюта",
+  "metalsPaidInBase": "В вашей валюте ({currency})",
+  "metalsPaidInBaseHint": "Пересчитано по сегодняшнему курсу; измените, если в день покупки курс был другим.",
+  "metalsMetalOnly": "Без работы {percent} · работа {making}"
 }

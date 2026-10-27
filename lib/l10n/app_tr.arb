@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "Ödenen",
   "metalsPeriodGain": "Bu dönemde fiyatın etkisi: {amount} ({percent})",
   "metalsPeriodNote": "Yeni alışlar asla kazanç sayılmaz.",
-  "metalsChartNeedsCost": "Kazancını grafikte görmek için her parçaya ne ödediğini ekle."
+  "metalsChartNeedsCost": "Kazancını grafikte görmek için her parçaya ne ödediğini ekle.",
+  "metalsAddMaking": "İşçilik dahil mi?",
+  "metalsFieldMaking": "İşçilik",
+  "metalsMakingTooHigh": "İşçilik ödediğinden fazla olamaz",
+  "metalsPaidCurrency": "Para birimi",
+  "metalsPaidInBase": "Kendi para biriminde ({currency})",
+  "metalsPaidInBaseHint": "Bugünkü kurla hesaplandı; alış günü kur farklıysa değiştir.",
+  "metalsMetalOnly": "İşçiliksiz {percent} · işçilik {making}"
 }

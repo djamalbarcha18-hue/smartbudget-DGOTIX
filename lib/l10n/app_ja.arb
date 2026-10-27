@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "支払い",
   "metalsPeriodGain": "この期間の価格の影響：{amount}（{percent}）",
   "metalsPeriodNote": "新しい購入が利益として数えられることはありません。",
-  "metalsChartNeedsCost": "各品の購入価格を入れると、グラフで損益が見られます。"
+  "metalsChartNeedsCost": "各品の購入価格を入れると、グラフで損益が見られます。",
+  "metalsAddMaking": "加工賃を含む？",
+  "metalsFieldMaking": "加工賃",
+  "metalsMakingTooHigh": "加工賃は支払額を超えられません",
+  "metalsPaidCurrency": "通貨",
+  "metalsPaidInBase": "あなたの通貨で（{currency}）",
+  "metalsPaidInBaseHint": "今日のレートで計算しました。購入日のレートが違えば修正してください。",
+  "metalsMetalOnly": "加工賃を除く {percent} · 加工賃 {making}"
 }

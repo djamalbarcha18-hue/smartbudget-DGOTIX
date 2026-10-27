@@ -4,14 +4,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/localization/fallback_localizations.dart';
+import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_glass.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
 import 'package:smartbudget/features/metals/domain/metal_gains.dart';
 import 'package:smartbudget/features/metals/domain/metal_history.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
 import 'package:smartbudget/features/metals/domain/metals_valuation.dart';
+import 'package:smartbudget/features/metals/presentation/metal_editor_sheet.dart';
 import 'package:smartbudget/features/metals/presentation/metals_page.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -52,6 +56,12 @@ final List<MetalHolding> _lots = <MetalHolding>[
 ];
 
 int _minor(Money m) => m.minorUnits;
+
+/// The rates above, fixed.
+class _FixedRates extends RatesController {
+  @override
+  Map<String, double> build() => _rates;
+}
 
 void main() {
   group('each purchase keeps its own result', () {
@@ -173,6 +183,139 @@ void main() {
               .paid,
           isNull);
     });
+  });
+
+  group('workmanship', () {
+    // 10 g of 21 karat for 120,000, of which 30,000 workmanship; worth
+    // 105,000 in metal today.
+    final MetalHolding bracelet = MetalHolding(
+      id: 'b',
+      metal: Metal.gold,
+      grams: 10,
+      purity: 21,
+      paid: const Money(12000000, 'DZD'),
+      making: const Money(3000000, 'DZD'),
+      createdAt: DateTime(2026, 1, 1),
+    );
+
+    test('the result counts everything paid; the metal alone is apart', () {
+      final Gain g =
+          MetalGains.ofHolding(bracelet, _prices[Metal.gold], _rates)!;
+      expect(g.amount.minorUnits, -1500000); // workmanship is spent
+      expect(g.ratio, closeTo(-0.125, 1e-9));
+      expect(g.making!.minorUnits, 3000000);
+      final Gain metal = g.metalOnly!;
+      expect(metal.amount.minorUnits, 1500000); // the gold itself rose
+      expect(metal.ratio, closeTo(1 / 6, 1e-9));
+    });
+
+    test('the average price of a gram leaves workmanship out', () {
+      final MetalAverage a = MetalGains.averages(
+          <MetalHolding>[bracelet], _prices, 'DZD', _rates)[Metal.gold]!;
+      expect(a.paidPerGram.asDouble, closeTo(90000 / 8.75, 0.01));
+    });
+
+    test('kept with the piece, and older pieces still read', () {
+      final MetalHolding back = MetalHolding.fromJson(bracelet.toJson());
+      expect(back.making, const Money(3000000, 'DZD'));
+      expect(MetalHolding.fromJson(_lots[0].toJson()).making, isNull);
+    });
+  });
+
+  group('paid in another currency', () {
+    // 600 EUR that came to 85,000 DZD on the day (today's rate: 90,000).
+    final MetalHolding abroad = MetalHolding(
+      id: 'a',
+      metal: Metal.gold,
+      grams: 10,
+      purity: 21,
+      paid: const Money(60000, 'EUR'),
+      paidBase: const Money(8500000, 'DZD'),
+      createdAt: DateTime(2026, 1, 1),
+    );
+
+    test("what it came to then counts, not today's rate", () {
+      final Gain g = MetalGains.ofHolding(abroad, _prices[Metal.gold], _rates)!;
+      expect(g.paid.minorUnits, 8500000);
+      expect(g.amount.minorUnits, 2000000);
+    });
+
+    test('kept with the piece', () {
+      expect(MetalHolding.fromJson(abroad.toJson()).paidBase,
+          const Money(8500000, 'DZD'));
+    });
+
+    test('a piece paid in the base currency needs nothing more', () {
+      expect(MetalsValuation.cost(_lots[0], 'DZD', _rates), _lots[0].paid);
+    });
+  });
+
+  testWidgets('adding: currency, what it came to, workmanship',
+      (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues(<String, Object>{
+      'sb_base_currency': 'DZD',
+    });
+    tester.view.physicalSize = const Size(1170, 5000);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    final ProviderContainer c = ProviderContainer(overrides: <Override>[
+      metalPricesProvider.overrideWithValue(_prices),
+      ratesProvider.overrideWith(_FixedRates.new),
+    ]);
+    addTearDown(c.dispose);
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: c,
+      child: MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          ...AppLocalizations.localizationsDelegates,
+          ...fallbackLocalizationsDelegates,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: ThemeData(extensions: const <ThemeExtension<dynamic>>[
+          DsColors.light,
+          DsGlass.light,
+        ]),
+        home: const Scaffold(body: MetalEditorSheet()),
+      ),
+    ));
+    await tester.pumpAndSettle();
+    final AppLocalizations l =
+        await AppLocalizations.delegate.load(const Locale('en'));
+    final String base = c.read(baseCurrencyProvider);
+    // Simple at first: no extra fields.
+    expect(find.text(l.metalsPaidInBase(base)), findsNothing);
+    expect(find.text(l.metalsFieldMaking), findsNothing);
+
+    await tester.enterText(find.byType(TextFormField).first, '10');
+    await tester.enterText(find.byType(TextFormField).at(2), '600');
+    // Paid in euros: what it came to appears, filled in at today's rate.
+    await tester.tap(find.byType(DropdownButtonFormField<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('EUR').last);
+    await tester.pumpAndSettle();
+    expect(find.text(l.metalsPaidInBase(base)), findsOneWidget);
+    final double rate = _rates[base]! / _rates['EUR']!;
+    expect(find.text(AmountInput.text(600 * rate)), findsOneWidget);
+    // The user knows better: their own figure that day.
+    await tester.enterText(find.byType(TextFormField).at(3), '85000');
+
+    // Workmanship: opened on demand; more than paid is refused.
+    await tester.tap(find.text(l.metalsAddMaking));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextFormField).at(4), '700');
+    await tester.tap(find.text(l.save));
+    await tester.pumpAndSettle();
+    expect(find.text(l.metalsMakingTooHigh), findsOneWidget);
+    await tester.enterText(find.byType(TextFormField).at(4), '100');
+    await tester.tap(find.text(l.save));
+    await tester.pumpAndSettle();
+
+    final MetalHolding saved = (await tester
+        .runAsync(() => c.read(metalStoreProvider).all()))!.single;
+    expect(saved.paid, const Money(60000, 'EUR'));
+    expect(saved.paidBase, Money.fromDouble(85000, base));
+    expect(saved.making, const Money(10000, 'EUR'));
   });
 
   testWidgets('the page: each piece, the average and the years',

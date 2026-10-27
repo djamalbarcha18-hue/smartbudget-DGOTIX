@@ -80,6 +80,23 @@ abstract final class MetalsValuation {
     return MetalsCalculator.perGram(usdPerOunce) * rate;
   }
 
+  /// What [h] cost in [currency]: what it came to then when that was noted
+  /// ([MetalHolding.paidBase]), else its price converted at the app's
+  /// rates. Null without a cost or a rate.
+  static Money? cost(
+      MetalHolding h, String currency, Map<String, double> ratesVsUsd) {
+    final Money? paid = h.paid;
+    if (paid == null || paid.minorUnits <= 0) return null;
+    if (paid.currencyCode == currency) return paid;
+    final Money? base = h.paidBase;
+    if (base != null && base.minorUnits > 0) {
+      return base.currencyCode == currency
+          ? base
+          : WalletMath.convert(base, currency, ratesVsUsd);
+    }
+    return WalletMath.convert(paid, currency, ratesVsUsd);
+  }
+
   /// [h]'s value at [price], in the price's currency.
   static Money value(MetalHolding h, MetalPrice price) =>
       Money.fromDouble(h.grams * price.at(h.metal, h.purity), price.currency);
@@ -107,9 +124,7 @@ abstract final class MetalsValuation {
       final Money v = value(h, p);
       total += v.minorUnits;
       byMetal[h.metal] = (byMetal[h.metal] ?? 0) + v.minorUnits;
-      final Money? cost = h.paid == null
-          ? null
-          : WalletMath.convert(h.paid!, currency, ratesVsUsd);
+      final Money? cost = MetalsValuation.cost(h, currency, ratesVsUsd);
       if (cost != null) {
         anyPaid = true;
         paid += cost.minorUnits;

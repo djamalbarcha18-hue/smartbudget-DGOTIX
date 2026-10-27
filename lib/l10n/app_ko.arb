@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "지불",
   "metalsPeriodGain": "이 기간 가격의 영향: {amount} ({percent})",
   "metalsPeriodNote": "새 구입은 절대 수익으로 계산되지 않습니다.",
-  "metalsChartNeedsCost": "차트에서 수익을 보려면 각 항목의 구입가를 입력하세요."
+  "metalsChartNeedsCost": "차트에서 수익을 보려면 각 항목의 구입가를 입력하세요.",
+  "metalsAddMaking": "세공비 포함?",
+  "metalsFieldMaking": "세공비",
+  "metalsMakingTooHigh": "세공비는 지불액보다 클 수 없습니다",
+  "metalsPaidCurrency": "통화",
+  "metalsPaidInBase": "내 통화로 ({currency})",
+  "metalsPaidInBaseHint": "오늘 환율로 계산했습니다. 구입일 환율이 달랐다면 바꾸세요.",
+  "metalsMetalOnly": "세공비 제외 {percent} · 세공비 {making}"
 }

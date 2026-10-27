@@ -51,6 +51,8 @@ class MetalHolding {
     required this.purity,
     this.name = '',
     this.paid,
+    this.paidBase,
+    this.making,
     this.boughtOn,
     required this.createdAt,
   });
@@ -69,6 +71,13 @@ class MetalHolding {
 
   /// What it cost, in the currency paid (optional).
   final Money? paid;
+
+  /// When [paid] is in another currency: what it came to in the user's
+  /// currency at the time (so later exchange rates don't change the gain).
+  final Money? paidBase;
+
+  /// The part of [paid] that was workmanship (jewellery), same currency.
+  final Money? making;
   final DateTime? boughtOn;
   final DateTime createdAt;
 
@@ -83,6 +92,9 @@ class MetalHolding {
         if (name.isNotEmpty) 'name': name,
         if (paid != null) 'paidMinor': paid!.minorUnits,
         if (paid != null) 'paidCurrency': paid!.currencyCode,
+        if (paidBase != null) 'paidBaseMinor': paidBase!.minorUnits,
+        if (paidBase != null) 'paidBaseCurrency': paidBase!.currencyCode,
+        if (making != null) 'makingMinor': making!.minorUnits,
         if (boughtOn != null) 'boughtOn': boughtOn!.toIso8601String(),
         'createdAt': createdAt.toIso8601String(),
       };
@@ -100,6 +112,15 @@ class MetalHolding {
           ? null
           : Money((json['paidMinor'] as num).toInt(),
               (json['paidCurrency'] as String?) ?? 'USD'),
+      paidBase: json['paidBaseMinor'] is num &&
+              json['paidBaseCurrency'] is String
+          ? Money((json['paidBaseMinor'] as num).toInt(),
+              json['paidBaseCurrency'] as String)
+          : null,
+      making: json['paidMinor'] != null && json['makingMinor'] is num
+          ? Money((json['makingMinor'] as num).toInt(),
+              (json['paidCurrency'] as String?) ?? 'USD')
+          : null,
       boughtOn: DateTime.tryParse((json['boughtOn'] as String?) ?? ''),
       createdAt: DateTime.tryParse((json['createdAt'] as String?) ?? '') ??
           DateTime(2000),

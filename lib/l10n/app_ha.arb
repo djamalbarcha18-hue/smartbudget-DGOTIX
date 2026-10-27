@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "An biya",
   "metalsPeriodGain": "Tasirin farashi a wannan lokaci: {amount} ({percent})",
   "metalsPeriodNote": "Sabbin sayayya ba a taɓa ƙidaya su riba ba.",
-  "metalsChartNeedsCost": "Shigar da abin da ka biya kan kowane abu don ganin ribarka a jadawali."
+  "metalsChartNeedsCost": "Shigar da abin da ka biya kan kowane abu don ganin ribarka a jadawali.",
+  "metalsAddMaking": "Akwai kuɗin aiki a ciki?",
+  "metalsFieldMaking": "Kuɗin aiki",
+  "metalsMakingTooHigh": "Kuɗin aiki ba zai fi abin da ka biya ba",
+  "metalsPaidCurrency": "Kuɗi",
+  "metalsPaidInBase": "Daidai da kuɗinka ({currency})",
+  "metalsPaidInBaseHint": "An lissafa da farashin musaya na yau; canza idan ya bambanta ranar saye.",
+  "metalsMetalOnly": "Ba tare da kuɗin aiki ba {percent} · kuɗin aiki {making}"
 }

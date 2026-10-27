@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "चुकाए",
   "metalsPeriodGain": "इस अवधि में दाम का असर: {amount} ({percent})",
   "metalsPeriodNote": "नई खरीद कभी मुनाफ़ा नहीं गिनी जाती।",
-  "metalsChartNeedsCost": "चार्ट पर मुनाफ़ा देखने के लिए हर चीज़ की चुकाई कीमत भरें।"
+  "metalsChartNeedsCost": "चार्ट पर मुनाफ़ा देखने के लिए हर चीज़ की चुकाई कीमत भरें।",
+  "metalsAddMaking": "क्या इसमें बनवाई शामिल है?",
+  "metalsFieldMaking": "बनवाई",
+  "metalsMakingTooHigh": "बनवाई चुकाई कीमत से ज़्यादा नहीं हो सकती",
+  "metalsPaidCurrency": "मुद्रा",
+  "metalsPaidInBase": "आपकी मुद्रा में ({currency})",
+  "metalsPaidInBaseHint": "आज की दर से निकाला; अगर खरीद के दिन दर अलग थी तो बदल दें।",
+  "metalsMetalOnly": "बनवाई के बिना {percent} · बनवाई {making}"
 }

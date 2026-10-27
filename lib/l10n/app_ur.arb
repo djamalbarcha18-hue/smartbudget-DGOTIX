@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "ادا کیے",
   "metalsPeriodGain": "اس مدت میں قیمت کا اثر: {amount} ({percent})",
   "metalsPeriodNote": "نئی خریداری کبھی منافع شمار نہیں ہوتی۔",
-  "metalsChartNeedsCost": "چارٹ پر منافع دیکھنے کے لیے ہر چیز کی ادا کی گئی قیمت درج کریں۔"
+  "metalsChartNeedsCost": "چارٹ پر منافع دیکھنے کے لیے ہر چیز کی ادا کی گئی قیمت درج کریں۔",
+  "metalsAddMaking": "کیا مزدوری شامل ہے؟",
+  "metalsFieldMaking": "مزدوری",
+  "metalsMakingTooHigh": "مزدوری ادا کی گئی رقم سے زیادہ نہیں ہو سکتی",
+  "metalsPaidCurrency": "کرنسی",
+  "metalsPaidInBase": "آپ کی کرنسی میں ({currency})",
+  "metalsPaidInBaseHint": "آج کے نرخ پر حساب کیا؛ اگر خریداری کے دن نرخ مختلف تھا تو بدل دیں۔",
+  "metalsMetalOnly": "مزدوری کے بغیر {percent} · مزدوری {making}"
 }

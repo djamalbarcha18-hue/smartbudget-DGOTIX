@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "Betaald",
   "metalsPeriodGain": "Door de prijs in deze periode: {amount} ({percent})",
   "metalsPeriodNote": "Nieuwe aankopen tellen nooit als winst.",
-  "metalsChartNeedsCost": "Vul voor elk stuk in wat je betaalde om je winst in de grafiek te zien."
+  "metalsChartNeedsCost": "Vul voor elk stuk in wat je betaalde om je winst in de grafiek te zien.",
+  "metalsAddMaking": "Inclusief maakloon?",
+  "metalsFieldMaking": "Maakloon",
+  "metalsMakingTooHigh": "Het maakloon kan niet hoger zijn dan wat je betaalde",
+  "metalsPaidCurrency": "Valuta",
+  "metalsPaidInBase": "Komt overeen in jouw valuta ({currency})",
+  "metalsPaidInBaseHint": "Berekend tegen de koers van vandaag; pas aan als de koers op de aankoopdag anders was.",
+  "metalsMetalOnly": "Zonder maakloon {percent} · maakloon {making}"
 }

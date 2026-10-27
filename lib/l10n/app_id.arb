@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "Dibayar",
   "metalsPeriodGain": "Dari harga selama periode ini: {amount} ({percent})",
   "metalsPeriodNote": "Pembelian baru tidak pernah dihitung sebagai keuntungan.",
-  "metalsChartNeedsCost": "Isi harga yang Anda bayar untuk tiap barang agar keuntungan tampil di grafik."
+  "metalsChartNeedsCost": "Isi harga yang Anda bayar untuk tiap barang agar keuntungan tampil di grafik.",
+  "metalsAddMaking": "Termasuk ongkos pembuatan?",
+  "metalsFieldMaking": "Ongkos pembuatan",
+  "metalsMakingTooHigh": "Ongkos pembuatan tidak boleh melebihi harga yang dibayar",
+  "metalsPaidCurrency": "Mata uang",
+  "metalsPaidInBase": "Setara dalam mata uang Anda ({currency})",
+  "metalsPaidInBaseHint": "Dihitung dengan kurs hari ini; ubah jika kurs pada hari pembelian berbeda.",
+  "metalsMetalOnly": "Tanpa ongkos {percent} · ongkos {making}"
 }

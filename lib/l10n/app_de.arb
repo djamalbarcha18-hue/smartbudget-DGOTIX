@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "Bezahlt",
   "metalsPeriodGain": "Durch den Preis in diesem Zeitraum: {amount} ({percent})",
   "metalsPeriodNote": "Neue Käufe zählen nie als Gewinn.",
-  "metalsChartNeedsCost": "Gib für jedes Stück an, was du bezahlt hast, um deinen Gewinn im Diagramm zu sehen."
+  "metalsChartNeedsCost": "Gib für jedes Stück an, was du bezahlt hast, um deinen Gewinn im Diagramm zu sehen.",
+  "metalsAddMaking": "Davon Arbeitslohn?",
+  "metalsFieldMaking": "Arbeitslohn",
+  "metalsMakingTooHigh": "Der Arbeitslohn kann nicht höher sein als der Preis",
+  "metalsPaidCurrency": "Währung",
+  "metalsPaidInBase": "Entspricht in deiner Währung ({currency})",
+  "metalsPaidInBaseHint": "Zum heutigen Kurs berechnet; ändere es, wenn der Kurs am Kauftag anders war.",
+  "metalsMetalOnly": "Ohne Arbeitslohn {percent} · Arbeitslohn {making}"
 }

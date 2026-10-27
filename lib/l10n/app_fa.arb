@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "پرداختی",
   "metalsPeriodGain": "اثر قیمت در این دوره: {amount} ({percent})",
   "metalsPeriodNote": "خریدهای تازه هرگز سود حساب نمی‌شوند.",
-  "metalsChartNeedsCost": "برای دیدن سود روی نمودار، مبلغ پرداختی هر قطعه را وارد کنید."
+  "metalsChartNeedsCost": "برای دیدن سود روی نمودار، مبلغ پرداختی هر قطعه را وارد کنید.",
+  "metalsAddMaking": "شامل اجرت؟",
+  "metalsFieldMaking": "اجرت ساخت",
+  "metalsMakingTooHigh": "اجرت نمی‌تواند بیشتر از مبلغ پرداختی باشد",
+  "metalsPaidCurrency": "ارز",
+  "metalsPaidInBase": "معادل به ارز شما ({currency})",
+  "metalsPaidInBaseHint": "با نرخ امروز حساب شد؛ اگر نرخ روز خرید فرق داشت، آن را تغییر دهید.",
+  "metalsMetalOnly": "بدون اجرت {percent} · اجرت {making}"
 }

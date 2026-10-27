@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "Betaal",
   "metalsPeriodGain": "Deur die prys in hierdie tydperk: {amount} ({percent})",
   "metalsPeriodNote": "Nuwe aankope tel nooit as wins nie.",
-  "metalsChartNeedsCost": "Vul in wat jy vir elke stuk betaal het om jou wins op die grafiek te sien."
+  "metalsChartNeedsCost": "Vul in wat jy vir elke stuk betaal het om jou wins op die grafiek te sien.",
+  "metalsAddMaking": "Sluit vakmanskap in?",
+  "metalsFieldMaking": "Vakmanskap",
+  "metalsMakingTooHigh": "Vakmanskap kan nie meer as die prys wees nie",
+  "metalsPaidCurrency": "Geldeenheid",
+  "metalsPaidInBase": "In jou geldeenheid ({currency})",
+  "metalsPaidInBaseHint": "Teen vandag se koers bereken; verander dit as die koers op die aankoopdag anders was.",
+  "metalsMetalOnly": "Sonder vakmanskap {percent} · vakmanskap {making}"
 }

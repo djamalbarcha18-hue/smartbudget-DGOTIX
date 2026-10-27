@@ -1748,5 +1748,12 @@
   "metalsLegendPaid": "ما دفعته",
   "metalsPeriodGain": "أثر السعر خلال هذه الفترة: {amount} ({percent})",
   "metalsPeriodNote": "مشترياتك الجديدة لا تُحسب ربحًا أبدًا.",
-  "metalsChartNeedsCost": "أضف ما دفعته في كل قطعة لترى ربحك على الرسم."
+  "metalsChartNeedsCost": "أضف ما دفعته في كل قطعة لترى ربحك على الرسم.",
+  "metalsAddMaking": "منها مصنعية؟",
+  "metalsFieldMaking": "المصنعية",
+  "metalsMakingTooHigh": "المصنعية أكثر مما دفعته",
+  "metalsPaidCurrency": "العملة",
+  "metalsPaidInBase": "يعادل بعملتك ({currency})",
+  "metalsPaidInBaseHint": "حسبناه بسعر صرف اليوم؛ عدّله إن كان سعر الصرف يوم الشراء مختلفًا.",
+  "metalsMetalOnly": "دون المصنعية {percent} · المصنعية {making}"
 }

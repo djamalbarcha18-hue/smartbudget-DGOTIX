@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "Pago",
   "metalsPeriodGain": "Efeito do preço neste período: {amount} ({percent})",
   "metalsPeriodNote": "Compras novas nunca contam como ganho.",
-  "metalsChartNeedsCost": "Informe quanto pagou por cada peça para ver seus ganhos no gráfico."
+  "metalsChartNeedsCost": "Informe quanto pagou por cada peça para ver seus ganhos no gráfico.",
+  "metalsAddMaking": "Inclui mão de obra?",
+  "metalsFieldMaking": "Mão de obra",
+  "metalsMakingTooHigh": "A mão de obra não pode passar do valor pago",
+  "metalsPaidCurrency": "Moeda",
+  "metalsPaidInBase": "Equivale na sua moeda ({currency})",
+  "metalsPaidInBaseHint": "Calculado no câmbio de hoje; altere se o câmbio era outro no dia da compra.",
+  "metalsMetalOnly": "Sem mão de obra {percent} · mão de obra {making}"
 }

@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "Dibayar",
   "metalsPeriodGain": "Kesan harga dalam tempoh ini: {amount} ({percent})",
   "metalsPeriodNote": "Pembelian baharu tidak pernah dikira sebagai keuntungan.",
-  "metalsChartNeedsCost": "Masukkan harga yang anda bayar bagi setiap barang untuk melihat keuntungan pada carta."
+  "metalsChartNeedsCost": "Masukkan harga yang anda bayar bagi setiap barang untuk melihat keuntungan pada carta.",
+  "metalsAddMaking": "Termasuk upah tukang?",
+  "metalsFieldMaking": "Upah tukang",
+  "metalsMakingTooHigh": "Upah tukang tidak boleh melebihi harga dibayar",
+  "metalsPaidCurrency": "Mata wang",
+  "metalsPaidInBase": "Bersamaan dalam mata wang anda ({currency})",
+  "metalsPaidInBaseHint": "Dikira pada kadar hari ini; ubah jika kadar pada hari pembelian berbeza.",
+  "metalsMetalOnly": "Tanpa upah {percent} · upah {making}"
 }

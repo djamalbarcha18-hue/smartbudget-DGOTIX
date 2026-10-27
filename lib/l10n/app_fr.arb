@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "Payé",
   "metalsPeriodGain": "Effet du prix sur cette période : {amount} ({percent})",
   "metalsPeriodNote": "Les nouveaux achats ne comptent jamais comme des gains.",
-  "metalsChartNeedsCost": "Indiquez ce que vous avez payé pour chaque pièce pour voir vos gains sur le graphique."
+  "metalsChartNeedsCost": "Indiquez ce que vous avez payé pour chaque pièce pour voir vos gains sur le graphique.",
+  "metalsAddMaking": "Dont façon ?",
+  "metalsFieldMaking": "Façon",
+  "metalsMakingTooHigh": "La façon ne peut pas dépasser le prix payé",
+  "metalsPaidCurrency": "Devise",
+  "metalsPaidInBase": "Équivalent dans votre devise ({currency})",
+  "metalsPaidInBaseHint": "Calculé au taux du jour ; modifiez-le si le taux était différent le jour de l'achat.",
+  "metalsMetalOnly": "Hors façon {percent} · façon {making}"
 }

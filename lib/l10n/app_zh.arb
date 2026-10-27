@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "已付",
   "metalsPeriodGain": "此期间价格的影响：{amount}（{percent}）",
   "metalsPeriodNote": "新购入永远不算作收益。",
-  "metalsChartNeedsCost": "为每件填写购买价，即可在图表上看到收益。"
+  "metalsChartNeedsCost": "为每件填写购买价，即可在图表上看到收益。",
+  "metalsAddMaking": "含加工费？",
+  "metalsFieldMaking": "加工费",
+  "metalsMakingTooHigh": "加工费不能超过所付金额",
+  "metalsPaidCurrency": "货币",
+  "metalsPaidInBase": "折合您的货币（{currency}）",
+  "metalsPaidInBaseHint": "按今天的汇率计算；若购买当天汇率不同，请修改。",
+  "metalsMetalOnly": "不含加工费 {percent} · 加工费 {making}"
 }

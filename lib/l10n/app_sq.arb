@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "Paguar",
   "metalsPeriodGain": "Ndikimi i çmimit në këtë periudhë: {amount} ({percent})",
   "metalsPeriodNote": "Blerjet e reja nuk llogariten kurrë si fitim.",
-  "metalsChartNeedsCost": "Shtoni sa paguat për çdo copë që të shihni fitimin në grafik."
+  "metalsChartNeedsCost": "Shtoni sa paguat për çdo copë që të shihni fitimin në grafik.",
+  "metalsAddMaking": "Përfshin punimin?",
+  "metalsFieldMaking": "Punimi",
+  "metalsMakingTooHigh": "Punimi nuk mund të jetë më shumë se sa paguat",
+  "metalsPaidCurrency": "Monedha",
+  "metalsPaidInBase": "Në monedhën tuaj ({currency})",
+  "metalsPaidInBaseHint": "U llogarit me kursin e sotëm; ndryshojeni nëse kursi ishte ndryshe ditën e blerjes.",
+  "metalsMetalOnly": "Pa punimin {percent} · punimi {making}"
 }

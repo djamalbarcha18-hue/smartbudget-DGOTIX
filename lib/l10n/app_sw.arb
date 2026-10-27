@@ -1548,5 +1548,12 @@
   "metalsLegendPaid": "Ulilipa",
   "metalsPeriodGain": "Athari ya bei katika kipindi hiki: {amount} ({percent})",
   "metalsPeriodNote": "Manunuzi mapya hayahesabiwi kamwe kuwa faida.",
-  "metalsChartNeedsCost": "Weka ulicholipa kwa kila kipande ili uone faida kwenye chati."
+  "metalsChartNeedsCost": "Weka ulicholipa kwa kila kipande ili uone faida kwenye chati.",
+  "metalsAddMaking": "Inajumuisha ufundi?",
+  "metalsFieldMaking": "Ufundi",
+  "metalsMakingTooHigh": "Ufundi hauwezi kuzidi ulicholipa",
+  "metalsPaidCurrency": "Sarafu",
+  "metalsPaidInBase": "Kwa sarafu yako ({currency})",
+  "metalsPaidInBaseHint": "Imehesabiwa kwa kiwango cha leo; ibadilishe kama kiwango kilikuwa tofauti siku ya kununua.",
+  "metalsMetalOnly": "Bila ufundi {percent} · ufundi {making}"
 }

@@ -4,15 +4,26 @@ import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/metals/domain/metal_history.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
 import 'package:smartbudget/features/metals/domain/metals_valuation.dart';
-import 'package:smartbudget/features/wallets/domain/wallet.dart';
 
 /// Gain or loss on what was paid: [value] against [paid], same currency.
 @immutable
 class Gain {
-  const Gain({required this.paid, required this.value});
+  const Gain({required this.paid, required this.value, this.making});
 
   final Money paid;
   final Money value;
+
+  /// The workmanship included in [paid], when noted (jewellery).
+  final Money? making;
+
+  /// The same without the workmanship: what the metal itself did.
+  Gain? get metalOnly {
+    final Money? m = making;
+    if (m == null || m.minorUnits <= 0) return null;
+    return Gain(
+        paid: Money(paid.minorUnits - m.minorUnits, paid.currencyCode),
+        value: value);
+  }
 
   Money get amount =>
       Money(value.minorUnits - paid.minorUnits, paid.currencyCode);
@@ -65,8 +76,8 @@ class YearGain {
 /// Gains on precious metals bought at different times and prices. Each piece
 /// or bar keeps its own cost, so nothing is averaged away: a piece bought
 /// cheap long ago and one bought dear last month each show their own result,
-/// and the totals add them up. Costs paid in another currency are converted
-/// at the app's rates (today's).
+/// and the totals add them up. A cost paid in another currency counts at
+/// what it came to then, when noted, else at the app's rates (today's).
 abstract final class MetalGains {
   /// When [h] was bought (the day it was added when no date was given).
   static DateTime boughtOn(MetalHolding h) => h.boughtOn ?? h.createdAt;
@@ -74,21 +85,34 @@ abstract final class MetalGains {
   /// [h]'s cost in [currency], or null (no cost given, or no rate for it).
   static Money? cost(
           MetalHolding h, String currency, Map<String, double> ratesVsUsd) =>
-      h.paid == null || h.paid!.minorUnits <= 0
-          ? null
-          : WalletMath.convert(h.paid!, currency, ratesVsUsd);
+      MetalsValuation.cost(h, currency, ratesVsUsd);
 
-  /// [h]'s gain at [price], or null without a price or a cost.
+  /// The share of [h]'s cost that was the metal (1 without workmanship).
+  static double metalShare(MetalHolding h) {
+    final Money? paid = h.paid, making = h.making;
+    if (paid == null || making == null || paid.minorUnits <= 0) return 1;
+    return (1 - making.minorUnits / paid.minorUnits).clamp(0, 1).toDouble();
+  }
+
+  /// [h]'s gain at [price], or null without a price or a cost. Everything
+  /// paid counts, workmanship included ([Gain.metalOnly] leaves it out).
   static Gain? ofHolding(
       MetalHolding h, MetalPrice? price, Map<String, double> ratesVsUsd) {
     if (price == null) return null;
     final Money? paid = cost(h, price.currency, ratesVsUsd);
     if (paid == null) return null;
-    return Gain(paid: paid, value: MetalsValuation.value(h, price));
+    final double share = metalShare(h);
+    return Gain(
+      paid: paid,
+      value: MetalsValuation.value(h, price),
+      making: share >= 1
+          ? null
+          : Money((paid.minorUnits * (1 - share)).round(), paid.currencyCode),
+    );
   }
 
   /// Per metal, the average cost of a pure gram over the purchases with a
-  /// known cost (metals with none are left out).
+  /// known cost, workmanship left out (metals with none are left out).
   static Map<Metal, MetalAverage> averages(
     List<MetalHolding> holdings,
     Map<Metal, MetalPrice> prices,
@@ -103,7 +127,9 @@ abstract final class MetalGains {
       final Money? c = cost(h, currency, ratesVsUsd);
       if (c == null) continue;
       grams[h.metal] = (grams[h.metal] ?? 0) + h.pureGrams;
-      paid[h.metal] = (paid[h.metal] ?? 0) + c.minorUnits;
+      // The metal only: workmanship isn't part of a gram's price.
+      paid[h.metal] =
+          (paid[h.metal] ?? 0) + (c.minorUnits * metalShare(h)).round();
     }
     return <Metal, MetalAverage>{
       for (final Metal m in grams.keys)
