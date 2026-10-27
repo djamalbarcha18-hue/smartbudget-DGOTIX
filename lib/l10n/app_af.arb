@@ -1575,6 +1575,5 @@
   "budgetMoreCategories": "Ander kategorieë ({count})",
   "txnMoreDetails": "Meer besonderhede (notas, betaalmetode)",
   "marketsOtherCountries": "Ander lande ({count})",
-  "marketsByCountry": "Wisselkoerse per land ({count})",
-  "backAgainToExit": "Druk weer terug om uit te gaan"
+  "marketsByCountry": "Wisselkoerse per land ({count})"
 }

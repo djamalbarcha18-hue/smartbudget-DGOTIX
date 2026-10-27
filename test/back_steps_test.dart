@@ -66,11 +66,6 @@ Future<void> _back(WidgetTester tester) async {
 }
 
 void main() {
-  late AppLocalizations l;
-  setUpAll(() async {
-    l = await AppLocalizations.delegate.load(const Locale('en'));
-  });
-
   testWidgets('before: pages opened from the menu, back closed the app',
       (WidgetTester tester) async {
     int closed = 0;
@@ -103,11 +98,22 @@ void main() {
     await _back(tester);
     expect(find.text('page dashboard'), findsOneWidget);
 
-    // Home: the first press says how to leave, the second leaves.
+    // Home: back leaves, as Android apps do; nothing to read first.
+    await _back(tester);
+    expect(exits, 1);
+  });
+
+  testWidgets('a page opened again: back never shows it twice',
+      (WidgetTester tester) async {
+    int exits = 0;
+    final GoRouter r = await _pump(
+        tester, _router(withBackSteps: true, onExit: () => exits++));
+    for (final String p in <String>['/budget', '/goals', '/budget']) {
+      r.go(p);
+      await tester.pumpAndSettle();
+    }
     await _back(tester);
     expect(find.text('page dashboard'), findsOneWidget);
-    expect(find.text(l.backAgainToExit), findsOneWidget);
-    expect(exits, 0);
     await _back(tester);
     expect(exits, 1);
   });

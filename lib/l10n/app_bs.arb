@@ -1575,6 +1575,5 @@
   "budgetMoreCategories": "Ostale kategorije ({count})",
   "txnMoreDetails": "Više detalja (bilješke, način plaćanja)",
   "marketsOtherCountries": "Ostale zemlje ({count})",
-  "marketsByCountry": "Kursevi po zemljama ({count})",
-  "backAgainToExit": "Pritisni nazad ponovo za izlaz"
+  "marketsByCountry": "Kursevi po zemljama ({count})"
 }

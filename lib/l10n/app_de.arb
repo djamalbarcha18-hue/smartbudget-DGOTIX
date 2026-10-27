@@ -1575,6 +1575,5 @@
   "budgetMoreCategories": "Weitere Kategorien ({count})",
   "txnMoreDetails": "Mehr Details (Notizen, Zahlungsart)",
   "marketsOtherCountries": "Weitere Länder ({count})",
-  "marketsByCountry": "Wechselkurse nach Land ({count})",
-  "backAgainToExit": "Zum Verlassen erneut Zurück drücken"
+  "marketsByCountry": "Wechselkurse nach Land ({count})"
 }

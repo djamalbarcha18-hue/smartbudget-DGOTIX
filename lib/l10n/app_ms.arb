@@ -1575,6 +1575,5 @@
   "budgetMoreCategories": "Kategori lain ({count})",
   "txnMoreDetails": "Butiran lanjut (nota, kaedah bayaran)",
   "marketsOtherCountries": "Negara lain ({count})",
-  "marketsByCountry": "Kadar tukaran mengikut negara ({count})",
-  "backAgainToExit": "Tekan kembali sekali lagi untuk keluar"
+  "marketsByCountry": "Kadar tukaran mengikut negara ({count})"
 }

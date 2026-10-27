@@ -1861,6 +1861,5 @@
   "marketsOtherCountries": "Other countries ({count})",
   "@marketsOtherCountries": {"placeholders": {"count": {"type": "int"}}},
   "marketsByCountry": "Exchange rates by country ({count})",
-  "@marketsByCountry": {"placeholders": {"count": {"type": "int"}}},
-  "backAgainToExit": "Press back again to leave"
+  "@marketsByCountry": {"placeholders": {"count": {"type": "int"}}}
 }

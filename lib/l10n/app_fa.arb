@@ -1575,6 +1575,5 @@
   "budgetMoreCategories": "دسته‌های دیگر ({count})",
   "txnMoreDetails": "جزئیات بیشتر (یادداشت، روش پرداخت)",
   "marketsOtherCountries": "کشورهای دیگر ({count})",
-  "marketsByCountry": "نرخ ارز بر اساس کشور ({count})",
-  "backAgainToExit": "برای خروج دوباره «بازگشت» را بزنید"
+  "marketsByCountry": "نرخ ارز بر اساس کشور ({count})"
 }

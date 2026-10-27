@@ -1575,6 +1575,5 @@
   "budgetMoreCategories": "Altre categorie ({count})",
   "txnMoreDetails": "Altri dettagli (note, metodo di pagamento)",
   "marketsOtherCountries": "Altri paesi ({count})",
-  "marketsByCountry": "Cambi per paese ({count})",
-  "backAgainToExit": "Premi di nuovo indietro per uscire"
+  "marketsByCountry": "Cambi per paese ({count})"
 }

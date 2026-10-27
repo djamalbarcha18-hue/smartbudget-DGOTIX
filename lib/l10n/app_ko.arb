@@ -1575,6 +1575,5 @@
   "budgetMoreCategories": "다른 카테고리 ({count})",
   "txnMoreDetails": "자세히 (메모, 결제 수단)",
   "marketsOtherCountries": "다른 국가 ({count})",
-  "marketsByCountry": "국가별 환율 ({count})",
-  "backAgainToExit": "한 번 더 누르면 종료됩니다"
+  "marketsByCountry": "국가별 환율 ({count})"
 }

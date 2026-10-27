@@ -1575,6 +1575,5 @@
   "budgetMoreCategories": "Diğer kategoriler ({count})",
   "txnMoreDetails": "Daha fazla ayrıntı (notlar, ödeme yöntemi)",
   "marketsOtherCountries": "Diğer ülkeler ({count})",
-  "marketsByCountry": "Ülkelere göre döviz kurları ({count})",
-  "backAgainToExit": "Çıkmak için tekrar geri basın"
+  "marketsByCountry": "Ülkelere göre döviz kurları ({count})"
 }

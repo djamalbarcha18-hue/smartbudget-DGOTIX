@@ -1575,6 +1575,5 @@
   "budgetMoreCategories": "دیگر زمرے ({count})",
   "txnMoreDetails": "مزید تفصیل (نوٹس، ادائیگی کا طریقہ)",
   "marketsOtherCountries": "دیگر ممالک ({count})",
-  "marketsByCountry": "ملک وار شرح تبادلہ ({count})",
-  "backAgainToExit": "باہر نکلنے کے لیے دوبارہ واپس دبائیں"
+  "marketsByCountry": "ملک وار شرح تبادلہ ({count})"
 }

@@ -1575,6 +1575,5 @@
   "budgetMoreCategories": "Otras categorías ({count})",
   "txnMoreDetails": "Más detalles (notas, método de pago)",
   "marketsOtherCountries": "Otros países ({count})",
-  "marketsByCountry": "Tipos de cambio por país ({count})",
-  "backAgainToExit": "Pulsa atrás otra vez para salir"
+  "marketsByCountry": "Tipos de cambio por país ({count})"
 }
