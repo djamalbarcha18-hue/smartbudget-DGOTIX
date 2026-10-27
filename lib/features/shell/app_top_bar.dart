@@ -96,10 +96,9 @@ class AppTopBar extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: <Widget>[
-                // Short month names, so the currency stays in view.
-                const _MonthChip(short: true),
-                const SizedBox(width: DsSpacing.xs),
-                const _YearChip(),
+                // Month and year in one chip, so everything fits a phone
+                // without sliding (the theme is in Settings).
+                const _PeriodChip(),
                 const SizedBox(width: DsSpacing.xs),
                 const _CurrencyChip(),
                 IconButton(
@@ -107,7 +106,6 @@ class AppTopBar extends StatelessWidget {
                   tooltip: AppLocalizations.of(context).searchHint,
                   icon: Icon(Icons.search_rounded, color: c.brand),
                 ),
-                const ThemeToggleButton(),
               ],
             ),
           ),
@@ -202,10 +200,7 @@ class _ChipBox extends StatelessWidget {
 
 /// Global month selector — shared with Monthly Budget via [selectedMonthProvider].
 class _MonthChip extends ConsumerWidget {
-  const _MonthChip({this.short = false});
-
-  /// Abbreviated name on the chip (the menu keeps full names).
-  final bool short;
+  const _MonthChip();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -225,11 +220,7 @@ class _MonthChip extends ConsumerWidget {
         for (int m = 1; m <= 12; m++)
           PopupMenuItem<int>(value: m, child: Text(names[m - 1])),
       ],
-      child: _ChipBox(
-          icon: Icons.event_note_outlined,
-          label: short
-              ? MonthNames.short(lang: lang)[value - 1]
-              : names[value - 1]),
+      child: _ChipBox(icon: Icons.event_note_outlined, label: names[value - 1]),
     );
   }
 }
@@ -258,6 +249,145 @@ class _YearChip extends ConsumerWidget {
           PopupMenuItem<int>(value: y, child: Text('$y')),
       ],
       child: _ChipBox(icon: Icons.calendar_today_outlined, label: '$value'),
+    );
+  }
+}
+
+/// Phone: the month and year in one chip ("Oct 2026"); a tap opens one
+/// picker for both, so the bar fits without sliding sideways.
+class _PeriodChip extends ConsumerWidget {
+  const _PeriodChip();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLang lang = appLangOf(context);
+    final int month = ref.watch(selectedMonthProvider);
+    final int year = ref.watch(selectedYearProvider);
+    final int m = (month >= 1 && month <= 12) ? month : AppClock.now().month;
+    return InkWell(
+      borderRadius: DsRadius.brMd,
+      onTap: () => showModalBottomSheet<void>(
+        context: context,
+        backgroundColor: context.dsColors.bgElevated,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+        builder: (BuildContext ctx) => const _PeriodPicker(),
+      ),
+      child: _ChipBox(
+        icon: Icons.event_note_outlined,
+        label: '${MonthNames.full(lang: lang)[m - 1]} $year',
+      ),
+    );
+  }
+}
+
+/// The year (with arrows) above the twelve months; picking a month sets
+/// both and closes.
+class _PeriodPicker extends ConsumerStatefulWidget {
+  const _PeriodPicker();
+
+  @override
+  ConsumerState<_PeriodPicker> createState() => _PeriodPickerState();
+}
+
+class _PeriodPickerState extends ConsumerState<_PeriodPicker> {
+  // The same years as the year chip: this one and the next nine.
+  final int _first = AppClock.now().year;
+  late int _year = ref.read(selectedYearProvider).clamp(_first, _first + 9);
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final List<String> names = MonthNames.full(lang: appLangOf(context));
+    final int month = ref.watch(selectedMonthProvider);
+    final bool shown = _year == ref.watch(selectedYearProvider);
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(DsSpacing.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                IconButton(
+                  onPressed:
+                      _year > _first ? () => setState(() => _year--) : null,
+                  icon: const Icon(Icons.chevron_left_rounded),
+                ),
+                SizedBox(
+                  width: 96,
+                  child: Text('$_year',
+                      textAlign: TextAlign.center, style: t.titleLarge),
+                ),
+                IconButton(
+                  onPressed: _year < _first + 9
+                      ? () => setState(() => _year++)
+                      : null,
+                  icon: const Icon(Icons.chevron_right_rounded),
+                ),
+              ],
+            ),
+            const SizedBox(height: DsSpacing.md),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 3,
+              mainAxisSpacing: DsSpacing.sm,
+              crossAxisSpacing: DsSpacing.sm,
+              childAspectRatio: 2.6,
+              children: <Widget>[
+                for (int m = 1; m <= 12; m++)
+                  _MonthCell(
+                    label: names[m - 1],
+                    selected: shown && m == month,
+                    onTap: () {
+                      ref.read(selectedYearProvider.notifier).state = _year;
+                      ref.read(selectedMonthProvider.notifier).state = m;
+                      Navigator.of(context).pop();
+                    },
+                    colors: c,
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MonthCell extends StatelessWidget {
+  const _MonthCell({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    required this.colors,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  final DsColors colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? colors.brand : colors.surfaceMuted,
+      borderRadius: DsRadius.brMd,
+      child: InkWell(
+        borderRadius: DsRadius.brMd,
+        onTap: onTap,
+        child: Center(
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: selected ? Colors.white : null,
+                fontWeight: selected ? FontWeight.w700 : null),
+          ),
+        ),
+      ),
     );
   }
 }

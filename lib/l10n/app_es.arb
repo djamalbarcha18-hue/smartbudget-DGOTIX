@@ -244,7 +244,7 @@
   "sectionAiInsights": "Análisis con IA",
   "kpiTotalIncome": "Ingresos totales",
   "kpiTotalExpenses": "Gastos totales",
-  "kpiNetProfit": "Beneficio neto",
+  "kpiNetProfit": "Te queda",
   "kpiSavings": "Ahorro",
   "kpiSavingsRate": "Tasa de ahorro",
   "kpiFinancialHealth": "Salud financiera",
@@ -362,7 +362,7 @@
   "fieldDueDate": "Vencimiento",
   "debtOwedToMe": "Me deben",
   "debtOwedByMe": "Debo",
-  "debtNet": "Posición neta",
+  "debtNet": "Lo que te deben menos lo que debes",
   "debtRemaining": "Pendiente",
   "emptyDebtsTitle": "Aún no hay deudas",
   "emptyDebtsMessage": "Lleva aquí el control del dinero que prestaste o pediste prestado.",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "Lo que vendí ({count})",
   "metalsSoldOn": "Vendido el {date}",
   "metalsUndoSale": "Deshacer la venta",
-  "metalsSaleIncome": "Venta {name}"
+  "metalsSaleIncome": "Venta {name}",
+  "welcomeFirst": "Bienvenido",
+  "budgetMoreCategories": "Otras categorías ({count})",
+  "txnMoreDetails": "Más detalles (notas, método de pago)",
+  "marketsOtherCountries": "Otros países ({count})",
+  "marketsByCountry": "Tipos de cambio por país ({count})"
 }

@@ -61,6 +61,18 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
   double _num(TextEditingController c) =>
       AmountInput.parse(c.text) ?? 0;
 
+  bool _pricesFilled = false;
+
+  /// Today's gold and silver prices per gram (pure) only.
+  void _fillPrices() {
+    final Map<Metal, MetalPrice> prices = ref.read(metalPricesProvider);
+    final MetalPrice? gold = prices[Metal.gold];
+    final MetalPrice? silver = prices[Metal.silver];
+    if (gold != null) _gold.text = _fmt(_round(gold.perGram));
+    if (silver != null) _silver.text = _fmt(_round(silver.perGram));
+    _apply();
+  }
+
   /// Today's gold and silver prices per gram (pure), and the value of the
   /// gold and silver kept on the Gold & silver page.
   void _fillFromMetals() {
@@ -106,6 +118,16 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
     ref.watch(metalsSummaryProvider);
     final bool needsPrices =
         inputs.goldPricePerGram <= 0 && inputs.silverPricePerGram <= 0;
+    // No prices typed yet but today's are known: use them, once, so the
+    // answer shows without the user looking them up.
+    if (needsPrices &&
+        !_pricesFilled &&
+        ref.watch(metalPricesProvider).isNotEmpty) {
+      _pricesFilled = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _fillPrices();
+      });
+    }
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(DsSpacing.pageGutter),
@@ -114,6 +136,52 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
         children: <Widget>[
           Text(l.navZakat, style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: DsSpacing.xl),
+
+          // The answer first; what it is worked out from comes below.
+          if (needsPrices)
+            Padding(
+              padding: const EdgeInsets.all(DsSpacing.md),
+              child: Text(l.zakatEnterPrices,
+                  style: Theme.of(context).textTheme.bodySmall,
+                  textAlign: TextAlign.center),
+            )
+          else
+            GlassCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _row(context, l.zakatNisab,
+                      MoneyFormatter.format(r.adoptedNisab)),
+                  const Divider(height: DsSpacing.xl),
+                  // Gathered assets — component breakdown (non-zero only).
+                  if (r.savings.minorUnits != 0)
+                    _row(context, l.zakatSavings,
+                        MoneyFormatter.format(r.savings), sub: true),
+                  if (r.surplus.minorUnits != 0)
+                    _row(context, l.zakatSurplus,
+                        MoneyFormatter.format(r.surplus), sub: true),
+                  if (r.portfolio.minorUnits != 0)
+                    _row(context, l.zakatPortfolio,
+                        MoneyFormatter.format(r.portfolio), sub: true),
+                  if (r.receivables.minorUnits != 0)
+                    _row(context, l.zakatReceivables,
+                        MoneyFormatter.format(r.receivables), sub: true),
+                  if (r.manual.minorUnits != 0)
+                    _row(context, l.zakatManualWealth,
+                        MoneyFormatter.format(r.manual), sub: true),
+                  _row(context, l.zakatAssets, MoneyFormatter.format(r.assets)),
+                  _row(context, l.zakatLiabilities,
+                      MoneyFormatter.format(r.liabilities)),
+                  const Divider(height: DsSpacing.xl),
+                  _row(context, l.zakatNetWealth,
+                      MoneyFormatter.format(r.netZakatable),
+                      strong: true),
+                  const SizedBox(height: DsSpacing.md),
+                  _StatusBanner(result: r, hawl: hawl),
+                ],
+              ),
+            ),
+          const SizedBox(height: DsSpacing.lg),
 
           // Inputs.
           GlassCard(
@@ -220,49 +288,6 @@ class _ZakatPageState extends ConsumerState<ZakatPage> {
           ),
           const SizedBox(height: DsSpacing.lg),
 
-          if (needsPrices)
-            Padding(
-              padding: const EdgeInsets.all(DsSpacing.md),
-              child: Text(l.zakatEnterPrices,
-                  style: Theme.of(context).textTheme.bodySmall,
-                  textAlign: TextAlign.center),
-            )
-          else
-            GlassCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  _row(context, l.zakatNisab,
-                      MoneyFormatter.format(r.adoptedNisab)),
-                  const Divider(height: DsSpacing.xl),
-                  // Gathered assets — component breakdown (non-zero only).
-                  if (r.savings.minorUnits != 0)
-                    _row(context, l.zakatSavings,
-                        MoneyFormatter.format(r.savings), sub: true),
-                  if (r.surplus.minorUnits != 0)
-                    _row(context, l.zakatSurplus,
-                        MoneyFormatter.format(r.surplus), sub: true),
-                  if (r.portfolio.minorUnits != 0)
-                    _row(context, l.zakatPortfolio,
-                        MoneyFormatter.format(r.portfolio), sub: true),
-                  if (r.receivables.minorUnits != 0)
-                    _row(context, l.zakatReceivables,
-                        MoneyFormatter.format(r.receivables), sub: true),
-                  if (r.manual.minorUnits != 0)
-                    _row(context, l.zakatManualWealth,
-                        MoneyFormatter.format(r.manual), sub: true),
-                  _row(context, l.zakatAssets, MoneyFormatter.format(r.assets)),
-                  _row(context, l.zakatLiabilities,
-                      MoneyFormatter.format(r.liabilities)),
-                  const Divider(height: DsSpacing.xl),
-                  _row(context, l.zakatNetWealth,
-                      MoneyFormatter.format(r.netZakatable),
-                      strong: true),
-                  const SizedBox(height: DsSpacing.md),
-                  _StatusBanner(result: r, hawl: hawl),
-                ],
-              ),
-            ),
           const SizedBox(height: DsSpacing.md),
           Text(l.zakatDisclaimer,
               style: Theme.of(context).textTheme.labelSmall),

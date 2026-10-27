@@ -87,8 +87,14 @@ class DashboardPage extends ConsumerWidget {
         ? (scope == DashboardScope.month ? l.vsPreviousMonth : l.vsPreviousYear)
         : null;
 
-    final String greeting =
-        name == null ? l.welcomeGreeting : '${l.welcomeGreeting}، $name';
+    // Nothing recorded yet (and nothing on its way): only what helps to
+    // start, not a page of empty charts.
+    final bool nothingYet = !waiting &&
+        (ref.watch(transactionsProvider).valueOrNull?.isEmpty ?? false);
+
+    // "Welcome back" only once there is something to come back to.
+    final String hello = nothingYet ? l.welcomeFirst : l.welcomeGreeting;
+    final String greeting = name == null ? hello : '$hello، $name';
 
     // KPI cards: income and expenses side by side first, then what's left
     // (net) and the savings rate under them (two pairs on a phone).
@@ -157,6 +163,8 @@ class DashboardPage extends ConsumerWidget {
             const SizedBox(height: gap),
             const MetalsHomeCard(),
             const PageSkeleton(child: _LoadingPanels()),
+          ] else if (nothingYet) ...<Widget>[
+          const MetalsHomeCard(),
           ] else ...<Widget>[
           KpiGrid(children: kpis),
           const SizedBox(height: gap),
@@ -214,8 +222,10 @@ class DashboardPage extends ConsumerWidget {
 
           ],
           // ⑤ DGOTIX AI insights, then live global markets at the bottom.
-          const DgotixInsightsSection(),
-          const SizedBox(height: gap),
+          if (!nothingYet) ...const <Widget>[
+            DgotixInsightsSection(),
+            SizedBox(height: gap),
+          ],
           const GlobalMarketsSection(),
         ],
       ),

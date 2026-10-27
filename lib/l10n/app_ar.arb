@@ -294,7 +294,7 @@
 
   "kpiTotalIncome": "إجمالي الدخل",
   "kpiTotalExpenses": "إجمالي المصروفات",
-  "kpiNetProfit": "صافي الربح",
+  "kpiNetProfit": "المتبقي",
   "kpiSavings": "الادخار",
   "kpiSavingsRate": "معدّل الادخار",
   "kpiFinancialHealth": "الصحة المالية",
@@ -423,7 +423,7 @@
   "fieldDueDate": "تاريخ الاستحقاق",
   "debtOwedToMe": "ما لي",
   "debtOwedByMe": "ما عليّ",
-  "debtNet": "صافي المركز",
+  "debtNet": "الفرق بين ما لك وما عليك",
   "debtRemaining": "المتبقّي",
   "emptyDebtsTitle": "لا توجد ديون بعد",
   "emptyDebtsMessage": "تابع هنا ما أقرضته أو اقترضته.",
@@ -1770,5 +1770,10 @@
   "metalsSoldTitle": "ما بعته ({count})",
   "metalsSoldOn": "بيع في {date}",
   "metalsUndoSale": "تراجع عن البيع",
-  "metalsSaleIncome": "بيع {name}"
+  "metalsSaleIncome": "بيع {name}",
+  "welcomeFirst": "أهلاً بك",
+  "budgetMoreCategories": "فئات أخرى ({count})",
+  "txnMoreDetails": "تفاصيل أكثر (ملاحظات، طريقة الدفع)",
+  "marketsOtherCountries": "دول أخرى ({count})",
+  "marketsByCountry": "أسعار الصرف حسب الدولة ({count})"
 }

@@ -94,15 +94,12 @@ class _CategoryContent extends ConsumerWidget {
     }
     switch (category) {
       case MarketCategory.exchangeRates:
-        return Column(
+        return const Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            const _RateTypeCard(),
-            const SizedBox(height: DsSpacing.lg),
-            for (final CountryMarket country in MarketConfig.countries) ...<Widget>[
-              _CountrySection(country: country),
-              const SizedBox(height: DsSpacing.lg),
-            ],
+            _RateTypeCard(),
+            SizedBox(height: DsSpacing.lg),
+            _Countries(),
           ],
         );
       case MarketCategory.crypto:
@@ -225,6 +222,62 @@ class _CustomRateFieldState extends ConsumerState<_CustomRateField> {
   }
 }
 
+/// The user's own market first (by the base currency); the others folded,
+/// by name, so no country is put before the rest.
+class _Countries extends ConsumerWidget {
+  const _Countries();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final bool ar = appLangOf(context).isAr;
+    final String base = ref.watch(baseCurrencyProvider);
+    String name(CountryMarket m) => ar ? m.nameAr : m.nameEn;
+    final List<CountryMarket> own = <CountryMarket>[
+      for (final CountryMarket m in MarketConfig.countries)
+        if (m.base == base) m,
+    ];
+    final List<CountryMarket> others = <CountryMarket>[
+      for (final CountryMarket m in MarketConfig.countries)
+        if (m.base != base) m,
+    ]..sort((CountryMarket a, CountryMarket b) => name(a).compareTo(name(b)));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        for (final CountryMarket m in own) ...<Widget>[
+          _CountrySection(country: m),
+          const SizedBox(height: DsSpacing.lg),
+        ],
+        if (others.isNotEmpty)
+          GlassCard(
+            padding: const EdgeInsets.symmetric(
+                horizontal: DsSpacing.lg, vertical: DsSpacing.xs),
+            child: Theme(
+              data:
+                  Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                childrenPadding: const EdgeInsets.only(bottom: DsSpacing.md),
+                leading: const Icon(Icons.public_rounded),
+                title: Text(
+                    own.isEmpty
+                        ? l.marketsByCountry(others.length)
+                        : l.marketsOtherCountries(others.length),
+                    style: Theme.of(context).textTheme.titleSmall),
+                children: <Widget>[
+                  for (final CountryMarket m in others) ...<Widget>[
+                    _CountrySection(country: m),
+                    const SizedBox(height: DsSpacing.md),
+                  ],
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 // --------------------------------------------------------------------------
 // FIAT country section
 // --------------------------------------------------------------------------
@@ -260,6 +313,7 @@ class _CountrySection extends ConsumerWidget {
           const SizedBox(height: DsSpacing.md),
           for (final String pair in country.pairs)
             _PairRow(
+              quiet: true,
               currency: pair,
               base: country.base,
               official: fx.whenOrNull(
@@ -273,6 +327,22 @@ class _CountrySection extends ConsumerWidget {
                   ? () => _editManual(context, ref, country.country, pair)
                   : null,
             ),
+          // Nothing came back: said once for the card, not under each figure.
+          if (!fx.isLoading &&
+              !parallel.isLoading &&
+              country.pairs.every((String pair) =>
+                  fx.whenOrNull(
+                          data: (FxSnapshot s) =>
+                              s.cross(pair, country.base)) ==
+                      null &&
+                  !_hasParallel(parallel, manual, country.country, pair))) ...<Widget>[
+            const SizedBox(height: DsSpacing.xs),
+            Text(AppLocalizations.of(context).marketUnavailable,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: context.dsColors.textMuted)),
+          ],
           const SizedBox(height: DsSpacing.sm),
           _SourceLine(
             source: fx.whenOrNull(data: (FxSnapshot s) => s.source) ??
@@ -282,6 +352,17 @@ class _CountrySection extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  static bool _hasParallel(AsyncValue<List<FxQuote>> parallel,
+      Map<String, ManualParallel> manual, String country, String pair) {
+    final FxQuote? q = parallel.whenOrNull(
+        data: (List<FxQuote> qs) => _firstOrNull(qs, pair));
+    final ManualParallel? m = manual[manualParallelKey(country, pair)];
+    return q?.buy != null ||
+        q?.sell != null ||
+        m?.buy != null ||
+        m?.sell != null;
   }
 
   static FxQuote? _firstOrNull(List<FxQuote> qs, String currency) {
@@ -380,7 +461,11 @@ class _PairRow extends StatelessWidget {
     this.manual,
     this.parallelLocked = false,
     this.onEditManual,
+    this.quiet = false,
   });
+
+  /// With no figure at all, just the pair (the card says it once).
+  final bool quiet;
 
   final String currency;
   final String base;
@@ -433,6 +518,11 @@ class _PairRow extends StatelessWidget {
                 ),
             ],
           ),
+          if (!(quiet &&
+              !officialLoading &&
+              official == null &&
+              buy == null &&
+              sell == null)) ...<Widget>[
           const SizedBox(height: DsSpacing.xs),
           Wrap(
             spacing: DsSpacing.lg,
@@ -474,6 +564,7 @@ class _PairRow extends StatelessWidget {
               ],
             ],
           ),
+          ],
         ],
       ),
     );

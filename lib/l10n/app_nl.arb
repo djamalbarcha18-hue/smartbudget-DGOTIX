@@ -362,7 +362,7 @@
   "fieldDueDate": "Vervaldatum",
   "debtOwedToMe": "Tegoed",
   "debtOwedByMe": "Schuld",
-  "debtNet": "Nettopositie",
+  "debtNet": "Tegoed min schuld",
   "debtRemaining": "Resterend",
   "emptyDebtsTitle": "Nog geen schulden",
   "emptyDebtsMessage": "Houd hier geld bij dat je hebt uitgeleend of geleend.",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "Wat ik verkocht ({count})",
   "metalsSoldOn": "Verkocht op {date}",
   "metalsUndoSale": "Verkoop ongedaan maken",
-  "metalsSaleIncome": "Verkoop {name}"
+  "metalsSaleIncome": "Verkoop {name}",
+  "welcomeFirst": "Welkom",
+  "budgetMoreCategories": "Andere categorieën ({count})",
+  "txnMoreDetails": "Meer details (notities, betaalmethode)",
+  "marketsOtherCountries": "Andere landen ({count})",
+  "marketsByCountry": "Wisselkoersen per land ({count})"
 }

@@ -17,6 +17,7 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
+import 'package:smartbudget/features/transactions/presentation/first_entry_buttons.dart';
 
 class FinancialHealthPage extends ConsumerWidget {
   const FinancialHealthPage({super.key});
@@ -41,6 +42,7 @@ class FinancialHealthPage extends ConsumerWidget {
                 title: l.pageFinancialHealth,
                 message: l.healthEmpty,
                 icon: Icons.monitor_heart_outlined,
+                action: const FirstEntryButtons(),
               ),
             )
           else

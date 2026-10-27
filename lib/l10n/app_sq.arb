@@ -362,7 +362,7 @@
   "fieldDueDate": "Afati",
   "debtOwedToMe": "Më detyrohen",
   "debtOwedByMe": "Detyrohem",
-  "debtNet": "Pozicioni neto",
+  "debtNet": "Të marrat minus detyrimet",
   "debtRemaining": "Mbetur",
   "emptyDebtsTitle": "Ende nuk ka borxhe",
   "emptyDebtsMessage": "Ndiq këtu paratë që ke dhënë hua ose ke marrë hua.",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "Çfarë kam shitur ({count})",
   "metalsSoldOn": "Shitur më {date}",
   "metalsUndoSale": "Anulo shitjen",
-  "metalsSaleIncome": "Shitje {name}"
+  "metalsSaleIncome": "Shitje {name}",
+  "welcomeFirst": "Mirë se erdhe",
+  "budgetMoreCategories": "Kategori të tjera ({count})",
+  "txnMoreDetails": "Më shumë detaje (shënime, mënyra e pagesës)",
+  "marketsOtherCountries": "Vende të tjera ({count})",
+  "marketsByCountry": "Kurset sipas vendit ({count})"
 }

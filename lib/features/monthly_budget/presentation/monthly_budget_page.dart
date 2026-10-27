@@ -113,6 +113,9 @@ class MonthlyBudgetPage extends ConsumerWidget {
 class _BudgetSection extends ConsumerWidget {
   const _BudgetSection();
 
+  /// How many of the first categories always show.
+  static const int _everyday = 6;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
@@ -128,6 +131,31 @@ class _BudgetSection extends ConsumerWidget {
     final String? focusCategory =
         (focus != null && focus.route == '/budget') ? focus.key : null;
 
+    // What matters this month shows: categories with a budget or spending,
+    // and the everyday ones (the list starts with them); the rest wait
+    // folded, so a newcomer isn't met by every category at once.
+    final List<String> all =
+        ref.watch(categoriesForProvider(TransactionType.expense));
+    bool inUse(String cat) =>
+        (planned[cat]?.minorUnits ?? 0) > 0 ||
+        (actual[cat] ?? 0) > 0 ||
+        cat == focusCategory;
+    final List<String> shown = <String>[
+      for (int i = 0; i < all.length; i++)
+        if (i < _everyday || inUse(all[i])) all[i],
+    ];
+    final List<String> more = <String>[
+      for (final String cat in all)
+        if (!shown.contains(cat)) cat,
+    ];
+    Widget row(String cat) => _BudgetRow(
+          category: cat,
+          plannedMinor: planned[cat]?.minorUnits ?? 0,
+          actualMinor: actual[cat] ?? 0,
+          currency: currency,
+          highlighted: focusCategory == cat,
+        );
+
     return GlassCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,14 +166,18 @@ class _BudgetSection extends ConsumerWidget {
           Text(l.plannedVsActualHint,
               style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: DsSpacing.lg),
-          for (final String cat
-              in ref.watch(categoriesForProvider(TransactionType.expense)))
-            _BudgetRow(
-              category: cat,
-              plannedMinor: planned[cat]?.minorUnits ?? 0,
-              actualMinor: actual[cat] ?? 0,
-              currency: currency,
-              highlighted: focusCategory == cat,
+          for (final String cat in shown) row(cat),
+          if (more.isNotEmpty)
+            Theme(
+              data:
+                  Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                childrenPadding: EdgeInsets.zero,
+                title: Text(l.budgetMoreCategories(more.length),
+                    style: Theme.of(context).textTheme.titleSmall),
+                children: <Widget>[for (final String cat in more) row(cat)],
+              ),
             ),
         ],
       ),

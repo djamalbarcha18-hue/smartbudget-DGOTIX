@@ -24,6 +24,7 @@ class DsTextField extends StatefulWidget {
     this.suffixText,
     this.minLines,
     this.maxLines = 1,
+    this.autofocus = false,
   });
 
   final String label;
@@ -44,6 +45,9 @@ class DsTextField extends StatefulWidget {
   /// Multi-line fields (notes): grows from [minLines] up to [maxLines].
   final int? minLines;
   final int maxLines;
+
+  /// Ready to type as soon as it shows (the one field a form starts with).
+  final bool autofocus;
 
   @override
   State<DsTextField> createState() => _DsTextFieldState();
@@ -69,6 +73,7 @@ class _DsTextFieldState extends State<DsTextField> {
         const SizedBox(height: 6),
         TextFormField(
           controller: widget.controller,
+          autofocus: widget.autofocus,
           obscureText: _obscured,
           minLines: widget.obscure ? null : widget.minLines,
           maxLines: widget.obscure ? 1 : widget.maxLines,

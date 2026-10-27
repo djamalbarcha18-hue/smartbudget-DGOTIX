@@ -244,7 +244,7 @@
   "sectionAiInsights": "Yapay zekâ içgörüleri",
   "kpiTotalIncome": "Toplam gelir",
   "kpiTotalExpenses": "Toplam gider",
-  "kpiNetProfit": "Net kâr",
+  "kpiNetProfit": "Kalan",
   "kpiSavings": "Birikim",
   "kpiSavingsRate": "Birikim oranı",
   "kpiFinancialHealth": "Finansal sağlık",
@@ -362,7 +362,7 @@
   "fieldDueDate": "Vade tarihi",
   "debtOwedToMe": "Bana borçlu",
   "debtOwedByMe": "Borçluyum",
-  "debtNet": "Net durum",
+  "debtNet": "Alacaklar eksi borçlar",
   "debtRemaining": "Kalan",
   "emptyDebtsTitle": "Henüz borç yok",
   "emptyDebtsMessage": "Verdiğin veya aldığın borçları burada takip et.",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "Sattıklarım ({count})",
   "metalsSoldOn": "{date} tarihinde satıldı",
   "metalsUndoSale": "Satışı geri al",
-  "metalsSaleIncome": "Satış: {name}"
+  "metalsSaleIncome": "Satış: {name}",
+  "welcomeFirst": "Hoş geldin",
+  "budgetMoreCategories": "Diğer kategoriler ({count})",
+  "txnMoreDetails": "Daha fazla ayrıntı (notlar, ödeme yöntemi)",
+  "marketsOtherCountries": "Diğer ülkeler ({count})",
+  "marketsByCountry": "Ülkelere göre döviz kurları ({count})"
 }

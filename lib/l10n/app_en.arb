@@ -294,7 +294,7 @@
 
   "kpiTotalIncome": "Total Income",
   "kpiTotalExpenses": "Total Expenses",
-  "kpiNetProfit": "Net Profit",
+  "kpiNetProfit": "Left over",
   "kpiSavings": "Savings",
   "kpiSavingsRate": "Savings Rate",
   "kpiFinancialHealth": "Financial Health",
@@ -424,7 +424,7 @@
   "fieldDueDate": "Due date",
   "debtOwedToMe": "Owed to me",
   "debtOwedByMe": "I owe",
-  "debtNet": "Net position",
+  "debtNet": "What you’re owed minus what you owe",
   "debtRemaining": "Remaining",
   "emptyDebtsTitle": "No debts yet",
   "emptyDebtsMessage": "Track money you lent or borrowed here.",
@@ -1853,5 +1853,13 @@
   "@metalsSoldOn": {"placeholders": {"date": {"type": "String"}}},
   "metalsUndoSale": "Undo the sale",
   "metalsSaleIncome": "Sold {name}",
-  "@metalsSaleIncome": {"placeholders": {"name": {"type": "String"}}}
+  "@metalsSaleIncome": {"placeholders": {"name": {"type": "String"}}},
+  "welcomeFirst": "Welcome",
+  "budgetMoreCategories": "Other categories ({count})",
+  "@budgetMoreCategories": {"placeholders": {"count": {"type": "int"}}},
+  "txnMoreDetails": "More details (notes, payment method)",
+  "marketsOtherCountries": "Other countries ({count})",
+  "@marketsOtherCountries": {"placeholders": {"count": {"type": "int"}}},
+  "marketsByCountry": "Exchange rates by country ({count})",
+  "@marketsByCountry": {"placeholders": {"count": {"type": "int"}}}
 }

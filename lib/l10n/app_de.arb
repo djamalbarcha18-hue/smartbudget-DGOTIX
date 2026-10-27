@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "Was ich verkauft habe ({count})",
   "metalsSoldOn": "Verkauft am {date}",
   "metalsUndoSale": "Verkauf rückgängig machen",
-  "metalsSaleIncome": "Verkauf {name}"
+  "metalsSaleIncome": "Verkauf {name}",
+  "welcomeFirst": "Willkommen",
+  "budgetMoreCategories": "Weitere Kategorien ({count})",
+  "txnMoreDetails": "Mehr Details (Notizen, Zahlungsart)",
+  "marketsOtherCountries": "Weitere Länder ({count})",
+  "marketsByCountry": "Wechselkurse nach Land ({count})"
 }

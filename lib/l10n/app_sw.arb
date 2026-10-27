@@ -362,7 +362,7 @@
   "fieldDueDate": "Tarehe ya mwisho",
   "debtOwedToMe": "Ninadai",
   "debtOwedByMe": "Ninadaiwa",
-  "debtNet": "Hali halisi",
+  "debtNet": "Unachodai kasoro unachodaiwa",
   "debtRemaining": "Kilichobaki",
   "emptyDebtsTitle": "Bado hakuna madeni",
   "emptyDebtsMessage": "Fuatilia hapa pesa ulizokopesha au kukopa.",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "Nilichouza ({count})",
   "metalsSoldOn": "Kimeuzwa {date}",
   "metalsUndoSale": "Tendua mauzo",
-  "metalsSaleIncome": "Mauzo {name}"
+  "metalsSaleIncome": "Mauzo {name}",
+  "welcomeFirst": "Karibu",
+  "budgetMoreCategories": "Kategoria nyingine ({count})",
+  "txnMoreDetails": "Maelezo zaidi (maelezo, njia ya malipo)",
+  "marketsOtherCountries": "Nchi nyingine ({count})",
+  "marketsByCountry": "Viwango kwa nchi ({count})"
 }

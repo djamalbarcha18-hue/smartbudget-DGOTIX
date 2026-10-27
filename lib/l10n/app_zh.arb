@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "已卖出（{count}）",
   "metalsSoldOn": "{date} 卖出",
   "metalsUndoSale": "撤销卖出",
-  "metalsSaleIncome": "卖出 {name}"
+  "metalsSaleIncome": "卖出 {name}",
+  "welcomeFirst": "欢迎",
+  "budgetMoreCategories": "其他类别（{count}）",
+  "txnMoreDetails": "更多详情（备注、付款方式）",
+  "marketsOtherCountries": "其他国家（{count}）",
+  "marketsByCountry": "各国汇率（{count}）"
 }

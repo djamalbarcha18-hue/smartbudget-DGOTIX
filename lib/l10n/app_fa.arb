@@ -362,7 +362,7 @@
   "fieldDueDate": "سررسید",
   "debtOwedToMe": "طلب من",
   "debtOwedByMe": "بدهی من",
-  "debtNet": "وضعیت خالص",
+  "debtNet": "طلب منهای بدهی",
   "debtRemaining": "باقی‌مانده",
   "emptyDebtsTitle": "هنوز بدهی ثبت نشده",
   "emptyDebtsMessage": "پولی را که قرض گرفته‌اید یا قرض داده‌اید اینجا ثبت کنید.",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "آنچه فروختم ({count})",
   "metalsSoldOn": "فروخته شده در {date}",
   "metalsUndoSale": "لغو فروش",
-  "metalsSaleIncome": "فروش {name}"
+  "metalsSaleIncome": "فروش {name}",
+  "welcomeFirst": "خوش آمدید",
+  "budgetMoreCategories": "دسته‌های دیگر ({count})",
+  "txnMoreDetails": "جزئیات بیشتر (یادداشت، روش پرداخت)",
+  "marketsOtherCountries": "کشورهای دیگر ({count})",
+  "marketsByCountry": "نرخ ارز بر اساس کشور ({count})"
 }

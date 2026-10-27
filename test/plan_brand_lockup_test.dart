@@ -34,7 +34,7 @@ void main() {
     (Plan.pro, 'PRO'),
   ]) {
     testWidgets('a $label user sees the $label badge', (WidgetTester tester) async {
-      await tester.pumpWidget(host(const PlanBrandLockup(logoHeight: 56), plan: plan));
+      await tester.pumpWidget(host(const PlanBrandLockup(logoHeight: 56, showPlan: true), plan: plan));
       expect(find.text(label), findsOneWidget);
       expect(find.text('Digital Productivity Solutions'), findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -46,6 +46,15 @@ void main() {
     expect(PlanBrandLockup.styleFor(Plan.pro), LockupBadgeStyle.solid);
   });
 
+  testWidgets('while everything is free for everyone: no PRO badge',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(host(
+        const PlanBrandLockup(logoHeight: 56, showPlan: false),
+        plan: Plan.pro));
+    expect(find.text('PRO'), findsNothing);
+    expect(find.text('Digital Productivity Solutions'), findsOneWidget);
+  });
+
   testWidgets('signed out (no plan known): no badge', (WidgetTester tester) async {
     await tester.pumpWidget(host(const DgotixBrandLockup(logoHeight: 56)));
     for (final String label in <String>['FREE', 'PRO']) {
@@ -54,8 +63,10 @@ void main() {
   });
 
   testWidgets('dark mode renders without errors', (WidgetTester tester) async {
-    await tester.pumpWidget(host(const PlanBrandLockup(logoHeight: 56),
-        plan: Plan.pro, brightness: Brightness.dark));
+    await tester.pumpWidget(host(
+        const PlanBrandLockup(logoHeight: 56, showPlan: true),
+        plan: Plan.pro,
+        brightness: Brightness.dark));
     expect(find.text('PRO'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

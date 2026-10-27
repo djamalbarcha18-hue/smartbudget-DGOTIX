@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "売ったもの（{count}）",
   "metalsSoldOn": "{date} に売却",
   "metalsUndoSale": "売却を取り消す",
-  "metalsSaleIncome": "売却 {name}"
+  "metalsSaleIncome": "売却 {name}",
+  "welcomeFirst": "ようこそ",
+  "budgetMoreCategories": "その他のカテゴリー（{count}）",
+  "txnMoreDetails": "詳細（メモ・支払い方法）",
+  "marketsOtherCountries": "その他の国（{count}）",
+  "marketsByCountry": "国別の為替レート（{count}）"
 }

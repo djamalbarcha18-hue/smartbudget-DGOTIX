@@ -21,6 +21,7 @@ import 'package:smartbudget/features/wallets/domain/wallet.dart';
 import 'package:smartbudget/features/wallets/presentation/wallet_text.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/features/transactions/presentation/first_entry_buttons.dart';
 
 /// A searchable, filterable list of transactions. When [type] is null it shows
 /// income + expense with filter chips; otherwise it is locked to one kind.
@@ -101,6 +102,8 @@ class _TransactionsListViewState extends ConsumerState<TransactionsListView> {
                       : l.noResults,
                   message: all.isEmpty ? l.emptyTransactionsMessage : null,
                   icon: Icons.receipt_long_outlined,
+                  // Nothing yet: start right here.
+                  action: all.isEmpty ? const FirstEntryButtons() : null,
                 )
               : ListView.separated(
                   itemCount: items.length,

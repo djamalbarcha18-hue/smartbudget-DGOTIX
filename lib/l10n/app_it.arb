@@ -362,7 +362,7 @@
   "fieldDueDate": "Scadenza",
   "debtOwedToMe": "Mi devono",
   "debtOwedByMe": "Devo",
-  "debtNet": "Posizione netta",
+  "debtNet": "Crediti meno debiti",
   "debtRemaining": "Residuo",
   "emptyDebtsTitle": "Ancora nessun debito",
   "emptyDebtsMessage": "Tieni traccia qui dei soldi che hai prestato o preso in prestito.",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "Ciò che ho venduto ({count})",
   "metalsSoldOn": "Venduto il {date}",
   "metalsUndoSale": "Annulla la vendita",
-  "metalsSaleIncome": "Vendita {name}"
+  "metalsSaleIncome": "Vendita {name}",
+  "welcomeFirst": "Benvenuto",
+  "budgetMoreCategories": "Altre categorie ({count})",
+  "txnMoreDetails": "Altri dettagli (note, metodo di pagamento)",
+  "marketsOtherCountries": "Altri paesi ({count})",
+  "marketsByCountry": "Cambi per paese ({count})"
 }

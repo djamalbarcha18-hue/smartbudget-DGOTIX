@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/core/time/clock_sync_controller.dart';
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/money/currency.dart';
@@ -214,13 +215,25 @@ class SettingsPage extends ConsumerWidget {
                 const SizedBox(height: DsSpacing.lg),
               ],
 
-              // World time sync + time zone.
-              _SettingsSection(
-                icon: Icons.schedule_rounded,
-                title: l.settingsTime,
-                child: const ClockSection(),
+              // World time sync + time zone: only when the device's clock
+              // is off, the one time it matters to the user.
+              Consumer(
+                builder: (BuildContext context, WidgetRef ref, _) {
+                  final ClockStatus s = ref.watch(clockSyncProvider);
+                  if (!s.synced ||
+                      s.offset.abs() < const Duration(minutes: 1)) {
+                    return const SizedBox.shrink();
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: DsSpacing.lg),
+                    child: _SettingsSection(
+                      icon: Icons.schedule_rounded,
+                      title: l.settingsTime,
+                      child: const ClockSection(),
+                    ),
+                  );
+                },
               ),
-              const SizedBox(height: DsSpacing.lg),
 
               // Custom categories.
               _SettingsSection(

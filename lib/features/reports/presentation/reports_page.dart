@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
+import 'package:smartbudget/design_system/components/ds_states.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
 import 'package:smartbudget/design_system/components/kpi_grid.dart';
@@ -17,6 +18,7 @@ import 'package:smartbudget/features/reports/presentation/export_pdf_button.dart
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
+import 'package:smartbudget/features/transactions/presentation/first_entry_buttons.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
@@ -42,15 +44,30 @@ class ReportsPage extends ConsumerWidget {
         full || (p == ReportPeriod.monthly && freeMonths.contains(s));
     final ReportResult report = ref.watch(reportResultProvider);
     final bool hasData = report.summary.count > 0;
+    final bool nothingYet =
+        ref.watch(transactionsProvider).valueOrNull?.isEmpty ?? false;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(DsSpacing.pageGutter),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          BrandedTitle(l.brandAnalytics,
+          // Named as in the menu, so the page is recognised.
+          BrandedTitle(l.navReports,
               style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: DsSpacing.lg),
+          // Nothing recorded yet: one way to start, not a page of empty cards.
+          if (nothingYet)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: DsSpacing.x5l),
+              child: DsEmpty(
+                title: l.emptyTransactionsTitle,
+                message: l.emptyTransactionsMessage,
+                icon: Icons.insights_outlined,
+                action: const FirstEntryButtons(),
+              ),
+            )
+          else ...<Widget>[
 
           // Controls.
           Wrap(
@@ -171,6 +188,7 @@ class ReportsPage extends ConsumerWidget {
             totals: report.expenseCategories,
             color: c.expense,
           ),
+          ],
         ],
       ),
     );

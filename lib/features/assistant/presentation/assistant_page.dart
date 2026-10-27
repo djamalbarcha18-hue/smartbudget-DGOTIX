@@ -16,6 +16,8 @@ import 'package:smartbudget/features/assistant/domain/insight_engine.dart';
 import 'package:smartbudget/features/assistant/presentation/ai_usage_card.dart';
 import 'package:smartbudget/features/assistant/presentation/ask_dgotix_card.dart';
 import 'package:smartbudget/features/assistant/presentation/insight_view.dart';
+import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
+import 'package:smartbudget/features/transactions/presentation/first_entry_buttons.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// AI Assistant — rule-based "smart insights" computed entirely on-device from
@@ -60,7 +62,11 @@ class AssistantPage extends ConsumerWidget {
                 const _AssistantLockedCard(),
               const SizedBox(height: DsSpacing.xl),
               if (insights.isEmpty)
-                _EmptyInsights(message: l.assistantEmpty)
+                _EmptyInsights(
+                  message: l.assistantEmpty,
+                  start: ref.watch(transactionsProvider).valueOrNull?.isEmpty ??
+                      false,
+                )
               else ...<Widget>[
                 Text(l.assistantInsightsTitle,
                     style: Theme.of(context).textTheme.titleMedium),
@@ -117,8 +123,11 @@ class _InsightCard extends StatelessWidget {
 }
 
 class _EmptyInsights extends StatelessWidget {
-  const _EmptyInsights({required this.message});
+  const _EmptyInsights({required this.message, this.start = false});
   final String message;
+
+  /// Nothing recorded yet: offer to add the first entry here.
+  final bool start;
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +140,10 @@ class _EmptyInsights extends StatelessWidget {
           Text(message,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium),
+          if (start) ...<Widget>[
+            const SizedBox(height: DsSpacing.md),
+            const FirstEntryButtons(),
+          ],
         ],
       ),
     );

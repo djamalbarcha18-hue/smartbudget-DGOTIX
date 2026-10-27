@@ -362,7 +362,7 @@
   "fieldDueDate": "Ranar biya",
   "debtOwedToMe": "Ana bina",
   "debtOwedByMe": "Ina bi",
-  "debtNet": "Matsayi na gaskiya",
+  "debtNet": "Bashin da kake bi ban da wanda ake binka",
   "debtRemaining": "Saura",
   "emptyDebtsTitle": "Babu basussuka tukuna",
   "emptyDebtsMessage": "Bi a nan kuɗin da ka bayar ko ka karɓa a matsayin bashi.",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "Abin da na sayar ({count})",
   "metalsSoldOn": "An sayar {date}",
   "metalsUndoSale": "Soke sayarwar",
-  "metalsSaleIncome": "Sayar da {name}"
+  "metalsSaleIncome": "Sayar da {name}",
+  "welcomeFirst": "Barka da zuwa",
+  "budgetMoreCategories": "Sauran rukunoni ({count})",
+  "txnMoreDetails": "Ƙarin bayani (bayanai, hanyar biya)",
+  "marketsOtherCountries": "Sauran ƙasashe ({count})",
+  "marketsByCountry": "Farashin musaya ta ƙasa ({count})"
 }

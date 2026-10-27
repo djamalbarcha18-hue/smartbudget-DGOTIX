@@ -244,7 +244,7 @@
   "sectionAiInsights": "Wawasan AI",
   "kpiTotalIncome": "Total Pemasukan",
   "kpiTotalExpenses": "Total Pengeluaran",
-  "kpiNetProfit": "Laba Bersih",
+  "kpiNetProfit": "Sisa",
   "kpiSavings": "Tabungan",
   "kpiSavingsRate": "Rasio Tabungan",
   "kpiFinancialHealth": "Kesehatan Keuangan",
@@ -362,7 +362,7 @@
   "fieldDueDate": "Jatuh tempo",
   "debtOwedToMe": "Piutang saya",
   "debtOwedByMe": "Utang saya",
-  "debtNet": "Posisi bersih",
+  "debtNet": "Piutang dikurangi utang",
   "debtRemaining": "Sisa",
   "emptyDebtsTitle": "Belum ada utang",
   "emptyDebtsMessage": "Catat uang yang Anda pinjamkan atau pinjam di sini.",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "Yang sudah saya jual ({count})",
   "metalsSoldOn": "Dijual {date}",
   "metalsUndoSale": "Batalkan penjualan",
-  "metalsSaleIncome": "Jual {name}"
+  "metalsSaleIncome": "Jual {name}",
+  "welcomeFirst": "Selamat datang",
+  "budgetMoreCategories": "Kategori lain ({count})",
+  "txnMoreDetails": "Detail lain (catatan, metode pembayaran)",
+  "marketsOtherCountries": "Negara lain ({count})",
+  "marketsByCountry": "Kurs per negara ({count})"
 }

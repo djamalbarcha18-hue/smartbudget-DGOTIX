@@ -362,7 +362,7 @@
   "fieldDueDate": "Срок погашения",
   "debtOwedToMe": "Мне должны",
   "debtOwedByMe": "Я должен",
-  "debtNet": "Чистая позиция",
+  "debtNet": "Вам должны минус вы должны",
   "debtRemaining": "Осталось",
   "emptyDebtsTitle": "Долгов пока нет",
   "emptyDebtsMessage": "Отслеживайте здесь деньги, которые вы дали или взяли в долг.",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "Что я продал ({count})",
   "metalsSoldOn": "Продано {date}",
   "metalsUndoSale": "Отменить продажу",
-  "metalsSaleIncome": "Продажа: {name}"
+  "metalsSaleIncome": "Продажа: {name}",
+  "welcomeFirst": "Добро пожаловать",
+  "budgetMoreCategories": "Другие категории ({count})",
+  "txnMoreDetails": "Подробнее (заметки, способ оплаты)",
+  "marketsOtherCountries": "Другие страны ({count})",
+  "marketsByCountry": "Курсы по странам ({count})"
 }

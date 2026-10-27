@@ -362,7 +362,7 @@
   "fieldDueDate": "देय तारीख़",
   "debtOwedToMe": "मुझे लेना है",
   "debtOwedByMe": "मुझे देना है",
-  "debtNet": "शुद्ध स्थिति",
+  "debtNet": "लेना घटा देना",
   "debtRemaining": "बाक़ी",
   "emptyDebtsTitle": "अभी कोई क़र्ज़ नहीं",
   "emptyDebtsMessage": "उधार लिया या दिया पैसा यहाँ दर्ज करें।",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "जो मैंने बेचा ({count})",
   "metalsSoldOn": "{date} को बेचा",
   "metalsUndoSale": "बिक्री वापस लें",
-  "metalsSaleIncome": "बिक्री {name}"
+  "metalsSaleIncome": "बिक्री {name}",
+  "welcomeFirst": "स्वागत है",
+  "budgetMoreCategories": "अन्य श्रेणियाँ ({count})",
+  "txnMoreDetails": "और विवरण (नोट्स, भुगतान का तरीका)",
+  "marketsOtherCountries": "अन्य देश ({count})",
+  "marketsByCountry": "देश के अनुसार विनिमय दरें ({count})"
 }

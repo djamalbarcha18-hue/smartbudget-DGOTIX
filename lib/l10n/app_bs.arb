@@ -362,7 +362,7 @@
   "fieldDueDate": "Rok dospijeća",
   "debtOwedToMe": "Duguju meni",
   "debtOwedByMe": "Ja dugujem",
-  "debtNet": "Neto stanje",
+  "debtNet": "Potraživanja minus dugovi",
   "debtRemaining": "Preostalo",
   "emptyDebtsTitle": "Još nema dugova",
   "emptyDebtsMessage": "Ovdje prati novac koji si posudio ili pozajmio.",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "Šta sam prodao ({count})",
   "metalsSoldOn": "Prodano {date}",
   "metalsUndoSale": "Poništi prodaju",
-  "metalsSaleIncome": "Prodaja {name}"
+  "metalsSaleIncome": "Prodaja {name}",
+  "welcomeFirst": "Dobro došao",
+  "budgetMoreCategories": "Ostale kategorije ({count})",
+  "txnMoreDetails": "Više detalja (bilješke, način plaćanja)",
+  "marketsOtherCountries": "Ostale zemlje ({count})",
+  "marketsByCountry": "Kursevi po zemljama ({count})"
 }

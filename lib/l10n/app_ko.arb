@@ -244,7 +244,7 @@
   "sectionAiInsights": "AI 인사이트",
   "kpiTotalIncome": "수입",
   "kpiTotalExpenses": "지출",
-  "kpiNetProfit": "순이익",
+  "kpiNetProfit": "남은 돈",
   "kpiSavings": "저축",
   "kpiSavingsRate": "저축률",
   "kpiFinancialHealth": "재무 건강",
@@ -362,7 +362,7 @@
   "fieldDueDate": "기한",
   "debtOwedToMe": "받을 돈",
   "debtOwedByMe": "갚을 돈",
-  "debtNet": "순액",
+  "debtNet": "받을 돈 − 갚을 돈",
   "debtRemaining": "남은 금액",
   "emptyDebtsTitle": "아직 빚이 없어요",
   "emptyDebtsMessage": "빌리거나 빌려준 돈을 여기에 기록하세요.",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "판매한 것 ({count})",
   "metalsSoldOn": "{date} 판매",
   "metalsUndoSale": "판매 취소",
-  "metalsSaleIncome": "판매 {name}"
+  "metalsSaleIncome": "판매 {name}",
+  "welcomeFirst": "환영해요",
+  "budgetMoreCategories": "다른 카테고리 ({count})",
+  "txnMoreDetails": "자세히 (메모, 결제 수단)",
+  "marketsOtherCountries": "다른 국가 ({count})",
+  "marketsByCountry": "국가별 환율 ({count})"
 }

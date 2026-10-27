@@ -362,7 +362,7 @@
   "fieldDueDate": "Vencimento",
   "debtOwedToMe": "Me devem",
   "debtOwedByMe": "Eu devo",
-  "debtNet": "Posição líquida",
+  "debtNet": "A receber menos a pagar",
   "debtRemaining": "Restante",
   "emptyDebtsTitle": "Nenhuma dívida ainda",
   "emptyDebtsMessage": "Acompanhe aqui o dinheiro que você emprestou ou pegou emprestado.",
@@ -1570,5 +1570,10 @@
   "metalsSoldTitle": "O que vendi ({count})",
   "metalsSoldOn": "Vendido em {date}",
   "metalsUndoSale": "Desfazer a venda",
-  "metalsSaleIncome": "Venda {name}"
+  "metalsSaleIncome": "Venda {name}",
+  "welcomeFirst": "Bem-vindo",
+  "budgetMoreCategories": "Outras categorias ({count})",
+  "txnMoreDetails": "Mais detalhes (notas, forma de pagamento)",
+  "marketsOtherCountries": "Outros países ({count})",
+  "marketsByCountry": "Câmbio por país ({count})"
 }

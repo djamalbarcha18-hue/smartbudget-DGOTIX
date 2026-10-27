@@ -127,6 +127,11 @@ class _TransactionEditorSheetState
   String? _initialWallet;
   bool _saving = false;
 
+  /// Notes and payment method shown (asked for, or already filled).
+  bool _more = false;
+  bool get _moreShown =>
+      _more || _notes.text.trim().isNotEmpty || _paymentMethod != null;
+
   /// The trip picked by hand; until then a new expense follows the trip
   /// under way on its date.
   String? _tripChoice;
@@ -434,6 +439,9 @@ class _TransactionEditorSheetState
                     label: l.fieldAmount,
                     suffixText: cur.code,
                     controller: _amount,
+                    // A new entry starts with the amount.
+                    autofocus:
+                        widget.existing == null && widget.prefill == null,
                     prefixIcon: Icons.tag_rounded,
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
@@ -552,16 +560,6 @@ class _TransactionEditorSheetState
                     prefixIcon: Icons.notes_rounded,
                   ),
                   const SizedBox(height: DsSpacing.lg),
-                  // Free notes; a scanned invoice puts its products here.
-                  DsTextField(
-                    label: '${l.fieldNotes} (${l.optional})',
-                    controller: _notes,
-                    prefixIcon: Icons.receipt_long_outlined,
-                    keyboardType: TextInputType.multiline,
-                    minLines: 1,
-                    maxLines: 6,
-                  ),
-                  const SizedBox(height: DsSpacing.lg),
                   if (AppEnv.smartTrip && !_isIncome) ...<Widget>[
                     _TripDropdown(
                       value: _tripId(ref.watch(tripsProvider).valueOrNull ??
@@ -579,14 +577,36 @@ class _TransactionEditorSheetState
                     ),
                     const SizedBox(height: DsSpacing.lg),
                   ],
-                  _CategoryDropdown(
-                    label: '${l.fieldPaymentMethod} (${l.optional})',
-                    hint: l.fieldPaymentMethod,
-                    value: _paymentMethod,
-                    items: Catalog.paymentMethods,
-                    onChanged: (String? v) =>
-                        setState(() => _paymentMethod = v),
-                  ),
+                  // Notes and the payment method wait behind one line,
+                  // unless they already hold something.
+                  if (_moreShown) ...<Widget>[
+                    // Free notes; a scanned invoice puts its products here.
+                    DsTextField(
+                      label: '${l.fieldNotes} (${l.optional})',
+                      controller: _notes,
+                      prefixIcon: Icons.receipt_long_outlined,
+                      keyboardType: TextInputType.multiline,
+                      minLines: 1,
+                      maxLines: 6,
+                    ),
+                    const SizedBox(height: DsSpacing.lg),
+                    _CategoryDropdown(
+                      label: '${l.fieldPaymentMethod} (${l.optional})',
+                      hint: l.fieldPaymentMethod,
+                      value: _paymentMethod,
+                      items: Catalog.paymentMethods,
+                      onChanged: (String? v) =>
+                          setState(() => _paymentMethod = v),
+                    ),
+                  ] else
+                    Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: TextButton.icon(
+                        onPressed: () => setState(() => _more = true),
+                        icon: const Icon(Icons.add_rounded, size: 18),
+                        label: Text(l.txnMoreDetails),
+                      ),
+                    ),
                   const SizedBox(height: DsSpacing.xl),
                   DsButton(
                     label: l.save,
