@@ -383,7 +383,7 @@ class _MonthCell extends StatelessWidget {
           child: Text(
             label,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: selected ? Colors.white : null,
+                color: selected ? colors.onBrand : null,
                 fontWeight: selected ? FontWeight.w700 : null),
           ),
         ),

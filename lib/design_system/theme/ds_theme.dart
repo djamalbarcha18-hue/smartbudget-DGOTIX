@@ -106,6 +106,13 @@ abstract final class DsTheme {
               BorderSide(color: colors.borderStrong)),
         ),
       ),
+      // Chosen chips too (Today / Yesterday…), so Black Gold shows gold.
+      chipTheme: ChipThemeData(
+        selectedColor: colors.brand,
+        checkmarkColor: colors.onBrand,
+        secondaryLabelStyle:
+            textTheme.labelLarge?.copyWith(color: colors.onBrand),
+      ),
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
           color: colors.bgElevated,
