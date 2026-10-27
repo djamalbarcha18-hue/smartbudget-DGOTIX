@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:idb_shim/idb.dart' as idb;
 import 'package:idb_shim/idb_client_memory.dart' show newIdbFactoryMemory;
+import 'package:idb_shim/idb_io.dart' show getIdbFactorySembastIo;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/storage/local_db.dart';
@@ -427,6 +429,36 @@ void main() {
       await db.move('sb_txns_dev-7', 'sb_txns_$_u1');
       expect(await _rows(factory, 'sb_txns_dev-7'), isEmpty);
       expect((await _rows(factory, 'sb_txns_$_u1')).keys, <String>['a']);
+    });
+  });
+
+  group('on a phone (the database file Android uses)', () {
+    test('moved in, saved, and still there after the app restarts', () async {
+      final Directory dir =
+          await Directory.systemTemp.createTemp('smartbudget_db');
+      addTearDown(() => dir.delete(recursive: true));
+      final idb.IdbFactory file = getIdbFactorySembastIo(dir.path);
+      db = LocalDbRecordLists(file);
+      RecordLists.current = db;
+      seed(<String, Object>{
+        'sb_txns_$_u1': jsonEncode(<Object>[_t('a', 4550), _t('b', 120000)]),
+      });
+      expect(await _ids(_u1), <String>['a', 'b']);
+      final FakeTransactionRepository repo =
+          FakeTransactionRepository(userId: _u1);
+      await repo.watchAll().first;
+      await repo.add(_txn('c', 99));
+      await db.close();
+      expect(File('${dir.path}/${LocalDbRecordLists.dbName}').existsSync(),
+          isTrue);
+
+      // The app starts again: a new connection to the same file.
+      db = LocalDbRecordLists(getIdbFactorySembastIo(dir.path));
+      RecordLists.current = db;
+      expect(await _ids(_u1), <String>['a', 'b', 'c']);
+      final Map<String, Map<String, dynamic>> rows =
+          await _rows(getIdbFactorySembastIo(dir.path), 'sb_txns_$_u1');
+      expect(rows['b']!['amountMinor'], 120000);
     });
   });
 }

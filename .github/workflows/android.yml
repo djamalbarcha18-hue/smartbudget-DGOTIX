@@ -83,7 +83,8 @@ jobs:
           # in Supabase (Authentication > Attack Protection) only.
           TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY || '0x4AAAAAAFQb5tnXUE643C_f' }}
         run: |
-          DEFINES="--dart-define=STORE_BUILD=true"
+          # The device database for the user's lists (docs/LOCAL_DATABASE.md).
+          DEFINES="--dart-define=STORE_BUILD=true --dart-define=INDEXED_DB=true"
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
             DEFINES="$DEFINES --dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
             # Commodity prices (industrial metals, steel & iron, energy,

@@ -1,16 +1,21 @@
 # The device database (IndexedDB, hidden)
 
-**Status: built, off.** Builds made with `--dart-define=INDEXED_DB=true` keep
-the user's lists (transactions, budgets, goals, debts, projects, recurring
-items, wallets, wallet moves, trips, seasons, darets, challenges, metals) in
-the browser's IndexedDB instead of one localStorage text per list. Without
-the flag nothing changes. The app on Android keeps SharedPreferences either
-way (IndexedDB is a browser feature).
+**Status: on** for the web (`.github/workflows/deploy-web.yml`) and the
+Android app (`.github/workflows/android.yml`), since 2026-10-27. Builds made
+with `--dart-define=INDEXED_DB=true` keep the user's lists (transactions,
+budgets, goals, debts, projects, recurring items, wallets, wallet moves,
+trips, seasons, darets, challenges, metals) in a database instead of one
+SharedPreferences text per list: the browser's IndexedDB on the web, and on
+Android a database file in the app's support folder (`db/smartbudget`, the
+same code through sembast; «clear cache» keeps it, «clear data» or
+uninstalling removes it, as with SharedPreferences). Without the flag
+nothing changes.
 
 Why: localStorage holds about 5 million characters for the whole site (a
 transaction takes about 430 with its sync entry, so roughly 11,000 of them),
-and every change rewrote a whole list. IndexedDB has far more room and
-writes only the record that changed.
+and every change rewrote a whole list (on Android too, where SharedPreferences
+rewrites its whole file). The database has far more room and writes only the
+record that changed.
 
 ## How it works
 
@@ -48,8 +53,8 @@ writes only the record that changed.
 
 ## Turning it on, and back off
 
-1. Add `--dart-define=INDEXED_DB=true` to `DEFINES` in
-   `.github/workflows/deploy-web.yml`.
+1. `--dart-define=INDEXED_DB=true` in `DEFINES` of
+   `.github/workflows/deploy-web.yml` and `.github/workflows/android.yml`.
 2. To go back, remove it: on the next start the app copies back any list
    whose localStorage copy fell behind, empties the database and carries on
    as before. If that copy can't be made, it keeps using the database
@@ -60,7 +65,7 @@ writes only the record that changed.
 - `test/local_db_test.dart`: moving in (verified, never doubled, unreadable
   copies, sessions without the database), saving (one record written,
   order kept, refusals shown), concurrent loads, upgrades, turning off,
-  accounts.
+  accounts, and Android's database file (kept across a restart).
 - `SB_TEST_LOCAL_DB=1 flutter test` runs the other tests on the database
   (in memory). Screen tests run on a simulated clock the in-memory database
   doesn't follow, so use it with the files that have no screen tests.

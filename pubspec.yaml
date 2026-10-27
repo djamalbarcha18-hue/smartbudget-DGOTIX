@@ -92,6 +92,9 @@ dependencies:
   # by default; see docs/LOCAL_DATABASE.md). Pinned to releases at least two
   # weeks old; BSD-2-Clause.
   idb_shim: 2.10.0+1
+  # Where the device database file goes on Android (the app's support
+  # folder). Already a dependency of other packages.
+  path_provider: ^2.1.6
 
 dev_dependencies:
   flutter_test:
