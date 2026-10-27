@@ -1799,5 +1799,11 @@
   "loadingLabel": "Loading",
   "loadingSlow": "This is taking longer than usual.",
   "loadRetry": "Try again",
-  "loadFailed": "Couldn't load. Check your connection and try again."
+  "loadFailed": "Couldn't load. Check your connection and try again.",
+  "saveFailedTitle": "Your last change wasn't saved on this device",
+  "saveFailedWhy": "Storage may be full. Download a backup so nothing is lost, then try again.",
+  "saveRetryDone": "Saved",
+  "dataWhereCloud": "Your data is on this device and in your account, synced automatically.",
+  "dataWhereBrowser": "Your data is stored in this browser only. Clearing the site's data deletes it, so keep a backup.",
+  "dataWherePhone": "Your data is stored on this phone only. Clearing the app's data or uninstalling it deletes it, so keep a backup."
 }

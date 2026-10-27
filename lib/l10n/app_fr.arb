@@ -1531,5 +1531,11 @@
   "loadingLabel": "Chargement",
   "loadingSlow": "Le chargement prend plus de temps que d'habitude.",
   "loadRetry": "Réessayer",
-  "loadFailed": "Chargement impossible. Vérifiez la connexion et réessayez."
+  "loadFailed": "Chargement impossible. Vérifiez la connexion et réessayez.",
+  "saveFailedTitle": "Votre dernière modification n'a pas été enregistrée sur cet appareil",
+  "saveFailedWhy": "Le stockage est peut-être plein. Téléchargez une sauvegarde pour ne rien perdre, puis réessayez.",
+  "saveRetryDone": "Enregistré",
+  "dataWhereCloud": "Vos données sont sur cet appareil et dans votre compte, synchronisées automatiquement.",
+  "dataWhereBrowser": "Vos données sont enregistrées dans ce navigateur uniquement. Effacer les données du site les supprime : gardez une sauvegarde.",
+  "dataWherePhone": "Vos données sont enregistrées sur ce téléphone uniquement. Effacer les données de l'application ou la désinstaller les supprime : gardez une sauvegarde."
 }

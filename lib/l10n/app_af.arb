@@ -1531,5 +1531,11 @@
   "loadingLabel": "Laai tans",
   "loadingSlow": "Dit neem langer as gewoonlik.",
   "loadRetry": "Probeer weer",
-  "loadFailed": "Kon nie laai nie. Kontroleer die verbinding en probeer weer."
+  "loadFailed": "Kon nie laai nie. Kontroleer die verbinding en probeer weer.",
+  "saveFailedTitle": "Jou laaste verandering is nie op hierdie toestel gestoor nie",
+  "saveFailedWhy": "Die berging is dalk vol. Laai 'n rugsteun af sodat niks verlore gaan nie, en probeer dan weer.",
+  "saveRetryDone": "Gestoor",
+  "dataWhereCloud": "Jou data is op hierdie toestel en in jou rekening en word outomaties gesinchroniseer.",
+  "dataWhereBrowser": "Jou data word net in hierdie blaaier gestoor. As jy die werf se data uitvee, is dit weg; hou dus 'n rugsteun.",
+  "dataWherePhone": "Jou data word net op hierdie foon gestoor. As jy die app se data uitvee of die app verwyder, is dit weg; hou dus 'n rugsteun."
 }

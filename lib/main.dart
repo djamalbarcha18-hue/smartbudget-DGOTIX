@@ -10,6 +10,8 @@ import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/l10n/latin_digits.dart';
 import 'package:smartbudget/core/storage/legacy_cleanup.dart';
 import 'package:smartbudget/core/storage/persistent_storage.dart';
+import 'package:smartbudget/core/storage/save_health.dart';
+import 'package:smartbudget/core/storage/unload_guard.dart';
 import 'package:smartbudget/core/time/network_time.dart';
 import 'package:smartbudget/features/app_lock/application/app_lock_controller.dart';
 import 'package:smartbudget/features/app_lock/data/lock_store.dart';
@@ -76,6 +78,9 @@ Future<void> _start() async {
 
   // Erase personal AI keys saved by earlier versions (no longer supported).
   removeRetiredLocalData().ignore();
+
+  // On the web, warn before leaving while some changes couldn't be stored.
+  guardUnload(() => SaveHealth.failing.value);
 
   // Read before the first frame so a locked app never shows its content.
   final LockConfig lock = await LockStore.load();

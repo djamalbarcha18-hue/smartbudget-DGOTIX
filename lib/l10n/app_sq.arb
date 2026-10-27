@@ -1531,5 +1531,11 @@
   "loadingLabel": "Po ngarkohet",
   "loadingSlow": "Po zgjat më shumë se zakonisht.",
   "loadRetry": "Provo sërish",
-  "loadFailed": "Ngarkimi dështoi. Kontrolloni lidhjen dhe provoni sërish."
+  "loadFailed": "Ngarkimi dështoi. Kontrolloni lidhjen dhe provoni sërish.",
+  "saveFailedTitle": "Ndryshimi juaj i fundit nuk u ruajt në këtë pajisje",
+  "saveFailedWhy": "Hapësira mund të jetë plot. Shkarkoni një kopje rezervë që të mos humbasë asgjë, pastaj provoni sërish.",
+  "saveRetryDone": "U ruajt",
+  "dataWhereCloud": "Të dhënat tuaja janë në këtë pajisje dhe në llogarinë tuaj, të sinkronizuara automatikisht.",
+  "dataWhereBrowser": "Të dhënat tuaja ruhen vetëm në këtë shfletues. Fshirja e të dhënave të faqes i fshin ato, prandaj mbani një kopje rezervë.",
+  "dataWherePhone": "Të dhënat tuaja ruhen vetëm në këtë telefon. Fshirja e të dhënave të aplikacionit ose çinstalimi i tij i fshin ato, prandaj mbani një kopje rezervë."
 }

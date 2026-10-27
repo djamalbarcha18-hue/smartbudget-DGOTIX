@@ -1531,5 +1531,11 @@
   "loadingLabel": "Caricamento",
   "loadingSlow": "Ci vuole più del solito.",
   "loadRetry": "Riprova",
-  "loadFailed": "Caricamento non riuscito. Controlla la connessione e riprova."
+  "loadFailed": "Caricamento non riuscito. Controlla la connessione e riprova.",
+  "saveFailedTitle": "La tua ultima modifica non è stata salvata su questo dispositivo",
+  "saveFailedWhy": "Lo spazio di archiviazione potrebbe essere pieno. Scarica un backup per non perdere nulla, poi riprova.",
+  "saveRetryDone": "Salvato",
+  "dataWhereCloud": "I tuoi dati sono su questo dispositivo e nel tuo account, sincronizzati automaticamente.",
+  "dataWhereBrowser": "I tuoi dati sono salvati solo in questo browser. Cancellare i dati del sito li elimina: conserva un backup.",
+  "dataWherePhone": "I tuoi dati sono salvati solo su questo telefono. Cancellare i dati dell'app o disinstallarla li elimina: conserva un backup."
 }

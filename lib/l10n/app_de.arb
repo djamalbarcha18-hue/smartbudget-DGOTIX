@@ -1531,5 +1531,11 @@
   "loadingLabel": "Wird geladen",
   "loadingSlow": "Das dauert länger als sonst.",
   "loadRetry": "Erneut versuchen",
-  "loadFailed": "Laden fehlgeschlagen. Verbindung prüfen und erneut versuchen."
+  "loadFailed": "Laden fehlgeschlagen. Verbindung prüfen und erneut versuchen.",
+  "saveFailedTitle": "Deine letzte Änderung wurde auf diesem Gerät nicht gespeichert",
+  "saveFailedWhy": "Der Speicher ist möglicherweise voll. Lade eine Sicherung herunter, damit nichts verloren geht, und versuche es dann erneut.",
+  "saveRetryDone": "Gespeichert",
+  "dataWhereCloud": "Deine Daten sind auf diesem Gerät und in deinem Konto und werden automatisch synchronisiert.",
+  "dataWhereBrowser": "Deine Daten sind nur in diesem Browser gespeichert. Das Löschen der Websitedaten entfernt sie – bewahre eine Sicherung auf.",
+  "dataWherePhone": "Deine Daten sind nur auf diesem Telefon gespeichert. Das Löschen der App-Daten oder Deinstallieren der App entfernt sie – bewahre eine Sicherung auf."
 }

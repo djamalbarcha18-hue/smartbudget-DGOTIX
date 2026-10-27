@@ -1531,5 +1531,11 @@
   "loadingLabel": "Ana lodawa",
   "loadingSlow": "Yana ɗaukar lokaci fiye da yadda aka saba.",
   "loadRetry": "Sake gwadawa",
-  "loadFailed": "Ba a iya lodawa ba. Duba haɗin intanet sannan ka sake gwadawa."
+  "loadFailed": "Ba a iya lodawa ba. Duba haɗin intanet sannan ka sake gwadawa.",
+  "saveFailedTitle": "Ba a adana canjinka na ƙarshe a wannan na'ura ba",
+  "saveFailedWhy": "Wataƙila ma'ajin ya cika. Sauke fayil ɗin kwafi don kada wani abu ya ɓace, sannan ka sake gwadawa.",
+  "saveRetryDone": "An adana",
+  "dataWhereCloud": "Bayananka suna kan wannan na'ura da kuma asusunka, kuma suna daidaituwa kai tsaye.",
+  "dataWhereBrowser": "An adana bayananka a wannan burauza kaɗai. Share bayanan shafin zai goge su, don haka ka riƙe kwafi.",
+  "dataWherePhone": "An adana bayananka a wannan waya kaɗai. Share bayanan manhajar ko cire ta zai goge su, don haka ka riƙe kwafi."
 }

@@ -1531,5 +1531,11 @@
   "loadingLabel": "Učitavanje",
   "loadingSlow": "Ovo traje duže nego obično.",
   "loadRetry": "Pokušaj ponovo",
-  "loadFailed": "Učitavanje nije uspjelo. Provjerite vezu i pokušajte ponovo."
+  "loadFailed": "Učitavanje nije uspjelo. Provjerite vezu i pokušajte ponovo.",
+  "saveFailedTitle": "Vaša posljednja izmjena nije sačuvana na ovom uređaju",
+  "saveFailedWhy": "Memorija je možda puna. Preuzmite rezervnu kopiju da se ništa ne izgubi, pa pokušajte ponovo.",
+  "saveRetryDone": "Sačuvano",
+  "dataWhereCloud": "Vaši podaci su na ovom uređaju i na vašem računu i automatski se sinhronizuju.",
+  "dataWhereBrowser": "Vaši podaci su sačuvani samo u ovom pregledniku. Brisanje podataka stranice ih briše, zato čuvajte rezervnu kopiju.",
+  "dataWherePhone": "Vaši podaci su sačuvani samo na ovom telefonu. Brisanje podataka aplikacije ili njena deinstalacija ih briše, zato čuvajte rezervnu kopiju."
 }

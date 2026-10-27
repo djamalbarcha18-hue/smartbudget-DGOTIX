@@ -1531,5 +1531,11 @@
   "loadingLabel": "Yükleniyor",
   "loadingSlow": "Bu her zamankinden uzun sürüyor.",
   "loadRetry": "Tekrar dene",
-  "loadFailed": "Yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin."
+  "loadFailed": "Yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.",
+  "saveFailedTitle": "Son değişikliğin bu cihaza kaydedilmedi",
+  "saveFailedWhy": "Depolama alanı dolmuş olabilir. Hiçbir şey kaybolmasın diye bir yedek indir, sonra tekrar dene.",
+  "saveRetryDone": "Kaydedildi",
+  "dataWhereCloud": "Verilerin bu cihazda ve hesabında, otomatik olarak eşitleniyor.",
+  "dataWhereBrowser": "Verilerin yalnızca bu tarayıcıda saklanıyor. Site verilerini temizlemek onları siler; bir yedek sakla.",
+  "dataWherePhone": "Verilerin yalnızca bu telefonda saklanıyor. Uygulama verilerini temizlemek veya uygulamayı kaldırmak onları siler; bir yedek sakla."
 }

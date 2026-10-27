@@ -1531,5 +1531,11 @@
   "loadingLabel": "Laden",
   "loadingSlow": "Dit duurt langer dan normaal.",
   "loadRetry": "Opnieuw proberen",
-  "loadFailed": "Laden mislukt. Controleer de verbinding en probeer het opnieuw."
+  "loadFailed": "Laden mislukt. Controleer de verbinding en probeer het opnieuw.",
+  "saveFailedTitle": "Je laatste wijziging is niet op dit apparaat opgeslagen",
+  "saveFailedWhy": "De opslag is misschien vol. Download een back-up zodat er niets verloren gaat en probeer het opnieuw.",
+  "saveRetryDone": "Opgeslagen",
+  "dataWhereCloud": "Je gegevens staan op dit apparaat en in je account en worden automatisch gesynchroniseerd.",
+  "dataWhereBrowser": "Je gegevens staan alleen in deze browser. Als je de websitegegevens wist, zijn ze weg; bewaar dus een back-up.",
+  "dataWherePhone": "Je gegevens staan alleen op deze telefoon. Als je de app-gegevens wist of de app verwijdert, zijn ze weg; bewaar dus een back-up."
 }

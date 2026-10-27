@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/storage/save_health.dart';
 import 'package:smartbudget/core/storage/stored_list.dart';
 
 import 'package:smartbudget/core/money/money.dart';
@@ -154,12 +155,15 @@ class FakeBudgetRepository implements BudgetRepository {
   Future<void> _persist() async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
+      final bool ok = await prefs.setString(
         _key,
         jsonEncode(_items.map((BudgetTarget b) => b.toJson()).toList()),
       );
+      if (!ok) throw StateError('not stored');
+      SaveHealth.saved(_key);
     } catch (_) {
-      // Non-fatal for dev.
+      // The user is told and can try again (SaveHealth).
+      SaveHealth.failed(_key, _persist);
     }
   }
 }

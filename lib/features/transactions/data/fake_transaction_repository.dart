@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/storage/save_health.dart';
 import 'package:smartbudget/core/storage/stored_list.dart';
 
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -154,9 +155,12 @@ class FakeTransactionRepository implements TransactionRepository {
       final String raw = jsonEncode(
         _items.map((Transaction t) => t.toJson()).toList(),
       );
-      await prefs.setString(_key, raw);
+      final bool ok = await prefs.setString(_key, raw);
+      if (!ok) throw StateError('not stored');
+      SaveHealth.saved(_key);
     } catch (_) {
-      // Non-fatal for dev.
+      // The user is told and can try again (SaveHealth).
+      SaveHealth.failed(_key, _persist);
     }
   }
 }

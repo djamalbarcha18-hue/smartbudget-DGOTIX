@@ -1531,5 +1531,11 @@
   "loadingLabel": "Cargando",
   "loadingSlow": "Está tardando más de lo habitual.",
   "loadRetry": "Reintentar",
-  "loadFailed": "No se pudo cargar. Revisa la conexión e inténtalo de nuevo."
+  "loadFailed": "No se pudo cargar. Revisa la conexión e inténtalo de nuevo.",
+  "saveFailedTitle": "Tu último cambio no se guardó en este dispositivo",
+  "saveFailedWhy": "Puede que el almacenamiento esté lleno. Descarga una copia de seguridad para no perder nada y vuelve a intentarlo.",
+  "saveRetryDone": "Guardado",
+  "dataWhereCloud": "Tus datos están en este dispositivo y en tu cuenta, sincronizados automáticamente.",
+  "dataWhereBrowser": "Tus datos se guardan solo en este navegador. Borrar los datos del sitio los elimina, así que guarda una copia de seguridad.",
+  "dataWherePhone": "Tus datos se guardan solo en este teléfono. Borrar los datos de la app o desinstalarla los elimina, así que guarda una copia de seguridad."
 }

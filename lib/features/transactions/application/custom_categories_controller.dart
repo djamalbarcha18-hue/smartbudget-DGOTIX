@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/storage/account_keys.dart';
+import 'package:smartbudget/core/storage/save_health.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -56,17 +57,21 @@ class CustomCategoriesController extends Notifier<CustomCategories> {
   static List<String> _asList(Object? v) =>
       v is List ? v.whereType<String>().toList() : const <String>[];
 
-  Future<void> _save() async {
+  Future<void> _save() => _write(
+      _key,
+      jsonEncode(<String, dynamic>{
+        'income': state.income,
+        'expense': state.expense,
+      }));
+
+  static Future<void> _write(String key, String raw) async {
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();
-      await p.setString(
-          _key,
-          jsonEncode(<String, dynamic>{
-            'income': state.income,
-            'expense': state.expense,
-          }));
+      if (!await p.setString(key, raw)) throw StateError('not stored');
+      SaveHealth.saved(key);
     } catch (_) {
-      // Non-fatal.
+      // The user is told and can try again (SaveHealth).
+      SaveHealth.failed(key, () => _write(key, raw));
     }
   }
 

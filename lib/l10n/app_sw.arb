@@ -1531,5 +1531,11 @@
   "loadingLabel": "Inapakia",
   "loadingSlow": "Inachukua muda mrefu kuliko kawaida.",
   "loadRetry": "Jaribu tena",
-  "loadFailed": "Imeshindwa kupakia. Angalia muunganisho kisha jaribu tena."
+  "loadFailed": "Imeshindwa kupakia. Angalia muunganisho kisha jaribu tena.",
+  "saveFailedTitle": "Badiliko lako la mwisho halikuhifadhiwa kwenye kifaa hiki",
+  "saveFailedWhy": "Huenda hifadhi imejaa. Pakua nakala rudufu ili kisipotee chochote, kisha ujaribu tena.",
+  "saveRetryDone": "Imehifadhiwa",
+  "dataWhereCloud": "Data yako iko kwenye kifaa hiki na kwenye akaunti yako, na husawazishwa kiotomatiki.",
+  "dataWhereBrowser": "Data yako imehifadhiwa kwenye kivinjari hiki pekee. Kufuta data ya tovuti huifuta, kwa hiyo weka nakala rudufu.",
+  "dataWherePhone": "Data yako imehifadhiwa kwenye simu hii pekee. Kufuta data ya programu au kuiondoa huifuta, kwa hiyo weka nakala rudufu."
 }

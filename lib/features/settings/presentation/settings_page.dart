@@ -922,6 +922,8 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
+        const _DataWhereLine(),
+        const SizedBox(height: DsSpacing.md),
         Text(l.dataBackupHint, style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(height: DsSpacing.sm),
         _LastBackupLine(status: ref.watch(backupStatusProvider)),
@@ -961,6 +963,55 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
                   ?.copyWith(color: c.textFaint)),
         ],
       ],
+    );
+  }
+}
+
+/// Where the user's data is kept: on this device and in the account (while
+/// sync runs), or on this device only, and what would erase it then.
+class _DataWhereLine extends ConsumerWidget {
+  const _DataWhereLine();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final bool cloud = ref.watch(syncControllerProvider).phase != SyncPhase.off;
+    final Color tint = cloud ? c.income : c.saving;
+    return Container(
+      padding: const EdgeInsets.all(DsSpacing.md),
+      decoration: BoxDecoration(
+        color: tint.withValues(alpha: 0.08),
+        borderRadius: DsRadius.brMd,
+        border: Border.all(color: tint.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Icon(
+              cloud
+                  ? Icons.cloud_done_outlined
+                  : kIsWeb
+                      ? Icons.language_rounded
+                      : Icons.smartphone_rounded,
+              size: 18,
+              color: tint),
+          const SizedBox(width: DsSpacing.sm),
+          Expanded(
+            child: Text(
+              cloud
+                  ? l.dataWhereCloud
+                  : kIsWeb
+                      ? l.dataWhereBrowser
+                      : l.dataWherePhone,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: c.textPrimary),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

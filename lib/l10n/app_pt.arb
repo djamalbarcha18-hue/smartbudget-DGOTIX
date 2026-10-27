@@ -1531,5 +1531,11 @@
   "loadingLabel": "A carregar",
   "loadingSlow": "Está a demorar mais do que o habitual.",
   "loadRetry": "Tentar novamente",
-  "loadFailed": "Não foi possível carregar. Verifique a ligação e tente novamente."
+  "loadFailed": "Não foi possível carregar. Verifique a ligação e tente novamente.",
+  "saveFailedTitle": "Sua última alteração não foi salva neste aparelho",
+  "saveFailedWhy": "O armazenamento pode estar cheio. Baixe um backup para não perder nada e tente novamente.",
+  "saveRetryDone": "Salvo",
+  "dataWhereCloud": "Seus dados estão neste aparelho e na sua conta, sincronizados automaticamente.",
+  "dataWhereBrowser": "Seus dados estão salvos apenas neste navegador. Limpar os dados do site os apaga, então mantenha um backup.",
+  "dataWherePhone": "Seus dados estão salvos apenas neste celular. Limpar os dados do app ou desinstalá-lo os apaga, então mantenha um backup."
 }

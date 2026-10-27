@@ -21,6 +21,7 @@ import 'package:smartbudget/features/privacy/presentation/money_privacy_host.dar
 import 'package:smartbudget/features/reminders/application/reminder_controller.dart';
 import 'package:smartbudget/features/settings/presentation/language_picker.dart';
 import 'package:smartbudget/features/shell/offline_banner.dart';
+import 'package:smartbudget/features/shell/save_problem_banner.dart';
 import 'package:smartbudget/features/sync/application/sync_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -110,8 +111,9 @@ class SmartBudgetApp extends ConsumerWidget {
             child: AppLockGate(
                 child: MoneyPrivacyHost(
                     child: OfflineBanner(
-                        child: UpdateBanner(
-                            child: child ?? const SizedBox.shrink())))),
+                        child: SaveProblemBanner(
+                            child: UpdateBanner(
+                                child: child ?? const SizedBox.shrink()))))),
           ),
         ),
       ),

@@ -93,6 +93,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  # Lets tests make the device storage refuse a write (already a dependency
+  # of shared_preferences).
+  shared_preferences_platform_interface: ^2.4.2
 
   # Generates the Android launcher icons from assets/launcher/ (drawn by
   # tool/make_app_icons.py; run `dart run flutter_launcher_icons` after).

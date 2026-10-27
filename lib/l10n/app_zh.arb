@@ -1531,5 +1531,11 @@
   "loadingLabel": "正在加载",
   "loadingSlow": "加载时间比平时长。",
   "loadRetry": "重试",
-  "loadFailed": "加载失败。请检查网络后重试。"
+  "loadFailed": "加载失败。请检查网络后重试。",
+  "saveFailedTitle": "您最近的更改未保存在此设备上",
+  "saveFailedWhy": "存储空间可能已满。请下载备份以免丢失数据，然后重试。",
+  "saveRetryDone": "已保存",
+  "dataWhereCloud": "您的数据保存在此设备和您的账户中，并自动同步。",
+  "dataWhereBrowser": "您的数据仅保存在此浏览器中。清除网站数据会将其删除，请保留备份。",
+  "dataWherePhone": "您的数据仅保存在此手机上。清除应用数据或卸载应用会将其删除，请保留备份。"
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/storage/save_health.dart';
 import 'package:smartbudget/core/storage/stored_list.dart';
 
 /// A small per-key list persisted in the browser (SharedPreferences), with a
@@ -107,13 +108,21 @@ class LocalListStore<T> {
 
   Future<void> _commit() async {
     _sort();
+    await _write();
+    _emit();
+  }
+
+  Future<void> _write() async {
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();
-      await p.setString(key, jsonEncode(_items.map(toJson).toList()));
+      final bool ok =
+          await p.setString(key, jsonEncode(_items.map(toJson).toList()));
+      if (!ok) throw StateError('not stored');
+      SaveHealth.saved(key);
     } catch (_) {
-      // Non-fatal.
+      // The user is told and can try again (SaveHealth).
+      SaveHealth.failed(key, _write);
     }
-    _emit();
   }
 
   void _sort() {

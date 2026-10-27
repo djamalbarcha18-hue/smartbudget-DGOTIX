@@ -1531,5 +1531,11 @@
   "loadingLabel": "Memuat",
   "loadingSlow": "Ini lebih lama dari biasanya.",
   "loadRetry": "Coba lagi",
-  "loadFailed": "Gagal memuat. Periksa koneksi lalu coba lagi."
+  "loadFailed": "Gagal memuat. Periksa koneksi lalu coba lagi.",
+  "saveFailedTitle": "Perubahan terakhir Anda tidak tersimpan di perangkat ini",
+  "saveFailedWhy": "Penyimpanan mungkin penuh. Unduh cadangan agar tidak ada yang hilang, lalu coba lagi.",
+  "saveRetryDone": "Tersimpan",
+  "dataWhereCloud": "Data Anda ada di perangkat ini dan di akun Anda, disinkronkan otomatis.",
+  "dataWhereBrowser": "Data Anda hanya disimpan di browser ini. Menghapus data situs akan menghapusnya, jadi simpan cadangan.",
+  "dataWherePhone": "Data Anda hanya disimpan di ponsel ini. Menghapus data aplikasi atau mencopot aplikasinya akan menghapusnya, jadi simpan cadangan."
 }
