@@ -31,7 +31,7 @@ as in the official `@whop/sdk`.
 
 1. **Create the product & plans** in the Whop dashboard: one product
    (SmartBudget Pro) with two **renewing** plans matching
-   `docs/PRICING.md` — $7.99 / month and $49.99 / year. Copy each plan id
+   `docs/PRICING.md` — $8.99 / month and $59.99 / year. Copy each plan id
    (`plan_...`).
 
 2. **Apply the schema** and record the plan ids:

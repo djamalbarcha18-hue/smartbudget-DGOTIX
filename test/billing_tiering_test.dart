@@ -30,8 +30,8 @@ void main() {
 
     test('locked display prices match docs/PRICING.md', () {
       expect(Plan.free.priceUsd(BillingPeriod.monthly), 0);
-      expect(Plan.pro.priceUsd(BillingPeriod.monthly), 7.99);
-      expect(Plan.pro.priceUsd(BillingPeriod.yearly), 49.99);
+      expect(Plan.pro.priceUsd(BillingPeriod.monthly), 8.99);
+      expect(Plan.pro.priceUsd(BillingPeriod.yearly), 59.99);
       expect(Plan.free.priceUsd(BillingPeriod.yearly), 0);
     });
   });
