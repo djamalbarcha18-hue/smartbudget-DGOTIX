@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "Kategori të tjera ({count})",
   "txnMoreDetails": "Më shumë detaje (shënime, mënyra e pagesës)",
   "marketsOtherCountries": "Vende të tjera ({count})",
-  "marketsByCountry": "Kurset sipas vendit ({count})"
+  "marketsByCountry": "Kurset sipas vendit ({count})",
+  "viewLess": "Shfaq më pak",
+  "incomeNoneInPeriod": "Asnjë e ardhur në këtë periudhë",
+  "expenseNoneInPeriod": "Asnjë shpenzim në këtë periudhë"
 }

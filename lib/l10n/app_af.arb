@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "Ander kategorieë ({count})",
   "txnMoreDetails": "Meer besonderhede (notas, betaalmetode)",
   "marketsOtherCountries": "Ander lande ({count})",
-  "marketsByCountry": "Wisselkoerse per land ({count})"
+  "marketsByCountry": "Wisselkoerse per land ({count})",
+  "viewLess": "Wys minder",
+  "incomeNoneInPeriod": "Geen inkomste in hierdie tydperk",
+  "expenseNoneInPeriod": "Geen uitgawes in hierdie tydperk"
 }

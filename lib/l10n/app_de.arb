@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "Weitere Kategorien ({count})",
   "txnMoreDetails": "Mehr Details (Notizen, Zahlungsart)",
   "marketsOtherCountries": "Weitere Länder ({count})",
-  "marketsByCountry": "Wechselkurse nach Land ({count})"
+  "marketsByCountry": "Wechselkurse nach Land ({count})",
+  "viewLess": "Weniger anzeigen",
+  "incomeNoneInPeriod": "Keine Einnahmen in diesem Zeitraum",
+  "expenseNoneInPeriod": "Keine Ausgaben in diesem Zeitraum"
 }

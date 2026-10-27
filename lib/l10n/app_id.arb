@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "Kategori lain ({count})",
   "txnMoreDetails": "Detail lain (catatan, metode pembayaran)",
   "marketsOtherCountries": "Negara lain ({count})",
-  "marketsByCountry": "Kurs per negara ({count})"
+  "marketsByCountry": "Kurs per negara ({count})",
+  "viewLess": "Lihat lebih sedikit",
+  "incomeNoneInPeriod": "Tidak ada pemasukan di periode ini",
+  "expenseNoneInPeriod": "Tidak ada pengeluaran di periode ini"
 }

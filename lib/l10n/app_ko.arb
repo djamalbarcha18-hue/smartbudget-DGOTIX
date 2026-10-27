@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "다른 카테고리 ({count})",
   "txnMoreDetails": "자세히 (메모, 결제 수단)",
   "marketsOtherCountries": "다른 국가 ({count})",
-  "marketsByCountry": "국가별 환율 ({count})"
+  "marketsByCountry": "국가별 환율 ({count})",
+  "viewLess": "접기",
+  "incomeNoneInPeriod": "이 기간에 수입이 없어요",
+  "expenseNoneInPeriod": "이 기간에 지출이 없어요"
 }

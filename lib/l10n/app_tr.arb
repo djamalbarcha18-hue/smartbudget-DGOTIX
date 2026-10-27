@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "Diğer kategoriler ({count})",
   "txnMoreDetails": "Daha fazla ayrıntı (notlar, ödeme yöntemi)",
   "marketsOtherCountries": "Diğer ülkeler ({count})",
-  "marketsByCountry": "Ülkelere göre döviz kurları ({count})"
+  "marketsByCountry": "Ülkelere göre döviz kurları ({count})",
+  "viewLess": "Daha az göster",
+  "incomeNoneInPeriod": "Bu dönemde gelir yok",
+  "expenseNoneInPeriod": "Bu dönemde gider yok"
 }

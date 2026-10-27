@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "Ostale kategorije ({count})",
   "txnMoreDetails": "Više detalja (bilješke, način plaćanja)",
   "marketsOtherCountries": "Ostale zemlje ({count})",
-  "marketsByCountry": "Kursevi po zemljama ({count})"
+  "marketsByCountry": "Kursevi po zemljama ({count})",
+  "viewLess": "Prikaži manje",
+  "incomeNoneInPeriod": "Nema prihoda u ovom periodu",
+  "expenseNoneInPeriod": "Nema troškova u ovom periodu"
 }

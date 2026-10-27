@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "Sauran rukunoni ({count})",
   "txnMoreDetails": "Ƙarin bayani (bayanai, hanyar biya)",
   "marketsOtherCountries": "Sauran ƙasashe ({count})",
-  "marketsByCountry": "Farashin musaya ta ƙasa ({count})"
+  "marketsByCountry": "Farashin musaya ta ƙasa ({count})",
+  "viewLess": "Nuna kaɗan",
+  "incomeNoneInPeriod": "Babu kuɗin shiga a wannan lokaci",
+  "expenseNoneInPeriod": "Babu kashe kuɗi a wannan lokaci"
 }

@@ -33,6 +33,8 @@ class DonutChart extends StatefulWidget {
     this.trackColor,
     this.selectedIndex,
     this.onSelectionChanged,
+    this.selectedCenterTop,
+    this.selectedCenterBottom,
   });
 
   final List<DonutSegment> segments;
@@ -51,6 +53,11 @@ class DonutChart extends StatefulWidget {
   /// chart). When null, the chart manages its own tap selection internally.
   final int? selectedIndex;
   final ValueChanged<int?>? onSelectionChanged;
+
+  /// What the center says for the chosen slice, when the caller knows better
+  /// than the slice (a category folded into "Other" shows its own value).
+  final String? selectedCenterTop;
+  final String? selectedCenterBottom;
 
   @override
   State<DonutChart> createState() => _DonutChartState();
@@ -101,7 +108,15 @@ class _DonutChartState extends State<DonutChart> {
     final int? active = (_active != null && _active! < segs.length) ? _active : null;
 
     Widget? center;
-    if (active != null) {
+    if (active != null &&
+        active == _sticky &&
+        widget.selectedCenterTop != null) {
+      center = _CenterLabel(
+        top: widget.selectedCenterTop,
+        bottom: widget.selectedCenterBottom,
+        topColor: segs[active].color,
+      );
+    } else if (active != null) {
       final DonutSegment seg = segs[active];
       center = _CenterLabel(
         top: seg.label,
@@ -121,7 +136,9 @@ class _DonutChartState extends State<DonutChart> {
         if (_hover != null) setState(() => _hover = null);
       },
       child: GestureDetector(
-        onTapDown: (d) {
+        // On release, so a swipe that starts on the ring (in a page view)
+        // doesn't choose a slice on its way.
+        onTapUp: (d) {
           final int? hit = _hitTest(d.localPosition);
           if (hit == null) return;
           final int? next = _sticky == hit ? null : hit;
@@ -142,7 +159,18 @@ class _DonutChartState extends State<DonutChart> {
               track: widget.trackColor ??
                   Theme.of(context).dividerColor.withValues(alpha: 0.25),
             ),
-            child: center == null ? null : Center(child: center),
+            // The center changes with a short fade, not a jump.
+            child: center == null
+                ? null
+                : Center(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 160),
+                      child: KeyedSubtree(
+                          key: ValueKey<String>(
+                              '${(center as _CenterLabel).top}|${center.bottom}'),
+                          child: center),
+                    ),
+                  ),
           ),
         ),
       ),

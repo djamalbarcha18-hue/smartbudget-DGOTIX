@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "अन्य श्रेणियाँ ({count})",
   "txnMoreDetails": "और विवरण (नोट्स, भुगतान का तरीका)",
   "marketsOtherCountries": "अन्य देश ({count})",
-  "marketsByCountry": "देश के अनुसार विनिमय दरें ({count})"
+  "marketsByCountry": "देश के अनुसार विनिमय दरें ({count})",
+  "viewLess": "कम दिखाएँ",
+  "incomeNoneInPeriod": "इस अवधि में कोई आय नहीं",
+  "expenseNoneInPeriod": "इस अवधि में कोई खर्च नहीं"
 }

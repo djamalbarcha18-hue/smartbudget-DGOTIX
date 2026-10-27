@@ -1861,5 +1861,8 @@
   "marketsOtherCountries": "Other countries ({count})",
   "@marketsOtherCountries": {"placeholders": {"count": {"type": "int"}}},
   "marketsByCountry": "Exchange rates by country ({count})",
-  "@marketsByCountry": {"placeholders": {"count": {"type": "int"}}}
+  "@marketsByCountry": {"placeholders": {"count": {"type": "int"}}},
+  "viewLess": "View less",
+  "incomeNoneInPeriod": "No income in this period",
+  "expenseNoneInPeriod": "No expenses in this period"
 }

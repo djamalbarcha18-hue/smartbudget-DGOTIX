@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "Kategori lain ({count})",
   "txnMoreDetails": "Butiran lanjut (nota, kaedah bayaran)",
   "marketsOtherCountries": "Negara lain ({count})",
-  "marketsByCountry": "Kadar tukaran mengikut negara ({count})"
+  "marketsByCountry": "Kadar tukaran mengikut negara ({count})",
+  "viewLess": "Lihat kurang",
+  "incomeNoneInPeriod": "Tiada pendapatan dalam tempoh ini",
+  "expenseNoneInPeriod": "Tiada perbelanjaan dalam tempoh ini"
 }

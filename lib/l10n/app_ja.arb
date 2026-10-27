@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "その他のカテゴリー（{count}）",
   "txnMoreDetails": "詳細（メモ・支払い方法）",
   "marketsOtherCountries": "その他の国（{count}）",
-  "marketsByCountry": "国別の為替レート（{count}）"
+  "marketsByCountry": "国別の為替レート（{count}）",
+  "viewLess": "閉じる",
+  "incomeNoneInPeriod": "この期間の収入はありません",
+  "expenseNoneInPeriod": "この期間の支出はありません"
 }

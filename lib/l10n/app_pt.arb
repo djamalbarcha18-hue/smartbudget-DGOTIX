@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "Outras categorias ({count})",
   "txnMoreDetails": "Mais detalhes (notas, forma de pagamento)",
   "marketsOtherCountries": "Outros países ({count})",
-  "marketsByCountry": "Câmbio por país ({count})"
+  "marketsByCountry": "Câmbio por país ({count})",
+  "viewLess": "Ver menos",
+  "incomeNoneInPeriod": "Sem receitas neste período",
+  "expenseNoneInPeriod": "Sem despesas neste período"
 }

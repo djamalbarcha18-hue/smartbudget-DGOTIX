@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "دیگر زمرے ({count})",
   "txnMoreDetails": "مزید تفصیل (نوٹس، ادائیگی کا طریقہ)",
   "marketsOtherCountries": "دیگر ممالک ({count})",
-  "marketsByCountry": "ملک وار شرح تبادلہ ({count})"
+  "marketsByCountry": "ملک وار شرح تبادلہ ({count})",
+  "viewLess": "کم دکھائیں",
+  "incomeNoneInPeriod": "اس مدت میں کوئی آمدنی نہیں",
+  "expenseNoneInPeriod": "اس مدت میں کوئی خرچ نہیں"
 }

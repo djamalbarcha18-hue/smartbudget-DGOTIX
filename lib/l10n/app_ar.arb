@@ -1775,5 +1775,8 @@
   "budgetMoreCategories": "فئات أخرى ({count})",
   "txnMoreDetails": "تفاصيل أكثر (ملاحظات، طريقة الدفع)",
   "marketsOtherCountries": "دول أخرى ({count})",
-  "marketsByCountry": "أسعار الصرف حسب الدولة ({count})"
+  "marketsByCountry": "أسعار الصرف حسب الدولة ({count})",
+  "viewLess": "عرض أقل",
+  "incomeNoneInPeriod": "لا دخل في هذه الفترة",
+  "expenseNoneInPeriod": "لا مصروفات في هذه الفترة"
 }

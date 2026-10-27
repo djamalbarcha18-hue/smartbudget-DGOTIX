@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "Другие категории ({count})",
   "txnMoreDetails": "Подробнее (заметки, способ оплаты)",
   "marketsOtherCountries": "Другие страны ({count})",
-  "marketsByCountry": "Курсы по странам ({count})"
+  "marketsByCountry": "Курсы по странам ({count})",
+  "viewLess": "Свернуть",
+  "incomeNoneInPeriod": "Нет доходов за этот период",
+  "expenseNoneInPeriod": "Нет расходов за этот период"
 }

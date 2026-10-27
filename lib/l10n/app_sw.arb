@@ -1575,5 +1575,8 @@
   "budgetMoreCategories": "Kategoria nyingine ({count})",
   "txnMoreDetails": "Maelezo zaidi (maelezo, njia ya malipo)",
   "marketsOtherCountries": "Nchi nyingine ({count})",
-  "marketsByCountry": "Viwango kwa nchi ({count})"
+  "marketsByCountry": "Viwango kwa nchi ({count})",
+  "viewLess": "Onyesha machache",
+  "incomeNoneInPeriod": "Hakuna mapato katika kipindi hiki",
+  "expenseNoneInPeriod": "Hakuna matumizi katika kipindi hiki"
 }

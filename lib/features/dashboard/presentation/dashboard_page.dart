@@ -5,14 +5,11 @@ import 'package:intl/intl.dart' show DateFormat;
 
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/l10n/month_names.dart';
-import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
-import 'package:smartbudget/design_system/components/donut_chart.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/monthly_bars_chart.dart';
 import 'package:smartbudget/design_system/icons/sb_icons.dart';
-import 'package:smartbudget/design_system/tokens/ds_chart_palette.dart';
 import 'package:smartbudget/design_system/components/ds_section_header.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/components/kpi_card.dart';
@@ -28,7 +25,7 @@ import 'package:smartbudget/features/backup/presentation/backup_reminder_card.da
 import 'package:smartbudget/features/dashboard/application/dashboard_controller.dart';
 import 'package:smartbudget/features/dashboard/presentation/dashboard_cards.dart';
 import 'package:smartbudget/features/dashboard/presentation/dgotix_insights_section.dart';
-import 'package:smartbudget/features/dashboard/presentation/expense_breakdown_section.dart';
+import 'package:smartbudget/features/dashboard/presentation/income_expense_card.dart';
 import 'package:smartbudget/features/dashboard/presentation/global_markets_section.dart';
 import 'package:smartbudget/features/onboarding/presentation/welcome_card.dart';
 import 'package:smartbudget/features/recurring/domain/recurrence_engine.dart';
@@ -189,18 +186,8 @@ class DashboardPage extends ConsumerWidget {
           const SizedBox(height: gap),
 
           // ③ Right under the month pulse, where the money came from and
-          //    where it went: income first, then expenses, two equal halves.
-          //    The row follows the reading direction (income on the right in
-          //    Arabic, on the left in English; on top when stacked).
-          const _EqualRow(
-            height: 360,
-            narrowHeight: 420,
-            minRowWidth: 880,
-            children: <Widget>[
-              _IncomeDonutCard(),
-              ExpenseBreakdownSection(),
-            ],
-          ),
+          //    where it went: one card, income and expenses as two pages.
+          const IncomeExpenseCard(),
           const SizedBox(height: gap),
 
           // ④ Every analysis row is a main panel (8/12) and a companion
@@ -574,152 +561,6 @@ class _LegendDot extends StatelessWidget {
         const SizedBox(width: 6),
         Text(label, style: Theme.of(context).textTheme.labelSmall),
       ],
-    );
-  }
-}
-
-class _IncomeDonutCard extends ConsumerWidget {
-  const _IncomeDonutCard();
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return _DistributionBody(
-      title: AppLocalizations.of(context).sectionIncomeDistribution,
-      totals: ref.watch(scopedIncomeCategoryTotalsProvider),
-    );
-  }
-}
-
-/// A donut of category shares (top 6 + aggregated "Other") with a legend.
-class _DistributionBody extends StatelessWidget {
-  const _DistributionBody({required this.title, required this.totals});
-  final String title;
-  final List<CategoryTotal> totals;
-
-  @override
-  Widget build(BuildContext context) {
-    final AppLocalizations l = AppLocalizations.of(context);
-    final DsColors c = context.dsColors;
-    final AppLang lang = appLangOf(context);
-    final int totalMinor =
-        totals.fold<int>(0, (int s, CategoryTotal t) => s + t.amount.minorUnits);
-
-    final List<DonutSegment> segments = <DonutSegment>[];
-    final List<Widget> legend = <Widget>[];
-    if (totals.isNotEmpty) {
-      const int topN = 6;
-      final List<CategoryTotal> top =
-          totals.length > topN ? totals.sublist(0, topN) : totals;
-      final String currency = totals.first.amount.currencyCode;
-      for (int i = 0; i < top.length; i++) {
-        segments.add(DonutSegment(
-          label: Catalog.label(top[i].category, lang: lang),
-          value: top[i].amount.minorUnits.toDouble(),
-          color: DsChartPalette.at(i),
-          valueLabel: MoneyFormatter.compact(top[i].amount),
-        ));
-      }
-      if (totals.length > topN) {
-        final int otherMinor = totals
-            .sublist(topN)
-            .fold<int>(0, (int s, CategoryTotal t) => s + t.amount.minorUnits);
-        segments.add(DonutSegment(
-          label: l.chartOther,
-          value: otherMinor.toDouble(),
-          color: DsChartPalette.other,
-          valueLabel: MoneyFormatter.compact(Money(otherMinor, currency)),
-        ));
-      }
-      for (final DonutSegment seg in segments) {
-        final int pct =
-            totalMinor == 0 ? 0 : (seg.value / totalMinor * 100).round();
-        legend.add(Padding(
-          padding: const EdgeInsets.only(bottom: 6),
-          child: Row(
-            children: <Widget>[
-              Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                    color: seg.color,
-                    borderRadius: BorderRadius.circular(3)),
-              ),
-              const SizedBox(width: DsSpacing.sm),
-              Expanded(
-                child: Text(seg.label,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    overflow: TextOverflow.ellipsis),
-              ),
-              Text('$pct%',
-                  style: Theme.of(context)
-                      .textTheme
-                      .labelSmall
-                      ?.copyWith(color: c.textMuted)),
-            ],
-          ),
-        ));
-      }
-    }
-
-    return GlassCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          DsSectionHeader(title: title, icon: Icons.donut_small_outlined),
-          const SizedBox(height: DsSpacing.md),
-          if (totals.isEmpty)
-            Expanded(
-              child: Center(
-                child: Text(l.emptyTransactionsMessage,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    textAlign: TextAlign.center),
-              ),
-            )
-          else
-            Expanded(
-              child: LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints cons) {
-                  // Same donut and layout as the expense card beside it.
-                  final Widget donut = Center(
-                    child: DonutChart(
-                      segments: segments,
-                      size: 140,
-                      thickness: 26,
-                      centerTop: MoneyFormatter.compact(
-                          Money(totalMinor, totals.first.amount.currencyCode)),
-                      centerBottom: title,
-                    ),
-                  );
-                  if (cons.maxWidth >= 380) {
-                    return Row(
-                      children: <Widget>[
-                        SizedBox(width: 156, child: donut),
-                        const SizedBox(width: DsSpacing.lg),
-                        Expanded(
-                          child: Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: ConstrainedBox(
-                              // Keep each share next to its category.
-                              constraints: const BoxConstraints(maxWidth: 190),
-                              child: ListView(
-                                  shrinkWrap: true, children: legend),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                  return Column(
-                    children: <Widget>[
-                      donut,
-                      const SizedBox(height: DsSpacing.md),
-                      Expanded(child: ListView(children: legend)),
-                    ],
-                  );
-                },
-              ),
-            ),
-        ],
-      ),
     );
   }
 }
