@@ -36,8 +36,8 @@ void main() {
             builder: (_, __) => const Scaffold(body: _Broken())),
         GoRoute(
           path: '/goals',
-          builder: (_, __) => Scaffold(
-            body: Column(children: const <Widget>[
+          builder: (_, __) => const Scaffold(
+            body: Column(children: <Widget>[
               Text('goals'),
               SizedBox(width: 40, height: 40, child: _Broken()),
             ]),
