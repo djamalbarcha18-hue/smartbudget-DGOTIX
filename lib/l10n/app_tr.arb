@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "Bu dönemde gelir yok",
   "expenseNoneInPeriod": "Bu dönemde gider yok",
   "errorPartTitle": "Bu bölüm gösterilemedi",
-  "errorGoHome": "Ana sayfaya dön"
+  "errorGoHome": "Ana sayfaya dön",
+  "trialTitle": "Pro'yu {days} gün ücretsiz deneyin",
+  "trialBody": "Kart gerekmez. Bitince tüm verilerinizle Ücretsiz plana dönersiniz.",
+  "trialStart": "Ücretsiz denemeyi başlat",
+  "trialStarting": "Başlatılıyor…",
+  "trialActive": "{date} tarihine kadar Pro'yu deniyorsunuz",
+  "trialActiveBody": "Ücret alınmaz. Sonrasında abone olmazsanız Ücretsiz plana dönersiniz.",
+  "trialUsed": "Bu hesap ücretsiz denemesini zaten kullandı.",
+  "trialFailed": "Deneme başlatılamadı. Bağlantınızı kontrol edip tekrar deneyin.",
+  "foundingBadge": "Lansman teklifi",
+  "foundingFirstYear": "İlk yıl {price}, sonra {regular} / yıl",
+  "foundingUntil": "{date} tarihine kadar lansman teklifi"
 }

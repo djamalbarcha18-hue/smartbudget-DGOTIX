@@ -239,6 +239,23 @@ A coupon (server-side `coupons` table) has:
 Trials are delivered as a PRO entitlement with an `expires_at`; when it lapses
 the account falls back to FREE with no loss of the user's own data.
 
+### Launch offers (implemented, `supabase/launch_offers.sql`)
+
+- **14-day PRO trial, no card, once per account.** The Plans screen offers it
+  to a signed-in FREE account that never had one; `start_pro_trial()` sets
+  `trial_plan` / `trial_expires_at` and stamps `trial_used_at` so it can't be
+  started twice (a paying account can't start one). Shown only while plans are
+  on sale (not during the beta, except in payment test mode).
+- **Founding offer: the first year of PRO yearly at $39.99**, then $59.99.
+  Sold on its own Whop plan (initial price $39.99, renewing at $59.99),
+  recorded in `billing_prices` with `offer = 'founding'`. It runs while the
+  Edge Function secret `FOUNDING_OFFER_ENDS_AT` is in the future
+  (`FOUNDING_YEARLY_USD` sets the price, default 39.99); remove the secret to
+  end it early (e.g. at 300 subscribers). The app shows the first-year price
+  and the end date only while `billing-config` reports the offer, and that only
+  when the founding plan is recorded, so the screen and the charge agree.
+  Monthly is never discounted.
+
 **Implemented:** `supabase/coupons.sql` (tables `coupons` + `coupon_redemptions`,
 server-only RLS) and the `coupon-validate` Edge Function, which validates a code
 (window, global cap, per-user cap) and returns the resulting price or trial

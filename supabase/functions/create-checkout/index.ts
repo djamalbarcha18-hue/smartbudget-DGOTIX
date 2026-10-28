@@ -16,7 +16,7 @@
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
 import { rateLimited } from "../_shared/usage.ts";
-import { planToPrice } from "../_shared/billing.ts";
+import { foundingOffer, planToPrice } from "../_shared/billing.ts";
 import { createWhopCheckout, whopConfigured } from "../_shared/whop.ts";
 import {
   createPaypalSubscription,
@@ -93,7 +93,12 @@ async function whopCheckout(
   if (!whopConfigured()) {
     return jsonResponse({ error: "not_configured" }, 503, cors);
   }
-  const planId = await planToPrice(db, plan, period, "whop");
+  // During the founding offer the first year of PRO yearly is sold on its own
+  // Whop plan (founding price, then the regular one); without it, the regular.
+  const founding = plan === "pro" && period === "yearly" && foundingOffer()
+    ? await planToPrice(db, plan, period, "whop", "founding")
+    : null;
+  const planId = founding ?? await planToPrice(db, plan, period, "whop");
   if (!planId) return jsonResponse({ error: "unknown_price" }, 400, cors);
 
   // A checkout configuration for the Whop plan: its metadata is copied onto

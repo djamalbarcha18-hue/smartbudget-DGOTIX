@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -15,8 +16,11 @@ import 'package:smartbudget/features/billing/application/entitlement_controller.
 import 'package:smartbudget/features/billing/data/checkout_service.dart';
 import 'package:smartbudget/features/billing/data/coupon_service.dart';
 import 'package:smartbudget/features/billing/data/subscription_service.dart';
+import 'package:smartbudget/features/billing/data/trial_service.dart';
 import 'package:smartbudget/features/billing/domain/coupon.dart';
+import 'package:smartbudget/features/billing/domain/entitlement.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/domain/founding_offer.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/billing/domain/user_subscription.dart';
 import 'package:smartbudget/features/billing/domain/payment_links.dart';
@@ -37,7 +41,15 @@ class PlansPage extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     // Payment test mode (beta, sandbox only): plans are offered from FREE up.
     final bool payTest = ref.watch(paymentTestModeProvider).valueOrNull ?? false;
-    final Plan current = payTest ? Plan.free : ref.watch(effectivePlanProvider);
+    // Plans are on sale (not the beta, or its payment test mode).
+    final bool selling = !AppEnv.betaAllAccess || payTest;
+    // What is bought from: the paid plan, so a PRO trial can still subscribe.
+    final Plan current = payTest
+        ? Plan.free
+        : ref.watch(remoteEntitlementProvider).valueOrNull?.plan ??
+            ref.watch(effectivePlanProvider);
+    final FoundingOffer? offer =
+        selling ? ref.watch(foundingOfferProvider).valueOrNull : null;
     final bool wide = MediaQuery.of(context).size.width >= 700;
 
     final List<Widget> cards = <Widget>[
@@ -46,7 +58,8 @@ class PlansPage extends ConsumerWidget {
             plan: p,
             current: current,
             highlight: p == Plan.pro,
-            payTest: payTest),
+            payTest: payTest,
+            offer: offer),
     ];
 
     return SingleChildScrollView(
@@ -73,6 +86,7 @@ class PlansPage extends ConsumerWidget {
               if (payTest) const _PayTestBanner(),
               if (AppEnv.betaAllAccess) const _BetaBanner(),
               const _CurrentPlanCard(),
+              if (selling) const _TrialCard(),
               if (wide)
                 IntrinsicHeight(
                   child: Row(
@@ -235,6 +249,89 @@ class _CurrentPlanCard extends ConsumerWidget {
             ),
             const SizedBox(width: DsSpacing.sm),
             const _ManageButton(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The one free PRO trial: offered to a FREE account that hasn't had it, then
+/// shows until when it runs. The server decides who may start one.
+class _TrialCard extends ConsumerStatefulWidget {
+  const _TrialCard();
+
+  @override
+  ConsumerState<_TrialCard> createState() => _TrialCardState();
+}
+
+class _TrialCardState extends ConsumerState<_TrialCard> {
+  bool _busy = false;
+
+  Future<void> _start() async {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    setState(() => _busy = true);
+    final TrialStart r = await ref.read(trialServiceProvider).start();
+    if (!mounted) return;
+    setState(() => _busy = false);
+    ref.invalidate(remoteEntitlementProvider);
+    messenger.showSnackBar(SnackBar(
+      content: Text(switch (r.error) {
+        null => l.trialActive(_ltr(_fmtDate(r.endsAt) ?? '')),
+        TrialError.used || TrialError.paid => l.trialUsed,
+        TrialError.network => l.trialFailed,
+      }),
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!ref.watch(authControllerProvider).isAuthenticated) {
+      return const SizedBox.shrink();
+    }
+    final Entitlement? e = ref.watch(remoteEntitlementProvider).valueOrNull;
+    if (e == null) return const SizedBox.shrink();
+    final bool running = e.trialActiveAt(AppClock.now());
+    if (!running && (e.plan != Plan.free || e.trialUsed)) {
+      return const SizedBox.shrink();
+    }
+
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: DsSpacing.md),
+      child: GlassCard(
+        accent: c.brand,
+        child: Row(
+          children: <Widget>[
+            Icon(running ? Icons.hourglass_top_rounded : Icons.redeem_outlined,
+                size: 20, color: c.brand),
+            const SizedBox(width: DsSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                      running
+                          ? l.trialActive(_ltr(_fmtDate(e.trialExpiresAt) ?? ''))
+                          : l.trialTitle(kProTrialDays),
+                      style: t.titleSmall
+                          ?.copyWith(fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 2),
+                  Text(running ? l.trialActiveBody : l.trialBody,
+                      style: t.labelSmall?.copyWith(color: c.textMuted)),
+                ],
+              ),
+            ),
+            if (!running) ...<Widget>[
+              const SizedBox(width: DsSpacing.sm),
+              DsButton(
+                label: _busy ? l.trialStarting : l.trialStart,
+                onPressed: _busy ? null : _start,
+              ),
+            ],
           ],
         ),
       ),
@@ -440,6 +537,7 @@ class _PlanCard extends StatelessWidget {
     required this.current,
     required this.highlight,
     this.payTest = false,
+    this.offer,
   });
 
   final Plan plan;
@@ -448,6 +546,9 @@ class _PlanCard extends StatelessWidget {
 
   /// Payment test mode: checkout is offered even during the beta.
   final bool payTest;
+
+  /// The founding offer while it is sold (first year of yearly cheaper).
+  final FoundingOffer? offer;
 
   int _limit(Feature f) => FeatureCatalog.quotaFor(f, plan)?.limit ?? 0;
 
@@ -538,16 +639,26 @@ class _PlanCard extends StatelessWidget {
               style: t.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 2),
-            Row(
-              children: <Widget>[
-                Text(l.planPerYear(_money(yearly)),
-                    style: t.bodySmall?.copyWith(color: c.textMuted)),
-                if (save != null && save > 0) ...<Widget>[
-                  const SizedBox(width: DsSpacing.sm),
-                  _Pill(text: l.planYearlySave(save), color: c.income),
+            if (offer != null) ...<Widget>[
+              Text(
+                  l.foundingFirstYear(
+                      _ltr(_money(offer!.yearlyUsd)), _ltr(_money(yearly))),
+                  style: t.bodySmall?.copyWith(color: c.textMuted)),
+              const SizedBox(height: DsSpacing.xs),
+              _Pill(
+                  text: l.foundingUntil(_ltr(_fmtDate(offer!.endsAt) ?? '')),
+                  color: c.brand),
+            ] else
+              Row(
+                children: <Widget>[
+                  Text(l.planPerYear(_money(yearly)),
+                      style: t.bodySmall?.copyWith(color: c.textMuted)),
+                  if (save != null && save > 0) ...<Widget>[
+                    const SizedBox(width: DsSpacing.sm),
+                    _Pill(text: l.planYearlySave(save), color: c.income),
+                  ],
                 ],
-              ],
-            ),
+              ),
           ],
           const SizedBox(height: DsSpacing.lg),
           for (final String f in _features(l)) ...<Widget>[
@@ -577,7 +688,7 @@ class _PlanCard extends StatelessWidget {
     if (!plan.atLeast(current)) {
       return const SizedBox.shrink();
     }
-    return _UpgradeCta(plan: plan);
+    return _UpgradeCta(plan: plan, offer: offer);
   }
 }
 
@@ -586,8 +697,9 @@ class _PlanCard extends StatelessWidget {
 /// back gracefully to the "billing coming soon" note. Upgrade is the only path
 /// to more AI: DGOTIX is the sole AI provider and quotas come with the plan.
 class _UpgradeCta extends ConsumerStatefulWidget {
-  const _UpgradeCta({required this.plan});
+  const _UpgradeCta({required this.plan, this.offer});
   final Plan plan;
+  final FoundingOffer? offer;
 
   @override
   ConsumerState<_UpgradeCta> createState() => _UpgradeCtaState();
@@ -703,11 +815,16 @@ class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
             ),
             ListTile(
               leading: Icon(Icons.calendar_today_outlined, color: c.brand),
-              title: Text(l.planPerYear(
-                  _money(widget.plan.priceUsd(BillingPeriod.yearly)))),
-              trailing: (save != null && save > 0)
-                  ? _Pill(text: l.planYearlySave(save), color: c.income)
-                  : null,
+              title: Text(widget.offer != null
+                  ? l.foundingFirstYear(_ltr(_money(widget.offer!.yearlyUsd)),
+                      _ltr(_money(widget.plan.priceUsd(BillingPeriod.yearly))))
+                  : l.planPerYear(
+                      _money(widget.plan.priceUsd(BillingPeriod.yearly)))),
+              trailing: widget.offer != null
+                  ? _Pill(text: l.foundingBadge, color: c.brand)
+                  : (save != null && save > 0)
+                      ? _Pill(text: l.planYearlySave(save), color: c.income)
+                      : null,
               onTap: () => Navigator.of(ctx).pop(BillingPeriod.yearly),
             ),
             const SizedBox(height: DsSpacing.sm),
@@ -762,6 +879,10 @@ int? _yearlySavePercentFor(Plan plan) {
   if (full <= 0) return null;
   return ((full - y) / full * 100).round();
 }
+
+/// A price or date kept in its own left-to-right order inside a sentence, so
+/// right-to-left text doesn't move its \$ sign or reverse its parts.
+String _ltr(String s) => '\u2066$s\u2069';
 
 String _money(double? v) {
   if (v == null) return '—';

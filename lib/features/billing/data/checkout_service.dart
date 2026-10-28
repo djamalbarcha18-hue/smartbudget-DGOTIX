@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/billing/domain/founding_offer.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 
 /// A payment method / gateway the checkout can use.
@@ -87,24 +89,38 @@ class CheckoutService {
 final checkoutServiceProvider =
     Provider<CheckoutService>((_) => const CheckoutService());
 
-/// The payment methods the server actually has configured (secrets set), so the
-/// Plans screen only offers gateways that work. Empty on any failure — the UI
-/// then falls back to a single default attempt with its graceful messaging.
-final enabledProvidersProvider = FutureProvider<List<PayProvider>>((ref) async {
+/// What the server's `billing-config` says (payment methods, sandbox, a
+/// running offer). Null on any failure.
+final billingConfigProvider =
+    FutureProvider<Map<Object?, Object?>?>((ref) async {
   try {
     final FunctionResponse res =
         await Supabase.instance.client.functions.invoke('billing-config');
     final Object? data = res.data;
-    if (data is! Map) return const <PayProvider>[];
-    final Object? list = data['providers'];
-    if (list is! List) return const <PayProvider>[];
-    return list
-        .map((Object? e) => PayProviderX.fromId(e?.toString()))
-        .whereType<PayProvider>()
-        .toList();
+    return data is Map ? data : null;
   } catch (_) {
-    return const <PayProvider>[];
+    return null;
   }
+});
+
+/// The payment methods the server actually has configured (secrets set), so the
+/// Plans screen only offers gateways that work. Empty on any failure — the UI
+/// then falls back to a single default attempt with its graceful messaging.
+final enabledProvidersProvider = FutureProvider<List<PayProvider>>((ref) async {
+  final Object? list =
+      (await ref.watch(billingConfigProvider.future))?['providers'];
+  if (list is! List) return const <PayProvider>[];
+  return list
+      .map((Object? e) => PayProviderX.fromId(e?.toString()))
+      .whereType<PayProvider>()
+      .toList();
+});
+
+/// The founding offer while the server sells it; null otherwise.
+final foundingOfferProvider = FutureProvider<FoundingOffer?>((ref) async {
+  final FoundingOffer? o = FoundingOffer.fromJson(
+      (await ref.watch(billingConfigProvider.future))?['offer']);
+  return o != null && o.activeAt(AppClock.now()) ? o : null;
 });
 
 /// Payment test mode: during the beta nothing is sold, but the web app opened
@@ -112,12 +128,5 @@ final enabledProvidersProvider = FutureProvider<List<PayProvider>>((ref) async {
 /// while the server says every payment method is a sandbox account.
 final paymentTestModeProvider = FutureProvider<bool>((ref) async {
   if (!AppEnv.betaAllAccess || !AppEnv.payTestRequested) return false;
-  try {
-    final FunctionResponse res =
-        await Supabase.instance.client.functions.invoke('billing-config');
-    final Object? data = res.data;
-    return data is Map && data['sandbox'] == true;
-  } catch (_) {
-    return false;
-  }
+  return (await ref.watch(billingConfigProvider.future))?['sandbox'] == true;
 });

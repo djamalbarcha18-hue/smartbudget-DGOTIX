@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "Nema prihoda u ovom periodu",
   "expenseNoneInPeriod": "Nema troškova u ovom periodu",
   "errorPartTitle": "Ovaj dio se ne može prikazati",
-  "errorGoHome": "Nazad na početnu"
+  "errorGoHome": "Nazad na početnu",
+  "trialTitle": "Isprobajte Pro besplatno {days} dana",
+  "trialBody": "Bez kartice. Kada istekne, vraćate se na besplatni plan sa svim svojim podacima.",
+  "trialStart": "Započni besplatnu probu",
+  "trialStarting": "Pokretanje…",
+  "trialActive": "Isprobavate Pro do {date}",
+  "trialActiveBody": "Ništa se ne naplaćuje. Nakon toga se vraćate na besplatni plan, osim ako se pretplatite.",
+  "trialUsed": "Ovaj račun je već iskoristio besplatnu probu.",
+  "trialFailed": "Proba nije pokrenuta. Provjerite vezu i pokušajte ponovo.",
+  "foundingBadge": "Početna ponuda",
+  "foundingFirstYear": "{price} prve godine, zatim {regular} / god.",
+  "foundingUntil": "Početna ponuda do {date}"
 }

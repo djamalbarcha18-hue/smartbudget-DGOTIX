@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "Aucun revenu sur cette période",
   "expenseNoneInPeriod": "Aucune dépense sur cette période",
   "errorPartTitle": "Cette partie n'a pas pu s'afficher",
-  "errorGoHome": "Retour à l'accueil"
+  "errorGoHome": "Retour à l'accueil",
+  "trialTitle": "Essayez Pro gratuitement pendant {days} jours",
+  "trialBody": "Sans carte. À la fin, vous revenez à la formule Gratuite, avec toutes vos données.",
+  "trialStart": "Commencer l'essai gratuit",
+  "trialStarting": "Démarrage…",
+  "trialActive": "Vous essayez Pro jusqu'au {date}",
+  "trialActiveBody": "Rien n'est prélevé. Ensuite, vous revenez à la formule Gratuite, sauf si vous vous abonnez.",
+  "trialUsed": "Ce compte a déjà eu son essai gratuit.",
+  "trialFailed": "Impossible de démarrer l'essai. Vérifiez votre connexion et réessayez.",
+  "foundingBadge": "Offre de lancement",
+  "foundingFirstYear": "{price} la première année, puis {regular} / an",
+  "foundingUntil": "Offre de lancement jusqu'au {date}"
 }

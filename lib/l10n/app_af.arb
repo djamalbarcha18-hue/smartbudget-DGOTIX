@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "Geen inkomste in hierdie tydperk",
   "expenseNoneInPeriod": "Geen uitgawes in hierdie tydperk",
   "errorPartTitle": "Hierdie deel kon nie gewys word nie",
-  "errorGoHome": "Terug tuis"
+  "errorGoHome": "Terug tuis",
+  "trialTitle": "Probeer Pro {days} dae gratis",
+  "trialBody": "Geen kaart nodig nie. Daarna is jy terug op Gratis, met al jou data.",
+  "trialStart": "Begin gratis proeftydperk",
+  "trialStarting": "Begin tans…",
+  "trialActive": "Jy probeer Pro tot {date}",
+  "trialActiveBody": "Niks word gehef nie. Daarna is jy terug op Gratis, tensy jy inteken.",
+  "trialUsed": "Hierdie rekening het reeds sy gratis proeftydperk gehad.",
+  "trialFailed": "Die proeftydperk kon nie begin nie. Gaan jou verbinding na en probeer weer.",
+  "foundingBadge": "Bekendstellingsaanbod",
+  "foundingFirstYear": "{price} die eerste jaar, daarna {regular} / jaar",
+  "foundingUntil": "Bekendstellingsaanbod tot {date}"
 }

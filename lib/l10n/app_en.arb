@@ -1866,5 +1866,20 @@
   "incomeNoneInPeriod": "No income in this period",
   "expenseNoneInPeriod": "No expenses in this period",
   "errorPartTitle": "This part couldn't be shown",
-  "errorGoHome": "Back home"
+  "errorGoHome": "Back home",
+  "trialTitle": "Try Pro free for {days} days",
+  "@trialTitle": {"placeholders": {"days": {"type": "int"}}},
+  "trialBody": "No card needed. When it ends you're back on Free, with all your data.",
+  "trialStart": "Start free trial",
+  "trialStarting": "Starting…",
+  "trialActive": "You're trying Pro until {date}",
+  "@trialActive": {"placeholders": {"date": {"type": "String"}}},
+  "trialActiveBody": "Nothing is charged. After that you're back on Free unless you subscribe.",
+  "trialUsed": "This account has already had its free trial.",
+  "trialFailed": "Couldn't start the trial. Check your connection and try again.",
+  "foundingBadge": "Launch offer",
+  "foundingFirstYear": "{price} the first year, then {regular} / yr",
+  "@foundingFirstYear": {"placeholders": {"price": {"type": "String"}, "regular": {"type": "String"}}},
+  "foundingUntil": "Launch offer until {date}",
+  "@foundingUntil": {"placeholders": {"date": {"type": "String"}}}
 }

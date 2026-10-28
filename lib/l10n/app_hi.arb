@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "इस अवधि में कोई आय नहीं",
   "expenseNoneInPeriod": "इस अवधि में कोई खर्च नहीं",
   "errorPartTitle": "यह हिस्सा दिखाया नहीं जा सका",
-  "errorGoHome": "होम पर लौटें"
+  "errorGoHome": "होम पर लौटें",
+  "trialTitle": "Pro को {days} दिन मुफ़्त आज़माएँ",
+  "trialBody": "कार्ड की ज़रूरत नहीं। ख़त्म होने पर आप अपने सारे डेटा के साथ मुफ़्त प्लान पर लौट आएँगे।",
+  "trialStart": "मुफ़्त ट्रायल शुरू करें",
+  "trialStarting": "शुरू हो रहा है…",
+  "trialActive": "आप {date} तक Pro आज़मा रहे हैं",
+  "trialActiveBody": "कोई शुल्क नहीं कटेगा। उसके बाद सदस्यता न लेने पर आप मुफ़्त प्लान पर लौट आएँगे।",
+  "trialUsed": "इस खाते ने अपना मुफ़्त ट्रायल पहले ही ले लिया है।",
+  "trialFailed": "ट्रायल शुरू नहीं हो सका। अपना कनेक्शन जाँचें और फिर कोशिश करें।",
+  "foundingBadge": "लॉन्च ऑफ़र",
+  "foundingFirstYear": "पहले साल {price}, फिर {regular} / वर्ष",
+  "foundingUntil": "लॉन्च ऑफ़र {date} तक"
 }

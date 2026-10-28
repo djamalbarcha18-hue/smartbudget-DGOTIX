@@ -1780,5 +1780,16 @@
   "incomeNoneInPeriod": "لا دخل في هذه الفترة",
   "expenseNoneInPeriod": "لا مصروفات في هذه الفترة",
   "errorPartTitle": "تعذّر عرض هذا الجزء",
-  "errorGoHome": "رجوع إلى الرئيسية"
+  "errorGoHome": "رجوع إلى الرئيسية",
+  "trialTitle": "جرّب Pro مجانًا {days} يومًا",
+  "trialBody": "بلا بطاقة. عند انتهائها تعود إلى الباقة المجانية مع كل بياناتك.",
+  "trialStart": "ابدأ التجربة المجانية",
+  "trialStarting": "جارٍ البدء…",
+  "trialActive": "أنت تجرّب Pro حتى {date}",
+  "trialActiveBody": "لا يُخصم أي مبلغ. بعدها تعود إلى الباقة المجانية ما لم تشترك.",
+  "trialUsed": "استفاد هذا الحساب من تجربته المجانية من قبل.",
+  "trialFailed": "تعذّر بدء التجربة. تحقّق من الاتصال وحاول مرة أخرى.",
+  "foundingBadge": "عرض الإطلاق",
+  "foundingFirstYear": "{price} للسنة الأولى، ثم {regular} / سنة",
+  "foundingUntil": "عرض الإطلاق حتى {date}"
 }

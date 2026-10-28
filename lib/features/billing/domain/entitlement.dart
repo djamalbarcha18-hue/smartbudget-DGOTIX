@@ -14,6 +14,7 @@ class Entitlement {
     this.trialPlan,
     this.trialExpiresAt,
     this.period,
+    this.trialUsed = false,
   });
 
   /// The account's own (paid or free) plan.
@@ -24,6 +25,9 @@ class Entitlement {
 
   /// When [trialPlan] stops applying. Null when there is no trial.
   final DateTime? trialExpiresAt;
+
+  /// Whether the account has had its one free trial (running or over).
+  final bool trialUsed;
 
   /// How the paid [plan] is billed (monthly or yearly), or null when unknown
   /// or on FREE. Some perks are reserved for yearly subscribers.
@@ -54,6 +58,7 @@ class Entitlement {
         if (trialExpiresAt != null)
           'trialExpiresAt': trialExpiresAt!.toUtc().toIso8601String(),
         if (period != null) 'period': period!.name,
+        if (trialUsed) 'trialUsed': true,
       };
 
   static Entitlement fromJson(Map<String, dynamic> j) {
@@ -65,6 +70,7 @@ class Entitlement {
       trialPlan: tp == null ? null : PlanX.fromStorage(tp),
       trialExpiresAt: te == null ? null : DateTime.tryParse(te),
       period: billingPeriodFrom(pe),
+      trialUsed: j['trialUsed'] == true,
     );
   }
 
@@ -80,11 +86,13 @@ class Entitlement {
     Plan? trialPlan,
     DateTime? trialExpiresAt,
     BillingPeriod? period,
+    bool? trialUsed,
   }) =>
       Entitlement(
         plan: plan ?? this.plan,
         trialPlan: trialPlan ?? this.trialPlan,
         trialExpiresAt: trialExpiresAt ?? this.trialExpiresAt,
         period: period ?? this.period,
+        trialUsed: trialUsed ?? this.trialUsed,
       );
 }

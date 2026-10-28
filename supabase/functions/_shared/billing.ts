@@ -33,17 +33,57 @@ export async function priceToPlan(
   };
 }
 
-/** The provider price id for a (plan, period), or null. */
+/**
+ * The provider price id for a (plan, period), or null. With [offer], the price
+ * sold only during that offer (billing_prices.offer); without it, the regular
+ * one (offer null). A database without supabase/launch_offers.sql has no offer
+ * column: its one price per (plan, period) is the regular one.
+ */
 export async function planToPrice(
   db: SupabaseClient,
   plan: Plan,
   period: "monthly" | "yearly",
   provider = "whop",
+  offer: string | null = null,
 ): Promise<string | null> {
-  const { data } = await db.from("billing_prices")
-    .select("price_id").eq("plan", plan).eq("period", period)
-    .eq("provider", provider).eq("active", true).maybeSingle();
-  return (data?.price_id as string | undefined) ?? null;
+  const prices = () =>
+    db.from("billing_prices")
+      .select("price_id").eq("plan", plan).eq("period", period)
+      .eq("provider", provider).eq("active", true);
+  if (offer) {
+    const { data, error } = await prices().eq("offer", offer).maybeSingle();
+    return error ? null : (data?.price_id as string | undefined) ?? null;
+  }
+  const { data, error } = await prices().is("offer", null).maybeSingle();
+  if (!error) return (data?.price_id as string | undefined) ?? null;
+  const old = await prices().maybeSingle();
+  return (old.data?.price_id as string | undefined) ?? null;
+}
+
+/** The founding offer: the first year of PRO yearly at a lower price. */
+export interface FoundingOffer {
+  yearlyUsd: number;
+  endsAt: string;
+}
+
+/**
+ * The founding offer while it runs, from the Edge Function secrets
+ * FOUNDING_OFFER_ENDS_AT (an ISO date-time; the offer stops then, or earlier
+ * when the secret is removed) and FOUNDING_YEARLY_USD (default 39.99). Null
+ * when unset, unparsable or over.
+ */
+export function foundingOffer(
+  env: { endsAt?: string | null; yearlyUsd?: string | null } = {
+    endsAt: Deno.env.get("FOUNDING_OFFER_ENDS_AT"),
+    yearlyUsd: Deno.env.get("FOUNDING_YEARLY_USD"),
+  },
+  now = new Date(),
+): FoundingOffer | null {
+  const ends = new Date(env.endsAt ?? "");
+  if (!env.endsAt || isNaN(ends.getTime()) || ends <= now) return null;
+  const price = Number(env.yearlyUsd ?? "39.99");
+  if (!Number.isFinite(price) || price <= 0) return null;
+  return { yearlyUsd: price, endsAt: ends.toISOString() };
 }
 
 /**

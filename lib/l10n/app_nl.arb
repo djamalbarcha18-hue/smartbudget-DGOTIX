@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "Geen inkomsten in deze periode",
   "expenseNoneInPeriod": "Geen uitgaven in deze periode",
   "errorPartTitle": "Dit deel kon niet worden weergegeven",
-  "errorGoHome": "Terug naar start"
+  "errorGoHome": "Terug naar start",
+  "trialTitle": "Probeer Pro {days} dagen gratis",
+  "trialBody": "Geen kaart nodig. Daarna ben je terug op Gratis, met al je gegevens.",
+  "trialStart": "Gratis proef starten",
+  "trialStarting": "Bezig met starten…",
+  "trialActive": "Je probeert Pro tot {date}",
+  "trialActiveBody": "Er wordt niets afgeschreven. Daarna ben je terug op Gratis, tenzij je een abonnement neemt.",
+  "trialUsed": "Dit account heeft zijn gratis proef al gehad.",
+  "trialFailed": "De proef kon niet starten. Controleer je verbinding en probeer het opnieuw.",
+  "foundingBadge": "Introductieaanbod",
+  "foundingFirstYear": "{price} het eerste jaar, daarna {regular} / jaar",
+  "foundingUntil": "Introductieaanbod tot {date}"
 }

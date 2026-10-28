@@ -34,9 +34,26 @@ class EntitlementService {
         trialPlan: tp == null ? null : PlanX.fromStorage(tp),
         trialExpiresAt: te == null ? null : DateTime.tryParse('$te'),
         period: await _period(uid),
+        trialUsed: await _trialUsed(uid),
       );
     } catch (_) {
       return null;
+    }
+  }
+
+  /// Whether the account has had its free trial. Read on its own: a database
+  /// without supabase/launch_offers.sql has no such column, and that must not
+  /// cost the plan. Unknown ⇒ true, so no trial is offered that can't start.
+  Future<bool> _trialUsed(String uid) async {
+    try {
+      final Map<String, dynamic>? row = await _client
+          .from('ai_entitlements')
+          .select('trial_used_at')
+          .eq('user_id', uid)
+          .maybeSingle();
+      return row?['trial_used_at'] != null;
+    } catch (_) {
+      return true;
     }
   }
 

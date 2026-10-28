@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "Babu kuɗin shiga a wannan lokaci",
   "expenseNoneInPeriod": "Babu kashe kuɗi a wannan lokaci",
   "errorPartTitle": "Ba a iya nuna wannan ɓangaren ba",
-  "errorGoHome": "Koma gida"
+  "errorGoHome": "Koma gida",
+  "trialTitle": "Gwada Pro kyauta na kwanaki {days}",
+  "trialBody": "Ba a buƙatar kati. Idan ya ƙare, za ka koma tsarin Kyauta tare da duk bayananka.",
+  "trialStart": "Fara gwaji kyauta",
+  "trialStarting": "Ana farawa…",
+  "trialActive": "Kana gwada Pro har zuwa {date}",
+  "trialActiveBody": "Ba a cire kuɗi ba. Bayan haka za ka koma tsarin Kyauta sai dai idan ka yi rajista.",
+  "trialUsed": "Wannan asusun ya riga ya yi amfani da gwajinsa na kyauta.",
+  "trialFailed": "Ba a iya fara gwajin ba. Duba haɗinka ka sake gwadawa.",
+  "foundingBadge": "Tayin ƙaddamarwa",
+  "foundingFirstYear": "{price} a shekarar farko, sannan {regular} / shekara",
+  "foundingUntil": "Tayin ƙaddamarwa har zuwa {date}"
 }

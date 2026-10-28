@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "Tidak ada pemasukan di periode ini",
   "expenseNoneInPeriod": "Tidak ada pengeluaran di periode ini",
   "errorPartTitle": "Bagian ini tidak dapat ditampilkan",
-  "errorGoHome": "Kembali ke beranda"
+  "errorGoHome": "Kembali ke beranda",
+  "trialTitle": "Coba Pro gratis selama {days} hari",
+  "trialBody": "Tanpa kartu. Setelah selesai, Anda kembali ke paket Gratis dengan semua data Anda.",
+  "trialStart": "Mulai uji coba gratis",
+  "trialStarting": "Memulai…",
+  "trialActive": "Anda mencoba Pro hingga {date}",
+  "trialActiveBody": "Tidak ada biaya. Setelah itu Anda kembali ke paket Gratis kecuali berlangganan.",
+  "trialUsed": "Akun ini sudah pernah memakai uji coba gratisnya.",
+  "trialFailed": "Uji coba tidak dapat dimulai. Periksa koneksi Anda dan coba lagi.",
+  "foundingBadge": "Penawaran peluncuran",
+  "foundingFirstYear": "{price} tahun pertama, lalu {regular} / thn",
+  "foundingUntil": "Penawaran peluncuran hingga {date}"
 }

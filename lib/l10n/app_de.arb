@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "Keine Einnahmen in diesem Zeitraum",
   "expenseNoneInPeriod": "Keine Ausgaben in diesem Zeitraum",
   "errorPartTitle": "Dieser Teil konnte nicht angezeigt werden",
-  "errorGoHome": "Zurück zur Startseite"
+  "errorGoHome": "Zurück zur Startseite",
+  "trialTitle": "Pro {days} Tage kostenlos testen",
+  "trialBody": "Keine Karte nötig. Danach bist du wieder im kostenlosen Tarif, mit allen Daten.",
+  "trialStart": "Kostenlos testen",
+  "trialStarting": "Wird gestartet…",
+  "trialActive": "Du testest Pro bis {date}",
+  "trialActiveBody": "Es wird nichts abgebucht. Danach bist du wieder im kostenlosen Tarif, außer du abonnierst.",
+  "trialUsed": "Dieses Konto hatte seinen kostenlosen Test schon.",
+  "trialFailed": "Der Test konnte nicht starten. Prüfe deine Verbindung und versuche es erneut.",
+  "foundingBadge": "Startangebot",
+  "foundingFirstYear": "{price} im ersten Jahr, danach {regular} / Jahr",
+  "foundingUntil": "Startangebot bis {date}"
 }

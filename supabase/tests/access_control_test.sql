@@ -20,6 +20,8 @@ insert into subscriptions (user_id, plan, status) values
   ('bbbbbbbb-0000-0000-0000-000000000002', 'pro', 'active');
 insert into ai_entitlements (user_id, plan) values
   ('aaaaaaaa-0000-0000-0000-000000000001', 'free');
+insert into ai_entitlements (user_id, plan) values
+  ('bbbbbbbb-0000-0000-0000-000000000002', 'pro');
 insert into ai_usage_monthly (user_id, month, requests) values
   ('aaaaaaaa-0000-0000-0000-000000000001', '2026-10', 5);
 
@@ -78,6 +80,11 @@ select pg_temp.attempt('A reads payment subscriptions', 'select * from billing_s
 select pg_temp.attempt('A writes a payment subscription', $q$insert into billing_subscriptions (provider, provider_subscription_id, user_id, plan, status) values ('whop', 'mem_x', auth.uid(), 'pro', 'active')$q$, 'denied');
 select pg_temp.attempt('A applies a payment event directly', $q$select apply_subscription_event('whop', 'mem_x', auth.uid(), 'pro', 'monthly', 'active', null, null, false, now())$q$, 'denied');
 select pg_temp.attempt('A reads usage counters', 'select * from usage_daily', 'denied');
+-- The PRO trial: once per account, never stretched or reset by the client.
+select pg_temp.attempt('A starts a PRO trial', 'select start_pro_trial()', 'rows=1');
+select pg_temp.attempt('A starts a second trial', 'select start_pro_trial()', 'denied');
+select pg_temp.attempt('A stretches own trial', $q$update ai_entitlements set trial_expires_at = now() + interval '1 year' where user_id = auth.uid()$q$, 'rows=0');
+select pg_temp.attempt('A clears own trial mark', 'update ai_entitlements set trial_used_at = null where user_id = auth.uid()', 'rows=0');
 select pg_temp.attempt('A resets the shared usage', 'delete from usage_pools', 'denied');
 select pg_temp.attempt('A clears own rate limits', 'delete from rate_limits', 'denied');
 select pg_temp.attempt('A calls the rate limiter directly', $q$select rate_limit_hit(auth.uid(), 'ai', 60, 1000)$q$, 'denied');
@@ -105,6 +112,7 @@ select pg_temp.attempt('anon counts an unknown event', $q$select count_event('an
 select pg_temp.attempt('anon reads the totals', 'select * from app_stats_daily', 'denied');
 select pg_temp.attempt('anon reads the monthly totals', 'select * from app_stats_monthly', 'denied');
 select pg_temp.attempt('anon sets a total', $q$insert into app_stats_daily (day, event, count) values (current_date, 'trip_created', 999999)$q$, 'denied');
+select pg_temp.attempt('anon starts a PRO trial', 'select start_pro_trial()', 'denied');
 reset role;
 set role authenticated;
 select set_config('request.jwt.claim.sub', 'aaaaaaaa-0000-0000-0000-000000000001', false);
@@ -113,6 +121,11 @@ select pg_temp.attempt('A reads the totals', 'select * from app_stats_daily', 'd
 select pg_temp.attempt('A changes a total', $q$update app_stats_daily set count = 999999$q$, 'denied');
 reset role;
 select pg_temp.attempt('the totals hold two trips and nothing else', $q$select 1 from app_stats_daily where event = 'trip_created' and count = 2 and not exists (select 1 from app_stats_daily where event <> 'trip_created')$q$, 'rows=1');
+select pg_temp.attempt('A trial is PRO for 14 days', $q$select 1 from ai_entitlements where user_id = 'aaaaaaaa-0000-0000-0000-000000000001' and trial_plan = 'pro' and trial_used_at is not null and trial_expires_at between now() + interval '13 days 23 hours' and now() + interval '14 days 1 hour'$q$, 'rows=1');
+set role authenticated;
+select set_config('request.jwt.claim.sub', 'bbbbbbbb-0000-0000-0000-000000000002', false);
+select pg_temp.attempt('B (paying) starts a trial', 'select start_pro_trial()', 'denied');
+reset role;
 
 select outcome || '  ' || test from results;
 select count(*) filter (where outcome = 'PASS') || ' passed, ' || count(*) filter (where outcome <> 'PASS') || ' failed' from results;

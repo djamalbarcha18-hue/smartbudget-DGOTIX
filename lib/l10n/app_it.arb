@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "Nessuna entrata in questo periodo",
   "expenseNoneInPeriod": "Nessuna spesa in questo periodo",
   "errorPartTitle": "Impossibile mostrare questa parte",
-  "errorGoHome": "Torna alla home"
+  "errorGoHome": "Torna alla home",
+  "trialTitle": "Prova Pro gratis per {days} giorni",
+  "trialBody": "Nessuna carta. Alla fine torni al piano Gratuito, con tutti i tuoi dati.",
+  "trialStart": "Inizia la prova gratuita",
+  "trialStarting": "Avvio…",
+  "trialActive": "Stai provando Pro fino al {date}",
+  "trialActiveBody": "Non viene addebitato nulla. Dopo torni al piano Gratuito, a meno che tu non ti abboni.",
+  "trialUsed": "Questo account ha già usato la prova gratuita.",
+  "trialFailed": "Impossibile avviare la prova. Controlla la connessione e riprova.",
+  "foundingBadge": "Offerta di lancio",
+  "foundingFirstYear": "{price} il primo anno, poi {regular} / anno",
+  "foundingUntil": "Offerta di lancio fino al {date}"
 }

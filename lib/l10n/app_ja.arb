@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "この期間の収入はありません",
   "expenseNoneInPeriod": "この期間の支出はありません",
   "errorPartTitle": "この部分を表示できませんでした",
-  "errorGoHome": "ホームに戻る"
+  "errorGoHome": "ホームに戻る",
+  "trialTitle": "Proを{days}日間無料でお試し",
+  "trialBody": "カード不要。終了後はすべてのデータを保ったまま無料プランに戻ります。",
+  "trialStart": "無料トライアルを開始",
+  "trialStarting": "開始しています…",
+  "trialActive": "{date}までProをお試し中です",
+  "trialActiveBody": "料金はかかりません。その後、登録しなければ無料プランに戻ります。",
+  "trialUsed": "このアカウントは無料トライアルを利用済みです。",
+  "trialFailed": "トライアルを開始できませんでした。接続を確認して、もう一度お試しください。",
+  "foundingBadge": "リリース記念オファー",
+  "foundingFirstYear": "初年度 {price}、以降は {regular} / 年",
+  "foundingUntil": "リリース記念オファー（{date}まで）"
 }

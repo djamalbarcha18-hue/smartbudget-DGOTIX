@@ -97,6 +97,24 @@ order end in Whop's latest state:
 - Every delivery is deduped by its `webhook-id` (`billing_events`) and signed
   deliveries older than 5 minutes are refused.
 
+## Launch offers (trial and founding price)
+
+1. Run `supabase/launch_offers.sql` in the SQL editor (safe to re-run; also part
+   of `setup_all.sql`). Until then the app shows no trial and the checkout
+   keeps using the one price per plan and period.
+2. **Founding price (optional):** in Whop, add a third plan to SmartBudget Pro:
+   renewing yearly, first payment $39.99, then $59.99. Record it:
+
+   ```sql
+   insert into billing_prices (price_id, provider, plan, period, offer) values
+     ('plan_xxx_founding', 'whop', 'pro', 'yearly', 'founding')
+   on conflict (price_id) do update set offer = excluded.offer, active = true;
+   ```
+
+3. Start it with the secret `FOUNDING_OFFER_ENDS_AT` (for example
+   `2027-01-15T23:59:59Z`); end it early by removing the secret. Members who
+   bought it keep their plan: the webhook maps every recorded price id.
+
 ## Testing (sandbox)
 
 Use `WHOP_API_URL=https://sandbox-api.whop.com/api/v1` with a sandbox API key

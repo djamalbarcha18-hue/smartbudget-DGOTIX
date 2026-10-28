@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "اس مدت میں کوئی آمدنی نہیں",
   "expenseNoneInPeriod": "اس مدت میں کوئی خرچ نہیں",
   "errorPartTitle": "یہ حصہ دکھایا نہیں جا سکا",
-  "errorGoHome": "ہوم پر واپس"
+  "errorGoHome": "ہوم پر واپس",
+  "trialTitle": "Pro کو {days} دن مفت آزمائیں",
+  "trialBody": "کارڈ کی ضرورت نہیں۔ ختم ہونے پر آپ اپنے تمام ڈیٹا کے ساتھ مفت پلان پر واپس آ جائیں گے۔",
+  "trialStart": "مفت آزمائش شروع کریں",
+  "trialStarting": "شروع ہو رہا ہے…",
+  "trialActive": "آپ {date} تک Pro آزما رہے ہیں",
+  "trialActiveBody": "کوئی رقم نہیں کٹے گی۔ اس کے بعد سبسکرائب نہ کرنے پر آپ مفت پلان پر واپس آ جائیں گے۔",
+  "trialUsed": "یہ اکاؤنٹ اپنی مفت آزمائش پہلے ہی استعمال کر چکا ہے۔",
+  "trialFailed": "آزمائش شروع نہیں ہو سکی۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔",
+  "foundingBadge": "لانچ آفر",
+  "foundingFirstYear": "پہلے سال {price}، پھر {regular} / سال",
+  "foundingUntil": "لانچ آفر {date} تک"
 }

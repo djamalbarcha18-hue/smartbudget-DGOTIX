@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "此期间没有收入",
   "expenseNoneInPeriod": "此期间没有支出",
   "errorPartTitle": "无法显示此部分",
-  "errorGoHome": "返回首页"
+  "errorGoHome": "返回首页",
+  "trialTitle": "免费试用 Pro {days} 天",
+  "trialBody": "无需银行卡。结束后你将回到免费版，所有数据都会保留。",
+  "trialStart": "开始免费试用",
+  "trialStarting": "正在开始…",
+  "trialActive": "你正在试用 Pro，至 {date}",
+  "trialActiveBody": "不会扣费。之后如未订阅，将回到免费版。",
+  "trialUsed": "此账户已使用过免费试用。",
+  "trialFailed": "无法开始试用。请检查网络连接后重试。",
+  "foundingBadge": "首发优惠",
+  "foundingFirstYear": "首年 {price}，之后每年 {regular}",
+  "foundingUntil": "首发优惠，截至 {date}"
 }

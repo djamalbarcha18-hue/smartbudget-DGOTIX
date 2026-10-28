@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "Tiada pendapatan dalam tempoh ini",
   "expenseNoneInPeriod": "Tiada perbelanjaan dalam tempoh ini",
   "errorPartTitle": "Bahagian ini tidak dapat dipaparkan",
-  "errorGoHome": "Kembali ke laman utama"
+  "errorGoHome": "Kembali ke laman utama",
+  "trialTitle": "Cuba Pro percuma selama {days} hari",
+  "trialBody": "Tanpa kad. Apabila tamat, anda kembali ke pelan Percuma dengan semua data anda.",
+  "trialStart": "Mula percubaan percuma",
+  "trialStarting": "Memulakan…",
+  "trialActive": "Anda mencuba Pro sehingga {date}",
+  "trialActiveBody": "Tiada caj. Selepas itu anda kembali ke pelan Percuma melainkan anda melanggan.",
+  "trialUsed": "Akaun ini sudah menggunakan percubaan percumanya.",
+  "trialFailed": "Percubaan tidak dapat dimulakan. Semak sambungan anda dan cuba lagi.",
+  "foundingBadge": "Tawaran pelancaran",
+  "foundingFirstYear": "{price} tahun pertama, kemudian {regular} / thn",
+  "foundingUntil": "Tawaran pelancaran sehingga {date}"
 }

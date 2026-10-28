@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "Hakuna mapato katika kipindi hiki",
   "expenseNoneInPeriod": "Hakuna matumizi katika kipindi hiki",
   "errorPartTitle": "Sehemu hii haikuweza kuonyeshwa",
-  "errorGoHome": "Rudi mwanzo"
+  "errorGoHome": "Rudi mwanzo",
+  "trialTitle": "Jaribu Pro bila malipo kwa siku {days}",
+  "trialBody": "Hakuna kadi inayohitajika. Ikiisha, unarudi kwenye mpango wa Bure ukiwa na data yako yote.",
+  "trialStart": "Anza jaribio la bure",
+  "trialStarting": "Inaanza…",
+  "trialActive": "Unajaribu Pro hadi {date}",
+  "trialActiveBody": "Hakuna malipo yanayokatwa. Baada ya hapo unarudi kwenye mpango wa Bure usipojiunga.",
+  "trialUsed": "Akaunti hii tayari imetumia jaribio lake la bure.",
+  "trialFailed": "Jaribio halikuweza kuanza. Kagua muunganisho wako ujaribu tena.",
+  "foundingBadge": "Ofa ya uzinduzi",
+  "foundingFirstYear": "{price} mwaka wa kwanza, kisha {regular} / mwaka",
+  "foundingUntil": "Ofa ya uzinduzi hadi {date}"
 }

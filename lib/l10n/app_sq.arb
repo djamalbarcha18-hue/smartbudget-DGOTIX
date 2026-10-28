@@ -1580,5 +1580,16 @@
   "incomeNoneInPeriod": "Asnjë e ardhur në këtë periudhë",
   "expenseNoneInPeriod": "Asnjë shpenzim në këtë periudhë",
   "errorPartTitle": "Kjo pjesë nuk mund të shfaqej",
-  "errorGoHome": "Kthehu në fillim"
+  "errorGoHome": "Kthehu në fillim",
+  "trialTitle": "Provo Pro falas për {days} ditë",
+  "trialBody": "Pa kartë. Kur mbaron, ktheheni te plani Falas me të gjitha të dhënat tuaja.",
+  "trialStart": "Nis provën falas",
+  "trialStarting": "Po niset…",
+  "trialActive": "Po provoni Pro deri më {date}",
+  "trialActiveBody": "Nuk tarifohet asgjë. Pas kësaj ktheheni te plani Falas, përveç nëse abonoheni.",
+  "trialUsed": "Kjo llogari e ka përdorur tashmë provën falas.",
+  "trialFailed": "Prova nuk mund të nisë. Kontrolloni lidhjen dhe provoni përsëri.",
+  "foundingBadge": "Ofertë prezantuese",
+  "foundingFirstYear": "{price} vitin e parë, pastaj {regular} / vit",
+  "foundingUntil": "Ofertë prezantuese deri më {date}"
 }
