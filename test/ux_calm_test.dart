@@ -16,6 +16,7 @@ import 'package:smartbudget/features/markets/domain/market_models.dart';
 import 'package:smartbudget/features/markets/presentation/markets_page.dart';
 import 'package:smartbudget/features/monthly_budget/presentation/monthly_budget_page.dart';
 import 'package:smartbudget/features/shell/app_top_bar.dart';
+import 'package:smartbudget/features/shell/brand_controls.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -104,6 +105,40 @@ void main() {
     _dispose(c);
     await tester.pump(const Duration(minutes: 1));
   });
+
+  for (final (String name, Size size) in <(String, Size)>[
+    ('the smallest phone', const Size(960, 2400)), // 320 wide
+    ('a desktop', const Size(4200, 2400)), // 1400 wide
+  ]) {
+    testWidgets('light/dark sits by search and notifications on $name',
+        (WidgetTester tester) async {
+      final ProviderContainer c =
+          await pump(tester, const AppTopBar(onOpenMenu: null), size: size);
+      expect(tester.takeException(), isNull);
+      final Finder theme = find.byType(ThemeToggleButton);
+      expect(theme, findsOneWidget);
+      final Finder dark = find.descendant(
+          of: theme, matching: find.byIcon(Icons.dark_mode_outlined));
+      final bool wasDark = dark.evaluate().isEmpty;
+      final double x = tester.getCenter(theme).dx;
+      final double bell = tester
+          .getCenter(find.byIcon(Icons.notifications_none_rounded))
+          .dx;
+      expect(x, lessThan(bell));
+      expect(bell - x, lessThan(60)); // right beside it
+      if (size.width < 1200) {
+        expect(tester.getCenter(find.byIcon(Icons.search_rounded)).dx,
+            lessThan(x)); // phone: search, then light/dark
+      }
+      await tester.tap(theme);
+      await tester.pumpAndSettle();
+      // The other mode now: the icon offers the way back.
+      expect(dark.evaluate().isEmpty, !wasDark);
+      await tester.pumpWidget(const SizedBox());
+      _dispose(c);
+      await tester.pump(const Duration(minutes: 1));
+    });
+  }
 
   testWidgets('nothing recorded: the transactions page offers to start',
       (WidgetTester tester) async {

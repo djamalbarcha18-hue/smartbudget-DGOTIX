@@ -70,8 +70,8 @@ class AppTopBar extends StatelessWidget {
           const _CurrencyChip(),
           const SizedBox(width: DsSpacing.xs),
           if (!isMobile) const LanguageToggleButton(),
-          const ThemeToggleButton(),
           const _LockNowButton(),
+          const ThemeToggleButton(),
           const _NotificationsBell(),
           const SizedBox(width: DsSpacing.xs),
           const _ProfileChip(),
@@ -81,8 +81,8 @@ class AppTopBar extends StatelessWidget {
     );
   }
 
-  /// Phone layout: menu and the always-needed actions stay pinned; the period
-  /// and currency selectors (plus search and theme) scroll sideways instead of
+  /// Phone layout: menu, search, light/dark and the always-needed actions stay
+  /// pinned; the period and currency selectors scroll sideways instead of
   /// overflowing the bar.
   Widget _mobile(BuildContext context, DsColors c) {
     return Row(
@@ -98,20 +98,32 @@ class AppTopBar extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 // Month and year in one chip, so everything fits a phone
-                // without sliding (the theme is in Settings).
+                // without sliding.
                 const _PeriodChip(),
                 const SizedBox(width: DsSpacing.xs),
                 const _CurrencyChip(),
-                IconButton(
-                  onPressed: () => AppSearchDialog.show(context),
-                  tooltip: AppLocalizations.of(context).searchHint,
-                  icon: Icon(Icons.search_rounded, color: c.brand),
-                ),
               ],
             ),
           ),
         ),
-        const _LockNowButton(),
+        // As compact as the bell beside them, so the chips keep their room.
+        IconButtonTheme(
+          data: IconButtonThemeData(
+            style: IconButton.styleFrom(visualDensity: VisualDensity.compact),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              IconButton(
+                onPressed: () => AppSearchDialog.show(context),
+                tooltip: AppLocalizations.of(context).searchHint,
+                icon: Icon(Icons.search_rounded, color: c.brand),
+              ),
+              const ThemeToggleButton(),
+              const _LockNowButton(),
+            ],
+          ),
+        ),
         const _NotificationsBell(),
         const _ProfileChip(),
       ],
