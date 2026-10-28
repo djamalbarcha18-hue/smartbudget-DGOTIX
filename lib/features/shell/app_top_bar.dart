@@ -92,16 +92,16 @@ class AppTopBar extends StatelessWidget {
           tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
           icon: Icon(Icons.menu_rounded, color: c.brand),
         ),
-        Expanded(
+        const Expanded(
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: <Widget>[
                 // Month and year in one chip, so everything fits a phone
                 // without sliding.
-                const _PeriodChip(),
-                const SizedBox(width: DsSpacing.xs),
-                const _CurrencyChip(),
+                _PeriodChip(),
+                SizedBox(width: DsSpacing.xs),
+                _CurrencyChip(),
               ],
             ),
           ),
