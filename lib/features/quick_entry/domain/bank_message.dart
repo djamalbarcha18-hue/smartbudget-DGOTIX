@@ -157,9 +157,8 @@ abstract final class BankMessageParser {
     // After "amount", "مبلغ", "montant"…
     final String lower = s.toLowerCase();
     for (final RegExpMatch n in numbers) {
-      final String before = lower
-          .substring(0, n.start)
-          .replaceFirst(RegExp(r'[\s:=-]+$'), '');
+      final String before =
+          lower.substring(0, n.start).replaceFirst(RegExp(r'[\s:=-]+$'), '');
       if (_amountWords.any(before.endsWith)) {
         final double? v = _value(n[0]!, null);
         if (v != null) return (amount: v, currency: null);
@@ -305,9 +304,10 @@ abstract final class BankMessageParser {
       RegExp(r'\b(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})\b');
   static final RegExp _dateDmy =
       RegExp(r'\b(\d{1,2})[-/.](\d{1,2})[-/.](\d{4}|\d{2})\b');
+
   /// «2026年10月24日», «10月24日», «2026년 10월 24일».
-  static final RegExp _dateCjk = RegExp(
-      r'(?:(\d{4})\s*[年년]\s*)?(\d{1,2})\s*[月월]\s*(\d{1,2})\s*[日일]');
+  static final RegExp _dateCjk =
+      RegExp(r'(?:(\d{4})\s*[年년]\s*)?(\d{1,2})\s*[月월]\s*(\d{1,2})\s*[日일]');
   static final RegExp _dateNamed = RegExp(
       r'\b(\d{1,2})[-\s]?(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?[-\s,]*(\d{4}|\d{2})?\b',
       caseSensitive: false);

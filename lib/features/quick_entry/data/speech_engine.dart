@@ -73,10 +73,23 @@ class DeviceSpeechEngine implements SpeechEngine {
   final stt.SpeechToText _speech;
   bool _ready = false;
 
+  /// The locale worked out for a language, kept so the two plugin round-trips
+  /// it takes happen once rather than before every sentence.
+  final Map<String, String?> _locales = <String, String?>{};
+
   /// How long a silence ends the listening, and the longest one turn can run.
-  /// Short: a quick entry is a few words ("قهوة مئتين"), not a paragraph.
-  static const Duration _pauseFor = Duration(seconds: 3);
+  /// Short: a quick entry is a few words ("قهوة مئتين"), not a paragraph, so
+  /// waiting longer only makes it feel slow. Android imposes a floor of about
+  /// a second of its own, which this cannot go below.
+  static const Duration _pauseFor = Duration(seconds: 2);
   static const Duration _listenFor = Duration(seconds: 30);
+
+  /// How long to wait for the engine's own final answer once the silence has
+  /// ended the turn, before taking the last words it heard as final. The
+  /// plugin's own default is two seconds, which is two seconds of a sheet that
+  /// looks stuck after the entry is already on screen; engines that answer at
+  /// all answer well inside this.
+  static const Duration _finalWait = Duration(milliseconds: 1200);
 
   @override
   bool get supported => support.browserHearsSpeech();
@@ -99,6 +112,7 @@ class DeviceSpeechEngine implements SpeechEngine {
           // A permanent error ends the turn; the error listener above reports
           // it, so nothing is left listening in the background.
           onStatus: (_) {},
+          finalTimeout: _finalWait,
         );
       }
       if (!_ready) return VoiceFailure.denied;
@@ -129,14 +143,16 @@ class DeviceSpeechEngine implements SpeechEngine {
 
   /// The device locale to listen in, or null to leave the choice to it.
   Future<String?> _localeFor(String language) async {
+    if (_locales.containsKey(language)) return _locales[language];
     try {
       final List<stt.LocaleName> have = await _speech.locales();
-      return VoiceLocale.pick(
+      return _locales[language] = VoiceLocale.pick(
         language,
         have.map((stt.LocaleName l) => l.localeId).toList(),
         systemLocale: (await _speech.systemLocale())?.localeId,
       );
     } catch (_) {
+      // Not cached: a later try may reach the engine.
       return null;
     }
   }

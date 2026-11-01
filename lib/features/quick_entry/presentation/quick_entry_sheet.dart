@@ -40,8 +40,8 @@ class QuickEntrySheet extends ConsumerStatefulWidget {
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (_) => Padding(
-          padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: const QuickEntrySheet(),
         ),
       ),
@@ -211,19 +211,19 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
     final List<Wallet> wallets = ref.watch(walletsProvider);
     final bool hasWallets = wallets.length > 1;
     final String defaultWallet = ref.watch(effectiveDefaultWalletProvider);
-    Wallet walletOf(String? id) => wallets.firstWhere(
-        (Wallet w) => w.id == (id ?? defaultWallet),
-        orElse: () => wallets.first);
+    Wallet walletOf(String? id) =>
+        wallets.firstWhere((Wallet w) => w.id == (id ?? defaultWallet),
+            orElse: () => wallets.first);
     final bool blocked = _entries.any(_noWallet);
 
     String dayLabel(DateTime d) {
-      final int diff = DateTime(today.year, today.month, today.day)
-          .difference(d)
-          .inDays;
+      final int diff =
+          DateTime(today.year, today.month, today.day).difference(d).inDays;
       return switch (diff) {
         0 => l.quickToday,
         1 => l.quickYesterday,
-        _ => '\u2066${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}\u2069',
+        _ =>
+          '\u2066${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}\u2069',
       };
     }
 
@@ -335,8 +335,7 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
                               ].join(' · '),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style:
-                                  t.bodySmall?.copyWith(color: c.textMuted),
+                              style: t.bodySmall?.copyWith(color: c.textMuted),
                             ),
                           ],
                         ),
@@ -377,9 +376,8 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
                           ? l.quickSaveN(_entries.length)
                           : l.save,
                       icon: Icons.check_rounded,
-                      onPressed: _entries.isEmpty || blocked
-                          ? null
-                          : () => _save(l),
+                      onPressed:
+                          _entries.isEmpty || blocked ? null : () => _save(l),
                     ),
                   ),
                   if (_entries.length == 1) ...<Widget>[

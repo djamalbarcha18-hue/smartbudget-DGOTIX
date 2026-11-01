@@ -47,6 +47,11 @@ class _VoiceInputButtonState extends ConsumerState<VoiceInputButton>
 
   bool _listening = false;
 
+  /// Between the tap and the microphone actually opening. The engine has to
+  /// start up first, which on the first tap of a session takes a moment, so
+  /// the button says the tap landed rather than looking ignored.
+  bool _starting = false;
+
   /// The engine while it is listening. Held so [dispose] can close the
   /// microphone without reaching for a provider the widget no longer has.
   SpeechEngine? _open;
@@ -132,6 +137,7 @@ class _VoiceInputButtonState extends ConsumerState<VoiceInputButton>
       await _rememberNotice();
     }
     if (!mounted) return;
+    setState(() => _starting = true);
 
     final VoiceFailure? failed = await engine.start(
       language: appLangOf(context).code,
@@ -146,6 +152,7 @@ class _VoiceInputButtonState extends ConsumerState<VoiceInputButton>
       onFailure: _report,
     );
     if (!mounted) return;
+    setState(() => _starting = false);
     if (failed != null) {
       _report(failed);
       return;
@@ -160,6 +167,7 @@ class _VoiceInputButtonState extends ConsumerState<VoiceInputButton>
     _pulse.stop();
     _setListening(false);
     setState(() {
+      _starting = false;
       // No engine or no permission won't fix itself by tapping again.
       _gone =
           failure == VoiceFailure.unavailable || failure == VoiceFailure.denied;
@@ -183,11 +191,15 @@ class _VoiceInputButtonState extends ConsumerState<VoiceInputButton>
     final DsColors c = context.dsColors;
     final Widget icon = Icon(
       _listening ? Icons.stop_rounded : Icons.mic_none_rounded,
-      color: _listening ? c.brand : c.textMuted,
+      // Brand colour while starting too: the tap is acknowledged at once,
+      // without a spinner, which would be motion for its own sake.
+      color: _listening || _starting ? c.brand : c.textMuted,
     );
     return IconButton(
       tooltip: _listening ? l.voiceStop : l.voiceStart,
-      onPressed: _tap,
+      // A second tap while it is starting would be read as "stop" before
+      // there is anything to stop.
+      onPressed: _starting ? null : _tap,
       icon: _listening
           ? FadeTransition(
               opacity: Tween<double>(begin: 1, end: 0.45).animate(_pulse),

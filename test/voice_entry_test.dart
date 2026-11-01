@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,13 +18,17 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// A microphone the test drives by hand.
 class _FakeEngine implements SpeechEngine {
-  _FakeEngine({this.supported = true, this.failWith});
+  _FakeEngine({this.supported = true, this.failWith, this.opening});
 
   @override
   final bool supported;
 
   /// When set, [start] refuses with it instead of listening.
   final VoiceFailure? failWith;
+
+  /// When set, [start] waits for it, standing in for an engine that takes a
+  /// moment to wake up.
+  final Completer<void>? opening;
 
   @override
   bool listening = false;
@@ -40,6 +46,7 @@ class _FakeEngine implements SpeechEngine {
     required void Function(VoiceFailure failure) onFailure,
   }) async {
     askedFor = language;
+    if (opening != null) await opening!.future;
     if (failWith != null) return failWith;
     _onHeard = onHeard;
     listening = true;
@@ -204,6 +211,32 @@ void main() {
       expect(heard, <String>['coffee', 'coffee 200 (done)']);
       // Done: the button offers to listen again, not to stop.
       expect(find.byIcon(Icons.mic_none_rounded), findsOneWidget);
+    });
+
+    testWidgets('the tap is answered before the microphone has opened',
+        (WidgetTester tester) async {
+      SharedPreferences.setMockInitialValues(
+          <String, Object>{VoiceInputButton.prefKey: true});
+      final Completer<void> opening = Completer<void>();
+      final _FakeEngine engine = _FakeEngine(opening: opening);
+      await tester.pumpWidget(_host(engine, <String>[]));
+      await tester.pumpAndSettle();
+      expect(tester.widget<Icon>(find.byType(Icon)).color,
+          DsColors.light.textMuted);
+
+      await tester.tap(find.byType(IconButton));
+      await tester.pump();
+      // Starting up: the button has changed colour, so the tap did not go
+      // unanswered, and a second tap cannot stop what has not started.
+      expect(
+          tester.widget<Icon>(find.byType(Icon)).color, DsColors.light.brand);
+      expect(
+          tester.widget<IconButton>(find.byType(IconButton)).onPressed, isNull);
+
+      opening.complete();
+      await tester.pumpAndSettle();
+      expect(engine.listening, isTrue);
+      expect(find.byIcon(Icons.stop_rounded), findsOneWidget);
     });
 
     testWidgets('while listening the button stops instead of starting again',
