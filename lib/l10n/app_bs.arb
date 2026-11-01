@@ -1580,5 +1580,15 @@
   "incomeNoneInPeriod": "Nema prihoda u ovom periodu",
   "expenseNoneInPeriod": "Nema troškova u ovom periodu",
   "errorPartTitle": "Ovaj dio se ne može prikazati",
-  "errorGoHome": "Nazad na početnu"
+  "errorGoHome": "Nazad na početnu",
+  "voiceStart": "Govorite umjesto da kucate",
+  "voiceListening": "Slušam…",
+  "voiceStop": "Zaustavi",
+  "voiceNoticeTitle": "Unesite glasom",
+  "voiceNoticeBody": "Recite šta ste potrošili, na primjer „kafa 200“. Zvuk u riječi pretvara govorni mehanizam vašeg telefona, a većina ga za to šalje svom proizvođaču, baš kao i tipka mikrofona na tastaturi. SmartBudget prima samo riječi i ne čuva nikakav snimak.",
+  "voiceNoticeOk": "Razumijem",
+  "voiceFailedUnavailable": "Glasovni unos nije dostupan na ovom uređaju.",
+  "voiceFailedDenied": "SmartBudgetu treba mikrofon. Uključite ga u postavkama uređaja.",
+  "voiceFailedNoSpeech": "Ništa nije čuo. Pokušajte ponovo.",
+  "voiceFailedError": "Glasovni unos nije uspio. Pokušajte ponovo."
 }

@@ -1580,5 +1580,15 @@
   "incomeNoneInPeriod": "Geen inkomsten in deze periode",
   "expenseNoneInPeriod": "Geen uitgaven in deze periode",
   "errorPartTitle": "Dit deel kon niet worden weergegeven",
-  "errorGoHome": "Terug naar start"
+  "errorGoHome": "Terug naar start",
+  "voiceStart": "Spreek in plaats van typen",
+  "voiceListening": "Aan het luisteren…",
+  "voiceStop": "Stoppen",
+  "voiceNoticeTitle": "Invoeren met je stem",
+  "voiceNoticeBody": "Zeg wat je hebt uitgegeven, bijvoorbeeld “koffie 200”. De spraakmachine van je telefoon zet het geluid om in woorden, en de meeste sturen het daarvoor naar hun maker, net als de microfoontoets op je toetsenbord. SmartBudget ontvangt alleen de woorden en bewaart geen opname.",
+  "voiceNoticeOk": "Begrepen",
+  "voiceFailedUnavailable": "Spraakinvoer is niet beschikbaar op dit apparaat.",
+  "voiceFailedDenied": "SmartBudget heeft de microfoon nodig. Zet die aan in je apparaatinstellingen.",
+  "voiceFailedNoSpeech": "Niets gehoord. Probeer het opnieuw.",
+  "voiceFailedError": "Spraakinvoer werkte niet. Probeer het opnieuw."
 }

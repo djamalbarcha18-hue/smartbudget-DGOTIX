@@ -1580,5 +1580,15 @@
   "incomeNoneInPeriod": "Keine Einnahmen in diesem Zeitraum",
   "expenseNoneInPeriod": "Keine Ausgaben in diesem Zeitraum",
   "errorPartTitle": "Dieser Teil konnte nicht angezeigt werden",
-  "errorGoHome": "Zurück zur Startseite"
+  "errorGoHome": "Zurück zur Startseite",
+  "voiceStart": "Sprich statt zu tippen",
+  "voiceListening": "Ich höre zu…",
+  "voiceStop": "Stopp",
+  "voiceNoticeTitle": "Per Sprache eingeben",
+  "voiceNoticeBody": "Sag, was du ausgegeben hast, etwa „Kaffee 200“. Die Spracherkennung deines Telefons wandelt den Ton in Wörter um, und die meisten senden ihn dafür an ihren Hersteller, genau wie die Mikrofontaste deiner Tastatur. SmartBudget erhält nur die Wörter und speichert keine Aufnahme.",
+  "voiceNoticeOk": "Verstanden",
+  "voiceFailedUnavailable": "Die Spracheingabe ist auf diesem Gerät nicht verfügbar.",
+  "voiceFailedDenied": "SmartBudget braucht das Mikrofon. Schalte es in den Geräteeinstellungen ein.",
+  "voiceFailedNoSpeech": "Nichts gehört. Versuch es noch einmal.",
+  "voiceFailedError": "Die Spracheingabe hat nicht geklappt. Versuch es noch einmal."
 }

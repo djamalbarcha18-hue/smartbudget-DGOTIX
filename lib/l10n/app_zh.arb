@@ -1580,5 +1580,15 @@
   "incomeNoneInPeriod": "此期间没有收入",
   "expenseNoneInPeriod": "此期间没有支出",
   "errorPartTitle": "无法显示此部分",
-  "errorGoHome": "返回首页"
+  "errorGoHome": "返回首页",
+  "voiceStart": "用说的，不用打字",
+  "voiceListening": "正在聆听…",
+  "voiceStop": "停止",
+  "voiceNoticeTitle": "用语音记一笔",
+  "voiceNoticeBody": "说出你花了多少，例如“咖啡 200”。把声音变成文字的是你手机自带的语音引擎，多数引擎会为此把声音发送给它的开发商，就像键盘上的麦克风键一样。SmartBudget 只收到文字，不保留任何录音。",
+  "voiceNoticeOk": "明白了",
+  "voiceFailedUnavailable": "此设备不支持语音输入。",
+  "voiceFailedDenied": "SmartBudget 需要使用麦克风，请在设备设置中开启。",
+  "voiceFailedNoSpeech": "没有听到内容，请再试一次。",
+  "voiceFailedError": "语音输入未成功，请再试一次。"
 }

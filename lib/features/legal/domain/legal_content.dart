@@ -209,6 +209,15 @@ abstract final class LegalContent {
               'category; the image is not stored.',
         ),
         const LegalSection(
+          'Voice entry',
+          'When you tap the microphone in quick entry, your device\'s own speech '
+              'engine turns what you say into text. Most such engines send the audio to '
+              'the company that makes them in order to do it, exactly as the microphone '
+              'key on your keyboard does, under that company\'s own privacy policy. '
+              'SmartBudget receives only the resulting text, keeps no recording, and '
+              'never opens the microphone without your tap.',
+        ),
+        const LegalSection(
           'Payments and subscriptions',
           'Paid plans are optional. You pay on the secure checkout of Whop '
               '(whop.com), our payment provider, or with PayPal if you choose '
@@ -353,6 +362,14 @@ abstract final class LegalContent {
               'السحابي فيُرسل صورة الإيصال عبر خادمنا الآمن إلى مزوّد ذكاء '
               'اصطناعي فقط لقراءة اسم التاجر والتاريخ والمبلغ والمنتجات والفئة؛ '
               'ولا تُخزَّن الصورة.',
+        ),
+        const LegalSection(
+          'الإدخال الصوتي',
+          'عندما تضغط على الميكروفون في الإدخال السريع، يحوّل محرّك الكلام في جهازك '
+              'ما تقوله إلى نص. وأغلب هذه المحرّكات ترسل الصوت إلى الشركة المطوّرة له '
+              'لتفعل ذلك، تمامًا كزر الميكروفون في لوحة مفاتيحك، وفق سياسة خصوصية تلك '
+              'الشركة. ولا يستلم SmartBudget إلا النص الناتج، ولا يحتفظ بأي تسجيل، ولا '
+              'يفتح الميكروفون أبدًا دون ضغطة منك.',
         ),
         const LegalSection(
           'المدفوعات والاشتراكات',
@@ -747,6 +764,16 @@ abstract final class LegalContent {
               'catégorie ; l\'image n\'est pas conservée.',
         ),
         const LegalSection(
+          'Saisie vocale',
+          'Lorsque vous touchez le micro dans la saisie rapide, le moteur vocal de '
+              'votre appareil transforme ce que vous dites en texte. La plupart de ces '
+              'moteurs envoient le son à l\'entreprise qui les édite pour le faire, '
+              'exactement comme la touche micro de votre clavier, selon la politique de '
+              'confidentialité de cette entreprise. SmartBudget ne reçoit que le texte '
+              'obtenu, ne conserve aucun enregistrement et n\'ouvre jamais le micro sans '
+              'votre geste.',
+        ),
+        const LegalSection(
           'Paiements et abonnements',
           'Les formules payantes sont facultatives. Vous payez sur la page '
               'de paiement sécurisée de Whop (whop.com), notre prestataire de '
@@ -1057,6 +1084,16 @@ abstract final class LegalContent {
               'barang, dan kategori; gambarnya tidak disimpan.',
         ),
         const LegalSection(
+          'Masukan suara',
+          'Saat Anda menekan mikrofon di masukan cepat, mesin suara perangkat Anda '
+              'mengubah ucapan Anda menjadi teks. Sebagian besar mesin tersebut '
+              'mengirimkan audio ke perusahaan pembuatnya untuk melakukannya, persis '
+              'seperti tombol mikrofon pada papan ketik Anda, sesuai kebijakan privasi '
+              'perusahaan tersebut. SmartBudget hanya menerima teks hasilnya, tidak '
+              'menyimpan rekaman apa pun, dan tidak pernah membuka mikrofon tanpa ketukan '
+              'Anda.',
+        ),
+        const LegalSection(
           'Pembayaran dan langganan',
           'Paket berbayar bersifat opsional. Anda membayar di halaman '
               'pembayaran aman Whop (whop.com), penyedia pembayaran kami, atau '
@@ -1347,6 +1384,15 @@ abstract final class LegalContent {
               'través de nuestro servidor seguro a un proveedor de IA solo para '
               'leer el comercio, la fecha, el importe, los artículos y la '
               'categoría; la imagen no se guarda.',
+        ),
+        const LegalSection(
+          'Entrada por voz',
+          'Cuando tocas el micrófono en la entrada rápida, el motor de voz de tu '
+              'dispositivo convierte lo que dices en texto. La mayoría de esos motores '
+              'envían el audio a la empresa que los fabrica para hacerlo, igual que la '
+              'tecla del micrófono de tu teclado, conforme a la política de privacidad de '
+              'esa empresa. SmartBudget solo recibe el texto resultante, no guarda '
+              'ninguna grabación y nunca abre el micrófono sin que lo toques.',
         ),
         const LegalSection(
           'Pagos y suscripciones',
@@ -1642,6 +1688,15 @@ abstract final class LegalContent {
               'sağlayıcısına gönderir; görüntü saklanmaz.',
         ),
         const LegalSection(
+          'Sesli giriş',
+          'Hızlı girişte mikrofona dokunduğunuzda, cihazınızın ses motoru '
+              'söylediklerinizi metne dönüştürür. Bu motorların çoğu bunu yapmak için '
+              'sesi kendilerini üreten şirkete gönderir; tıpkı klavyenizdeki mikrofon '
+              'tuşu gibi ve o şirketin gizlilik politikası kapsamında. SmartBudget '
+              'yalnızca ortaya çıkan metni alır, hiçbir kayıt tutmaz ve siz dokunmadan '
+              'mikrofonu asla açmaz.',
+        ),
+        const LegalSection(
           'Ödemeler ve abonelikler',
           'Ücretli planlar isteğe bağlıdır. Ödemeyi ödeme sağlayıcımız '
               'Whop\'un (whop.com) güvenli ödeme sayfasında ya da seçersen '
@@ -1927,6 +1982,15 @@ abstract final class LegalContent {
               'Imbasan awan menghantar imej resit melalui pelayan selamat kami '
               'kepada penyedia AI hanya untuk membaca peniaga, tarikh, jumlah, '
               'item dan kategori; imej tidak disimpan.',
+        ),
+        const LegalSection(
+          'Input suara',
+          'Apabila anda menekan mikrofon dalam input pantas, enjin suara peranti anda '
+              'menukar apa yang anda sebut kepada teks. Kebanyakan enjin itu menghantar '
+              'audio kepada syarikat yang membuatnya untuk berbuat demikian, sama seperti '
+              'kekunci mikrofon pada papan kekunci anda, menurut dasar privasi syarikat '
+              'tersebut. SmartBudget hanya menerima teks yang terhasil, tidak menyimpan '
+              'sebarang rakaman, dan tidak pernah membuka mikrofon tanpa ketikan anda.',
         ),
         const LegalSection(
           'Bayaran dan langganan',
@@ -2225,6 +2289,15 @@ abstract final class LegalContent {
               'بھیجتی ہے؛ تصویر محفوظ نہیں کی جاتی۔',
         ),
         const LegalSection(
+          'صوتی اندراج',
+          'جب آپ فوری اندراج میں مائیکروفون دباتے ہیں تو آپ کے آلے کا اسپیچ انجن آپ '
+              'کی بات کو متن میں بدلتا ہے۔ ایسے اکثر انجن یہ کام کرنے کے لیے آواز اپنے '
+              'بنانے والی کمپنی کو بھیجتے ہیں، بالکل جیسے آپ کے کی بورڈ کا مائیک بٹن، اور '
+              'یہ اُس کمپنی کی پرائیویسی پالیسی کے تحت ہوتا ہے۔ SmartBudget صرف حاصل شدہ '
+              'متن وصول کرتا ہے، کوئی ریکارڈنگ محفوظ نہیں رکھتا، اور آپ کے دبائے بغیر '
+              'کبھی مائیکروفون نہیں کھولتا۔',
+        ),
+        const LegalSection(
           'ادائیگیاں اور سبسکرپشنز',
           'ادا شدہ پلانز اختیاری ہیں۔ آپ ہمارے ادائیگی فراہم کنندہ Whop '
               '(whop.com) کے محفوظ ادائیگی صفحے پر، یا چاہیں تو PayPal سے '
@@ -2509,6 +2582,15 @@ abstract final class LegalContent {
               'sicheren Server an einen KI-Anbieter gesendet, nur um Händler, '
               'Datum, Betrag, Positionen und Kategorie zu lesen; das Bild wird '
               'nicht gespeichert.',
+        ),
+        const LegalSection(
+          'Spracheingabe',
+          'Wenn du in der Schnellerfassung auf das Mikrofon tippst, wandelt die '
+              'Spracherkennung deines Geräts das Gesagte in Text um. Die meisten dieser '
+              'Dienste senden den Ton dafür an das Unternehmen, das sie herstellt – genau '
+              'wie die Mikrofontaste deiner Tastatur und nach der Datenschutzerklärung '
+              'dieses Unternehmens. SmartBudget erhält nur den entstandenen Text, '
+              'speichert keine Aufnahme und öffnet das Mikrofon nie ohne dein Antippen.',
         ),
         const LegalSection(
           'Zahlungen und Abos',
@@ -2809,6 +2891,15 @@ abstract final class LegalContent {
               ' a data, o valor, os itens e a categoria; a imagem não é guardada.',
         ),
         const LegalSection(
+          'Entrada por voz',
+          'Quando toca no microfone na introdução rápida, o motor de voz do seu '
+              'dispositivo transforma o que diz em texto. A maioria desses motores envia '
+              'o áudio à empresa que os produz para o fazer, tal como a tecla do '
+              'microfone do seu teclado, ao abrigo da política de privacidade dessa '
+              'empresa. O SmartBudget recebe apenas o texto resultante, não guarda '
+              'qualquer gravação e nunca abre o microfone sem o seu toque.',
+        ),
+        const LegalSection(
           'Pagamentos e assinaturas',
           'Os planos pagos são opcionais. Você paga no checkout seguro da Whop '
               '(whop.com), nosso provedor de pagamentos, ou com PayPal, se '
@@ -3099,6 +3190,16 @@ abstract final class LegalContent {
               'scontrino tramite il nostro server sicuro a un fornitore di IA '
               'solo per leggere esercente, data, importo, articoli e categoria; '
               'l\'immagine non viene conservata.',
+        ),
+        const LegalSection(
+          'Inserimento vocale',
+          'Quando tocchi il microfono nell\'inserimento rapido, il motore vocale del '
+              'tuo dispositivo trasforma ciò che dici in testo. La maggior parte di '
+              'questi motori invia l\'audio all\'azienda che li produce per farlo, '
+              'esattamente come il tasto microfono della tastiera, secondo l\'informativa '
+              'sulla privacy di quell\'azienda. SmartBudget riceve solo il testo ottenuto, '
+              'non conserva alcuna registrazione e non apre mai il microfono senza un tuo '
+              'tocco.',
         ),
         const LegalSection(
           'Pagamenti e abbonamenti',
@@ -3397,6 +3498,15 @@ abstract final class LegalContent {
               'bewaard.',
         ),
         const LegalSection(
+          'Steminvoer',
+          'Wanneer je in de snelle invoer op de microfoon tikt, zet de spraakmachine '
+              'van je apparaat om wat je zegt in tekst. De meeste van die machines sturen '
+              'het geluid daarvoor naar het bedrijf dat ze maakt, net als de '
+              'microfoontoets op je toetsenbord, volgens het privacybeleid van dat '
+              'bedrijf. SmartBudget ontvangt alleen de resulterende tekst, bewaart geen '
+              'opname en opent de microfoon nooit zonder jouw tik.',
+        ),
+        const LegalSection(
           'Betalingen en abonnementen',
           'Betaalde abonnementen zijn optioneel. Je betaalt via de beveiligde '
               'checkout van Whop (whop.com), onze betaalpartner, of met PayPal als'
@@ -3690,6 +3800,15 @@ abstract final class LegalContent {
               'i kategoriju; slika se ne čuva.',
         ),
         const LegalSection(
+          'Glasovni unos',
+          'Kada u brzom unosu dodirnete mikrofon, govorni mehanizam vašeg uređaja '
+              'pretvara ono što kažete u tekst. Većina takvih mehanizama za to šalje zvuk '
+              'kompaniji koja ih pravi, baš kao i tipka mikrofona na vašoj tastaturi, u '
+              'skladu s politikom privatnosti te kompanije. SmartBudget prima samo '
+              'dobiveni tekst, ne čuva nikakav snimak i nikada ne otvara mikrofon bez '
+              'vašeg dodira.',
+        ),
+        const LegalSection(
           'Plaćanja i pretplate',
           'Plaćeni paketi su opcionalni. Plaćaš na sigurnoj naplati Whopa '
               '(whop.com), našeg pružaoca plaćanja, ili PayPalom ako to izabereš.'
@@ -3967,6 +4086,15 @@ abstract final class LegalContent {
               'Skanimi në cloud e dërgon imazhin e faturës përmes serverit tonë '
               'të sigurt te një ofrues AI vetëm për të lexuar tregtarin, datën, '
               'shumën, artikujt dhe kategorinë; imazhi nuk ruhet.',
+        ),
+        const LegalSection(
+          'Futja me zë',
+          'Kur prekni mikrofonin te futja e shpejtë, motori i të folurit i pajisjes '
+              'suaj e kthen atë që thoni në tekst. Shumica e këtyre motorëve e dërgojnë '
+              'zërin te kompania që i prodhon për ta bërë këtë, ashtu si tasti i '
+              'mikrofonit në tastierën tuaj, sipas politikës së privatësisë së asaj '
+              'kompanie. SmartBudget merr vetëm tekstin e dalë, nuk ruan asnjë regjistrim '
+              'dhe nuk e hap kurrë mikrofonin pa prekjen tuaj.',
         ),
         const LegalSection(
           'Pagesat dhe abonimet',
@@ -4261,6 +4389,16 @@ abstract final class LegalContent {
               'сохраняется.',
         ),
         const LegalSection(
+          'Голосовой ввод',
+          'Когда вы нажимаете микрофон в быстром вводе, речевой движок вашего '
+              'устройства превращает сказанное в текст. Большинство таких движков для '
+              'этого отправляют звук компании-разработчику — точно так же, как кнопка '
+              'микрофона на вашей клавиатуре, и в соответствии с политикой '
+              'конфиденциальности этой компании. SmartBudget получает только полученный '
+              'текст, не хранит никаких записей и никогда не включает микрофон без вашего '
+              'нажатия.',
+        ),
+        const LegalSection(
           'Платежи и подписки',
           'Платные тарифы необязательны. Вы оплачиваете на защищённой странице '
               'оплаты Whop (whop.com), нашего платёжного провайдера, или через '
@@ -4552,6 +4690,15 @@ abstract final class LegalContent {
               'tarehe, kiasi, bidhaa na kategoria tu; picha haihifadhiwi.',
         ),
         const LegalSection(
+          'Uwekaji kwa sauti',
+          'Unapogusa maikrofoni kwenye uwekaji wa haraka, injini ya sauti ya kifaa '
+              'chako hubadilisha unachosema kuwa maandishi. Injini nyingi kama hizo '
+              'hutuma sauti kwa kampuni inayozitengeneza ili kufanya hivyo, kama vile '
+              'kitufe cha maikrofoni kwenye kibodi yako, kwa mujibu wa sera ya faragha ya '
+              'kampuni hiyo. SmartBudget hupokea maandishi yanayotokana nayo pekee, '
+              'haihifadhi rekodi yoyote, na haifungui maikrofoni kamwe bila wewe kugusa.',
+        ),
+        const LegalSection(
           'Malipo na usajili',
           'Vifurushi vya kulipia ni vya hiari. Unalipa kwenye ukurasa salama wa '
               'malipo wa Whop (whop.com), mtoa huduma wetu wa malipo, au kwa '
@@ -4837,6 +4984,15 @@ abstract final class LegalContent {
               'kayayyaki da rukuni kawai; ba a ajiye hoton.',
         ),
         const LegalSection(
+          'Shigar da murya',
+          'Lokacin da ka taɓa makirufo a cikin shigarwa mai sauri, injin maganar '
+              'na\'urarka yana mai da abin da ka faɗa zuwa rubutu. Yawancin waɗannan '
+              'injina suna aika sauti zuwa ga kamfanin da ya yi su domin yin hakan, kamar '
+              'maɓallin makirufo a kan madannin ka, bisa manufar sirri ta wannan kamfani. '
+              'SmartBudget yana karɓar rubutun da ya fito kawai, ba ya ajiye wani rikodi, '
+              'kuma ba ya taɓa buɗe makirufo ba tare da ka danna ba.',
+        ),
+        const LegalSection(
           'Biya da biyan kuɗi na lokaci',
           'Tsare-tsaren biya zaɓi ne. Kana biya a shafin biya mai tsaro na '
               'Whop (whop.com), mai ba mu sabis na biya, ko da PayPal idan ka '
@@ -5113,6 +5269,15 @@ abstract final class LegalContent {
               'beveiligde bediener na \'n KI-verskaffer, slegs om die winkel, '
               'datum, bedrag, items en kategorie te lees; die foto word nie '
               'gehou nie.',
+        ),
+        const LegalSection(
+          'Steminvoer',
+          'Wanneer jy in die vinnige invoer op die mikrofoon tik, skakel jou toestel '
+              'se spraakenjin om wat jy sê in teks. Die meeste sulke enjins stuur die '
+              'klank daarvoor na die maatskappy wat hulle maak, net soos die '
+              'mikrofoonsleutel op jou sleutelbord, volgens daardie maatskappy se '
+              'privaatheidsbeleid. SmartBudget ontvang net die teks wat daaruit kom, hou '
+              'geen opname nie, en maak die mikrofoon nooit sonder jou tik oop nie.',
         ),
         const LegalSection(
           'Betalings en intekeninge',
@@ -5394,6 +5559,14 @@ abstract final class LegalContent {
               'نگه داشته نمی‌شود.',
         ),
         const LegalSection(
+          'ورود صوتی',
+          'وقتی در ورود سریع روی میکروفون می‌زنید، موتور گفتار دستگاهتان آنچه '
+              'می‌گویید را به متن تبدیل می‌کند. بیشتر این موتورها برای این کار صدا را به '
+              'شرکت سازنده‌شان می‌فرستند، درست مانند دکمهٔ میکروفون صفحه‌کلید شما و بر '
+              'اساس سیاست حریم خصوصی همان شرکت. SmartBudget فقط متن به‌دست‌آمده را دریافت '
+              'می‌کند، هیچ ضبطی نگه نمی‌دارد و هرگز بدون زدن شما میکروفون را باز نمی‌کند.',
+        ),
+        const LegalSection(
           'پرداخت‌ها و اشتراک‌ها',
           'طرح‌های پولی اختیاری‌اند. پرداخت از طریق صفحه پرداخت امن Whop '
               '(whop.com)، همکار پرداخت ما، یا با PayPal اگر آن را انتخاب کنید، '
@@ -5658,6 +5831,15 @@ abstract final class LegalContent {
               'रखी नहीं जाती।',
         ),
         const LegalSection(
+          'आवाज़ से दर्ज करना',
+          'जब आप त्वरित प्रविष्टि में माइक्रोफ़ोन दबाते हैं, तो आपके डिवाइस का स्पीच '
+              'इंजन आपकी कही बात को टेक्स्ट में बदलता है। ऐसे अधिकांश इंजन यह करने के लिए '
+              'आवाज़ अपनी बनाने वाली कंपनी को भेजते हैं, ठीक वैसे ही जैसे आपके कीबोर्ड का '
+              'माइक बटन, और उसी कंपनी की निजता नीति के तहत। SmartBudget केवल बना हुआ '
+              'टेक्स्ट पाता है, कोई रिकॉर्डिंग नहीं रखता, और आपके दबाए बिना कभी '
+              'माइक्रोफ़ोन नहीं खोलता।',
+        ),
+        const LegalSection(
           'भुगतान और सदस्यताएँ',
           'भुगतान वाले प्लान वैकल्पिक हैं। आप Whop (whop.com), हमारे भुगतान '
               'साझेदार, के सुरक्षित चेकआउट से भुगतान करते हैं, या चाहें तो PayPal '
@@ -5913,6 +6095,11 @@ abstract final class LegalContent {
               '日期、金额、商品和类别；照片不会被保存。',
         ),
         const LegalSection(
+          '语音输入',
+          '当你在快速记账中点击麦克风时，你设备自带的语音引擎会把你说的话转成文字。多数这类引擎会为此把声音发送给开发它的公司，就像键盘上的麦克风键一样，并受该公司隐私政策的约束。SmartBudget '
+              '只收到转换后的文字，不保留任何录音，也绝不会在你未点击时开启麦克风。',
+        ),
+        const LegalSection(
           '付款与订阅',
           '付费方案是可选的。你通过我们的支付合作伙伴 Whop（'
               'whop.com）的安全结账页面付款，也可以选择 '
@@ -6155,6 +6342,11 @@ abstract final class LegalContent {
               'クラウドスキャンは、店名、日付、金額、品目、カテゴリを読み取'
               'るためだけに、レシートの写真を私たちの安全なサーバーから '
               'AI 提供元に送ります。写真は保存されません。',
+        ),
+        const LegalSection(
+          '音声入力',
+          'クイック入力でマイクをタップすると、お使いの端末の音声エンジンが話した内容を文字に変換します。多くのエンジンはそのために音声を提供元の企業へ送信します。キーボードのマイクキーとまったく同じ仕組みで、その企業のプライバシーポリシーに従います。SmartBudget '
+              'が受け取るのは変換後の文字だけで、録音は保存せず、あなたがタップしない限りマイクを開くことはありません。',
         ),
         const LegalSection(
           '支払いとサブスクリプション',
@@ -6434,6 +6626,12 @@ abstract final class LegalContent {
               '목, 카테고리를 읽기 위해서만 영수증 사진을 저희의 안'
               '전한 서버에서 AI 제공업체로 보내며, 사진은 저장되지'
               ' 않습니다.',
+        ),
+        const LegalSection(
+          '음성 입력',
+          '빠른 입력에서 마이크를 누르면 기기에 내장된 음성 엔진이 말한 내용을 텍스트로 바꿉니다. 대부분의 엔진은 이를 위해 소리를 제조사로 '
+              '전송하며, 이는 키보드의 마이크 키와 똑같고 해당 회사의 개인정보 처리방침을 따릅니다. SmartBudget은 변환된 텍스트만 받고, '
+              '녹음은 보관하지 않으며, 사용자가 누르지 않으면 절대 마이크를 열지 않습니다.',
         ),
         const LegalSection(
           '결제와 구독',

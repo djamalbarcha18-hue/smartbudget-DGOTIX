@@ -1580,5 +1580,15 @@
   "incomeNoneInPeriod": "Asnjë e ardhur në këtë periudhë",
   "expenseNoneInPeriod": "Asnjë shpenzim në këtë periudhë",
   "errorPartTitle": "Kjo pjesë nuk mund të shfaqej",
-  "errorGoHome": "Kthehu në fillim"
+  "errorGoHome": "Kthehu në fillim",
+  "voiceStart": "Flisni në vend që të shkruani",
+  "voiceListening": "Po dëgjoj…",
+  "voiceStop": "Ndalo",
+  "voiceNoticeTitle": "Futeni me zë",
+  "voiceNoticeBody": "Thoni sa shpenzuat, për shembull “kafe 200”. Zërin në fjalë e kthen motori i të folurit i telefonit tuaj, dhe shumica e dërgojnë te prodhuesi i tyre për këtë, ashtu si tasti i mikrofonit në tastierë. SmartBudget merr vetëm fjalët dhe nuk ruan asnjë regjistrim.",
+  "voiceNoticeOk": "E kuptova",
+  "voiceFailedUnavailable": "Futja me zë nuk është e disponueshme në këtë pajisje.",
+  "voiceFailedDenied": "SmartBudget ka nevojë për mikrofonin. Aktivizojeni në cilësimet e pajisjes.",
+  "voiceFailedNoSpeech": "Nuk u dëgjua asgjë. Provoni përsëri.",
+  "voiceFailedError": "Futja me zë nuk funksionoi. Provoni përsëri."
 }

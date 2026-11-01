@@ -1580,5 +1580,15 @@
   "incomeNoneInPeriod": "Tiada pendapatan dalam tempoh ini",
   "expenseNoneInPeriod": "Tiada perbelanjaan dalam tempoh ini",
   "errorPartTitle": "Bahagian ini tidak dapat dipaparkan",
-  "errorGoHome": "Kembali ke laman utama"
+  "errorGoHome": "Kembali ke laman utama",
+  "voiceStart": "Bercakap dan bukan menaip",
+  "voiceListening": "Mendengar…",
+  "voiceStop": "Berhenti",
+  "voiceNoticeTitle": "Masukkan dengan suara",
+  "voiceNoticeBody": "Sebutkan perbelanjaan anda, seperti “kopi 200”. Enjin suara telefon anda yang menukar bunyi kepada perkataan, dan kebanyakannya menghantarnya kepada pembuatnya untuk berbuat demikian, sama seperti kekunci mikrofon pada papan kekunci anda. SmartBudget hanya menerima perkataan dan tidak menyimpan sebarang rakaman.",
+  "voiceNoticeOk": "Faham",
+  "voiceFailedUnavailable": "Input suara tidak tersedia pada peranti ini.",
+  "voiceFailedDenied": "SmartBudget memerlukan mikrofon. Hidupkannya dalam tetapan peranti anda.",
+  "voiceFailedNoSpeech": "Tiada apa-apa didengar. Cuba lagi.",
+  "voiceFailedError": "Input suara tidak berjaya. Cuba lagi."
 }

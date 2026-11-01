@@ -95,6 +95,9 @@ dependencies:
   # Where the device database file goes on Android (the app's support
   # folder). Already a dependency of other packages.
   path_provider: ^2.1.6
+  # Voice entry: the device's own speech engine (Android, and Chrome on the
+  # web). Pinned: 7.5.0 would raise this project's Flutter floor to 3.44.
+  speech_to_text: 7.4.0
 
 dev_dependencies:
   flutter_test:

@@ -1580,5 +1580,15 @@
   "incomeNoneInPeriod": "Geen inkomste in hierdie tydperk",
   "expenseNoneInPeriod": "Geen uitgawes in hierdie tydperk",
   "errorPartTitle": "Hierdie deel kon nie gewys word nie",
-  "errorGoHome": "Terug tuis"
+  "errorGoHome": "Terug tuis",
+  "voiceStart": "Praat in plaas van tik",
+  "voiceListening": "Luister tans…",
+  "voiceStop": "Stop",
+  "voiceNoticeTitle": "Voer met jou stem in",
+  "voiceNoticeBody": "Sê wat jy bestee het, soos “koffie 200”. Dit is jou foon se eie spraakenjin wat die klank in woorde omskakel, en die meeste stuur dit daarvoor na hul maker, net soos die mikrofoonsleutel op jou sleutelbord. SmartBudget ontvang net die woorde en hou geen opname nie.",
+  "voiceNoticeOk": "Verstaan",
+  "voiceFailedUnavailable": "Steminvoer is nie op hierdie toestel beskikbaar nie.",
+  "voiceFailedDenied": "SmartBudget het die mikrofoon nodig. Skakel dit in jou toestel se instellings aan.",
+  "voiceFailedNoSpeech": "Niks gehoor nie. Probeer weer.",
+  "voiceFailedError": "Steminvoer het nie gewerk nie. Probeer weer."
 }

@@ -1580,5 +1580,15 @@
   "incomeNoneInPeriod": "Sin ingresos en este periodo",
   "expenseNoneInPeriod": "Sin gastos en este periodo",
   "errorPartTitle": "No se pudo mostrar esta parte",
-  "errorGoHome": "Volver al inicio"
+  "errorGoHome": "Volver al inicio",
+  "voiceStart": "Habla en vez de escribir",
+  "voiceListening": "Escuchando…",
+  "voiceStop": "Detener",
+  "voiceNoticeTitle": "Dicta tu entrada",
+  "voiceNoticeBody": "Di lo que gastaste, por ejemplo «café 200». Es el motor de voz de tu teléfono el que convierte el sonido en palabras, y la mayoría lo envía a su fabricante para hacerlo, igual que la tecla del micrófono de tu teclado. SmartBudget solo recibe las palabras y no guarda ninguna grabación.",
+  "voiceNoticeOk": "Entendido",
+  "voiceFailedUnavailable": "La entrada por voz no está disponible en este dispositivo.",
+  "voiceFailedDenied": "SmartBudget necesita el micrófono. Actívalo en los ajustes de tu dispositivo.",
+  "voiceFailedNoSpeech": "No se oyó nada. Inténtalo de nuevo.",
+  "voiceFailedError": "La entrada por voz no funcionó. Inténtalo de nuevo."
 }

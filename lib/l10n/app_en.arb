@@ -1866,5 +1866,15 @@
   "incomeNoneInPeriod": "No income in this period",
   "expenseNoneInPeriod": "No expenses in this period",
   "errorPartTitle": "This part couldn't be shown",
-  "errorGoHome": "Back home"
+  "errorGoHome": "Back home",
+  "voiceStart": "Speak instead of typing",
+  "voiceListening": "Listening…",
+  "voiceStop": "Stop",
+  "voiceNoticeTitle": "Speak your entry",
+  "voiceNoticeBody": "Say what you spent, like “coffee 200”. Your phone's own speech engine turns the sound into words, and most send it to their maker to do that, exactly as the microphone key on your keyboard does. SmartBudget receives the words only and keeps no recording.",
+  "voiceNoticeOk": "Got it",
+  "voiceFailedUnavailable": "Voice entry isn't available on this device.",
+  "voiceFailedDenied": "SmartBudget needs the microphone. Turn it on in your device settings.",
+  "voiceFailedNoSpeech": "Nothing heard. Try again.",
+  "voiceFailedError": "Voice entry didn't work. Try again."
 }
