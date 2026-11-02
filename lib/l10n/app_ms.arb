@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "Amaran pintar: ramalan bajet, perbelanjaan luar biasa dan ringkasan",
   "txnTypeIncome": "Pendapatan",
   "txnTypeExpense": "Perbelanjaan",
-  "budgetThisMonth": "Bajet bulan ini",
-  "budgetUsedCaption": "{spent} daripada {planned}",
   "budgetNotSet": "Tiada bajet ditetapkan untuk bulan ini",
   "upcomingTitle": "Perlu dibayar dalam 7 hari",
   "upcomingNone": "Tiada yang perlu dibayar dalam 7 hari akan datang",

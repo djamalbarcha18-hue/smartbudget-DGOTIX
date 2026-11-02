@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "Умные уведомления: прогнозы бюджета, необычные траты и итоги",
   "txnTypeIncome": "Доход",
   "txnTypeExpense": "Расход",
-  "budgetThisMonth": "Бюджет этого месяца",
-  "budgetUsedCaption": "{spent} из {planned}",
   "budgetNotSet": "Бюджет на этот месяц не задан",
   "upcomingTitle": "Сроки в ближайшие 7 дней",
   "upcomingNone": "В ближайшие 7 дней сроков нет",

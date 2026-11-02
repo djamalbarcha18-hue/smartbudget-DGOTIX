@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "Smarte Hinweise: Budgetprognosen, ungewöhnliche Ausgaben und Übersichten",
   "txnTypeIncome": "Einnahme",
   "txnTypeExpense": "Ausgabe",
-  "budgetThisMonth": "Budget dieses Monats",
-  "budgetUsedCaption": "{spent} von {planned}",
   "budgetNotSet": "Für diesen Monat ist kein Budget festgelegt",
   "upcomingTitle": "Fällig in 7 Tagen",
   "upcomingNone": "In den nächsten 7 Tagen ist nichts fällig",

@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "智能提醒：预算预测、异常支出和摘要",
   "txnTypeIncome": "收入",
   "txnTypeExpense": "支出",
-  "budgetThisMonth": "本月预算",
-  "budgetUsedCaption": "{spent} / {planned}",
   "budgetNotSet": "本月未设预算",
   "upcomingTitle": "7 天内到期",
   "upcomingNone": "未来 7 天没有到期项",

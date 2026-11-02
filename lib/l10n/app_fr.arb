@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "Alertes intelligentes : prévisions budgétaires, dépenses inhabituelles et résumés",
   "txnTypeIncome": "Revenu",
   "txnTypeExpense": "Dépense",
-  "budgetThisMonth": "Budget du mois",
-  "budgetUsedCaption": "{spent} sur {planned}",
   "budgetNotSet": "Aucun budget fixé pour ce mois",
   "upcomingTitle": "Échéances sous 7 jours",
   "upcomingNone": "Rien de prévu dans les 7 prochains jours",

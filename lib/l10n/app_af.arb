@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "Slim waarskuwings: begrotingsvooruitskattings, ongewone uitgawes en opsommings",
   "txnTypeIncome": "Inkomste",
   "txnTypeExpense": "Uitgawe",
-  "budgetThisMonth": "Hierdie maand se begroting",
-  "budgetUsedCaption": "{spent} van {planned}",
   "budgetNotSet": "Geen begroting vir hierdie maand gestel nie",
   "upcomingTitle": "Betaalbaar binne 7 dae",
   "upcomingNone": "Niks betaalbaar in die volgende 7 dae nie",

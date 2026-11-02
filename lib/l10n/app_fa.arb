@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "هشدارهای هوشمند: پیش‌بینی بودجه، خرج غیرعادی و خلاصه‌ها",
   "txnTypeIncome": "درآمد",
   "txnTypeExpense": "هزینه",
-  "budgetThisMonth": "بودجه این ماه",
-  "budgetUsedCaption": "{spent} از {planned}",
   "budgetNotSet": "برای این ماه بودجه‌ای تعیین نشده",
   "upcomingTitle": "سررسید تا 7 روز",
   "upcomingNone": "چیزی در 7 روز آینده سررسید نمی‌شود",

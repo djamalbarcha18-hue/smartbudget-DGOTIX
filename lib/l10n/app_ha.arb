@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "Faɗakarwa masu hikima: hasashen kasafi, kashe kuɗi da ba a saba ba da taƙaitattu",
   "txnTypeIncome": "Kuɗin shiga",
   "txnTypeExpense": "Kashe kuɗi",
-  "budgetThisMonth": "Kasafin wannan wata",
-  "budgetUsedCaption": "{spent} cikin {planned}",
   "budgetNotSet": "Ba a saita kasafi a wannan wata ba",
   "upcomingTitle": "Masu zuwa cikin kwana 7",
   "upcomingNone": "Babu abin biya cikin kwanaki 7 masu zuwa",

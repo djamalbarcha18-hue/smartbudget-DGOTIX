@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "Alertas inteligentes: previsões do orçamento, gastos incomuns e resumos",
   "txnTypeIncome": "Receita",
   "txnTypeExpense": "Despesa",
-  "budgetThisMonth": "Orçamento deste mês",
-  "budgetUsedCaption": "{spent} de {planned}",
   "budgetNotSet": "Nenhum orçamento definido para este mês",
   "upcomingTitle": "Vence em 7 dias",
   "upcomingNone": "Nada vence nos próximos 7 dias",

@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "Akıllı uyarılar: bütçe tahminleri, olağandışı harcamalar ve özetler",
   "txnTypeIncome": "Gelir",
   "txnTypeExpense": "Gider",
-  "budgetThisMonth": "Bu ayın bütçesi",
-  "budgetUsedCaption": "{planned} içinden {spent}",
   "budgetNotSet": "Bu ay için bütçe belirlenmedi",
   "upcomingTitle": "7 gün içinde ödenecekler",
   "upcomingNone": "Önümüzdeki 7 günde ödenecek bir şey yok",

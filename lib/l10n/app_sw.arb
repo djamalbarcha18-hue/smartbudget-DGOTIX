@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "Arifa mahiri: utabiri wa bajeti, matumizi yasiyo ya kawaida na muhtasari",
   "txnTypeIncome": "Mapato",
   "txnTypeExpense": "Matumizi",
-  "budgetThisMonth": "Bajeti ya mwezi huu",
-  "budgetUsedCaption": "{spent} kati ya {planned}",
   "budgetNotSet": "Hakuna bajeti iliyowekwa mwezi huu",
   "upcomingTitle": "Yanayolipwa ndani ya siku 7",
   "upcomingNone": "Hakuna kinacholipwa ndani ya siku 7 zijazo",
