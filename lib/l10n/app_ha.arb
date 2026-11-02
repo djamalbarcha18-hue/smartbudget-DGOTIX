@@ -1593,5 +1593,14 @@
   "voiceFailedError": "Shigar da murya bai yi aiki ba. Sake gwadawa.",
   "budgetDailyTitle": "Za a iya kashewa yau",
   "budgetDailyLeft": "{amount} saura",
-  "budgetOverBy": "An wuce da {amount}"
+  "budgetOverBy": "An wuce da {amount}",
+  "inviteTitle": "Gayyaci abokai, buɗe fasaloli",
+  "inviteBody": "Idan abokai uku suka shiga ta hanyar haɗin ka suka fara amfani da manhajar, fasalolin da ke ƙasa za su buɗe har abada.",
+  "inviteLink": "Haɗin gayyatarka",
+  "inviteCopied": "An kwafi haɗin",
+  "inviteProgressLine": "{done} daga {needed} sun shiga sun fara",
+  "inviteRewards": "Abin da za ka buɗe",
+  "inviteUnlocked": "An buɗe",
+  "inviteNeedAccount": "Ƙirƙiri asusu don samun haɗinka da bin diddigin ci gaba.",
+  "rewardHigherLimits": "Ƙarin iyaka: kasafi mara iyaka, ƙarin buri, bashi da walat"
 }

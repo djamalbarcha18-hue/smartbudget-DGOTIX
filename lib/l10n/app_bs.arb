@@ -1593,5 +1593,14 @@
   "voiceFailedError": "Glasovni unos nije uspio. Pokušajte ponovo.",
   "budgetDailyTitle": "Sigurno za danas",
   "budgetDailyLeft": "{amount} preostalo",
-  "budgetOverBy": "Prekoračeno za {amount}"
+  "budgetOverBy": "Prekoračeno za {amount}",
+  "inviteTitle": "Pozovite prijatelje, otključajte funkcije",
+  "inviteBody": "Kada se troje prijatelja pridruži preko vašeg linka i počne koristiti aplikaciju, funkcije ispod se trajno otključavaju.",
+  "inviteLink": "Vaš link za pozivnicu",
+  "inviteCopied": "Link kopiran",
+  "inviteProgressLine": "{done} od {needed} pridružilo se i počelo",
+  "inviteRewards": "Šta otključavate",
+  "inviteUnlocked": "Otključano",
+  "inviteNeedAccount": "Napravite račun da dobijete svoj link i pratite napredak.",
+  "rewardHigherLimits": "Viši limiti: neograničeni budžeti te više ciljeva, dugova i novčanika"
 }

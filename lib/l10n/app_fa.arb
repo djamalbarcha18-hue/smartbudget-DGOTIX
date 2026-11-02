@@ -1593,5 +1593,14 @@
   "voiceFailedError": "ورود صوتی کار نکرد. دوباره تلاش کنید.",
   "budgetDailyTitle": "قابل خرج امروز",
   "budgetDailyLeft": "{amount} باقی‌مانده",
-  "budgetOverBy": "{amount} بیشتر از بودجه"
+  "budgetOverBy": "{amount} بیشتر از بودجه",
+  "inviteTitle": "دوستان را دعوت کنید و امکانات باز کنید",
+  "inviteBody": "وقتی سه دوست با لینک شما ثبت‌نام کنند و استفاده را شروع کنند، امکانات زیر برای همیشه باز می‌شود.",
+  "inviteLink": "لینک دعوت شما",
+  "inviteCopied": "لینک کپی شد",
+  "inviteProgressLine": "{done} از {needed} ثبت‌نام کرده و شروع کرده‌اند",
+  "inviteRewards": "چه چیزی باز می‌شود",
+  "inviteUnlocked": "باز شد",
+  "inviteNeedAccount": "برای دریافت لینک و دیدن پیشرفت، حساب بسازید.",
+  "rewardHigherLimits": "سقف بالاتر: بودجه نامحدود و اهداف، بدهی و کیف‌پول بیشتر"
 }

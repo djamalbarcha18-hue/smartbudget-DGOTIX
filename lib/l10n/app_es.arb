@@ -1593,5 +1593,14 @@
   "voiceFailedError": "La entrada por voz no funcionó. Inténtalo de nuevo.",
   "budgetDailyTitle": "Disponible hoy",
   "budgetDailyLeft": "quedan {amount}",
-  "budgetOverBy": "{amount} por encima"
+  "budgetOverBy": "{amount} por encima",
+  "inviteTitle": "Invita a amigos y desbloquea funciones",
+  "inviteBody": "Cuando tres amigos se unan con tu enlace y empiecen a usar la app, las funciones de abajo se desbloquean para siempre.",
+  "inviteLink": "Tu enlace de invitación",
+  "inviteCopied": "Enlace copiado",
+  "inviteProgressLine": "{done} de {needed} se unieron y empezaron",
+  "inviteRewards": "Lo que desbloqueas",
+  "inviteUnlocked": "Desbloqueado",
+  "inviteNeedAccount": "Crea una cuenta para obtener tu enlace y seguir tu progreso.",
+  "rewardHigherLimits": "Límites más altos: presupuestos ilimitados y más metas, deudas y carteras"
 }

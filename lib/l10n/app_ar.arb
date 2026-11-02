@@ -1793,5 +1793,14 @@
   "voiceFailedError": "تعذّر الإدخال الصوتي. حاول مرة أخرى.",
   "budgetDailyTitle": "متاح اليوم",
   "budgetDailyLeft": "{amount} متبقية",
-  "budgetOverBy": "تجاوزت بـ {amount}"
+  "budgetOverBy": "تجاوزت بـ {amount}",
+  "inviteTitle": "ادعُ أصدقاءك وافتح ميزات",
+  "inviteBody": "عندما ينضم ثلاثة أصدقاء عبر رابطك ويبدأون استخدام التطبيق، تُفتح لك الميزات أدناه نهائيًا.",
+  "inviteLink": "رابط دعوتك",
+  "inviteCopied": "نُسخ الرابط",
+  "inviteProgressLine": "{done} من {needed} انضموا وبدأوا الاستخدام",
+  "inviteRewards": "ما تفتحه",
+  "inviteUnlocked": "مفتوحة",
+  "inviteNeedAccount": "أنشئ حسابًا للحصول على رابط دعوتك ومتابعة تقدّمك.",
+  "rewardHigherLimits": "حدود أعلى: ميزانيات بلا حد، وأهداف وديون ومحافظ أكثر"
 }

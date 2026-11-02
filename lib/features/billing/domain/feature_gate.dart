@@ -8,6 +8,7 @@
 library;
 
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/referrals/domain/referral_reward.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 
 /// Why a feature is (dis)allowed. Presentation maps these to localized copy.
@@ -80,12 +81,19 @@ abstract final class FeatureGate {
     required Plan plan,
     int used = 0,
     BillingPeriod? period,
+    Set<ReferralReward> rewards = const <ReferralReward>{},
   }) {
     final int consumed = used < 0 ? 0 : used;
     final Plan minTier = FeatureCatalog.minTierFor(feature);
 
+    // A reward earned by inviting friends opens its feature on any plan. It
+    // is deliberately checked before the tier: that is the whole point of it.
+    // Only features that cost nothing to serve are ever granted this way
+    // (see ReferralRewards), so this can never hand out metered server work.
+    final bool byReward = ReferralRewards.opens(rewards, feature);
+
     // Boolean gate below its minimum tier: needs an upgrade to that tier.
-    if (!plan.atLeast(minTier)) {
+    if (!byReward && !plan.atLeast(minTier)) {
       return GateDecision(
         feature: feature,
         allowed: false,
@@ -95,7 +103,8 @@ abstract final class FeatureGate {
     }
 
     // Yearly-only perk on a plan that isn't billed yearly: switch to yearly.
-    if (FeatureCatalog.ruleFor(feature).yearlyOnly &&
+    if (!byReward &&
+        FeatureCatalog.ruleFor(feature).yearlyOnly &&
         period != BillingPeriod.yearly) {
       return GateDecision(
         feature: feature,
@@ -105,9 +114,19 @@ abstract final class FeatureGate {
       );
     }
 
-    final Quota? quota = FeatureCatalog.quotaFor(feature, plan);
+    final Quota? plannedQuota = FeatureCatalog.quotaFor(feature, plan);
 
-    // Boolean gate the plan satisfies: allowed, nothing metered.
+    // A reward can raise a counted allowance, never lower one: whichever of
+    // the plan's and the reward's is the more generous wins, and unlimited
+    // (−1) beats any number.
+    final int? earned = ReferralRewards.limitFor(rewards, feature);
+    final Quota? quota = (plannedQuota != null && earned != null)
+        ? (plannedQuota.isUnlimited || (earned > 0 && plannedQuota.limit >= earned)
+            ? plannedQuota
+            : Quota(earned, plannedQuota.window))
+        : plannedQuota;
+
+    // Boolean gate the plan (or a reward) satisfies: allowed, nothing metered.
     if (quota == null) {
       return GateDecision(
         feature: feature,

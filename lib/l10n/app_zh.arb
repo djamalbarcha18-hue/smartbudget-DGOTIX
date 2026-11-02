@@ -1593,5 +1593,14 @@
   "voiceFailedError": "语音输入未成功，请再试一次。",
   "budgetDailyTitle": "今日可用",
   "budgetDailyLeft": "剩余 {amount}",
-  "budgetOverBy": "超出 {amount}"
+  "budgetOverBy": "超出 {amount}",
+  "inviteTitle": "邀请好友，解锁功能",
+  "inviteBody": "当三位好友通过你的链接加入并开始使用后，下列功能将永久解锁。",
+  "inviteLink": "你的邀请链接",
+  "inviteCopied": "链接已复制",
+  "inviteProgressLine": "{needed} 位中已有 {done} 位加入并开始使用",
+  "inviteRewards": "你将解锁",
+  "inviteUnlocked": "已解锁",
+  "inviteNeedAccount": "创建账户以获取你的链接并查看进度。",
+  "rewardHigherLimits": "更高上限：预算不限量，更多目标、债务与钱包"
 }

@@ -1593,5 +1593,14 @@
   "voiceFailedError": "Steminvoer het nie gewerk nie. Probeer weer.",
   "budgetDailyTitle": "Veilig om vandag te bestee",
   "budgetDailyLeft": "{amount} oor",
-  "budgetOverBy": "{amount} oor die begroting"
+  "budgetOverBy": "{amount} oor die begroting",
+  "inviteTitle": "Nooi vriende, ontsluit kenmerke",
+  "inviteBody": "Wanneer drie vriende deur jou skakel aansluit en die app begin gebruik, word die kenmerke hieronder permanent oopgesluit.",
+  "inviteLink": "Jou uitnodigingskakel",
+  "inviteCopied": "Skakel gekopieer",
+  "inviteProgressLine": "{done} van {needed} aangesluit en begin",
+  "inviteRewards": "Wat jy ontsluit",
+  "inviteUnlocked": "Ontsluit",
+  "inviteNeedAccount": "Skep 'n rekening om jou skakel te kry en jou vordering te volg.",
+  "rewardHigherLimits": "Hoër limiete: onbeperkte begrotings, meer doelwitte, skulde en beursies"
 }

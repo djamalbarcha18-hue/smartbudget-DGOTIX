@@ -47,6 +47,7 @@ import 'package:smartbudget/features/offers/application/offers_controller.dart';
 import 'package:smartbudget/features/offers/presentation/partner_offer_card.dart';
 import 'package:smartbudget/features/settings/presentation/base_currency_change.dart';
 import 'package:smartbudget/features/settings/presentation/clock_section.dart';
+import 'package:smartbudget/features/referrals/presentation/invite_rewards_card.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
@@ -113,7 +114,8 @@ class SettingsPage extends ConsumerWidget {
                                                       context) ==
                                                   Brightness.dark))
                                   .bgPage,
-                              () => ref.read(themeModeProvider.notifier).set(m)),
+                              () =>
+                                  ref.read(themeModeProvider.notifier).set(m)),
                     ),
                     if (AppEnv.proThemes) ...<Widget>[
                       const SizedBox(height: DsSpacing.lg),
@@ -146,7 +148,8 @@ class SettingsPage extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(l.baseCurrency,
-                                  style: Theme.of(context).textTheme.titleSmall),
+                                  style:
+                                      Theme.of(context).textTheme.titleSmall),
                               Text(l.baseCurrencyHint,
                                   style: Theme.of(context).textTheme.bodySmall),
                             ],
@@ -288,6 +291,12 @@ class SettingsPage extends ConsumerWidget {
                 const SizedBox(height: DsSpacing.lg),
               ],
 
+              // Invite friends and unlock what three of them earn. Its own
+              // card, above sharing: the two are related but one is a reward
+              // and the other is just a link.
+              const InviteRewardsCard(),
+              const SizedBox(height: DsSpacing.lg),
+
               // Share the platform (social channels, progress card, QR code).
               _SettingsSection(
                 icon: Icons.ios_share_rounded,
@@ -296,8 +305,10 @@ class SettingsPage extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(l.shareSettingsHint,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: context.dsColors.textMuted)),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: context.dsColors.textMuted)),
                     const SizedBox(height: DsSpacing.md),
                     DsButton(
                       label: l.shareOpen,
@@ -827,8 +838,7 @@ class _DeveloperSectionState extends ConsumerState<_DeveloperSection> {
         // Hidden during the beta, when every feature is already unlocked.
         if (!AppEnv.hasSupabase && !AppEnv.betaAllAccess) ...<Widget>[
           const SizedBox(height: DsSpacing.lg),
-          Text(l.devPlanPreview,
-              style: Theme.of(context).textTheme.titleSmall),
+          Text(l.devPlanPreview, style: Theme.of(context).textTheme.titleSmall),
           const SizedBox(height: DsSpacing.xs),
           Text(l.devPlanPreviewHint,
               style: Theme.of(context).textTheme.bodySmall),
@@ -846,8 +856,8 @@ class _DeveloperSectionState extends ConsumerState<_DeveloperSection> {
           ),
           const SizedBox(height: DsSpacing.sm),
           _SegmentedRow<BillingPeriod>(
-            value: ref.watch(entitlementProvider).period ??
-                BillingPeriod.monthly,
+            value:
+                ref.watch(entitlementProvider).period ?? BillingPeriod.monthly,
             options: <_Segment<BillingPeriod>>[
               _Segment<BillingPeriod>(
                   BillingPeriod.monthly, l.periodMonthly, null),
@@ -907,8 +917,8 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
         SnackBar(
           content: Text(res.isEmpty
               ? l.importEmpty
-              : l.importDoneAll(res.transactionsAdded, res.budgetsAdded,
-                  res.plansAdded)),
+              : l.importDoneAll(
+                  res.transactionsAdded, res.budgetsAdded, res.plansAdded)),
         ),
       );
     } catch (_) {
@@ -926,10 +936,9 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
     final int txCount =
         ref.watch(transactionsProvider).valueOrNull?.length ?? 0;
     final int budCount = ref.watch(budgetsProvider).valueOrNull?.length ?? 0;
-    final int planCount =
-        (ref.watch(goalsProvider).valueOrNull?.length ?? 0) +
-            (ref.watch(debtsProvider).valueOrNull?.length ?? 0) +
-            (ref.watch(projectsProvider).valueOrNull?.length ?? 0);
+    final int planCount = (ref.watch(goalsProvider).valueOrNull?.length ?? 0) +
+        (ref.watch(debtsProvider).valueOrNull?.length ?? 0) +
+        (ref.watch(projectsProvider).valueOrNull?.length ?? 0);
     final bool hasData = txCount > 0 || budCount > 0 || planCount > 0;
 
     return Column(
@@ -1094,9 +1103,16 @@ class _SyncSection extends ConsumerWidget {
     final (IconData icon, Color color, String text) = switch (status.phase) {
       SyncPhase.off => (Icons.cloud_off_outlined, c.textMuted, l.syncOffNote),
       SyncPhase.syncing => (Icons.sync_rounded, c.brand, l.cloudSyncing),
-      SyncPhase.offline =>
-        (Icons.cloud_off_outlined, c.textMuted, l.syncOfflineNote),
-      SyncPhase.error => (Icons.sync_problem_outlined, c.expense, l.syncErrorNote),
+      SyncPhase.offline => (
+          Icons.cloud_off_outlined,
+          c.textMuted,
+          l.syncOfflineNote
+        ),
+      SyncPhase.error => (
+          Icons.sync_problem_outlined,
+          c.expense,
+          l.syncErrorNote
+        ),
       SyncPhase.idle => (
           Icons.cloud_done_outlined,
           last == null ? c.textMuted : c.income,
@@ -1112,8 +1128,7 @@ class _SyncSection extends ConsumerWidget {
           contentPadding: EdgeInsets.zero,
           title: Text(l.syncAuto, style: t.titleSmall),
           value: enabled,
-          onChanged: (bool v) =>
-              ref.read(syncEnabledProvider.notifier).set(v),
+          onChanged: (bool v) => ref.read(syncEnabledProvider.notifier).set(v),
         ),
         Row(
           children: <Widget>[
@@ -1168,8 +1183,7 @@ class _ActionButton extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Icon(icon,
-                  size: 18, color: enabled ? c.brand : c.textFaint),
+              Icon(icon, size: 18, color: enabled ? c.brand : c.textFaint),
               const SizedBox(width: DsSpacing.sm),
               Text(
                 label,

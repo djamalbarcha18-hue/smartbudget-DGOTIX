@@ -1593,5 +1593,14 @@
   "voiceFailedError": "आवाज़ से दर्ज करना काम नहीं आया। फिर कोशिश करें।",
   "budgetDailyTitle": "आज खर्च योग्य",
   "budgetDailyLeft": "{amount} शेष",
-  "budgetOverBy": "{amount} अधिक खर्च"
+  "budgetOverBy": "{amount} अधिक खर्च",
+  "inviteTitle": "दोस्तों को बुलाएँ, सुविधाएँ खोलें",
+  "inviteBody": "जब तीन दोस्त आपके लिंक से जुड़कर ऐप इस्तेमाल करना शुरू करें, नीचे दी सुविधाएँ हमेशा के लिए खुल जाएँगी।",
+  "inviteLink": "आपका निमंत्रण लिंक",
+  "inviteCopied": "लिंक कॉपी हुआ",
+  "inviteProgressLine": "{needed} में से {done} जुड़े और शुरू किया",
+  "inviteRewards": "क्या खुलेगा",
+  "inviteUnlocked": "खुल गया",
+  "inviteNeedAccount": "अपना लिंक पाने और प्रगति देखने के लिए खाता बनाएँ।",
+  "rewardHigherLimits": "ऊँची सीमाएँ: असीमित बजट, और ज़्यादा लक्ष्य, कर्ज़ और वॉलेट"
 }

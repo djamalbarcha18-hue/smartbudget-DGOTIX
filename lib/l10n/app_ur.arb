@@ -1593,5 +1593,14 @@
   "voiceFailedError": "صوتی اندراج کام نہیں کر سکا۔ دوبارہ کوشش کریں۔",
   "budgetDailyTitle": "آج خرچ کے لیے دستیاب",
   "budgetDailyLeft": "{amount} باقی",
-  "budgetOverBy": "{amount} زیادہ"
+  "budgetOverBy": "{amount} زیادہ",
+  "inviteTitle": "دوستوں کو مدعو کریں، فیچرز کھولیں",
+  "inviteBody": "جب تین دوست آپ کے لنک سے شامل ہو کر ایپ استعمال کرنا شروع کریں، نیچے دیے فیچرز ہمیشہ کے لیے کھل جائیں گے۔",
+  "inviteLink": "آپ کا دعوتی لنک",
+  "inviteCopied": "لنک کاپی ہو گیا",
+  "inviteProgressLine": "{needed} میں سے {done} شامل ہو کر شروع کر چکے",
+  "inviteRewards": "کیا کھلے گا",
+  "inviteUnlocked": "کھل گیا",
+  "inviteNeedAccount": "اپنا لنک حاصل کرنے اور پیش رفت دیکھنے کے لیے اکاؤنٹ بنائیں۔",
+  "rewardHigherLimits": "زیادہ حدود: لامحدود بجٹ، مزید اہداف، قرض اور والٹس"
 }

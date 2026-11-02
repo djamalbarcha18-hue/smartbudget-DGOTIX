@@ -1593,5 +1593,14 @@
   "voiceFailedError": "Masukan suara gagal. Coba lagi.",
   "budgetDailyTitle": "Tersedia hari ini",
   "budgetDailyLeft": "sisa {amount}",
-  "budgetOverBy": "Lebih {amount}"
+  "budgetOverBy": "Lebih {amount}",
+  "inviteTitle": "Ajak teman, buka fitur",
+  "inviteBody": "Ketika tiga teman bergabung lewat tautanmu dan mulai memakai aplikasi, fitur di bawah terbuka selamanya.",
+  "inviteLink": "Tautan undanganmu",
+  "inviteCopied": "Tautan disalin",
+  "inviteProgressLine": "{done} dari {needed} bergabung dan mulai",
+  "inviteRewards": "Yang kamu buka",
+  "inviteUnlocked": "Terbuka",
+  "inviteNeedAccount": "Buat akun untuk mendapat tautanmu dan melihat kemajuanmu.",
+  "rewardHigherLimits": "Batas lebih tinggi: anggaran tanpa batas, lebih banyak tujuan, utang, dan dompet"
 }

@@ -5,6 +5,7 @@ import 'package:smartbudget/features/billing/application/entitlement_controller.
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/feature_gate.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
+import 'package:smartbudget/features/referrals/application/referrals_controller.dart';
 
 /// Client-side used-count for a metered [Feature] this period.
 ///
@@ -50,5 +51,8 @@ final featureGateProvider = Provider.family<GateDecision, Feature>((ref, f) {
   return FeatureGate.evaluate(f,
       plan: plan,
       used: _usedFor(ref, f),
-      period: ref.watch(billingPeriodProvider));
+      period: ref.watch(billingPeriodProvider),
+      // What inviting friends has unlocked. Empty until the server answers,
+      // which withholds the extras and touches nothing else.
+      rewards: ref.watch(activeRewardsProvider));
 });

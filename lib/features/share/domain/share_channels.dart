@@ -66,8 +66,8 @@ abstract final class ShareLinks {
             'body': p.textWithLink,
           }),
         // `sms:?&body=` is the form both Android and iOS accept.
-        ShareChannel.sms => Uri.parse(
-            'sms:?&body=${Uri.encodeComponent(p.textWithLink)}'),
+        ShareChannel.sms =>
+          Uri.parse('sms:?&body=${Uri.encodeComponent(p.textWithLink)}'),
         ShareChannel.instagram => null,
       };
 

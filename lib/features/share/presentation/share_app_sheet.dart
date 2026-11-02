@@ -19,6 +19,8 @@ import 'package:smartbudget/features/share/application/share_controller.dart';
 import 'package:smartbudget/features/share/data/native_share.dart';
 import 'package:smartbudget/features/share/domain/share_channels.dart';
 import 'package:smartbudget/features/share/domain/share_highlight.dart';
+import 'package:smartbudget/features/referrals/application/referrals_controller.dart';
+import 'package:smartbudget/features/referrals/domain/referral_link.dart';
 import 'package:smartbudget/features/share/domain/share_qr.dart';
 import 'package:smartbudget/features/share/presentation/share_card_skin.dart';
 import 'package:smartbudget/features/share/presentation/share_progress_card.dart';
@@ -50,7 +52,11 @@ class ShareAppSheet extends ConsumerStatefulWidget {
 class _ShareAppSheetState extends ConsumerState<ShareAppSheet> {
   final GlobalKey _qrCardKey = GlobalKey();
   final GlobalKey _progressKey = GlobalKey();
-  late final String _url = ShareQr.appUrl();
+
+  /// The app's address, carrying this member's invite code when they have
+  /// one — so an ordinary share is also an invite, with nothing extra to do.
+  String get _url => ReferralLink.invite(
+      ShareQr.appUrl(), ref.watch(referralCodeProvider).valueOrNull);
   late final String _svg = ShareQr.svg(_url);
   late final String _smallQr = ShareQr.svg(_url, size: 256);
   late ShareTab _tab = widget.initialTab;
@@ -122,11 +128,9 @@ class _ShareAppSheetState extends ConsumerState<ShareAppSheet> {
     }
   }
 
-  GlobalKey get _cardKey =>
-      _tab == ShareTab.invite ? _qrCardKey : _progressKey;
-  double get _cardRatio => _tab == ShareTab.invite
-      ? 4
-      : ShareProgressCard.exportPixelRatio;
+  GlobalKey get _cardKey => _tab == ShareTab.invite ? _qrCardKey : _progressKey;
+  double get _cardRatio =>
+      _tab == ShareTab.invite ? 4 : ShareProgressCard.exportPixelRatio;
   String get _cardFile => _tab == ShareTab.invite
       ? 'smartbudget-qr.png'
       : 'smartbudget-progress.png';
@@ -250,8 +254,8 @@ class _ShareAppSheetState extends ConsumerState<ShareAppSheet> {
                             ?.copyWith(fontWeight: FontWeight.w700)),
                   ),
                   IconButton(
-                    tooltip: MaterialLocalizations.of(context)
-                        .closeButtonTooltip,
+                    tooltip:
+                        MaterialLocalizations.of(context).closeButtonTooltip,
                     icon: Icon(Icons.close_rounded, color: c.textMuted),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
@@ -273,11 +277,10 @@ class _ShareAppSheetState extends ConsumerState<ShareAppSheet> {
                   ),
                 ],
                 selected: <ShareTab>{_tab},
-                onSelectionChanged: (Set<ShareTab> s) =>
-                    setState(() {
-                      _tab = s.first;
-                      _status = null;
-                    }),
+                onSelectionChanged: (Set<ShareTab> s) => setState(() {
+                  _tab = s.first;
+                  _status = null;
+                }),
               ),
               const SizedBox(height: DsSpacing.lg),
               if (_tab == ShareTab.invite)
@@ -505,8 +508,7 @@ class _ChannelGrid extends StatelessWidget {
       runSpacing: DsSpacing.md,
       children: <Widget>[
         for (final ShareChannel ch in channels)
-          _ChannelTile(
-              channel: ch, onTap: enabled ? () => onTap(ch) : null),
+          _ChannelTile(channel: ch, onTap: enabled ? () => onTap(ch) : null),
       ],
     );
   }
@@ -566,7 +568,11 @@ class _ChannelTile extends StatelessWidget {
           const Icon(Icons.facebook, color: Colors.white, size: 24),
           'Facebook'
         ),
-      ShareChannel.linkedin => (const Color(0xFF0A66C2), glyph('in'), 'LinkedIn'),
+      ShareChannel.linkedin => (
+          const Color(0xFF0A66C2),
+          glyph('in'),
+          'LinkedIn'
+        ),
       ShareChannel.instagram => (
           const Color(0xFFDD2A7B),
           const Icon(Icons.camera_alt_outlined, color: Colors.white, size: 22),

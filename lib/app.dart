@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/features/referrals/application/referral_claim.dart';
 import 'package:smartbudget/core/l10n/app_lang.dart';
 import 'package:smartbudget/core/localization/fallback_localizations.dart';
 import 'package:smartbudget/core/localization/locale_controller.dart';
@@ -53,6 +54,8 @@ class SmartBudgetApp extends ConsumerWidget {
     ref.listen(baseValueBackfillProvider, (_, __) {});
     // Keeps this device and the account's cloud copy in step.
     ref.listen(syncControllerProvider, (_, __) {});
+    // Attaches a waiting invite to the account that just signed in.
+    ref.listen(referralRedeemProvider, (_, __) {});
     // Until the user picks a base currency, it follows the language (Turkish
     // shows lira, Malay ringgit…); the first transaction settles it.
     ref.listen(localeProvider, (Locale? prev, Locale next) {
@@ -63,8 +66,8 @@ class SmartBudgetApp extends ConsumerWidget {
       }
     });
     // Amounts follow the number style chosen in Settings.
-    ref.listen(numberStyleProvider,
-        (_, NumberStyle next) => applyNumberStyle(next));
+    ref.listen(
+        numberStyleProvider, (_, NumberStyle next) => applyNumberStyle(next));
     // The daily reminder (Android): scheduled again whenever its plan changes
     // (settings, language, or something recorded today).
     ref.listen(reminderPlanProvider, (_, ReminderPlan? next) {

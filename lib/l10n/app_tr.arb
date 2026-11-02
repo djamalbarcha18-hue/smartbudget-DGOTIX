@@ -1593,5 +1593,14 @@
   "voiceFailedError": "Sesli giriş çalışmadı. Tekrar deneyin.",
   "budgetDailyTitle": "Bugün harcanabilir",
   "budgetDailyLeft": "{amount} kaldı",
-  "budgetOverBy": "{amount} aşıldı"
+  "budgetOverBy": "{amount} aşıldı",
+  "inviteTitle": "Arkadaşlarını davet et, özellik aç",
+  "inviteBody": "Bağlantınla üç arkadaş katılıp uygulamayı kullanmaya başlayınca aşağıdaki özellikler kalıcı olarak açılır.",
+  "inviteLink": "Davet bağlantın",
+  "inviteCopied": "Bağlantı kopyalandı",
+  "inviteProgressLine": "{needed} kişiden {done} katıldı ve başladı",
+  "inviteRewards": "Neler açılıyor",
+  "inviteUnlocked": "Açıldı",
+  "inviteNeedAccount": "Bağlantını almak ve ilerlemeni görmek için hesap oluştur.",
+  "rewardHigherLimits": "Daha yüksek sınırlar: sınırsız bütçe, daha fazla hedef, borç ve cüzdan"
 }

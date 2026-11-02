@@ -1593,5 +1593,14 @@
   "voiceFailedError": "Uwekaji kwa sauti haukufanya kazi. Jaribu tena.",
   "budgetDailyTitle": "Inayoweza kutumika leo",
   "budgetDailyLeft": "{amount} zimebaki",
-  "budgetOverBy": "Umezidi kwa {amount}"
+  "budgetOverBy": "Umezidi kwa {amount}",
+  "inviteTitle": "Alika marafiki, fungua vipengele",
+  "inviteBody": "Marafiki watatu wakijiunga kupitia kiungo chako na kuanza kutumia programu, vipengele vilivyo hapa chini vitafunguka milele.",
+  "inviteLink": "Kiungo chako cha mwaliko",
+  "inviteCopied": "Kiungo kimenakiliwa",
+  "inviteProgressLine": "{done} kati ya {needed} wamejiunga na kuanza",
+  "inviteRewards": "Unachofungua",
+  "inviteUnlocked": "Imefunguliwa",
+  "inviteNeedAccount": "Fungua akaunti upate kiungo chako na ufuatilie maendeleo.",
+  "rewardHigherLimits": "Mipaka ya juu: bajeti zisizo na kikomo, malengo, madeni na pochi zaidi"
 }

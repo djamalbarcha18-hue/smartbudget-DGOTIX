@@ -1593,5 +1593,14 @@
   "voiceFailedError": "Spraakinvoer werkte niet. Probeer het opnieuw.",
   "budgetDailyTitle": "Vandaag beschikbaar",
   "budgetDailyLeft": "{amount} over",
-  "budgetOverBy": "{amount} over het budget"
+  "budgetOverBy": "{amount} over het budget",
+  "inviteTitle": "Nodig vrienden uit, ontgrendel functies",
+  "inviteBody": "Als drie vrienden via jouw link meedoen en de app gaan gebruiken, blijven de functies hieronder voorgoed open.",
+  "inviteLink": "Jouw uitnodigingslink",
+  "inviteCopied": "Link gekopieerd",
+  "inviteProgressLine": "{done} van {needed} aangesloten en begonnen",
+  "inviteRewards": "Wat je ontgrendelt",
+  "inviteUnlocked": "Ontgrendeld",
+  "inviteNeedAccount": "Maak een account om je link te krijgen en je voortgang te volgen.",
+  "rewardHigherLimits": "Hogere limieten: onbeperkte budgetten en meer doelen, schulden en portefeuilles"
 }

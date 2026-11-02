@@ -7,6 +7,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:smartbudget/app.dart';
 import 'package:smartbudget/core/app_restart.dart';
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/features/referrals/application/referral_claim.dart';
+import 'package:smartbudget/features/referrals/data/referral_service.dart';
 import 'package:smartbudget/core/errors/app_error_view.dart';
 import 'package:smartbudget/core/l10n/latin_digits.dart';
 import 'package:smartbudget/core/storage/legacy_cleanup.dart';
@@ -49,6 +51,10 @@ Future<void> main() async {
       anonKey: AppEnv.supabaseAnonKey,
     );
   }
+
+  // An invite link carries its code in the address; note it now, long before
+  // there is an account to attach it to.
+  const ReferralClaim(ReferralService()).remember(Uri.base).ignore();
 
   // Notes a tap on the daily reminder that opened the app.
   if (ReminderNotifications.supported) {

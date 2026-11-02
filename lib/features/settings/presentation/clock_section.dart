@@ -42,8 +42,7 @@ class _ClockSectionState extends ConsumerState<ClockSection> {
 
   static String _two(int n) => n.toString().padLeft(2, '0');
   static String _hm(DateTime d) => '${_two(d.hour)}:${_two(d.minute)}';
-  static String _ymd(DateTime d) =>
-      '${d.year}-${_two(d.month)}-${_two(d.day)}';
+  static String _ymd(DateTime d) => '${d.year}-${_two(d.month)}-${_two(d.day)}';
 
   String _amount(AppLocalizations l, Duration d) {
     final ({int days, int hours, int minutes, int seconds}) p = splitDrift(d);
@@ -72,10 +71,9 @@ class _ClockSectionState extends ConsumerState<ClockSection> {
     final DateTime now = AppClock.now();
     final DateTime utc = now.toUtc();
     final String offset = formatUtcOffset(now.timeZoneOffset);
-    final String zone =
-        (_zone == null || _zone == 'UTC' || _zone == 'Etc/UTC')
-            ? offset
-            : '$_zone · $offset';
+    final String zone = (_zone == null || _zone == 'UTC' || _zone == 'Etc/UTC')
+        ? offset
+        : '$_zone · $offset';
 
     final (IconData icon, Color color, String title) = s.syncing
         ? (Icons.sync_rounded, c.brand, l.clockSyncing)
@@ -162,8 +160,8 @@ class _ClockRow extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: Text(label,
-                style: t.bodyMedium?.copyWith(color: c.textMuted)),
+            child:
+                Text(label, style: t.bodyMedium?.copyWith(color: c.textMuted)),
           ),
           Directionality(
             textDirection: TextDirection.ltr,

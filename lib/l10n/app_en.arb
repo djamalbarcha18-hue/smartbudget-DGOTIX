@@ -1881,5 +1881,15 @@
   "budgetDailyLeft": "{amount} left",
   "budgetOverBy": "Over by {amount}",
   "@budgetDailyLeft": {"placeholders": {"amount": {"type": "String"}}},
-  "@budgetOverBy": {"placeholders": {"amount": {"type": "String"}}}
+  "@budgetOverBy": {"placeholders": {"amount": {"type": "String"}}},
+  "inviteTitle": "Invite friends, unlock features",
+  "inviteBody": "When three friends join through your link and start using the app, the features below unlock for good.",
+  "inviteLink": "Your invite link",
+  "inviteCopied": "Link copied",
+  "inviteProgressLine": "{done} of {needed} joined and started",
+  "inviteRewards": "What you unlock",
+  "inviteUnlocked": "Unlocked",
+  "inviteNeedAccount": "Create an account to get your invite link and follow your progress.",
+  "rewardHigherLimits": "Higher limits: unlimited budgets, and more goals, debts and wallets",
+  "@inviteProgressLine": {"placeholders": {"done": {"type": "int"}, "needed": {"type": "int"}}}
 }

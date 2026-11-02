@@ -1593,5 +1593,14 @@
   "voiceFailedError": "La saisie vocale n'a pas fonctionné. Réessayez.",
   "budgetDailyTitle": "Disponible aujourd'hui",
   "budgetDailyLeft": "{amount} restants",
-  "budgetOverBy": "Dépassement de {amount}"
+  "budgetOverBy": "Dépassement de {amount}",
+  "inviteTitle": "Invitez des amis, débloquez des fonctions",
+  "inviteBody": "Quand trois amis rejoignent via votre lien et commencent à utiliser l'application, les fonctions ci-dessous sont débloquées définitivement.",
+  "inviteLink": "Votre lien d'invitation",
+  "inviteCopied": "Lien copié",
+  "inviteProgressLine": "{done} sur {needed} inscrits et actifs",
+  "inviteRewards": "Ce que vous débloquez",
+  "inviteUnlocked": "Débloqué",
+  "inviteNeedAccount": "Créez un compte pour obtenir votre lien et suivre votre progression.",
+  "rewardHigherLimits": "Limites plus hautes : budgets illimités, plus d'objectifs, dettes et portefeuilles"
 }

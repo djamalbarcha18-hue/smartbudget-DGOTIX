@@ -10,6 +10,7 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/feature_gate.dart';
+import 'package:smartbudget/features/referrals/application/referrals_controller.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -52,7 +53,11 @@ abstract final class PlanLimits {
     final ProviderContainer c =
         ProviderScope.containerOf(context, listen: false);
     final GateDecision d = FeatureGate.evaluate(feature,
-        plan: c.read(effectivePlanProvider), used: count(c));
+        plan: c.read(effectivePlanProvider),
+        used: count(c),
+        // The same rewards featureGateProvider applies. Without this the
+        // screen would show a raised limit and the add would still refuse.
+        rewards: c.read(activeRewardsProvider));
     if (d.allowed) return true;
     UpgradeSheet.show(context, d);
     return false;

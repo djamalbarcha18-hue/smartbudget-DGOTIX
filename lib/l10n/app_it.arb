@@ -1593,5 +1593,14 @@
   "voiceFailedError": "L'inserimento vocale non ha funzionato. Riprova.",
   "budgetDailyTitle": "Disponibile oggi",
   "budgetDailyLeft": "{amount} rimasti",
-  "budgetOverBy": "Superato di {amount}"
+  "budgetOverBy": "Superato di {amount}",
+  "inviteTitle": "Invita amici e sblocca funzioni",
+  "inviteBody": "Quando tre amici si iscrivono dal tuo link e iniziano a usare l'app, le funzioni qui sotto restano sbloccate per sempre.",
+  "inviteLink": "Il tuo link d'invito",
+  "inviteCopied": "Link copiato",
+  "inviteProgressLine": "{done} su {needed} iscritti e attivi",
+  "inviteRewards": "Cosa sblocchi",
+  "inviteUnlocked": "Sbloccato",
+  "inviteNeedAccount": "Crea un account per ottenere il tuo link e seguire i progressi.",
+  "rewardHigherLimits": "Limiti più alti: budget illimitati e più obiettivi, debiti e portafogli"
 }

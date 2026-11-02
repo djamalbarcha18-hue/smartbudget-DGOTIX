@@ -1593,5 +1593,14 @@
   "voiceFailedError": "Input suara tidak berjaya. Cuba lagi.",
   "budgetDailyTitle": "Tersedia hari ini",
   "budgetDailyLeft": "baki {amount}",
-  "budgetOverBy": "Lebih {amount}"
+  "budgetOverBy": "Lebih {amount}",
+  "inviteTitle": "Jemput rakan, buka ciri",
+  "inviteBody": "Apabila tiga rakan menyertai melalui pautan anda dan mula menggunakan apl, ciri di bawah terbuka selamanya.",
+  "inviteLink": "Pautan jemputan anda",
+  "inviteCopied": "Pautan disalin",
+  "inviteProgressLine": "{done} daripada {needed} menyertai dan bermula",
+  "inviteRewards": "Apa yang anda buka",
+  "inviteUnlocked": "Terbuka",
+  "inviteNeedAccount": "Cipta akaun untuk mendapat pautan anda dan ikuti kemajuan.",
+  "rewardHigherLimits": "Had lebih tinggi: bajet tanpa had, lebih banyak matlamat, hutang dan dompet"
 }

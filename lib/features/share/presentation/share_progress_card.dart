@@ -92,8 +92,8 @@ class ShareProgressCard extends StatelessWidget {
               ),
               const Spacer(),
               Text(AppConfig.appName,
-                  style: t.labelMedium?.copyWith(
-                      color: _white, fontWeight: FontWeight.w700)),
+                  style: t.labelMedium
+                      ?.copyWith(color: _white, fontWeight: FontWeight.w700)),
             ],
           ),
           const Spacer(),
@@ -129,11 +129,10 @@ class ShareProgressCard extends StatelessWidget {
             )
           else
             Text(l.shareCardJourneyTitle,
-                style: t.headlineMedium?.copyWith(
-                    color: _white, fontWeight: FontWeight.w800)),
+                style: t.headlineMedium
+                    ?.copyWith(color: _white, fontWeight: FontWeight.w800)),
           const SizedBox(height: 6),
-          Text(label,
-              style: t.titleSmall?.copyWith(color: _soft, height: 1.3)),
+          Text(label, style: t.titleSmall?.copyWith(color: _soft, height: 1.3)),
           if (h.extras.isNotEmpty) ...<Widget>[
             const SizedBox(height: 14),
             Wrap(

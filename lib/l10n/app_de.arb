@@ -1593,5 +1593,14 @@
   "voiceFailedError": "Die Spracheingabe hat nicht geklappt. Versuch es noch einmal.",
   "budgetDailyTitle": "Heute verfügbar",
   "budgetDailyLeft": "{amount} übrig",
-  "budgetOverBy": "{amount} über dem Budget"
+  "budgetOverBy": "{amount} über dem Budget",
+  "inviteTitle": "Freunde einladen, Funktionen freischalten",
+  "inviteBody": "Wenn drei Freunde über Ihren Link beitreten und die App nutzen, bleiben die Funktionen unten dauerhaft frei.",
+  "inviteLink": "Ihr Einladungslink",
+  "inviteCopied": "Link kopiert",
+  "inviteProgressLine": "{done} von {needed} beigetreten und gestartet",
+  "inviteRewards": "Was Sie freischalten",
+  "inviteUnlocked": "Freigeschaltet",
+  "inviteNeedAccount": "Erstellen Sie ein Konto, um Ihren Link zu erhalten und den Fortschritt zu sehen.",
+  "rewardHigherLimits": "Höhere Grenzen: unbegrenzte Budgets, mehr Ziele, Schulden und Konten"
 }
