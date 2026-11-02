@@ -28,6 +28,10 @@ jobs:
     name: Back up the database
     runs-on: ubuntu-latest
     steps:
+      # Backups that were never switched on are not a broken build. Failing
+      # the run every night would mail the owner a red cross daily until the
+      # noise is what gets ignored — and then a real failure goes with it.
+      # Not configured: say so and stop. Configured badly: still an error.
       - name: Check the secrets are set
         id: check
         env:
@@ -35,15 +39,18 @@ jobs:
           PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
         run: |
           if [ -z "$DB_URL" ] || [ -z "$PASSPHRASE" ]; then
-            echo "::error::Set SUPABASE_DB_URL and BACKUP_PASSPHRASE in the repository secrets to turn backups on (docs/BACKUP.md)."
-            exit 1
+            echo "::warning::Backups are off: set SUPABASE_DB_URL and BACKUP_PASSPHRASE in the repository secrets to turn them on (docs/BACKUP.md)."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
           if [ "${#PASSPHRASE}" -lt 16 ]; then
             echo "::error::BACKUP_PASSPHRASE is too short: use at least 16 characters."
             exit 1
           fi
+          echo "ok=true" >> "$GITHUB_OUTPUT"
 
       - name: Dump the database
+        if: steps.check.outputs.ok == 'true'
         env:
           DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
@@ -68,6 +75,7 @@ jobs:
           ls -l out
 
       - name: Encrypt
+        if: steps.check.outputs.ok == 'true'
         env:
           PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
         run: |
@@ -86,6 +94,7 @@ jobs:
           ls -l "smartbudget-db-$STAMP.tar.gz.gpg"
 
       - name: Keep the encrypted backup (30 days)
+        if: steps.check.outputs.ok == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: smartbudget-db-${{ env.STAMP }}
