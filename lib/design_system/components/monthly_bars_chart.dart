@@ -93,7 +93,7 @@ _BarsLayout _layout(Size size, List<MonthPoint> points, {double axisW = 0}) {
   final int top = maxPos <= 0 ? 0 : step * (maxPos / step).ceil();
   final int bottom = negAbs <= 0 ? 0 : step * (negAbs / step).ceil();
   final int range = top + bottom;
-  final double topPad = 6;
+  const double topPad = 6;
   final double usableH = chartH - topPad;
   double y(int minor) => topPad + ((top - minor) / range) * usableH;
   final double zeroY = y(0);

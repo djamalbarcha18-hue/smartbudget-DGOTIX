@@ -7,4 +7,4 @@
 library;
 
 export 'receipt_image_native_stub.dart'
-    if (dart.library.html) 'receipt_image_native_web.dart';
+    if (dart.library.js_interop) 'receipt_image_native_web.dart';

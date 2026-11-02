@@ -220,7 +220,7 @@ void main() {
 
   group('Entitlement', () {
     test('defaults to free; effective plan is free', () {
-      final Entitlement e = Entitlement.free;
+      const Entitlement e = Entitlement.free;
       expect(e.plan, Plan.free);
       expect(e.effectivePlanAt(DateTime(2026, 9, 22)), Plan.free);
     });

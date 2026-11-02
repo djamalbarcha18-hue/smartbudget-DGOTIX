@@ -101,14 +101,14 @@ abstract final class ReportPdfBuilder {
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: <pw.Widget>[
                 pw.Text('DGOTIX',
-                    style: pw.TextStyle(
+                    style: const pw.TextStyle(
                         color: _brand,
                         fontWeight: pw.FontWeight.bold,
                         fontSize: 15,
                         letterSpacing: 1.5)),
                 pw.SizedBox(height: 2),
                 pw.Text(pdfSafe(d.title),
-                    style: pw.TextStyle(
+                    style: const pw.TextStyle(
                         color: _ink, fontWeight: pw.FontWeight.bold, fontSize: 19)),
               ],
             ),
@@ -173,7 +173,7 @@ abstract final class ReportPdfBuilder {
               style: const pw.TextStyle(color: _muted, fontSize: 8)),
           pw.SizedBox(height: 4),
           pw.Text(pdfSafe(r.value),
-              style: pw.TextStyle(
+              style: const pw.TextStyle(
                   color: _ink, fontWeight: pw.FontWeight.bold, fontSize: 12)),
         ],
       ),
@@ -185,7 +185,7 @@ abstract final class ReportPdfBuilder {
       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
       children: <pw.Widget>[
         pw.Text(pdfSafe(title),
-            style: pw.TextStyle(
+            style: const pw.TextStyle(
                 color: _ink, fontWeight: pw.FontWeight.bold, fontSize: 13)),
         pw.SizedBox(height: 6),
         if (rows.isEmpty)
@@ -205,7 +205,7 @@ abstract final class ReportPdfBuilder {
                   ),
                   pw.SizedBox(width: 10),
                   pw.Text(pdfSafe(r.value),
-                      style: pw.TextStyle(
+                      style: const pw.TextStyle(
                           color: _ink,
                           fontWeight: pw.FontWeight.bold,
                           fontSize: 10)),

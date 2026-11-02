@@ -2,6 +2,8 @@
 /// numbers and their meaning, so it is fully unit-testable and reused by every
 /// KPI on the dashboard (single source of calculation).
 
+library;
+
 /// Raw direction of a change (before any semantic interpretation).
 enum KpiDirection { up, down, flat }
 
