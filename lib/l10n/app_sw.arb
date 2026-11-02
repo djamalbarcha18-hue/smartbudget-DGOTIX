@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "Uwekaji kwa sauti haupatikani kwenye kifaa hiki.",
   "voiceFailedDenied": "SmartBudget inahitaji maikrofoni. Iwashe katika mipangilio ya kifaa chako.",
   "voiceFailedNoSpeech": "Hakuna kilichosikika. Jaribu tena.",
-  "voiceFailedError": "Uwekaji kwa sauti haukufanya kazi. Jaribu tena."
+  "voiceFailedError": "Uwekaji kwa sauti haukufanya kazi. Jaribu tena.",
+  "budgetDailyTitle": "Inayoweza kutumika leo",
+  "budgetDailyLeft": "{amount} zimebaki",
+  "budgetOverBy": "Umezidi kwa {amount}"
 }

@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "Sesli giriş bu cihazda kullanılamıyor.",
   "voiceFailedDenied": "SmartBudget mikrofona ihtiyaç duyuyor. Cihaz ayarlarınızdan açın.",
   "voiceFailedNoSpeech": "Hiçbir şey duyulmadı. Tekrar deneyin.",
-  "voiceFailedError": "Sesli giriş çalışmadı. Tekrar deneyin."
+  "voiceFailedError": "Sesli giriş çalışmadı. Tekrar deneyin.",
+  "budgetDailyTitle": "Bugün harcanabilir",
+  "budgetDailyLeft": "{amount} kaldı",
+  "budgetOverBy": "{amount} aşıldı"
 }

@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "La saisie vocale n'est pas disponible sur cet appareil.",
   "voiceFailedDenied": "SmartBudget a besoin du micro. Activez-le dans les réglages de votre appareil.",
   "voiceFailedNoSpeech": "Rien entendu. Réessayez.",
-  "voiceFailedError": "La saisie vocale n'a pas fonctionné. Réessayez."
+  "voiceFailedError": "La saisie vocale n'a pas fonctionné. Réessayez.",
+  "budgetDailyTitle": "Disponible aujourd'hui",
+  "budgetDailyLeft": "{amount} restants",
+  "budgetOverBy": "Dépassement de {amount}"
 }

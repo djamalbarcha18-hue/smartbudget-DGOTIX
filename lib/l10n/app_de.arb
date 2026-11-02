@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "Die Spracheingabe ist auf diesem Gerät nicht verfügbar.",
   "voiceFailedDenied": "SmartBudget braucht das Mikrofon. Schalte es in den Geräteeinstellungen ein.",
   "voiceFailedNoSpeech": "Nichts gehört. Versuch es noch einmal.",
-  "voiceFailedError": "Die Spracheingabe hat nicht geklappt. Versuch es noch einmal."
+  "voiceFailedError": "Die Spracheingabe hat nicht geklappt. Versuch es noch einmal.",
+  "budgetDailyTitle": "Heute verfügbar",
+  "budgetDailyLeft": "{amount} übrig",
+  "budgetOverBy": "{amount} über dem Budget"
 }

@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "ورود صوتی روی این دستگاه در دسترس نیست.",
   "voiceFailedDenied": "SmartBudget به میکروفون نیاز دارد. آن را در تنظیمات دستگاهتان روشن کنید.",
   "voiceFailedNoSpeech": "چیزی شنیده نشد. دوباره تلاش کنید.",
-  "voiceFailedError": "ورود صوتی کار نکرد. دوباره تلاش کنید."
+  "voiceFailedError": "ورود صوتی کار نکرد. دوباره تلاش کنید.",
+  "budgetDailyTitle": "قابل خرج امروز",
+  "budgetDailyLeft": "{amount} باقی‌مانده",
+  "budgetOverBy": "{amount} بیشتر از بودجه"
 }

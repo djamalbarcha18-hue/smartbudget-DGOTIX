@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "Futja me zë nuk është e disponueshme në këtë pajisje.",
   "voiceFailedDenied": "SmartBudget ka nevojë për mikrofonin. Aktivizojeni në cilësimet e pajisjes.",
   "voiceFailedNoSpeech": "Nuk u dëgjua asgjë. Provoni përsëri.",
-  "voiceFailedError": "Futja me zë nuk funksionoi. Provoni përsëri."
+  "voiceFailedError": "Futja me zë nuk funksionoi. Provoni përsëri.",
+  "budgetDailyTitle": "Në dispozicion sot",
+  "budgetDailyLeft": "{amount} të mbetura",
+  "budgetOverBy": "Tejkaluar me {amount}"
 }

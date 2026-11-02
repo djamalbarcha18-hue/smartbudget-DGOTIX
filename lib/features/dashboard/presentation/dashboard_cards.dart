@@ -19,6 +19,7 @@ import 'package:smartbudget/features/analytics/application/alerts_controller.dar
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/analytics/presentation/alert_presentation.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
+import 'package:smartbudget/features/budget/domain/daily_allowance.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
 import 'package:smartbudget/features/financial_health/application/health_controller.dart';
@@ -147,15 +148,30 @@ class BudgetPulseCard extends ConsumerWidget {
     final double used = spent / plannedMinor;
     final Color tone =
         used > 1 ? c.expense : (used >= 0.8 ? c.warning : c.brand);
+
+    // The headline is what can still be spent today, not the share of the
+    // month already gone: "63% used" doesn't answer "can I buy this?", and
+    // the bar below says the same thing without taking the big figure.
+    final Money plannedTotal = Money(plannedMinor, currency);
+    final Money spentTotal = Money(spent, currency);
+    final DateTime now = AppClock.now();
+    final Money perDay =
+        DailyAllowance.perDay(plannedTotal, spentTotal, now)!;
+    final Money left = DailyAllowance.left(plannedTotal, spentTotal);
+    final bool over = left.minorUnits <= 0;
+
     return _PulseCard(
-      title: l.budgetThisMonth,
+      title: l.budgetDailyTitle,
       icon: Icons.account_balance_wallet_outlined,
-      value: MoneyFormatter.percent(used, decimals: 0),
-      valueColor: used > 1 ? c.expense : null,
-      caption: l.budgetUsedCaption(
-        MoneyFormatter.format(Money(spent, currency)),
-        MoneyFormatter.format(Money(plannedMinor, currency)),
-      ),
+      value: MoneyFormatter.format(perDay),
+      valueColor: over ? c.expense : null,
+      // Overspent: by how much, since "0 left" alone hides the size of it.
+      // Otherwise what is left and how many days it has to cover.
+      caption: over
+          ? l.budgetOverBy(
+              MoneyFormatter.format(Money(-left.minorUnits, currency)))
+          : '${l.budgetDailyLeft(MoneyFormatter.format(left))}'
+              ' · ${l.chDaysLeft(DailyAllowance.daysLeftInMonth(now))}',
       progress: used,
       progressColor: tone,
       onTap: () => context.go('/budget'),

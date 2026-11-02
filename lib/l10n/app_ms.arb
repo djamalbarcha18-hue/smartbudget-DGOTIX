@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "Input suara tidak tersedia pada peranti ini.",
   "voiceFailedDenied": "SmartBudget memerlukan mikrofon. Hidupkannya dalam tetapan peranti anda.",
   "voiceFailedNoSpeech": "Tiada apa-apa didengar. Cuba lagi.",
-  "voiceFailedError": "Input suara tidak berjaya. Cuba lagi."
+  "voiceFailedError": "Input suara tidak berjaya. Cuba lagi.",
+  "budgetDailyTitle": "Tersedia hari ini",
+  "budgetDailyLeft": "baki {amount}",
+  "budgetOverBy": "Lebih {amount}"
 }

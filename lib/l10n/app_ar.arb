@@ -1790,5 +1790,8 @@
   "voiceFailedUnavailable": "الإدخال الصوتي غير متاح على هذا الجهاز.",
   "voiceFailedDenied": "يحتاج SmartBudget إلى الميكروفون. فعّله في إعدادات جهازك.",
   "voiceFailedNoSpeech": "لم أسمع شيئًا. حاول مرة أخرى.",
-  "voiceFailedError": "تعذّر الإدخال الصوتي. حاول مرة أخرى."
+  "voiceFailedError": "تعذّر الإدخال الصوتي. حاول مرة أخرى.",
+  "budgetDailyTitle": "متاح اليوم",
+  "budgetDailyLeft": "{amount} متبقية",
+  "budgetOverBy": "تجاوزت بـ {amount}"
 }

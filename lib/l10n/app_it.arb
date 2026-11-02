@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "L'inserimento vocale non è disponibile su questo dispositivo.",
   "voiceFailedDenied": "SmartBudget ha bisogno del microfono. Attivalo nelle impostazioni del dispositivo.",
   "voiceFailedNoSpeech": "Non ho sentito nulla. Riprova.",
-  "voiceFailedError": "L'inserimento vocale non ha funzionato. Riprova."
+  "voiceFailedError": "L'inserimento vocale non ha funzionato. Riprova.",
+  "budgetDailyTitle": "Disponibile oggi",
+  "budgetDailyLeft": "{amount} rimasti",
+  "budgetOverBy": "Superato di {amount}"
 }

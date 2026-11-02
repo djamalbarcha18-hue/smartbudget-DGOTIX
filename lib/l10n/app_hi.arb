@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "इस डिवाइस पर आवाज़ से दर्ज करना उपलब्ध नहीं है।",
   "voiceFailedDenied": "SmartBudget को माइक्रोफ़ोन चाहिए। इसे अपने डिवाइस की सेटिंग में चालू करें।",
   "voiceFailedNoSpeech": "कुछ सुनाई नहीं दिया। फिर कोशिश करें।",
-  "voiceFailedError": "आवाज़ से दर्ज करना काम नहीं आया। फिर कोशिश करें।"
+  "voiceFailedError": "आवाज़ से दर्ज करना काम नहीं आया। फिर कोशिश करें।",
+  "budgetDailyTitle": "आज खर्च योग्य",
+  "budgetDailyLeft": "{amount} शेष",
+  "budgetOverBy": "{amount} अधिक खर्च"
 }

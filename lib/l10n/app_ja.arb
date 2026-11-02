@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "このデバイスでは音声入力を利用できません。",
   "voiceFailedDenied": "SmartBudget にはマイクが必要です。デバイスの設定でオンにしてください。",
   "voiceFailedNoSpeech": "何も聞き取れませんでした。もう一度お試しください。",
-  "voiceFailedError": "音声入力に失敗しました。もう一度お試しください。"
+  "voiceFailedError": "音声入力に失敗しました。もう一度お試しください。",
+  "budgetDailyTitle": "今日使える額",
+  "budgetDailyLeft": "残り {amount}",
+  "budgetOverBy": "{amount} 超過"
 }

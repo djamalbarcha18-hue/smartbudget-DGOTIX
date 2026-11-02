@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "此设备不支持语音输入。",
   "voiceFailedDenied": "SmartBudget 需要使用麦克风，请在设备设置中开启。",
   "voiceFailedNoSpeech": "没有听到内容，请再试一次。",
-  "voiceFailedError": "语音输入未成功，请再试一次。"
+  "voiceFailedError": "语音输入未成功，请再试一次。",
+  "budgetDailyTitle": "今日可用",
+  "budgetDailyLeft": "剩余 {amount}",
+  "budgetOverBy": "超出 {amount}"
 }

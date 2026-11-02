@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "Spraakinvoer is niet beschikbaar op dit apparaat.",
   "voiceFailedDenied": "SmartBudget heeft de microfoon nodig. Zet die aan in je apparaatinstellingen.",
   "voiceFailedNoSpeech": "Niets gehoord. Probeer het opnieuw.",
-  "voiceFailedError": "Spraakinvoer werkte niet. Probeer het opnieuw."
+  "voiceFailedError": "Spraakinvoer werkte niet. Probeer het opnieuw.",
+  "budgetDailyTitle": "Vandaag beschikbaar",
+  "budgetDailyLeft": "{amount} over",
+  "budgetOverBy": "{amount} over het budget"
 }

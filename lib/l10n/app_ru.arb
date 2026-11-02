@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "Голосовой ввод недоступен на этом устройстве.",
   "voiceFailedDenied": "SmartBudget нужен микрофон. Включите его в настройках устройства.",
   "voiceFailedNoSpeech": "Ничего не услышал. Попробуйте ещё раз.",
-  "voiceFailedError": "Голосовой ввод не сработал. Попробуйте ещё раз."
+  "voiceFailedError": "Голосовой ввод не сработал. Попробуйте ещё раз.",
+  "budgetDailyTitle": "Доступно сегодня",
+  "budgetDailyLeft": "осталось {amount}",
+  "budgetOverBy": "Превышено на {amount}"
 }

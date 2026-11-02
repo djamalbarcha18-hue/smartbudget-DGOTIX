@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "Steminvoer is nie op hierdie toestel beskikbaar nie.",
   "voiceFailedDenied": "SmartBudget het die mikrofoon nodig. Skakel dit in jou toestel se instellings aan.",
   "voiceFailedNoSpeech": "Niks gehoor nie. Probeer weer.",
-  "voiceFailedError": "Steminvoer het nie gewerk nie. Probeer weer."
+  "voiceFailedError": "Steminvoer het nie gewerk nie. Probeer weer.",
+  "budgetDailyTitle": "Veilig om vandag te bestee",
+  "budgetDailyLeft": "{amount} oor",
+  "budgetOverBy": "{amount} oor die begroting"
 }

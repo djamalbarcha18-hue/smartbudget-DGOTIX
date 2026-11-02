@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "Shigar da murya ba ya samuwa a wannan na'urar.",
   "voiceFailedDenied": "SmartBudget yana buƙatar makirufo. Kunna shi a cikin saitunan na'urarka.",
   "voiceFailedNoSpeech": "Ba a ji komai ba. Sake gwadawa.",
-  "voiceFailedError": "Shigar da murya bai yi aiki ba. Sake gwadawa."
+  "voiceFailedError": "Shigar da murya bai yi aiki ba. Sake gwadawa.",
+  "budgetDailyTitle": "Za a iya kashewa yau",
+  "budgetDailyLeft": "{amount} saura",
+  "budgetOverBy": "An wuce da {amount}"
 }

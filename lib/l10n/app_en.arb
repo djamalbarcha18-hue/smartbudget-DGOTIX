@@ -1876,5 +1876,10 @@
   "voiceFailedUnavailable": "Voice entry isn't available on this device.",
   "voiceFailedDenied": "SmartBudget needs the microphone. Turn it on in your device settings.",
   "voiceFailedNoSpeech": "Nothing heard. Try again.",
-  "voiceFailedError": "Voice entry didn't work. Try again."
+  "voiceFailedError": "Voice entry didn't work. Try again.",
+  "budgetDailyTitle": "Safe to spend today",
+  "budgetDailyLeft": "{amount} left",
+  "budgetOverBy": "Over by {amount}",
+  "@budgetDailyLeft": {"placeholders": {"amount": {"type": "String"}}},
+  "@budgetOverBy": {"placeholders": {"amount": {"type": "String"}}}
 }

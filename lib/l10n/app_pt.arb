@@ -1590,5 +1590,8 @@
   "voiceFailedUnavailable": "A entrada por voz não está disponível neste dispositivo.",
   "voiceFailedDenied": "O SmartBudget precisa do microfone. Ative-o nas definições do dispositivo.",
   "voiceFailedNoSpeech": "Nada foi ouvido. Tente novamente.",
-  "voiceFailedError": "A entrada por voz não funcionou. Tente novamente."
+  "voiceFailedError": "A entrada por voz não funcionou. Tente novamente.",
+  "budgetDailyTitle": "Disponível hoje",
+  "budgetDailyLeft": "restam {amount}",
+  "budgetOverBy": "Excedeu em {amount}"
 }
