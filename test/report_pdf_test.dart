@@ -14,7 +14,9 @@ void main() {
     expect(shown.contains('\u200E'), isTrue); // kept on screen
     final String printed = pdfSafe(shown);
     expect(printed, 'ر.ق\u00A0343,500.00');
-    expect(pdfSafe('\u2066abc\u2069 \u200Fد'), 'abc د');
+    // The gap is doubled because the line has Arabic in it: the PDF library
+    // swallows a single space after some Arabic words (see docs/REPORTS.md).
+    expect(pdfSafe('\u2066abc\u2069 \u200Fد'), 'abc  د');
     expect(pdfSafe('الطعام'), 'الطعام');
   });
 

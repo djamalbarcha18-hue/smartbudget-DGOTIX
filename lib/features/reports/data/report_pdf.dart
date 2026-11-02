@@ -3,12 +3,37 @@ import 'dart:typed_data';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-/// Drops invisible direction marks (LRM, RLM, embeddings, isolates). The app's
-/// money strings start with an LRM so the symbol stays in front on screen, but
-/// the PDF fonts have no glyph for it and it printed as a box; the PDF lays
-/// out direction itself.
-String pdfSafe(String s) =>
-    s.replaceAll(RegExp('[\u200E\u200F\u202A-\u202E\u2066-\u2069]'), '');
+/// Any character written in the Arabic script (Arabic, Persian, Urdu).
+final RegExp _arabicScript = RegExp(r'[؀-ۿݐ-ݿﭐ-﻿]');
+
+/// Drops invisible direction marks (LRM, RLM, embeddings, isolates), and
+/// widens the gaps in Arabic-script text.
+///
+/// **The gap.** The PDF library shapes Arabic itself, and for some words it
+/// emits the letters unshaped; where it does, the space that follows collapses
+/// and two words print as one — "دار السلام" comes out "دارالسلام". It is the
+/// library's bug, not ours: 3.13.1 is its newest release and still has it.
+///
+/// Doubling the space is the one remedy that works. A non-breaking space, a
+/// zero-width space and a ZWNJ were each tried: the first changes nothing, and
+/// the other two print as a missing-glyph box, because the bundled fonts have
+/// no glyph for them.
+///
+/// The cost is that gaps between words the library sets correctly — most of
+/// them — come out a little wide. That is the trade taken deliberately: a
+/// slightly airy line is a blemish, two words run together is an error, and
+/// which words are affected could not be predicted reliably enough to treat
+/// them differently (see docs/REPORTS.md).
+///
+/// Latin, Cyrillic and CJK reports are untouched: the doubling applies only
+/// where the text is in the Arabic script.
+String pdfSafe(String s) {
+  final String clean =
+      s.replaceAll(RegExp('[\u200E\u200F\u202A-\u202E\u2066-\u2069]'), '');
+  if (!_arabicScript.hasMatch(clean)) return clean;
+  // Only single spaces, so running it twice changes nothing.
+  return clean.replaceAll(RegExp('(?<! ) (?! )'), '  ');
+}
 
 /// A single label/value line in the report.
 class ReportRow {
@@ -66,8 +91,8 @@ abstract final class ReportPdfBuilder {
     List<pw.Font> fallback = const <pw.Font>[],
   }) async {
     final pw.Document doc = pw.Document(
-      theme: pw.ThemeData.withFont(
-          base: base, bold: bold, fontFallback: fallback),
+      theme:
+          pw.ThemeData.withFont(base: base, bold: bold, fontFallback: fallback),
     );
 
     doc.addPage(
@@ -109,7 +134,9 @@ abstract final class ReportPdfBuilder {
                 pw.SizedBox(height: 2),
                 pw.Text(pdfSafe(d.title),
                     style: const pw.TextStyle(
-                        color: _ink, fontWeight: pw.FontWeight.bold, fontSize: 19)),
+                        color: _ink,
+                        fontWeight: pw.FontWeight.bold,
+                        fontSize: 19)),
               ],
             ),
             pw.Column(
@@ -189,7 +216,8 @@ abstract final class ReportPdfBuilder {
                 color: _ink, fontWeight: pw.FontWeight.bold, fontSize: 13)),
         pw.SizedBox(height: 6),
         if (rows.isEmpty)
-          pw.Text(pdfSafe(empty), style: const pw.TextStyle(color: _muted, fontSize: 10))
+          pw.Text(pdfSafe(empty),
+              style: const pw.TextStyle(color: _muted, fontSize: 10))
         else
           for (final ReportRow r in rows)
             pw.Container(
