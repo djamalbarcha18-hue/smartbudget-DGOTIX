@@ -46,7 +46,10 @@ Future<void> main() async {
   if (AppEnv.hasSupabase) {
     await Supabase.initialize(
       url: AppEnv.supabaseUrl,
-      anonKey: AppEnv.supabaseAnonKey,
+      // The key itself is unchanged (it is already an sb_publishable_ one);
+      // only the parameter was renamed. AppEnv keeps the SUPABASE_ANON_KEY
+      // define so no workflow or repository secret has to be renamed.
+      publishableKey: AppEnv.supabaseAnonKey,
     );
   }
 
