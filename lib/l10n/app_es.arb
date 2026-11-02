@@ -1591,5 +1591,15 @@
   "trialFailed": "No se pudo iniciar la prueba. Revisa tu conexión e inténtalo de nuevo.",
   "foundingBadge": "Oferta de lanzamiento",
   "foundingLocked": "{price}/año en vez de {regular} — tu precio se mantiene mientras sigas suscrito",
-  "foundingUntil": "Oferta de lanzamiento hasta el {date}"
+  "foundingUntil": "Oferta de lanzamiento hasta el {date}",
+  "voiceStart": "Habla en vez de escribir",
+  "voiceListening": "Escuchando…",
+  "voiceStop": "Detener",
+  "voiceNoticeTitle": "Dicta tu entrada",
+  "voiceNoticeBody": "Di lo que gastaste, por ejemplo «café 200». Es el motor de voz de tu teléfono el que convierte el sonido en palabras, y la mayoría lo envía a su fabricante para hacerlo, igual que la tecla del micrófono de tu teclado. SmartBudget solo recibe las palabras y no guarda ninguna grabación.",
+  "voiceNoticeOk": "Entendido",
+  "voiceFailedUnavailable": "La entrada por voz no está disponible en este dispositivo.",
+  "voiceFailedDenied": "SmartBudget necesita el micrófono. Actívalo en los ajustes de tu dispositivo.",
+  "voiceFailedNoSpeech": "No se oyó nada. Inténtalo de nuevo.",
+  "voiceFailedError": "La entrada por voz no funcionó. Inténtalo de nuevo."
 }

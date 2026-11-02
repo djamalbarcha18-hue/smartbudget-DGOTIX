@@ -1881,5 +1881,15 @@
   "foundingLocked": "{price}/yr instead of {regular} — your price stays locked while you stay subscribed",
   "@foundingLocked": {"placeholders": {"price": {"type": "String"}, "regular": {"type": "String"}}},
   "foundingUntil": "Launch offer until {date}",
-  "@foundingUntil": {"placeholders": {"date": {"type": "String"}}}
+  "@foundingUntil": {"placeholders": {"date": {"type": "String"}}},
+  "voiceStart": "Speak instead of typing",
+  "voiceListening": "Listening…",
+  "voiceStop": "Stop",
+  "voiceNoticeTitle": "Speak your entry",
+  "voiceNoticeBody": "Say what you spent, like “coffee 200”. Your phone's own speech engine turns the sound into words, and most send it to their maker to do that, exactly as the microphone key on your keyboard does. SmartBudget receives the words only and keeps no recording.",
+  "voiceNoticeOk": "Got it",
+  "voiceFailedUnavailable": "Voice entry isn't available on this device.",
+  "voiceFailedDenied": "SmartBudget needs the microphone. Turn it on in your device settings.",
+  "voiceFailedNoSpeech": "Nothing heard. Try again.",
+  "voiceFailedError": "Voice entry didn't work. Try again."
 }

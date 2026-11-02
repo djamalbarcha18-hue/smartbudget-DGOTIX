@@ -1591,5 +1591,15 @@
   "trialFailed": "Uji coba tidak dapat dimulai. Periksa koneksi Anda dan coba lagi.",
   "foundingBadge": "Penawaran peluncuran",
   "foundingLocked": "{price}/thn alih-alih {regular} — harga Anda tetap selama Anda berlangganan",
-  "foundingUntil": "Penawaran peluncuran hingga {date}"
+  "foundingUntil": "Penawaran peluncuran hingga {date}",
+  "voiceStart": "Bicara daripada mengetik",
+  "voiceListening": "Mendengarkan…",
+  "voiceStop": "Berhenti",
+  "voiceNoticeTitle": "Masukkan dengan suara",
+  "voiceNoticeBody": "Sebutkan pengeluaran Anda, misalnya “kopi 200”. Mesin suara ponsel Andalah yang mengubah suara menjadi kata, dan sebagian besar mengirimkannya ke pembuatnya untuk itu, persis seperti tombol mikrofon pada papan ketik. SmartBudget hanya menerima kata-katanya dan tidak menyimpan rekaman apa pun.",
+  "voiceNoticeOk": "Mengerti",
+  "voiceFailedUnavailable": "Masukan suara tidak tersedia di perangkat ini.",
+  "voiceFailedDenied": "SmartBudget membutuhkan mikrofon. Aktifkan di pengaturan perangkat Anda.",
+  "voiceFailedNoSpeech": "Tidak terdengar apa pun. Coba lagi.",
+  "voiceFailedError": "Masukan suara gagal. Coba lagi."
 }

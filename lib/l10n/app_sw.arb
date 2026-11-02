@@ -1591,5 +1591,15 @@
   "trialFailed": "Jaribio halikuweza kuanza. Kagua muunganisho wako ujaribu tena.",
   "foundingBadge": "Ofa ya uzinduzi",
   "foundingLocked": "{price}/mwaka badala ya {regular} — bei yako inabaki ilivyo maadamu unaendelea kujisajili",
-  "foundingUntil": "Ofa ya uzinduzi hadi {date}"
+  "foundingUntil": "Ofa ya uzinduzi hadi {date}",
+  "voiceStart": "Sema badala ya kuandika",
+  "voiceListening": "Nasikiliza…",
+  "voiceStop": "Simamisha",
+  "voiceNoticeTitle": "Weka kwa sauti",
+  "voiceNoticeBody": "Sema ulichotumia, kama “kahawa 200”. Injini ya sauti ya simu yako ndiyo hubadilisha sauti kuwa maneno, na nyingi huituma kwa mtengenezaji wake kwa ajili hiyo, kama vile kitufe cha maikrofoni kwenye kibodi yako. SmartBudget hupokea maneno pekee na haihifadhi rekodi yoyote.",
+  "voiceNoticeOk": "Nimeelewa",
+  "voiceFailedUnavailable": "Uwekaji kwa sauti haupatikani kwenye kifaa hiki.",
+  "voiceFailedDenied": "SmartBudget inahitaji maikrofoni. Iwashe katika mipangilio ya kifaa chako.",
+  "voiceFailedNoSpeech": "Hakuna kilichosikika. Jaribu tena.",
+  "voiceFailedError": "Uwekaji kwa sauti haukufanya kazi. Jaribu tena."
 }

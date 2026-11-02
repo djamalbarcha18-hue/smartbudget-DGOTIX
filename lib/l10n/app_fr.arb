@@ -1591,5 +1591,15 @@
   "trialFailed": "Impossible de démarrer l'essai. Vérifiez votre connexion et réessayez.",
   "foundingBadge": "Offre de lancement",
   "foundingLocked": "{price}/an au lieu de {regular} — votre prix reste acquis tant que vous êtes abonné",
-  "foundingUntil": "Offre de lancement jusqu'au {date}"
+  "foundingUntil": "Offre de lancement jusqu'au {date}",
+  "voiceStart": "Parlez au lieu d'écrire",
+  "voiceListening": "J'écoute…",
+  "voiceStop": "Arrêter",
+  "voiceNoticeTitle": "Dictez votre saisie",
+  "voiceNoticeBody": "Dites ce que vous avez dépensé, comme « café 200 ». C'est le moteur vocal de votre téléphone qui transforme le son en mots, et la plupart l'envoient à leur éditeur pour cela, exactement comme la touche micro de votre clavier. SmartBudget ne reçoit que les mots et ne conserve aucun enregistrement.",
+  "voiceNoticeOk": "J'ai compris",
+  "voiceFailedUnavailable": "La saisie vocale n'est pas disponible sur cet appareil.",
+  "voiceFailedDenied": "SmartBudget a besoin du micro. Activez-le dans les réglages de votre appareil.",
+  "voiceFailedNoSpeech": "Rien entendu. Réessayez.",
+  "voiceFailedError": "La saisie vocale n'a pas fonctionné. Réessayez."
 }

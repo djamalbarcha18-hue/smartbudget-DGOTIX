@@ -1591,5 +1591,15 @@
   "trialFailed": "Ba a iya fara gwajin ba. Duba haɗinka ka sake gwadawa.",
   "foundingBadge": "Tayin ƙaddamarwa",
   "foundingLocked": "{price}/shekara maimakon {regular} — farashinka ba zai canja ba muddin ka ci gaba da biyan kuɗi",
-  "foundingUntil": "Tayin ƙaddamarwa har zuwa {date}"
+  "foundingUntil": "Tayin ƙaddamarwa har zuwa {date}",
+  "voiceStart": "Yi magana maimakon rubutu",
+  "voiceListening": "Ina saurare…",
+  "voiceStop": "Tsaya",
+  "voiceNoticeTitle": "Shigar da murya",
+  "voiceNoticeBody": "Faɗi abin da ka kashe, kamar “kofi 200”. Injin maganar wayarka ne ke mai da sauti zuwa kalmomi, kuma yawancinsu suna aika shi zuwa ga mai yin sa domin haka, kamar maɓallin makirufo a kan madannin ka. SmartBudget yana karɓar kalmomi kawai kuma ba ya ajiye wani rikodi.",
+  "voiceNoticeOk": "Na gane",
+  "voiceFailedUnavailable": "Shigar da murya ba ya samuwa a wannan na'urar.",
+  "voiceFailedDenied": "SmartBudget yana buƙatar makirufo. Kunna shi a cikin saitunan na'urarka.",
+  "voiceFailedNoSpeech": "Ba a ji komai ba. Sake gwadawa.",
+  "voiceFailedError": "Shigar da murya bai yi aiki ba. Sake gwadawa."
 }

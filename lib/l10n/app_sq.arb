@@ -1591,5 +1591,15 @@
   "trialFailed": "Prova nuk mund të nisë. Kontrolloni lidhjen dhe provoni përsëri.",
   "foundingBadge": "Ofertë prezantuese",
   "foundingLocked": "{price}/vit në vend të {regular} — çmimi juaj mbetet për sa kohë jeni i abonuar",
-  "foundingUntil": "Ofertë prezantuese deri më {date}"
+  "foundingUntil": "Ofertë prezantuese deri më {date}",
+  "voiceStart": "Flisni në vend që të shkruani",
+  "voiceListening": "Po dëgjoj…",
+  "voiceStop": "Ndalo",
+  "voiceNoticeTitle": "Futeni me zë",
+  "voiceNoticeBody": "Thoni sa shpenzuat, për shembull “kafe 200”. Zërin në fjalë e kthen motori i të folurit i telefonit tuaj, dhe shumica e dërgojnë te prodhuesi i tyre për këtë, ashtu si tasti i mikrofonit në tastierë. SmartBudget merr vetëm fjalët dhe nuk ruan asnjë regjistrim.",
+  "voiceNoticeOk": "E kuptova",
+  "voiceFailedUnavailable": "Futja me zë nuk është e disponueshme në këtë pajisje.",
+  "voiceFailedDenied": "SmartBudget ka nevojë për mikrofonin. Aktivizojeni në cilësimet e pajisjes.",
+  "voiceFailedNoSpeech": "Nuk u dëgjua asgjë. Provoni përsëri.",
+  "voiceFailedError": "Futja me zë nuk funksionoi. Provoni përsëri."
 }

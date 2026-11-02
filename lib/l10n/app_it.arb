@@ -1591,5 +1591,15 @@
   "trialFailed": "Impossibile avviare la prova. Controlla la connessione e riprova.",
   "foundingBadge": "Offerta di lancio",
   "foundingLocked": "{price}/anno invece di {regular} — il tuo prezzo resta finché mantieni l'abbonamento",
-  "foundingUntil": "Offerta di lancio fino al {date}"
+  "foundingUntil": "Offerta di lancio fino al {date}",
+  "voiceStart": "Parla invece di scrivere",
+  "voiceListening": "In ascolto…",
+  "voiceStop": "Ferma",
+  "voiceNoticeTitle": "Inserisci con la voce",
+  "voiceNoticeBody": "Di' quanto hai speso, ad esempio “caffè 200”. È il motore vocale del tuo telefono a trasformare il suono in parole, e la maggior parte lo invia al proprio produttore per farlo, esattamente come il tasto microfono della tastiera. SmartBudget riceve solo le parole e non conserva alcuna registrazione.",
+  "voiceNoticeOk": "Ho capito",
+  "voiceFailedUnavailable": "L'inserimento vocale non è disponibile su questo dispositivo.",
+  "voiceFailedDenied": "SmartBudget ha bisogno del microfono. Attivalo nelle impostazioni del dispositivo.",
+  "voiceFailedNoSpeech": "Non ho sentito nulla. Riprova.",
+  "voiceFailedError": "L'inserimento vocale non ha funzionato. Riprova."
 }

@@ -1591,5 +1591,15 @@
   "trialFailed": "Deneme başlatılamadı. Bağlantınızı kontrol edip tekrar deneyin.",
   "foundingBadge": "Lansman teklifi",
   "foundingLocked": "{regular} yerine {price}/yıl — aboneliğiniz sürdükçe fiyatınız sabit kalır",
-  "foundingUntil": "{date} tarihine kadar lansman teklifi"
+  "foundingUntil": "{date} tarihine kadar lansman teklifi",
+  "voiceStart": "Yazmak yerine konuşun",
+  "voiceListening": "Dinliyor…",
+  "voiceStop": "Durdur",
+  "voiceNoticeTitle": "Sesle girin",
+  "voiceNoticeBody": "Ne harcadığınızı söyleyin, örneğin “kahve 200”. Sesi kelimelere çeviren, telefonunuzun kendi ses motorudur; çoğu bunun için sesi üreticisine gönderir, tıpkı klavyenizdeki mikrofon tuşu gibi. SmartBudget yalnızca kelimeleri alır ve hiçbir kayıt tutmaz.",
+  "voiceNoticeOk": "Anladım",
+  "voiceFailedUnavailable": "Sesli giriş bu cihazda kullanılamıyor.",
+  "voiceFailedDenied": "SmartBudget mikrofona ihtiyaç duyuyor. Cihaz ayarlarınızdan açın.",
+  "voiceFailedNoSpeech": "Hiçbir şey duyulmadı. Tekrar deneyin.",
+  "voiceFailedError": "Sesli giriş çalışmadı. Tekrar deneyin."
 }

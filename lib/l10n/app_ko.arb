@@ -1591,5 +1591,15 @@
   "trialFailed": "체험을 시작할 수 없습니다. 연결을 확인하고 다시 시도하세요.",
   "foundingBadge": "출시 기념 혜택",
   "foundingLocked": "{regular} 대신 {price}/년 — 구독을 유지하는 동안 가격이 그대로입니다",
-  "foundingUntil": "출시 기념 혜택 ({date}까지)"
+  "foundingUntil": "출시 기념 혜택 ({date}까지)",
+  "voiceStart": "입력하는 대신 말하기",
+  "voiceListening": "듣고 있습니다…",
+  "voiceStop": "중지",
+  "voiceNoticeTitle": "음성으로 입력",
+  "voiceNoticeBody": "“커피 200”처럼 지출한 내용을 말해 보세요. 소리를 글자로 바꾸는 것은 휴대폰에 내장된 음성 엔진이며, 대부분은 이를 위해 소리를 제조사로 보냅니다. 키보드의 마이크 키와 똑같습니다. SmartBudget은 글자만 받으며 녹음은 보관하지 않습니다.",
+  "voiceNoticeOk": "알겠습니다",
+  "voiceFailedUnavailable": "이 기기에서는 음성 입력을 사용할 수 없습니다.",
+  "voiceFailedDenied": "SmartBudget에 마이크가 필요합니다. 기기 설정에서 켜 주세요.",
+  "voiceFailedNoSpeech": "아무것도 들리지 않았습니다. 다시 시도해 주세요.",
+  "voiceFailedError": "음성 입력에 실패했습니다. 다시 시도해 주세요."
 }

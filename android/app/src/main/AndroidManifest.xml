@@ -3,6 +3,8 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Unlocking with fingerprint / face (app lock). -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+    <!-- Voice entry: only asked for when the user taps the microphone. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <!-- The daily reminder: scheduled again after the phone restarts (the
          plugin itself asks for POST_NOTIFICATIONS). -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
@@ -83,6 +85,10 @@
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+        </intent>
+        <!-- The speech engine voice entry speaks to (Android 11+). -->
+        <intent>
+            <action android:name="android.speech.RecognitionService"/>
         </intent>
         <!-- Links opened by url_launcher: web pages, e-mail, SMS, WhatsApp. -->
         <intent>

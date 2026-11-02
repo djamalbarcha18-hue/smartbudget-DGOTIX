@@ -1591,5 +1591,15 @@
   "trialFailed": "トライアルを開始できませんでした。接続を確認して、もう一度お試しください。",
   "foundingBadge": "リリース記念オファー",
   "foundingLocked": "{regular} のところ {price}/年 — 購読を続けるかぎり価格は変わりません",
-  "foundingUntil": "リリース記念オファー（{date}まで）"
+  "foundingUntil": "リリース記念オファー（{date}まで）",
+  "voiceStart": "入力せずに話す",
+  "voiceListening": "聞いています…",
+  "voiceStop": "停止",
+  "voiceNoticeTitle": "音声で入力",
+  "voiceNoticeBody": "「コーヒー 200」のように、使った金額を話してください。音声を文字に変換するのはお使いのスマートフォンの音声エンジンで、多くはそのために音声を提供元へ送信します。キーボードのマイクキーとまったく同じ仕組みです。SmartBudget が受け取るのは文字だけで、録音は保存しません。",
+  "voiceNoticeOk": "わかりました",
+  "voiceFailedUnavailable": "このデバイスでは音声入力を利用できません。",
+  "voiceFailedDenied": "SmartBudget にはマイクが必要です。デバイスの設定でオンにしてください。",
+  "voiceFailedNoSpeech": "何も聞き取れませんでした。もう一度お試しください。",
+  "voiceFailedError": "音声入力に失敗しました。もう一度お試しください。"
 }

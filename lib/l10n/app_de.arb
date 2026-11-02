@@ -1591,5 +1591,15 @@
   "trialFailed": "Der Test konnte nicht starten. Prüfe deine Verbindung und versuche es erneut.",
   "foundingBadge": "Startangebot",
   "foundingLocked": "{price}/Jahr statt {regular} — Ihr Preis bleibt, solange Sie abonniert sind",
-  "foundingUntil": "Startangebot bis {date}"
+  "foundingUntil": "Startangebot bis {date}",
+  "voiceStart": "Sprich statt zu tippen",
+  "voiceListening": "Ich höre zu…",
+  "voiceStop": "Stopp",
+  "voiceNoticeTitle": "Per Sprache eingeben",
+  "voiceNoticeBody": "Sag, was du ausgegeben hast, etwa „Kaffee 200“. Die Spracherkennung deines Telefons wandelt den Ton in Wörter um, und die meisten senden ihn dafür an ihren Hersteller, genau wie die Mikrofontaste deiner Tastatur. SmartBudget erhält nur die Wörter und speichert keine Aufnahme.",
+  "voiceNoticeOk": "Verstanden",
+  "voiceFailedUnavailable": "Die Spracheingabe ist auf diesem Gerät nicht verfügbar.",
+  "voiceFailedDenied": "SmartBudget braucht das Mikrofon. Schalte es in den Geräteeinstellungen ein.",
+  "voiceFailedNoSpeech": "Nichts gehört. Versuch es noch einmal.",
+  "voiceFailedError": "Die Spracheingabe hat nicht geklappt. Versuch es noch einmal."
 }

@@ -1791,5 +1791,15 @@
   "trialFailed": "تعذّر بدء التجربة. تحقّق من الاتصال وحاول مرة أخرى.",
   "foundingBadge": "عرض الإطلاق",
   "foundingLocked": "{price} / سنة بدل {regular} — سعرك محفوظ ما دمت مشتركًا",
-  "foundingUntil": "عرض الإطلاق حتى {date}"
+  "foundingUntil": "عرض الإطلاق حتى {date}",
+  "voiceStart": "تحدّث بدل الكتابة",
+  "voiceListening": "أستمع…",
+  "voiceStop": "إيقاف",
+  "voiceNoticeTitle": "أدخل بصوتك",
+  "voiceNoticeBody": "قل ما أنفقته، مثل «قهوة 200». محرّك الكلام في هاتفك هو الذي يحوّل الصوت إلى كلمات، وأغلب المحرّكات ترسله إلى الشركة المطوّرة له لتفعل ذلك، تمامًا كزر الميكروفون في لوحة المفاتيح. ولا يستلم SmartBudget إلا الكلمات، ولا يحتفظ بأي تسجيل.",
+  "voiceNoticeOk": "فهمت",
+  "voiceFailedUnavailable": "الإدخال الصوتي غير متاح على هذا الجهاز.",
+  "voiceFailedDenied": "يحتاج SmartBudget إلى الميكروفون. فعّله في إعدادات جهازك.",
+  "voiceFailedNoSpeech": "لم أسمع شيئًا. حاول مرة أخرى.",
+  "voiceFailedError": "تعذّر الإدخال الصوتي. حاول مرة أخرى."
 }

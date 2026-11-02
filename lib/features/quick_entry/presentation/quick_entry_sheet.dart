@@ -14,6 +14,7 @@ import 'package:smartbudget/features/exchange_rates/application/rates_controller
 import 'package:smartbudget/features/quick_entry/domain/bank_message.dart';
 import 'package:smartbudget/features/quick_entry/domain/quick_entry_parser.dart';
 import 'package:smartbudget/features/quick_entry/presentation/shared_text_listener.dart';
+import 'package:smartbudget/features/quick_entry/presentation/voice_input_button.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
@@ -39,8 +40,8 @@ class QuickEntrySheet extends ConsumerStatefulWidget {
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (_) => Padding(
-          padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: const QuickEntrySheet(),
         ),
       ),
@@ -54,6 +55,25 @@ class QuickEntrySheet extends ConsumerStatefulWidget {
 class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
   final TextEditingController _text = TextEditingController();
   List<QuickEntry> _entries = const <QuickEntry>[];
+
+  /// True while the microphone is open, so the sheet says it is listening.
+  bool _listening = false;
+
+  /// Words heard replace what the microphone put there before, never what was
+  /// typed by hand, so a correction isn't wiped by the next partial result.
+  String _typed = '';
+
+  void _heard(String text, {required bool done}) {
+    final String all = _typed.isEmpty ? text : '$_typed $text';
+    _text.value = TextEditingValue(
+      text: all,
+      selection: TextSelection.collapsed(offset: all.length),
+    );
+    _parse(all);
+    // What was heard becomes part of the text once the engine is sure, so
+    // the next turn adds to it instead of replacing it.
+    if (done) _typed = all;
+  }
 
   @override
   void dispose() {
@@ -191,19 +211,19 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
     final List<Wallet> wallets = ref.watch(walletsProvider);
     final bool hasWallets = wallets.length > 1;
     final String defaultWallet = ref.watch(effectiveDefaultWalletProvider);
-    Wallet walletOf(String? id) => wallets.firstWhere(
-        (Wallet w) => w.id == (id ?? defaultWallet),
-        orElse: () => wallets.first);
+    Wallet walletOf(String? id) =>
+        wallets.firstWhere((Wallet w) => w.id == (id ?? defaultWallet),
+            orElse: () => wallets.first);
     final bool blocked = _entries.any(_noWallet);
 
     String dayLabel(DateTime d) {
-      final int diff = DateTime(today.year, today.month, today.day)
-          .difference(d)
-          .inDays;
+      final int diff =
+          DateTime(today.year, today.month, today.day).difference(d).inDays;
       return switch (diff) {
         0 => l.quickToday,
         1 => l.quickYesterday,
-        _ => '\u2066${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}\u2069',
+        _ =>
+          '\u2066${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}\u2069',
       };
     }
 
@@ -252,15 +272,23 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
                 controller: _text,
                 autofocus: true,
                 textInputAction: TextInputAction.done,
-                onChanged: _parse,
+                onChanged: (String v) {
+                  _typed = v;
+                  _parse(v);
+                },
                 onSubmitted: (_) => _save(l),
                 decoration: InputDecoration(
                   hintText: l.quickExample,
                   prefixIcon: Icon(Icons.edit_note_rounded, color: c.textMuted),
+                  suffixIcon: VoiceInputButton(
+                    onText: _heard,
+                    onListening: (bool v) => setState(() => _listening = v),
+                  ),
                   border: const OutlineInputBorder(borderRadius: DsRadius.brMd),
                 ),
               ),
               const SizedBox(height: DsSpacing.md),
+              if (_listening) const VoiceListeningLine(),
               if (_bank)
                 Padding(
                   padding: const EdgeInsets.only(bottom: DsSpacing.sm),
@@ -307,8 +335,7 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
                               ].join(' · '),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style:
-                                  t.bodySmall?.copyWith(color: c.textMuted),
+                              style: t.bodySmall?.copyWith(color: c.textMuted),
                             ),
                           ],
                         ),
@@ -349,9 +376,8 @@ class _QuickEntrySheetState extends ConsumerState<QuickEntrySheet> {
                           ? l.quickSaveN(_entries.length)
                           : l.save,
                       icon: Icons.check_rounded,
-                      onPressed: _entries.isEmpty || blocked
-                          ? null
-                          : () => _save(l),
+                      onPressed:
+                          _entries.isEmpty || blocked ? null : () => _save(l),
                     ),
                   ),
                   if (_entries.length == 1) ...<Widget>[
