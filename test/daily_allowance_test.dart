@@ -41,26 +41,29 @@ Future<void> _loadFont(String family, List<String> paths) async {
 
 Money _m(int major) => Money(major * 100, _cur);
 
-FinanceSummary _spent(Money expense) => FinanceSummary(
-      income: _m(0),
-      expense: expense,
-      net: Money(-expense.minorUnits, _cur),
-      savingsRate: 0,
-      count: 1,
-    );
+/// The category the budget below is set on.
+const String _budgeted = 'food';
 
 /// The card as the dashboard builds it, at the width a phone gives it.
+///
+/// [spent] went to the budgeted category; [elsewhere] to one with no budget,
+/// which the card must leave out of the comparison.
 Widget _host({
   required Money planned,
   required Money spent,
+  Money? elsewhere,
   Locale locale = const Locale('ar'),
 }) =>
     ProviderScope(
       overrides: <Override>[
         baseCurrencyProvider.overrideWith(() => _Cur()),
         monthPlannedByCategoryProvider
-            .overrideWithValue(<String, Money>{'x': planned}),
-        monthlySummaryProvider.overrideWithValue(_spent(spent)),
+            .overrideWithValue(<String, Money>{_budgeted: planned}),
+        monthExpenseCategoryTotalsProvider.overrideWithValue(<CategoryTotal>[
+          CategoryTotal(category: _budgeted, amount: spent),
+          if (elsewhere != null)
+            CategoryTotal(category: 'rent', amount: elsewhere),
+        ]),
       ],
       child: MaterialApp(
         locale: locale,
@@ -156,6 +159,22 @@ void main() {
       expect(find.text(l.budgetDailyTitle), findsOneWidget);
       // The headline is the daily figure, not a percentage.
       expect(find.textContaining('%'), findsNothing);
+      final int days = DailyAllowance.daysLeftInMonth(AppClock.now());
+      expect(find.textContaining(l.chDaysLeft(days)), findsOneWidget);
+    });
+
+    testWidgets('a budget on one category ignores what was spent outside it',
+        (WidgetTester tester) async {
+      // Food budgeted at 30,000 with 15,000 spent on it; the rent is far
+      // bigger but was never in that budget, so it must not report an
+      // overspend.
+      await tester.pumpWidget(
+          _host(planned: _m(30000), spent: _m(15000), elsewhere: _m(90000)));
+      await tester.pumpAndSettle();
+      final AppLocalizations l =
+          await AppLocalizations.delegate.load(const Locale('ar'));
+      expect(find.textContaining(l.budgetOverBy('').trim().split(' ').first),
+          findsNothing);
       final int days = DailyAllowance.daysLeftInMonth(AppClock.now());
       expect(find.textContaining(l.chDaysLeft(days)), findsOneWidget);
     });

@@ -130,15 +130,27 @@ class BudgetPulseCard extends ConsumerWidget {
     final String currency = ref.watch(baseCurrencyProvider);
     final Map<String, Money> planned = ref.watch(monthPlannedByCategoryProvider);
     int plannedMinor = 0;
-    for (final Money m in planned.values) {
-      if (m.currencyCode == currency) plannedMinor += m.minorUnits;
+    final Set<String> budgeted = <String>{};
+    for (final MapEntry<String, Money> e in planned.entries) {
+      if (e.value.currencyCode != currency) continue;
+      plannedMinor += e.value.minorUnits;
+      budgeted.add(e.key);
     }
-    final FinanceSummary month = ref.watch(monthlySummaryProvider);
-    final int spent = month.expense.minorUnits;
+
+    // Only what went to the categories that have a budget. Measuring the
+    // whole month's spending against a budget set for food alone reports an
+    // overspend that never happened — the rent was never in that budget.
+    int spent = 0;
+    for (final CategoryTotal t
+        in ref.watch(monthExpenseCategoryTotalsProvider)) {
+      if (budgeted.contains(t.category)) spent += t.amount.minorUnits;
+    }
 
     if (plannedMinor <= 0) {
       return _PulseCard(
-        title: l.budgetThisMonth,
+        // The same title in every state: a card that renames itself when the
+        // numbers change is a card the reader has to re-learn.
+        title: l.budgetDailyTitle,
         icon: Icons.account_balance_wallet_outlined,
         value: '—',
         caption: l.budgetNotSet,
