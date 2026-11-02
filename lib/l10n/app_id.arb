@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "Peringatan cerdas: proyeksi anggaran, pengeluaran tidak biasa, dan ringkasan",
   "txnTypeIncome": "Pemasukan",
   "txnTypeExpense": "Pengeluaran",
-  "budgetThisMonth": "Anggaran bulan ini",
-  "budgetUsedCaption": "{spent} dari {planned}",
   "budgetNotSet": "Belum ada anggaran bulan ini",
   "upcomingTitle": "Jatuh tempo dalam 7 hari",
   "upcomingNone": "Tidak ada yang jatuh tempo dalam 7 hari ke depan",

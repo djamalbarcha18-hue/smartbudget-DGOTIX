@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "Slimme meldingen: budgetprognoses, ongebruikelijke uitgaven en overzichten",
   "txnTypeIncome": "Inkomen",
   "txnTypeExpense": "Uitgave",
-  "budgetThisMonth": "Budget deze maand",
-  "budgetUsedCaption": "{spent} van {planned}",
   "budgetNotSet": "Geen budget ingesteld voor deze maand",
   "upcomingTitle": "Binnen 7 dagen",
   "upcomingNone": "Niets te betalen in de komende 7 dagen",

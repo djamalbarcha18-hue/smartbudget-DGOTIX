@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "Pametna upozorenja: prognoze budžeta, neobična potrošnja i pregledi",
   "txnTypeIncome": "Prihod",
   "txnTypeExpense": "Trošak",
-  "budgetThisMonth": "Budžet ovog mjeseca",
-  "budgetUsedCaption": "{spent} od {planned}",
   "budgetNotSet": "Za ovaj mjesec nije postavljen budžet",
   "upcomingTitle": "Dospijeva za 7 dana",
   "upcomingNone": "Ništa ne dospijeva u narednih 7 dana",

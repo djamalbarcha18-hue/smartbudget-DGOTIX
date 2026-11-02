@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "スマート通知：予算の予測、いつもと違う支出、まとめ",
   "txnTypeIncome": "収入",
   "txnTypeExpense": "支出",
-  "budgetThisMonth": "今月の予算",
-  "budgetUsedCaption": "{spent} / {planned}",
   "budgetNotSet": "今月の予算は未設定です",
   "upcomingTitle": "7 日以内の期日",
   "upcomingNone": "今後 7 日間に期日はありません",

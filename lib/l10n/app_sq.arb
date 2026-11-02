@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "Njoftime të zgjuara: parashikime buxheti, shpenzime të pazakonta dhe përmbledhje",
   "txnTypeIncome": "E ardhur",
   "txnTypeExpense": "Shpenzim",
-  "budgetThisMonth": "Buxheti i këtij muaji",
-  "budgetUsedCaption": "{spent} nga {planned}",
   "budgetNotSet": "Nuk ka buxhet për këtë muaj",
   "upcomingTitle": "Afati brenda 7 ditëve",
   "upcomingNone": "Asgjë me afat në 7 ditët e ardhshme",

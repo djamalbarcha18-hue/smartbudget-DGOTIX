@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "स्मार्ट अलर्ट: बजट पूर्वानुमान, असामान्य ख़र्च और सारांश",
   "txnTypeIncome": "आमदनी",
   "txnTypeExpense": "ख़र्च",
-  "budgetThisMonth": "इस महीने का बजट",
-  "budgetUsedCaption": "{planned} में से {spent}",
   "budgetNotSet": "इस महीने कोई बजट तय नहीं",
   "upcomingTitle": "7 दिनों में देय",
   "upcomingNone": "अगले 7 दिनों में कुछ देय नहीं",

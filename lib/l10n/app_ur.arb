@@ -1147,8 +1147,6 @@
   "planFeatSmartAlerts": "اسمارٹ الرٹس: بجٹ کی پیش گوئیاں، غیر معمولی خرچ اور خلاصے",
   "txnTypeIncome": "آمدنی",
   "txnTypeExpense": "خرچ",
-  "budgetThisMonth": "اس مہینے کا بجٹ",
-  "budgetUsedCaption": "{planned} میں سے {spent}",
   "budgetNotSet": "اس مہینے کے لیے کوئی بجٹ مقرر نہیں",
   "upcomingTitle": "7 دن میں واجب",
   "upcomingNone": "اگلے 7 دنوں میں کچھ واجب نہیں",
