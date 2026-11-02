@@ -1590,6 +1590,6 @@
   "trialUsed": "Kjo llogari e ka përdorur tashmë provën falas.",
   "trialFailed": "Prova nuk mund të nisë. Kontrolloni lidhjen dhe provoni përsëri.",
   "foundingBadge": "Ofertë prezantuese",
-  "foundingFirstYear": "{price} vitin e parë, pastaj {regular} / vit",
+  "foundingLocked": "{price}/vit në vend të {regular} — çmimi juaj mbetet për sa kohë jeni i abonuar",
   "foundingUntil": "Ofertë prezantuese deri më {date}"
 }

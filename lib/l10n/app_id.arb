@@ -1590,6 +1590,6 @@
   "trialUsed": "Akun ini sudah pernah memakai uji coba gratisnya.",
   "trialFailed": "Uji coba tidak dapat dimulai. Periksa koneksi Anda dan coba lagi.",
   "foundingBadge": "Penawaran peluncuran",
-  "foundingFirstYear": "{price} tahun pertama, lalu {regular} / thn",
+  "foundingLocked": "{price}/thn alih-alih {regular} — harga Anda tetap selama Anda berlangganan",
   "foundingUntil": "Penawaran peluncuran hingga {date}"
 }

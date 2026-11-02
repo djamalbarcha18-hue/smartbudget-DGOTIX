@@ -1590,6 +1590,6 @@
   "trialUsed": "Wannan asusun ya riga ya yi amfani da gwajinsa na kyauta.",
   "trialFailed": "Ba a iya fara gwajin ba. Duba haɗinka ka sake gwadawa.",
   "foundingBadge": "Tayin ƙaddamarwa",
-  "foundingFirstYear": "{price} a shekarar farko, sannan {regular} / shekara",
+  "foundingLocked": "{price}/shekara maimakon {regular} — farashinka ba zai canja ba muddin ka ci gaba da biyan kuɗi",
   "foundingUntil": "Tayin ƙaddamarwa har zuwa {date}"
 }

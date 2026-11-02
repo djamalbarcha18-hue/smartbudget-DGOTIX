@@ -641,7 +641,7 @@ class _PlanCard extends StatelessWidget {
             const SizedBox(height: 2),
             if (offer != null) ...<Widget>[
               Text(
-                  l.foundingFirstYear(
+                  l.foundingLocked(
                       _ltr(_money(offer!.yearlyUsd)), _ltr(_money(yearly))),
                   style: t.bodySmall?.copyWith(color: c.textMuted)),
               const SizedBox(height: DsSpacing.xs),
@@ -816,7 +816,7 @@ class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
             ListTile(
               leading: Icon(Icons.calendar_today_outlined, color: c.brand),
               title: Text(widget.offer != null
-                  ? l.foundingFirstYear(_ltr(_money(widget.offer!.yearlyUsd)),
+                  ? l.foundingLocked(_ltr(_money(widget.offer!.yearlyUsd)),
                       _ltr(_money(widget.plan.priceUsd(BillingPeriod.yearly))))
                   : l.planPerYear(
                       _money(widget.plan.priceUsd(BillingPeriod.yearly)))),

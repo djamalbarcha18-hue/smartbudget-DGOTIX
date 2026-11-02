@@ -103,7 +103,10 @@ order end in Whop's latest state:
    of `setup_all.sql`). Until then the app shows no trial and the checkout
    keeps using the one price per plan and period.
 2. **Founding price (optional):** in Whop, add a third plan to SmartBudget Pro:
-   renewing yearly, first payment $39.99, then $59.99. Record it:
+   renewing yearly at $39.99, hidden from the store page (it is sold only
+   through the app, while the offer runs). It keeps renewing at $39.99: a
+   founding member's price is locked for as long as they stay subscribed,
+   which is what the Plans screen promises. Record it:
 
    ```sql
    insert into billing_prices (price_id, provider, plan, period, offer) values

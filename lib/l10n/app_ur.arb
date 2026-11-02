@@ -1590,6 +1590,6 @@
   "trialUsed": "یہ اکاؤنٹ اپنی مفت آزمائش پہلے ہی استعمال کر چکا ہے۔",
   "trialFailed": "آزمائش شروع نہیں ہو سکی۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔",
   "foundingBadge": "لانچ آفر",
-  "foundingFirstYear": "پہلے سال {price}، پھر {regular} / سال",
+  "foundingLocked": "{regular} کے بجائے {price} سالانہ — جب تک آپ رکن رہیں، آپ کی قیمت وہی رہے گی",
   "foundingUntil": "لانچ آفر {date} تک"
 }

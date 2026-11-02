@@ -81,13 +81,13 @@ void main() {
           isNull);
     });
 
-    testWidgets('the Pro card shows the first-year price and its end date',
+    testWidgets('the Pro card shows the locked founding price and its end date',
         (WidgetTester tester) async {
       await tester.binding.setSurfaceSize(const Size(1200, 2400));
       await tester
           .pumpWidget(_host(entitlement: const Entitlement(), offer: _offer));
       await tester.pumpAndSettle();
-      expect(find.text('\u2066\$39.99\u2069 the first year, then \u2066\$59.99\u2069 / yr'),
+      expect(find.text('\u2066\$39.99\u2069/yr instead of \u2066\$59.99\u2069 — your price stays locked while you stay subscribed'),
           findsOneWidget);
       expect(find.textContaining('Launch offer until'), findsOneWidget);
       expect(find.textContaining('Save'), findsNothing);
@@ -101,7 +101,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.textContaining('Upgrade'));
       await tester.pumpAndSettle();
-      expect(find.text('\u2066\$39.99\u2069 the first year, then \u2066\$59.99\u2069 / yr'),
+      expect(find.text('\u2066\$39.99\u2069/yr instead of \u2066\$59.99\u2069 — your price stays locked while you stay subscribed'),
           findsNWidgets(2));
       expect(find.text('Launch offer'), findsOneWidget);
     });

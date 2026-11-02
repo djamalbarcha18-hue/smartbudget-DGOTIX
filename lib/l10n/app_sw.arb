@@ -1590,6 +1590,6 @@
   "trialUsed": "Akaunti hii tayari imetumia jaribio lake la bure.",
   "trialFailed": "Jaribio halikuweza kuanza. Kagua muunganisho wako ujaribu tena.",
   "foundingBadge": "Ofa ya uzinduzi",
-  "foundingFirstYear": "{price} mwaka wa kwanza, kisha {regular} / mwaka",
+  "foundingLocked": "{price}/mwaka badala ya {regular} — bei yako inabaki ilivyo maadamu unaendelea kujisajili",
   "foundingUntil": "Ofa ya uzinduzi hadi {date}"
 }

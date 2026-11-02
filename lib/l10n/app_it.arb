@@ -1590,6 +1590,6 @@
   "trialUsed": "Questo account ha già usato la prova gratuita.",
   "trialFailed": "Impossibile avviare la prova. Controlla la connessione e riprova.",
   "foundingBadge": "Offerta di lancio",
-  "foundingFirstYear": "{price} il primo anno, poi {regular} / anno",
+  "foundingLocked": "{price}/anno invece di {regular} — il tuo prezzo resta finché mantieni l'abbonamento",
   "foundingUntil": "Offerta di lancio fino al {date}"
 }

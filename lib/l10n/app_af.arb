@@ -1590,6 +1590,6 @@
   "trialUsed": "Hierdie rekening het reeds sy gratis proeftydperk gehad.",
   "trialFailed": "Die proeftydperk kon nie begin nie. Gaan jou verbinding na en probeer weer.",
   "foundingBadge": "Bekendstellingsaanbod",
-  "foundingFirstYear": "{price} die eerste jaar, daarna {regular} / jaar",
+  "foundingLocked": "{price}/jr in plaas van {regular} — jou prys bly vas solank jy ingeteken bly",
   "foundingUntil": "Bekendstellingsaanbod tot {date}"
 }

@@ -1590,6 +1590,6 @@
   "trialUsed": "이 계정은 이미 무료 체험을 사용했습니다.",
   "trialFailed": "체험을 시작할 수 없습니다. 연결을 확인하고 다시 시도하세요.",
   "foundingBadge": "출시 기념 혜택",
-  "foundingFirstYear": "첫해 {price}, 이후 연 {regular}",
+  "foundingLocked": "{regular} 대신 {price}/년 — 구독을 유지하는 동안 가격이 그대로입니다",
   "foundingUntil": "출시 기념 혜택 ({date}까지)"
 }

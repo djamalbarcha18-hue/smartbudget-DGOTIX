@@ -1590,6 +1590,6 @@
   "trialUsed": "此账户已使用过免费试用。",
   "trialFailed": "无法开始试用。请检查网络连接后重试。",
   "foundingBadge": "首发优惠",
-  "foundingFirstYear": "首年 {price}，之后每年 {regular}",
+  "foundingLocked": "{price}/年，而非 {regular} — 只要持续订阅，价格保持不变",
   "foundingUntil": "首发优惠，截至 {date}"
 }

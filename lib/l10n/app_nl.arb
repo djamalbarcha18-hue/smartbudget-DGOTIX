@@ -1590,6 +1590,6 @@
   "trialUsed": "Dit account heeft zijn gratis proef al gehad.",
   "trialFailed": "De proef kon niet starten. Controleer je verbinding en probeer het opnieuw.",
   "foundingBadge": "Introductieaanbod",
-  "foundingFirstYear": "{price} het eerste jaar, daarna {regular} / jaar",
+  "foundingLocked": "{price}/jr in plaats van {regular} — je prijs blijft zolang je geabonneerd blijft",
   "foundingUntil": "Introductieaanbod tot {date}"
 }

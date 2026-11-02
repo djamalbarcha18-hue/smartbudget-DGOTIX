@@ -1590,6 +1590,6 @@
   "trialUsed": "Bu hesap ücretsiz denemesini zaten kullandı.",
   "trialFailed": "Deneme başlatılamadı. Bağlantınızı kontrol edip tekrar deneyin.",
   "foundingBadge": "Lansman teklifi",
-  "foundingFirstYear": "İlk yıl {price}, sonra {regular} / yıl",
+  "foundingLocked": "{regular} yerine {price}/yıl — aboneliğiniz sürdükçe fiyatınız sabit kalır",
   "foundingUntil": "{date} tarihine kadar lansman teklifi"
 }

@@ -1790,6 +1790,6 @@
   "trialUsed": "استفاد هذا الحساب من تجربته المجانية من قبل.",
   "trialFailed": "تعذّر بدء التجربة. تحقّق من الاتصال وحاول مرة أخرى.",
   "foundingBadge": "عرض الإطلاق",
-  "foundingFirstYear": "{price} للسنة الأولى، ثم {regular} / سنة",
+  "foundingLocked": "{price} / سنة بدل {regular} — سعرك محفوظ ما دمت مشتركًا",
   "foundingUntil": "عرض الإطلاق حتى {date}"
 }

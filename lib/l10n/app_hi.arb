@@ -1590,6 +1590,6 @@
   "trialUsed": "इस खाते ने अपना मुफ़्त ट्रायल पहले ही ले लिया है।",
   "trialFailed": "ट्रायल शुरू नहीं हो सका। अपना कनेक्शन जाँचें और फिर कोशिश करें।",
   "foundingBadge": "लॉन्च ऑफ़र",
-  "foundingFirstYear": "पहले साल {price}, फिर {regular} / वर्ष",
+  "foundingLocked": "{regular} के बजाय {price}/वर्ष — जब तक आप सदस्य रहेंगे, आपकी कीमत वही रहेगी",
   "foundingUntil": "लॉन्च ऑफ़र {date} तक"
 }

@@ -1590,6 +1590,6 @@
   "trialUsed": "Ovaj račun je već iskoristio besplatnu probu.",
   "trialFailed": "Proba nije pokrenuta. Provjerite vezu i pokušajte ponovo.",
   "foundingBadge": "Početna ponuda",
-  "foundingFirstYear": "{price} prve godine, zatim {regular} / god.",
+  "foundingLocked": "{price}/god. umjesto {regular} — vaša cijena ostaje ista dok ste pretplaćeni",
   "foundingUntil": "Početna ponuda do {date}"
 }

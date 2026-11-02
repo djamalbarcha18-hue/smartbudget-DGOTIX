@@ -1590,6 +1590,6 @@
   "trialUsed": "このアカウントは無料トライアルを利用済みです。",
   "trialFailed": "トライアルを開始できませんでした。接続を確認して、もう一度お試しください。",
   "foundingBadge": "リリース記念オファー",
-  "foundingFirstYear": "初年度 {price}、以降は {regular} / 年",
+  "foundingLocked": "{regular} のところ {price}/年 — 購読を続けるかぎり価格は変わりません",
   "foundingUntil": "リリース記念オファー（{date}まで）"
 }

@@ -1590,6 +1590,6 @@
   "trialUsed": "Akaun ini sudah menggunakan percubaan percumanya.",
   "trialFailed": "Percubaan tidak dapat dimulakan. Semak sambungan anda dan cuba lagi.",
   "foundingBadge": "Tawaran pelancaran",
-  "foundingFirstYear": "{price} tahun pertama, kemudian {regular} / thn",
+  "foundingLocked": "{price}/thn dan bukan {regular} — harga anda kekal selagi anda melanggan",
   "foundingUntil": "Tawaran pelancaran sehingga {date}"
 }

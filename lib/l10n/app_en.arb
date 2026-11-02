@@ -1878,8 +1878,8 @@
   "trialUsed": "This account has already had its free trial.",
   "trialFailed": "Couldn't start the trial. Check your connection and try again.",
   "foundingBadge": "Launch offer",
-  "foundingFirstYear": "{price} the first year, then {regular} / yr",
-  "@foundingFirstYear": {"placeholders": {"price": {"type": "String"}, "regular": {"type": "String"}}},
+  "foundingLocked": "{price}/yr instead of {regular} — your price stays locked while you stay subscribed",
+  "@foundingLocked": {"placeholders": {"price": {"type": "String"}, "regular": {"type": "String"}}},
   "foundingUntil": "Launch offer until {date}",
   "@foundingUntil": {"placeholders": {"date": {"type": "String"}}}
 }
