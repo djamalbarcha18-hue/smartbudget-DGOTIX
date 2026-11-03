@@ -146,15 +146,22 @@ class _KpiCardState extends State<KpiCard> {
                     size: compact ? 32 : 40),
                 SizedBox(width: compact ? DsSpacing.sm : DsSpacing.md),
               ],
+              // The whole label, always: on a narrow tile it shrinks a little
+              // rather than being cut to "إجمالي المصر…", which hides which
+              // card it is. Same size on a roomy tile, so cards still line up.
               Expanded(
-                child: Text(
-                  label,
-                  style: t.titleSmall?.copyWith(
-                      color: c.textMuted,
-                      fontWeight: FontWeight.w700,
-                      fontSize: compact ? 12.5 : null),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    label,
+                    style: t.titleSmall?.copyWith(
+                        color: c.textMuted,
+                        fontWeight: FontWeight.w700,
+                        fontSize: compact ? 12.5 : null),
+                    maxLines: 1,
+                    softWrap: false,
+                  ),
                 ),
               ),
               if (privacy != null)
