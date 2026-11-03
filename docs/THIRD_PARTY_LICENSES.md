@@ -39,7 +39,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 - Source: https://fonts.google.com/specimen/Tajawal
 - License: SIL Open Font License 1.1 (OFL) — https://openfontlicense.org
 
-The OFL permits bundling and embedding the font in documents and applications.
+The OFL permits bundling and embedding the font in documents and applications,
+and permits modification.
+
+**Modified.** The two bundled files carry 36 added cmap entries for Arabic
+presentation forms the PDF library asks for and the original cmap lacks, made
+by `tool/patch_arabic_pdf_fonts.py`. No glyph, metric or name was touched, and
+the font declares no Reserved Font Name.
 Copyright (c) 2017 Boutros International. All rights reserved.
 
 
