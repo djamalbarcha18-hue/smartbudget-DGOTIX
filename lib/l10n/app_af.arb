@@ -1604,5 +1604,15 @@
   "reportWithInsight": "Voeg 'n geskrewe ontleding by",
   "reportInsightHint": "DGOTIX AI lees hierdie tydperk se totale en skryf wat gebeur het en drie stappe. Jou transaksies word nie gestuur nie.",
   "reportInsightTitle": "Jou syfers gelees",
-  "reportInsightFailed": "Verslag sonder die ontleding uitgevoer — die assistent was onbereikbaar."
+  "reportInsightFailed": "Verslag sonder die ontleding uitgevoer — die assistent was onbereikbaar.",
+  "reportVsPrevious": "Vergeleke met die vorige tydperk",
+  "reportChange": "Verandering",
+  "reportNoPrevious": "Geen vroeëre tydperk om mee te vergelyk nie",
+  "reportBudgetTitle": "Begroting",
+  "reportPlanned": "Beplan",
+  "reportSpent": "Bestee",
+  "reportLeft": "Oor",
+  "reportTopCategories": "Grootste uitgawekategorieë",
+  "reportBudgetUsed": "{percent} van die begroting · {count} kategorieë",
+  "reportPointsChange": "{value} pte"
 }

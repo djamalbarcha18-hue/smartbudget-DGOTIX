@@ -1604,5 +1604,15 @@
   "reportWithInsight": "Добавить письменный анализ",
   "reportInsightHint": "DGOTIX AI читает итоги периода и пишет, что произошло, и три шага. Ваши операции не отправляются.",
   "reportInsightTitle": "Чтение ваших цифр",
-  "reportInsightFailed": "Отчёт выгружен без анализа — помощник недоступен."
+  "reportInsightFailed": "Отчёт выгружен без анализа — помощник недоступен.",
+  "reportVsPrevious": "По сравнению с предыдущим периодом",
+  "reportChange": "Изменение",
+  "reportNoPrevious": "Нет предыдущего периода для сравнения",
+  "reportBudgetTitle": "Бюджет",
+  "reportPlanned": "Запланировано",
+  "reportSpent": "Потрачено",
+  "reportLeft": "Остаток",
+  "reportTopCategories": "Крупнейшие статьи расходов",
+  "reportBudgetUsed": "{percent} бюджета · категорий: {count}",
+  "reportPointsChange": "{value} п."
 }

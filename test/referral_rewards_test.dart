@@ -74,13 +74,16 @@ void main() {
 
     test('not the reports, which are what PRO sells', () {
       for (final Feature f in <Feature>[
-        Feature.reportPdf,
         Feature.advancedReports,
         Feature.reportTrends,
         Feature.smartAlerts,
       ]) {
         expect(_gate(f, rewards: _all).allowed, isFalse, reason: '$f');
       }
+      // The PDF itself is free for everyone, invitations or not: what PRO
+      // sells is the longer periods and the written analysis, both of which
+      // sit behind Feature.advancedReports above.
+      expect(_gate(Feature.reportPdf, rewards: _all).allowed, isTrue);
     });
 
     test('the AI allowance is untouched, with or without rewards', () {

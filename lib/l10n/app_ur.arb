@@ -1604,5 +1604,15 @@
   "reportWithInsight": "تحریری تجزیہ شامل کریں",
   "reportInsightHint": "DGOTIX AI اس مدت کے میزان پڑھ کر بتاتا ہے کیا ہوا اور تین اقدام۔ آپ کی لین دین نہیں بھیجی جاتی۔",
   "reportInsightTitle": "آپ کے اعداد کا جائزہ",
-  "reportInsightFailed": "رپورٹ تجزیے کے بغیر برآمد ہوئی — معاون تک رسائی نہ ہو سکی۔"
+  "reportInsightFailed": "رپورٹ تجزیے کے بغیر برآمد ہوئی — معاون تک رسائی نہ ہو سکی۔",
+  "reportVsPrevious": "پچھلی مدت کے مقابلے میں",
+  "reportChange": "تبدیلی",
+  "reportNoPrevious": "موازنے کے لیے پچھلی مدت موجود نہیں",
+  "reportBudgetTitle": "بجٹ",
+  "reportPlanned": "منصوبہ",
+  "reportSpent": "خرچ",
+  "reportLeft": "باقی",
+  "reportTopCategories": "سب سے بڑے اخراجات کے زمرے",
+  "reportBudgetUsed": "بجٹ کا {percent} · {count} زمرے",
+  "reportPointsChange": "{value} پوائنٹ"
 }

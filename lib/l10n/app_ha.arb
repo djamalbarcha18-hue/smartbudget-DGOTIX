@@ -1604,5 +1604,15 @@
   "reportWithInsight": "Ƙara bincike a rubuce",
   "reportInsightHint": "DGOTIX AI yana karanta jimillar wannan lokaci ya rubuta abin da ya faru da matakai uku. Ba a aika ma'amalolinka ba.",
   "reportInsightTitle": "Karanta lambobinka",
-  "reportInsightFailed": "An fitar da rahoton ba tare da bincike ba — ba a iya isa ga mataimakin ba."
+  "reportInsightFailed": "An fitar da rahoton ba tare da bincike ba — ba a iya isa ga mataimakin ba.",
+  "reportVsPrevious": "Idan aka kwatanta da lokacin da ya gabata",
+  "reportChange": "Canji",
+  "reportNoPrevious": "Babu lokacin baya don kwatantawa",
+  "reportBudgetTitle": "Kasafin kuɗi",
+  "reportPlanned": "An shirya",
+  "reportSpent": "An kashe",
+  "reportLeft": "Saura",
+  "reportTopCategories": "Manyan rukunan kashe kuɗi",
+  "reportBudgetUsed": "{percent} na kasafin · rukunoni {count}",
+  "reportPointsChange": "maki {value}"
 }

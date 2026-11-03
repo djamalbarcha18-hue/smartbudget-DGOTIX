@@ -1803,5 +1803,15 @@
   "reportWithInsight": "أضف تحليلًا مكتوبًا",
   "reportInsightHint": "يقرأ DGOTIX AI إجماليات هذه الفترة ويكتب ما حدث وثلاث خطوات. لا تُرسَل معاملاتك.",
   "reportInsightTitle": "قراءة في أرقامك",
-  "reportInsightFailed": "صُدِّر التقرير بلا تحليل — تعذّر الوصول إلى المساعد."
+  "reportInsightFailed": "صُدِّر التقرير بلا تحليل — تعذّر الوصول إلى المساعد.",
+  "reportVsPrevious": "مقارنة بالفترة السابقة",
+  "reportChange": "التغيّر",
+  "reportNoPrevious": "لا توجد فترة سابقة للمقارنة",
+  "reportBudgetTitle": "الميزانية",
+  "reportPlanned": "المخطَّط",
+  "reportSpent": "المنفَق",
+  "reportLeft": "المتبقّي",
+  "reportTopCategories": "أكبر فئات الإنفاق",
+  "reportBudgetUsed": "{percent} من الميزانية · {count} فئة",
+  "reportPointsChange": "{value} نقطة"
 }

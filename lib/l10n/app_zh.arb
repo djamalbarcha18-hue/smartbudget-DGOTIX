@@ -1604,5 +1604,15 @@
   "reportWithInsight": "添加文字分析",
   "reportInsightHint": "DGOTIX AI 读取本期合计，写出发生了什么以及三个步骤。不会发送你的交易记录。",
   "reportInsightTitle": "数字解读",
-  "reportInsightFailed": "报告已导出但没有分析 — 无法连接助手。"
+  "reportInsightFailed": "报告已导出但没有分析 — 无法连接助手。",
+  "reportVsPrevious": "与上一周期相比",
+  "reportChange": "变化",
+  "reportNoPrevious": "没有可比较的上一周期",
+  "reportBudgetTitle": "预算",
+  "reportPlanned": "计划",
+  "reportSpent": "已花费",
+  "reportLeft": "剩余",
+  "reportTopCategories": "最大支出类别",
+  "reportBudgetUsed": "预算的 {percent} · {count} 个类别",
+  "reportPointsChange": "{value} 点"
 }

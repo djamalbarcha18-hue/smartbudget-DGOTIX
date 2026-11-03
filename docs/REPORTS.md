@@ -1,8 +1,63 @@
 # Reports (PDF)
 
-Four reporting periods — monthly, quarterly, half-yearly and yearly — all of
-them PRO. The PDF is built on the device from data already there; nothing is
-sent anywhere to make one.
+Four reporting periods — monthly, quarterly, half-yearly and yearly. The PDF
+is built on the device from data already there; nothing is sent anywhere to
+make one.
+
+## What is free and what is PRO
+
+| | Free | PRO |
+|---|---|---|
+| The document, with every section below | this month and last | every period |
+| Quarter, half-year, year | — | ✅ |
+| The written analysis | — | ✅ |
+
+A report you cannot take with you is not a report, so the export itself is
+everyone's (`Feature.reportPdf`, free). What PRO sells is the longer periods
+— the screen already forces a free plan to the current or previous month
+through `Feature.advancedReports` — and the analysis, which is gated on the
+same feature plus an assistant request to spend.
+
+## What the page holds
+
+Each section appears only when the account has something to put in it; a
+panel of zeroes tells the reader nothing.
+
+| | |
+|---|---|
+| Header | the DGOTIX logo, drawn from `assets/brand/dgotix-logo.svg` as vector, with the wordmark set in type as the fallback if the asset cannot be read |
+| Four headline figures | income, expenses, left over, savings rate |
+| The written analysis | PRO, and only when asked for |
+| Against the period before | the four figures, this period and last, with the move — in points for the savings rate, because a rate moving 11.3% → 26.0% rose by 14.7 points, not by 130% |
+| Budget · Debts · Health | planned/spent/left with a meter, the debt balances, the health score out of 100 |
+| The year | twelve months of income and expense as paired columns |
+| Largest categories | the five biggest expenses as proportional bars |
+| Income and expenses | the full tables |
+
+Everything is computed by `ReportFigures` and turned into the page by
+`ReportDocument` — neither touches Flutter or the network, so the whole
+document is built in tests for all twenty-three languages
+(`test/report_pdf_languages_test.dart`, `test/report_document_test.dart`).
+
+### Drawn, not charted
+
+The bars are drawn from rows and containers rather than the library's chart
+widgets, which place their own axes and do not mirror for a right-to-left
+page. The library does mirror a row, so one list gives January at the right
+in Arabic and at the left in English, with no special case and no reversing
+(reversing it ourselves flipped it back — that bug is why this note exists).
+
+### The comparison crosses the year
+
+January's previous period is last December, Q1's is Q4, the first half's is
+the second half of the year before. `ReportRange.previous` carries its own
+year for exactly this, and the figures are built from every transaction the
+account has rather than the selected year's, so the comparison does not
+quietly vanish each January.
+
+A move too small to print is not a direction: anything that would round to
+0.0 is shown as flat and uncoloured, so a month that gained 0.004 points
+never reads "-0.0" in red.
 
 ## The written commentary
 
@@ -47,11 +102,19 @@ does.
 
 ### What it costs
 
-One request per export, through the same gateway as everything else, so the
-server's existing quota, daily limit and monthly cost ceiling apply unchanged
-— there is no second allowance to keep in step. A few hundred words in and
-out: on the cheapest model in the registry that is a fraction of a cent, and
-a PRO account's ceiling is $2 a month.
+At most one request per export, through the same gateway as everything else,
+so the server's existing quota, daily limit and monthly cost ceiling apply
+unchanged — there is no second allowance to keep in step. A page of figures
+in, eighty words out: on the cheapest model in the registry that is a
+fraction of a cent, and a PRO account's ceiling is $2 a month.
+
+Often no request at all. `ReportInsightCache` keys an analysis by a digest of
+exactly what the assistant was given — account, language, period and the
+whole brief — so re-exporting the same report reads the text back from the
+device and spends nothing. One new transaction, a changed budget or another
+language changes the digest and a fresh analysis is written: a cached
+sentence about figures that have moved would be worse than no sentence. The
+twelve most recent are kept, on the device, in the app's own preferences.
 
 ### When it is not there
 

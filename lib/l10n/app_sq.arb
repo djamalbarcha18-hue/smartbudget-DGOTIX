@@ -1604,5 +1604,15 @@
   "reportWithInsight": "Shto një analizë të shkruar",
   "reportInsightHint": "DGOTIX AI lexon totalet e kësaj periudhe dhe shkruan çfarë ndodhi dhe tre hapa. Transaksionet tuaja nuk dërgohen.",
   "reportInsightTitle": "Leximi i shifrave tuaja",
-  "reportInsightFailed": "Raporti u eksportua pa analizën — asistenti nuk u arrit."
+  "reportInsightFailed": "Raporti u eksportua pa analizën — asistenti nuk u arrit.",
+  "reportVsPrevious": "Krahasuar me periudhën e mëparshme",
+  "reportChange": "Ndryshimi",
+  "reportNoPrevious": "Nuk ka periudhë të mëparshme për krahasim",
+  "reportBudgetTitle": "Buxheti",
+  "reportPlanned": "Planifikuar",
+  "reportSpent": "Shpenzuar",
+  "reportLeft": "Mbetur",
+  "reportTopCategories": "Kategoritë më të mëdha të shpenzimeve",
+  "reportBudgetUsed": "{percent} e buxhetit · {count} kategori",
+  "reportPointsChange": "{value} pikë"
 }

@@ -1892,5 +1892,17 @@
   "reportWithInsight": "Add a written analysis",
   "reportInsightHint": "DGOTIX AI reads this period's totals and writes what happened and three steps. Your transactions are not sent.",
   "reportInsightTitle": "Reading your figures",
-  "reportInsightFailed": "The report was exported without the analysis — the assistant could not be reached."
+  "reportInsightFailed": "The report was exported without the analysis — the assistant could not be reached.",
+  "reportVsPrevious": "Compared with the previous period",
+  "reportChange": "Change",
+  "reportNoPrevious": "No earlier period to compare with",
+  "reportBudgetTitle": "Budget",
+  "reportPlanned": "Planned",
+  "reportSpent": "Spent",
+  "reportLeft": "Left",
+  "reportTopCategories": "Largest expense categories",
+  "reportBudgetUsed": "{percent} of the budget · {count} categories",
+  "@reportBudgetUsed": { "placeholders": { "percent": { "type": "String" }, "count": { "type": "int" } } },
+  "reportPointsChange": "{value} pts",
+  "@reportPointsChange": { "placeholders": { "value": { "type": "String" } } }
 }

@@ -50,7 +50,8 @@ void main() {
     });
 
     test('boolean gates have no quota and a min tier', () {
-      expect(FeatureCatalog.quotaFor(Feature.advancedReports, Plan.pro), isNull);
+      expect(
+          FeatureCatalog.quotaFor(Feature.advancedReports, Plan.pro), isNull);
       expect(FeatureCatalog.minTierFor(Feature.advancedReports), Plan.pro);
       expect(FeatureCatalog.minTierFor(Feature.prioritySupport), Plan.pro);
     });
@@ -58,8 +59,8 @@ void main() {
     test('nextTierWithMore points upward until the top', () {
       expect(FeatureCatalog.nextTierWithMore(Feature.dgotixAi, Plan.free),
           Plan.pro);
-      expect(FeatureCatalog.nextTierWithMore(Feature.dgotixAi, Plan.pro),
-          isNull);
+      expect(
+          FeatureCatalog.nextTierWithMore(Feature.dgotixAi, Plan.pro), isNull);
     });
   });
 
@@ -141,8 +142,20 @@ void main() {
       }
     });
 
-    test('every paid feature: FREE is asked to go Pro, Pro has it',
+    test('the PDF document itself is free; its periods and analysis are not',
         () {
+      // A report you cannot take with you is not a report, so the export is
+      // everyone's. PRO sells the quarter, half-year and year (which the
+      // screen gates through advancedReports) and the written analysis.
+      expect(FeatureGate.evaluate(Feature.reportPdf, plan: Plan.free).allowed,
+          isTrue);
+      expect(
+          FeatureGate.evaluate(Feature.advancedReports, plan: Plan.free)
+              .allowed,
+          isFalse);
+    });
+
+    test('every paid feature: FREE is asked to go Pro, Pro has it', () {
       for (final Feature f in <Feature>[
         Feature.multiCurrency,
         Feature.advancedReports,
@@ -150,7 +163,6 @@ void main() {
         Feature.cloudSyncFull,
         Feature.healthDetails,
         Feature.salarySplit,
-        Feature.reportPdf,
         Feature.reportTrends,
         Feature.smartAlerts,
         Feature.portfolioFull,
@@ -178,8 +190,7 @@ void main() {
 
     test('boolean gate at/above min tier ⇒ allowed', () {
       expect(
-          FeatureGate.evaluate(Feature.advancedReports, plan: Plan.pro)
-              .allowed,
+          FeatureGate.evaluate(Feature.advancedReports, plan: Plan.pro).allowed,
           isTrue);
       expect(
           FeatureGate.evaluate(Feature.prioritySupport, plan: Plan.pro).allowed,
@@ -187,8 +198,8 @@ void main() {
     });
 
     test('metered under budget ⇒ allowed with remaining', () {
-      final GateDecision d = FeatureGate.evaluate(Feature.dgotixAi,
-          plan: Plan.pro, used: 10);
+      final GateDecision d =
+          FeatureGate.evaluate(Feature.dgotixAi, plan: Plan.pro, used: 10);
       expect(d.allowed, isTrue);
       expect(d.limit, 100);
       expect(d.remaining, 90);
@@ -196,8 +207,8 @@ void main() {
     });
 
     test('metered at budget ⇒ quotaReached + upgrade tier', () {
-      final GateDecision d = FeatureGate.evaluate(Feature.dgotixAi,
-          plan: Plan.free, used: 5);
+      final GateDecision d =
+          FeatureGate.evaluate(Feature.dgotixAi, plan: Plan.free, used: 5);
       expect(d.allowed, isFalse);
       expect(d.reason, GateReason.quotaReached);
       expect(d.remaining, 0);
@@ -205,14 +216,14 @@ void main() {
     });
 
     test('usedFraction drives the 80/90/100 nudges', () {
-      final GateDecision d = FeatureGate.evaluate(Feature.dgotixAi,
-          plan: Plan.pro, used: 80);
+      final GateDecision d =
+          FeatureGate.evaluate(Feature.dgotixAi, plan: Plan.pro, used: 80);
       expect(d.usedFraction, closeTo(0.8, 1e-9));
     });
 
     test('overuse is clamped, never negative remaining', () {
-      final GateDecision d = FeatureGate.evaluate(Feature.dgotixAi,
-          plan: Plan.free, used: 99);
+      final GateDecision d =
+          FeatureGate.evaluate(Feature.dgotixAi, plan: Plan.free, used: 99);
       expect(d.remaining, 0);
       expect(d.usedFraction, 1.0);
     });
@@ -254,7 +265,8 @@ void main() {
           BillingPeriod.yearly);
       expect(
           const Entitlement(period: BillingPeriod.yearly).paidPeriod, isNull);
-      expect(Entitlement.fromJson(const <String, dynamic>{'plan': 'pro'}).period,
+      expect(
+          Entitlement.fromJson(const <String, dynamic>{'plan': 'pro'}).period,
           isNull);
     });
 

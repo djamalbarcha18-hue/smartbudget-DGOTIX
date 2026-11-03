@@ -1604,5 +1604,15 @@
   "reportWithInsight": "Dodaj pisanu analizu",
   "reportInsightHint": "DGOTIX AI čita zbirove ovog perioda i piše šta se desilo te tri koraka. Vaše transakcije se ne šalju.",
   "reportInsightTitle": "Čitanje vaših brojeva",
-  "reportInsightFailed": "Izvještaj je izvezen bez analize — asistent nije bio dostupan."
+  "reportInsightFailed": "Izvještaj je izvezen bez analize — asistent nije bio dostupan.",
+  "reportVsPrevious": "U poređenju s prethodnim periodom",
+  "reportChange": "Promjena",
+  "reportNoPrevious": "Nema ranijeg perioda za poređenje",
+  "reportBudgetTitle": "Budžet",
+  "reportPlanned": "Planirano",
+  "reportSpent": "Potrošeno",
+  "reportLeft": "Preostalo",
+  "reportTopCategories": "Najveće kategorije troškova",
+  "reportBudgetUsed": "{percent} budžeta · kategorija: {count}",
+  "reportPointsChange": "{value} bodova"
 }

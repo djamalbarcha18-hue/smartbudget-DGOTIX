@@ -1604,5 +1604,15 @@
   "reportWithInsight": "Ongeza uchambuzi ulioandikwa",
   "reportInsightHint": "DGOTIX AI husoma jumla za kipindi hiki na kuandika kilichotokea na hatua tatu. Miamala yako haitumwi.",
   "reportInsightTitle": "Kusoma takwimu zako",
-  "reportInsightFailed": "Ripoti imehamishwa bila uchambuzi — hakuweza kufikiwa msaidizi."
+  "reportInsightFailed": "Ripoti imehamishwa bila uchambuzi — hakuweza kufikiwa msaidizi.",
+  "reportVsPrevious": "Ikilinganishwa na kipindi kilichopita",
+  "reportChange": "Mabadiliko",
+  "reportNoPrevious": "Hakuna kipindi cha awali cha kulinganisha",
+  "reportBudgetTitle": "Bajeti",
+  "reportPlanned": "Iliyopangwa",
+  "reportSpent": "Iliyotumika",
+  "reportLeft": "Iliyobaki",
+  "reportTopCategories": "Kategoria kubwa za matumizi",
+  "reportBudgetUsed": "{percent} ya bajeti · kategoria {count}",
+  "reportPointsChange": "pointi {value}"
 }

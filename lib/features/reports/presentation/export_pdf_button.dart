@@ -3,18 +3,19 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/reports/application/reports_controller.dart';
+import 'package:smartbudget/features/reports/domain/report_figures.dart';
+import 'package:smartbudget/features/reports/data/report_document.dart';
+import 'package:smartbudget/features/reports/data/report_fonts.dart';
 import 'package:smartbudget/features/reports/data/report_pdf.dart';
 import 'package:smartbudget/features/reports/data/report_insight_service.dart';
-import 'package:smartbudget/features/reports/domain/report_period.dart';
-import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -22,7 +23,6 @@ import 'package:smartbudget/features/billing/application/feature_gate_provider.d
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
-import 'package:smartbudget/core/l10n/month_names.dart';
 
 /// Exports the current report as a branded DGOTIX PDF (print / save-as-PDF).
 class ExportPdfButton extends ConsumerStatefulWidget {
@@ -44,10 +44,12 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
     final bool full = ref.watch(featureGateProvider(Feature.reportPdf)).allowed;
-    // Offered only where both halves are available: the PDF itself, and an
-    // assistant request to spend on it.
-    final bool canWrite =
-        full && ref.watch(featureGateProvider(Feature.dgotixAi)).allowed;
+    // The written analysis is the PRO half of this feature: the document
+    // itself is everyone's. Both gates are checked — the plan, and an
+    // assistant request left to spend on it.
+    final bool canWrite = full &&
+        ref.watch(featureGateProvider(Feature.advancedReports)).allowed &&
+        ref.watch(featureGateProvider(Feature.dgotixAi)).allowed;
 
     final Widget button = TextButton.icon(
       onPressed: _busy
@@ -100,88 +102,46 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
 
     setState(() => _busy = true);
     try {
-      final ReportResult report = ref.read(reportResultProvider);
-      final ReportPeriod period = ref.read(effectiveReportPeriodProvider);
-      final int sub = ref.read(effectiveReportSubProvider);
-      final int year = ref.read(selectedYearProvider);
-      final FinanceSummary s = report.summary;
-
-      final String periodText = period == ReportPeriod.yearly
-          ? '${_periodLabel(period, l)} · $year'
-          : '${_periodLabel(period, l)} — ${_subLabel(period, sub, l, lang)} · $year';
+      final ReportFigures f = ref.read(reportFiguresProvider);
+      final int year = f.range.year;
+      final FinanceSummary s = f.summary;
+      final String periodText = ReportDocument.periodText(f, l, lang);
 
       // Asked for before the document is laid out; a null answer (quota
-      // gone, offline, refused) simply leaves the commentary out.
+      // gone, offline, refused) simply leaves the commentary out. An answer
+      // already written for these same figures comes back from the device
+      // without a request being made at all.
       String? insight;
       if (_withInsight) {
         insight = await ref.read(reportInsightServiceProvider).write(
-              summary: s,
-              income: report.incomeCategories,
-              expenses: report.expenseCategories,
+              figures: f,
               periodLabel: periodText,
               language: lang,
               money: MoneyFormatter.format,
+              label: (String c) => Catalog.label(c, lang: lang),
+              accountKey: ref.read(currentAccountIdProvider) ?? '',
             );
       }
 
-      final ReportPdfData data = ReportPdfData(
-        title: l.navReports,
-        subtitle: periodText,
-        generatedLabel: l
-            .reportGeneratedOn(DateFormat('yyyy-MM-dd').format(AppClock.now())),
-        kpis: <ReportRow>[
-          ReportRow(l.kpiTotalIncome, MoneyFormatter.format(s.income)),
-          ReportRow(l.kpiTotalExpenses, MoneyFormatter.format(s.expense)),
-          ReportRow(l.kpiNetProfit, MoneyFormatter.format(s.net)),
-          ReportRow(l.kpiSavingsRate, MoneyFormatter.percent(s.savingsRate)),
-        ],
-        incomeTitle: l.reportIncomeByCategory,
-        income: _rows(report.incomeCategories, lang),
-        expenseTitle: l.reportExpenseByCategory,
-        expenses: _rows(report.expenseCategories, lang),
-        emptyLabel: l.emptyTransactionsMessage,
-        footer: 'DGOTIX Analytics · SmartBudget',
-        isRtl: lang.rtl,
-        insightTitle: insight == null ? null : l.reportInsightTitle,
+      final ReportPdfData data = ReportDocument.build(
+        figures: f,
+        l: l,
+        lang: lang,
+        now: AppClock.now(),
+        logoSvg: await ReportDocument.logo(),
         insight: insight,
       );
 
-      // Urdu letters aren't in Tajawal: Urdu reports use Noto Naskh Arabic.
-      // Cyrillic isn't either: Russian reports are set in Inter.
-      final pw.Font base;
-      final pw.Font bold;
-      if (lang == AppLang.ru) {
-        base = pw.Font.ttf(
-            await rootBundle.load('assets/google_fonts/Inter-Regular.ttf'));
-        bold = pw.Font.ttf(
-            await rootBundle.load('assets/google_fonts/Inter-SemiBold.ttf'));
-      } else {
-        final String family = lang.naskh ? 'NotoNaskhArabic' : 'Tajawal';
-        base = pw.Font.ttf(
-            await rootBundle.load('assets/fonts/$family-Regular.ttf'));
-        bold =
-            pw.Font.ttf(await rootBundle.load('assets/fonts/$family-Bold.ttf'));
-      }
-      // Only where letters are missing, to keep files small: Tajawal for the
-      // digits and Latin of Urdu reports and any Arabic in Russian ones,
-      // Inter for Turkish ğ ş İ, Bosnian č ć đ, Hausa ɓ ɗ ƙ ƴ and currency
-      // signs Tajawal lacks (₹ ₺ ₦ ₫ ฿ ₱ Kč…).
-      final bool interLetters = switch (lang) {
-        AppLang.tr || AppLang.bs || AppLang.ha => true,
-        _ => false,
-      };
+      // Which faces this language and currency need (ReportFonts), loaded
+      // from the bundle so an export works with no network.
+      final ReportFontSet faces = ReportFonts.forLanguage(lang,
+          currencySymbol: s.income.currency.symbol);
+      Future<pw.Font> face(String path) async =>
+          pw.Font.ttf(await rootBundle.load(path));
+      final pw.Font base = await face(faces.base);
+      final pw.Font bold = await face(faces.bold);
       final List<pw.Font> fallback = <pw.Font>[
-        if (lang.naskh || lang == AppLang.ru)
-          pw.Font.ttf(
-              await rootBundle.load('assets/fonts/Tajawal-Regular.ttf')),
-        if (lang != AppLang.ru &&
-            (interLetters || _needsInter(s.income.currency.symbol)))
-          pw.Font.ttf(
-              await rootBundle.load('assets/google_fonts/Inter-Regular.ttf')),
-        // The rial and afghani signs are only in Noto Naskh.
-        if (!lang.naskh && _needsNaskh(s.income.currency.symbol))
-          pw.Font.ttf(await rootBundle
-              .load('assets/fonts/NotoNaskhArabic-Regular.ttf')),
+        for (final String path in faces.fallback) await face(path),
       ];
       final Uint8List bytes = await ReportPdfBuilder.build(data,
           base: base, bold: bold, fallback: fallback);
@@ -193,63 +153,6 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
       messenger.showSnackBar(SnackBar(content: Text(failed)));
     } finally {
       if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  /// A currency sign with a character beyond Latin-1, Arabic and €.
-  static bool _needsInter(String symbol) => symbol.runes.any((int r) =>
-      r > 0xFF &&
-      (r < 0x0600 || r > 0x06FF) &&
-      r != 0x20AC &&
-      !_needsNaskh(String.fromCharCode(r)));
-
-  /// The rial (﷼) and afghani (؋) signs, which Tajawal and Inter lack.
-  static bool _needsNaskh(String symbol) =>
-      symbol.contains('\uFDFC') || symbol.contains('\u060B');
-
-  List<ReportRow> _rows(List<CategoryTotal> totals, AppLang lang) => totals
-      .map((CategoryTotal t) => ReportRow(Catalog.label(t.category, lang: lang),
-          MoneyFormatter.format(t.amount)))
-      .toList();
-
-  String _periodLabel(ReportPeriod p, AppLocalizations l) => switch (p) {
-        ReportPeriod.monthly => l.periodMonthly,
-        ReportPeriod.quarterly => l.periodQuarterly,
-        ReportPeriod.halfYearly => l.periodHalfYearly,
-        ReportPeriod.yearly => l.periodYearly,
-      };
-
-  String _subLabel(ReportPeriod p, int s, AppLocalizations l, AppLang lang) {
-    switch (p) {
-      case ReportPeriod.monthly:
-        return MonthNames.full(lang: lang)[(s - 1).clamp(0, 11)];
-      case ReportPeriod.quarterly:
-        return lang.pick('الربع $s', 'Q$s',
-            fr: 'T$s',
-            id: 'K$s',
-            es: 'T$s',
-            tr: '$s. Çeyrek',
-            ms: 'Suku $s',
-            ur: 'سہ ماہی $s',
-            de: 'Q$s',
-            pt: '$sº tri',
-            it: 'T$s',
-            nl: 'K$s',
-            bs: 'K$s',
-            sq: 'T$s',
-            ru: '$s кв.',
-            sw: 'Robo $s',
-            ha: 'Kwata $s',
-            af: 'K$s',
-            fa: 'فصل $s',
-            hi: 'तिमाही $s',
-            zh: '第$s季度',
-            ja: '第$s四半期',
-            ko: '$s분기');
-      case ReportPeriod.halfYearly:
-        return s == 2 ? l.half2 : l.half1;
-      case ReportPeriod.yearly:
-        return '';
     }
   }
 }

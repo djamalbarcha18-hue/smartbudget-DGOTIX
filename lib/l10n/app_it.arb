@@ -1604,5 +1604,15 @@
   "reportWithInsight": "Aggiungi un'analisi scritta",
   "reportInsightHint": "DGOTIX AI legge i totali del periodo e scrive cosa è successo e tre passi. Le tue transazioni non vengono inviate.",
   "reportInsightTitle": "Lettura dei tuoi numeri",
-  "reportInsightFailed": "Report esportato senza l'analisi: assistente non raggiungibile."
+  "reportInsightFailed": "Report esportato senza l'analisi: assistente non raggiungibile.",
+  "reportVsPrevious": "Rispetto al periodo precedente",
+  "reportChange": "Variazione",
+  "reportNoPrevious": "Nessun periodo precedente da confrontare",
+  "reportBudgetTitle": "Budget",
+  "reportPlanned": "Previsto",
+  "reportSpent": "Speso",
+  "reportLeft": "Rimanente",
+  "reportTopCategories": "Principali categorie di spesa",
+  "reportBudgetUsed": "{percent} del budget · {count} categorie",
+  "reportPointsChange": "{value} pt"
 }

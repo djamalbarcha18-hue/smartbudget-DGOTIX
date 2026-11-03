@@ -1604,5 +1604,15 @@
   "reportWithInsight": "Schriftliche Analyse hinzufügen",
   "reportInsightHint": "DGOTIX AI liest die Summen des Zeitraums und schreibt, was geschah, und drei Schritte. Ihre Buchungen werden nicht gesendet.",
   "reportInsightTitle": "Ihre Zahlen gelesen",
-  "reportInsightFailed": "Bericht ohne Analyse exportiert — der Assistent war nicht erreichbar."
+  "reportInsightFailed": "Bericht ohne Analyse exportiert — der Assistent war nicht erreichbar.",
+  "reportVsPrevious": "Im Vergleich zum Vorzeitraum",
+  "reportChange": "Veränderung",
+  "reportNoPrevious": "Kein früherer Zeitraum zum Vergleich",
+  "reportBudgetTitle": "Budget",
+  "reportPlanned": "Geplant",
+  "reportSpent": "Ausgegeben",
+  "reportLeft": "Übrig",
+  "reportTopCategories": "Größte Ausgabenkategorien",
+  "reportBudgetUsed": "{percent} des Budgets · {count} Kategorien",
+  "reportPointsChange": "{value} Pkt."
 }

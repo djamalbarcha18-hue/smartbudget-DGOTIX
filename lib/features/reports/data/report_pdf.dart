@@ -42,6 +42,69 @@ class ReportRow {
   final String value;
 }
 
+/// A line of the comparison table: this period against the one before it.
+class ReportComparisonRow {
+  const ReportComparisonRow(this.label, this.now, this.before, this.change,
+      {this.up});
+
+  final String label;
+  final String now;
+  final String before;
+
+  /// Already formatted and signed by the caller ("+12.5%", "-3,000 DZD").
+  final String change;
+
+  /// true up, false down, null flat or not a direction worth colouring.
+  /// Colour is never the only carrier: the sign is in [change] too, for a
+  /// reader printing in black and white.
+  final bool? up;
+}
+
+/// A small titled panel: the budget, the debts, the health score.
+class ReportPanel {
+  const ReportPanel({
+    required this.title,
+    required this.rows,
+    this.meter,
+    this.meterLabel,
+    this.overMeter = false,
+  });
+
+  final String title;
+  final List<ReportRow> rows;
+
+  /// 0..1, drawn as a bar under the rows. Null leaves the panel plain.
+  final double? meter;
+  final String? meterLabel;
+
+  /// Draws the meter in the warning colour: a budget already spent past its
+  /// plan, for instance.
+  final bool overMeter;
+}
+
+/// One month of the year chart.
+class ReportTrendPoint {
+  const ReportTrendPoint(this.label, this.income, this.expense);
+
+  final String label;
+
+  /// Minor units. The chart only ever compares them with each other, so no
+  /// currency is needed.
+  final int income;
+  final int expense;
+}
+
+/// A proportional bar in the "largest categories" strip.
+class ReportBar {
+  const ReportBar(this.label, this.value, this.ratio);
+
+  final String label;
+  final String value;
+
+  /// 0..1 of the largest bar in the set.
+  final double ratio;
+}
+
 /// Everything the PDF needs, already localized & formatted by the caller so the
 /// builder stays free of Flutter/context/l10n dependencies.
 class ReportPdfData {
@@ -59,6 +122,15 @@ class ReportPdfData {
     required this.isRtl,
     this.insightTitle,
     this.insight,
+    this.logoSvg,
+    this.comparisonTitle,
+    this.comparison = const <ReportComparisonRow>[],
+    this.noComparisonLabel,
+    this.panels = const <ReportPanel>[],
+    this.trendTitle,
+    this.trend = const <ReportTrendPoint>[],
+    this.topTitle,
+    this.top = const <ReportBar>[],
   });
 
   final String title; // functional report title
@@ -80,9 +152,40 @@ class ReportPdfData {
   final String? insightTitle;
   final String? insight;
 
+  /// The DGOTIX mark, as SVG source. Null falls back to the wordmark set in
+  /// type, so a report is never blocked on an asset that failed to load.
+  final String? logoSvg;
+
+  /// This period against the one before it. Empty when there is no earlier
+  /// period; [noComparisonLabel] then says so rather than leaving a gap.
+  final String? comparisonTitle;
+  final List<ReportComparisonRow> comparison;
+  final String? noComparisonLabel;
+
+  /// Budget, debts, health — whichever the account has anything to say about.
+  final List<ReportPanel> panels;
+
+  /// The twelve months of the year, as paired bars.
+  final String? trendTitle;
+  final List<ReportTrendPoint> trend;
+
+  /// The largest expense categories, as proportional bars.
+  final String? topTitle;
+  final List<ReportBar> top;
+
   bool get hasInsight =>
       (insight?.trim().isNotEmpty ?? false) &&
       (insightTitle?.trim().isNotEmpty ?? false);
+
+  bool get hasComparison =>
+      comparisonTitle != null &&
+      (comparison.isNotEmpty || noComparisonLabel != null);
+
+  bool get hasTrend =>
+      trendTitle != null &&
+      trend.any((ReportTrendPoint p) => p.income > 0 || p.expense > 0);
+
+  bool get hasTop => topTitle != null && top.isNotEmpty;
 }
 
 /// Builds a branded (DGOTIX) A4 PDF for a report. The caller supplies an
@@ -97,6 +200,11 @@ abstract final class ReportPdfBuilder {
   /// The brand at 8% over white, worked out here rather than written as an
   /// alpha: a PDF fill does not blend, so an alpha colour prints solid.
   static const PdfColor _tint = PdfColor(0.92690, 0.96016, 0.99749);
+
+  /// Income green and expense red, dark enough to read on white and to stay
+  /// legible when the page is printed in grey.
+  static const PdfColor _up = PdfColor(0.08627, 0.53725, 0.32157);
+  static const PdfColor _down = PdfColor(0.80392, 0.21569, 0.21569);
 
   /// [base]/[bold] are Arabic-capable fonts supplied by the caller (bundled
   /// TTFs), so export works fully offline. [fallback] covers letters they
@@ -121,11 +229,27 @@ abstract final class ReportPdfBuilder {
         footer: (pw.Context ctx) => _footer(data, ctx),
         build: (pw.Context ctx) => <pw.Widget>[
           _kpis(data),
-          pw.SizedBox(height: 20),
-          // Above the tables: what the figures mean comes before the figures
-          // themselves, which is the order someone reads a report in.
+          pw.SizedBox(height: 18),
+          // What the figures mean comes before the figures themselves, which
+          // is the order a report is read in.
           if (data.hasInsight) ...<pw.Widget>[
             _insight(data),
+            pw.SizedBox(height: 16),
+          ],
+          if (data.hasComparison) ...<pw.Widget>[
+            _comparison(data),
+            pw.SizedBox(height: 16),
+          ],
+          if (data.panels.isNotEmpty) ...<pw.Widget>[
+            _panels(data),
+            pw.SizedBox(height: 16),
+          ],
+          if (data.hasTrend) ...<pw.Widget>[
+            _trend(data),
+            pw.SizedBox(height: 16),
+          ],
+          if (data.hasTop) ...<pw.Widget>[
+            _top(data),
             pw.SizedBox(height: 16),
           ],
           _table(data.incomeTitle, data.income, data.emptyLabel),
@@ -148,12 +272,7 @@ abstract final class ReportPdfBuilder {
             pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: <pw.Widget>[
-                pw.Text('DGOTIX',
-                    style: const pw.TextStyle(
-                        color: _brand,
-                        fontWeight: pw.FontWeight.bold,
-                        fontSize: 15,
-                        letterSpacing: 1.5)),
+                _mark(d),
                 pw.SizedBox(height: 2),
                 pw.Text(pdfSafe(d.title),
                     style: const pw.TextStyle(
@@ -179,6 +298,288 @@ abstract final class ReportPdfBuilder {
         pw.SizedBox(height: 8),
         pw.Container(height: 2, color: _brand),
         pw.SizedBox(height: 14),
+      ],
+    );
+  }
+
+  /// The DGOTIX mark. The drawn logo when it was loaded, the wordmark set in
+  /// type when it was not — an asset that failed to load must not cost the
+  /// reader their report.
+  static pw.Widget _mark(ReportPdfData d) {
+    final String? svg = d.logoSvg;
+    if (svg != null && svg.trim().isNotEmpty) {
+      try {
+        return pw.SvgImage(svg: svg, height: 17);
+      } catch (_) {
+        // A malformed asset falls through to the wordmark below.
+      }
+    }
+    return pw.Text('DGOTIX',
+        style: const pw.TextStyle(
+            color: _brand,
+            fontWeight: pw.FontWeight.bold,
+            fontSize: 15,
+            letterSpacing: 1.5));
+  }
+
+  /// This period beside the one before it.
+  static pw.Widget _comparison(ReportPdfData d) {
+    if (d.comparison.isEmpty) {
+      return _section(
+        d.comparisonTitle!,
+        pw.Text(pdfSafe(d.noComparisonLabel ?? ''),
+            style: const pw.TextStyle(color: _muted, fontSize: 9)),
+      );
+    }
+    return _section(
+      d.comparisonTitle!,
+      pw.Column(
+        children: <pw.Widget>[
+          for (int i = 0; i < d.comparison.length; i++)
+            _comparisonRow(d.comparison[i], last: i == d.comparison.length - 1),
+        ],
+      ),
+    );
+  }
+
+  static pw.Widget _comparisonRow(ReportComparisonRow r, {required bool last}) {
+    final PdfColor tone = r.up == null ? _muted : (r.up! ? _up : _down);
+    return pw.Container(
+      padding: const pw.EdgeInsets.symmetric(vertical: 5),
+      decoration: last
+          ? null
+          : const pw.BoxDecoration(
+              border:
+                  pw.Border(bottom: pw.BorderSide(color: _line, width: 0.5)),
+            ),
+      child: pw.Row(
+        children: <pw.Widget>[
+          pw.Expanded(
+            flex: 4,
+            child: pw.Text(pdfSafe(r.label),
+                style: const pw.TextStyle(color: _ink, fontSize: 9)),
+          ),
+          pw.Expanded(
+            flex: 3,
+            child: pw.Text(pdfSafe(r.now),
+                style: const pw.TextStyle(
+                    color: _ink, fontWeight: pw.FontWeight.bold, fontSize: 9)),
+          ),
+          pw.Expanded(
+            flex: 3,
+            child: pw.Text(pdfSafe(r.before),
+                style: const pw.TextStyle(color: _muted, fontSize: 9)),
+          ),
+          pw.Expanded(
+            flex: 2,
+            child: pw.Text(pdfSafe(r.change),
+                style: pw.TextStyle(
+                    color: tone, fontWeight: pw.FontWeight.bold, fontSize: 9)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Budget, debts and health side by side.
+  static pw.Widget _panels(ReportPdfData d) {
+    return pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: <pw.Widget>[
+        for (int i = 0; i < d.panels.length; i++) ...<pw.Widget>[
+          if (i > 0) pw.SizedBox(width: 10),
+          pw.Expanded(child: _panel(d.panels[i])),
+        ],
+      ],
+    );
+  }
+
+  static pw.Widget _panel(ReportPanel p) {
+    return pw.Container(
+      padding: const pw.EdgeInsets.all(10),
+      decoration: pw.BoxDecoration(
+        border: pw.Border.all(color: _line, width: 0.8),
+        borderRadius: pw.BorderRadius.circular(6),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: <pw.Widget>[
+          pw.Text(pdfSafe(p.title),
+              style: const pw.TextStyle(
+                  color: _muted, fontSize: 8, letterSpacing: 0.3)),
+          pw.SizedBox(height: 6),
+          for (final ReportRow r in p.rows)
+            pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 3),
+              child: pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: <pw.Widget>[
+                  pw.Expanded(
+                    child: pw.Text(pdfSafe(r.label),
+                        style: const pw.TextStyle(color: _muted, fontSize: 8)),
+                  ),
+                  pw.Text(pdfSafe(r.value),
+                      style: const pw.TextStyle(
+                          color: _ink,
+                          fontWeight: pw.FontWeight.bold,
+                          fontSize: 9)),
+                ],
+              ),
+            ),
+          if (p.meter != null) ...<pw.Widget>[
+            pw.SizedBox(height: 5),
+            _meter(p.meter!, over: p.overMeter),
+            if (p.meterLabel != null) ...<pw.Widget>[
+              pw.SizedBox(height: 3),
+              pw.Text(pdfSafe(p.meterLabel!),
+                  style: const pw.TextStyle(color: _muted, fontSize: 7)),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+
+  /// A filled bar, clamped so a budget spent twice over still fits the panel.
+  ///
+  /// Built from two flexed halves rather than a fraction of the width: the
+  /// PDF library has no fractional box, and integer flex divides exactly.
+  /// The library mirrors a row's children on a right-to-left page, so the
+  /// fill starts at the right there without anything being reversed here.
+  static pw.Widget _meter(double ratio, {bool over = false}) {
+    final double v = ratio.isNaN ? 0 : ratio.clamp(0.0, 1.0);
+    final int filled = (v * 1000).round();
+    final List<pw.Widget> parts = <pw.Widget>[
+      if (filled > 0)
+        pw.Expanded(
+          flex: filled,
+          child: pw.Container(
+            decoration: pw.BoxDecoration(
+              color: over ? _down : _brand,
+              borderRadius: pw.BorderRadius.circular(3),
+            ),
+          ),
+        ),
+      if (filled < 1000) pw.Expanded(flex: 1000 - filled, child: pw.SizedBox()),
+    ];
+    return pw.Container(
+      height: 5,
+      decoration: pw.BoxDecoration(
+        color: _line,
+        borderRadius: pw.BorderRadius.circular(3),
+      ),
+      child: pw.Row(children: parts),
+    );
+  }
+
+  /// Twelve months, income and expense as paired columns.
+  ///
+  /// Drawn rather than charted: the chart widgets place their own axes and
+  /// do not mirror for a right-to-left page. Drawn from rows, the library
+  /// mirrors it for us, so January sits at the right in Arabic and at the
+  /// left in English with one list and no special case.
+  static pw.Widget _trend(ReportPdfData d) {
+    const double height = 56;
+    final int peak = d.trend.fold<int>(
+        1,
+        (int m, ReportTrendPoint p) => <int>[m, p.income, p.expense]
+            .reduce((int a, int b) => a > b ? a : b));
+    final List<ReportTrendPoint> points = d.trend;
+
+    double h(int v) => v <= 0 ? 0.6 : (v / peak) * height;
+
+    return _section(
+      d.trendTitle!,
+      pw.Column(
+        children: <pw.Widget>[
+          pw.SizedBox(
+            height: height,
+            child: pw.Row(
+              crossAxisAlignment: pw.CrossAxisAlignment.end,
+              children: <pw.Widget>[
+                for (final ReportTrendPoint p in points)
+                  pw.Expanded(
+                    child: pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.center,
+                      crossAxisAlignment: pw.CrossAxisAlignment.end,
+                      children: <pw.Widget>[
+                        pw.Container(
+                            width: 5, height: h(p.income), color: _brand),
+                        pw.SizedBox(width: 1.5),
+                        pw.Container(
+                            width: 5, height: h(p.expense), color: _down),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          pw.SizedBox(height: 3),
+          pw.Container(height: 0.5, color: _line),
+          pw.SizedBox(height: 3),
+          pw.Row(
+            children: <pw.Widget>[
+              for (final ReportTrendPoint p in points)
+                pw.Expanded(
+                  child: pw.Center(
+                    child: pw.Text(pdfSafe(p.label),
+                        style: const pw.TextStyle(color: _muted, fontSize: 6)),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// The largest expense categories as proportional bars.
+  static pw.Widget _top(ReportPdfData d) {
+    return _section(
+      d.topTitle!,
+      pw.Column(
+        children: <pw.Widget>[
+          for (final ReportBar b in d.top)
+            pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 6),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+                children: <pw.Widget>[
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: <pw.Widget>[
+                      pw.Expanded(
+                        child: pw.Text(pdfSafe(b.label),
+                            style:
+                                const pw.TextStyle(color: _ink, fontSize: 8)),
+                      ),
+                      pw.Text(pdfSafe(b.value),
+                          style: const pw.TextStyle(
+                              color: _ink,
+                              fontWeight: pw.FontWeight.bold,
+                              fontSize: 8)),
+                    ],
+                  ),
+                  pw.SizedBox(height: 3),
+                  _meter(b.ratio),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// A titled block, so every section on the page carries the same heading.
+  static pw.Widget _section(String title, pw.Widget child) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+      children: <pw.Widget>[
+        pw.Text(pdfSafe(title),
+            style: const pw.TextStyle(
+                color: _ink, fontWeight: pw.FontWeight.bold, fontSize: 11)),
+        pw.SizedBox(height: 6),
+        child,
       ],
     );
   }

@@ -171,9 +171,12 @@ abstract final class FeatureCatalog {
       feature: Feature.parallelRates,
       minTier: Plan.pro,
     ),
+    // The document itself is everyone's: a report you cannot take with you
+    // is not a report. What PRO buys is the longer periods (quarter, half,
+    // year — Feature.advancedReports) and the written analysis.
     Feature.reportPdf: FeatureRule(
       feature: Feature.reportPdf,
-      minTier: Plan.pro,
+      minTier: Plan.free,
     ),
     Feature.reportTrends: FeatureRule(
       feature: Feature.reportTrends,

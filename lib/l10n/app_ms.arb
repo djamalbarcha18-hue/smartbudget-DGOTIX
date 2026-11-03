@@ -1604,5 +1604,15 @@
   "reportWithInsight": "Tambah analisis bertulis",
   "reportInsightHint": "DGOTIX AI membaca jumlah tempoh ini dan menulis apa yang berlaku serta tiga langkah. Transaksi anda tidak dihantar.",
   "reportInsightTitle": "Membaca angka anda",
-  "reportInsightFailed": "Laporan dieksport tanpa analisis — pembantu tidak dapat dihubungi."
+  "reportInsightFailed": "Laporan dieksport tanpa analisis — pembantu tidak dapat dihubungi.",
+  "reportVsPrevious": "Berbanding tempoh sebelumnya",
+  "reportChange": "Perubahan",
+  "reportNoPrevious": "Tiada tempoh sebelumnya untuk dibandingkan",
+  "reportBudgetTitle": "Bajet",
+  "reportPlanned": "Dirancang",
+  "reportSpent": "Dibelanjakan",
+  "reportLeft": "Baki",
+  "reportTopCategories": "Kategori perbelanjaan terbesar",
+  "reportBudgetUsed": "{percent} daripada bajet · {count} kategori",
+  "reportPointsChange": "{value} mata"
 }

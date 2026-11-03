@@ -1604,5 +1604,15 @@
   "reportWithInsight": "Voeg een geschreven analyse toe",
   "reportInsightHint": "DGOTIX AI leest de totalen van deze periode en schrijft wat er gebeurde en drie stappen. Je transacties worden niet verstuurd.",
   "reportInsightTitle": "Je cijfers gelezen",
-  "reportInsightFailed": "Rapport zonder analyse geëxporteerd — de assistent was niet bereikbaar."
+  "reportInsightFailed": "Rapport zonder analyse geëxporteerd — de assistent was niet bereikbaar.",
+  "reportVsPrevious": "Vergeleken met de vorige periode",
+  "reportChange": "Verschil",
+  "reportNoPrevious": "Geen eerdere periode om mee te vergelijken",
+  "reportBudgetTitle": "Budget",
+  "reportPlanned": "Gepland",
+  "reportSpent": "Uitgegeven",
+  "reportLeft": "Over",
+  "reportTopCategories": "Grootste uitgavencategorieën",
+  "reportBudgetUsed": "{percent} van het budget · {count} categorieën",
+  "reportPointsChange": "{value} ptn"
 }

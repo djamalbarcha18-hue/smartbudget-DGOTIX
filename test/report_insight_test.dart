@@ -4,36 +4,101 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/l10n/app_lang.dart';
+import 'package:smartbudget/features/transactions/domain/categories.dart';
+import 'package:smartbudget/features/budget/domain/budget_target.dart';
+import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
 import 'package:smartbudget/features/reports/data/report_insight_service.dart';
 import 'package:smartbudget/features/reports/data/report_pdf.dart';
+import 'package:smartbudget/features/reports/domain/report_figures.dart';
 import 'package:smartbudget/features/reports/domain/report_insight.dart';
-import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
+import 'package:smartbudget/features/reports/domain/report_period.dart';
+import 'package:smartbudget/features/reports/domain/report_range.dart';
+import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
-Money _m(int major) => Money(major * 100, 'DZD');
+const String _cur = 'DZD';
+
+Money _m(int major) => Money(major * 100, _cur);
 String _money(Money m) => '${m.minorUnits ~/ 100} DZD';
 
-CategoryTotal _c(String name, int major) =>
-    CategoryTotal(category: name, amount: _m(major));
+/// Categories are stored under their Arabic names. They reach the brief
+/// already read through the catalogue, exactly as the tables print them: a
+/// commentary naming a category differently from the table beside it would
+/// be a bug the reader sees.
+String _label(String key) => Catalog.label(key, lang: AppLang.en);
 
-final FinanceSummary _summary = FinanceSummary(
-  income: _m(85000),
-  expense: _m(62900),
-  net: _m(22100),
-  savingsRate: 0.26,
-  count: 41,
-);
-
-String _brief({
-  List<CategoryTotal>? income,
-  List<CategoryTotal>? expenses,
+Transaction _t({
+  required int year,
+  required int month,
+  required int major,
+  required TransactionType type,
+  String category = 'الطعام',
 }) =>
-    ReportInsight.brief(
-      summary: _summary,
-      income: income ?? <CategoryTotal>[_c('راتب', 70000)],
-      expenses: expenses ??
-          <CategoryTotal>[_c('إيجار السكن', 25000), _c('طعام', 18000)],
-      periodLabel: 'سنوي · 2026',
+    Transaction(
+      id: '$year-$month-$major-${type.name}-$category',
+      date: DateTime(year, month, 10),
+      category: category,
+      amount: _m(major),
+      type: type,
+      createdAt: DateTime(year, month, 10),
+    );
+
+/// January 2026: 85,000 in, 62,900 out. December 2025: 80,000 in, 71,000 out.
+final List<Transaction> _txns = <Transaction>[
+  _t(
+      year: 2025,
+      month: 12,
+      major: 80000,
+      type: TransactionType.income,
+      category: 'راتب أساسي'),
+  _t(year: 2025, month: 12, major: 71000, type: TransactionType.expense),
+  _t(
+      year: 2026,
+      month: 1,
+      major: 70000,
+      type: TransactionType.income,
+      category: 'راتب أساسي'),
+  _t(
+      year: 2026,
+      month: 1,
+      major: 15000,
+      type: TransactionType.income,
+      category: 'عمل حر'),
+  _t(
+      year: 2026,
+      month: 1,
+      major: 25000,
+      type: TransactionType.expense,
+      category: 'السكن'),
+  _t(
+      year: 2026,
+      month: 1,
+      major: 37900,
+      type: TransactionType.expense,
+      category: 'الطعام'),
+];
+
+ReportFigures _figures({
+  List<Transaction>? transactions,
+  List<BudgetTarget> budgets = const <BudgetTarget>[],
+  DebtSummary? debts,
+  double? health,
+  int month = 1,
+  int year = 2026,
+}) =>
+    ReportFigures.build(
+      range: ReportRange(period: ReportPeriod.monthly, year: year, sub: month),
+      currency: _cur,
+      transactions: transactions ?? _txns,
+      budgets: budgets,
+      debts: debts,
+      healthScore: health,
+    );
+
+String _brief({ReportFigures? figures}) => ReportInsight.brief(
+      figures: figures ?? _figures(),
+      periodLabel: 'شهري — يناير · 2026',
       money: _money,
+      label: _label,
     );
 
 void main() {
@@ -68,23 +133,36 @@ void main() {
       expect(b, contains('85000 DZD'));
       expect(b, contains('62900 DZD'));
       expect(b, contains('26.0%'));
-      expect(b, contains('إيجار السكن'));
-      expect(b, contains('سنوي · 2026'));
+      expect(b, contains('Housing'),
+          reason: 'read through the catalogue, not the stored key');
+      expect(b, isNot(contains('السكن')));
+      expect(b, contains('شهري — يناير · 2026'));
     });
 
     test('money is formatted by the report, so the two cannot disagree', () {
-      expect(_brief(), contains(_money(_summary.income)));
+      expect(_brief(), contains(_money(_m(85000))));
     });
 
     test('only the biggest categories, so the payload stays small', () {
-      final List<CategoryTotal> many = <CategoryTotal>[
-        for (int i = 0; i < 40; i++) _c('cat$i', 100 - i),
-      ];
-      final String b = _brief(expenses: many);
+      final String b = _brief(
+        figures: _figures(
+          transactions: <Transaction>[
+            for (int i = 0; i < 40; i++)
+              _t(
+                year: 2026,
+                month: 1,
+                major: 4000 - i,
+                type: TransactionType.expense,
+                category: 'cat$i',
+              ),
+          ],
+        ),
+      );
       expect(b, contains('cat0'));
       expect(b.contains('cat$kInsightCategories'), isFalse,
           reason: 'past the cut-off');
-      // A rough ceiling: a few hundred words, not a ledger.
+      // A rough ceiling: a page of figures, never a ledger — this is what
+      // keeps the request cheap however many categories an account has.
       expect(b.length, lessThan(2000));
     });
 
@@ -92,26 +170,25 @@ void main() {
       final String b = _brief();
       // 62900 of 85000 income.
       expect(b, contains('Expense ratio: 74.0% of income'));
-      // 25000 of 62900 expenses, and 18000 of 62900.
+      // 25000 of 62900 expenses, and 37900 of 62900.
       expect(b, contains('39.7%'));
-      expect(b, contains('28.6%'));
+      expect(b, contains('60.3%'));
       // 70000 of 85000 income.
       expect(b, contains('82.4%'));
     });
 
     test('no income means no expense ratio, not a division by zero', () {
-      final String b = ReportInsight.brief(
-        summary: FinanceSummary(
-          income: _m(0),
-          expense: _m(4000),
-          net: _m(-4000),
-          savingsRate: 0,
-          count: 3,
+      final String b = _brief(
+        figures: _figures(
+          month: 5,
+          transactions: <Transaction>[
+            _t(
+                year: 2026,
+                month: 5,
+                major: 4000,
+                type: TransactionType.expense),
+          ],
         ),
-        income: <CategoryTotal>[],
-        expenses: <CategoryTotal>[_c('طعام', 4000)],
-        periodLabel: 'شهري',
-        money: _money,
       );
       expect(b, contains('not available'));
       expect(b, isNot(contains('Infinity')));
@@ -120,23 +197,83 @@ void main() {
       expect(b, contains('100.0%'));
     });
 
-    test('a category whose side totals zero gets no share at all', () {
-      final String b = ReportInsight.brief(
-        summary: FinanceSummary(
-          income: _m(0),
-          expense: _m(0),
-          net: _m(0),
-          savingsRate: 0,
-          count: 0,
-        ),
-        income: <CategoryTotal>[_c('راتب', 0)],
-        expenses: <CategoryTotal>[_c('طعام', 0)],
-        periodLabel: 'شهري',
-        money: _money,
+    test('an empty side is stated, never divided by', () {
+      final String b = _brief(
+        figures: _figures(month: 7, transactions: const <Transaction>[]),
       );
-      expect(b, contains('راتب'));
       expect(b, isNot(contains('NaN')));
-      expect(b, isNot(contains('%)')), reason: 'no share in brackets');
+      expect(b, isNot(contains('Infinity')));
+      expect(b, contains('(none)'));
+    });
+
+    test('the move against the period before travels with the figures', () {
+      final String b = _brief();
+      expect(b, contains('Against the period before:'));
+      // 85,000 against 80,000 in, 62,900 against 71,000 out.
+      expect(b, contains('+6.3%'));
+      expect(b, contains('-11.4%'));
+      expect(b, contains('was 80000 DZD'));
+      // 26.0% against 11.3%: points, never a percentage of a percentage.
+      expect(b, contains('points'));
+    });
+
+    test('a first period says there is nothing to compare with', () {
+      final String b = _brief(
+        figures: _figures(
+          month: 12,
+          year: 2025,
+          transactions: <Transaction>[
+            _t(year: 2025, month: 12, major: 100, type: TransactionType.income),
+          ],
+        ),
+      );
+      expect(b, contains('no earlier period on record'));
+      expect(b, isNot(contains('was ')));
+    });
+
+    test('the budget travels as plan, spend and share', () {
+      final String b = _brief(
+        figures: _figures(budgets: <BudgetTarget>[
+          BudgetTarget(
+            id: 'b1',
+            year: 2026,
+            month: 1,
+            category: 'السكن',
+            planned: _m(20000),
+            createdAt: DateTime(2026, 1, 1),
+          ),
+        ]),
+      );
+      expect(b, contains('Budget: planned 20000 DZD'));
+      expect(b, contains('spent 25000 DZD'));
+      expect(b, contains('over plan'));
+    });
+
+    test('no budget is stated plainly, not left out', () {
+      expect(_brief(), contains('Budget: none set'));
+    });
+
+    test('debts and the health score travel when the account has them', () {
+      final String b = _brief(
+        figures: _figures(
+          debts: const DebtSummary(
+            owedToMe: Money(1000000, _cur),
+            owedByMe: Money(2500000, _cur),
+            net: Money(-1500000, _cur),
+            openCount: 3,
+          ),
+          health: 72.4,
+        ),
+      );
+      expect(b, contains('Debts outstanding today'));
+      expect(b, contains('3 open'));
+      expect(b, contains('Financial health score: 72 out of 100'));
+    });
+
+    test('an account with neither sends neither', () {
+      final String b = _brief();
+      expect(b, isNot(contains('Debts outstanding')));
+      expect(b, isNot(contains('Financial health score')));
     });
 
     test('the register asked for is analysis, brief and numeric', () {
@@ -153,9 +290,11 @@ void main() {
     });
 
     test('an empty period says so rather than sending an empty shape', () {
-      final String b =
-          _brief(income: <CategoryTotal>[], expenses: <CategoryTotal>[]);
-      expect(b, contains('(none)'));
+      expect(
+        _brief(
+            figures: _figures(month: 9, transactions: const <Transaction>[])),
+        contains('(none)'),
+      );
     });
 
     test('the writing is asked for in the report\'s own language', () {

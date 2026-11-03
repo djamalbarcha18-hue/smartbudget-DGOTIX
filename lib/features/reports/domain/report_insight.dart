@@ -12,6 +12,8 @@
 library;
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
+import 'package:smartbudget/features/reports/domain/report_figures.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 
 /// How many category lines are sent. The long tail of tiny categories adds
@@ -28,22 +30,24 @@ const int kInsightMaxLines = 6;
 abstract final class ReportInsight {
   /// The figures to be explained, as compact lines.
   ///
-  /// [money] formats an amount the way the report prints it, so the writing
-  /// and the table cannot disagree about a number.
+  /// [money] formats an amount the way the report prints it and [label] names
+  /// a category the way the report names it, so the writing and the tables
+  /// cannot disagree about a number or call a category something else.
   static String brief({
-    required FinanceSummary summary,
-    required List<CategoryTotal> income,
-    required List<CategoryTotal> expenses,
+    required ReportFigures figures,
     required String periodLabel,
     required String Function(Money) money,
+    required String Function(String) label,
   }) {
-    // Every share is worked out here rather than left to the model: a
-    // language model is a poor calculator, and a commentary that disagrees
-    // with its own table is worse than no commentary. Nothing new leaves the
-    // device — each ratio is derived from the four figures and the category
-    // lines the report already prints.
+    // Every share and every move is worked out here rather than left to the
+    // model: a language model is a poor calculator, and a commentary that
+    // disagrees with the table beside it is worse than no commentary. All of
+    // it is derived from the figures the report already prints.
     String percentOf(int part, int whole) =>
         '${(part * 100 / whole).toStringAsFixed(1)}%';
+
+    String signed(double ratio) =>
+        '${ratio >= 0 ? '+' : ''}${(ratio * 100).toStringAsFixed(1)}%';
 
     String lines(List<CategoryTotal> totals, int whole) {
       final List<CategoryTotal> top = totals.take(kInsightCategories).toList();
@@ -51,28 +55,83 @@ abstract final class ReportInsight {
       return top.map((CategoryTotal t) {
         final String share =
             whole > 0 ? ' (${percentOf(t.amount.minorUnits, whole)})' : '';
-        return '  ${t.category}: ${money(t.amount)}$share';
+        return '  ${label(t.category)}: ${money(t.amount)}$share';
       }).join('\n');
     }
 
-    final int incomeMinor = summary.income.minorUnits;
-    final int expenseMinor = summary.expense.minorUnits;
+    final FinanceSummary s = figures.summary;
+    final int incomeMinor = s.income.minorUnits;
+    final int expenseMinor = s.expense.minorUnits;
 
-    return <String>[
+    final List<String> out = <String>[
       'Period: $periodLabel',
-      'Income: ${money(summary.income)}',
-      'Expenses: ${money(summary.expense)}',
-      'Net: ${money(summary.net)}',
-      'Savings rate: ${(summary.savingsRate * 100).toStringAsFixed(1)}%',
+      'Income: ${money(s.income)}',
+      'Expenses: ${money(s.expense)}',
+      'Net: ${money(s.net)}',
+      'Savings rate: ${(s.savingsRate * 100).toStringAsFixed(1)}%',
       if (incomeMinor > 0)
         'Expense ratio: ${percentOf(expenseMinor, incomeMinor)} of income'
       else
         'Expense ratio: not available (no income recorded)',
+    ];
+
+    final FinanceSummary? was = figures.previous;
+    if (was != null) {
+      out.add('Against the period before:');
+      void move(String name, PeriodChange? c, Money before) {
+        if (c == null) return;
+        final double? r = c.ratio;
+        final String change =
+            r == null ? money(c.delta) : '${signed(r)} (${money(c.delta)})';
+        out.add('  $name: $change, was ${money(before)}');
+      }
+
+      move('Income', figures.incomeChange, was.income);
+      move('Expenses', figures.expenseChange, was.expense);
+      move('Net', figures.netChange, was.net);
+      final double? pts = figures.savingsRateChange;
+      if (pts != null) {
+        out.add('  Savings rate: ${pts >= 0 ? '+' : ''}'
+            '${(pts * 100).toStringAsFixed(1)} points, '
+            'was ${(was.savingsRate * 100).toStringAsFixed(1)}%');
+      }
+    } else {
+      out.add('Against the period before: no earlier period on record.');
+    }
+
+    final BudgetFigures b = figures.budget;
+    if (b.hasBudget) {
+      out.add('Budget: planned ${money(b.planned)}, '
+          'spent ${money(b.spent)} '
+          '(${percentOf(b.spent.minorUnits, b.planned.minorUnits)} of it), '
+          'across ${b.categories} categories'
+          '${b.isOver ? ' — over plan' : ''}');
+    } else {
+      out.add('Budget: none set for this period.');
+    }
+
+    final DebtSummary? debts = figures.debts;
+    if (debts != null) {
+      out.add('Debts outstanding today: owed to the account '
+          '${money(debts.owedToMe)}, owed by the account '
+          '${money(debts.owedByMe)}, net ${money(debts.net)}, '
+          '${debts.openCount} open');
+    }
+
+    final double? health = figures.healthScore;
+    if (health != null) {
+      out.add(
+          'Financial health score: ${health.toStringAsFixed(0)} out of 100');
+    }
+
+    out.addAll(<String>[
       'Income by source (share of income):',
-      lines(income, incomeMinor),
+      lines(figures.income, incomeMinor),
       'Expenses by category (share of expenses):',
-      lines(expenses, expenseMinor),
-    ].join('\n');
+      lines(figures.expenses, expenseMinor),
+    ]);
+
+    return out.join('\n');
   }
 
   /// What the assistant is asked to write.
@@ -92,8 +151,9 @@ abstract final class ReportInsight {
             'quantitative, forward-looking.',
         'Exactly two parts, in this order, and nothing else:',
         '1. Reading: two sentences. Each one states a ratio or an amount from '
-            'the figures below - the expense ratio, the savings rate, or the '
-            'share of the largest category - and names that category.',
+            'the figures below - the expense ratio, the savings rate, the '
+            'move against the period before, the share of the budget used, '
+            'or the share of the largest category - and names that category.',
         '2. Next: exactly three steps, one line each, under twelve words. '
             'Each line names one category, one target figure, and the amount '
             'it frees over the period.',

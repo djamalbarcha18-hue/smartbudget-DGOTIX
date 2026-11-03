@@ -3,7 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/budget/application/budget_controller.dart';
+import 'package:smartbudget/features/budget/domain/budget_target.dart';
+import 'package:smartbudget/features/debts/application/debts_controller.dart';
+import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
+import 'package:smartbudget/features/financial_health/application/health_controller.dart';
+import 'package:smartbudget/features/financial_health/domain/health_engine.dart';
+import 'package:smartbudget/features/reports/domain/report_figures.dart';
 import 'package:smartbudget/features/reports/domain/report_period.dart';
+import 'package:smartbudget/features/reports/domain/report_range.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -85,5 +93,35 @@ final reportResultProvider = Provider<ReportResult>((ref) {
         txns, TransactionType.income, currency),
     expenseCategories: FinanceCalculator.categoryTotals(
         txns, TransactionType.expense, currency),
+  );
+});
+
+/// The span the report covers, as the screen currently has it set.
+final reportRangeProvider = Provider<ReportRange>((ref) => ReportRange(
+      period: ref.watch(effectiveReportPeriodProvider),
+      year: ref.watch(selectedYearProvider),
+      sub: ref.watch(effectiveReportSubProvider),
+    ));
+
+/// Every figure the PDF prints, worked out in one place.
+///
+/// Reads every transaction rather than the selected year's: the period before
+/// January sits in the year before it, and a comparison that silently went
+/// missing each January would be worse than none.
+final reportFiguresProvider = Provider<ReportFigures>((ref) {
+  final List<Transaction> all =
+      ref.watch(transactionsProvider).valueOrNull ?? const <Transaction>[];
+  final List<BudgetTarget> budgets =
+      ref.watch(budgetsProvider).valueOrNull ?? const <BudgetTarget>[];
+  final DebtSummary debts = ref.watch(debtSummaryProvider);
+  final HealthReport health = ref.watch(healthReportProvider);
+
+  return ReportFigures.build(
+    range: ref.watch(reportRangeProvider),
+    currency: ref.watch(baseCurrencyProvider),
+    transactions: all,
+    budgets: budgets,
+    debts: debts.openCount > 0 ? debts : null,
+    healthScore: health.hasData ? health.score : null,
   );
 });

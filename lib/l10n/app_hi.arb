@@ -1604,5 +1604,15 @@
   "reportWithInsight": "लिखित विश्लेषण जोड़ें",
   "reportInsightHint": "DGOTIX AI इस अवधि के कुल पढ़कर बताता है क्या हुआ और तीन कदम। आपके लेन-देन नहीं भेजे जाते।",
   "reportInsightTitle": "आपके आँकड़ों का पाठ",
-  "reportInsightFailed": "रिपोर्ट विश्लेषण के बिना निर्यात हुई — सहायक तक नहीं पहुँच सके।"
+  "reportInsightFailed": "रिपोर्ट विश्लेषण के बिना निर्यात हुई — सहायक तक नहीं पहुँच सके।",
+  "reportVsPrevious": "पिछली अवधि की तुलना में",
+  "reportChange": "बदलाव",
+  "reportNoPrevious": "तुलना के लिए पिछली अवधि नहीं है",
+  "reportBudgetTitle": "बजट",
+  "reportPlanned": "नियोजित",
+  "reportSpent": "खर्च",
+  "reportLeft": "शेष",
+  "reportTopCategories": "सबसे बड़ी खर्च श्रेणियाँ",
+  "reportBudgetUsed": "बजट का {percent} · {count} श्रेणियाँ",
+  "reportPointsChange": "{value} अंक"
 }

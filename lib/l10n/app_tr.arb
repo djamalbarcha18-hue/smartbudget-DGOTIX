@@ -1604,5 +1604,15 @@
   "reportWithInsight": "Yazılı analiz ekle",
   "reportInsightHint": "DGOTIX AI bu dönemin toplamlarını okur, ne olduğunu ve üç adımı yazar. İşlemleriniz gönderilmez.",
   "reportInsightTitle": "Rakamlarınızın okunuşu",
-  "reportInsightFailed": "Rapor analiz olmadan dışa aktarıldı — asistana ulaşılamadı."
+  "reportInsightFailed": "Rapor analiz olmadan dışa aktarıldı — asistana ulaşılamadı.",
+  "reportVsPrevious": "Önceki döneme kıyasla",
+  "reportChange": "Değişim",
+  "reportNoPrevious": "Karşılaştırılacak önceki dönem yok",
+  "reportBudgetTitle": "Bütçe",
+  "reportPlanned": "Planlanan",
+  "reportSpent": "Harcanan",
+  "reportLeft": "Kalan",
+  "reportTopCategories": "En büyük harcama kategorileri",
+  "reportBudgetUsed": "Bütçenin {percent} kadarı · {count} kategori",
+  "reportPointsChange": "{value} puan"
 }

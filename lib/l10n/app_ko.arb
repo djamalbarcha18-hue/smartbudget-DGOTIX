@@ -1604,5 +1604,15 @@
   "reportWithInsight": "서술 분석 추가",
   "reportInsightHint": "DGOTIX AI가 이 기간의 합계를 읽고 무슨 일이 있었는지와 세 단계를 씁니다. 거래 내역은 전송되지 않습니다.",
   "reportInsightTitle": "숫자 읽기",
-  "reportInsightFailed": "분석 없이 내보냈습니다 — 어시스턴트에 연결하지 못했습니다."
+  "reportInsightFailed": "분석 없이 내보냈습니다 — 어시스턴트에 연결하지 못했습니다.",
+  "reportVsPrevious": "이전 기간과 비교",
+  "reportChange": "변화",
+  "reportNoPrevious": "비교할 이전 기간이 없습니다",
+  "reportBudgetTitle": "예산",
+  "reportPlanned": "계획",
+  "reportSpent": "지출",
+  "reportLeft": "남음",
+  "reportTopCategories": "지출이 가장 큰 항목",
+  "reportBudgetUsed": "예산의 {percent} · {count}개 항목",
+  "reportPointsChange": "{value}포인트"
 }

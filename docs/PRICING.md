@@ -182,7 +182,8 @@ The catalog is the source of truth; this is the intended shape:
 | Financial health | score, risks, emergency fund | + strengths, pillars, recommendations |
 | Automatic sync across devices | — (backup file export only) | ✅ |
 | Smart salary split | — | ✅ |
-| PDF report export | — | ✅ |
+| PDF report export | ✅ this month and last | ✅ every period |
+| Written AI analysis in the PDF | — | ✅ |
 | Yearly trend chart (months compared) | — | ✅ |
 | Smart alerts (forecasts, unusual spending, summaries) | — | ✅ |
 | Markets: crypto, metals, commodities | — | ✅ |
