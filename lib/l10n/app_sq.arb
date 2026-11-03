@@ -1600,5 +1600,9 @@
   "inviteRewards": "Çfarë shkyçni",
   "inviteUnlocked": "E shkyçur",
   "inviteNeedAccount": "Krijoni një llogari për të marrë lidhjen dhe për të ndjekur përparimin.",
-  "rewardHigherLimits": "Kufij më të lartë: buxhete të palimituara, më shumë synime, borxhe dhe portofola"
+  "rewardHigherLimits": "Kufij më të lartë: buxhete të palimituara, më shumë synime, borxhe dhe portofola",
+  "reportWithInsight": "Shto një analizë të shkruar",
+  "reportInsightHint": "DGOTIX AI lexon totalet e kësaj periudhe dhe shkruan çfarë ndodhi dhe tre hapa. Transaksionet tuaja nuk dërgohen.",
+  "reportInsightTitle": "Leximi i shifrave tuaja",
+  "reportInsightFailed": "Raporti u eksportua pa analizën — asistenti nuk u arrit."
 }

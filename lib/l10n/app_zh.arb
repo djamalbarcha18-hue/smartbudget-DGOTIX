@@ -1600,5 +1600,9 @@
   "inviteRewards": "你将解锁",
   "inviteUnlocked": "已解锁",
   "inviteNeedAccount": "创建账户以获取你的链接并查看进度。",
-  "rewardHigherLimits": "更高上限：预算不限量，更多目标、债务与钱包"
+  "rewardHigherLimits": "更高上限：预算不限量，更多目标、债务与钱包",
+  "reportWithInsight": "添加文字分析",
+  "reportInsightHint": "DGOTIX AI 读取本期合计，写出发生了什么以及三个步骤。不会发送你的交易记录。",
+  "reportInsightTitle": "数字解读",
+  "reportInsightFailed": "报告已导出但没有分析 — 无法连接助手。"
 }

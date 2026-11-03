@@ -1888,5 +1888,9 @@
   "inviteUnlocked": "Unlocked",
   "inviteNeedAccount": "Create an account to get your invite link and follow your progress.",
   "rewardHigherLimits": "Higher limits: unlimited budgets, and more goals, debts and wallets",
-  "@inviteProgressLine": {"placeholders": {"done": {"type": "int"}, "needed": {"type": "int"}}}
+  "@inviteProgressLine": {"placeholders": {"done": {"type": "int"}, "needed": {"type": "int"}}},
+  "reportWithInsight": "Add a written analysis",
+  "reportInsightHint": "DGOTIX AI reads this period's totals and writes what happened and three steps. Your transactions are not sent.",
+  "reportInsightTitle": "Reading your figures",
+  "reportInsightFailed": "The report was exported without the analysis — the assistant could not be reached."
 }

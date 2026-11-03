@@ -1600,5 +1600,9 @@
   "inviteRewards": "Wat je ontgrendelt",
   "inviteUnlocked": "Ontgrendeld",
   "inviteNeedAccount": "Maak een account om je link te krijgen en je voortgang te volgen.",
-  "rewardHigherLimits": "Hogere limieten: onbeperkte budgetten en meer doelen, schulden en portefeuilles"
+  "rewardHigherLimits": "Hogere limieten: onbeperkte budgetten en meer doelen, schulden en portefeuilles",
+  "reportWithInsight": "Voeg een geschreven analyse toe",
+  "reportInsightHint": "DGOTIX AI leest de totalen van deze periode en schrijft wat er gebeurde en drie stappen. Je transacties worden niet verstuurd.",
+  "reportInsightTitle": "Je cijfers gelezen",
+  "reportInsightFailed": "Rapport zonder analyse geëxporteerd — de assistent was niet bereikbaar."
 }

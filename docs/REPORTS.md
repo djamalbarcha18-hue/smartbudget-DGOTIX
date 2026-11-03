@@ -4,6 +4,37 @@ Four reporting periods — monthly, quarterly, half-yearly and yearly — all of
 them PRO. The PDF is built on the device from data already there; nothing is
 sent anywhere to make one.
 
+## The written commentary
+
+A PRO reader can ask DGOTIX AI to write the report's commentary: what
+happened in a few sentences, then three concrete steps. It is off by default
+and switched on per export, because it spends one of the account's assistant
+requests.
+
+### What leaves the device
+
+Only the figures the report already prints: the four totals and the biggest
+eight category lines. **No transaction, note, merchant, date, wallet or
+account.** That is enforced by shape — `ReportInsight.brief` takes the
+computed summary and the category totals, and neither file so much as imports
+the transaction model. `test/report_insight_test.dart` fails if either ever
+does.
+
+### What it costs
+
+One request per export, through the same gateway as everything else, so the
+server's existing quota, daily limit and monthly cost ceiling apply unchanged
+— there is no second allowance to keep in step. A few hundred words in and
+out: on the cheapest model in the registry that is a fraction of a cent, and
+a PRO account's ceiling is $2 a month.
+
+### When it is not there
+
+A refused request, an exhausted quota or no network all give null, and the
+report is produced exactly as it is without one — same layout, no error, no
+empty block. `ReportPdfData.hasInsight` requires both the heading and the
+text, so a half-filled answer is treated as none.
+
 ## The Arabic word gap
 
 The `pdf` package shapes Arabic itself, and for some words it emits the

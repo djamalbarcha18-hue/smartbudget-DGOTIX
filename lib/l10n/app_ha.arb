@@ -1600,5 +1600,9 @@
   "inviteRewards": "Abin da za ka buɗe",
   "inviteUnlocked": "An buɗe",
   "inviteNeedAccount": "Ƙirƙiri asusu don samun haɗinka da bin diddigin ci gaba.",
-  "rewardHigherLimits": "Ƙarin iyaka: kasafi mara iyaka, ƙarin buri, bashi da walat"
+  "rewardHigherLimits": "Ƙarin iyaka: kasafi mara iyaka, ƙarin buri, bashi da walat",
+  "reportWithInsight": "Ƙara bincike a rubuce",
+  "reportInsightHint": "DGOTIX AI yana karanta jimillar wannan lokaci ya rubuta abin da ya faru da matakai uku. Ba a aika ma'amalolinka ba.",
+  "reportInsightTitle": "Karanta lambobinka",
+  "reportInsightFailed": "An fitar da rahoton ba tare da bincike ba — ba a iya isa ga mataimakin ba."
 }

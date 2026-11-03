@@ -1600,5 +1600,9 @@
   "inviteRewards": "Neler açılıyor",
   "inviteUnlocked": "Açıldı",
   "inviteNeedAccount": "Bağlantını almak ve ilerlemeni görmek için hesap oluştur.",
-  "rewardHigherLimits": "Daha yüksek sınırlar: sınırsız bütçe, daha fazla hedef, borç ve cüzdan"
+  "rewardHigherLimits": "Daha yüksek sınırlar: sınırsız bütçe, daha fazla hedef, borç ve cüzdan",
+  "reportWithInsight": "Yazılı analiz ekle",
+  "reportInsightHint": "DGOTIX AI bu dönemin toplamlarını okur, ne olduğunu ve üç adımı yazar. İşlemleriniz gönderilmez.",
+  "reportInsightTitle": "Rakamlarınızın okunuşu",
+  "reportInsightFailed": "Rapor analiz olmadan dışa aktarıldı — asistana ulaşılamadı."
 }

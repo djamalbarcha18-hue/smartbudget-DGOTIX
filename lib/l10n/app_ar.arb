@@ -1799,5 +1799,9 @@
   "inviteRewards": "ما تفتحه",
   "inviteUnlocked": "مفتوحة",
   "inviteNeedAccount": "أنشئ حسابًا للحصول على رابط دعوتك ومتابعة تقدّمك.",
-  "rewardHigherLimits": "حدود أعلى: ميزانيات بلا حد، وأهداف وديون ومحافظ أكثر"
+  "rewardHigherLimits": "حدود أعلى: ميزانيات بلا حد، وأهداف وديون ومحافظ أكثر",
+  "reportWithInsight": "أضف تحليلًا مكتوبًا",
+  "reportInsightHint": "يقرأ DGOTIX AI إجماليات هذه الفترة ويكتب ما حدث وثلاث خطوات. لا تُرسَل معاملاتك.",
+  "reportInsightTitle": "قراءة في أرقامك",
+  "reportInsightFailed": "صُدِّر التقرير بلا تحليل — تعذّر الوصول إلى المساعد."
 }

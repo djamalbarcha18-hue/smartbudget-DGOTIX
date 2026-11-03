@@ -1600,5 +1600,9 @@
   "inviteRewards": "O que desbloqueia",
   "inviteUnlocked": "Desbloqueado",
   "inviteNeedAccount": "Crie uma conta para obter o seu link e acompanhar o progresso.",
-  "rewardHigherLimits": "Limites maiores: orçamentos ilimitados e mais metas, dívidas e carteiras"
+  "rewardHigherLimits": "Limites maiores: orçamentos ilimitados e mais metas, dívidas e carteiras",
+  "reportWithInsight": "Adicionar uma análise escrita",
+  "reportInsightHint": "A DGOTIX AI lê os totais do período e escreve o que aconteceu e três passos. As suas transações não são enviadas.",
+  "reportInsightTitle": "Leitura dos seus números",
+  "reportInsightFailed": "Relatório exportado sem a análise — não foi possível contactar o assistente."
 }

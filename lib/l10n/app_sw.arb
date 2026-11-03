@@ -1600,5 +1600,9 @@
   "inviteRewards": "Unachofungua",
   "inviteUnlocked": "Imefunguliwa",
   "inviteNeedAccount": "Fungua akaunti upate kiungo chako na ufuatilie maendeleo.",
-  "rewardHigherLimits": "Mipaka ya juu: bajeti zisizo na kikomo, malengo, madeni na pochi zaidi"
+  "rewardHigherLimits": "Mipaka ya juu: bajeti zisizo na kikomo, malengo, madeni na pochi zaidi",
+  "reportWithInsight": "Ongeza uchambuzi ulioandikwa",
+  "reportInsightHint": "DGOTIX AI husoma jumla za kipindi hiki na kuandika kilichotokea na hatua tatu. Miamala yako haitumwi.",
+  "reportInsightTitle": "Kusoma takwimu zako",
+  "reportInsightFailed": "Ripoti imehamishwa bila uchambuzi — hakuweza kufikiwa msaidizi."
 }

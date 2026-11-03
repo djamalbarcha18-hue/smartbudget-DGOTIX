@@ -1600,5 +1600,9 @@
   "inviteRewards": "解放されるもの",
   "inviteUnlocked": "解放済み",
   "inviteNeedAccount": "アカウントを作ると招待リンクと進捗が表示されます。",
-  "rewardHigherLimits": "上限アップ：予算は無制限、目標・負債・ウォレットも増加"
+  "rewardHigherLimits": "上限アップ：予算は無制限、目標・負債・ウォレットも増加",
+  "reportWithInsight": "文章による分析を追加",
+  "reportInsightHint": "DGOTIX AI がこの期間の合計を読み、何が起きたかと3つの手順を書きます。取引明細は送信されません。",
+  "reportInsightTitle": "数字の読み解き",
+  "reportInsightFailed": "分析なしで書き出しました — アシスタントに接続できませんでした。"
 }

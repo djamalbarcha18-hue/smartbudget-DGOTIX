@@ -1600,5 +1600,9 @@
   "inviteRewards": "Apa yang anda buka",
   "inviteUnlocked": "Terbuka",
   "inviteNeedAccount": "Cipta akaun untuk mendapat pautan anda dan ikuti kemajuan.",
-  "rewardHigherLimits": "Had lebih tinggi: bajet tanpa had, lebih banyak matlamat, hutang dan dompet"
+  "rewardHigherLimits": "Had lebih tinggi: bajet tanpa had, lebih banyak matlamat, hutang dan dompet",
+  "reportWithInsight": "Tambah analisis bertulis",
+  "reportInsightHint": "DGOTIX AI membaca jumlah tempoh ini dan menulis apa yang berlaku serta tiga langkah. Transaksi anda tidak dihantar.",
+  "reportInsightTitle": "Membaca angka anda",
+  "reportInsightFailed": "Laporan dieksport tanpa analisis — pembantu tidak dapat dihubungi."
 }

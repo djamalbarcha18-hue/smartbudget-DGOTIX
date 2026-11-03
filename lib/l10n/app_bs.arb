@@ -1600,5 +1600,9 @@
   "inviteRewards": "Šta otključavate",
   "inviteUnlocked": "Otključano",
   "inviteNeedAccount": "Napravite račun da dobijete svoj link i pratite napredak.",
-  "rewardHigherLimits": "Viši limiti: neograničeni budžeti te više ciljeva, dugova i novčanika"
+  "rewardHigherLimits": "Viši limiti: neograničeni budžeti te više ciljeva, dugova i novčanika",
+  "reportWithInsight": "Dodaj pisanu analizu",
+  "reportInsightHint": "DGOTIX AI čita zbirove ovog perioda i piše šta se desilo te tri koraka. Vaše transakcije se ne šalju.",
+  "reportInsightTitle": "Čitanje vaših brojeva",
+  "reportInsightFailed": "Izvještaj je izvezen bez analize — asistent nije bio dostupan."
 }

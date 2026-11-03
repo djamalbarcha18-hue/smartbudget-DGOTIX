@@ -1600,5 +1600,9 @@
   "inviteRewards": "Was Sie freischalten",
   "inviteUnlocked": "Freigeschaltet",
   "inviteNeedAccount": "Erstellen Sie ein Konto, um Ihren Link zu erhalten und den Fortschritt zu sehen.",
-  "rewardHigherLimits": "Höhere Grenzen: unbegrenzte Budgets, mehr Ziele, Schulden und Konten"
+  "rewardHigherLimits": "Höhere Grenzen: unbegrenzte Budgets, mehr Ziele, Schulden und Konten",
+  "reportWithInsight": "Schriftliche Analyse hinzufügen",
+  "reportInsightHint": "DGOTIX AI liest die Summen des Zeitraums und schreibt, was geschah, und drei Schritte. Ihre Buchungen werden nicht gesendet.",
+  "reportInsightTitle": "Ihre Zahlen gelesen",
+  "reportInsightFailed": "Bericht ohne Analyse exportiert — der Assistent war nicht erreichbar."
 }

@@ -1600,5 +1600,9 @@
   "inviteRewards": "Wat jy ontsluit",
   "inviteUnlocked": "Ontsluit",
   "inviteNeedAccount": "Skep 'n rekening om jou skakel te kry en jou vordering te volg.",
-  "rewardHigherLimits": "Hoër limiete: onbeperkte begrotings, meer doelwitte, skulde en beursies"
+  "rewardHigherLimits": "Hoër limiete: onbeperkte begrotings, meer doelwitte, skulde en beursies",
+  "reportWithInsight": "Voeg 'n geskrewe ontleding by",
+  "reportInsightHint": "DGOTIX AI lees hierdie tydperk se totale en skryf wat gebeur het en drie stappe. Jou transaksies word nie gestuur nie.",
+  "reportInsightTitle": "Jou syfers gelees",
+  "reportInsightFailed": "Verslag sonder die ontleding uitgevoer — die assistent was onbereikbaar."
 }

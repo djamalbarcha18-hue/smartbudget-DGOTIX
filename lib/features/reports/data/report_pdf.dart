@@ -57,6 +57,8 @@ class ReportPdfData {
     required this.emptyLabel,
     required this.footer,
     required this.isRtl,
+    this.insightTitle,
+    this.insight,
   });
 
   final String title; // functional report title
@@ -70,6 +72,17 @@ class ReportPdfData {
   final String emptyLabel;
   final String footer;
   final bool isRtl;
+
+  /// The heading above the written commentary, and the commentary itself.
+  /// Both null on a report without one — which is every report until the
+  /// reader asks for it, and any report where the request did not come back.
+  /// The rest of the page is identical either way.
+  final String? insightTitle;
+  final String? insight;
+
+  bool get hasInsight =>
+      (insight?.trim().isNotEmpty ?? false) &&
+      (insightTitle?.trim().isNotEmpty ?? false);
 }
 
 /// Builds a branded (DGOTIX) A4 PDF for a report. The caller supplies an
@@ -80,6 +93,10 @@ abstract final class ReportPdfBuilder {
   static const PdfColor _ink = PdfColor(0.05882, 0.09020, 0.16471);
   static const PdfColor _muted = PdfColor(0.39216, 0.45490, 0.54510);
   static const PdfColor _line = PdfColor(0.88627, 0.90980, 0.94118);
+
+  /// The brand at 8% over white, worked out here rather than written as an
+  /// alpha: a PDF fill does not blend, so an alpha colour prints solid.
+  static const PdfColor _tint = PdfColor(0.92690, 0.96016, 0.99749);
 
   /// [base]/[bold] are Arabic-capable fonts supplied by the caller (bundled
   /// TTFs), so export works fully offline. [fallback] covers letters they
@@ -105,6 +122,12 @@ abstract final class ReportPdfBuilder {
         build: (pw.Context ctx) => <pw.Widget>[
           _kpis(data),
           pw.SizedBox(height: 20),
+          // Above the tables: what the figures mean comes before the figures
+          // themselves, which is the order someone reads a report in.
+          if (data.hasInsight) ...<pw.Widget>[
+            _insight(data),
+            pw.SizedBox(height: 16),
+          ],
           _table(data.incomeTitle, data.income, data.emptyLabel),
           pw.SizedBox(height: 16),
           _table(data.expenseTitle, data.expenses, data.emptyLabel),
@@ -202,6 +225,35 @@ abstract final class ReportPdfBuilder {
           pw.Text(pdfSafe(r.value),
               style: const pw.TextStyle(
                   color: _ink, fontWeight: pw.FontWeight.bold, fontSize: 12)),
+        ],
+      ),
+    );
+  }
+
+  /// The written commentary, set as plain paragraphs inside a tinted block
+  /// so it reads as commentary rather than as another table.
+  static pw.Widget _insight(ReportPdfData d) {
+    return pw.Container(
+      width: double.infinity,
+      padding: const pw.EdgeInsets.all(12),
+      decoration: pw.BoxDecoration(
+        color: _tint,
+        borderRadius: pw.BorderRadius.circular(8),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: <pw.Widget>[
+          pw.Text(pdfSafe(d.insightTitle!),
+              style: const pw.TextStyle(
+                  color: _ink, fontWeight: pw.FontWeight.bold, fontSize: 11)),
+          pw.SizedBox(height: 6),
+          for (final String line in d.insight!.split('\n'))
+            pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 3),
+              child: pw.Text(pdfSafe(line),
+                  style: const pw.TextStyle(
+                      color: _ink, fontSize: 9, lineSpacing: 2)),
+            ),
         ],
       ),
     );
