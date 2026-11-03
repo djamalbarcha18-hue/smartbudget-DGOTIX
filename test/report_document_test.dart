@@ -191,7 +191,15 @@ void main() {
       expect(d.hasTrend, isTrue);
       expect(d.trend.first.income, 8500000);
       expect(d.trend.first.expense, 6290000);
+      expect(d.trend.first.net, 8500000 - 6290000,
+          reason: 'the blue bar is the month\'s own left-over');
       expect(d.trend.last.income, 0, reason: 'December 2025 is another year');
+    });
+
+    test('the chart says which colour is which, in the page\'s language', () {
+      expect(_doc(AppLang.en).trendLegend,
+          <String>['Total Income', 'Total Expenses', 'Left over']);
+      expect(_doc(AppLang.ar).trendLegend.first, 'إجمالي الدخل');
     });
 
     test('the largest categories are bars against the largest', () {

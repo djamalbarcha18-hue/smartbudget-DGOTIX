@@ -30,14 +30,28 @@ panel of zeroes tells the reader nothing.
 | The written analysis | PRO, and only when asked for |
 | Against the period before | the four figures, this period and last, with the move — in points for the savings rate, because a rate moving 11.3% → 26.0% rose by 14.7 points, not by 130% |
 | Budget · Debts · Health | planned/spent/left with a meter, the debt balances, the health score out of 100 |
-| The year | twelve months of income and expense as paired columns |
-| Largest categories | the five biggest expenses as proportional bars |
+| The year | twelve months as grouped columns — **green income, red expenses, blue left over**, with the three words under the title saying which is which |
+| Largest categories | the five biggest expenses as proportional bars, red, following the same rule |
 | Income and expenses | the full tables |
 
 Everything is computed by `ReportFigures` and turned into the page by
 `ReportDocument` — neither touches Flutter or the network, so the whole
 document is built in tests for all twenty-three languages
 (`test/report_pdf_languages_test.dart`, `test/report_document_test.dart`).
+
+### The three colours
+
+Green is income, red is expenses, blue is what is left over, everywhere on
+the page. A month that spent more than it took in has no upward bar to draw,
+so its left-over bar hangs **below the line** instead of vanishing — all
+three bars share one scale, so the heights can be read against each other.
+
+Colour is never the only carrier: the legend names each one in the report's
+own language, and every figure is also in the tables for a reader printing
+in black and white.
+
+The budget meter keeps blue, turning red only when the plan is overspent —
+there it is a progress bar with a warning state, not a breakdown of money.
 
 ### Drawn, not charted
 

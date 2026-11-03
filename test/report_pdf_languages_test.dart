@@ -77,9 +77,15 @@ ReportPdfData _data(AppLang lang, {bool full = true}) => ReportPdfData(
       trend: full
           ? <ReportTrendPoint>[
               for (int i = 0; i < 12; i++)
-                ReportTrendPoint('${i + 1}', 8000000 + i, 6000000 + i),
+                // One month in deficit, so the below-the-line bar is drawn
+                // in every language too.
+                ReportTrendPoint('${i + 1}', 8000000 + i, 6000000 + i,
+                    i == 3 ? -900000 : 2000000 + i),
             ]
           : const <ReportTrendPoint>[],
+      trendLegend: full
+          ? const <String>['Income', 'Expenses', 'Left over']
+          : const <String>[],
       topTitle: full ? 'Largest' : null,
       top: full
           ? <ReportBar>[ReportBar(_sample[lang]!, '25,000', 1.0)]

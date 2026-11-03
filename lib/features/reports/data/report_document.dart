@@ -55,8 +55,17 @@ abstract final class ReportDocument {
       trendTitle: l.sectionIncomeExpenseTrend,
       trend: <ReportTrendPoint>[
         for (final MonthPoint m in figures.year)
-          ReportTrendPoint(MonthNames.short(lang: lang)[m.monthIndex],
-              m.income.minorUnits, m.expense.minorUnits),
+          ReportTrendPoint(
+            MonthNames.short(lang: lang)[m.monthIndex],
+            m.income.minorUnits,
+            m.expense.minorUnits,
+            m.net.minorUnits,
+          ),
+      ],
+      trendLegend: <String>[
+        l.kpiTotalIncome,
+        l.kpiTotalExpenses,
+        l.kpiNetProfit,
       ],
       topTitle: l.reportTopCategories,
       top: _top(figures, lang, money),

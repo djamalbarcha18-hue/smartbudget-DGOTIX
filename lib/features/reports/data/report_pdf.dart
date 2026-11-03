@@ -84,7 +84,7 @@ class ReportPanel {
 
 /// One month of the year chart.
 class ReportTrendPoint {
-  const ReportTrendPoint(this.label, this.income, this.expense);
+  const ReportTrendPoint(this.label, this.income, this.expense, this.net);
 
   final String label;
 
@@ -92,6 +92,10 @@ class ReportTrendPoint {
   /// currency is needed.
   final int income;
   final int expense;
+
+  /// Income minus expenses. Negative in a month that spent more than it
+  /// took in, and the chart draws that below the line rather than hiding it.
+  final int net;
 }
 
 /// A proportional bar in the "largest categories" strip.
@@ -129,6 +133,7 @@ class ReportPdfData {
     this.panels = const <ReportPanel>[],
     this.trendTitle,
     this.trend = const <ReportTrendPoint>[],
+    this.trendLegend = const <String>[],
     this.topTitle,
     this.top = const <ReportBar>[],
   });
@@ -165,9 +170,14 @@ class ReportPdfData {
   /// Budget, debts, health — whichever the account has anything to say about.
   final List<ReportPanel> panels;
 
-  /// The twelve months of the year, as paired bars.
+  /// The twelve months of the year, as grouped bars.
   final String? trendTitle;
   final List<ReportTrendPoint> trend;
+
+  /// The three words under the title that say which colour is which:
+  /// income, expenses, left over, in that order. Colour is never the only
+  /// carrier — every figure is also in the tables.
+  final List<String> trendLegend;
 
   /// The largest expense categories, as proportional bars.
   final String? topTitle;
@@ -479,19 +489,37 @@ abstract final class ReportPdfBuilder {
   /// mirrors it for us, so January sits at the right in Arabic and at the
   /// left in English with one list and no special case.
   static pw.Widget _trend(ReportPdfData d) {
-    const double height = 56;
-    final int peak = d.trend.fold<int>(
-        1,
-        (int m, ReportTrendPoint p) => <int>[m, p.income, p.expense]
-            .reduce((int a, int b) => a > b ? a : b));
-    final List<ReportTrendPoint> points = d.trend;
+    const double height = 52;
+    const double deficit = 13;
 
-    double h(int v) => v <= 0 ? 0.6 : (v / peak) * height;
+    final List<ReportTrendPoint> points = d.trend;
+    final int peak = points.fold<int>(
+        1,
+        (int m, ReportTrendPoint p) => <int>[
+              m,
+              p.income,
+              p.expense,
+              p.net.abs()
+            ].reduce((int a, int b) => a > b ? a : b));
+
+    // A month that spent more than it took in: its bar hangs below the line.
+    final bool anyDeficit = points.any((ReportTrendPoint p) => p.net < 0);
+
+    double up(int v) => v <= 0 ? 0 : (v / peak) * height;
+    double down(int v) => v >= 0 ? 0 : (v.abs() / peak) * height;
+
+    pw.Widget bar(double h, PdfColor colour) =>
+        pw.Container(width: 4.5, height: h < 0.6 ? 0.6 : h, color: colour);
 
     return _section(
       d.trendTitle!,
       pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
         children: <pw.Widget>[
+          if (d.trendLegend.length == 3) ...<pw.Widget>[
+            _legend(d.trendLegend),
+            pw.SizedBox(height: 6),
+          ],
           pw.SizedBox(
             height: height,
             child: pw.Row(
@@ -503,19 +531,48 @@ abstract final class ReportPdfBuilder {
                       mainAxisAlignment: pw.MainAxisAlignment.center,
                       crossAxisAlignment: pw.CrossAxisAlignment.end,
                       children: <pw.Widget>[
-                        pw.Container(
-                            width: 5, height: h(p.income), color: _brand),
+                        bar(up(p.income), _up),
                         pw.SizedBox(width: 1.5),
-                        pw.Container(
-                            width: 5, height: h(p.expense), color: _down),
+                        bar(up(p.expense), _down),
+                        pw.SizedBox(width: 1.5),
+                        bar(up(p.net), _brand),
                       ],
                     ),
                   ),
               ],
             ),
           ),
-          pw.SizedBox(height: 3),
+          pw.SizedBox(height: 2),
           pw.Container(height: 0.5, color: _line),
+          if (anyDeficit)
+            pw.SizedBox(
+              height: deficit,
+              child: pw.Row(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: <pw.Widget>[
+                  for (final ReportTrendPoint p in points)
+                    pw.Expanded(
+                      child: pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.center,
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: <pw.Widget>[
+                          // The group above is 16.5 wide (three 4.5 bars,
+                          // two 1.5 gaps) and centred; this spacer makes
+                          // this row the same width, so the deficit hangs
+                          // exactly under its month's left-over bar.
+                          pw.SizedBox(width: 12),
+                          if (p.net < 0)
+                            pw.Container(
+                              width: 4.5,
+                              height: down(p.net).clamp(0.6, deficit),
+                              color: _brand,
+                            ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
           pw.SizedBox(height: 3),
           pw.Row(
             children: <pw.Widget>[
@@ -530,6 +587,23 @@ abstract final class ReportPdfBuilder {
           ),
         ],
       ),
+    );
+  }
+
+  /// Income, expenses, left over — the three words that say which colour is
+  /// which, in the report's own language.
+  static pw.Widget _legend(List<String> labels) {
+    const List<PdfColor> colours = <PdfColor>[_up, _down, _brand];
+    return pw.Row(
+      children: <pw.Widget>[
+        for (int i = 0; i < 3; i++) ...<pw.Widget>[
+          if (i > 0) pw.SizedBox(width: 12),
+          pw.Container(width: 6, height: 6, color: colours[i]),
+          pw.SizedBox(width: 4),
+          pw.Text(pdfSafe(labels[i]),
+              style: const pw.TextStyle(color: _muted, fontSize: 7)),
+        ],
+      ],
     );
   }
 
@@ -561,7 +635,8 @@ abstract final class ReportPdfBuilder {
                     ],
                   ),
                   pw.SizedBox(height: 3),
-                  _meter(b.ratio),
+                  // Spending, so red — the same rule the chart follows.
+                  _meter(b.ratio, over: true),
                 ],
               ),
             ),
