@@ -6,10 +6,35 @@ sent anywhere to make one.
 
 ## The written commentary
 
-A PRO reader can ask DGOTIX AI to write the report's commentary: what
-happened in a few sentences, then three concrete steps. It is off by default
-and switched on per export, because it spends one of the account's assistant
-requests.
+A PRO reader can ask DGOTIX AI to write the report's commentary. It is off by
+default and switched on per export, because it spends one of the account's
+assistant requests.
+
+### The register
+
+An analyst's note, not prose. Two sentences and three steps, no more:
+
+| | |
+|---|---|
+| Reading | two sentences, each carrying a ratio or an amount and naming its category |
+| Next | exactly three steps, one line each, under twelve words, each with a target figure and what it frees |
+| Length | 80 words at most |
+
+Motivation comes from arithmetic — the figure the next period could reach and
+what it is worth — not from praise. Congratulating, scolding and any
+encouragement without a number are ruled out, as are metaphor, imagery,
+adjectives of mood and narrative.
+
+Two things make that hold rather than hope it does:
+
+- **The shares are computed here, not by the model.** The brief carries the
+  expense ratio and every category's share of its side, already worked out.
+  A language model is a poor calculator, and a commentary that disagrees with
+  the table beside it is worse than no commentary. These are derived from the
+  figures the report already prints — nothing new leaves the device.
+- **Length is enforced, not requested.** A word cap in a prompt is a request.
+  `clean()` keeps the first `kInsightMaxLines` (6) lines and drops the rest,
+  so an overrun loses whole lines and never a half sentence.
 
 ### What leaves the device
 
@@ -34,6 +59,38 @@ A refused request, an exhausted quota or no network all give null, and the
 report is produced exactly as it is without one — same layout, no error, no
 empty block. `ReportPdfData.hasInsight` requires both the heading and the
 text, so a half-filled answer is treated as none.
+
+## The letters Tajawal was missing
+
+The `pdf` package shapes Arabic itself: rather than hand the font the letters
+and let OpenType choose the joined shapes, it rewrites the text into Unicode's
+Arabic Presentation Forms-B block (U+FE70-U+FEFF) and looks each form up in
+the font's cmap.
+
+Tajawal carries the initial, medial and final forms but **not the isolated
+ones**. Where the package asked for an isolated form the lookup failed:
+
+| should print | printed |
+|---|---|
+| شهري | شهر |
+| سنوي | سنو |
+| ربع سنوي | ربع سنو |
+| أخرى | أخري |
+| جاري | جار |
+
+It hit any word whose last letter follows a non-joining letter (ا د ذ ر ز و),
+**including all four report period names** and the category أخرى. Urdu and
+Persian reports are set in Noto Naskh Arabic, whose cmap is complete, so they
+were never affected; neither were the app's own screens, which use the system
+shaper.
+
+`tool/patch_arabic_pdf_fonts.py` adds the 36 missing mappings to the bundled
+Tajawal Regular and Bold, each to the glyph of the letter it decomposes to —
+what a complete font already does. It adds cmap entries and nothing else:
+outlines, metrics, names, GSUB and GPOS come out byte for byte identical, and
+each file grows by a few hundred bytes. Run it after replacing a font file
+with a fresh download; `test/pdf_arabic_forms_test.dart` fails if it was not
+run.
 
 ## The Arabic word gap
 

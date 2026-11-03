@@ -88,6 +88,70 @@ void main() {
       expect(b.length, lessThan(2000));
     });
 
+    test('the shares are worked out for the model, not by it', () {
+      final String b = _brief();
+      // 62900 of 85000 income.
+      expect(b, contains('Expense ratio: 74.0% of income'));
+      // 25000 of 62900 expenses, and 18000 of 62900.
+      expect(b, contains('39.7%'));
+      expect(b, contains('28.6%'));
+      // 70000 of 85000 income.
+      expect(b, contains('82.4%'));
+    });
+
+    test('no income means no expense ratio, not a division by zero', () {
+      final String b = ReportInsight.brief(
+        summary: FinanceSummary(
+          income: _m(0),
+          expense: _m(4000),
+          net: _m(-4000),
+          savingsRate: 0,
+          count: 3,
+        ),
+        income: <CategoryTotal>[],
+        expenses: <CategoryTotal>[_c('طعام', 4000)],
+        periodLabel: 'شهري',
+        money: _money,
+      );
+      expect(b, contains('not available'));
+      expect(b, isNot(contains('Infinity')));
+      expect(b, isNot(contains('NaN')));
+      // The expense side still carries its shares.
+      expect(b, contains('100.0%'));
+    });
+
+    test('a category whose side totals zero gets no share at all', () {
+      final String b = ReportInsight.brief(
+        summary: FinanceSummary(
+          income: _m(0),
+          expense: _m(0),
+          net: _m(0),
+          savingsRate: 0,
+          count: 0,
+        ),
+        income: <CategoryTotal>[_c('راتب', 0)],
+        expenses: <CategoryTotal>[_c('طعام', 0)],
+        periodLabel: 'شهري',
+        money: _money,
+      );
+      expect(b, contains('راتب'));
+      expect(b, isNot(contains('NaN')));
+      expect(b, isNot(contains('%)')), reason: 'no share in brackets');
+    });
+
+    test('the register asked for is analysis, brief and numeric', () {
+      final String p = ReportInsight.prompt('Arabic');
+      expect(p, contains('financial analysis'));
+      expect(p, contains('At most 80 words'));
+      expect(p, contains('three steps'));
+      expect(p, contains('two sentences'));
+      // Motivating by arithmetic, and nothing literary.
+      expect(p, contains('not by praise'));
+      expect(p, contains('No congratulating'));
+      expect(p, contains('No metaphor'));
+      expect(p, contains('do not recompute'));
+    });
+
     test('an empty period says so rather than sending an empty shape', () {
       final String b =
           _brief(income: <CategoryTotal>[], expenses: <CategoryTotal>[]);
@@ -130,6 +194,30 @@ void main() {
 
     test('blank lines are dropped but the sentences keep their order', () {
       expect(ReportInsight.clean('one\n\n\ntwo\nthree'), 'one\ntwo\nthree');
+    });
+
+    test('a commentary that runs long is cut to whole lines, not mid-word', () {
+      final String raw =
+          List<String>.generate(20, (int i) => 'line $i').join('\n');
+      final String out = ReportInsight.clean(raw)!;
+      final List<String> kept = out.split('\n');
+      expect(kept.length, kInsightMaxLines);
+      expect(kept.first, 'line 0');
+      expect(kept.last, 'line ${kInsightMaxLines - 1}');
+      // Nothing was truncated inside a line.
+      for (final String line in kept) {
+        expect(line, matches(RegExp(r'^line \d+$')));
+      }
+    });
+
+    test('two sentences and three steps pass through untouched', () {
+      const String raw = 'Expenses took 74.0% of income; housing alone 39.7%.\n'
+          'The savings rate held at 26.0%.\n'
+          'Housing: cap at 22000 DZD, frees 3000 DZD.\n'
+          'Food: cap at 16000 DZD, frees 2000 DZD.\n'
+          'Transport: cap at 5000 DZD, frees 1200 DZD.';
+      final String? out = ReportInsight.clean(raw);
+      expect(out, raw, reason: 'five lines is inside the cap');
     });
   });
 
