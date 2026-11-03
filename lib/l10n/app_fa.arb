@@ -1614,5 +1614,6 @@
   "reportLeft": "باقی‌مانده",
   "reportTopCategories": "بزرگ‌ترین دسته‌های هزینه",
   "reportBudgetUsed": "{percent} از بودجه · {count} دسته",
-  "reportPointsChange": "{value} واحد"
+  "reportPointsChange": "{value} واحد",
+  "reportExcludedNote": "{count} رکورد به {currencies} شمرده نشده است: نرخ تبدیلی همراه آن‌ها ثبت نشده."
 }

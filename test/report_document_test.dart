@@ -3,6 +3,8 @@
 /// so this is where it is checked.
 library;
 
+import 'dart:io';
+
 import 'package:flutter/widgets.dart' show Locale;
 import 'package:flutter_test/flutter_test.dart';
 
@@ -10,6 +12,7 @@ import 'package:smartbudget/core/l10n/app_lang.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
+import 'package:smartbudget/features/financial_health/domain/health_engine.dart';
 import 'package:smartbudget/features/reports/data/report_document.dart';
 import 'package:smartbudget/features/reports/data/report_pdf.dart';
 import 'package:smartbudget/features/reports/domain/report_figures.dart';
@@ -50,6 +53,7 @@ ReportFigures _figures({
   List<BudgetTarget> budgets = const <BudgetTarget>[],
   DebtSummary? debts,
   double? health,
+  List<HealthRisk> risks = const <HealthRisk>[],
 }) =>
     ReportFigures.build(
       range: ReportRange(period: period, year: year, sub: sub),
@@ -58,6 +62,7 @@ ReportFigures _figures({
       budgets: budgets,
       debts: debts,
       healthScore: health,
+      risks: risks,
     );
 
 ReportPdfData _doc(
@@ -278,6 +283,92 @@ void main() {
       expect(d.panels[0].title, 'Debts & Loans');
       expect(d.panels[1].rows.first.value, '72');
       expect(d.panels[1].meter, closeTo(0.724, 1e-9));
+    });
+  });
+
+  group('what the figures warn about', () {
+    test('an account with no risks gets no risk block', () {
+      final ReportPdfData d = _doc(AppLang.en);
+      expect(d.risks, isEmpty);
+      expect(d.hasRisks, isFalse);
+    });
+
+    test('each risk is stated in the report\'s language', () {
+      final ReportFigures f = _figures(risks: const <HealthRisk>[
+        HealthRisk(RiskKind.negativeCashFlow),
+        HealthRisk(RiskKind.highDebtToIncome),
+      ]);
+      final ReportPdfData en = _doc(AppLang.en, figures: f);
+      expect(en.hasRisks, isTrue);
+      expect(en.risks.length, 2);
+      expect(en.risks.first, contains('spending more than you earn'));
+
+      final ReportPdfData ar = _doc(AppLang.ar, figures: f);
+      expect(ar.risks.first, isNot(en.risks.first));
+      expect(ar.risksTitle, isNot(en.risksTitle));
+    });
+
+    test('every kind the engine can raise has a sentence', () {
+      for (final RiskKind kind in RiskKind.values) {
+        final ReportPdfData d = _doc(AppLang.en,
+            figures: _figures(risks: <HealthRisk>[
+              HealthRisk(kind),
+            ]));
+        expect(d.risks.single.trim(), isNotEmpty, reason: kind.name);
+      }
+    });
+
+    test('the wording is the health screen\'s own, not a second opinion', () {
+      final String screen = File(
+              'lib/features/financial_health/presentation/financial_health_page.dart')
+          .readAsStringSync();
+      final String doc = File('lib/features/reports/data/report_document.dart')
+          .readAsStringSync();
+      for (final RiskKind kind in RiskKind.values) {
+        final String key = 'RiskKind.${kind.name} =>';
+        expect(screen.contains(key), isTrue, reason: kind.name);
+        expect(doc.contains(key), isTrue, reason: kind.name);
+      }
+    });
+  });
+
+  group('money the totals could not include', () {
+    ReportPdfData withForeign(AppLang lang) => _doc(
+          lang,
+          figures: _figures(transactions: <Transaction>[
+            ..._txns,
+            Transaction(
+              id: 'eur-no-rate',
+              date: DateTime(2026, 1, 20),
+              category: 'السكن',
+              amount: const Money(10000, 'EUR'),
+              type: TransactionType.expense,
+              createdAt: DateTime(2026, 1, 20),
+            ),
+          ]),
+        );
+
+    test('an ordinary report says nothing, because nothing was left out', () {
+      expect(_doc(AppLang.en).excludedNote, isNull);
+    });
+
+    test('a record with no recorded rate is named on the page', () {
+      final ReportPdfData d = withForeign(AppLang.en);
+      expect(d.excludedNote, isNotNull);
+      expect(d.excludedNote, contains('EUR'));
+      expect(d.excludedNote, contains('1'));
+    });
+
+    test('the note is in the report\'s own language', () {
+      expect(withForeign(AppLang.ar).excludedNote, contains('سعر صرف'));
+      expect(withForeign(AppLang.fr).excludedNote, contains('taux de change'));
+    });
+
+    test('the totals themselves are unchanged by it', () {
+      // The valued records still add up exactly as before; only the note
+      // is new.
+      expect(withForeign(AppLang.en).kpis[1].value,
+          _doc(AppLang.en).kpis[1].value);
     });
   });
 

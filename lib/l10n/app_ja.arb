@@ -1614,5 +1614,6 @@
   "reportLeft": "残り",
   "reportTopCategories": "支出の多いカテゴリ",
   "reportBudgetUsed": "予算の {percent} · {count} カテゴリ",
-  "reportPointsChange": "{value} ポイント"
+  "reportPointsChange": "{value} ポイント",
+  "reportExcludedNote": "{currencies} の {count} 件は未集計です。為替レートが記録されていません。"
 }

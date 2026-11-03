@@ -123,5 +123,6 @@ final reportFiguresProvider = Provider<ReportFigures>((ref) {
     budgets: budgets,
     debts: debts.openCount > 0 ? debts : null,
     healthScore: health.hasData ? health.score : null,
+    risks: health.risks,
   );
 });

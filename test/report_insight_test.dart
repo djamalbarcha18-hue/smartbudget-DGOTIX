@@ -276,6 +276,27 @@ void main() {
       expect(b, isNot(contains('Financial health score')));
     });
 
+    test('the brief admits what the totals could not include', () {
+      final String b = _brief(
+        figures: _figures(transactions: <Transaction>[
+          ..._txns,
+          Transaction(
+            id: 'usd-no-rate',
+            date: DateTime(2026, 1, 20),
+            category: 'السكن',
+            amount: const Money(5000, 'USD'),
+            type: TransactionType.expense,
+            createdAt: DateTime(2026, 1, 20),
+          ),
+        ]),
+      );
+      expect(b, contains('Not included: 1 records in USD'));
+    });
+
+    test('a complete period says nothing about exclusions', () {
+      expect(_brief(), isNot(contains('Not included')));
+    });
+
     test('the register asked for is analysis, brief and numeric', () {
       final String p = ReportInsight.prompt('Arabic');
       expect(p, contains('financial analysis'));

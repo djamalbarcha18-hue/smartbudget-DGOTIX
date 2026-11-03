@@ -13,6 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
+import 'package:smartbudget/features/financial_health/domain/health_engine.dart';
 import 'package:smartbudget/features/reports/domain/report_range.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -95,6 +96,9 @@ class ReportFigures {
     this.previous,
     this.debts,
     this.healthScore,
+    this.excludedCount = 0,
+    this.excludedCurrencies = const <String>{},
+    this.risks = const <HealthRisk>[],
   });
 
   final ReportRange range;
@@ -120,6 +124,25 @@ class ReportFigures {
 
   /// 0..100, or null when there is too little data to score.
   final double? healthScore;
+
+  /// Records inside the period that carry no value in the base currency, so
+  /// no total could include them.
+  ///
+  /// They are never guessed at a rate they were not recorded with — today's
+  /// rate would restate last January — but a report that drops money without
+  /// saying so is a report that lies by omission. The document prints a line
+  /// naming how many and in which currencies.
+  final int excludedCount;
+  final Set<String> excludedCurrencies;
+
+  bool get hasExcluded => excludedCount > 0;
+
+  /// The standing risks the health engine found — spending above income, a
+  /// debt load too heavy, no buffer. Already computed for the health screen;
+  /// the report states them rather than working them out a second time.
+  final List<HealthRisk> risks;
+
+  bool get hasRisks => risks.isNotEmpty;
 
   bool get hasComparison => previous != null;
 
@@ -151,15 +174,31 @@ class ReportFigures {
     required List<BudgetTarget> budgets,
     DebtSummary? debts,
     double? healthScore,
+    List<HealthRisk> risks = const <HealthRisk>[],
   }) {
-    final List<Transaction> inRange = transactions
+    // One record, once. Ids are unique in the ledger, but a report is the
+    // last place a merge or an import bug should be allowed to show up as
+    // money that does not exist.
+    final List<Transaction> ledger = _unique(transactions);
+
+    final List<Transaction> inRange = ledger
         .where((Transaction t) => range.contains(t.date))
         .toList(growable: false);
 
     final ReportRange before = range.previous;
-    final List<Transaction> inBefore = transactions
+    final List<Transaction> inBefore = ledger
         .where((Transaction t) => before.contains(t.date))
         .toList(growable: false);
+
+    // What no total could include, counted here so the page can say so.
+    int excluded = 0;
+    final Set<String> excludedCurrencies = <String>{};
+    for (final Transaction t in inRange) {
+      if (t.inCurrency(currency) == null) {
+        excluded++;
+        excludedCurrencies.add(t.amount.currencyCode);
+      }
+    }
 
     return ReportFigures(
       range: range,
@@ -176,7 +215,20 @@ class ReportFigures {
           : FinanceCalculator.summarize(inBefore, currency),
       debts: debts,
       healthScore: healthScore,
+      excludedCount: excluded,
+      excludedCurrencies: excludedCurrencies,
+      risks: risks,
     );
+  }
+
+  /// The ledger with each id kept once, in the order it first appears.
+  static List<Transaction> _unique(List<Transaction> all) {
+    final Set<String> seen = <String>{};
+    final List<Transaction> out = <Transaction>[];
+    for (final Transaction t in all) {
+      if (seen.add(t.id)) out.add(t);
+    }
+    return out;
   }
 
   static BudgetFigures _budget(

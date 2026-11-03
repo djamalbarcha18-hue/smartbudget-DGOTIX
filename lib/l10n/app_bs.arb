@@ -1614,5 +1614,6 @@
   "reportLeft": "Preostalo",
   "reportTopCategories": "Najveće kategorije troškova",
   "reportBudgetUsed": "{percent} budžeta · kategorija: {count}",
-  "reportPointsChange": "{value} bodova"
+  "reportPointsChange": "{value} bodova",
+  "reportExcludedNote": "{count} zapisa u {currencies} nije uračunato: uz njih nije zabilježen kurs."
 }

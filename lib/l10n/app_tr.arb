@@ -1614,5 +1614,6 @@
   "reportLeft": "Kalan",
   "reportTopCategories": "En büyük harcama kategorileri",
   "reportBudgetUsed": "Bütçenin {percent} kadarı · {count} kategori",
-  "reportPointsChange": "{value} puan"
+  "reportPointsChange": "{value} puan",
+  "reportExcludedNote": "{currencies} cinsinden {count} kayıt sayılmadı: yanlarında döviz kuru kaydedilmemiş."
 }

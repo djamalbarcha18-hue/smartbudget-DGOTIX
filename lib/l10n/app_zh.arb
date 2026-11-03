@@ -1614,5 +1614,6 @@
   "reportLeft": "剩余",
   "reportTopCategories": "最大支出类别",
   "reportBudgetUsed": "预算的 {percent} · {count} 个类别",
-  "reportPointsChange": "{value} 点"
+  "reportPointsChange": "{value} 点",
+  "reportExcludedNote": "{currencies} 的 {count} 笔记录未计入：未随之记录汇率。"
 }

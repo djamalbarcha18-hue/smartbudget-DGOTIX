@@ -1614,5 +1614,6 @@
   "reportLeft": "Sisa",
   "reportTopCategories": "Kategori pengeluaran terbesar",
   "reportBudgetUsed": "{percent} dari anggaran · {count} kategori",
-  "reportPointsChange": "{value} poin"
+  "reportPointsChange": "{value} poin",
+  "reportExcludedNote": "{count} catatan dalam {currencies} tidak dihitung: tidak ada kurs yang tercatat bersamanya."
 }

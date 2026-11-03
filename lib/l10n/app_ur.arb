@@ -1614,5 +1614,6 @@
   "reportLeft": "باقی",
   "reportTopCategories": "سب سے بڑے اخراجات کے زمرے",
   "reportBudgetUsed": "بجٹ کا {percent} · {count} زمرے",
-  "reportPointsChange": "{value} پوائنٹ"
+  "reportPointsChange": "{value} پوائنٹ",
+  "reportExcludedNote": "{currencies} میں {count} اندراجات شمار نہیں ہوئے: اُن کے ساتھ شرحِ تبادلہ محفوظ نہیں۔"
 }

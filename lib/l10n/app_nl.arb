@@ -1614,5 +1614,6 @@
   "reportLeft": "Over",
   "reportTopCategories": "Grootste uitgavencategorieën",
   "reportBudgetUsed": "{percent} van het budget · {count} categorieën",
-  "reportPointsChange": "{value} ptn"
+  "reportPointsChange": "{value} ptn",
+  "reportExcludedNote": "{count} boekingen in {currencies} tellen niet mee: er is geen wisselkoers bij vastgelegd."
 }

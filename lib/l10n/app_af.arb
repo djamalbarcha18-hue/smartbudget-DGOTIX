@@ -1614,5 +1614,6 @@
   "reportLeft": "Oor",
   "reportTopCategories": "Grootste uitgawekategorieë",
   "reportBudgetUsed": "{percent} van die begroting · {count} kategorieë",
-  "reportPointsChange": "{value} pte"
+  "reportPointsChange": "{value} pte",
+  "reportExcludedNote": "{count} inskrywings in {currencies} tel nie: geen wisselkoers is daarmee opgeteken nie."
 }

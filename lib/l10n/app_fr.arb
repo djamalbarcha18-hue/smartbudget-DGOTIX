@@ -1614,5 +1614,6 @@
   "reportLeft": "Restant",
   "reportTopCategories": "Principaux postes de dépense",
   "reportBudgetUsed": "{percent} du budget · {count} catégories",
-  "reportPointsChange": "{value} pts"
+  "reportPointsChange": "{value} pts",
+  "reportExcludedNote": "{count} opérations en {currencies} ne sont pas comptées : aucun taux de change n’a été enregistré avec elles."
 }

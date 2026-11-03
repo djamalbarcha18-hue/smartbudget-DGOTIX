@@ -1813,5 +1813,6 @@
   "reportLeft": "المتبقّي",
   "reportTopCategories": "أكبر فئات الإنفاق",
   "reportBudgetUsed": "{percent} من الميزانية · {count} فئة",
-  "reportPointsChange": "{value} نقطة"
+  "reportPointsChange": "{value} نقطة",
+  "reportExcludedNote": "{count} عملية بعملة {currencies} غير محتسبة: لم يُسجَّل معها سعر صرف."
 }

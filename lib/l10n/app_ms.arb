@@ -1614,5 +1614,6 @@
   "reportLeft": "Baki",
   "reportTopCategories": "Kategori perbelanjaan terbesar",
   "reportBudgetUsed": "{percent} daripada bajet · {count} kategori",
-  "reportPointsChange": "{value} mata"
+  "reportPointsChange": "{value} mata",
+  "reportExcludedNote": "{count} rekod dalam {currencies} tidak dikira: tiada kadar tukaran direkodkan bersamanya."
 }

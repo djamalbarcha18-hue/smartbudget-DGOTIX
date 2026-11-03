@@ -73,6 +73,55 @@ A move too small to print is not a direction: anything that would round to
 0.0 is shown as flat and uncoloured, so a month that gained 0.004 points
 never reads "-0.0" in red.
 
+## Accounting accuracy
+
+The figures are checked by `test/report_accuracy_test.dart`, which covers
+the fourteen ways a period total can go wrong. What it establishes:
+
+| | |
+|---|---|
+| Boundaries | the last instant of a month stays in it; the first of the next does not; December and January are different years |
+| Dates | stored and read as wall-clock days, so a record made at 23:59 does not slide into the next month on a device in another zone |
+| Internal transfers | moving money between your own wallets is a `WalletMove`, never a transaction — the engine cannot see one, and a source test keeps it that way |
+| Opening balances | a wallet's `opening` lives on the wallet, so starting with money in the bank is not income |
+| Duplicates | each id counts once, whatever the list contains |
+| Currencies | counted at the rate recorded with the record, never today's |
+| Periods agree | twelve months add up to the year, three to the quarter, six to the half — exactly, to the minor unit |
+| Tables agree | the category tables and the month chart each add up to the headline totals |
+
+### Money the totals cannot include
+
+An amount in another currency counts through the base value recorded with
+it. One recorded without a rate has no value in the base currency, and
+guessing today's rate would restate last January — so it is left out.
+
+Left out, but **not left unsaid**: `ReportFigures` counts those records and
+names their currencies, the page prints a line under the headline figures,
+and the brief tells the assistant so its commentary never calls a total
+complete when it is not. A report that drops money silently lies by
+omission.
+
+### Where the money is, and what it is called
+
+- **Net cash flow** is income minus expenses for the period. The page calls
+  it "left over", never "savings" — they are not the same thing.
+- **Savings rate** is that figure over income. It is a cash-flow rate, not
+  a measure of net worth.
+- **Refunds** are an income category in SmartBudget, not a contra-entry
+  against the expense. A refund therefore raises both income and expenses
+  for the period rather than reducing the expense. The report states the
+  ledger as the user keeps it rather than restating their records.
+- **A negative amount** reduces its own side, so a cancellation entered as
+  a negative expense nets out correctly.
+
+### Financial risks
+
+The health engine already works out the standing risks — spending above
+income, a debt load too heavy, no buffer. The report prints them in the same
+words the health screen uses, from the same `RiskKind`, so the two can never
+give a different account of the same finding. A test fails if either side
+stops covering a kind.
+
 ## The written commentary
 
 A PRO reader can ask DGOTIX AI to write the report's commentary. It is off by

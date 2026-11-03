@@ -1614,5 +1614,6 @@
   "reportLeft": "Iliyobaki",
   "reportTopCategories": "Kategoria kubwa za matumizi",
   "reportBudgetUsed": "{percent} ya bajeti · kategoria {count}",
-  "reportPointsChange": "pointi {value}"
+  "reportPointsChange": "pointi {value}",
+  "reportExcludedNote": "Rekodi {count} za {currencies} hazijahesabiwa: hakuna kiwango cha ubadilishaji kilichohifadhiwa nazo."
 }

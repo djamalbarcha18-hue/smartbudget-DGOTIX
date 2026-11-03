@@ -1614,5 +1614,6 @@
   "reportLeft": "남음",
   "reportTopCategories": "지출이 가장 큰 항목",
   "reportBudgetUsed": "예산의 {percent} · {count}개 항목",
-  "reportPointsChange": "{value}포인트"
+  "reportPointsChange": "{value}포인트",
+  "reportExcludedNote": "{currencies} 기록 {count}건은 합계에 없습니다. 환율이 함께 기록되지 않았습니다."
 }

@@ -118,6 +118,14 @@ abstract final class ReportInsight {
           '${debts.openCount} open');
     }
 
+    if (figures.hasExcluded) {
+      // So the commentary never calls a total complete when it is not.
+      out.add('Not included: ${figures.excludedCount} records in '
+          '${(figures.excludedCurrencies.toList()..sort()).join(', ')} '
+          'with no recorded exchange rate. Say so in one clause if it '
+          'matters to the reading.');
+    }
+
     final double? health = figures.healthScore;
     if (health != null) {
       out.add(

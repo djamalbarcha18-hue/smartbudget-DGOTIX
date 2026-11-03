@@ -1614,5 +1614,6 @@
   "reportLeft": "Übrig",
   "reportTopCategories": "Größte Ausgabenkategorien",
   "reportBudgetUsed": "{percent} des Budgets · {count} Kategorien",
-  "reportPointsChange": "{value} Pkt."
+  "reportPointsChange": "{value} Pkt.",
+  "reportExcludedNote": "{count} Buchungen in {currencies} sind nicht enthalten: Zu ihnen wurde kein Wechselkurs erfasst."
 }

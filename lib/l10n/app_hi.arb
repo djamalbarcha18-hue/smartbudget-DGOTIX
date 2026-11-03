@@ -1614,5 +1614,6 @@
   "reportLeft": "शेष",
   "reportTopCategories": "सबसे बड़ी खर्च श्रेणियाँ",
   "reportBudgetUsed": "बजट का {percent} · {count} श्रेणियाँ",
-  "reportPointsChange": "{value} अंक"
+  "reportPointsChange": "{value} अंक",
+  "reportExcludedNote": "{currencies} में {count} प्रविष्टियाँ नहीं गिनी गईं: उनके साथ कोई विनिमय दर दर्ज नहीं है।"
 }

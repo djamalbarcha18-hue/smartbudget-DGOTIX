@@ -1614,5 +1614,6 @@
   "reportLeft": "Restante",
   "reportTopCategories": "Maiores categorias de despesa",
   "reportBudgetUsed": "{percent} do orçamento · {count} categorias",
-  "reportPointsChange": "{value} pts"
+  "reportPointsChange": "{value} pts",
+  "reportExcludedNote": "{count} registos em {currencies} não são contados: não foi registada nenhuma taxa de câmbio com eles."
 }

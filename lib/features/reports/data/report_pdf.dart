@@ -136,6 +136,9 @@ class ReportPdfData {
     this.trendLegend = const <String>[],
     this.topTitle,
     this.top = const <ReportBar>[],
+    this.excludedNote,
+    this.risksTitle,
+    this.risks = const <String>[],
   });
 
   final String title; // functional report title
@@ -183,6 +186,18 @@ class ReportPdfData {
   final String? topTitle;
   final List<ReportBar> top;
 
+  /// One line stating what the totals could not include. Null on the
+  /// ordinary report, where nothing was left out.
+  final String? excludedNote;
+
+  /// The standing risks worth printing, already written as sentences in the
+  /// report's language. Empty on an account with none, and the block is
+  /// then not drawn at all.
+  final String? risksTitle;
+  final List<String> risks;
+
+  bool get hasRisks => risksTitle != null && risks.isNotEmpty;
+
   bool get hasInsight =>
       (insight?.trim().isNotEmpty ?? false) &&
       (insightTitle?.trim().isNotEmpty ?? false);
@@ -216,6 +231,10 @@ abstract final class ReportPdfBuilder {
   static const PdfColor _up = PdfColor(0.08627, 0.53725, 0.32157);
   static const PdfColor _down = PdfColor(0.80392, 0.21569, 0.21569);
 
+  /// The expense red at 7% over white, blended here because a PDF fill does
+  /// not blend an alpha.
+  static const PdfColor _warnTint = PdfColor(0.98627, 0.94510, 0.94510);
+
   /// [base]/[bold] are Arabic-capable fonts supplied by the caller (bundled
   /// TTFs), so export works fully offline. [fallback] covers letters they
   /// lack (Turkish ğ ş İ in Tajawal).
@@ -239,6 +258,10 @@ abstract final class ReportPdfBuilder {
         footer: (pw.Context ctx) => _footer(data, ctx),
         build: (pw.Context ctx) => <pw.Widget>[
           _kpis(data),
+          if (data.excludedNote != null) ...<pw.Widget>[
+            pw.SizedBox(height: 8),
+            _excluded(data.excludedNote!),
+          ],
           pw.SizedBox(height: 18),
           // What the figures mean comes before the figures themselves, which
           // is the order a report is read in.
@@ -260,6 +283,10 @@ abstract final class ReportPdfBuilder {
           ],
           if (data.hasTop) ...<pw.Widget>[
             _top(data),
+            pw.SizedBox(height: 16),
+          ],
+          if (data.hasRisks) ...<pw.Widget>[
+            _risks(data),
             pw.SizedBox(height: 16),
           ],
           _table(data.incomeTitle, data.income, data.emptyLabel),
@@ -330,6 +357,21 @@ abstract final class ReportPdfBuilder {
             fontWeight: pw.FontWeight.bold,
             fontSize: 15,
             letterSpacing: 1.5));
+  }
+
+  /// What the totals could not include, stated under them rather than left
+  /// for the reader to discover by adding the tables up themselves.
+  static pw.Widget _excluded(String note) {
+    return pw.Container(
+      width: double.infinity,
+      padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: pw.BoxDecoration(
+        color: _warnTint,
+        borderRadius: pw.BorderRadius.circular(5),
+      ),
+      child: pw.Text(pdfSafe(note),
+          style: const pw.TextStyle(color: _down, fontSize: 8)),
+    );
   }
 
   /// This period beside the one before it.
@@ -637,6 +679,40 @@ abstract final class ReportPdfBuilder {
                   pw.SizedBox(height: 3),
                   // Spending, so red — the same rule the chart follows.
                   _meter(b.ratio, over: true),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// What the figures warn about, one sentence each.
+  ///
+  /// These come from the health engine, which already works them out for its
+  /// own screen; the report states them rather than computing them twice.
+  static pw.Widget _risks(ReportPdfData d) {
+    return _section(
+      d.risksTitle!,
+      pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+        children: <pw.Widget>[
+          for (final String risk in d.risks)
+            pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 4),
+              child: pw.Row(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: <pw.Widget>[
+                  pw.Container(
+                      width: 3,
+                      height: 9,
+                      margin: const pw.EdgeInsets.only(top: 1),
+                      color: _down),
+                  pw.SizedBox(width: 6),
+                  pw.Expanded(
+                    child: pw.Text(pdfSafe(risk),
+                        style: const pw.TextStyle(color: _ink, fontSize: 9)),
+                  ),
                 ],
               ),
             ),

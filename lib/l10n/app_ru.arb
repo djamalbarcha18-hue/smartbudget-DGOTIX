@@ -1614,5 +1614,6 @@
   "reportLeft": "Остаток",
   "reportTopCategories": "Крупнейшие статьи расходов",
   "reportBudgetUsed": "{percent} бюджета · категорий: {count}",
-  "reportPointsChange": "{value} п."
+  "reportPointsChange": "{value} п.",
+  "reportExcludedNote": "Записи в {currencies} не учтены ({count}): для них не сохранён курс обмена."
 }

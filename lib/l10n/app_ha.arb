@@ -1614,5 +1614,6 @@
   "reportLeft": "Saura",
   "reportTopCategories": "Manyan rukunan kashe kuɗi",
   "reportBudgetUsed": "{percent} na kasafin · rukunoni {count}",
-  "reportPointsChange": "maki {value}"
+  "reportPointsChange": "maki {value}",
+  "reportExcludedNote": "Bayanai {count} na {currencies} ba a lissafa su ba: ba a adana farashin musaya tare da su ba."
 }

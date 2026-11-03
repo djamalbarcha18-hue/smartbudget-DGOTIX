@@ -1614,5 +1614,6 @@
   "reportLeft": "Mbetur",
   "reportTopCategories": "Kategoritë më të mëdha të shpenzimeve",
   "reportBudgetUsed": "{percent} e buxhetit · {count} kategori",
-  "reportPointsChange": "{value} pikë"
+  "reportPointsChange": "{value} pikë",
+  "reportExcludedNote": "{count} regjistrime në {currencies} nuk janë llogaritur: nuk u regjistrua asnjë kurs këmbimi me to."
 }

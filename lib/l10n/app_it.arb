@@ -1614,5 +1614,6 @@
   "reportLeft": "Rimanente",
   "reportTopCategories": "Principali categorie di spesa",
   "reportBudgetUsed": "{percent} del budget · {count} categorie",
-  "reportPointsChange": "{value} pt"
+  "reportPointsChange": "{value} pt",
+  "reportExcludedNote": "{count} movimenti in {currencies} non sono conteggiati: non è stato registrato alcun tasso di cambio."
 }

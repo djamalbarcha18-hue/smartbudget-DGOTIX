@@ -1904,5 +1904,7 @@
   "reportBudgetUsed": "{percent} of the budget · {count} categories",
   "@reportBudgetUsed": { "placeholders": { "percent": { "type": "String" }, "count": { "type": "int" } } },
   "reportPointsChange": "{value} pts",
-  "@reportPointsChange": { "placeholders": { "value": { "type": "String" } } }
+  "@reportPointsChange": { "placeholders": { "value": { "type": "String" } } },
+  "reportExcludedNote": "{count} records in {currencies} are not counted: no exchange rate was recorded with them.",
+  "@reportExcludedNote": { "placeholders": { "count": { "type": "int" }, "currencies": { "type": "String" } } }
 }

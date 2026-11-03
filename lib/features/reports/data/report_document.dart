@@ -13,6 +13,7 @@ import 'package:smartbudget/core/l10n/month_names.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
+import 'package:smartbudget/features/financial_health/domain/health_engine.dart';
 import 'package:smartbudget/features/reports/data/report_pdf.dart';
 import 'package:smartbudget/features/reports/domain/report_figures.dart';
 import 'package:smartbudget/features/reports/domain/report_period.dart';
@@ -48,6 +49,12 @@ abstract final class ReportDocument {
         ReportRow(l.kpiNetProfit, money(s.net)),
         ReportRow(l.kpiSavingsRate, MoneyFormatter.percent(s.savingsRate)),
       ],
+      excludedNote: figures.hasExcluded
+          ? l.reportExcludedNote(
+              figures.excludedCount,
+              (figures.excludedCurrencies.toList()..sort()).join(' · '),
+            )
+          : null,
       comparisonTitle: l.reportVsPrevious,
       comparison: _comparison(figures, l, money),
       noComparisonLabel: l.reportNoPrevious,
@@ -66,6 +73,10 @@ abstract final class ReportDocument {
         l.kpiTotalIncome,
         l.kpiTotalExpenses,
         l.kpiNetProfit,
+      ],
+      risksTitle: l.healthRisks,
+      risks: <String>[
+        for (final HealthRisk r in figures.risks) _risk(r, l),
       ],
       topTitle: l.reportTopCategories,
       top: _top(figures, lang, money),
@@ -163,6 +174,17 @@ abstract final class ReportDocument {
       ),
     ];
   }
+
+  /// A risk as the health screen words it, so the two never disagree about
+  /// what the same finding means.
+  static String _risk(HealthRisk r, AppLocalizations l) => switch (r.kind) {
+        RiskKind.negativeCashFlow => l.riskNegativeCashFlow,
+        RiskKind.spendingExceedsIncome => l.riskSpendingExceedsIncome,
+        RiskKind.highDebtService => l.riskHighDebtService,
+        RiskKind.highDebtToIncome => l.riskHighDebtToIncome,
+        RiskKind.noEmergencyBuffer => l.riskNoEmergencyBuffer,
+        RiskKind.incomeInstability => l.riskIncomeInstability,
+      };
 
   /// Below half of the last printed decimal: the page would show it as zero,
   /// so it is treated as zero everywhere rather than only in the text.
