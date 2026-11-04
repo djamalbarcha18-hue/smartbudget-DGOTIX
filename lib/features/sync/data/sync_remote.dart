@@ -22,6 +22,12 @@ class RemoteCopy {
 abstract interface class SyncRemote {
   Future<RemoteCopy> pull();
 
+  /// The cloud copy's version alone (a few bytes, not the whole document):
+  /// null when the account has no copy yet or the database lacks the
+  /// version column. Lets a device that has nothing new to send skip
+  /// downloading a copy it already has.
+  Future<int?> probe();
+
   /// Uploads [doc] over [base]; false when another device uploaded first
   /// (merge again and retry).
   Future<bool> push(Map<String, dynamic> doc, RemoteCopy base);
@@ -70,6 +76,21 @@ class SupabaseSyncRemote implements SyncRemote {
   }
 
   @override
+  Future<int?> probe() async {
+    try {
+      final Map<String, dynamic>? row = await _client
+          .from(_table)
+          .select('version')
+          .eq('user_id', _uid)
+          .maybeSingle();
+      return (row?['version'] as num?)?.toInt();
+    } on sb.PostgrestException catch (e) {
+      if (_noVersionColumn(e)) return null;
+      rethrow;
+    }
+  }
+
+  @override
   Future<bool> push(Map<String, dynamic> doc, RemoteCopy base) async {
     final Map<String, dynamic> row = <String, dynamic>{
       'data': doc,
@@ -77,9 +98,9 @@ class SupabaseSyncRemote implements SyncRemote {
       'updated_at': AppClock.now().toUtc().toIso8601String(),
     };
     if (!base.versioned) {
-      await _client
-          .from(_table)
-          .upsert(<String, dynamic>{'user_id': _uid, ...row}, onConflict: 'user_id');
+      await _client.from(_table).upsert(
+          <String, dynamic>{'user_id': _uid, ...row},
+          onConflict: 'user_id');
       return true;
     }
     if (base.version == null) {

@@ -91,6 +91,16 @@ final syncControllerProvider =
 class SyncController extends Notifier<SyncStatus> {
   static const String _ledgerBase = 'sb_sync_ledger';
   static const String _lastBase = 'sb_sync_last';
+
+  /// The cloud version this device last matched, and when it last downloaded
+  /// the whole copy (see [_round]).
+  static const String _seenBase = 'sb_sync_seen';
+  static const String _fullBase = 'sb_sync_full';
+
+  /// A device with nothing new to send checks the cloud version (a few bytes)
+  /// instead of downloading the whole copy, but still downloads it at least
+  /// this often, in case the version alone ever misses a change.
+  static const Duration fullEvery = Duration(hours: 6);
   static const Duration afterChange = Duration(seconds: 4);
   static const Duration every = Duration(minutes: 10);
 
@@ -256,6 +266,27 @@ class SyncController extends Notifier<SyncStatus> {
     // 2. Merge with the cloud copy, apply, upload; again if another device
     //    uploaded in between.
     final SyncRemote remote = ref.read(syncRemoteProvider);
+    final String seenKey = AccountKeys.of(_seenBase, account);
+    final String fullKey = AccountKeys.of(_fullBase, account);
+
+    // Nothing new on this device and the cloud copy is the version already
+    // matched, recently downloaded in full: there is nothing to merge, so the
+    // whole copy is not downloaded again (it is the largest thing the app
+    // sends or receives, every few minutes).
+    final int? seen = prefs.getInt(seenKey);
+    final int? fullAt = prefs.getInt(fullKey);
+    if (seen != null &&
+        fullAt != null &&
+        now - fullAt < fullEvery.inMilliseconds &&
+        SyncMerge.same(local, ledger)) {
+      final int? current = await remote.probe();
+      if (_disposed || _account != account) return;
+      if (current != null && current == seen) {
+        await _markSynced(prefs, account);
+        return;
+      }
+    }
+
     for (int attempt = 0; attempt < 3; attempt++) {
       final RemoteCopy copy = await remote.pull();
       if (_disposed || _account != account) return;
@@ -275,17 +306,33 @@ class SyncController extends Notifier<SyncStatus> {
       await prefs.setString(
           ledgerKey, jsonEncode(SyncMerge.ledgerToJson(merged)));
       local = merged;
-      if (SyncMerge.same(merged, cloud) ||
-          await remote.push(SyncMerge.toCloud(merged), copy)) {
-        final DateTime at = AppClock.now();
-        await prefs.setInt(
-            AccountKeys.of(_lastBase, account), at.millisecondsSinceEpoch);
-        ref.read(backupStatusProvider.notifier).markBackedUp().ignore();
-        state = SyncStatus(SyncPhase.idle, lastSyncedAt: at);
+      final bool unchanged = SyncMerge.same(merged, cloud);
+      if (unchanged || await remote.push(SyncMerge.toCloud(merged), copy)) {
+        // The version this device now matches (an upload makes the next one).
+        final int? matched = !copy.versioned
+            ? null
+            : unchanged
+                ? copy.version
+                : (copy.version ?? 0) + 1;
+        if (matched == null) {
+          await prefs.remove(seenKey);
+        } else {
+          await prefs.setInt(seenKey, matched);
+        }
+        await prefs.setInt(fullKey, now);
+        await _markSynced(prefs, account);
         return;
       }
     }
     state = state.copyWith(phase: SyncPhase.error);
+  }
+
+  Future<void> _markSynced(SharedPreferences prefs, String account) async {
+    final DateTime at = AppClock.now();
+    await prefs.setInt(
+        AccountKeys.of(_lastBase, account), at.millisecondsSinceEpoch);
+    ref.read(backupStatusProvider.notifier).markBackedUp().ignore();
+    state = SyncStatus(SyncPhase.idle, lastSyncedAt: at);
   }
 
   static Future<Records> _records(BackupService backup) async =>

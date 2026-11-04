@@ -20,7 +20,7 @@ import 'package:smartbudget/features/wallets/domain/wallet.dart';
 class FakeRemote implements SyncRemote {
   Map<String, dynamic>? doc;
   int? version;
-  int pulls = 0, pushes = 0;
+  int pulls = 0, pushes = 0, probes = 0;
 
   /// Runs (once) between a device's download and its upload: another device
   /// uploading first.
@@ -30,6 +30,12 @@ class FakeRemote implements SyncRemote {
   Future<RemoteCopy> pull() async {
     pulls++;
     return RemoteCopy(doc: doc, version: version);
+  }
+
+  @override
+  Future<int?> probe() async {
+    probes++;
+    return version;
   }
 
   @override
@@ -194,6 +200,108 @@ void main() {
     final Map<String, dynamic> cloudWallets = ((remote.doc!['c'] as Map)['wallets'] as Map).cast<String, dynamic>();
     expect(cloudWallets.keys, containsAll(<String>['w1', 'w2', 'w3']));
     await b.close();
+  });
+
+  test('nothing new here or in the cloud: the whole copy is not downloaded again',
+      () async {
+    final FakeRemote remote = FakeRemote();
+    final Device a = Device(remote);
+    final ProviderContainer c = await a.open();
+    await seed(c);
+    await sync(c); // uploads (version 1)
+    await sync(c); // settles: this device now matches version 1
+    final int pulls = remote.pulls, pushes = remote.pushes;
+    final int probes = remote.probes;
+
+    await sync(c);
+    await sync(c);
+
+    expect(remote.pulls, pulls, reason: 'no copy downloaded');
+    expect(remote.pushes, pushes, reason: 'nothing uploaded');
+    expect(remote.probes, probes + 2, reason: 'only the version was asked');
+    expect(c.read(syncControllerProvider).phase, SyncPhase.idle);
+    expect(c.read(syncControllerProvider).lastSyncedAt, isNotNull);
+    await a.close();
+  });
+
+  test('the cloud copy changed elsewhere: it is downloaded and applied',
+      () async {
+    final FakeRemote remote = FakeRemote();
+    final Device a = Device(remote);
+    final ProviderContainer c = await a.open();
+    await seed(c);
+    await sync(c);
+    await sync(c);
+    final int pulls = remote.pulls;
+
+    // "Another device" adds wallet w9 to the cloud copy.
+    final Map<String, dynamic> d = Map<String, dynamic>.from(remote.doc!);
+    final Map<String, dynamic> cs = Map<String, dynamic>.from(d['c'] as Map);
+    final Map<String, dynamic> ws =
+        Map<String, dynamic>.from(cs['wallets'] as Map);
+    ws['w9'] = <String, dynamic>{
+      't': DateTime.now().millisecondsSinceEpoch + 60000,
+      'd': <String, dynamic>{
+        'id': 'w9', 'name': 'Gold', 'type': 'other', 'openingMinor': 0,
+        'currency': 'DZD', 'createdAt': '2026-10-03T00:00:00.000',
+      },
+    };
+    cs['wallets'] = ws;
+    d['c'] = cs;
+    remote.doc = d;
+    remote.version = remote.version! + 1;
+
+    await sync(c);
+
+    expect(remote.pulls, greaterThan(pulls));
+    final Set<String> ids = (await c.read(walletStoreProvider).all())
+        .map((Wallet w) => w.id)
+        .toSet();
+    expect(ids, contains('w9'));
+    await a.close();
+  });
+
+  test('a change made here is uploaded even when the cloud is unchanged',
+      () async {
+    final FakeRemote remote = FakeRemote();
+    final Device a = Device(remote);
+    final ProviderContainer c = await a.open();
+    await seed(c);
+    await sync(c);
+    await sync(c);
+    final int version = remote.version!;
+
+    await c.read(walletStoreProvider).upsert(Wallet.fromJson(<String, dynamic>{
+      'id': 'w2', 'name': 'Bank', 'type': 'bank', 'openingMinor': 0,
+      'currency': 'DZD', 'createdAt': '2026-10-02T00:00:00.000',
+    }));
+    await sync(c);
+
+    expect(remote.version, greaterThan(version));
+    final Map<String, dynamic> cloudWallets =
+        ((remote.doc!['c'] as Map)['wallets'] as Map).cast<String, dynamic>();
+    expect(cloudWallets.keys, contains('w2'));
+    await a.close();
+  });
+
+  test('the whole copy is still downloaded now and then', () async {
+    final FakeRemote remote = FakeRemote();
+    final Device a = Device(remote);
+    final ProviderContainer c = await a.open();
+    await seed(c);
+    await sync(c);
+    await sync(c);
+
+    // Pretend the last full download was long ago.
+    final SharedPreferences p = await SharedPreferences.getInstance();
+    final String key = p.getKeys().firstWhere((String k) => k.contains('sb_sync_full'));
+    await p.setInt(key, 0);
+    final int pulls = remote.pulls;
+
+    await sync(c);
+
+    expect(remote.pulls, greaterThan(pulls));
+    await a.close();
   });
 
   test('sync off: nothing is sent', () async {

@@ -92,6 +92,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
   Future<void> _export() async {
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     final String failed = AppLocalizations.of(context).reportPdfFailed;
+    final String noInsight = AppLocalizations.of(context).reportInsightFailed;
     final AppLang ui = appLangOf(context);
     // Some scripts can't be set in the PDF (AppLang.pdfInEnglish): those
     // reports, and only they, are written in English.
@@ -121,6 +122,12 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
               label: (String c) => Catalog.label(c, lang: lang),
               accountKey: ref.read(currentAccountIdProvider) ?? '',
             );
+        // Asked for but not written (quota used, offline, assistant busy): the
+        // report still goes out, and the reader is told why it has no
+        // commentary instead of wondering whether the feature broke.
+        if (insight == null) {
+          messenger.showSnackBar(SnackBar(content: Text(noInsight)));
+        }
       }
 
       final ReportPdfData data = ReportDocument.build(
