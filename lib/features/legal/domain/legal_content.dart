@@ -21,7 +21,7 @@ class LegalSection {
 /// have it reviewed for their jurisdiction before relying on it.
 abstract final class LegalContent {
   /// Bump when the wording changes materially (shown as "last updated").
-  static const String lastUpdated = '2026-10-12';
+  static const String lastUpdated = '2026-11-04';
 
   static String get _app => AppConfig.appName;
   static String get _brand => AppConfig.parentBrand;
@@ -123,22 +123,44 @@ abstract final class LegalContent {
   static List<LegalSection> sections(LegalDoc doc, {required AppLang lang}) =>
       switch (doc) {
         LegalDoc.privacy => lang.pick(_privacyAr, _privacyEn,
-            fr: _privacyFr, id: _privacyId, es: _privacyEs,
-            tr: _privacyTr, ms: _privacyMs, ur: _privacyUr, de: _privacyDe,
-            pt: _privacyPt, it: _privacyIt, nl: _privacyNl,
-            bs: _privacyBs, sq: _privacySq, ru: _privacyRu,
-            sw: _privacySw, ha: _privacyHa, af: _privacyAf,
+            fr: _privacyFr,
+            id: _privacyId,
+            es: _privacyEs,
+            tr: _privacyTr,
+            ms: _privacyMs,
+            ur: _privacyUr,
+            de: _privacyDe,
+            pt: _privacyPt,
+            it: _privacyIt,
+            nl: _privacyNl,
+            bs: _privacyBs,
+            sq: _privacySq,
+            ru: _privacyRu,
+            sw: _privacySw,
+            ha: _privacyHa,
+            af: _privacyAf,
             fa: _privacyFa,
             hi: _privacyHi,
             zh: _privacyZh,
             ja: _privacyJa,
             ko: _privacyKo),
         LegalDoc.terms => lang.pick(_termsAr, _termsEn,
-            fr: _termsFr, id: _termsId, es: _termsEs,
-            tr: _termsTr, ms: _termsMs, ur: _termsUr, de: _termsDe,
-            pt: _termsPt, it: _termsIt, nl: _termsNl,
-            bs: _termsBs, sq: _termsSq, ru: _termsRu,
-            sw: _termsSw, ha: _termsHa, af: _termsAf,
+            fr: _termsFr,
+            id: _termsId,
+            es: _termsEs,
+            tr: _termsTr,
+            ms: _termsMs,
+            ur: _termsUr,
+            de: _termsDe,
+            pt: _termsPt,
+            it: _termsIt,
+            nl: _termsNl,
+            bs: _termsBs,
+            sq: _termsSq,
+            ru: _termsRu,
+            sw: _termsSw,
+            ha: _termsHa,
+            af: _termsAf,
             fa: _termsFa,
             hi: _termsHi,
             zh: _termsZh,
@@ -512,13 +534,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Refund policy',
-          'Except where required by law, payments are generally '
-              'non-refundable once a billing period has started, since you keep '
-              'access until its end. You can cancel at any time to stop future '
-              'renewals. For a refund request or any question about a charge, '
-              'contact us $_reachEn: we review each request under applicable '
-              'consumer law and issue approved refunds through Whop (or '
-              'PayPal).',
+          'You can ask for a full refund within 7 days of any charge, for any reason: contact us $_reachEn'
+              ' and we refund it through Whop (or PayPal). After 7 days, payments are generally non-refundable, except where the law requires otherwise, since you keep access until the end of the period you paid for. You can cancel at any time to stop future renewals.',
         ),
         const LegalSection(
           'Promotional codes',
@@ -629,12 +646,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'سياسة الاسترجاع',
-          'باستثناء ما يوجبه القانون، تكون المدفوعات عادةً غير قابلة '
-              'للاسترداد بعد بدء فترة الفوترة، لأنك تحتفظ بالوصول حتى نهايتها. '
-              'ويمكنك الإلغاء في أي وقت لإيقاف التجديدات القادمة. لطلب استرداد '
-              'أو لأي سؤال عن عملية دفع، تواصل معنا $_reachAr: ندرس كل طلب وفق '
-              'قانون حماية المستهلك المطبّق، ونُعيد المبالغ الموافَق عليها عبر '
-              'Whop (أو PayPal).',
+          'يمكنك طلب استرداد كامل خلال 7 أيام من أي عملية دفع ولأي سبب: تواصل معنا $_reachAr'
+              ' وسنردّ المبلغ عبر Whop (أو PayPal). وبعد 7 أيام تكون المدفوعات عموماً غير قابلة للاسترداد، إلا حيث يوجب القانون خلاف ذلك، لأنك تحتفظ بالوصول حتى نهاية الفترة المدفوعة. ويمكنك الإلغاء في أي وقت لإيقاف التجديدات القادمة.',
         ),
         const LegalSection(
           'الأكواد الترويجية',
@@ -947,14 +960,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Politique de remboursement',
-          'Sauf lorsque la loi l\'exige, les paiements ne sont en général '
-              'pas remboursables une fois qu\'une période de facturation a '
-              'commencé, puisque vous conservez l\'accès jusqu\'à sa fin. Vous '
-              'pouvez résilier à tout moment pour arrêter les renouvellements '
-              'futurs. Pour une demande de remboursement ou toute question sur '
-              'un paiement, contactez-nous $_reachFr : nous examinons chaque '
-              'demande selon le droit de la consommation applicable et '
-              'effectuons les remboursements accordés via Whop (ou PayPal).',
+          'Vous pouvez demander un remboursement intégral dans les 7 jours suivant tout paiement, quel qu\'en soit le motif : écrivez-nous $_reachFr'
+              ' et nous le remboursons via Whop (ou PayPal). Passé ce délai de 7 jours, les paiements ne sont en général pas remboursables, sauf si la loi en dispose autrement, puisque vous conservez l\'accès jusqu\'à la fin de la période payée. Vous pouvez résilier à tout moment pour arrêter les renouvellements futurs.',
         ),
         const LegalSection(
           'Codes promo',
@@ -1251,14 +1258,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Kebijakan pengembalian dana',
-          'Kecuali diwajibkan hukum, pembayaran umumnya tidak dapat '
-              'dikembalikan setelah periode penagihan dimulai, karena Anda '
-              'tetap punya akses sampai periode itu berakhir. Anda bisa '
-              'membatalkan kapan saja untuk menghentikan perpanjangan '
-              'berikutnya. Untuk permintaan pengembalian dana atau pertanyaan '
-              'tentang tagihan, hubungi kami $_reachId: kami meninjau setiap '
-              'permintaan sesuai hukum perlindungan konsumen yang berlaku dan '
-              'mengembalikan dana yang disetujui melalui Whop (atau PayPal).',
+          'Anda dapat meminta pengembalian dana penuh dalam 7 hari setelah pembayaran apa pun, dengan alasan apa pun: hubungi kami $_reachId'
+              ' dan kami akan mengembalikannya melalui Whop (atau PayPal). Setelah 7 hari, pembayaran pada umumnya tidak dapat dikembalikan, kecuali jika hukum menentukan lain, karena Anda tetap memiliki akses hingga akhir periode yang dibayar. Anda dapat membatalkan kapan saja untuk menghentikan perpanjangan berikutnya.',
         ),
         const LegalSection(
           'Kode promo',
@@ -1552,13 +1553,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Política de reembolso',
-          'Salvo que la ley lo exija, los pagos en general no son '
-              'reembolsables una vez iniciado un periodo de facturación, ya que '
-              'conservas el acceso hasta su final. Puedes cancelar cuando '
-              'quieras para evitar futuras renovaciones. Para pedir un '
-              'reembolso o preguntar por un cobro, escríbenos $_reachEs: '
-              'revisamos cada solicitud según la normativa de consumo aplicable '
-              'y devolvemos los importes aprobados a través de Whop (o PayPal).',
+          'Puedes pedir un reembolso completo dentro de los 7 días siguientes a cualquier cobro, por el motivo que sea: escríbenos $_reachEs'
+              ' y te lo devolvemos a través de Whop (o PayPal). Pasados los 7 días, los pagos generalmente no son reembolsables, salvo que la ley disponga otra cosa, ya que conservas el acceso hasta el final del periodo pagado. Puedes cancelar en cualquier momento para detener las renovaciones futuras.',
         ),
         const LegalSection(
           'Códigos promocionales',
@@ -1851,13 +1847,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'İade politikası',
-          'Yasanın gerektirdiği durumlar dışında, bir faturalandırma dönemi '
-              'başladıktan sonra ödemeler genellikle iade edilmez, çünkü '
-              'dönemin sonuna kadar erişimin devam eder. Gelecekteki '
-              'yenilemeleri durdurmak için istediğin zaman iptal edebilirsin. '
-              'İade talebi veya bir ödemeyle ilgili soru için bize $_reachTr '
-              'ulaş: her talebi geçerli tüketici hukukuna göre inceler, '
-              'onaylanan iadeleri Whop (ya da PayPal) üzerinden yaparız.',
+          'Herhangi bir ödemeden sonraki 7 gün içinde, herhangi bir nedenle tam iade isteyebilirsiniz: bize $_reachTr'
+              ' yazın, tutarı Whop (veya PayPal) üzerinden iade edelim. 7 günden sonra, yasanın aksini gerektirdiği durumlar dışında ödemeler genellikle iade edilmez; çünkü ödediğiniz dönemin sonuna kadar erişiminizi korursunuz. Sonraki yenilemeleri durdurmak için istediğiniz zaman iptal edebilirsiniz.',
         ),
         const LegalSection(
           'Promosyon kodları',
@@ -2155,15 +2146,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Dasar bayaran balik',
-          'Kecuali jika dikehendaki oleh undang-undang, bayaran secara '
-              'amnya tidak boleh dikembalikan sebaik sahaja tempoh pengebilan '
-              'bermula, kerana anda mengekalkan akses sehingga akhir tempoh '
-              'itu. Anda boleh membatalkan pada bila-bila masa untuk '
-              'menghentikan pembaharuan akan datang. Untuk permintaan bayaran '
-              'balik atau soalan tentang caj, hubungi kami $_reachMs: kami '
-              'menyemak setiap permintaan di bawah undang-undang pengguna yang '
-              'berkenaan dan membuat bayaran balik yang diluluskan melalui Whop '
-              '(atau PayPal).',
+          'Anda boleh meminta bayaran balik penuh dalam masa 7 hari selepas sebarang pembayaran, atas apa-apa sebab: hubungi kami $_reachMs'
+              ' dan kami akan memulangkannya melalui Whop (atau PayPal). Selepas 7 hari, pembayaran pada amnya tidak boleh dipulangkan, kecuali jika undang-undang menetapkan sebaliknya, kerana anda masih mempunyai akses sehingga akhir tempoh yang dibayar. Anda boleh membatalkan pada bila-bila masa untuk menghentikan pembaharuan seterusnya.',
         ),
         const LegalSection(
           'Kod promosi',
@@ -2449,13 +2433,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'رقم کی واپسی کی پالیسی',
-          'سوائے اس کے کہ قانون تقاضا کرے، بلنگ مدت شروع ہونے کے بعد '
-              'ادائیگیاں عموماً ناقابلِ واپسی ہیں، کیونکہ اس کے اختتام تک آپ کی '
-              'رسائی برقرار رہتی ہے۔ آئندہ تجدید روکنے کے لیے آپ کسی بھی وقت '
-              'منسوخ کر سکتے ہیں۔ رقم کی واپسی کی درخواست یا کسی ادائیگی کے '
-              'بارے میں سوال کے لیے ہم سے $_reachUr رابطہ کریں: ہم ہر درخواست '
-              'کو قابلِ اطلاق صارف قانون کے تحت دیکھتے ہیں اور منظور شدہ رقم '
-              'Whop (یا PayPal) کے ذریعے واپس کرتے ہیں۔',
+          'آپ کسی بھی ادائیگی کے 7 دن کے اندر، کسی بھی وجہ سے، مکمل رقم کی واپسی مانگ سکتے ہیں: ہم سے $_reachUr'
+              ' رابطہ کریں اور ہم Whop (یا PayPal) کے ذریعے رقم واپس کر دیں گے۔ 7 دن کے بعد ادائیگیاں عموماً واپس نہیں ہوتیں، سوائے اس کے کہ قانون کچھ اور تقاضا کرے، کیونکہ آپ کی ادا کی ہوئی مدت کے اختتام تک رسائی برقرار رہتی ہے۔ آئندہ تجدید روکنے کے لیے آپ کسی بھی وقت منسوخ کر سکتے ہیں۔',
         ),
         const LegalSection(
           'پروموشنل کوڈز',
@@ -2754,14 +2733,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Erstattungen',
-          'Soweit gesetzlich nicht anders vorgeschrieben, werden Zahlungen nach'
-              ' Beginn eines Abrechnungszeitraums grundsätzlich nicht erstattet, '
-              'da du den Zugang bis zu dessen Ende behältst. Du kannst jederzeit '
-              'kündigen, um künftige Verlängerungen zu stoppen. Für einen '
-              'Erstattungswunsch oder Fragen zu einer Abbuchung kontaktiere uns '
-              '$_reachDe: Wir prüfen jede Anfrage nach geltendem '
-              'Verbraucherrecht und erstatten genehmigte Beträge über Whop (oder '
-              'PayPal).',
+          'Du kannst innerhalb von 7 Tagen nach jeder Abbuchung aus beliebigem Grund eine vollständige Erstattung verlangen: Kontaktiere uns $_reachDe'
+              ', und wir erstatten den Betrag über Whop (oder PayPal). Nach 7 Tagen sind Zahlungen in der Regel nicht erstattungsfähig, soweit das Gesetz nichts anderes vorschreibt, da du den Zugang bis zum Ende des bezahlten Zeitraums behältst. Du kannst jederzeit kündigen, um künftige Verlängerungen zu beenden.',
         ),
         const LegalSection(
           'Aktionscodes',
@@ -3055,14 +3028,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Política de reembolso',
-          'Salvo quando a lei exigir, os pagamentos em geral não são '
-              'reembolsáveis depois que um período de cobrança começa, já que '
-              'você mantém o acesso até o fim dele. Você pode cancelar a qualquer'
-              ' momento para interromper as renovações futuras. Para pedir '
-              'reembolso ou tirar dúvidas sobre uma cobrança, fale conosco '
-              '$_reachPt: analisamos cada pedido conforme a lei do consumidor '
-              'aplicável e fazemos os reembolsos aprovados pela Whop (ou pelo '
-              'PayPal).',
+          'Você pode pedir o reembolso integral em até 7 dias após qualquer cobrança, por qualquer motivo: fale conosco $_reachPt'
+              ' e devolvemos o valor pela Whop (ou pelo PayPal). Após 7 dias, os pagamentos geralmente não são reembolsáveis, salvo quando a lei exigir de outra forma, pois você mantém o acesso até o fim do período pago. Você pode cancelar a qualquer momento para interromper as renovações futuras.',
         ),
         const LegalSection(
           'Códigos promocionais',
@@ -3362,14 +3329,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Politica di rimborso',
-          'Salvo quanto previsto dalla legge, i pagamenti in genere non sono '
-              'rimborsabili una volta iniziato un periodo di fatturazione, perché'
-              ' mantieni l\'accesso fino alla sua fine. Puoi annullare in '
-              'qualsiasi momento per fermare i rinnovi futuri. Per una richiesta '
-              'di rimborso o domande su un addebito, contattaci $_reachIt: '
-              'esaminiamo ogni richiesta secondo la normativa sui consumatori '
-              'applicabile ed effettuiamo i rimborsi approvati tramite Whop (o '
-              'PayPal).',
+          'Puoi chiedere il rimborso completo entro 7 giorni da qualsiasi addebito, per qualsiasi motivo: scrivici $_reachIt'
+              ' e lo rimborsiamo tramite Whop (o PayPal). Dopo 7 giorni i pagamenti non sono in genere rimborsabili, salvo che la legge disponga diversamente, perché mantieni l\'accesso fino alla fine del periodo pagato. Puoi annullare in qualsiasi momento per interrompere i rinnovi futuri.',
         ),
         const LegalSection(
           'Codici promozionali',
@@ -3669,13 +3630,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Terugbetalingsbeleid',
-          'Behalve waar de wet dat vereist, worden betalingen in principe niet '
-              'terugbetaald zodra een factuurperiode is begonnen, omdat je toegang'
-              ' houdt tot het einde ervan. Je kunt op elk moment opzeggen om '
-              'toekomstige verlengingen te stoppen. Voor een terugbetalingsverzoek'
-              ' of een vraag over een afschrijving neem je contact op $_reachNl: '
-              'we beoordelen elk verzoek volgens het geldende consumentenrecht en '
-              'betalen goedgekeurde bedragen terug via Whop (of PayPal).',
+          'Je kunt binnen 7 dagen na elke afschrijving om welke reden dan ook om volledige terugbetaling vragen: neem contact met ons op $_reachNl'
+              ' en wij betalen het terug via Whop (of PayPal). Na 7 dagen zijn betalingen in het algemeen niet terugbetaalbaar, tenzij de wet anders bepaalt, omdat je toegang houdt tot het einde van de betaalde periode. Je kunt op elk moment opzeggen om toekomstige verlengingen te stoppen.',
         ),
         const LegalSection(
           'Kortingscodes',
@@ -3959,12 +3915,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Politika povrata novca',
-          'Osim kad zakon nalaže drugačije, uplate se u pravilu ne vraćaju '
-              'nakon što period naplate počne, jer zadržavaš pristup do njegovog '
-              'kraja. Možeš otkazati bilo kada da zaustaviš buduće obnove. Za '
-              'zahtjev za povrat ili pitanje o naplati kontaktiraj nas $_reachBs:'
-              ' svaki zahtjev razmatramo prema važećem zakonu o zaštiti '
-              'potrošača, a odobrene povrate vršimo preko Whopa (ili PayPala).',
+          'Možete zatražiti potpuni povrat novca u roku od 7 dana od bilo koje naplate, iz bilo kojeg razloga: obratite nam se $_reachBs'
+              ' i vratit ćemo novac putem Whopa (ili PayPala). Nakon 7 dana uplate se općenito ne vraćaju, osim kad zakon nalaže drugačije, jer pristup zadržavate do kraja plaćenog razdoblja. Možete otkazati u bilo kojem trenutku kako biste zaustavili buduće obnove.',
         ),
         const LegalSection(
           'Promotivni kodovi',
@@ -4255,13 +4207,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Politika e rimbursimit',
-          'Përveç kur e kërkon ligji, pagesat në përgjithësi nuk rimbursohen '
-              'pasi të ketë nisur një periudhë faturimi, sepse e mban aksesin '
-              'deri në fund të saj. Mund ta anulosh në çdo kohë për të ndaluar '
-              'rinovimet e ardhshme. Për një kërkesë rimbursimi ose pyetje për '
-              'një tarifim, na kontakto $_reachSq: e shqyrtojmë çdo kërkesë sipas'
-              ' ligjit të zbatueshëm për mbrojtjen e konsumatorit dhe i bëjmë '
-              'rimbursimet e miratuara përmes Whop (ose PayPal).',
+          'Mund të kërkosh rimbursim të plotë brenda 7 ditëve nga çdo tarifim, për çfarëdo arsye: na kontakto $_reachSq'
+              ' dhe ta rimbursojmë përmes Whop (ose PayPal). Pas 7 ditësh, pagesat në përgjithësi nuk rimbursohen, përveç kur ligji e kërkon ndryshe, sepse e ruan qasjen deri në fund të periudhës së paguar. Mund ta anulosh në çdo kohë për të ndaluar rinovimet e ardhshme.',
         ),
         const LegalSection(
           'Kodet promocionale',
@@ -4557,14 +4504,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Политика возврата',
-          'Кроме случаев, предусмотренных законом, платежи, как правило, не '
-              'возвращаются после начала расчётного периода, поскольку доступ '
-              'сохраняется до его окончания. Вы можете отменить подписку в любой '
-              'момент, чтобы остановить будущие продления. По вопросу возврата '
-              'или любого списания свяжитесь с нами $_reachRu: мы рассматриваем '
-              'каждый запрос в соответствии с применимым законодательством о '
-              'защите прав потребителей и проводим одобренные возвраты через '
-              'Whop (или PayPal).',
+          'Вы можете запросить полный возврат в течение 7 дней после любого списания, по любой причине: напишите нам $_reachRu'
+              ', и мы вернём деньги через Whop (или PayPal). После 7 дней платежи, как правило, не возвращаются, если иное не требует закон, поскольку доступ сохраняется до конца оплаченного периода. Вы можете отменить подписку в любой момент, чтобы остановить будущие продления.',
         ),
         const LegalSection(
           'Промокоды',
@@ -4851,13 +4792,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Sera ya kurejesha pesa',
-          'Isipokuwa pale sheria inapotaka, malipo kwa kawaida hayarejeshwi '
-              'kipindi kikishaanza, kwa kuwa unabaki na ufikiaji hadi mwisho wake.'
-              ' Unaweza kughairi wakati wowote kusimamisha marudio yajayo. Kwa '
-              'ombi la kurejeshewa pesa au swali lolote kuhusu malipo, wasiliana '
-              'nasi $_reachSw: tunakagua kila ombi chini ya sheria ya walaji '
-              'inayohusika na kurejesha pesa zilizoidhinishwa kupitia Whop (au '
-              'PayPal).',
+          'Unaweza kuomba kurejeshewa pesa zote ndani ya siku 7 baada ya malipo yoyote, kwa sababu yoyote: wasiliana nasi $_reachSw'
+              ' nasi tutarejesha kupitia Whop (au PayPal). Baada ya siku 7, malipo kwa kawaida hayarejeshwi, isipokuwa pale sheria inapohitaji vinginevyo, kwa sababu unaendelea kupata huduma hadi mwisho wa kipindi ulicholipia. Unaweza kughairi wakati wowote ili kusimamisha usasishaji ujao.',
         ),
         const LegalSection(
           'Misimbo ya ofa',
@@ -5139,12 +5075,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Manufar mayar da kuɗi',
-          'Sai dai inda doka ta buƙata, yawanci ba a mayar da kuɗi bayan lokacin'
-              ' biya ya fara, tunda kana da dama har ƙarshensa. Za ka iya soke a '
-              'kowane lokaci don dakatar da sabuntawa na gaba. Don buƙatar mayar '
-              'da kuɗi ko kowace tambaya game da cire kuɗi, tuntuɓe mu $_reachHa:'
-              ' muna duba kowace buƙata bisa dokar masu sayayya da ta dace kuma '
-              'muna mayar da kuɗin da aka amince ta Whop (ko PayPal).',
+          'Za ka iya neman a mayar maka da cikakken kuɗinka cikin kwanaki 7 bayan kowane biyan kuɗi, saboda kowane dalili: tuntuɓe mu $_reachHa'
+              ' kuma za mu mayar ta Whop (ko PayPal). Bayan kwanaki 7, ba a saba mayar da biyan kuɗi ba, sai dai inda doka ta buƙaci akasin haka, domin kana ci gaba da samun damar har zuwa ƙarshen lokacin da ka biya. Za ka iya soke a kowane lokaci don dakatar da sabuntawa na gaba.',
         ),
         const LegalSection(
           'Lambobin tayi',
@@ -5433,13 +5365,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'Terugbetalingsbeleid',
-          'Behalwe waar die wet dit vereis, word betalings in beginsel nie '
-              'terugbetaal sodra \'n faktuurtydperk begin het nie, omdat jy '
-              'toegang tot die einde daarvan behou. Jy kan enige tyd kanselleer om'
-              ' toekomstige hernuwings te stop. Vir \'n terugbetalingsversoek of '
-              '\'n vraag oor \'n heffing, kontak ons $_reachAf: ons oorweeg elke '
-              'versoek volgens die toepaslike verbruikersreg en betaal goedgekeurde'
-              ' bedrae terug via Whop (of PayPal).',
+          'Jy kan binne 7 dae ná enige betaling om enige rede volle terugbetaling vra: kontak ons $_reachAf'
+              ' en ons betaal dit terug deur Whop (of PayPal). Ná 7 dae is betalings oor die algemeen nie terugbetaalbaar nie, tensy die wet anders vereis, aangesien jy toegang behou tot die einde van die betaalde tydperk. Jy kan enige tyd kanselleer om toekomstige hernuwings te stop.',
         ),
         const LegalSection(
           'Koepons',
@@ -5709,12 +5636,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'سیاست بازپرداخت',
-          'جز جایی که قانون الزام کند، پرداخت‌ها پس از شروع یک دوره صورت‌حساب '
-              'اصولاً بازپرداخت نمی‌شوند، چون تا پایان آن دسترسی دارید. هر زمان '
-              'می‌توانید برای توقف تمدیدهای بعدی لغو کنید. برای درخواست بازپرداخت '
-              'یا پرسش درباره یک کسر مبلغ، $_reachFa با ما تماس بگیرید: هر درخواست'
-              ' را طبق قانون حمایت از مصرف‌کننده مربوط بررسی و مبالغ تأییدشده را از'
-              ' طریق Whop (یا PayPal) بازپرداخت می‌کنیم.',
+          'می‌توانید ظرف ۷ روز پس از هر پرداخت، به هر دلیلی، بازپرداخت کامل بخواهید: با ما $_reachFa'
+              ' تماس بگیرید و ما مبلغ را از طریق Whop (یا PayPal) بازمی‌گردانیم. پس از ۷ روز، پرداخت‌ها معمولاً بازپرداخت نمی‌شوند، مگر آنکه قانون خلاف آن را الزام کند، زیرا دسترسی شما تا پایان دوره پرداخت‌شده حفظ می‌شود. هر زمان می‌توانید لغو کنید تا تمدیدهای بعدی متوقف شود.',
         ),
         const LegalSection(
           'کدهای تخفیف',
@@ -5982,12 +5905,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           'रिफ़ंड नीति',
-          'जहाँ क़ानून ज़रूरी न बनाए, वहाँ बिलिंग अवधि शुरू होने के बाद भुगतान '
-              'आमतौर पर वापस नहीं होते, क्योंकि उसके अंत तक आपकी पहुँच बनी रहती है।'
-              ' आगे के नवीनीकरण रोकने के लिए कभी भी रद्द कर सकते हैं। रिफ़ंड के '
-              'अनुरोध या किसी कटौती के सवाल के लिए $_reachHi हमसे संपर्क करें: हम '
-              'हर अनुरोध लागू उपभोक्ता क़ानून के अनुसार देखते हैं और स्वीकृत रक़में '
-              'Whop (या PayPal) से लौटाते हैं।',
+          'आप किसी भी भुगतान के 7 दिनों के भीतर, किसी भी कारण से, पूरा रिफ़ंड माँग सकते हैं: हमसे $_reachHi'
+              ' संपर्क करें और हम Whop (या PayPal) के ज़रिए राशि लौटा देंगे। 7 दिनों के बाद भुगतान आम तौर पर वापस नहीं होते, सिवाय इसके कि क़ानून कुछ और अपेक्षित करे, क्योंकि आपकी चुकाई गई अवधि के अंत तक आपकी पहुँच बनी रहती है। आगे के नवीनीकरण रोकने के लिए आप कभी भी रद्द कर सकते हैं।',
         ),
         const LegalSection(
           'कूपन',
@@ -6227,11 +6146,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           '退款政策',
-          '除法律另有要求外，计费周期开始后付款通常不予退还，因为你在周'
-              '期结束前仍可继续使用。你可以随时取消以停止之后的续订。如需申'
-              '请退款或对某笔扣款有疑问，请$_reachZh联系我们：我们'
-              '会依照适用的消费者法律处理每一项请求，并通过 Whop（或 '
-              'PayPal）退还获批的金额。',
+          '你可以在任何一笔扣款后的 7 天内，因任何原因申请全额退款：请$_reachZh'
+              '联系我们，我们将通过 Whop（或 PayPal）退款。超过 7 天后，付款通常不予退款（法律另有规定的除外），因为你可在已付费的期限结束前继续使用。你可以随时取消以停止之后的续费。',
         ),
         const LegalSection(
           '优惠码',
@@ -6497,12 +6413,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           '返金ポリシー',
-          '法律で求められる場合を除き、請求期間が始まった後の支払いは、'
-              '通常その期間の終わりまで利用できるため返金されません。今後の'
-              '更新を止めるにはいつでも解約できます。返金の依頼や請求に関す'
-              'るご質問は、$_reachJaお問い合わせください：適用され'
-              'る消費者法に従ってすべての依頼を確認し、承認された金額は '
-              'Whop（または PayPal）を通じて返金します。',
+          'どのお支払いについても、7 日以内であれば理由を問わず全額返金をご依頼いただけます。$_reachJa'
+              'ご連絡ください。Whop（または PayPal）を通じて返金します。7 日を過ぎたお支払いは、法律で別段の定めがある場合を除き、原則として返金できません（お支払い済みの期間の終わりまで引き続きご利用いただけるため）。今後の更新を止めるには、いつでも解約できます。',
         ),
         const LegalSection(
           'クーポン',
@@ -6789,13 +6701,8 @@ abstract final class LegalContent {
         ),
         LegalSection(
           '환불 정책',
-          '법에서 요구하지 않는 한, 결제 주기가 시작된 뒤의 결'
-              '제는 그 기간이 끝날 때까지 이용할 수 있으므로 일반적'
-              '으로 환불되지 않습니다. 이후 갱신을 막으려면 언제든 '
-              '해지할 수 있습니다. 환불 요청이나 청구에 관한 질문은'
-              ' $_reachKo 문의해 주세요: 적용되는 소비자 법'
-              '에 따라 모든 요청을 검토하고, 승인된 금액은 Whop'
-              '(또는 PayPal)을 통해 돌려드립니다.',
+          '어떤 결제든 7일 이내에는 이유를 불문하고 전액 환불을 요청할 수 있습니다. $_reachKo'
+              ' 문의해 주시면 Whop(또는 PayPal)을 통해 환불해 드립니다. 7일이 지나면 법에서 달리 정한 경우를 제외하고 결제는 원칙적으로 환불되지 않습니다. 결제한 기간이 끝날 때까지 계속 이용할 수 있기 때문입니다. 이후 갱신을 중단하려면 언제든지 해지할 수 있습니다.',
         ),
         const LegalSection(
           '쿠폰',
