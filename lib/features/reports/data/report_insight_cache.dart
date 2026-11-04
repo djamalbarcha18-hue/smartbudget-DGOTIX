@@ -65,6 +65,9 @@ class ReportInsightCache {
     try {
       final SharedPreferences p = await SharedPreferences.getInstance();
       final Map<String, Object?> all = _decode(p.getString(prefKey));
+      // Removed first so a rewrite moves to the end: the map's own order is
+      // the age, oldest first, and does not depend on the clock.
+      all.remove(key);
       all[key] = <String, Object?>{
         'text': text,
         'at': DateTime.now().toUtc().millisecondsSinceEpoch,
@@ -89,13 +92,16 @@ class ReportInsightCache {
   }
 
   /// Keeps the [keep] most recent entries, oldest dropped first.
+  ///
+  /// Age is the order of the map itself (oldest first, a rewrite moves to the
+  /// end), not the timestamp: two analyses written in the same millisecond
+  /// tie on a clock, and Dart's sort does not promise to keep tied items in
+  /// order, so the one dropped would have been arbitrary.
   static Map<String, Object?> _trim(Map<String, Object?> all) {
     if (all.length <= keep) return all;
-    int stamp(Object? e) => (e is Map && e['at'] is int) ? e['at']! as int : 0;
-    final List<String> byAge = all.keys.toList()
-      ..sort((String a, String b) => stamp(all[b]).compareTo(stamp(all[a])));
+    final List<String> keys = all.keys.toList();
     return <String, Object?>{
-      for (final String k in byAge.take(keep)) k: all[k],
+      for (final String k in keys.skip(keys.length - keep)) k: all[k],
     };
   }
 }

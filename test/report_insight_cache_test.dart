@@ -79,6 +79,21 @@ void main() {
     });
   });
 
+  test(
+      'a rewrite counts as new, so a re-exported report is not the one '
+      'dropped', () async {
+    await cache.write(_key(brief: 'kept'), 'kept text');
+    for (int i = 0; i < ReportInsightCache.keep - 1; i++) {
+      await cache.write(_key(brief: 'filler $i'), 'f$i');
+    }
+    // Rewriting the oldest makes it the newest...
+    await cache.write(_key(brief: 'kept'), 'kept text again');
+    // ...so the next arrival pushes out a filler, not this one.
+    await cache.write(_key(brief: 'newcomer'), 'new');
+    expect(await cache.read(_key(brief: 'kept')), 'kept text again');
+    expect(await cache.read(_key(brief: 'filler 0')), isNull);
+  });
+
   test('it keeps the newest analyses and drops the oldest', () async {
     for (int i = 0; i < ReportInsightCache.keep + 5; i++) {
       await cache.write(_key(brief: 'brief $i'), 'text $i');
