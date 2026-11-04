@@ -1,4 +1,4 @@
-import { allSandbox, isSandboxUrl } from "./billing.ts";
+import { allSandbox, foundingOffer, isSandboxUrl } from "./billing.ts";
 import { hmacBase64, membershipIdOf, verifyWhopSignature, whopSign, whopStatus } from "./whop.ts";
 
 const SECRET = "ws_test_secret";
@@ -90,4 +90,15 @@ Deno.test("test mode needs every provider on its sandbox", () => {
   expect(allSandbox(["whop", "paypal"], { paypal, whop: "https://api.whop.com/api/v1" }), false, "whop live");
   expect(allSandbox(["whop", "paypal"], { paypal, whop }), true, "both sandbox");
   expect(allSandbox(["whop", "paypal"], { paypal: "https://api-m.paypal.com", whop }), false, "paypal live");
+});
+
+Deno.test("the founding offer runs only until its end date", () => {
+  const now = new Date("2026-11-15T00:00:00Z");
+  const o = foundingOffer({ endsAt: "2026-12-31T23:59:59Z" }, now);
+  expect(o?.yearlyUsd === 39.99 && o?.endsAt === "2026-12-31T23:59:59.000Z", true, "running, default price");
+  expect(foundingOffer({ endsAt: "2026-11-14T00:00:00Z" }, now) === null, true, "over");
+  expect(foundingOffer({ endsAt: "" }, now) === null, true, "unset");
+  expect(foundingOffer({ endsAt: "soon" }, now) === null, true, "unparsable");
+  expect(foundingOffer({ endsAt: "2026-12-31", yearlyUsd: "29.99" }, now)?.yearlyUsd === 29.99, true, "own price");
+  expect(foundingOffer({ endsAt: "2026-12-31", yearlyUsd: "free" }, now) === null, true, "bad price");
 });

@@ -102,6 +102,26 @@ check(
   JSON.stringify(r) + JSON.stringify(asked),
 );
 
+// ---- Founding offer: the first year of PRO yearly on its own Whop plan ----
+const yearly = async (u: string) => {
+  const res = await handlers["create-checkout"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-" + u }, body: JSON.stringify({ plan: "pro", period: "yearly" }) }));
+  return { status: res.status, body: await res.json() };
+};
+const lastPlan = () => whopCheckouts[whopCheckouts.length - 1]?.plan_id;
+r = await yearly("f1");
+check("Founding: with no offer running, yearly is the regular plan", r.status === 200 && lastPlan() === "plan_pro_year", JSON.stringify(r) + lastPlan());
+Deno.env.set("FOUNDING_OFFER_ENDS_AT", new Date(Date.now() + 86_400_000).toISOString());
+r = await yearly("f2");
+check("Founding: while it runs, yearly opens the founding plan", r.status === 200 && lastPlan() === "plan_pro_founding", JSON.stringify(r) + lastPlan());
+r = await checkout("f3");
+check("Founding: monthly stays at its regular plan", r.status === 200 && lastPlan() === "plan_pro", JSON.stringify(r) + lastPlan());
+Deno.env.set("FOUNDING_OFFER_ENDS_AT", new Date(Date.now() - 1_000).toISOString());
+r = await yearly("f4");
+check("Founding: once it is over, yearly is the regular plan again", r.status === 200 && lastPlan() === "plan_pro_year", JSON.stringify(r) + lastPlan());
+Deno.env.delete("FOUNDING_OFFER_ENDS_AT");
+r = await whop(whopMem("membership.activated", U1, "mem_f", "plan_pro_founding", "active"));
+check("Founding: a founding membership is PRO yearly", last().p_plan === "pro" && last().p_period === "yearly", JSON.stringify(last()));
+
 // ---- Usage limits (BETA off: FREE = 3 scans a month, 5 lifetime AI answers) ----
 const scan = () => handlers["receipt-scan"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-u7" }, body: JSON.stringify({ imageBase64: "AAAA", mimeType: "image/jpeg", v: 2 }) }));
 model.reply = JSON.stringify({ r: true, inv: "", dt: "2026-10-01", cur: "USD", sym: "$", sup: "S", cus: "", cat: "x", it: [], sub: "", dis: "", tax: "", tot: "9.50", paid: "", due: "" });

@@ -1,6 +1,8 @@
 /// A KPI tile's title must be readable in full. On a narrow tile it used to
 /// be cut to "إجمالي المصر…", which hides which card it is; it now shrinks
 /// a little instead.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
