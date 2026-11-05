@@ -67,7 +67,7 @@ void main() {
 
 void chartColorTests() {
   group('chart colours follow the category families', () {
-    final DsColors c = DsColors.light;
+    const DsColors c = DsColors.light;
     test('built-in categories take their family colour, repeats shift', () {
       final List<Color> out = chartColorsFor(
           <String>['الطعام', 'المطاعم', 'السكن', 'الوقود'],
