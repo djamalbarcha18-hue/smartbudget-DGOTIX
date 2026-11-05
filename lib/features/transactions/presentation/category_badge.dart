@@ -219,21 +219,21 @@ Color familyColor(CategoryFamily f, DsColors c, Brightness b) {
   final bool dark = b == Brightness.dark;
   switch (f) {
     case CategoryFamily.basics:
-      return dark ? const Color(0xFF8FB0D6) : const Color(0xFF5B7FA6);
+      return dark ? const Color(0xFF8FB0D6) : const Color(0xFF597CA3);
     case CategoryFamily.food:
-      return dark ? const Color(0xFFE39A6E) : const Color(0xFFC8703F);
+      return dark ? const Color(0xFFE39A6E) : const Color(0xFFB76334);
     case CategoryFamily.mobility:
       return dark ? const Color(0xFFA99AC9) : const Color(0xFF7A6A9E);
     case CategoryFamily.lifestyle:
       return dark ? const Color(0xFFD98BA8) : const Color(0xFFB8577A);
     case CategoryFamily.commitments:
-      return dark ? const Color(0xFF8CC2AE) : const Color(0xFF5E8F7F);
+      return dark ? const Color(0xFF8CC2AE) : const Color(0xFF568374);
     case CategoryFamily.income:
-      return dark ? const Color(0xFF86C187) : const Color(0xFF5A9A5B);
+      return dark ? const Color(0xFF86C187) : const Color(0xFF4F8750);
     case CategoryFamily.incomePassive:
-      return dark ? const Color(0xFFDDBF72) : const Color(0xFFB8963F);
+      return dark ? const Color(0xFFDDBF72) : const Color(0xFF927732);
     case CategoryFamily.incomeWork:
-      return dark ? const Color(0xFF8FB0D6) : const Color(0xFF5B7FA6);
+      return dark ? const Color(0xFF8FB0D6) : const Color(0xFF597CA3);
     case CategoryFamily.incomeGift:
       return dark ? const Color(0xFFD98BA8) : const Color(0xFFB8577A);
   }
