@@ -643,7 +643,7 @@
   "supportEmailSubject": "SmartBudget-Support",
   "supportEmailCopied": "E-Mail-Adresse kopiert",
   "supportFaq": "Häufige Fragen",
-  "supportFaqHint": "Kurze Antworten dazu, wie SMARTBUDGET funktioniert.",
+  "supportFaqHint": "Kurze Antworten dazu, wie SmartBudget funktioniert.",
   "faqPrivacyQ": "Wo werden meine Daten gespeichert?",
   "faqPrivacyA": "Alles, was du eingibst, wird zuerst auf deinem Gerät gespeichert, sodass die App auch offline funktioniert. Wenn du dich anmeldest, werden deine Daten zusätzlich sicher zwischen deinen Geräten synchronisiert, und nur du kannst sie lesen. Du kannst jederzeit in den Einstellungen eine vollständige Sicherung exportieren.",
   "faqCurrencyQ": "Wie ändere ich die Basiswährung?",

@@ -643,7 +643,7 @@
   "supportEmailSubject": "SmartBudget podrška",
   "supportEmailCopied": "E-mail adresa je kopirana",
   "supportFaq": "Česta pitanja",
-  "supportFaqHint": "Brzi odgovori o tome kako SMARTBUDGET radi.",
+  "supportFaqHint": "Brzi odgovori o tome kako SmartBudget radi.",
   "faqPrivacyQ": "Gdje se čuvaju moji podaci?",
   "faqPrivacyA": "Sve što uneseš prvo se čuva na tvom uređaju, pa aplikacija radi i bez interneta. Kad se prijaviš, podaci se i sigurno sinhronizuju između tvojih uređaja, a samo ih ti možeš čitati. Pun backup možeš izvesti iz Postavki u bilo kojem trenutku.",
   "faqCurrencyQ": "Kako da promijenim osnovnu valutu?",

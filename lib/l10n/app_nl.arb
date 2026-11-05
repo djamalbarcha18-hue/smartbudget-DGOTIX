@@ -643,7 +643,7 @@
   "supportEmailSubject": "SmartBudget-support",
   "supportEmailCopied": "E-mailadres gekopieerd",
   "supportFaq": "Veelgestelde vragen",
-  "supportFaqHint": "Snelle antwoorden over hoe SMARTBUDGET werkt.",
+  "supportFaqHint": "Snelle antwoorden over hoe SmartBudget werkt.",
   "faqPrivacyQ": "Waar worden mijn gegevens opgeslagen?",
   "faqPrivacyA": "Alles wat je invult wordt eerst op je apparaat opgeslagen, zodat de app ook offline werkt. Als je inlogt, worden je gegevens ook veilig tussen je apparaten gesynchroniseerd, en alleen jij kunt ze lezen. Je kunt op elk moment een volledige back-up exporteren via Instellingen.",
   "faqCurrencyQ": "Hoe wijzig ik de basisvaluta?",

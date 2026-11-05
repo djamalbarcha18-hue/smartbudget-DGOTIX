@@ -643,7 +643,7 @@
   "supportEmailSubject": "SmartBudget 客服",
   "supportEmailCopied": "邮箱地址已复制",
   "supportFaq": "常见问题",
-  "supportFaqHint": "关于 SMARTBUDGET 如何运作的快速解答。",
+  "supportFaqHint": "关于 SmartBudget 如何运作的快速解答。",
   "faqPrivacyQ": "我的数据存在哪里？",
   "faqPrivacyA": "你输入的所有内容都会先保存在你的设备上，所以应用离线也能用。登录后，你的数据还会在你的设备之间安全同步，并且只有你能读取。你可以随时在设置中导出完整备份。",
   "faqCurrencyQ": "如何更改基础货币？",

@@ -643,7 +643,7 @@
   "supportEmailSubject": "SmartBudget サポート",
   "supportEmailCopied": "メールアドレスをコピーしました",
   "supportFaq": "よくある質問",
-  "supportFaqHint": "SMARTBUDGET の仕組みについての簡単な回答。",
+  "supportFaqHint": "SmartBudget の仕組みについての簡単な回答。",
   "faqPrivacyQ": "データはどこに保存されますか？",
   "faqPrivacyA": "入力したものはすべてまず端末に保存されるので、オフラインでもアプリは動きます。ログインすると、データは端末間で安全に同期され、読めるのはあなただけです。設定からいつでも完全なバックアップを書き出せます。",
   "faqCurrencyQ": "基本通貨はどう変更しますか？",

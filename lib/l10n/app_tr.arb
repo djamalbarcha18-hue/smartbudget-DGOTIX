@@ -643,7 +643,7 @@
   "supportEmailSubject": "SmartBudget destek",
   "supportEmailCopied": "E-posta adresi kopyalandı",
   "supportFaq": "Sık sorulan sorular",
-  "supportFaqHint": "SMARTBUDGET'ın nasıl çalıştığına dair kısa yanıtlar.",
+  "supportFaqHint": "SmartBudget'ın nasıl çalıştığına dair kısa yanıtlar.",
   "faqPrivacyQ": "Verilerim nerede saklanıyor?",
   "faqPrivacyA": "Girdiğin her şey önce cihazına kaydedilir, böylece uygulama çevrimdışı da çalışır. Giriş yaptığında verilerin cihazların arasında güvenle senkronize edilir ve yalnızca sen okuyabilirsin. İstediğin zaman Ayarlar'dan tam bir yedek dışa aktarabilirsin.",
   "faqCurrencyQ": "Ana para birimini nasıl değiştiririm?",

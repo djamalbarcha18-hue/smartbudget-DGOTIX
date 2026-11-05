@@ -643,7 +643,7 @@
   "supportEmailSubject": "Dukungan SmartBudget",
   "supportEmailCopied": "Alamat email disalin",
   "supportFaq": "Pertanyaan umum",
-  "supportFaqHint": "Jawaban singkat tentang cara kerja SMARTBUDGET.",
+  "supportFaqHint": "Jawaban singkat tentang cara kerja SmartBudget.",
   "faqPrivacyQ": "Di mana data saya disimpan?",
   "faqPrivacyA": "Semua yang Anda masukkan disimpan dulu di perangkat Anda, jadi aplikasi tetap jalan meski offline. Saat Anda masuk, data juga tersinkron dengan aman antarperangkat, dan hanya Anda yang bisa membacanya. Anda bisa mengekspor cadangan lengkap dari Pengaturan kapan saja.",
   "faqCurrencyQ": "Bagaimana mengganti mata uang dasar?",

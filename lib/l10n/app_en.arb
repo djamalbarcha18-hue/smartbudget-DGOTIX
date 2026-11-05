@@ -746,7 +746,7 @@
   "supportEmailSubject": "SmartBudget support",
   "supportEmailCopied": "Email address copied",
   "supportFaq": "Frequently asked questions",
-  "supportFaqHint": "Quick answers about how SMARTBUDGET works.",
+  "supportFaqHint": "Quick answers about how SmartBudget works.",
   "faqPrivacyQ": "Where is my data stored?",
   "faqPrivacyA": "Everything you enter is saved on your device first, so the app works even offline. When you sign in, your data also syncs securely between your devices, and only you can read it. You can export a full backup from Settings at any time.",
   "faqCurrencyQ": "How do I change the base currency?",

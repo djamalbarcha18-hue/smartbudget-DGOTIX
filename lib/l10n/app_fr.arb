@@ -643,7 +643,7 @@
   "supportEmailSubject": "Assistance SmartBudget",
   "supportEmailCopied": "Adresse e-mail copiée",
   "supportFaq": "Questions fréquentes",
-  "supportFaqHint": "Des réponses rapides sur le fonctionnement de SMARTBUDGET.",
+  "supportFaqHint": "Des réponses rapides sur le fonctionnement de SmartBudget.",
   "faqPrivacyQ": "Où sont stockées mes données ?",
   "faqPrivacyA": "Tout ce que vous saisissez est d'abord enregistré sur votre appareil, l'application fonctionne donc même hors ligne. Une fois connecté, vos données se synchronisent aussi de façon sécurisée entre vos appareils, et vous seul pouvez les lire. Vous pouvez exporter une sauvegarde complète depuis Paramètres à tout moment.",
   "faqCurrencyQ": "Comment changer la devise de base ?",

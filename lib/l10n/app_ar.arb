@@ -1,6 +1,6 @@
 {
   "@@locale": "ar",
-  "appTitle": "سمارت بدجت",
+  "appTitle": "SmartBudget",
 
   "navDashboard": "الرئيسية",
   "navChallenges": "التحديات والإنجازات",
@@ -745,7 +745,7 @@
   "supportEmailSubject": "دعم SmartBudget",
   "supportEmailCopied": "تم نسخ عنوان البريد",
   "supportFaq": "الأسئلة الشائعة",
-  "supportFaqHint": "إجابات سريعة حول طريقة عمل SMARTBUDGET.",
+  "supportFaqHint": "إجابات سريعة حول طريقة عمل SmartBudget.",
   "faqPrivacyQ": "أين تُخزَّن بياناتي؟",
   "faqPrivacyA": "كل ما تُدخله يُحفظ أولاً على جهازك، فيعمل التطبيق حتى دون إنترنت. وعند تسجيل الدخول تُزامَن بياناتك بأمان بين أجهزتك، ولا يطّلع عليها أحد سواك. ويمكنك تصدير نسخة احتياطية كاملة من الإعدادات في أي وقت.",
   "faqCurrencyQ": "كيف أغيّر العملة الأساسية؟",
