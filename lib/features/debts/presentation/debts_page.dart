@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_skeleton.dart';
@@ -14,6 +16,7 @@ import 'package:smartbudget/design_system/tokens/ds_breakpoints.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/debts/application/debt_totals_mode.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
@@ -31,6 +34,12 @@ class DebtsPage extends ConsumerWidget {
     final DsColors c = context.dsColors;
     final DebtSummary summary = ref.watch(debtSummaryProvider);
     final AsyncValue<List<Debt>> async = ref.watch(debtsProvider);
+    final String base = ref.watch(baseCurrencyProvider);
+    final List<CurrencyPosition> positions = ref.watch(debtPositionsProvider);
+    // The choice only matters when debts are in more than one currency.
+    final bool mixed = positions.any((CurrencyPosition p) => p.code != base);
+    final bool perCurrency = mixed &&
+        ref.watch(debtTotalsModeProvider) == DebtTotalsMode.perCurrency;
 
     final Widget addBtn = DsButton(
       label: l.addDebt,
@@ -58,45 +67,84 @@ class DebtsPage extends ConsumerWidget {
               ],
             ),
           const SizedBox(height: DsSpacing.lg),
-          KpiGrid(
-            children: <Widget>[
-              KpiCard(
-                label: l.debtOwedToMe,
-                value: MoneyFormatter.format(summary.owedToMe),
-                icon: Icons.call_received_rounded,
-                accent: c.income,
+          if (mixed) ...<Widget>[
+            SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<DebtTotalsMode>(
+                showSelectedIcon: false,
+                segments: <ButtonSegment<DebtTotalsMode>>[
+                  ButtonSegment<DebtTotalsMode>(
+                      value: DebtTotalsMode.converted,
+                      label: Text(l.debtTotalsInBase)),
+                  ButtonSegment<DebtTotalsMode>(
+                      value: DebtTotalsMode.perCurrency,
+                      label: Text(l.debtTotalsByCurrency)),
+                ],
+                selected: <DebtTotalsMode>{
+                  perCurrency
+                      ? DebtTotalsMode.perCurrency
+                      : DebtTotalsMode.converted,
+                },
+                onSelectionChanged: (Set<DebtTotalsMode> v) =>
+                    ref.read(debtTotalsModeProvider.notifier).set(v.first),
               ),
-              KpiCard(
-                label: l.debtOwedByMe,
-                value: MoneyFormatter.format(summary.owedByMe),
-                icon: Icons.call_made_rounded,
-                accent: c.expense,
-              ),
-              KpiCard(
-                label: l.debtNet,
-                value: MoneyFormatter.format(summary.net),
-                icon: Icons.balance_rounded,
-                accent: c.net,
-              ),
-            ],
-          ),
-          // Debts in another currency are counted at today's rate, and a
-          // currency with no rate yet is named, never dropped without a word.
-          if (summary.convertedCount > 0) ...<Widget>[
-            const SizedBox(height: DsSpacing.sm),
-            Text(l.walletTotalAtRates,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelSmall
-                    ?.copyWith(color: c.textMuted)),
+            ),
+            const SizedBox(height: DsSpacing.md),
           ],
-          if (summary.missingRateCodes.isNotEmpty) ...<Widget>[
-            const SizedBox(height: DsSpacing.sm),
-            Text(l.walletMissingRate(summary.missingRateCodes.join(', ')),
-                style: Theme.of(context)
-                    .textTheme
-                    .labelSmall
-                    ?.copyWith(color: c.expense)),
+          if (perCurrency)
+            // One line per currency, nothing converted.
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 250),
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: positions.length,
+                separatorBuilder: (_, __) =>
+                    const SizedBox(height: DsSpacing.sm),
+                itemBuilder: (BuildContext context, int i) =>
+                    _CurrencyPositionCard(position: positions[i]),
+              ),
+            )
+          else ...<Widget>[
+            KpiGrid(
+              children: <Widget>[
+                KpiCard(
+                  label: l.debtOwedToMe,
+                  value: MoneyFormatter.format(summary.owedToMe),
+                  icon: Icons.call_received_rounded,
+                  accent: c.income,
+                ),
+                KpiCard(
+                  label: l.debtOwedByMe,
+                  value: MoneyFormatter.format(summary.owedByMe),
+                  icon: Icons.call_made_rounded,
+                  accent: c.expense,
+                ),
+                KpiCard(
+                  label: l.debtNet,
+                  value: MoneyFormatter.format(summary.net),
+                  icon: Icons.balance_rounded,
+                  accent: c.net,
+                ),
+              ],
+            ),
+            // Debts in another currency are counted at today's rate, and a
+            // currency with no rate yet is named, never dropped without a word.
+            if (summary.convertedCount > 0) ...<Widget>[
+              const SizedBox(height: DsSpacing.sm),
+              Text(l.walletTotalAtRates,
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(color: c.textMuted)),
+            ],
+            if (summary.missingRateCodes.isNotEmpty) ...<Widget>[
+              const SizedBox(height: DsSpacing.sm),
+              Text(l.walletMissingRate(summary.missingRateCodes.join(', ')),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(color: c.expense)),
+            ],
           ],
           const SizedBox(height: DsSpacing.lg),
           Expanded(
@@ -139,7 +187,9 @@ class _DebtTile extends ConsumerWidget {
     // A debt in another currency shows what is left in its own currency, and
     // roughly what that is in the base currency when a rate is known.
     final String base = ref.watch(baseCurrencyProvider);
-    final Money? inBase = debt.original.currencyCode == base
+    final bool apart =
+        ref.watch(debtTotalsModeProvider) == DebtTotalsMode.perCurrency;
+    final Money? inBase = debt.original.currencyCode == base || apart
         ? null
         : DebtCalculator.inBase(
             DebtCalculator.remaining(debt), base, ref.watch(ratesProvider));
@@ -228,6 +278,71 @@ class _DebtTile extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// What is owed in one currency: lent, borrowed and the balance, as they are.
+class _CurrencyPositionCard extends StatelessWidget {
+  const _CurrencyPositionCard({required this.position});
+  final CurrencyPosition position;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final AppLocalizations l = AppLocalizations.of(context);
+    final TextTheme t = Theme.of(context).textTheme;
+
+    Widget figure(String label, Money m, Color color) => Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(label, style: t.labelSmall?.copyWith(color: c.textMuted)),
+              const SizedBox(height: 2),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: AlignmentDirectional.centerStart,
+                child: Text(
+                  MoneyFormatter.format(m),
+                  style: t.titleSmall
+                      ?.copyWith(color: color, fontWeight: FontWeight.w700),
+                  maxLines: 1,
+                  softWrap: false,
+                ),
+              ),
+            ],
+          ),
+        );
+
+    return Container(
+      padding: const EdgeInsets.all(DsSpacing.md),
+      decoration: BoxDecoration(
+        color: c.surface,
+        borderRadius: DsRadius.brMd,
+        border: Border.all(color: c.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              CurrencyFlag(Currencies.byCode(position.code), width: 20),
+              const SizedBox(width: DsSpacing.sm),
+              Text(position.code, style: t.titleSmall),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.sm),
+          Row(
+            children: <Widget>[
+              figure(l.debtOwedToMe, position.owedToMe, c.income),
+              const SizedBox(width: DsSpacing.sm),
+              figure(l.debtOwedByMe, position.owedByMe, c.expense),
+              const SizedBox(width: DsSpacing.sm),
+              figure(l.debtNet, position.net, c.net),
+            ],
+          ),
+        ],
       ),
     );
   }

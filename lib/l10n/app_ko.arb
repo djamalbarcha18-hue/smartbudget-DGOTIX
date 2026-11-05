@@ -119,6 +119,8 @@
   "walletCurrencyHint": "예: 해외 계좌용 유로 지갑과 자국 통화 지갑.",
   "walletCurrencyLocked": "만든 뒤에는 통화를 바꿀 수 없어요.",
   "debtCurrencyHint": "다른 통화로 빌리거나 빌려주셨나요? 여기서 선택하세요. 합계는 앱 환율로 환산됩니다.",
+  "debtTotalsInBase": "내 통화로",
+  "debtTotalsByCurrency": "통화별로",
   "walletTotalAtRates": "기준 통화로, 앱의 환율로 계산해요.",
   "walletMissingRate": "{codes}의 환율이 없어서 합계에 포함되지 않았어요. 환율에서 추가하세요.",
   "walletSent": "보낸 금액",

@@ -31,6 +31,24 @@ class DebtSummary {
   final List<String> missingRateCodes;
 }
 
+/// What is owed in one currency, not converted into any other.
+@immutable
+class CurrencyPosition {
+  const CurrencyPosition({
+    required this.code,
+    required this.owedToMe,
+    required this.owedByMe,
+    required this.openCount,
+  });
+
+  final String code;
+  final Money owedToMe;
+  final Money owedByMe;
+  final int openCount;
+
+  Money get net => Money(owedToMe.minorUnits - owedByMe.minorUnits, code);
+}
+
 /// Pure debt calculations. `remaining` and `status` are derived here so they are
 /// consistent everywhere and unit-tested.
 abstract final class DebtCalculator {
@@ -112,6 +130,39 @@ abstract final class DebtCalculator {
       convertedCount: converted,
       missingRateCodes: (missing.toList()..sort()),
     );
+  }
+
+  /// What is still owed, one line per currency and nothing converted: the
+  /// base currency first, then the others by code. A currency with no open
+  /// debt has no line.
+  static List<CurrencyPosition> byCurrency(
+      List<Debt> debts, String baseCurrency) {
+    final Map<String, int> toMe = <String, int>{};
+    final Map<String, int> byMe = <String, int>{};
+    final Map<String, int> open = <String, int>{};
+    for (final Debt d in debts) {
+      final Money r = remaining(d);
+      if (r.isZero) continue;
+      final String code = d.original.currencyCode;
+      open[code] = (open[code] ?? 0) + 1;
+      final Map<String, int> side = d.isLent ? toMe : byMe;
+      side[code] = (side[code] ?? 0) + r.minorUnits;
+    }
+    final List<String> codes = open.keys.toList()
+      ..sort((String a, String b) {
+        if (a == baseCurrency) return -1;
+        if (b == baseCurrency) return 1;
+        return a.compareTo(b);
+      });
+    return <CurrencyPosition>[
+      for (final String code in codes)
+        CurrencyPosition(
+          code: code,
+          owedToMe: Money(toMe[code] ?? 0, code),
+          owedByMe: Money(byMe[code] ?? 0, code),
+          openCount: open[code]!,
+        ),
+    ];
   }
 
   static DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);

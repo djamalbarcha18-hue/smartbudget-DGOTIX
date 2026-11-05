@@ -119,6 +119,8 @@
   "walletCurrencyHint": "bv. 'n euro-beursie vir jou rekening oorsee en een in jou plaaslike geldeenheid tuis.",
   "walletCurrencyLocked": "Die geldeenheid kan nie na skepping verander nie.",
   "debtCurrencyHint": "Lening in 'n ander geldeenheid? Kies dit hier; die totale reken dit om teen die app se wisselkoers.",
+  "debtTotalsInBase": "In my geldeenheid",
+  "debtTotalsByCurrency": "Per geldeenheid",
   "walletTotalAtRates": "In jou basisgeldeenheid, teen die app se wisselkoerse.",
   "walletMissingRate": "Geen wisselkoers vir {codes} nie, dus word dit uit die totaal gelaat. Voeg een by in Wisselkoerse.",
   "walletSent": "Bedrag gestuur",

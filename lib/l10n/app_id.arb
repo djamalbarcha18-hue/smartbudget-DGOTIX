@@ -119,6 +119,8 @@
   "walletCurrencyHint": "mis. dompet euro untuk rekening Anda di luar negeri dan satu lagi dalam mata uang lokal.",
   "walletCurrencyLocked": "Mata uang tidak dapat diubah setelah dibuat.",
   "debtCurrencyHint": "Pinjaman dalam mata uang lain? Pilih di sini; total akan mengonversinya dengan kurs di aplikasi.",
+  "debtTotalsInBase": "Dalam mata uang saya",
+  "debtTotalsByCurrency": "Per mata uang",
   "walletTotalAtRates": "Dalam mata uang dasar Anda, dengan kurs aplikasi.",
   "walletMissingRate": "Tidak ada kurs untuk {codes}, jadi tidak dihitung dalam total. Tambahkan di Kurs Mata Uang.",
   "walletSent": "Jumlah dikirim",

@@ -29,6 +29,13 @@ final debtSummaryProvider = Provider<DebtSummary>((ref) {
   return DebtCalculator.summary(debts, currency, ratesVsUsd: rates);
 });
 
+/// What is owed, one line per currency (nothing converted).
+final debtPositionsProvider = Provider<List<CurrencyPosition>>((ref) {
+  final List<Debt> debts =
+      ref.watch(debtsProvider).valueOrNull ?? const <Debt>[];
+  return DebtCalculator.byCurrency(debts, ref.watch(baseCurrencyProvider));
+});
+
 final debtActionsProvider = Provider<DebtActions>((ref) {
   return DebtActions(ref.watch(debtRepositoryProvider));
 });

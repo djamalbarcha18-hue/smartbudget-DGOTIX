@@ -140,6 +140,8 @@
   "walletCurrencyHint": "e.g. a euro wallet for your account abroad and one in your local currency at home.",
   "walletCurrencyLocked": "The currency can't change after creation.",
   "debtCurrencyHint": "Lent or borrowed in another currency? Choose it here; totals convert it at the app's exchange rate.",
+  "debtTotalsInBase": "In my currency",
+  "debtTotalsByCurrency": "By currency",
   "walletTotalAtRates": "In your base currency, at the app's exchange rates.",
   "walletMissingRate": "No exchange rate for {codes}, so it's left out of the total. Add one in Exchange Rates.",
   "@walletMissingRate": {"placeholders": {"codes": {"type": "String"}}},

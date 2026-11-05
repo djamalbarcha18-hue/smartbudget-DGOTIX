@@ -216,4 +216,61 @@ void main() {
       expect(back.original.currencyCode, 'EUR');
     });
   });
+
+  group('totals one line per currency', () {
+    Debt d(String currency, DebtType type, double original, {double paid = 0}) {
+      return Debt(
+        id: 'p-$currency-${type.name}-$original-$paid',
+        party: 'Friend',
+        type: type,
+        original: Money.fromDouble(original, currency),
+        paid: Money.fromDouble(paid, currency),
+        createdAt: DateTime(2026, 1, 1),
+      );
+    }
+
+    test('adds each currency on its own and converts nothing', () {
+      final List<CurrencyPosition> p = DebtCalculator.byCurrency(<Debt>[
+        d('EUR', DebtType.lent, 100),
+        d('EUR', DebtType.lent, 50, paid: 20), // 30 left
+        d('EUR', DebtType.borrowed, 40),
+        d('USD', DebtType.borrowed, 10),
+      ], 'DZD');
+      final CurrencyPosition eur = p.firstWhere((x) => x.code == 'EUR');
+      expect(eur.owedToMe, Money.fromDouble(130, 'EUR'));
+      expect(eur.owedByMe, Money.fromDouble(40, 'EUR'));
+      expect(eur.net, Money.fromDouble(90, 'EUR'));
+      expect(eur.openCount, 3);
+      final CurrencyPosition usd = p.firstWhere((x) => x.code == 'USD');
+      expect(usd.owedToMe, Money.fromDouble(0, 'USD'));
+      expect(usd.net, Money.fromDouble(-10, 'USD'));
+    });
+
+    test('the base currency comes first, then the others by code', () {
+      final List<CurrencyPosition> p = DebtCalculator.byCurrency(<Debt>[
+        d('USD', DebtType.lent, 1),
+        d('GBP', DebtType.lent, 1),
+        d('DZD', DebtType.lent, 1),
+        d('EUR', DebtType.lent, 1),
+      ], 'DZD');
+      expect(p.map((x) => x.code), <String>['DZD', 'EUR', 'GBP', 'USD']);
+    });
+
+    test('a settled debt, or a currency with nothing open, has no line', () {
+      final List<CurrencyPosition> p = DebtCalculator.byCurrency(<Debt>[
+        d('EUR', DebtType.lent, 100, paid: 100),
+        d('USD', DebtType.lent, 5),
+      ], 'DZD');
+      expect(p.map((x) => x.code), <String>['USD']);
+      expect(DebtCalculator.byCurrency(const <Debt>[], 'DZD'), isEmpty);
+    });
+
+    test('needs no exchange rate, so no currency is ever left out', () {
+      final List<CurrencyPosition> p = DebtCalculator.byCurrency(<Debt>[
+        d('XXX', DebtType.lent, 7),
+      ], 'DZD');
+      expect(p.single.code, 'XXX');
+      expect(p.single.owedToMe, Money.fromDouble(7, 'XXX'));
+    });
+  });
 }

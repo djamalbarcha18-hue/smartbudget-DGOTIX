@@ -119,6 +119,8 @@
   "walletCurrencyHint": "npr. novčanik u eurima za račun u inostranstvu i jedan u domaćoj valuti kod kuće.",
   "walletCurrencyLocked": "Valuta se ne može promijeniti nakon kreiranja.",
   "debtCurrencyHint": "Posudba u drugoj valuti? Odaberite je ovdje; ukupni iznosi je preračunavaju prema kursu u aplikaciji.",
+  "debtTotalsInBase": "U mojoj valuti",
+  "debtTotalsByCurrency": "Po valutama",
   "walletTotalAtRates": "U tvojoj osnovnoj valuti, po kursevima aplikacije.",
   "walletMissingRate": "Nema kursa za {codes}, pa nije uračunato u ukupno. Dodaj ga u Kursnoj listi.",
   "walletSent": "Poslani iznos",

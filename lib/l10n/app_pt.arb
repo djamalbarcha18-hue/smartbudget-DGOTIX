@@ -119,6 +119,8 @@
   "walletCurrencyHint": "ex.: uma carteira em euros para sua conta no exterior e outra na moeda local em casa.",
   "walletCurrencyLocked": "A moeda não pode mudar depois da criação.",
   "debtCurrencyHint": "Empréstimo em outra moeda? Escolha aqui; os totais convertem pela taxa de câmbio do app.",
+  "debtTotalsInBase": "Na minha moeda",
+  "debtTotalsByCurrency": "Por moeda",
   "walletTotalAtRates": "Na sua moeda base, pelas cotações do app.",
   "walletMissingRate": "Sem cotação para {codes}, por isso fica fora do total. Adicione uma em Câmbio.",
   "walletSent": "Valor enviado",

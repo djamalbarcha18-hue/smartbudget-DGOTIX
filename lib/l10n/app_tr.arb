@@ -119,6 +119,8 @@
   "walletCurrencyHint": "ör. yurt dışındaki hesabın için bir euro cüzdanı, evde de yerel para biriminde bir cüzdan.",
   "walletCurrencyLocked": "Para birimi oluşturulduktan sonra değiştirilemez.",
   "debtCurrencyHint": "Başka bir para biriminde borç mu? Buradan seçin; toplamlar uygulamadaki döviz kuruyla çevirir.",
+  "debtTotalsInBase": "Para birimimle",
+  "debtTotalsByCurrency": "Para birimine göre",
   "walletTotalAtRates": "Ana para biriminde, uygulamanın döviz kurlarıyla.",
   "walletMissingRate": "{codes} için döviz kuru yok, bu yüzden toplama dahil edilmedi. Döviz Kurları'ndan ekle.",
   "walletSent": "Gönderilen tutar",

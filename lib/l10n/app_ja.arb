@@ -119,6 +119,8 @@
   "walletCurrencyHint": "例：海外口座用にユーロのウォレット、もう 1 つを自国通貨で。",
   "walletCurrencyLocked": "作成後は通貨を変更できません。",
   "debtCurrencyHint": "別の通貨での貸し借りですか？ここで選びます。合計はアプリの為替レートで換算されます。",
+  "debtTotalsInBase": "自分の通貨で",
+  "debtTotalsByCurrency": "通貨ごと",
   "walletTotalAtRates": "基本通貨で、アプリの為替レートで計算。",
   "walletMissingRate": "{codes} のレートがないため合計に含まれていません。為替レートで追加してください。",
   "walletSent": "送った金額",

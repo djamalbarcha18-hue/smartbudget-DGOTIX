@@ -119,6 +119,8 @@
   "walletCurrencyHint": "p. ej. una billetera en euros para tu cuenta en el extranjero y otra en tu moneda local.",
   "walletCurrencyLocked": "La moneda no se puede cambiar después de crearla.",
   "debtCurrencyHint": "¿Préstamo en otra moneda? Elígela aquí; los totales la convierten al tipo de cambio de la app.",
+  "debtTotalsInBase": "En mi moneda",
+  "debtTotalsByCurrency": "Por moneda",
   "walletTotalAtRates": "En tu moneda base, al tipo de cambio de la app.",
   "walletMissingRate": "No hay tipo de cambio para {codes}, así que queda fuera del total. Añádelo en Tipos de cambio.",
   "walletSent": "Importe enviado",

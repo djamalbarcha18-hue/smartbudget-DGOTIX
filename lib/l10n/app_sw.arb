@@ -119,6 +119,8 @@
   "walletCurrencyHint": "mf. pochi ya euro kwa akaunti yako ya nje na nyingine ya sarafu ya nyumbani.",
   "walletCurrencyLocked": "Sarafu haiwezi kubadilishwa baada ya kuundwa.",
   "debtCurrencyHint": "Deni kwa sarafu nyingine? Ichague hapa; jumla huibadilisha kwa kiwango cha ubadilishaji cha programu.",
+  "debtTotalsInBase": "Kwa sarafu yangu",
+  "debtTotalsByCurrency": "Kwa kila sarafu",
   "walletTotalAtRates": "Katika sarafu yako kuu, kwa viwango vya ubadilishaji vya programu.",
   "walletMissingRate": "Hakuna kiwango cha ubadilishaji cha {codes}, kwa hiyo hakijajumuishwa kwenye jumla. Ongeza kiwango kwenye Viwango vya Ubadilishaji.",
   "walletSent": "Kiasi kilichotumwa",

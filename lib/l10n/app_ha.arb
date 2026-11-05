@@ -119,6 +119,8 @@
   "walletCurrencyHint": "misali jakar yuro don asusunka na waje da ɗaya da kuɗin gida.",
   "walletCurrencyLocked": "Ba za a iya canza kuɗin ba bayan an ƙirƙira.",
   "debtCurrencyHint": "Bashi da wata kuɗi daban? Zaɓe ta nan; jimlar tana canza ta bisa ƙimar musayar manhajar.",
+  "debtTotalsInBase": "Da kuɗina",
+  "debtTotalsByCurrency": "Kowace kuɗi daban",
   "walletTotalAtRates": "A cikin babban kuɗinka, bisa farashin musaya na manhajar.",
   "walletMissingRate": "Babu farashin musaya na {codes}, don haka ba a saka shi a jimilla ba. Ƙara ɗaya a Farashin Musaya.",
   "walletSent": "Adadin da aka aika",
