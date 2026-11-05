@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- A static page, so search engines can read it as text (the app itself is
+       drawn on a canvas). Its own policy: this site's two scripts, inline
+       styles, and nothing sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'none';
+    script-src 'self';
+    style-src 'unsafe-inline';
+    img-src 'self';
+    base-uri 'none';
+    form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>حاسبة الزكاة على المال والذهب والفضة | SmartBudget</title>
+  <meta name="description" content="حاسبة زكاة المال المجانية من SmartBudget (سمارت بدجت · سمارت بادجت): أدخل مدخراتك وذهبك وديونك لتعرف هل بلغ مالك النصاب وكم تُخرج، بنصاب الذهب 85 غرامًا أو الفضة 595 غرامًا ونسبة 2.5%.">
+  <link rel="canonical" href="https://smartbudget.dgotix.com/zakat/">
+  <meta name="theme-color" content="#0f766e">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ar_AR">
+  <meta property="og:site_name" content="SmartBudget">
+  <meta property="og:title" content="حاسبة الزكاة على المال | SmartBudget">
+  <meta property="og:description" content="احسب زكاة مالك في دقيقة: النصاب والحول والمبلغ الواجب. حاسبة مجانية بلا تسجيل.">
+  <meta property="og:url" content="https://smartbudget.dgotix.com/zakat/">
+  <meta property="og:image" content="https://smartbudget.dgotix.com/og-image.jpg">
+  <link rel="icon" href="/favicon.png">
+  <style>
+    :root {
+      --bg: #f6f8f8; --card: #ffffff; --ink: #14201f; --muted: #52625f;
+      --line: #d7e0de; --brand: #0f766e; --brand-ink: #ffffff;
+      --ok: #166534; --ok-bg: #e7f6ec; --wait: #92400e; --wait-bg: #fff4e0;
+      --due: #0f4c81; --due-bg: #e6f0fb;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e1615; --card: #16211f; --ink: #e8f0ee; --muted: #9db0ac;
+        --line: #284038; --brand: #2dd4bf; --brand-ink: #062f2a;
+        --ok: #86efac; --ok-bg: #12301e; --wait: #fcd34d; --wait-bg: #3a2a0c;
+        --due: #93c5fd; --due-bg: #112a44;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font: 17px/1.8 system-ui, "Segoe UI", Tahoma, "Noto Naskh Arabic", sans-serif;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px 48px; }
+    header { padding: 20px 0 4px; display: flex; align-items: baseline; gap: 10px; }
+    .brand { font-weight: 800; font-size: 20px; color: var(--brand); direction: ltr; }
+    .by { color: var(--muted); font-size: 14px; direction: ltr; }
+    h1 { font-size: 28px; line-height: 1.4; margin: 12px 0 8px; }
+    h2 { font-size: 21px; margin: 32px 0 6px; }
+    p { margin: 8px 0; }
+    .lead { color: var(--muted); }
+    .card {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 16px; padding: 18px; margin: 18px 0;
+    }
+    label { display: block; font-weight: 600; margin: 14px 0 4px; }
+    .hint { font-weight: 400; color: var(--muted); font-size: 14px; display: block; }
+    input[type=text], select {
+      width: 100%; padding: 12px; font: inherit; color: var(--ink);
+      background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+    }
+    input[type=text] { direction: ltr; text-align: right; }
+    input:focus, select:focus, button:focus-visible, a:focus-visible {
+      outline: 3px solid var(--brand); outline-offset: 2px;
+    }
+    .check { display: flex; gap: 10px; align-items: flex-start; font-weight: 600; }
+    .check input { width: 22px; height: 22px; margin-top: 6px; accent-color: var(--brand); }
+    button, .cta {
+      display: inline-block; margin-top: 16px; padding: 12px 22px; border: 0;
+      border-radius: 12px; background: var(--brand); color: var(--brand-ink);
+      font: inherit; font-weight: 700; text-decoration: none; cursor: pointer;
+    }
+    .result { border-radius: 14px; padding: 16px; margin-top: 18px; border: 1px solid var(--line); }
+    .result .headline { font-size: 20px; font-weight: 800; margin: 0; }
+    .result .detail { margin: 6px 0 0; }
+    .result.neutral { background: var(--bg); }
+    .result.ok { background: var(--ok-bg); color: var(--ok); }
+    .result.wait { background: var(--wait-bg); color: var(--wait); }
+    .result.due { background: var(--due-bg); color: var(--due); }
+    .note { font-size: 14px; color: var(--muted); }
+    ul { padding-inline-start: 22px; margin: 8px 0; }
+    details { border-bottom: 1px solid var(--line); padding: 10px 0; }
+    summary { cursor: pointer; font-weight: 700; }
+    footer { margin-top: 36px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 16px; }
+    footer a { color: var(--brand); }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "حاسبة الزكاة من SmartBudget",
+        "url": "https://smartbudget.dgotix.com/zakat/",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web",
+        "inLanguage": "ar",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": { "@type": "Organization", "name": "DGOTIX" }
+      },
+      {
+        "@type": "FAQPage",
+        "inLanguage": "ar",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "ما هو نصاب الزكاة؟",
+            "acceptedAnswer": { "@type": "Answer", "text": "النصاب هو الحدّ الأدنى للمال الذي تجب فيه الزكاة: ما يعادل 85 غرامًا من الذهب أو 595 غرامًا من الفضة، حسب المعيار الذي يفتي به عالمك أو دار الإفتاء في بلدك." }
+          },
+          {
+            "@type": "Question",
+            "name": "ما نسبة زكاة المال؟",
+            "acceptedAnswer": { "@type": "Answer", "text": "2.5% (ربع العشر) من صافي المال إذا بلغ النصاب وحال عليه الحول، أي مرّت عليه سنة هجرية كاملة." }
+          },
+          {
+            "@type": "Question",
+            "name": "هل تُرسَل بياناتي إلى أي جهة؟",
+            "acceptedAnswer": { "@type": "Answer", "text": "لا. الحساب يتم في متصفحك فقط، ولا يُرسَل أي رقم تكتبه إلى أي خادم." }
+          },
+          {
+            "@type": "Question",
+            "name": "هل هذه الحاسبة فتوى؟",
+            "acceptedAnswer": { "@type": "Answer", "text": "لا. هي أداة حساب وتخطيط. في المسائل الخلافية راجع عالمًا تثق به أو دار الإفتاء في بلدك." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="brand">SmartBudget</span>
+      <span class="by">by DGOTIX</span>
+    </header>
+
+    <main>
+      <h1>حاسبة الزكاة على المال والذهب والفضة</h1>
+      <p class="lead">أدخل ما تملكه وما عليك، لتعرف في دقيقة: هل بلغ مالك النصاب؟ وهل حال عليه الحول؟ وكم تُخرج؟ مجانية، بلا تسجيل، ولا يخرج أي رقم من جهازك.</p>
+
+      <form id="zakat-form" class="card" novalidate>
+        <label for="standard">معيار النصاب
+          <span class="hint">اختر ما يفتي به عالمك أو دار الإفتاء في بلدك.</span>
+        </label>
+        <select id="standard">
+          <option value="gold">الذهب: 85 غرامًا</option>
+          <option value="silver">الفضة: 595 غرامًا</option>
+        </select>
+
+        <label for="unit">العملة (اختياري)
+          <span class="hint">مثل: دج أو ريال أو دولار. للعرض فقط.</span>
+        </label>
+        <input id="unit" type="text" inputmode="text" autocomplete="off" maxlength="12">
+
+        <label for="gold">سعر غرام الذهب اليوم (عيار 24)
+          <span class="hint">اكتبه بعملتك. لا نجلب الأسعار تلقائيًّا حتى لا نعرض سعرًا غير دقيق.</span>
+        </label>
+        <input id="gold" type="text" inputmode="decimal" autocomplete="off">
+
+        <div id="silver-row" hidden>
+          <label for="silver">سعر غرام الفضة اليوم</label>
+          <input id="silver" type="text" inputmode="decimal" autocomplete="off">
+        </div>
+
+        <h2>ما تملكه</h2>
+        <label for="cash">النقود والمدخرات (في البنك وفي اليد)</label>
+        <input id="cash" type="text" inputmode="decimal" autocomplete="off">
+
+        <label for="metals">الذهب والفضة المدّخران
+          <span class="hint">بقيمتهما اليوم.</span>
+        </label>
+        <input id="metals" type="text" inputmode="decimal" autocomplete="off">
+
+        <label for="trade">عروض التجارة والاستثمارات
+          <span class="hint">بقيمتها السوقية اليوم.</span>
+        </label>
+        <input id="trade" type="text" inputmode="decimal" autocomplete="off">
+
+        <label for="receivables">ديون لك على الآخرين (مرجوّة السداد)</label>
+        <input id="receivables" type="text" inputmode="decimal" autocomplete="off">
+
+        <h2>ما عليك</h2>
+        <label for="liabilities">الديون الحالّة التي عليك
+          <span class="hint">التي حان وقت سدادها.</span>
+        </label>
+        <input id="liabilities" type="text" inputmode="decimal" autocomplete="off">
+
+        <h2>الحول</h2>
+        <label class="check" for="hawl">
+          <input id="hawl" type="checkbox">
+          <span>مرّت سنة هجرية كاملة على بلوغ مالي النصاب</span>
+        </label>
+
+        <button type="submit">احسب زكاتي</button>
+
+        <div id="result" class="result neutral" role="status" aria-live="polite" hidden>
+          <p class="headline"></p>
+          <p class="detail"></p>
+        </div>
+      </form>
+
+      <p class="note">هذه أداة حساب وتخطيط وليست فتوى. في المسائل الخلافية (كالحلي المعدّ للاستعمال، وبعض أنواع الديون) راجع عالمًا تثق به.</p>
+
+      <h2>ما هو نصاب الزكاة؟</h2>
+      <p>النصاب هو الحدّ الأدنى للمال الذي تجب فيه الزكاة. يعادل <strong>85 غرامًا من الذهب</strong> أو <strong>595 غرامًا من الفضة</strong>. يختلف الاعتماد على أحدهما بحسب فتوى بلدك، ولذلك تتيح لك الحاسبة الاختيار.</p>
+
+      <h2>ما نسبة زكاة المال؟</h2>
+      <p>تجب زكاة المال بنسبة <strong>2.5%</strong> (ربع العشر) من صافي المال إذا بلغ النصاب وحال عليه الحول.</p>
+
+      <h2>ما الحول؟</h2>
+      <p>الحول هو مرور <strong>سنة هجرية كاملة</strong> (قمرية) على بلوغ المال النصاب. فإن لم يتم الحول لم تجب الزكاة بعد، وتُحسب حين يتم.</p>
+
+      <h2>ما الذي يدخل في الحساب؟</h2>
+      <ul>
+        <li>النقود والمدخرات في البنك وفي اليد.</li>
+        <li>الذهب والفضة المدّخران.</li>
+        <li>عروض التجارة والاستثمارات بقيمتها السوقية.</li>
+        <li>الديون المرجوّة السداد لك على الآخرين.</li>
+        <li>وتُخصم من ذلك الديون الحالّة التي عليك.</li>
+      </ul>
+
+      <h2>أسئلة شائعة</h2>
+      <details>
+        <summary>هل تجب الزكاة على الراتب؟</summary>
+        <p>تجب على المال الذي يبلغ النصاب ويحول عليه الحول، سواء جاء من راتب أو غيره. ويرى بعض العلماء جواز إخراجها عند قبض الراتب، فراجع فتوى بلدك.</p>
+      </details>
+      <details>
+        <summary>أي سعر أستعمل للذهب؟</summary>
+        <p>سعر غرام الذهب عيار 24 اليوم في بلدك، بالعملة التي تحسب بها مالك.</p>
+      </details>
+      <details>
+        <summary>هل تُرسَل بياناتي إلى أي جهة؟</summary>
+        <p>لا. الحساب يتم في متصفحك فقط، ولا يُرسَل أي رقم تكتبه إلى أي خادم.</p>
+      </details>
+      <details>
+        <summary>هل هذه الحاسبة فتوى؟</summary>
+        <p>لا. هي أداة حساب وتخطيط. راجع عالمًا تثق به في المسائل الخلافية.</p>
+      </details>
+
+      <div class="card">
+        <h2 style="margin-top:0">تابع زكاتك مع ميزانيتك في SmartBudget</h2>
+        <p>التطبيق يحسب النصاب ويتابع الحول بالتاريخ الهجري، ويربط مدخراتك بأهدافك ويرتّب مصاريفك في مكان واحد. مجاني للبدء.</p>
+        <a class="cta" href="/">افتح التطبيق</a>
+      </div>
+    </main>
+
+    <footer>
+      <p><span class="brand" style="font-size:16px">SmartBudget</span> by DGOTIX · للتواصل: support@dgotix.com</p>
+    </footer>
+  </div>
+  <script src="zakat.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>

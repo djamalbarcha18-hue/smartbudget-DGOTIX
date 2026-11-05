@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- The app routes by hash (#/…), so the page itself is the only URL. -->
+<!-- The app routes by hash (#/…), so the page itself is one URL; /zakat/ is a
+     static page (text for search engines) with its own address. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://smartbudget.dgotix.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://smartbudget.dgotix.com/zakat/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>
