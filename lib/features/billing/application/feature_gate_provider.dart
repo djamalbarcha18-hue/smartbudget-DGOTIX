@@ -26,6 +26,7 @@ int _usedFor(Ref ref, Feature f) {
     case Feature.smartAlerts:
     case Feature.tripPhotoCard:
     case Feature.proThemes:
+    case Feature.categoryIcons:
     // Counted features are checked where an item is added (PlanLimits).
     case Feature.wallets:
     case Feature.multiCurrency:

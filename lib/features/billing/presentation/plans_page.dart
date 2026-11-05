@@ -581,6 +581,7 @@ class _PlanCard extends StatelessWidget {
           l.planFeatUnlimited,
           l.planFeatHealthDetails,
           l.planFeatSalarySplit,
+          l.featCategoryIcons,
           l.planFeatMarkets,
           l.planFeatPriority,
         ];

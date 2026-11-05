@@ -1348,6 +1348,7 @@
   "tripLevelLuxury": "ラグジュアリー",
   "tripDaysLabel": "日数：{days}",
   "featProThemes": "Pro テーマ",
+  "featCategoryIcons": "カテゴリーに自分だけのアイコンと色",
   "settingsThemeStyleHint": "Pro の色：ライトテーマにベージュ、セージ、ザクロ、ダークテーマにブラックゴールド。",
   "settingsThemeStyle": "テーマの色",
   "themeClassic": "クラシック",

@@ -1348,6 +1348,7 @@
   "tripLevelLuxury": "Lusso",
   "tripDaysLabel": "Giorni: {days}",
   "featProThemes": "Temi Pro",
+  "featCategoryIcons": "Icone e colori personalizzati per le tue categorie",
   "settingsThemeStyleHint": "Colori Pro: Beige, Salvia e Melograno per il tema chiaro, Nero e Oro per il tema scuro.",
   "settingsThemeStyle": "Colori del tema",
   "themeClassic": "Classico",

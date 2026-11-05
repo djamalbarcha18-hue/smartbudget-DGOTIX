@@ -40,6 +40,7 @@ String featureTitle(AppLocalizations l, Feature f) => switch (f) {
       Feature.smartAlerts => l.featSmartAlerts,
       Feature.tripPhotoCard => l.featTripPhotoCard,
       Feature.proThemes => l.featProThemes,
+      Feature.categoryIcons => l.featCategoryIcons,
     };
 
 /// Plan limits at the points where something new is added or opened. The

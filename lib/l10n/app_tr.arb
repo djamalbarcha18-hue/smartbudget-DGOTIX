@@ -1348,6 +1348,7 @@
   "tripLevelLuxury": "Lüks",
   "tripDaysLabel": "Gün sayısı: {days}",
   "featProThemes": "Pro temalar",
+  "featCategoryIcons": "Kategorileriniz için kendi simgeleriniz ve renkleriniz",
   "settingsThemeStyleHint": "Pro renkler: açık tema için Bej, Adaçayı ve Nar, koyu tema için Siyah Altın.",
   "settingsThemeStyle": "Tema renkleri",
   "themeClassic": "Klasik",

@@ -87,6 +87,10 @@ enum Feature {
 
   /// The Pro theme colours (Beige, Sage): softer on the eyes.
   proThemes,
+
+  /// Own icon and colour for the categories the user makes (the built-in
+  /// ones always have theirs, free). PRO.
+  categoryIcons,
 }
 
 /// How a metered quota resets.
@@ -190,6 +194,10 @@ abstract final class FeatureCatalog {
       feature: Feature.wallets,
       minTier: Plan.free,
       quotas: _freeItems2,
+    ),
+    Feature.categoryIcons: FeatureRule(
+      feature: Feature.categoryIcons,
+      minTier: Plan.pro,
     ),
     Feature.multiCurrency: FeatureRule(
       feature: Feature.multiCurrency,

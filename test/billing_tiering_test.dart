@@ -170,6 +170,7 @@ void main() {
         Feature.prioritySupport,
         Feature.tripPhotoCard,
         Feature.proThemes,
+        Feature.categoryIcons,
       ]) {
         final GateDecision d = FeatureGate.evaluate(f, plan: Plan.free);
         expect(d.allowed, isFalse, reason: '$f');

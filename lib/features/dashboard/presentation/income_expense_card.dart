@@ -9,14 +9,15 @@ import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/components/donut_chart.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
-import 'package:smartbudget/design_system/tokens/ds_chart_palette.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/dashboard/application/dashboard_controller.dart';
+import 'package:smartbudget/features/transactions/application/category_styles_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/transactions/presentation/category_badge.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Where the money came from and where it went, in one card: two tabs over
@@ -128,7 +129,7 @@ class _IncomeExpenseCardState extends ConsumerState<IncomeExpenseCard> {
                       width: i == _page ? 16 : 6,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: i == _page ? accent : c.borderStrong,
+                        color: i == _page ? accent : c.textFaint,
                         borderRadius: BorderRadius.circular(3),
                       ),
                     ),
@@ -328,8 +329,13 @@ class _BreakdownPageState extends ConsumerState<_BreakdownPage>
     final int total = totals.fold<int>(
         0, (int s, CategoryTotal t) => s + t.amount.minorUnits);
     final bool folded = totals.length > _topN;
-    Color colorOf(int i) =>
-        i < _topN ? DsChartPalette.at(i) : DsChartPalette.other;
+    final List<Color> familyColors = chartColorsFor(
+        <String>[for (final CategoryTotal t in totals.take(_topN)) t.category],
+        _income ? TransactionType.income : TransactionType.expense,
+        ref.watch(categoryStylesProvider),
+        c,
+        Theme.of(context).brightness);
+    Color colorOf(int i) => i < _topN ? familyColors[i] : c.textFaint;
     int sliceOf(int i) => i < _topN ? i : _topN;
 
     // The donut: top six and "Other", as before.
@@ -348,7 +354,7 @@ class _BreakdownPageState extends ConsumerState<_BreakdownPage>
               .sublist(_topN)
               .fold<int>(0, (int s, CategoryTotal t) => s + t.amount.minorUnits)
               .toDouble(),
-          color: DsChartPalette.other,
+          color: c.textFaint,
           valueLabel: _compact(
               Money(
                   totals.sublist(_topN).fold<int>(

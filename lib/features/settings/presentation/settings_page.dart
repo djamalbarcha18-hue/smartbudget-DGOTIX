@@ -1226,8 +1226,12 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
     final String name = _ctrl.text.trim();
     if (name.isEmpty) return;
     ref.read(customCategoriesProvider.notifier).add(widget.type, name);
-    ref.read(categoryStylesProvider.notifier).set(
-        widget.type, name, CustomCategoryLook(_iconKey, _family.name));
+    // The look is a PRO extra; a free category keeps the neutral tag.
+    if (ref.read(featureGateProvider(Feature.categoryIcons)).allowed) {
+      ref
+          .read(categoryStylesProvider.notifier)
+          .set(widget.type, name, CustomCategoryLook(_iconKey, _family.name));
+    }
     _ctrl.clear();
   }
 
@@ -1235,6 +1239,14 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
   /// left is the live preview. No words: it is all icons and colour dots.
   Widget _picker(DsColors c) {
     final bool income = widget.type == TransactionType.income;
+    final bool pro =
+        ref.watch(featureGateProvider(Feature.categoryIcons)).allowed;
+    // A tap on a choice opens the upgrade sheet for free plans.
+    void choose(VoidCallback pick) {
+      if (!PlanLimits.allow(context, Feature.categoryIcons)) return;
+      setState(pick);
+    }
+
     final Brightness b = Theme.of(context).brightness;
     final Color chosen =
         familyColor(income ? CategoryFamily.income : _family, c, b);
@@ -1246,8 +1258,12 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
           height: 40,
           decoration: BoxDecoration(
               shape: BoxShape.circle, color: chosen.withValues(alpha: 0.14)),
-          child: Icon(pickableCategoryIcons[_iconKey],
-              color: chosen, size: 20),
+          child: Icon(
+              pro
+                  ? pickableCategoryIcons[_iconKey]
+                  : Icons.lock_outline_rounded,
+              color: chosen,
+              size: 20),
         ),
         const SizedBox(width: DsSpacing.md),
         Expanded(
@@ -1261,7 +1277,7 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
                   for (final MapEntry<String, IconData> e
                       in pickableCategoryIcons.entries)
                     InkResponse(
-                      onTap: () => setState(() => _iconKey = e.key),
+                      onTap: () => choose(() => _iconKey = e.key),
                       child: Container(
                         width: 34,
                         height: 34,
@@ -1288,7 +1304,7 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
                       Padding(
                         padding: const EdgeInsetsDirectional.only(end: 10),
                         child: InkResponse(
-                          onTap: () => setState(() => _family = f),
+                          onTap: () => choose(() => _family = f),
                           child: Container(
                             width: 26,
                             height: 26,

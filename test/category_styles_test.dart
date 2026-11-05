@@ -4,11 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/design_system/theme/ds_theme.dart';
+import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/features/transactions/application/category_styles_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/presentation/category_badge.dart';
 
 void main() {
+  chartColorTests();
   setUp(() => SharedPreferences.setMockInitialValues(<String, Object>{}));
 
   test('look encodes, decodes and rejects junk', () {
@@ -60,5 +62,48 @@ void main() {
   test('every pickable icon key is unique and families exclude income', () {
     expect(pickableCategoryIcons.length, 24);
     expect(pickableFamilies, isNot(contains(CategoryFamily.income)));
+  });
+}
+
+void chartColorTests() {
+  group('chart colours follow the category families', () {
+    final DsColors c = DsColors.light;
+    test('built-in categories take their family colour, repeats shift', () {
+      final List<Color> out = chartColorsFor(
+          <String>['الطعام', 'المطاعم', 'السكن', 'الوقود'],
+          TransactionType.expense,
+          const <String, CustomCategoryLook>{},
+          c,
+          Brightness.light);
+      expect(out[0], familyColor(CategoryFamily.food, c, Brightness.light));
+      // Same family (food): not the same colour as its neighbour.
+      expect(out[1], isNot(out[0]));
+      expect(out[2], familyColor(CategoryFamily.basics, c, Brightness.light));
+      expect(out[3], familyColor(CategoryFamily.mobility, c, Brightness.light));
+      expect(out.toSet().length, 4);
+    });
+
+    test('a user-made category charts in the colour the user picked', () {
+      final List<Color> out = chartColorsFor(
+          <String>['Coffee'],
+          TransactionType.expense,
+          const <String, CustomCategoryLook>{
+            'e:Coffee': CustomCategoryLook('coffee', 'lifestyle')
+          },
+          c,
+          Brightness.light);
+      expect(out.single,
+          familyColor(CategoryFamily.lifestyle, c, Brightness.light));
+    });
+
+    test('income charts are green', () {
+      final List<Color> out = chartColorsFor(
+          <String>['راتب أساسي'],
+          TransactionType.income,
+          const <String, CustomCategoryLook>{},
+          c,
+          Brightness.light);
+      expect(out.single, c.income);
+    });
   });
 }

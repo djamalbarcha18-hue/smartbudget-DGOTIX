@@ -1348,6 +1348,7 @@
   "tripLevelLuxury": "豪华",
   "tripDaysLabel": "天数：{days}",
   "featProThemes": "Pro 主题",
+  "featCategoryIcons": "为你的分类自选图标和颜色",
   "settingsThemeStyleHint": "Pro 配色：浅色主题有米色、鼠尾草绿和石榴红，深色主题有黑金。",
   "settingsThemeStyle": "主题配色",
   "themeClassic": "经典",

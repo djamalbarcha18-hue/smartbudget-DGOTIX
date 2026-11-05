@@ -144,6 +144,47 @@ const List<CategoryFamily> pickableFamilies = <CategoryFamily>[
   CategoryFamily.commitments,
 ];
 
+/// The style of [category]: the built-in one, or, for a category the user
+/// made, the look they picked (neutral when they picked none).
+CategoryStyle resolveCategoryStyle(String category, TransactionType type,
+    Map<String, CustomCategoryLook> looks) {
+  final CategoryStyle base = CategoryStyle.of(category, type);
+  final CustomCategoryLook? look = looks[categoryLookKey(type, category)];
+  if (look == null || CategoryStyle.hasStyle(category, type)) return base;
+  final IconData? icon = pickableCategoryIcons[look.iconKey];
+  if (icon == null) return base;
+  return CategoryStyle(
+      icon,
+      type == TransactionType.income
+          ? CategoryFamily.income
+          : CategoryFamily.values.firstWhere(
+              (CategoryFamily f) =>
+                  f.name == look.familyName && f != CategoryFamily.income,
+              orElse: () => CategoryFamily.commitments));
+}
+
+/// Colours for the slices of a category chart, in order: each category takes
+/// its family colour, so the chart and the badges speak one language. When
+/// several categories share a family, later ones are shifted lighter or
+/// darker so neighbouring slices stay apart.
+List<Color> chartColorsFor(List<String> categories, TransactionType type,
+    Map<String, CustomCategoryLook> looks, DsColors c, Brightness b) {
+  final Map<CategoryFamily, int> seen = <CategoryFamily, int>{};
+  return <Color>[
+    for (final String cat in categories)
+      () {
+        final CategoryFamily f = resolveCategoryStyle(cat, type, looks).family;
+        final int n = seen[f] = (seen[f] ?? -1) + 1;
+        final Color base = familyColor(f, c, b);
+        if (n == 0) return base;
+        final HSLColor h = HSLColor.fromColor(base);
+        // 2nd lighter, 3rd darker, 4th lighter still...
+        final double step = 0.12 * ((n + 1) ~/ 2) * (n.isOdd ? 1 : -1);
+        return h.withLightness((h.lightness + step).clamp(0.2, 0.85)).toColor();
+      }(),
+  ];
+}
+
 /// Calm, theme-aware colour of a family (deeper on light, softer on dark).
 Color familyColor(CategoryFamily f, DsColors c, Brightness b) {
   if (f == CategoryFamily.income) return c.income;
@@ -181,23 +222,8 @@ class CategoryBadge extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final DsColors c = context.dsColors;
-    CategoryStyle s = CategoryStyle.of(category, type);
-    // A category the user made may carry the look they picked.
-    final CustomCategoryLook? look =
-        ref.watch(categoryStylesProvider)[categoryLookKey(type, category)];
-    if (look != null && !CategoryStyle.hasStyle(category, type)) {
-      final IconData? icon = pickableCategoryIcons[look.iconKey];
-      if (icon != null) {
-        s = CategoryStyle(
-            icon,
-            type == TransactionType.income
-                ? CategoryFamily.income
-                : CategoryFamily.values.firstWhere(
-                    (CategoryFamily f) =>
-                        f.name == look.familyName && f != CategoryFamily.income,
-                    orElse: () => CategoryFamily.commitments));
-      }
-    }
+    final CategoryStyle s =
+        resolveCategoryStyle(category, type, ref.watch(categoryStylesProvider));
     final Color color = familyColor(s.family, c, Theme.of(context).brightness);
     final bool income = type == TransactionType.income;
     return SizedBox(
