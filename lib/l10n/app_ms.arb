@@ -118,6 +118,7 @@
   "walletCurrency": "Mata wang dompet",
   "walletCurrencyHint": "cth. dompet euro untuk akaun anda di luar negara dan satu dalam mata wang tempatan di rumah.",
   "walletCurrencyLocked": "Mata wang tidak boleh diubah selepas dicipta.",
+  "debtCurrencyHint": "Pinjaman dalam mata wang lain? Pilih di sini; jumlah akan menukarkannya mengikut kadar tukaran dalam aplikasi.",
   "walletTotalAtRates": "Dalam mata wang asas anda, pada kadar pertukaran aplikasi.",
   "walletMissingRate": "Tiada kadar pertukaran untuk {codes}, jadi ia tidak dimasukkan dalam jumlah. Tambah satu dalam Kadar Pertukaran.",
   "walletSent": "Jumlah dihantar",

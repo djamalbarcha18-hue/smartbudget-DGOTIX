@@ -118,6 +118,7 @@
   "walletCurrency": "Valuta del portafoglio",
   "walletCurrencyHint": "es. un portafoglio in euro per il tuo conto all'estero e uno nella valuta locale a casa.",
   "walletCurrencyLocked": "La valuta non può cambiare dopo la creazione.",
+  "debtCurrencyHint": "Prestito in un'altra valuta? Sceglila qui; i totali la convertono al tasso di cambio dell'app.",
   "walletTotalAtRates": "Nella tua valuta base, ai cambi dell'app.",
   "walletMissingRate": "Nessun cambio per {codes}, quindi è escluso dal totale. Aggiungine uno in Cambi valute.",
   "walletSent": "Importo inviato",

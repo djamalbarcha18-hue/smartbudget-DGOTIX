@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
+import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_skeleton.dart';
@@ -16,6 +18,7 @@ import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
 import 'package:smartbudget/features/debts/presentation/debt_editor_sheet.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -77,12 +80,31 @@ class DebtsPage extends ConsumerWidget {
               ),
             ],
           ),
+          // Debts in another currency are counted at today's rate, and a
+          // currency with no rate yet is named, never dropped without a word.
+          if (summary.convertedCount > 0) ...<Widget>[
+            const SizedBox(height: DsSpacing.sm),
+            Text(l.walletTotalAtRates,
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(color: c.textMuted)),
+          ],
+          if (summary.missingRateCodes.isNotEmpty) ...<Widget>[
+            const SizedBox(height: DsSpacing.sm),
+            Text(l.walletMissingRate(summary.missingRateCodes.join(', ')),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(color: c.expense)),
+          ],
           const SizedBox(height: DsSpacing.lg),
           Expanded(
             child: AsyncListBody<Debt>(
               value: async,
               onRetry: () => ref.invalidate(debtsProvider),
-              skeleton: const DsSkeletonList(count: 5, gap: DsSpacing.sm, framed: true),
+              skeleton: const DsSkeletonList(
+                  count: 5, gap: DsSpacing.sm, framed: true),
               data: (List<Debt> debts) => debts.isEmpty
                   ? DsEmpty(
                       title: l.emptyDebtsTitle,
@@ -114,6 +136,13 @@ class _DebtTile extends ConsumerWidget {
     final AppLocalizations l = AppLocalizations.of(context);
     final DebtStatus status = DebtCalculator.status(debt);
     final Color typeColor = debt.isLent ? c.income : c.expense;
+    // A debt in another currency shows what is left in its own currency, and
+    // roughly what that is in the base currency when a rate is known.
+    final String base = ref.watch(baseCurrencyProvider);
+    final Money? inBase = debt.original.currencyCode == base
+        ? null
+        : DebtCalculator.inBase(
+            DebtCalculator.remaining(debt), base, ref.watch(ratesProvider));
 
     return Material(
       color: c.surface,
@@ -170,12 +199,19 @@ class _DebtTile extends ConsumerWidget {
                           fontWeight: FontWeight.w700,
                         ),
                   ),
+                  if (inBase != null)
+                    Text('≈ ${MoneyFormatter.format(inBase)}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelSmall
+                            ?.copyWith(color: c.textMuted)),
                   Text(l.debtRemaining,
                       style: Theme.of(context).textTheme.labelSmall),
                 ],
               ),
               PopupMenuButton<String>(
-                icon: Icon(Icons.more_vert_rounded, size: 18, color: c.textFaint),
+                icon:
+                    Icon(Icons.more_vert_rounded, size: 18, color: c.textFaint),
                 color: c.bgElevated,
                 onSelected: (String v) async {
                   if (v == 'edit') {

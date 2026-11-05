@@ -7,6 +7,7 @@ import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/design_system/components/currency_flag.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_date_picker.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
@@ -25,8 +26,11 @@ class DebtEditorSheet extends ConsumerStatefulWidget {
 
   static Future<void> show(BuildContext context, {Debt? existing}) async {
     if (existing == null &&
-        !PlanLimits.allowAdd(context, Feature.debts,
-            (ProviderContainer c) => c.read(debtsProvider).valueOrNull?.length ?? 0)) {
+        !PlanLimits.allowAdd(
+            context,
+            Feature.debts,
+            (ProviderContainer c) =>
+                c.read(debtsProvider).valueOrNull?.length ?? 0)) {
       return;
     }
     return showModalBottomSheet<void>(
@@ -50,17 +54,25 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
   DateTime? _dueDate;
   bool _saving = false;
 
+  /// The debt's currency: the base currency for a new one unless another is
+  /// chosen (a friend who borrowed in euros while the app is in dinars), and
+  /// the record's own for an edited one.
+  String? _currency;
+
   @override
   void initState() {
     super.initState();
     final Debt? e = widget.existing;
     _party = TextEditingController(text: e?.party ?? '');
-    _original =
-        TextEditingController(text: e == null ? '' : AmountInput.text(e.original.asDouble));
+    _original = TextEditingController(
+        text: e == null ? '' : AmountInput.text(e.original.asDouble));
     _paid = TextEditingController(
-        text: e == null || e.paid.isZero ? '' : AmountInput.text(e.paid.asDouble));
+        text: e == null || e.paid.isZero
+            ? ''
+            : AmountInput.text(e.paid.asDouble));
     _type = e?.type ?? DebtType.borrowed;
     _dueDate = e?.dueDate;
+    _currency = e?.original.currencyCode;
   }
 
   @override
@@ -75,14 +87,11 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
     if (_saving) return; // a second tap while saving
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
-    // An edited record keeps its own currency (it may predate a change of
-    // the base currency); a new one is in the base currency.
-    final String currency = widget.existing?.original.currencyCode ??
-        ref.read(baseCurrencyProvider);
-    final double original =
-        AmountInput.parse(_original.text) ?? 0;
-    final double paid =
-        AmountInput.parse(_paid.text) ?? 0;
+    // An edited record keeps its own currency; a new one is in the chosen
+    // currency, the base currency by default.
+    final String currency = _currency ?? ref.read(baseCurrencyProvider);
+    final double original = AmountInput.parse(_original.text) ?? 0;
+    final double paid = AmountInput.parse(_paid.text) ?? 0;
     final Debt debt = Debt(
       id: widget.existing?.id ?? DebtActions.newId(),
       party: _party.text.trim(),
@@ -107,9 +116,8 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
-    final Currency cur = Currencies.byCode(
-        widget.existing?.original.currencyCode ??
-            ref.watch(baseCurrencyProvider));
+    final String base = ref.watch(baseCurrencyProvider);
+    final Currency cur = Currencies.byCode(_currency ?? base);
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
@@ -157,6 +165,50 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
                         (v ?? '').trim().isEmpty ? l.valRequired : null,
                   ),
                   const SizedBox(height: DsSpacing.lg),
+                  DropdownButtonFormField<String>(
+                    // Rebuilt when the choice is put back to the base currency.
+                    key: ValueKey<String>(cur.code),
+                    initialValue: cur.code,
+                    isExpanded: true,
+                    decoration: InputDecoration(
+                      labelText: l.currency,
+                      helperText: widget.existing == null
+                          ? l.debtCurrencyHint
+                          : l.walletCurrencyLocked,
+                      helperMaxLines: 2,
+                    ),
+                    items: <DropdownMenuItem<String>>[
+                      for (final Currency option in Currencies.all)
+                        DropdownMenuItem<String>(
+                          value: option.code,
+                          child: Row(
+                            children: <Widget>[
+                              CurrencyFlag(option, width: 20),
+                              const SizedBox(width: DsSpacing.sm),
+                              Text('${option.code} · ${option.symbol}'),
+                            ],
+                          ),
+                        ),
+                    ],
+                    // An existing record's amounts are in its currency: changing
+                    // it would silently re-label them, so it stays as created.
+                    onChanged: widget.existing != null
+                        ? null
+                        : (String? v) {
+                            // Another currency than the base one is a paid
+                            // feature, as for wallets; the field goes back to
+                            // the base currency.
+                            if (v != null &&
+                                v != base &&
+                                !PlanLimits.allow(
+                                    context, Feature.multiCurrency)) {
+                              setState(() => _currency = base);
+                              return;
+                            }
+                            setState(() => _currency = v);
+                          },
+                  ),
+                  const SizedBox(height: DsSpacing.lg),
                   DsTextField(
                     label: l.fieldOriginal,
                     suffixText: cur.code,
@@ -165,8 +217,7 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
                     validator: (String? v) {
-                      final double n = AmountInput.parse((v ?? '')) ??
-                          0;
+                      final double n = AmountInput.parse((v ?? '')) ?? 0;
                       return n > 0 ? null : l.valAmountInvalid;
                     },
                   ),
@@ -194,7 +245,10 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
                     onClear: () => setState(() => _dueDate = null),
                   ),
                   const SizedBox(height: DsSpacing.xl),
-                  DsButton(label: l.save, expand: true, onPressed: _saving ? null : _save),
+                  DsButton(
+                      label: l.save,
+                      expand: true,
+                      onPressed: _saving ? null : _save),
                 ],
               ),
             ),
@@ -296,7 +350,8 @@ class _DueDateField extends StatelessWidget {
                 if (date != null)
                   InkWell(
                     onTap: onClear,
-                    child: Icon(Icons.clear_rounded, size: 16, color: c.textFaint),
+                    child:
+                        Icon(Icons.clear_rounded, size: 16, color: c.textFaint),
                   ),
               ],
             ),

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
+import 'package:smartbudget/features/exchange_rates/domain/exchange_rate_calculator.dart';
 
 /// Debts position summary (mirrors V1 debtSummary: amounts still outstanding).
 @immutable
@@ -12,12 +13,22 @@ class DebtSummary {
     required this.owedByMe,
     required this.net,
     required this.openCount,
+    this.convertedCount = 0,
+    this.missingRateCodes = const <String>[],
   });
 
   final Money owedToMe; // remaining on unpaid "lent"
   final Money owedByMe; // remaining on unpaid "borrowed"
   final Money net; // owedToMe - owedByMe
   final int openCount;
+
+  /// Open debts in another currency that are in the totals at today's
+  /// exchange rate (so the totals are approximate when this is above zero).
+  final int convertedCount;
+
+  /// Currencies of open debts that have no exchange rate yet: those debts are
+  /// left out of the totals, and the page says so instead of hiding them.
+  final List<String> missingRateCodes;
 }
 
 /// Pure debt calculations. `remaining` and `status` are derived here so they are
@@ -44,19 +55,53 @@ abstract final class DebtCalculator {
     return d.paid.minorUnits > 0 ? DebtStatus.partiallyPaid : DebtStatus.active;
   }
 
-  static DebtSummary summary(List<Debt> debts, String baseCurrency) {
+  /// [amount] in [base] at the given rates (units of each currency per 1 USD),
+  /// or null when either currency has no rate.
+  static Money? inBase(
+      Money amount, String base, Map<String, double> ratesVsUsd) {
+    if (amount.currencyCode == base) return amount;
+    final double from = ratesVsUsd[amount.currencyCode] ?? 0;
+    final double to = ratesVsUsd[base] ?? 0;
+    if (from <= 0 || to <= 0) return null;
+    return Money.fromDouble(
+      ExchangeRateCalculator.convert(
+        amount: amount.asDouble,
+        from: amount.currencyCode,
+        to: base,
+        ratesVsUsd: ratesVsUsd,
+      ),
+      base,
+    );
+  }
+
+  /// The position in [baseCurrency]. A debt in another currency is counted at
+  /// today's rate ([ratesVsUsd]); one whose currency has no rate yet is left
+  /// out and its currency listed in [DebtSummary.missingRateCodes], never
+  /// dropped silently.
+  static DebtSummary summary(
+    List<Debt> debts,
+    String baseCurrency, {
+    Map<String, double> ratesVsUsd = const <String, double>{},
+  }) {
     var toMe = 0;
     var byMe = 0;
     var open = 0;
+    var converted = 0;
+    final Set<String> missing = <String>{};
     for (final Debt d in debts) {
-      if (d.original.currencyCode != baseCurrency) continue;
       final Money r = remaining(d);
       if (r.isZero) continue; // fully settled
       open++;
+      final Money? inBase0 = inBase(r, baseCurrency, ratesVsUsd);
+      if (inBase0 == null) {
+        missing.add(d.original.currencyCode);
+        continue;
+      }
+      if (d.original.currencyCode != baseCurrency) converted++;
       if (d.isLent) {
-        toMe += r.minorUnits;
+        toMe += inBase0.minorUnits;
       } else {
-        byMe += r.minorUnits;
+        byMe += inBase0.minorUnits;
       }
     }
     return DebtSummary(
@@ -64,6 +109,8 @@ abstract final class DebtCalculator {
       owedByMe: Money(byMe, baseCurrency),
       net: Money(toMe - byMe, baseCurrency),
       openCount: open,
+      convertedCount: converted,
+      missingRateCodes: (missing.toList()..sort()),
     );
   }
 

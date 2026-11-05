@@ -118,6 +118,7 @@
   "walletCurrency": "Monedha e portofolit",
   "walletCurrencyHint": "p.sh. një portofol në euro për llogarinë jashtë vendit dhe një në monedhën vendase në shtëpi.",
   "walletCurrencyLocked": "Monedha nuk mund të ndryshohet pas krijimit.",
+  "debtCurrencyHint": "Hua në një monedhë tjetër? Zgjidhe këtu; totalet e konvertojnë me kursin e këmbimit të aplikacionit.",
   "walletTotalAtRates": "Në monedhën tënde bazë, me kurset e aplikacionit.",
   "walletMissingRate": "Nuk ka kurs për {codes}, ndaj nuk përfshihet në total. Shto një te Kurset e këmbimit.",
   "walletSent": "Shuma e dërguar",

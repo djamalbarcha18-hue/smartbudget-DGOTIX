@@ -119,6 +119,11 @@ class RatesController extends Notifier<Map<String, double>> {
   Map<String, double> _overrides = <String, double>{};
   Map<String, double> _live = <String, double>{};
 
+  /// True once the container is gone. The start-up load and the live refresh
+  /// finish after awaits, so they must not touch providers or state then
+  /// (an account switch, or a test, can end the container mid-refresh).
+  bool _gone = false;
+
   /// Indicative defaults (mirror SmartBudget V1 CURRENCIES).
   static const Map<String, double> _seed = <String, double>{
     'USD': 1.0,
@@ -194,6 +199,8 @@ class RatesController extends Notifier<Map<String, double>> {
   @override
   Map<String, double> build() {
     // Kicks off async load + live refresh; state updates as data arrives.
+    _gone = false;
+    ref.onDispose(() => _gone = true);
     _init();
     return Map<String, double>.from(_seed);
   }
@@ -201,6 +208,7 @@ class RatesController extends Notifier<Map<String, double>> {
   Future<void> _init() async {
     await _loadOverrides();
     await _loadCachedLive();
+    if (_gone) return;
     _recompute();
     await refresh();
   }
@@ -253,16 +261,20 @@ class RatesController extends Notifier<Map<String, double>> {
 
   /// Fetches fresh live rates. [force] bypasses the FX cache (manual refresh).
   Future<void> refresh({bool force = false}) async {
+    if (_gone) return;
     _publishStatus((FxStatus s) => s.copyWith(loading: true, error: false));
     if (force) {
       await ref.read(rateCacheProvider).clearAll();
+      if (_gone) return;
     }
     try {
       final FxSnapshot snap =
           await ref.read(fxRatesRepositoryProvider).latestVsUsd();
+      if (_gone) return;
       _live = Map<String, double>.from(snap.ratesPerUsd)
         ..removeWhere((String k, double v) => v <= 0);
       await _persistLive(snap);
+      if (_gone) return;
       _publishStatus((FxStatus s) => s.copyWith(
             loading: false,
             live: _live.isNotEmpty,
@@ -326,6 +338,7 @@ class RatesController extends Notifier<Map<String, double>> {
   }
 
   void _publishStatus(FxStatus Function(FxStatus) update) {
+    if (_gone) return;
     final StateController<FxStatus> ctrl = ref.read(fxStatusProvider.notifier);
     ctrl.state = update(ctrl.state);
   }

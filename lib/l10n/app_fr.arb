@@ -118,6 +118,7 @@
   "walletCurrency": "Devise du portefeuille",
   "walletCurrencyHint": "ex. un portefeuille en euros pour votre compte à l'étranger et un autre dans votre devise locale.",
   "walletCurrencyLocked": "La devise ne peut plus changer après la création.",
+  "debtCurrencyHint": "Prêt ou emprunt dans une autre devise ? Choisissez-la ici ; les totaux la convertissent au taux de change de l'application.",
   "walletTotalAtRates": "Dans votre devise de base, aux taux de change de l'application.",
   "walletMissingRate": "Aucun taux de change pour {codes} : exclu du total. Ajoutez-en un dans Taux de change.",
   "walletSent": "Montant envoyé",

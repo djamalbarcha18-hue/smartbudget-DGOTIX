@@ -7,6 +7,7 @@ import 'package:smartbudget/features/debts/data/fake_debt_repository.dart';
 import 'package:smartbudget/features/debts/domain/debt.dart';
 import 'package:smartbudget/features/debts/domain/debt_calculator.dart';
 import 'package:smartbudget/features/debts/domain/debt_repository.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 
 final debtRepositoryProvider = Provider<DebtRepository>((ref) {
   final String userId = ref.watch(authControllerProvider).user?.id ?? 'guest';
@@ -23,7 +24,9 @@ final debtSummaryProvider = Provider<DebtSummary>((ref) {
   final List<Debt> debts =
       ref.watch(debtsProvider).valueOrNull ?? const <Debt>[];
   final String currency = ref.watch(baseCurrencyProvider);
-  return DebtCalculator.summary(debts, currency);
+  // A debt in another currency counts at today's rate.
+  final Map<String, double> rates = ref.watch(ratesProvider);
+  return DebtCalculator.summary(debts, currency, ratesVsUsd: rates);
 });
 
 final debtActionsProvider = Provider<DebtActions>((ref) {

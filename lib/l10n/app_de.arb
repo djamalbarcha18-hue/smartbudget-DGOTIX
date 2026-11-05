@@ -118,6 +118,7 @@
   "walletCurrency": "Währung der Geldbörse",
   "walletCurrencyHint": "z. B. eine Euro-Geldbörse für dein Konto im Ausland und eine in deiner Landeswährung zu Hause.",
   "walletCurrencyLocked": "Die Währung lässt sich nach dem Anlegen nicht ändern.",
+  "debtCurrencyHint": "Darlehen in einer anderen Währung? Wähle sie hier; die Summen rechnen sie zum Wechselkurs der App um.",
   "walletTotalAtRates": "In deiner Basiswährung, zu den Wechselkursen der App.",
   "walletMissingRate": "Kein Wechselkurs für {codes}, daher nicht in der Summe enthalten. Füge einen unter Wechselkurse hinzu.",
   "walletSent": "Gesendeter Betrag",

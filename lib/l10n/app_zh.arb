@@ -118,6 +118,7 @@
   "walletCurrency": "钱包币种",
   "walletCurrencyHint": "例如为海外账户建一个欧元钱包，另一个用本地货币。",
   "walletCurrencyLocked": "创建后无法更改币种。",
+  "debtCurrencyHint": "借贷使用其他货币？在这里选择；合计会按应用汇率换算。",
   "walletTotalAtRates": "以你的基础货币，按应用汇率计算。",
   "walletMissingRate": "{codes} 没有汇率，因此未计入总额。请在汇率中添加。",
   "walletSent": "转出金额",
