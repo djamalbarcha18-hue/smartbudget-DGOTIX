@@ -212,37 +212,37 @@ List<Color> chartColorsFor(List<String> categories, TransactionType type,
   ];
 }
 
-/// Calm, theme-aware colour of a family: earthy, muted, and each hue far
-/// enough from the next to tell apart at a glance. Deeper on light themes,
-/// softer on dark ones.
+/// The basic, clear colour of a family (deeper on light themes, softer on
+/// dark ones). Income reuses the same basic hues: green for steady pay, amber
+/// for passive income, blue for own work, pink for gifts and aid.
 Color familyColor(CategoryFamily f, DsColors c, Brightness b) {
   final bool dark = b == Brightness.dark;
   switch (f) {
     case CategoryFamily.basics:
-      return dark ? const Color(0xFF8FB0D6) : const Color(0xFF597CA3);
+      return dark ? const Color(0xFF8AB4F8) : const Color(0xFF3B6FD4);
     case CategoryFamily.food:
-      return dark ? const Color(0xFFE39A6E) : const Color(0xFFB76334);
+      return dark ? const Color(0xFFF0A868) : const Color(0xFFC2631F);
     case CategoryFamily.mobility:
-      return dark ? const Color(0xFFA99AC9) : const Color(0xFF7A6A9E);
+      return dark ? const Color(0xFFB7A1F0) : const Color(0xFF7352BE);
     case CategoryFamily.lifestyle:
-      return dark ? const Color(0xFFD98BA8) : const Color(0xFFB8577A);
+      return dark ? const Color(0xFFF09AC0) : const Color(0xFFBA3F78);
     case CategoryFamily.commitments:
-      return dark ? const Color(0xFF8CC2AE) : const Color(0xFF568374);
+      return dark ? const Color(0xFFA3B1C6) : const Color(0xFF55657B);
     case CategoryFamily.income:
-      return dark ? const Color(0xFF86C187) : const Color(0xFF4F8750);
+      return dark ? const Color(0xFF10B981) : const Color(0xFF059669);
     case CategoryFamily.incomePassive:
-      return dark ? const Color(0xFFDDBF72) : const Color(0xFF927732);
+      return dark ? const Color(0xFFF5C15C) : const Color(0xFFA8680C);
     case CategoryFamily.incomeWork:
-      return dark ? const Color(0xFF8FB0D6) : const Color(0xFF597CA3);
+      return dark ? const Color(0xFF8AB4F8) : const Color(0xFF3B6FD4);
     case CategoryFamily.incomeGift:
-      return dark ? const Color(0xFFD98BA8) : const Color(0xFFB8577A);
+      return dark ? const Color(0xFFF09AC0) : const Color(0xFFBA3F78);
   }
 }
 
 /// The share of the family colour in a badge's background.
-const double kBadgeTint = 0.18;
+const double kBadgeTint = 0.14;
 
-/// Round soft badge: outline icon on an 18% tint of the family colour. Income
+/// Round soft badge: outline icon on a 14% tint of the family colour. Income
 /// carries a tiny arrow in its corner so it reads at a glance.
 class CategoryBadge extends ConsumerWidget {
   const CategoryBadge({
