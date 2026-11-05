@@ -21,6 +21,7 @@ import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
+import 'package:smartbudget/features/transactions/presentation/category_badge.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/trips/domain/trip.dart';
@@ -498,6 +499,7 @@ class _TransactionEditorSheetState
                     label: l.fieldCategory,
                     hint: l.selectCategory,
                     value: _category,
+                    badgeType: widget.type,
                     items: ref.watch(categoriesForProvider(widget.type)),
                     onChanged: (String? v) => setState(() => _category = v),
                     validator: (String? v) =>
@@ -815,7 +817,11 @@ class _CategoryDropdown extends StatelessWidget {
     required this.items,
     required this.onChanged,
     this.validator,
+    this.badgeType,
   });
+
+  /// When set, each entry shows its category badge (not for payment methods).
+  final TransactionType? badgeType;
 
   /// Shown above; none inside a split line.
   final String? label;
@@ -862,7 +868,18 @@ class _CategoryDropdown extends StatelessWidget {
           ),
           items: items
               .map((String e) => DropdownMenuItem<String>(
-                  value: e, child: Text(Catalog.label(e, lang: lang))))
+                  value: e,
+                  child: badgeType == null
+                      ? Text(Catalog.label(e, lang: lang))
+                      : Row(children: <Widget>[
+                          CategoryBadge(
+                              category: e, type: badgeType!, size: 28),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(Catalog.label(e, lang: lang),
+                                overflow: TextOverflow.ellipsis),
+                          ),
+                        ])))
               .toList(),
           onChanged: onChanged,
         ),

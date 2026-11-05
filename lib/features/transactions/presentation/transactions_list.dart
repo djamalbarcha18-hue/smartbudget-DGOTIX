@@ -15,6 +15,7 @@ import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/design_system/components/ds_skeleton.dart';
 import 'package:smartbudget/features/sync/application/data_loading.dart';
 import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
+import 'package:smartbudget/features/transactions/presentation/category_badge.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
@@ -219,21 +220,7 @@ class TransactionTile extends ConsumerWidget {
           ),
           child: Row(
             children: <Widget>[
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  txn.isIncome
-                      ? Icons.south_west_rounded
-                      : Icons.north_east_rounded,
-                  color: accent,
-                  size: 18,
-                ),
-              ),
+              CategoryBadge(category: txn.category, type: txn.type),
               const SizedBox(width: DsSpacing.md),
               Expanded(
                 child: Column(
