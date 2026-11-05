@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
+import 'package:smartbudget/features/transactions/application/category_styles_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
 /// The six calm colour families of the category icon system. A category
@@ -105,6 +107,43 @@ class CategoryStyle {
   };
 }
 
+/// The icons a user may give a category of their own (stored by key).
+const Map<String, IconData> pickableCategoryIcons = <String, IconData>{
+  'cart': Icons.shopping_cart_outlined,
+  'food': Icons.restaurant_outlined,
+  'coffee': Icons.local_cafe_outlined,
+  'home': Icons.home_outlined,
+  'car': Icons.directions_car_outlined,
+  'bus': Icons.directions_bus_outlined,
+  'health': Icons.medical_services_outlined,
+  'school': Icons.school_outlined,
+  'child': Icons.child_care_outlined,
+  'gift': Icons.card_giftcard_outlined,
+  'shirt': Icons.checkroom_outlined,
+  'phone': Icons.smartphone_outlined,
+  'wifi': Icons.wifi_rounded,
+  'bolt': Icons.bolt_outlined,
+  'water': Icons.water_drop_outlined,
+  'fitness': Icons.fitness_center_outlined,
+  'movie': Icons.theaters_outlined,
+  'game': Icons.sports_esports_outlined,
+  'book': Icons.menu_book_outlined,
+  'pets': Icons.pets_outlined,
+  'plane': Icons.flight_outlined,
+  'tools': Icons.build_outlined,
+  'work': Icons.work_outline_rounded,
+  'star': Icons.star_border_rounded,
+};
+
+/// The colour families a user may pick for an expense category.
+const List<CategoryFamily> pickableFamilies = <CategoryFamily>[
+  CategoryFamily.basics,
+  CategoryFamily.food,
+  CategoryFamily.mobility,
+  CategoryFamily.lifestyle,
+  CategoryFamily.commitments,
+];
+
 /// Calm, theme-aware colour of a family (deeper on light, softer on dark).
 Color familyColor(CategoryFamily f, DsColors c, Brightness b) {
   if (f == CategoryFamily.income) return c.income;
@@ -127,7 +166,7 @@ Color familyColor(CategoryFamily f, DsColors c, Brightness b) {
 
 /// Round soft badge: outline icon on a 14% tint of the family colour. Income
 /// carries a tiny arrow in its corner so it reads at a glance.
-class CategoryBadge extends StatelessWidget {
+class CategoryBadge extends ConsumerWidget {
   const CategoryBadge({
     super.key,
     required this.category,
@@ -140,9 +179,25 @@ class CategoryBadge extends StatelessWidget {
   final double size;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final DsColors c = context.dsColors;
-    final CategoryStyle s = CategoryStyle.of(category, type);
+    CategoryStyle s = CategoryStyle.of(category, type);
+    // A category the user made may carry the look they picked.
+    final CustomCategoryLook? look =
+        ref.watch(categoryStylesProvider)[categoryLookKey(type, category)];
+    if (look != null && !CategoryStyle.hasStyle(category, type)) {
+      final IconData? icon = pickableCategoryIcons[look.iconKey];
+      if (icon != null) {
+        s = CategoryStyle(
+            icon,
+            type == TransactionType.income
+                ? CategoryFamily.income
+                : CategoryFamily.values.firstWhere(
+                    (CategoryFamily f) =>
+                        f.name == look.familyName && f != CategoryFamily.income,
+                    orElse: () => CategoryFamily.commitments));
+      }
+    }
     final Color color = familyColor(s.family, c, Theme.of(context).brightness);
     final bool income = type == TransactionType.income;
     return SizedBox(

@@ -49,7 +49,9 @@ import 'package:smartbudget/features/settings/presentation/base_currency_change.
 import 'package:smartbudget/features/settings/presentation/clock_section.dart';
 import 'package:smartbudget/features/referrals/presentation/invite_rewards_card.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
+import 'package:smartbudget/features/transactions/application/category_styles_controller.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
+import 'package:smartbudget/features/transactions/presentation/category_badge.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -1211,6 +1213,8 @@ class _CategoryManager extends ConsumerStatefulWidget {
 
 class _CategoryManagerState extends ConsumerState<_CategoryManager> {
   final TextEditingController _ctrl = TextEditingController();
+  String _iconKey = pickableCategoryIcons.keys.first;
+  CategoryFamily _family = CategoryFamily.basics;
 
   @override
   void dispose() {
@@ -1222,7 +1226,92 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
     final String name = _ctrl.text.trim();
     if (name.isEmpty) return;
     ref.read(customCategoriesProvider.notifier).add(widget.type, name);
+    ref.read(categoryStylesProvider.notifier).set(
+        widget.type, name, CustomCategoryLook(_iconKey, _family.name));
     _ctrl.clear();
+  }
+
+  /// Icon + colour choice for the category being added; the badge on the
+  /// left is the live preview. No words: it is all icons and colour dots.
+  Widget _picker(DsColors c) {
+    final bool income = widget.type == TransactionType.income;
+    final Brightness b = Theme.of(context).brightness;
+    final Color chosen =
+        familyColor(income ? CategoryFamily.income : _family, c, b);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle, color: chosen.withValues(alpha: 0.14)),
+          child: Icon(pickableCategoryIcons[_iconKey],
+              color: chosen, size: 20),
+        ),
+        const SizedBox(width: DsSpacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: <Widget>[
+                  for (final MapEntry<String, IconData> e
+                      in pickableCategoryIcons.entries)
+                    InkResponse(
+                      onTap: () => setState(() => _iconKey = e.key),
+                      child: Container(
+                        width: 34,
+                        height: 34,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: e.key == _iconKey
+                              ? chosen.withValues(alpha: 0.18)
+                              : Colors.transparent,
+                          border: Border.all(
+                              color: e.key == _iconKey ? chosen : c.border),
+                        ),
+                        child: Icon(e.value,
+                            size: 18,
+                            color: e.key == _iconKey ? chosen : c.textMuted),
+                      ),
+                    ),
+                ],
+              ),
+              if (!income) ...<Widget>[
+                const SizedBox(height: DsSpacing.sm),
+                Row(
+                  children: <Widget>[
+                    for (final CategoryFamily f in pickableFamilies)
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(end: 10),
+                        child: InkResponse(
+                          onTap: () => setState(() => _family = f),
+                          child: Container(
+                            width: 26,
+                            height: 26,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: familyColor(f, c, b),
+                              border: Border.all(
+                                  color: f == _family
+                                      ? c.textPrimary
+                                      : Colors.transparent,
+                                  width: 2),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -1283,7 +1372,9 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
             ),
           ],
         ),
-        const SizedBox(height: DsSpacing.sm),
+        const SizedBox(height: DsSpacing.md),
+        _picker(c),
+        const SizedBox(height: DsSpacing.md),
         if (items.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: DsSpacing.xs),
@@ -1300,14 +1391,21 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
             children: <Widget>[
               for (final String name in items)
                 Chip(
+                  avatar: CategoryBadge(
+                      category: name, type: widget.type, size: 24),
                   label: Text(name),
                   backgroundColor: c.surfaceMuted,
                   side: BorderSide(color: c.border),
                   deleteIcon: const Icon(Icons.close_rounded, size: 16),
                   deleteButtonTooltipMessage: l.removeCategory,
-                  onDeleted: () => ref
-                      .read(customCategoriesProvider.notifier)
-                      .remove(widget.type, name),
+                  onDeleted: () {
+                    ref
+                        .read(customCategoriesProvider.notifier)
+                        .remove(widget.type, name);
+                    ref
+                        .read(categoryStylesProvider.notifier)
+                        .remove(widget.type, name);
+                  },
                 ),
             ],
           ),
