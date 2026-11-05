@@ -165,48 +165,75 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
                         (v ?? '').trim().isEmpty ? l.valRequired : null,
                   ),
                   const SizedBox(height: DsSpacing.lg),
-                  DropdownButtonFormField<String>(
-                    // Rebuilt when the choice is put back to the base currency.
-                    key: ValueKey<String>(cur.code),
-                    initialValue: cur.code,
-                    isExpanded: true,
-                    decoration: InputDecoration(
-                      labelText: l.currency,
-                      helperText: widget.existing == null
-                          ? l.debtCurrencyHint
-                          : l.walletCurrencyLocked,
-                      helperMaxLines: 2,
-                    ),
-                    items: <DropdownMenuItem<String>>[
-                      for (final Currency option in Currencies.all)
-                        DropdownMenuItem<String>(
-                          value: option.code,
-                          child: Row(
-                            children: <Widget>[
-                              CurrencyFlag(option, width: 20),
-                              const SizedBox(width: DsSpacing.sm),
-                              Text('${option.code} · ${option.symbol}'),
-                            ],
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(l.currency,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelMedium
+                              ?.copyWith(color: c.textMuted)),
+                      const SizedBox(height: 6),
+                      DropdownButtonFormField<String>(
+                        // Rebuilt when the choice is put back to the base currency.
+                        key: ValueKey<String>(cur.code),
+                        initialValue: cur.code,
+                        isExpanded: true,
+                        // The same look as the other fields of this sheet.
+                        decoration: InputDecoration(
+                          helperText: widget.existing == null
+                              ? l.debtCurrencyHint
+                              : l.walletCurrencyLocked,
+                          helperMaxLines: 2,
+                          filled: true,
+                          fillColor: c.surfaceMuted,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: DsRadius.brMd,
+                            borderSide: BorderSide(color: c.border),
                           ),
+                          disabledBorder: OutlineInputBorder(
+                            borderRadius: DsRadius.brMd,
+                            borderSide: BorderSide(color: c.border),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: DsRadius.brMd,
+                            borderSide: BorderSide(color: c.brand),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 14),
                         ),
+                        items: <DropdownMenuItem<String>>[
+                          for (final Currency option in Currencies.all)
+                            DropdownMenuItem<String>(
+                              value: option.code,
+                              child: Row(
+                                children: <Widget>[
+                                  CurrencyFlag(option, width: 20),
+                                  const SizedBox(width: DsSpacing.sm),
+                                  Text('${option.code} · ${option.symbol}'),
+                                ],
+                              ),
+                            ),
+                        ],
+                        // An existing record's amounts are in its currency: changing
+                        // it would silently re-label them, so it stays as created.
+                        onChanged: widget.existing != null
+                            ? null
+                            : (String? v) {
+                                // Another currency than the base one is a paid
+                                // feature, as for wallets; the field goes back to
+                                // the base currency.
+                                if (v != null &&
+                                    v != base &&
+                                    !PlanLimits.allow(
+                                        context, Feature.multiCurrency)) {
+                                  setState(() => _currency = base);
+                                  return;
+                                }
+                                setState(() => _currency = v);
+                              },
+                      ),
                     ],
-                    // An existing record's amounts are in its currency: changing
-                    // it would silently re-label them, so it stays as created.
-                    onChanged: widget.existing != null
-                        ? null
-                        : (String? v) {
-                            // Another currency than the base one is a paid
-                            // feature, as for wallets; the field goes back to
-                            // the base currency.
-                            if (v != null &&
-                                v != base &&
-                                !PlanLimits.allow(
-                                    context, Feature.multiCurrency)) {
-                              setState(() => _currency = base);
-                              return;
-                            }
-                            setState(() => _currency = v);
-                          },
                   ),
                   const SizedBox(height: DsSpacing.lg),
                   DsTextField(

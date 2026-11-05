@@ -92,16 +92,12 @@ class DebtsPage extends ConsumerWidget {
             const SizedBox(height: DsSpacing.md),
           ],
           if (perCurrency)
-            // One line per currency, nothing converted.
+            // One row per currency, nothing converted. Past a handful of
+            // currencies the table scrolls rather than push the debts away.
             ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 250),
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: positions.length,
-                separatorBuilder: (_, __) =>
-                    const SizedBox(height: DsSpacing.sm),
-                itemBuilder: (BuildContext context, int i) =>
-                    _CurrencyPositionCard(position: positions[i]),
+              constraints: const BoxConstraints(maxHeight: 300),
+              child: SingleChildScrollView(
+                child: _CurrencyPositionsTable(positions: positions),
               ),
             )
           else ...<Widget>[
@@ -283,65 +279,85 @@ class _DebtTile extends ConsumerWidget {
   }
 }
 
-/// What is owed in one currency: lent, borrowed and the balance, as they are.
-class _CurrencyPositionCard extends StatelessWidget {
-  const _CurrencyPositionCard({required this.position});
-  final CurrencyPosition position;
+/// What is owed, one row per currency: lent, borrowed and the balance, as
+/// they are and with nothing converted. The column titles are written once.
+class _CurrencyPositionsTable extends StatelessWidget {
+  const _CurrencyPositionsTable({required this.positions});
+  final List<CurrencyPosition> positions;
 
   @override
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
     final TextTheme t = Theme.of(context).textTheme;
+    const double codeWidth = 68;
 
-    Widget figure(String label, Money m, Color color) => Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(label, style: t.labelSmall?.copyWith(color: c.textMuted)),
-              const SizedBox(height: 2),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: AlignmentDirectional.centerStart,
-                child: Text(
-                  MoneyFormatter.format(m),
-                  style: t.titleSmall
-                      ?.copyWith(color: color, fontWeight: FontWeight.w700),
-                  maxLines: 1,
-                  softWrap: false,
-                ),
-              ),
-            ],
+    Widget head(String label) => Expanded(
+          child: Text(label,
+              style: t.labelSmall?.copyWith(color: c.textMuted),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+        );
+
+    Widget value(Money m, Color color) => Expanded(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: AlignmentDirectional.centerStart,
+            child: Text(
+              MoneyFormatter.format(m),
+              style: t.titleSmall
+                  ?.copyWith(color: color, fontWeight: FontWeight.w700),
+              maxLines: 1,
+              softWrap: false,
+            ),
           ),
         );
 
     return Container(
-      padding: const EdgeInsets.all(DsSpacing.md),
+      padding: const EdgeInsets.symmetric(
+          horizontal: DsSpacing.md, vertical: DsSpacing.sm),
       decoration: BoxDecoration(
         color: c.surface,
         borderRadius: DsRadius.brMd,
         border: Border.all(color: c.border),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Row(
             children: <Widget>[
-              CurrencyFlag(Currencies.byCode(position.code), width: 20),
+              const SizedBox(width: codeWidth),
+              head(l.debtOwedToMe),
               const SizedBox(width: DsSpacing.sm),
-              Text(position.code, style: t.titleSmall),
+              head(l.debtOwedByMe),
+              const SizedBox(width: DsSpacing.sm),
+              head(l.legendNet),
             ],
           ),
-          const SizedBox(height: DsSpacing.sm),
-          Row(
-            children: <Widget>[
-              figure(l.debtOwedToMe, position.owedToMe, c.income),
-              const SizedBox(width: DsSpacing.sm),
-              figure(l.debtOwedByMe, position.owedByMe, c.expense),
-              const SizedBox(width: DsSpacing.sm),
-              figure(l.debtNet, position.net, c.net),
-            ],
-          ),
+          Divider(height: DsSpacing.md, color: c.border),
+          for (final CurrencyPosition p in positions)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Row(
+                children: <Widget>[
+                  SizedBox(
+                    width: codeWidth,
+                    child: Row(
+                      children: <Widget>[
+                        CurrencyFlag(Currencies.byCode(p.code), width: 18),
+                        const SizedBox(width: 6),
+                        Text(p.code, style: t.titleSmall),
+                      ],
+                    ),
+                  ),
+                  value(p.owedToMe, c.income),
+                  const SizedBox(width: DsSpacing.sm),
+                  value(p.owedByMe, c.expense),
+                  const SizedBox(width: DsSpacing.sm),
+                  value(p.net, c.net),
+                ],
+              ),
+            ),
         ],
       ),
     );

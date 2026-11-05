@@ -71,10 +71,10 @@ void main() {
     expect(chooser, findsOneWidget);
     expect(find.textContaining('≈'), findsWidgets,
         reason: 'the euro debt shows what it is in dinars');
-    expect(find.text('EUR'), findsNothing, reason: 'no per-currency card');
+    expect(find.text('EUR'), findsNothing, reason: 'no per-currency row');
   });
 
-  testWidgets('"by currency": one card per currency, nothing converted',
+  testWidgets('"by currency": one row per currency, nothing converted',
       (WidgetTester tester) async {
     await open(tester, <Debt>[
       _debt('a', 'DZD', DebtType.lent, 1000),
@@ -85,13 +85,14 @@ void main() {
     await tester.tap(find.text('By currency'));
     await tester.pumpAndSettle();
 
-    // A card headed by each currency's code, and no converted figure.
+    // One row per currency, and no converted figure.
     expect(find.text('DZD'), findsOneWidget);
     expect(find.text('EUR'), findsOneWidget);
     expect(find.text('USD'), findsOneWidget);
     expect(find.textContaining('≈'), findsNothing);
-    // The three figures of every currency are there.
-    expect(find.text('Owed to me'), findsNWidgets(3));
+    // The column titles are written once, not once per currency.
+    expect(find.text('Owed to me'), findsOneWidget);
+    expect(find.text('Net'), findsOneWidget);
 
     // And the choice is kept for next time.
     final SharedPreferences p = await SharedPreferences.getInstance();
