@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- A static page, so search engines can read it as text (the app itself is
+       drawn on a canvas). Its own policy: this site's two scripts, inline
+       styles, and nothing sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'none';
+    script-src 'self';
+    style-src 'unsafe-inline';
+    img-src 'self';
+    base-uri 'none';
+    form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>حاسبة تقسيم الراتب 50/30/20: كيف أقسّم راتبي؟ | SmartBudget</title>
+  <meta name="description" content="كيف أقسّم راتبي؟ حاسبة قاعدة 50/30/20 المجانية من SmartBudget (سمارت بدجت · سمارت بادجت): اكتب راتبك الشهري لتعرف كم للاحتياجات وكم للرغبات وكم للادخار، بلا تسجيل.">
+  <link rel="canonical" href="https://smartbudget.dgotix.com/salary-split/">
+  <meta name="theme-color" content="#0f766e">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ar_AR">
+  <meta property="og:site_name" content="SmartBudget">
+  <meta property="og:title" content="حاسبة تقسيم الراتب 50/30/20 | SmartBudget">
+  <meta property="og:description" content="اكتب راتبك واعرف في ثوانٍ كم تنفق على احتياجاتك وكم على رغباتك وكم تدّخر. مجانية بلا تسجيل.">
+  <meta property="og:url" content="https://smartbudget.dgotix.com/salary-split/">
+  <meta property="og:image" content="https://smartbudget.dgotix.com/og-image.jpg">
+  <link rel="icon" href="/favicon.png">
+  <style>
+    :root {
+      --bg: #f6f8f8; --card: #ffffff; --ink: #14201f; --muted: #52625f;
+      --line: #d7e0de; --brand: #0f766e; --brand-ink: #ffffff;
+      --need: #0f4c81; --need-bg: #e6f0fb; --want: #92400e; --want-bg: #fff4e0;
+      --save: #166534; --save-bg: #e7f6ec;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e1615; --card: #16211f; --ink: #e8f0ee; --muted: #9db0ac;
+        --line: #284038; --brand: #2dd4bf; --brand-ink: #062f2a;
+        --need: #93c5fd; --need-bg: #112a44; --want: #fcd34d; --want-bg: #3a2a0c;
+        --save: #86efac; --save-bg: #12301e;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font: 17px/1.8 system-ui, "Segoe UI", Tahoma, "Noto Naskh Arabic", sans-serif;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px 48px; }
+    header { padding: 20px 0 4px; display: flex; align-items: baseline; gap: 10px; }
+    .brand { font-weight: 800; font-size: 20px; color: var(--brand); direction: ltr; }
+    .by { color: var(--muted); font-size: 14px; direction: ltr; }
+    h1 { font-size: 28px; line-height: 1.4; margin: 12px 0 8px; }
+    h2 { font-size: 21px; margin: 32px 0 6px; }
+    p { margin: 8px 0; }
+    .lead { color: var(--muted); }
+    .card {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 16px; padding: 18px; margin: 18px 0;
+    }
+    label { display: block; font-weight: 600; margin: 14px 0 4px; }
+    .hint { font-weight: 400; color: var(--muted); font-size: 14px; display: block; }
+    input[type=text] {
+      width: 100%; padding: 12px; font: inherit; color: var(--ink);
+      background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+      direction: ltr; text-align: right;
+    }
+    input:focus, button:focus-visible, a:focus-visible {
+      outline: 3px solid var(--brand); outline-offset: 2px;
+    }
+    button, .cta {
+      display: inline-block; margin-top: 16px; padding: 12px 22px; border: 0;
+      border-radius: 12px; background: var(--brand); color: var(--brand-ink);
+      font: inherit; font-weight: 700; text-decoration: none; cursor: pointer;
+    }
+    .buckets { display: grid; gap: 10px; margin-top: 18px; }
+    .bucket { border-radius: 14px; padding: 14px 16px; }
+    .bucket b { display: block; font-size: 15px; }
+    .bucket span.amount { font-size: 24px; font-weight: 800; direction: ltr; display: inline-block; }
+    .bucket small { display: block; opacity: .85; }
+    .needs { background: var(--need-bg); color: var(--need); }
+    .wants { background: var(--want-bg); color: var(--want); }
+    .savings { background: var(--save-bg); color: var(--save); }
+    .note { font-size: 14px; color: var(--muted); }
+    .peryear { font-weight: 700; margin: 12px 0 0; }
+    ul { padding-inline-start: 22px; margin: 8px 0; }
+    details { border-bottom: 1px solid var(--line); padding: 10px 0; }
+    summary { cursor: pointer; font-weight: 700; }
+    footer { margin-top: 36px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 16px; }
+    footer a { color: var(--brand); }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "حاسبة تقسيم الراتب من SmartBudget",
+        "url": "https://smartbudget.dgotix.com/salary-split/",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web",
+        "inLanguage": "ar",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": { "@type": "Organization", "name": "DGOTIX" }
+      },
+      {
+        "@type": "FAQPage",
+        "inLanguage": "ar",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "ما هي قاعدة 50/30/20؟",
+            "acceptedAnswer": { "@type": "Answer", "text": "قاعدة بسيطة لتقسيم الدخل الشهري بعد الضريبة: 50% للاحتياجات الأساسية، و30% للرغبات، و20% للادخار وسداد الديون." }
+          },
+          {
+            "@type": "Question",
+            "name": "ماذا لو كانت احتياجاتي أكثر من 50% من راتبي؟",
+            "acceptedAnswer": { "@type": "Answer", "text": "هذا شائع عند ارتفاع الإيجار أو الأقساط. ابدأ بخفض الرغبات قبل أن تمسّ الادخار، وانظر في أكبر بند في الاحتياجات، وحاول رفع الدخل. القاعدة نقطة بداية وليست حكمًا." }
+          },
+          {
+            "@type": "Question",
+            "name": "هل تُرسَل بياناتي إلى أي جهة؟",
+            "acceptedAnswer": { "@type": "Answer", "text": "لا. الحساب يتم في متصفحك فقط، ولا يُرسَل أي رقم تكتبه إلى أي خادم." }
+          },
+          {
+            "@type": "Question",
+            "name": "هل تناسب هذه القاعدة كل الرواتب؟",
+            "acceptedAnswer": { "@type": "Answer", "text": "هي نقطة انطلاق. التطبيق يضبطها على مصاريفك الفعلية في آخر ثلاثة أشهر وعلى أهدافك، فتصير أقرب لحياتك." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="brand">SmartBudget</span>
+      <span class="by">by DGOTIX</span>
+    </header>
+
+    <main>
+      <h1>كيف أقسّم راتبي؟ حاسبة قاعدة 50/30/20</h1>
+      <p class="lead">اكتب راتبك الشهري الصافي (بعد الضريبة والخصومات) لتعرف في ثوانٍ كم تخصّص للاحتياجات وللرغبات وللادخار. مجانية، بلا تسجيل، ولا يخرج أي رقم من جهازك.</p>
+
+      <form id="split-form" class="card" novalidate>
+        <label for="income">راتبك الشهري الصافي</label>
+        <input id="income" type="text" inputmode="decimal" autocomplete="off">
+
+        <label for="unit">العملة (اختياري)
+          <span class="hint">مثل: دج أو ريال أو دولار. للعرض فقط.</span>
+        </label>
+        <input id="unit" type="text" inputmode="text" autocomplete="off" maxlength="12">
+
+        <label for="actual">مصاريفك الأساسية الحالية (اختياري)
+          <span class="hint">الإيجار والفواتير والطعام والنقل وما لا غنى عنه. نخبرك هل هي ضمن 50%.</span>
+        </label>
+        <input id="actual" type="text" inputmode="decimal" autocomplete="off">
+
+        <button type="submit">قسّم راتبي</button>
+
+        <div id="result" role="status" aria-live="polite" hidden>
+          <div class="buckets">
+            <div class="bucket needs">
+              <b>الاحتياجات 50%</b>
+              <span class="amount" id="needs"></span>
+              <small>سكن، فواتير، طعام، نقل، صحة، تعليم، أقساط.</small>
+            </div>
+            <div class="bucket wants">
+              <b>الرغبات 30%</b>
+              <span class="amount" id="wants"></span>
+              <small>مطاعم، ترفيه، تسوق، هدايا، اشتراكات.</small>
+            </div>
+            <div class="bucket savings">
+              <b>الادخار 20%</b>
+              <span class="amount" id="savings"></span>
+              <small>مدّخرات، طوارئ، استثمار، سداد ديون.</small>
+            </div>
+          </div>
+          <p class="peryear" id="per-year"></p>
+          <p class="note" id="actual-note" hidden></p>
+        </div>
+      </form>
+
+      <p class="note">الأرقام تقسيم تقريبي للتخطيط، تُقرَّب فيه الاحتياجات والرغبات لأسفل ويذهب الباقي إلى الادخار، فيتطابق المجموع مع راتبك.</p>
+
+      <h2>ما هي قاعدة 50/30/20؟</h2>
+      <p>قاعدة بسيطة لتقسيم الدخل الشهري بعد الضريبة: <strong>50%</strong> للاحتياجات الأساسية، و<strong>30%</strong> للرغبات، و<strong>20%</strong> للادخار وسداد الديون. تصلح بدايةً سهلة لمن لا يعرف من أين يبدأ.</p>
+
+      <h2>ما الذي يدخل في كل بند؟</h2>
+      <ul>
+        <li><strong>الاحتياجات:</strong> السكن والفواتير والاتصالات والطعام والنقل والصحة والتعليم والأقساط والتأمين.</li>
+        <li><strong>الرغبات:</strong> كل ما يمكن الاستغناء عنه: المطاعم والترفيه والتسوق والهدايا.</li>
+        <li><strong>الادخار:</strong> المدّخرات وصندوق الطوارئ والاستثمار وسداد الديون.</li>
+      </ul>
+
+      <h2>ماذا لو كانت احتياجاتي أكثر من 50% من راتبي؟</h2>
+      <p>هذا شائع عند ارتفاع الإيجار أو الأقساط. ابدأ بخفض الرغبات قبل أن تمسّ الادخار، وانظر في أكبر بند في الاحتياجات، وحاول رفع الدخل. القاعدة نقطة بداية وليست حكمًا.</p>
+
+      <h2>أسئلة شائعة</h2>
+      <details>
+        <summary>هل تُرسَل بياناتي إلى أي جهة؟</summary>
+        <p>لا. الحساب يتم في متصفحك فقط، ولا يُرسَل أي رقم تكتبه إلى أي خادم.</p>
+      </details>
+      <details>
+        <summary>هل تناسب هذه القاعدة كل الرواتب؟</summary>
+        <p>هي نقطة انطلاق. التطبيق يضبطها على مصاريفك الفعلية في آخر ثلاثة أشهر وعلى أهدافك، فتصير أقرب لحياتك.</p>
+      </details>
+      <details>
+        <summary>هل هذه الحاسبة نصيحة مالية؟</summary>
+        <p>لا. هي أداة حساب وتخطيط عامة. لقرارات الاستثمار الكبيرة استشر مختصًّا.</p>
+      </details>
+
+      <div class="card">
+        <h2 style="margin-top:0">دع التطبيق يقسّم راتبك على مصاريفك الفعلية</h2>
+        <p>في SmartBudget يتعلّم «تقسيم الراتب الذكي» من آخر ثلاثة أشهر من مصاريفك ومن أهدافك، ويقترح لك ميزانية كل فئة بدل نسب عامة. مجاني للبدء.</p>
+        <a class="cta" href="/">افتح التطبيق</a>
+        <p class="note">وهل تحسب زكاة مالك؟ جرّب <a href="/zakat/">حاسبة الزكاة</a>.</p>
+      </div>
+    </main>
+
+    <footer>
+      <p><span class="brand" style="font-size:16px">SmartBudget</span> by DGOTIX · للتواصل: support@dgotix.com</p>
+    </footer>
+  </div>
+  <script src="split.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>
