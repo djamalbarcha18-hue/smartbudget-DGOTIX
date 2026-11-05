@@ -1214,7 +1214,9 @@ class _CategoryManager extends ConsumerStatefulWidget {
 class _CategoryManagerState extends ConsumerState<_CategoryManager> {
   final TextEditingController _ctrl = TextEditingController();
   String _iconKey = pickableCategoryIcons.keys.first;
-  CategoryFamily _family = CategoryFamily.basics;
+  late CategoryFamily _family = widget.type == TransactionType.income
+      ? CategoryFamily.income
+      : CategoryFamily.basics;
 
   @override
   void dispose() {
@@ -1227,7 +1229,8 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
     if (name.isEmpty) return;
     ref.read(customCategoriesProvider.notifier).add(widget.type, name);
     // The look is a PRO extra; a free category keeps the neutral tag.
-    if (ref.read(featureGateProvider(Feature.categoryIcons)).allowed) {
+    if (AppEnv.categoryIconPicker &&
+        ref.read(featureGateProvider(Feature.categoryIcons)).allowed) {
       ref
           .read(categoryStylesProvider.notifier)
           .set(widget.type, name, CustomCategoryLook(_iconKey, _family.name));
@@ -1248,8 +1251,7 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
     }
 
     final Brightness b = Theme.of(context).brightness;
-    final Color chosen =
-        familyColor(income ? CategoryFamily.income : _family, c, b);
+    final Color chosen = familyColor(_family, c, b);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -1296,11 +1298,12 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
                     ),
                 ],
               ),
-              if (!income) ...<Widget>[
+              ...<Widget>[
                 const SizedBox(height: DsSpacing.sm),
                 Row(
                   children: <Widget>[
-                    for (final CategoryFamily f in pickableFamilies)
+                    for (final CategoryFamily f
+                        in income ? pickableIncomeFamilies : pickableFamilies)
                       Padding(
                         padding: const EdgeInsetsDirectional.only(end: 10),
                         child: InkResponse(
@@ -1389,8 +1392,10 @@ class _CategoryManagerState extends ConsumerState<_CategoryManager> {
           ],
         ),
         const SizedBox(height: DsSpacing.md),
-        _picker(c),
-        const SizedBox(height: DsSpacing.md),
+        if (AppEnv.categoryIconPicker) ...<Widget>[
+          _picker(c),
+          const SizedBox(height: DsSpacing.md),
+        ],
         if (items.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: DsSpacing.xs),

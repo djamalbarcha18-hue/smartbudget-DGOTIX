@@ -12,14 +12,14 @@ void main() {
     }
   });
 
-  test('income categories are all in the income family, expenses never', () {
+  test('income categories use the income families, expenses never', () {
     for (final String c in Catalog.incomeCategories) {
-      expect(CategoryStyle.of(c, TransactionType.income).family,
-          CategoryFamily.income);
+      expect(
+          CategoryStyle.of(c, TransactionType.income).family.isIncome, isTrue);
     }
     for (final String c in Catalog.expenseCategories) {
-      expect(CategoryStyle.of(c, TransactionType.expense).family,
-          isNot(CategoryFamily.income));
+      expect(CategoryStyle.of(c, TransactionType.expense).family.isIncome,
+          isFalse);
     }
   });
 

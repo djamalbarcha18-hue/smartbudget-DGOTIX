@@ -83,6 +83,13 @@ abstract final class AppEnv {
   static const bool googleSignIn =
       bool.fromEnvironment('GOOGLE_SIGN_IN', defaultValue: false);
 
+  /// Choosing an icon and colour for one's own categories (a Pro extra):
+  /// hidden in every build until built with
+  /// `--dart-define=CATEGORY_ICON_PICKER=true`. The built-in category badges
+  /// are always shown.
+  static const bool categoryIconPicker =
+      bool.fromEnvironment('CATEGORY_ICON_PICKER', defaultValue: false);
+
   /// The device database (IndexedDB) for the user's records on the web,
   /// instead of one localStorage text per list: off in every build until
   /// built with `--dart-define=INDEXED_DB=true` (docs/LOCAL_DATABASE.md).

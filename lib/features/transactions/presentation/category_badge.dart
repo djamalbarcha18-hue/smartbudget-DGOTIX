@@ -6,9 +6,24 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/features/transactions/application/category_styles_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
-/// The six calm colour families of the category icon system. A category
-/// belongs to exactly one family; income is always its own (green) one.
-enum CategoryFamily { basics, food, mobility, lifestyle, commitments, income }
+/// The calm colour families of the category icon system: five for expenses,
+/// four (all income) for income. A category belongs to exactly one.
+enum CategoryFamily {
+  basics,
+  food,
+  mobility,
+  lifestyle,
+  commitments,
+
+  /// Income, in four calm hues by kind: steady pay (green), passive income
+  /// (gold), own work (blue), gifts and aid (rose).
+  income,
+  incomePassive,
+  incomeWork,
+  incomeGift;
+
+  bool get isIncome => index >= CategoryFamily.income.index;
+}
 
 /// Icon + family of one built-in category.
 class CategoryStyle {
@@ -34,30 +49,33 @@ class CategoryStyle {
           .containsKey(category);
 
   static const CategoryFamily _i = CategoryFamily.income;
+  static const CategoryFamily _p = CategoryFamily.incomePassive;
+  static const CategoryFamily _w = CategoryFamily.incomeWork;
+  static const CategoryFamily _g = CategoryFamily.incomeGift;
   static const Map<String, CategoryStyle> _income = <String, CategoryStyle>{
     'راتب أساسي': CategoryStyle(Icons.payments_outlined, _i),
     'مكافآت وحوافز': CategoryStyle(Icons.emoji_events_outlined, _i),
     'مكافأة نهاية الخدمة':
         CategoryStyle(Icons.assignment_turned_in_outlined, _i),
     'معاش تقاعدي': CategoryStyle(Icons.elderly_outlined, _i),
-    'عمل حر': CategoryStyle(Icons.laptop_mac_outlined, _i),
-    'عمل بدوام جزئي': CategoryStyle(Icons.schedule_outlined, _i),
-    'عمولات': CategoryStyle(Icons.percent_outlined, _i),
-    'أرباح تجارية': CategoryStyle(Icons.storefront_outlined, _i),
-    'دخل استثماري': CategoryStyle(Icons.trending_up_rounded, _i),
-    'أرباح أسهم وتوزيعات': CategoryStyle(Icons.pie_chart_outline_rounded, _i),
-    'أرباح العملات الرقمية': CategoryStyle(Icons.currency_bitcoin_outlined, _i),
-    'إيجارات': CategoryStyle(Icons.apartment_outlined, _i),
-    'تأجير قصير الأمد': CategoryStyle(Icons.bed_outlined, _i),
-    'تجارة إلكترونية': CategoryStyle(Icons.shopping_cart_outlined, _i),
-    'بيع أصول أو ممتلكات': CategoryStyle(Icons.sell_outlined, _i),
-    'محتوى رقمي وإبداعي': CategoryStyle(Icons.movie_creation_outlined, _i),
-    'استرجاع نقدي ومكافآت': CategoryStyle(Icons.currency_exchange_outlined, _i),
-    'منحة أو إعانة': CategoryStyle(Icons.volunteer_activism_outlined, _i),
-    'ميراث': CategoryStyle(Icons.account_balance_outlined, _i),
-    'استرداد أو تعويض': CategoryStyle(Icons.assignment_return_outlined, _i),
-    'هدايا': CategoryStyle(Icons.card_giftcard_outlined, _i),
-    'زكاة أو صدقة مستلمة': CategoryStyle(Icons.favorite_border_rounded, _i),
+    'عمل حر': CategoryStyle(Icons.laptop_mac_outlined, _w),
+    'عمل بدوام جزئي': CategoryStyle(Icons.schedule_outlined, _w),
+    'عمولات': CategoryStyle(Icons.percent_outlined, _w),
+    'أرباح تجارية': CategoryStyle(Icons.storefront_outlined, _w),
+    'دخل استثماري': CategoryStyle(Icons.trending_up_rounded, _p),
+    'أرباح أسهم وتوزيعات': CategoryStyle(Icons.pie_chart_outline_rounded, _p),
+    'أرباح العملات الرقمية': CategoryStyle(Icons.currency_bitcoin_outlined, _p),
+    'إيجارات': CategoryStyle(Icons.apartment_outlined, _p),
+    'تأجير قصير الأمد': CategoryStyle(Icons.bed_outlined, _p),
+    'تجارة إلكترونية': CategoryStyle(Icons.shopping_cart_outlined, _w),
+    'بيع أصول أو ممتلكات': CategoryStyle(Icons.sell_outlined, _p),
+    'محتوى رقمي وإبداعي': CategoryStyle(Icons.movie_creation_outlined, _w),
+    'استرجاع نقدي ومكافآت': CategoryStyle(Icons.currency_exchange_outlined, _g),
+    'منحة أو إعانة': CategoryStyle(Icons.volunteer_activism_outlined, _g),
+    'ميراث': CategoryStyle(Icons.account_balance_outlined, _g),
+    'استرداد أو تعويض': CategoryStyle(Icons.assignment_return_outlined, _g),
+    'هدايا': CategoryStyle(Icons.card_giftcard_outlined, _g),
+    'زكاة أو صدقة مستلمة': CategoryStyle(Icons.favorite_border_rounded, _g),
     'أخرى': CategoryStyle(Icons.more_horiz_rounded, _i),
   };
 
@@ -144,6 +162,14 @@ const List<CategoryFamily> pickableFamilies = <CategoryFamily>[
   CategoryFamily.commitments,
 ];
 
+/// The colour families a user may pick for an income category.
+const List<CategoryFamily> pickableIncomeFamilies = <CategoryFamily>[
+  CategoryFamily.income,
+  CategoryFamily.incomePassive,
+  CategoryFamily.incomeWork,
+  CategoryFamily.incomeGift,
+];
+
 /// The style of [category]: the built-in one, or, for a category the user
 /// made, the look they picked (neutral when they picked none).
 CategoryStyle resolveCategoryStyle(String category, TransactionType type,
@@ -155,12 +181,13 @@ CategoryStyle resolveCategoryStyle(String category, TransactionType type,
   if (icon == null) return base;
   return CategoryStyle(
       icon,
-      type == TransactionType.income
-          ? CategoryFamily.income
-          : CategoryFamily.values.firstWhere(
-              (CategoryFamily f) =>
-                  f.name == look.familyName && f != CategoryFamily.income,
-              orElse: () => CategoryFamily.commitments));
+      CategoryFamily.values.firstWhere(
+          (CategoryFamily f) =>
+              f.name == look.familyName &&
+              f.isIncome == (type == TransactionType.income),
+          orElse: () => type == TransactionType.income
+              ? CategoryFamily.income
+              : CategoryFamily.commitments));
 }
 
 /// Colours for the slices of a category chart, in order: each category takes
@@ -185,27 +212,37 @@ List<Color> chartColorsFor(List<String> categories, TransactionType type,
   ];
 }
 
-/// Calm, theme-aware colour of a family (deeper on light, softer on dark).
+/// Calm, theme-aware colour of a family: earthy, muted, and each hue far
+/// enough from the next to tell apart at a glance. Deeper on light themes,
+/// softer on dark ones.
 Color familyColor(CategoryFamily f, DsColors c, Brightness b) {
-  if (f == CategoryFamily.income) return c.income;
   final bool dark = b == Brightness.dark;
   switch (f) {
     case CategoryFamily.basics:
-      return dark ? const Color(0xFF8AB4F8) : const Color(0xFF3B6FD4);
+      return dark ? const Color(0xFF8FB0D6) : const Color(0xFF5B7FA6);
     case CategoryFamily.food:
-      return dark ? const Color(0xFFF0A868) : const Color(0xFFC2631F);
+      return dark ? const Color(0xFFE39A6E) : const Color(0xFFC8703F);
     case CategoryFamily.mobility:
-      return dark ? const Color(0xFFB7A1F0) : const Color(0xFF7352BE);
+      return dark ? const Color(0xFFA99AC9) : const Color(0xFF7A6A9E);
     case CategoryFamily.lifestyle:
-      return dark ? const Color(0xFFF09AC0) : const Color(0xFFBA3F78);
+      return dark ? const Color(0xFFD98BA8) : const Color(0xFFB8577A);
     case CategoryFamily.commitments:
-      return dark ? const Color(0xFFA3B1C6) : const Color(0xFF55657B);
+      return dark ? const Color(0xFF8CC2AE) : const Color(0xFF5E8F7F);
     case CategoryFamily.income:
-      return c.income;
+      return dark ? const Color(0xFF86C187) : const Color(0xFF5A9A5B);
+    case CategoryFamily.incomePassive:
+      return dark ? const Color(0xFFDDBF72) : const Color(0xFFB8963F);
+    case CategoryFamily.incomeWork:
+      return dark ? const Color(0xFF8FB0D6) : const Color(0xFF5B7FA6);
+    case CategoryFamily.incomeGift:
+      return dark ? const Color(0xFFD98BA8) : const Color(0xFFB8577A);
   }
 }
 
-/// Round soft badge: outline icon on a 14% tint of the family colour. Income
+/// The share of the family colour in a badge's background.
+const double kBadgeTint = 0.18;
+
+/// Round soft badge: outline icon on an 18% tint of the family colour. Income
 /// carries a tiny arrow in its corner so it reads at a glance.
 class CategoryBadge extends ConsumerWidget {
   const CategoryBadge({
@@ -237,7 +274,7 @@ class CategoryBadge extends ConsumerWidget {
             height: size,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: color.withValues(alpha: 0.14),
+              color: color.withValues(alpha: kBadgeTint),
             ),
             child: Icon(s.icon, color: color, size: size * 0.5),
           ),
@@ -250,7 +287,8 @@ class CategoryBadge extends ConsumerWidget {
                 height: size * 0.36,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: c.income,
+                  color: familyColor(
+                      CategoryFamily.income, c, Theme.of(context).brightness),
                   border: Border.all(color: c.surface, width: 1.5),
                 ),
                 child: Icon(Icons.south_west_rounded,

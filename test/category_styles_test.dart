@@ -61,7 +61,9 @@ void main() {
 
   test('every pickable icon key is unique and families exclude income', () {
     expect(pickableCategoryIcons.length, 24);
-    expect(pickableFamilies, isNot(contains(CategoryFamily.income)));
+    expect(pickableFamilies.any((CategoryFamily f) => f.isIncome), isFalse);
+    expect(
+        pickableIncomeFamilies.every((CategoryFamily f) => f.isIncome), isTrue);
   });
 }
 
@@ -96,14 +98,15 @@ void chartColorTests() {
           familyColor(CategoryFamily.lifestyle, c, Brightness.light));
     });
 
-    test('income charts are green', () {
+    test('income charts use the income colours', () {
       final List<Color> out = chartColorsFor(
           <String>['راتب أساسي'],
           TransactionType.income,
           const <String, CustomCategoryLook>{},
           c,
           Brightness.light);
-      expect(out.single, c.income);
+      expect(
+          out.single, familyColor(CategoryFamily.income, c, Brightness.light));
     });
   });
 }
