@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/network/connectivity.dart';
 import 'package:smartbudget/design_system/brand/dgotix_owl.dart';
 import 'package:smartbudget/design_system/components/markdown_text.dart';
@@ -15,15 +16,19 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/ai/data/ai_gateway_service.dart';
+import 'package:smartbudget/features/ai/application/ai_server_quota.dart';
 import 'package:smartbudget/features/ai/domain/ai_errors.dart';
+import 'package:smartbudget/features/ai/domain/ai_quota.dart';
 import 'package:smartbudget/features/ai/domain/ai_registry.dart';
 import 'package:smartbudget/features/assistant/application/ai_backend.dart';
 import 'package:smartbudget/features/assistant/application/ai_usage_controller.dart';
 import 'package:smartbudget/features/assistant/application/ask_ai_controller.dart';
 import 'package:smartbudget/features/assistant/data/ai_report_service.dart';
+import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
 import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/feature_gate.dart';
+import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// "Ask DGOTIX AI" — a lightweight chat that sends the user's question (plus a
@@ -53,6 +58,12 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
     // The owl looks down while the user types.
     _ctrl.addListener(_onTyping);
     _focus.addListener(_onTyping);
+    // The server's own count, so the balance shown is the real one.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ref.read(assistantReadyProvider)) {
+        ref.read(aiGatewayServiceProvider).status().ignore();
+      }
+    });
   }
 
   void _onTyping() {
@@ -131,16 +142,26 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
   }
 
   String _gatewayError(AppLocalizations l, AiFailure e) => switch (e.kind) {
-        AiErrorKind.quotaExceeded => l.askAiErrQuota,
+        AiErrorKind.quotaExceeded => _spentText(l, e.quota) ?? l.askAiErrQuota,
         AiErrorKind.rateLimited => l.askAiErrRate,
         _ => l.askAiUnavailable,
       };
+
+  /// The clear "all used" message with the limit and the day it starts over;
+  /// null (the general wording) for a one-time allowance or an unknown reset.
+  static String? _spentText(AppLocalizations l, AiQuotaInfo? q) =>
+      q == null || q.lifetime || q.resetsAt == null
+          ? null
+          : l.askAiErrQuotaSpent(q.limit, isoDate(q.resetsAt!.toLocal()));
 
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
+    final AiQuotaInfo? serverQuota = ref.watch(aiServerQuotaProvider);
+    // PRO is the top plan: spending its allowance has no upgrade to offer.
+    final bool canUpgrade = ref.watch(effectivePlanProvider) != Plan.pro;
     final List<ChatMessage> msgs = ref.watch(chatMessagesProvider);
     // Plan-quota nudges (80% / 90% / 100%); the server is the real enforcer.
     final GateDecision gate = ref.watch(featureGateProvider(Feature.dgotixAi));
@@ -220,7 +241,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
                 ),
               ],
             ),
-            if (_errorIsQuota) ...<Widget>[
+            if (_errorIsQuota && canUpgrade) ...<Widget>[
               const SizedBox(height: DsSpacing.sm),
               Align(
                 alignment: AlignmentDirectional.centerStart,
@@ -228,7 +249,9 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
               ),
             ],
           ],
-          if (_error == null) _QuotaNudge(gate: gate),
+          if (_error == null)
+            _QuotaNudge(
+                gate: gate, server: serverQuota, canUpgrade: canUpgrade),
           const SizedBox(height: DsSpacing.md),
           Row(
             children: <Widget>[
@@ -286,28 +309,49 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
 /// crosses ~80% of the period allowance (per docs/PRICING.md §6); at/over the
 /// limit it surfaces the upgrade-only wall.
 class _QuotaNudge extends StatelessWidget {
-  const _QuotaNudge({required this.gate});
+  const _QuotaNudge(
+      {required this.gate, this.server, required this.canUpgrade});
   final GateDecision gate;
+  final bool canUpgrade;
+
+  /// What the server says about the allowance, once it has said.
+  final AiQuotaInfo? server;
 
   @override
   Widget build(BuildContext context) {
-    final int? limit = gate.limit;
-    final int? remaining = gate.remaining;
-    final double? frac = gate.usedFraction;
-    // Not metered / unlimited / comfortably under budget ⇒ no nudge.
-    if (limit == null || remaining == null || frac == null || frac < 0.8) {
-      return const SizedBox.shrink();
-    }
-
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final bool over = !gate.allowed;
-    final Color color = over ? c.expense : c.saving;
-    final bool lifetime = gate.window == QuotaWindow.lifetime;
+    final AiQuotaInfo? s = server;
+    // The server's count is the real one; the plan table only stands in until
+    // it has answered.
+    final int? limit = s?.limit ?? gate.limit;
+    final int? remaining = s?.remaining ?? gate.remaining;
+    final double? frac = s?.usedFraction ?? gate.usedFraction;
+    if (limit == null || remaining == null || frac == null) {
+      return const SizedBox.shrink();
+    }
+    final bool over = s != null ? s.spent : !gate.allowed;
+    final bool lifetime =
+        s != null ? s.lifetime : gate.window == QuotaWindow.lifetime;
     final String left = lifetime
         ? l.aiQuotaLeftLifetime(remaining, limit)
         : l.aiQuotaLeftMonth(remaining, limit);
+    final String? renews = (s != null && !lifetime && s.resetsAt != null)
+        ? l.aiQuotaResetsOn(isoDate(s.resetsAt!.toLocal()))
+        : null;
+
+    // Comfortably under budget: a quiet line with the balance, no box.
+    if (frac < 0.8) {
+      if (s == null) return const SizedBox.shrink();
+      return Padding(
+        padding: const EdgeInsets.only(top: DsSpacing.sm),
+        child: Text(renews == null ? left : '$left · $renews',
+            style: t.labelSmall?.copyWith(color: c.textMuted)),
+      );
+    }
+
+    final Color color = over ? c.expense : c.saving;
 
     return Padding(
       padding: const EdgeInsets.only(top: DsSpacing.sm),
@@ -326,13 +370,17 @@ class _QuotaNudge extends StatelessWidget {
             const SizedBox(width: DsSpacing.sm),
             Expanded(
               child: Text(
-                over ? l.askAiErrQuota : '${l.aiQuotaNear} $left',
+                over
+                    ? (_AskDgotixCardState._spentText(l, s) ?? l.askAiErrQuota)
+                    : '${l.aiQuotaNear} $left${renews == null ? '' : ' · $renews'}',
                 style: t.labelSmall
                     ?.copyWith(color: color, fontWeight: FontWeight.w600),
               ),
             ),
-            const SizedBox(width: DsSpacing.sm),
-            _UpgradeButton(label: l.aiUpgrade),
+            if (canUpgrade) ...<Widget>[
+              const SizedBox(width: DsSpacing.sm),
+              _UpgradeButton(label: l.aiUpgrade),
+            ],
           ],
         ),
       ),

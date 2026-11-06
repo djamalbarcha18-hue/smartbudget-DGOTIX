@@ -168,4 +168,29 @@ fb = await ask("u10");
 check("AI: a retired model (404) falls back too", fb.status === 200 && model.asked.length === 2, fb.status + " " + model.asked.join(","));
 model.fail = {};
 
+// ---- Request size and what the app is told (AI policy: 4,000 in, 1,000 out) ----
+const askBody = (u: string, body: unknown) => handlers["ai-gateway"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-" + u }, body: JSON.stringify(body) }));
+model.lastBody = null;
+const okAnswer = await askBody("u20", { prompt: "how do I save?", context: "income: 4368" });
+const okJson = await okAnswer.json();
+check("AI: the answer carries the server's own balance", okAnswer.status === 200 && okJson.quota?.limit === 5 && okJson.quota?.used === 1 && okJson.quota?.remaining === 4 && okJson.quota?.window === "lifetime" && okJson.quota?.resetsAt === null, JSON.stringify(okJson.quota));
+check("AI: the model may write at most 1,000 tokens", model.lastBody?.generationConfig?.maxOutputTokens === 1000, JSON.stringify(model.lastBody?.generationConfig));
+
+const hugeContext = Array.from({ length: 1500 }, (_, i) => "line " + i + ": " + i * 1234567).join("\n");
+const calls0 = model.calls;
+const big = await askBody("u21", { prompt: "q", context: hugeContext });
+const sent = String(model.lastBody?.contents?.[0]?.parts?.[0]?.text ?? "") + String(model.lastBody?.systemInstruction?.parts?.[0]?.text ?? "");
+check("AI: a huge context is cut, not refused, and the input stays under 4,000 tokens", big.status === 200 && model.calls === calls0 + 1 && sent.length < 24000 && sent.includes("line 0:") && !sent.includes("line 1499:"), big.status + " sent=" + sent.length);
+
+const stat = await askBody("u22", { task: "status" });
+const statJson = await stat.json();
+const calls1 = model.calls;
+const usedBefore = db.tables.ai_usage_monthly?.find((x: any) => x.user_id === "u22")?.requests ?? 0;
+check("AI: a status call reports the allowance and counts nothing", stat.status === 200 && statJson.quota?.remaining === 5 && model.calls === calls1 && usedBefore === 0, JSON.stringify(statJson));
+
+for (let k = 0; k < 5; k++) await askBody("u23", { prompt: "q" + k });
+const spent = await askBody("u23", { prompt: "one more" });
+const spentJson = await spent.json();
+check("AI: when the allowance is spent the refusal says how much is left (none)", spent.status === 429 && spentJson.error === "quota_exceeded" && spentJson.quota?.remaining === 0 && spentJson.quota?.used === 5, spent.status + " " + JSON.stringify(spentJson));
+
 finish();

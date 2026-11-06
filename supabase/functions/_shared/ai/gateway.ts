@@ -9,6 +9,7 @@
 // owner can disable a provider/model or change priority WITHOUT a new app
 // release or client change.
 import { type SupabaseClient } from "npm:@supabase/supabase-js@2.117.2";
+import { MAX_OUTPUT_TOKENS } from "./budget.ts";
 
 export type ProviderId = "google" | "openai" | "anthropic";
 export type Capability = "text" | "image" | "structured" | "streaming";
@@ -191,7 +192,7 @@ export class ProviderError extends Error {
 // politely declined, so the AI can't be used as a free general chatbot. It
 // answers as a confident expert, without disclaimers or referrals (the app's
 // terms say its guidance is not professional advice).
-const SYSTEM = [
+export const SYSTEM = [
   // Role and depth.
   "You are DGOTIX AI, the financial assistant inside the SmartBudget app by " +
     "DGOTIX. You answer with the depth of a senior expert holding " +
@@ -276,7 +277,7 @@ async function geminiGen(model: string, sys: string, prompt: string): Promise<Ge
     {
       systemInstruction: { parts: [{ text: sys }] },
       contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.4, maxOutputTokens: 800 },
+      generationConfig: { temperature: 0.4, maxOutputTokens: MAX_OUTPUT_TOKENS },
     },
   );
   const raw = await res.text();
@@ -297,7 +298,7 @@ async function openaiGen(model: string, sys: string, prompt: string): Promise<Ge
       model,
       messages: [{ role: "system", content: sys }, { role: "user", content: prompt }],
       temperature: 0.4,
-      max_tokens: 800,
+      max_tokens: MAX_OUTPUT_TOKENS,
     },
   );
   const raw = await res.text();
@@ -314,7 +315,7 @@ async function anthropicGen(model: string, sys: string, prompt: string): Promise
   const res = await post(
     "https://api.anthropic.com/v1/messages",
     { "Content-Type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-    { model, max_tokens: 800, system: sys, messages: [{ role: "user", content: prompt }] },
+    { model, max_tokens: MAX_OUTPUT_TOKENS, system: sys, messages: [{ role: "user", content: prompt }] },
   );
   const raw = await res.text();
   if (res.status !== 200) throw new ProviderError(res.status, providerMsg(raw));

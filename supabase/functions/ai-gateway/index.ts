@@ -14,6 +14,7 @@ import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireAccount, serviceClient } from "../_shared/auth.ts";
 import { capText, readJsonBody } from "../_shared/body.ts";
 import { rateLimited, releaseUsage, reserveUsage } from "../_shared/usage.ts";
+import { fitInput, MAX_INPUT_TOKENS, type Turn } from "../_shared/ai/budget.ts";
 import {
   candidates,
   classify,
@@ -25,6 +26,7 @@ import {
   ProviderError,
   recordFailure,
   recordSuccess,
+  SYSTEM,
   type TaskType,
 } from "../_shared/ai/gateway.ts";
 import {
@@ -34,6 +36,7 @@ import {
   DAILY_LIMIT,
   effectivePlan,
   normalizePlan,
+  quotaInfo,
   trustOf,
 } from "../_shared/quota.ts";
 
@@ -70,11 +73,23 @@ Deno.serve(async (req: Request) => {
       return jsonResponse({ error: "rate_limited" }, 429, cors);
     }
     const body = await readJsonBody(req, MAX_BODY_BYTES);
+    // "status" only reports the allowance (no model call, nothing counted).
+    const statusOnly = body?.task === "status";
     const task = (VALID_TASKS.has(body?.task) ? body.task : "chat") as TaskType;
     const prompt = capText(String(body?.prompt ?? "").trim(), MAX_PROMPT_CHARS);
-    const context = capText(String(body?.context ?? ""), MAX_CONTEXT_CHARS);
-    const history = sanitizeHistory(body?.history);
-    if (!prompt) return jsonResponse({ error: "empty_prompt" }, 400, cors);
+    const rawContext = capText(String(body?.context ?? ""), MAX_CONTEXT_CHARS);
+    const rawHistory = sanitizeHistory(body?.history);
+    if (!prompt && !statusOnly) {
+      return jsonResponse({ error: "empty_prompt" }, 400, cors);
+    }
+    // The size of one request is limited (4,000 tokens in, 1,000 out): what
+    // doesn't fit is cut, oldest conversation first, never refused.
+    const fit = fitInput(
+      { system: SYSTEM, context: rawContext, history: rawHistory, prompt },
+      MAX_INPUT_TOKENS,
+    );
+    const context = fit.context;
+    const history = fit.history;
 
     const month = monthKey();
 
@@ -109,8 +124,14 @@ Deno.serve(async (req: Request) => {
     } else {
       usedReq = usage?.requests ?? 0;
     }
-    if (usedReq >= allow.limit || usedCost >= costCeiling) {
-      return jsonResponse({ error: "quota_exceeded" }, 429, cors);
+    const exhausted = usedReq >= allow.limit || usedCost >= costCeiling;
+    // What the app shows: the server's own count, never the device's.
+    const left = (used: number) => quotaInfo(allow, exhausted ? allow.limit : used);
+    if (statusOnly) {
+      return jsonResponse({ ok: true, quota: left(usedReq) }, 200, cors);
+    }
+    if (exhausted) {
+      return jsonResponse({ error: "quota_exceeded", quota: left(usedReq) }, 429, cors);
     }
     // Count the request now, atomically, so parallel requests can't all pass
     // the check above (null: database not updated yet, counted on success).
@@ -120,7 +141,7 @@ Deno.serve(async (req: Request) => {
       trust,
     });
     if (reservation === "quota") {
-      return jsonResponse({ error: "quota_exceeded" }, 429, cors);
+      return jsonResponse({ error: "quota_exceeded", quota: quotaInfo(allow, allow.limit) }, 429, cors);
     }
     if (reservation === "daily") {
       return jsonResponse({ error: "quota_exceeded", scope: "daily" }, 429, cors);
@@ -164,6 +185,7 @@ Deno.serve(async (req: Request) => {
           text: out.text,
           model: m.id,
           usage: { input: out.inputTokens, output: out.outputTokens },
+          quota: quotaInfo(allow, usedReq + 1),
           fallbackUsed: i > 0,
         }, 200, cors);
       } catch (e) {
@@ -187,8 +209,6 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: code }, status, corsHeaders());
   }
 });
-
-type Turn = { role: "user" | "assistant"; text: string };
 
 /// Conversation memory from the client, re-validated here: at most 6 turns,
 /// each capped, roles restricted — the client can't inflate the request.
