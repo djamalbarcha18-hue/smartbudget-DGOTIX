@@ -1349,6 +1349,8 @@
   "tripDaysLabel": "दिन: {days}",
   "featProThemes": "Pro थीम",
   "featCategoryIcons": "अपनी श्रेणियों के लिए अपने आइकन और रंग",
+  "categoryIconsPlain": "सादे आइकन, बिना रंग",
+  "categoryIconsPlainHint": "धूसर आइकन जिन्हें आप आकार से पहचानते हैं। चार्ट अपने रंग बनाए रखते हैं।",
   "settingsThemeStyleHint": "Pro रंग: लाइट थीम के लिए बेज, सेज और अनार; डार्क थीम के लिए ब्लैक गोल्ड।",
   "settingsThemeStyle": "थीम के रंग",
   "themeClassic": "क्लासिक",

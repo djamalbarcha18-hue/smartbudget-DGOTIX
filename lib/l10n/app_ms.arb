@@ -1349,6 +1349,8 @@
   "tripDaysLabel": "Bilangan hari: {days}",
   "featProThemes": "Tema Pro",
   "featCategoryIcons": "Ikon dan warna sendiri untuk kategori anda",
+  "categoryIconsPlain": "Ikon biasa tanpa warna",
+  "categoryIconsPlainHint": "Ikon kelabu yang dikenali melalui bentuk. Carta kekal berwarna.",
   "settingsThemeStyleHint": "Warna Pro: Kuning air, Sage dan Delima untuk tema cerah, Hitam Emas untuk tema gelap.",
   "settingsThemeStyle": "Warna tema",
   "themeClassic": "Klasik",

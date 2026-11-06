@@ -1349,6 +1349,8 @@
   "tripDaysLabel": "Ditë: {days}",
   "featProThemes": "Tema Pro",
   "featCategoryIcons": "Ikona dhe ngjyra tuaja për kategoritë",
+  "categoryIconsPlain": "Ikona të thjeshta, pa ngjyra",
+  "categoryIconsPlainHint": "Ikona gri që dallohen nga forma. Grafikët i mbajnë ngjyrat.",
   "settingsThemeStyleHint": "Ngjyra Pro: Bezhë, Sherebelë dhe Shegë për temën e çelët, E zezë dhe e artë për temën e errët.",
   "settingsThemeStyle": "Ngjyrat e temës",
   "themeClassic": "Klasike",

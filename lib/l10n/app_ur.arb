@@ -1349,6 +1349,8 @@
   "tripDaysLabel": "دنوں کی تعداد: {days}",
   "featProThemes": "Pro تھیمز",
   "featCategoryIcons": "اپنی زمروں کے لیے اپنے آئیکن اور رنگ",
+  "categoryIconsPlain": "سادہ آئیکن، بغیر رنگ",
+  "categoryIconsPlainHint": "سرمئی آئیکن جنہیں شکل سے پہچانا جاتا ہے۔ چارٹ اپنے رنگ برقرار رکھتے ہیں۔",
   "settingsThemeStyleHint": "Pro رنگ: ہلکی تھیم کے لیے بیج، سیج اور انار، گہری تھیم کے لیے سیاہ سنہری۔",
   "settingsThemeStyle": "تھیم کے رنگ",
   "themeClassic": "کلاسیکی",

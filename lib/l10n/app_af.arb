@@ -1349,6 +1349,8 @@
   "tripDaysLabel": "Dae: {days}",
   "featProThemes": "Pro-temas",
   "featCategoryIcons": "Eie ikone en kleure vir jou kategorieë",
+  "categoryIconsPlain": "Gewone ikone, sonder kleure",
+  "categoryIconsPlainHint": "Grys ikone wat jy aan hul vorm herken. Grafieke behou hul kleure.",
   "settingsThemeStyleHint": "Pro-kleure: Beige, Salie en Granaat vir die ligte tema, Swart Goud vir die donker tema.",
   "settingsThemeStyle": "Temakleure",
   "themeClassic": "Klassiek",

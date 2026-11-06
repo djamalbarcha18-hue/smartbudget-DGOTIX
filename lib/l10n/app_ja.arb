@@ -1349,6 +1349,8 @@
   "tripDaysLabel": "日数：{days}",
   "featProThemes": "Pro テーマ",
   "featCategoryIcons": "カテゴリーに自分だけのアイコンと色",
+  "categoryIconsPlain": "色なしのシンプルなアイコン",
+  "categoryIconsPlainHint": "形で見分けるグレーのアイコン。グラフの色はそのままです。",
   "settingsThemeStyleHint": "Pro の色：ライトテーマにベージュ、セージ、ザクロ、ダークテーマにブラックゴールド。",
   "settingsThemeStyle": "テーマの色",
   "themeClassic": "クラシック",

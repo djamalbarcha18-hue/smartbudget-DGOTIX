@@ -1349,6 +1349,8 @@
   "tripDaysLabel": "روزها: {days}",
   "featProThemes": "پوسته‌های Pro",
   "featCategoryIcons": "نماد و رنگ دلخواه برای دسته‌بندی‌های شما",
+  "categoryIconsPlain": "نمادهای ساده بدون رنگ",
+  "categoryIconsPlainHint": "نمادهای خاکستری که از روی شکل شناخته می‌شوند. نمودارها رنگ‌هایشان را نگه می‌دارند.",
   "settingsThemeStyleHint": "رنگ‌های Pro: بژ، مریم‌گلی و انار برای پوسته روشن؛ مشکی‌طلایی برای پوسته تیره.",
   "settingsThemeStyle": "رنگ‌های پوسته",
   "themeClassic": "کلاسیک",

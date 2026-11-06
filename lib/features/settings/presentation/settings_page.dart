@@ -49,6 +49,7 @@ import 'package:smartbudget/features/settings/presentation/base_currency_change.
 import 'package:smartbudget/features/settings/presentation/clock_section.dart';
 import 'package:smartbudget/features/referrals/presentation/invite_rewards_card.dart';
 import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
+import 'package:smartbudget/features/transactions/application/category_icon_style.dart';
 import 'package:smartbudget/features/transactions/application/category_styles_controller.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/presentation/category_badge.dart';
@@ -249,6 +250,19 @@ class SettingsPage extends ConsumerWidget {
                   children: <Widget>[
                     Text(l.categoriesManageHint,
                         style: Theme.of(context).textTheme.bodySmall),
+                    const SizedBox(height: DsSpacing.md),
+                    Consumer(
+                      builder: (BuildContext context, WidgetRef ref, _) =>
+                          SwitchListTile.adaptive(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(l.categoryIconsPlain),
+                        subtitle: Text(l.categoryIconsPlainHint),
+                        value: ref.watch(categoryIconsPlainProvider),
+                        onChanged: (bool v) => ref
+                            .read(categoryIconsPlainProvider.notifier)
+                            .set(v),
+                      ),
+                    ),
                     const SizedBox(height: DsSpacing.lg),
                     _CategoryManager(
                       title: l.customIncomeCategories,

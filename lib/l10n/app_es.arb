@@ -1349,6 +1349,8 @@
   "tripDaysLabel": "Días: {days}",
   "featProThemes": "Temas Pro",
   "featCategoryIcons": "Iconos y colores propios para tus categorías",
+  "categoryIconsPlain": "Iconos simples, sin colores",
+  "categoryIconsPlainHint": "Iconos grises que distingues por su forma. Los gráficos conservan sus colores.",
   "settingsThemeStyleHint": "Colores Pro: Beige, Salvia y Granada para el tema claro, Negro y oro para el tema oscuro.",
   "settingsThemeStyle": "Colores del tema",
   "themeClassic": "Clásico",

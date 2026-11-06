@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/design_system/icons/sb_icons.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
+import 'package:smartbudget/features/transactions/application/category_icon_style.dart';
 import 'package:smartbudget/features/transactions/application/category_styles_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
@@ -261,7 +262,11 @@ class CategoryBadge extends ConsumerWidget {
     final DsColors c = context.dsColors;
     final CategoryStyle s =
         resolveCategoryStyle(category, type, ref.watch(categoryStylesProvider));
-    final Color color = familyColor(s.family, c, Theme.of(context).brightness);
+    // Plain: a quiet grey badge, the shape of the icon says which category.
+    final bool plain = ref.watch(categoryIconsPlainProvider);
+    final Color color = plain
+        ? c.textMuted
+        : familyColor(s.family, c, Theme.of(context).brightness);
     final bool income = type == TransactionType.income;
     return SizedBox(
       width: size,
@@ -274,7 +279,8 @@ class CategoryBadge extends ConsumerWidget {
             height: size,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: color.withValues(alpha: kBadgeTint),
+              color:
+                  plain ? c.surfaceMuted : color.withValues(alpha: kBadgeTint),
             ),
             child: Icon(s.icon, color: color, size: size * 0.5),
           ),

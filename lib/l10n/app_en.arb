@@ -1588,6 +1588,8 @@
   "@tripDaysLabel": {"placeholders": {"days": {"type": "int"}}},
   "featProThemes": "Pro themes",
   "featCategoryIcons": "Your own icons and colours for categories",
+  "categoryIconsPlain": "Plain icons, no colours",
+  "categoryIconsPlainHint": "Grey icons you tell apart by shape. Charts keep their colours.",
   "settingsThemeStyleHint": "Pro colours: Beige, Sage and Pomegranate for the light theme, Black Gold for the dark theme.",
   "settingsThemeStyle": "Theme colours",
   "themeClassic": "Classic",

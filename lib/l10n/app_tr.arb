@@ -1349,6 +1349,8 @@
   "tripDaysLabel": "Gün sayısı: {days}",
   "featProThemes": "Pro temalar",
   "featCategoryIcons": "Kategorileriniz için kendi simgeleriniz ve renkleriniz",
+  "categoryIconsPlain": "Sade simgeler, renksiz",
+  "categoryIconsPlainHint": "Şeklinden tanıdığınız gri simgeler. Grafikler renklerini korur.",
   "settingsThemeStyleHint": "Pro renkler: açık tema için Bej, Adaçayı ve Nar, koyu tema için Siyah Altın.",
   "settingsThemeStyle": "Tema renkleri",
   "themeClassic": "Klasik",

@@ -1349,6 +1349,8 @@
   "tripDaysLabel": "Дней: {days}",
   "featProThemes": "Темы Pro",
   "featCategoryIcons": "Свои значки и цвета для ваших категорий",
+  "categoryIconsPlain": "Простые значки без цвета",
+  "categoryIconsPlainHint": "Серые значки, которые различают по форме. Диаграммы сохраняют цвета.",
   "settingsThemeStyleHint": "Цвета Pro: Бежевый, Шалфей и Гранат для светлой темы, Чёрное золото — для тёмной.",
   "settingsThemeStyle": "Цвета темы",
   "themeClassic": "Классический",
