@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
 import 'package:smartbudget/features/onboarding/domain/onboarding.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
+import 'package:smartbudget/features/transactions/domain/transaction.dart';
 
 /// Persisted onboarding flags. `null` until loaded from storage, so the welcome
 /// card never flashes for someone who already dismissed it.
@@ -20,6 +22,17 @@ class OnboardingController extends Notifier<OnboardingFlags?> {
   @override
   OnboardingFlags? build() {
     _load();
+    // The first time this device settles its data, the card starts its week;
+    // someone who already has records here is not new and never sees it.
+    ref.listen<AsyncValue<List<Transaction>>>(transactionsProvider,
+        (AsyncValue<List<Transaction>>? _, AsyncValue<List<Transaction>> next) {
+      final List<Transaction>? txns = next.valueOrNull;
+      final OnboardingFlags? f = state;
+      if (txns == null || f == null || f.firstSeenMs != null) return;
+      _update((OnboardingFlags x) => x.copyWith(
+          firstSeenMs: AppClock.now().millisecondsSinceEpoch,
+          dismissed: txns.length >= kEstablishedTransactions ? true : null));
+    }, fireImmediately: true);
     return null;
   }
 
@@ -38,14 +51,16 @@ class OnboardingController extends Notifier<OnboardingFlags?> {
     state = flags;
   }
 
-  void dismiss() => _update((OnboardingFlags f) => f.copyWith(dismissed: true));
+  void dismiss() => _update(
+      (OnboardingFlags f) => f.copyWith(dismissed: true, reopened: false));
   void markSettingsVisited() =>
       _update((OnboardingFlags f) => f.copyWith(visitedSettings: true));
   void markGuideVisited() =>
       _update((OnboardingFlags f) => f.copyWith(visitedGuide: true));
 
   /// Bring the welcome card back (e.g. from the user guide).
-  void reopen() => _update((OnboardingFlags f) => f.copyWith(dismissed: false));
+  void reopen() => _update(
+      (OnboardingFlags f) => f.copyWith(dismissed: false, reopened: true));
 
   void _update(OnboardingFlags Function(OnboardingFlags) change) {
     final OnboardingFlags next = change(state ?? const OnboardingFlags());

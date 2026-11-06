@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/onboarding/application/onboarding_controller.dart';
 import 'package:smartbudget/features/onboarding/domain/onboarding.dart';
+import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// First-run welcome card for the dashboard: a short checklist that ticks
@@ -20,7 +22,15 @@ class WelcomeCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final OnboardingFlags? flags = ref.watch(onboardingFlagsProvider);
     final List<OnboardingStep>? steps = ref.watch(onboardingStepsProvider);
-    if (flags == null || flags.dismissed || steps == null) {
+    final int? txCount = ref.watch(transactionsProvider).valueOrNull?.length;
+    if (flags == null ||
+        steps == null ||
+        txCount == null ||
+        !shouldShowWelcome(
+            flags: flags,
+            steps: steps,
+            transactionCount: txCount,
+            now: AppClock.now())) {
       return const SizedBox.shrink();
     }
 
