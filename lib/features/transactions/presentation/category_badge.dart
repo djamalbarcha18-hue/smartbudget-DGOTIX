@@ -240,6 +240,81 @@ Color familyColor(CategoryFamily f, DsColors c, Brightness b) {
   }
 }
 
+/// Optical balance of the icons. Material icons fill their square very
+/// differently: a walking figure is narrow, a percent sign has a lot of air,
+/// a gift box is dense. Each icon's ink was measured (its width, height and
+/// how much of the box it fills) and the ones that look small are drawn a
+/// little larger, the dense ones a little smaller, so a list of badges reads
+/// as one even rhythm. Keyed by code point (Material icons only); anything
+/// not listed is drawn at 1.0.
+const Map<int, double> _opticalScale = <int, double>{
+  0xee7a: 0.96,
+  0xee99: 0.96,
+  0xee9b: 0.98,
+  0xeedd: 1.18,
+  0xef06: 0.96,
+  0xef2d: 0.92,
+  0xef38: 1.02,
+  0xef3d: 0.9,
+  0xef4c: 1.08,
+  0xef4f: 0.96,
+  0xef56: 0.92,
+  0xef8f: 0.96,
+  0xefbb: 0.9,
+  0xefc4: 0.98,
+  0xefc6: 1.06,
+  0xf010: 1.12,
+  0xf01a: 1.08,
+  0xf07a: 1.06,
+  0xf085: 1.06,
+  0xf0c0: 0.92,
+  0xf0f2: 1.02,
+  0xf107: 1.04,
+  0xf151: 0.9,
+  0xf17c: 1.04,
+  0xf1be: 0.96,
+  0xf1c2: 0.9,
+  0xf266: 0.9,
+  0xf285: 0.92,
+  0xf2ef: 0.94,
+  0xf316: 0.98,
+  0xf325: 1.1,
+  0xf339: 1.04,
+  0xf33c: 0.96,
+  0xf353: 1.06,
+  0xf379: 1.08,
+  0xf37d: 1.02,
+  0xf37e: 0.94,
+  0xf3a9: 0.92,
+  0xf3bb: 1.02,
+  0xf3ca: 1.06,
+  0xf3ef: 0.94,
+  0xf3fb: 0.96,
+  0xf4a9: 0.92,
+  0xf737: 1.08,
+  0xf8d9: 1.18,
+  0xf0099: 0.98,
+  0xf01cf: 1.18,
+  0xf0254: 1.1,
+  0xf02bf: 1.04,
+  0xf039c: 0.96,
+  0xf054a: 1.06,
+  0xf05d6: 0.9,
+  0xf0636: 0.9,
+  0xf063f: 0.96,
+  0xf0695: 1.08,
+  0xf06a4: 0.9,
+};
+
+/// The factor to draw [icon] at so that it looks as large as its neighbours.
+double opticalScaleOf(IconData icon) => icon.fontFamily == 'MaterialIcons'
+    ? (_opticalScale[icon.codePoint] ?? 1.0)
+    : 1.0;
+
+/// How large the icon is inside its badge, as a share of the badge: 10%
+/// larger than before, the circle itself unchanged.
+const double kBadgeGlyph = 0.55;
+
 /// The share of the family colour in a badge's background.
 const double kBadgeTint = 0.14;
 
@@ -282,7 +357,9 @@ class CategoryBadge extends ConsumerWidget {
               color:
                   plain ? c.surfaceMuted : color.withValues(alpha: kBadgeTint),
             ),
-            child: Icon(s.icon, color: color, size: size * 0.5),
+            child: Icon(s.icon,
+                color: color,
+                size: size * kBadgeGlyph * opticalScaleOf(s.icon)),
           ),
           if (income)
             PositionedDirectional(

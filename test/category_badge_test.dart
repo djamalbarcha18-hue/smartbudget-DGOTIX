@@ -8,6 +8,7 @@ import 'package:smartbudget/features/transactions/presentation/category_badge.da
 
 void main() {
   contrastTests();
+  balanceTests();
   test('every built-in category has its own icon style', () {
     for (final TransactionType t in TransactionType.values) {
       for (final String c in Catalog.categoriesFor(t)) {
@@ -61,5 +62,27 @@ void contrastTests() {
         expect(ratio(fg, bg), greaterThanOrEqualTo(3.0), reason: '$f $b');
       }
     });
+  });
+}
+
+void balanceTests() {
+  test('icons are balanced: a walking figure is drawn larger than a percent',
+      () {
+    expect(opticalScaleOf(Icons.elderly_outlined),
+        greaterThan(opticalScaleOf(Icons.percent_outlined)));
+  });
+
+  test('every scale stays in a sane range and a glyph fits its circle', () {
+    for (final TransactionType t in TransactionType.values) {
+      for (final String c in Catalog.categoriesFor(t)) {
+        final double k = opticalScaleOf(CategoryStyle.of(c, t).icon);
+        expect(k, inInclusiveRange(0.9, 1.2), reason: c);
+        expect(kBadgeGlyph * k, lessThan(0.7), reason: c);
+      }
+    }
+  });
+
+  test('the glyph is 10% larger than before (0.5 -> 0.55)', () {
+    expect(kBadgeGlyph, closeTo(0.55, 1e-9));
   });
 }
