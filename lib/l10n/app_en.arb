@@ -1590,6 +1590,8 @@
   "featCategoryIcons": "Your own icons and colours for categories",
   "categoryIconsPlain": "Plain icons, no colours",
   "categoryIconsPlainHint": "Grey icons you tell apart by shape. Charts keep their colours.",
+  "errorReportsTitle": "Send anonymous error reports",
+  "errorReportsHint": "If something goes wrong, only the kind of error and where it happened are sent, never your data.",
   "settingsThemeStyleHint": "Pro colours: Beige, Sage and Pomegranate for the light theme, Black Gold for the dark theme.",
   "settingsThemeStyle": "Theme colours",
   "themeClassic": "Classic",

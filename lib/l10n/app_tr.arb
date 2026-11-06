@@ -1351,6 +1351,8 @@
   "featCategoryIcons": "Kategorileriniz için kendi simgeleriniz ve renkleriniz",
   "categoryIconsPlain": "Sade simgeler, renksiz",
   "categoryIconsPlainHint": "Şeklinden tanıdığınız gri simgeler. Grafikler renklerini korur.",
+  "errorReportsTitle": "Anonim hata raporları gönder",
+  "errorReportsHint": "Bir sorun olursa yalnızca hatanın türü ve oluştuğu yer gönderilir, verileriniz asla.",
   "settingsThemeStyleHint": "Pro renkler: açık tema için Bej, Adaçayı ve Nar, koyu tema için Siyah Altın.",
   "settingsThemeStyle": "Tema renkleri",
   "themeClassic": "Klasik",

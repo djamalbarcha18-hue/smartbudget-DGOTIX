@@ -1351,6 +1351,8 @@
   "featCategoryIcons": "Icone e colori personalizzati per le tue categorie",
   "categoryIconsPlain": "Icone semplici, senza colori",
   "categoryIconsPlainHint": "Icone grigie che riconosci dalla forma. I grafici mantengono i colori.",
+  "errorReportsTitle": "Invia segnalazioni di errore anonime",
+  "errorReportsHint": "Se qualcosa va storto, vengono inviati solo il tipo di errore e dove è avvenuto, mai i tuoi dati.",
   "settingsThemeStyleHint": "Colori Pro: Beige, Salvia e Melograno per il tema chiaro, Nero e Oro per il tema scuro.",
   "settingsThemeStyle": "Colori del tema",
   "themeClassic": "Classico",

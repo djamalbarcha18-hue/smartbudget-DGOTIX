@@ -1351,6 +1351,8 @@
   "featCategoryIcons": "Vlastite ikone i boje za tvoje kategorije",
   "categoryIconsPlain": "Jednostavne ikone, bez boja",
   "categoryIconsPlainHint": "Sive ikone koje prepoznaješ po obliku. Grafikoni zadržavaju boje.",
+  "errorReportsTitle": "Šalji anonimne izvještaje o greškama",
+  "errorReportsHint": "Kad nešto pođe po zlu, šalje se samo vrsta greške i mjesto gdje se desila, nikad tvoji podaci.",
   "settingsThemeStyleHint": "Pro boje: Bež, Žalfija i Nar za svijetlu temu, Crno-zlatna za tamnu temu.",
   "settingsThemeStyle": "Boje teme",
   "themeClassic": "Klasična",

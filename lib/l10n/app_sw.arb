@@ -1351,6 +1351,8 @@
   "featCategoryIcons": "Aikoni na rangi zako mwenyewe kwa makundi yako",
   "categoryIconsPlain": "Aikoni rahisi, bila rangi",
   "categoryIconsPlainHint": "Aikoni za kijivu unazotambua kwa umbo. Chati zinabaki na rangi zake.",
+  "errorReportsTitle": "Tuma ripoti za hitilafu bila jina",
+  "errorReportsHint": "Kukitokea tatizo, aina ya hitilafu na mahali ilipotokea tu hutumwa, kamwe data yako.",
   "settingsThemeStyleHint": "Rangi za Pro: Beige, Sage na Komamanga kwa mandhari ya mwanga, Black Gold kwa mandhari ya giza.",
   "settingsThemeStyle": "Rangi za mandhari",
   "themeClassic": "Asili",

@@ -1,0 +1,60 @@
+name: Apply anonymous error counts to Supabase
+
+# Applies supabase/error_reports.sql (the anonymous daily totals,
+# docs/ERROR_REPORTS.md) to the live database. By hand only, when the owner turns
+# error reports on. Safe to run again. Uses the Supabase Management API with
+# SUPABASE_ACCESS_TOKEN, which needs the database read and write permissions.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: supabase-functions
+  cancel-in-progress: false
+
+env:
+  API: https://api.supabase.com/v1/projects/fconhnyognxcpvmwobus
+
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    name: Apply error_reports.sql
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check access token
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
+            echo "::error::No SUPABASE_ACCESS_TOKEN secret."
+            exit 1
+          fi
+
+      - name: Apply the SQL
+        run: |
+          set -euo pipefail
+          sql=$( { echo "begin;"; cat supabase/error_reports.sql; echo "commit;"; } | jq -Rs '{query: .}')
+          code=$(curl -sS -o response.txt -w "%{http_code}" -X POST \
+            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+            -H "Content-Type: application/json" -d "$sql" "$API/database/query")
+          echo "HTTP $code"
+          if [ "${code:0:1}" != "2" ]; then
+            msg=$(head -c 900 response.txt | tr '\n\r' '  ')
+            echo "::error::SQL refused, HTTP $code: $msg"
+            exit 1
+          fi
+          echo "Applied."
+
+      - name: "Check: the counts exist and clients can't read them"
+        run: |
+          set -euo pipefail
+          q="select to_regclass('public.error_reports_daily') is not null as table_ok, has_function_privilege('anon', 'public.report_error(text,text,text)', 'execute') as anon_can_report, has_table_privilege('anon', 'public.error_reports_daily', 'select') as anon_can_read"
+          out=$(curl -sS --fail-with-body -X POST \
+            -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+            -H "Content-Type: application/json" -d "$(jq -n --arg q "$q" '{query: $q}')" "$API/database/query")
+          echo "$out"
+          echo "$out" | jq -e '.[0].table_ok == true and .[0].anon_can_report == true and .[0].anon_can_read == false' >/dev/null \
+            || { echo "::error::The anonymous error counts are not set up as expected."; exit 1; }

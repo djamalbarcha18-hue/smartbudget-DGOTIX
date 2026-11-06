@@ -1351,6 +1351,8 @@
   "featCategoryIcons": "Eigen pictogrammen en kleuren voor je categorieën",
   "categoryIconsPlain": "Eenvoudige pictogrammen, zonder kleuren",
   "categoryIconsPlainHint": "Grijze pictogrammen die je aan de vorm herkent. Grafieken behouden hun kleuren.",
+  "errorReportsTitle": "Anonieme foutrapporten versturen",
+  "errorReportsHint": "Als er iets misgaat, worden alleen het soort fout en de plek ervan verstuurd, nooit je gegevens.",
   "settingsThemeStyleHint": "Pro-kleuren: Beige, Salie en Granaatappel voor het lichte thema, Zwart-goud voor het donkere thema.",
   "settingsThemeStyle": "Themakleuren",
   "themeClassic": "Klassiek",

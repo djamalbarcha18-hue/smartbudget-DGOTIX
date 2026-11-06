@@ -120,7 +120,32 @@ abstract final class LegalContent {
       ? '${AppConfig.supportEmail}(으)로'
       : '앱의 “도움말과 지원” 페이지에서';
 
-  static List<LegalSection> sections(LegalDoc doc, {required AppLang lang}) =>
+  /// The anonymous error-report paragraph, in the languages offered (a hidden
+  /// language falls back to English). Added to the privacy policy only while
+  /// [AppEnv.errorReports] is on.
+  static const Map<AppLang, LegalSection> _errorReports = <AppLang, LegalSection>{
+    AppLang.en: LegalSection('Error reports', 'If the app hits an unexpected error, it can send only the kind of error and the place in our code where it happened (for example “FormatException at features/…/file.dart:42”), together with the app version and platform. Never the error message, your data, your account, your device or anything you typed. It is used only to find and fix bugs, and you can turn it off in Settings, under Privacy.'),
+    AppLang.ar: LegalSection('تقارير الأخطاء', 'إذا واجه التطبيق خطأً غير متوقع فقد يرسل نوع الخطأ فقط ومكانه في شيفرتنا (مثل «FormatException في features/…/file.dart:42») مع رقم إصدار التطبيق ونوع المنصة. لا تُرسل أبدًا رسالة الخطأ ولا بياناتك ولا حسابك ولا جهازك ولا أي شيء كتبته. نستخدمها فقط لاكتشاف الأعطال وإصلاحها، ويمكنك إيقافها من الإعدادات ثم الخصوصية.'),
+    AppLang.fr: LegalSection('Rapports d\'erreurs', 'Si l\'application rencontre une erreur inattendue, elle peut envoyer uniquement le type d\'erreur et l\'endroit de notre code où elle s\'est produite (par exemple « FormatException à features/…/file.dart:42 »), avec la version de l\'application et la plateforme. Jamais le message d\'erreur, vos données, votre compte, votre appareil ni rien de ce que vous avez saisi. Cela sert uniquement à trouver et corriger des bugs, et vous pouvez le désactiver dans Paramètres, sous Confidentialité.'),
+    AppLang.id: LegalSection('Laporan error', 'Jika aplikasi mengalami error tak terduga, aplikasi dapat mengirim hanya jenis error dan lokasinya di kode kami (misalnya “FormatException di features/…/file.dart:42”), beserta versi aplikasi dan platform. Tidak pernah pesan error, data Anda, akun, perangkat, atau apa pun yang Anda ketik. Hanya dipakai untuk menemukan dan memperbaiki bug, dan Anda dapat mematikannya di Pengaturan, bagian Privasi.'),
+    AppLang.es: LegalSection('Informes de errores', 'Si la aplicación encuentra un error inesperado, puede enviar solo el tipo de error y el lugar de nuestro código donde ocurrió (por ejemplo, «FormatException en features/…/file.dart:42»), junto con la versión de la aplicación y la plataforma. Nunca el mensaje de error, tus datos, tu cuenta, tu dispositivo ni nada de lo que escribiste. Se usa solo para encontrar y corregir fallos, y puedes desactivarlo en Ajustes, en Privacidad.'),
+    AppLang.tr: LegalSection('Hata raporları', 'Uygulama beklenmedik bir hatayla karşılaşırsa yalnızca hatanın türünü ve kodumuzda gerçekleştiği yeri (örneğin “features/…/file.dart:42 konumunda FormatException”) uygulama sürümü ve platformla birlikte gönderebilir. Hata mesajını, verilerinizi, hesabınızı, cihazınızı veya yazdığınız hiçbir şeyi asla göndermez. Yalnızca hataları bulup düzeltmek için kullanılır ve Ayarlar’daki Gizlilik bölümünden kapatabilirsiniz.'),
+    AppLang.ms: LegalSection('Laporan ralat', 'Jika aplikasi menghadapi ralat tidak dijangka, ia boleh menghantar hanya jenis ralat dan lokasinya dalam kod kami (contohnya “FormatException di features/…/file.dart:42”), bersama versi aplikasi dan platform. Tidak pernah mesej ralat, data anda, akaun, peranti atau apa-apa yang anda taip. Ia hanya digunakan untuk mencari dan membetulkan pepijat, dan anda boleh mematikannya di Tetapan, di bawah Privasi.'),
+    AppLang.ur: LegalSection('خرابی کی رپورٹس', 'اگر ایپ کو کوئی غیر متوقع خرابی پیش آئے تو وہ صرف خرابی کی قسم اور ہمارے کوڈ میں اس کی جگہ بھیج سکتی ہے (مثلاً «features/…/file.dart:42 پر FormatException»)، ساتھ ایپ کا ورژن اور پلیٹ فارم۔ خرابی کا پیغام، آپ کا ڈیٹا، آپ کا اکاؤنٹ، آپ کا آلہ یا آپ کا لکھا ہوا کچھ بھی کبھی نہیں بھیجا جاتا۔ یہ صرف خرابیاں ڈھونڈنے اور ٹھیک کرنے کے لیے استعمال ہوتی ہے، اور آپ اسے ترتیبات میں رازداری کے تحت بند کر سکتے ہیں۔'),
+  };
+
+  static List<LegalSection> sections(LegalDoc doc, {required AppLang lang}) {
+    final List<LegalSection> base = _sections(doc, lang: lang);
+    if (doc == LegalDoc.privacy && AppEnv.errorReports) {
+      return <LegalSection>[
+        ...base,
+        _errorReports[lang] ?? _errorReports[AppLang.en]!,
+      ];
+    }
+    return base;
+  }
+
+  static List<LegalSection> _sections(LegalDoc doc, {required AppLang lang}) =>
       switch (doc) {
         LegalDoc.privacy => lang.pick(_privacyAr, _privacyEn,
             fr: _privacyFr,

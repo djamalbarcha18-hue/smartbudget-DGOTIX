@@ -1351,6 +1351,8 @@
   "featCategoryIcons": "Naka alamomi da launuka don rukunnanka",
   "categoryIconsPlain": "Alamomi marasa launi",
   "categoryIconsPlainHint": "Alamomin launin toka da ake gane su ta siffa. Zane-zane suna riƙe launukansu.",
+  "errorReportsTitle": "Aika rahoton kurakurai ba tare da suna ba",
+  "errorReportsHint": "Idan wani abu ya faru, ana aika nau'in kuskure da inda ya faru kawai, ba bayananka ba.",
   "settingsThemeStyleHint": "Launukan Pro: Beige, Sage da Rumman don jigon haske, Black Gold don jigon duhu.",
   "settingsThemeStyle": "Launukan jigo",
   "themeClassic": "Na gargajiya",

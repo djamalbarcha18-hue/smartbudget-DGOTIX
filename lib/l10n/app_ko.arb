@@ -1351,6 +1351,8 @@
   "featCategoryIcons": "내 카테고리에 맞춘 아이콘과 색상",
   "categoryIconsPlain": "색 없는 단순 아이콘",
   "categoryIconsPlainHint": "모양으로 구분하는 회색 아이콘입니다. 차트는 색상을 유지합니다.",
+  "errorReportsTitle": "익명 오류 보고 보내기",
+  "errorReportsHint": "문제가 생기면 오류의 종류와 발생 위치만 전송하며, 내 데이터는 절대 보내지 않습니다.",
   "settingsThemeStyleHint": "Pro 색상: 라이트 테마에는 베이지, 세이지, 석류, 다크 테마에는 블랙 골드.",
   "settingsThemeStyle": "테마 색상",
   "themeClassic": "클래식",

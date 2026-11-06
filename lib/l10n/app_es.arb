@@ -1351,6 +1351,8 @@
   "featCategoryIcons": "Iconos y colores propios para tus categorías",
   "categoryIconsPlain": "Iconos simples, sin colores",
   "categoryIconsPlainHint": "Iconos grises que distingues por su forma. Los gráficos conservan sus colores.",
+  "errorReportsTitle": "Enviar informes de errores anónimos",
+  "errorReportsHint": "Si algo falla, solo se envían el tipo de error y dónde ocurrió, nunca tus datos.",
   "settingsThemeStyleHint": "Colores Pro: Beige, Salvia y Granada para el tema claro, Negro y oro para el tema oscuro.",
   "settingsThemeStyle": "Colores del tema",
   "themeClassic": "Clásico",

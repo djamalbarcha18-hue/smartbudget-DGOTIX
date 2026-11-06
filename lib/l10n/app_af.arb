@@ -1351,6 +1351,8 @@
   "featCategoryIcons": "Eie ikone en kleure vir jou kategorieë",
   "categoryIconsPlain": "Gewone ikone, sonder kleure",
   "categoryIconsPlainHint": "Grys ikone wat jy aan hul vorm herken. Grafieke behou hul kleure.",
+  "errorReportsTitle": "Stuur anonieme foutverslae",
+  "errorReportsHint": "As iets verkeerd loop, word net die soort fout en waar dit gebeur het gestuur, nooit jou data.",
   "settingsThemeStyleHint": "Pro-kleure: Beige, Salie en Granaat vir die ligte tema, Swart Goud vir die donker tema.",
   "settingsThemeStyle": "Temakleure",
   "themeClassic": "Klassiek",

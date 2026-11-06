@@ -1351,6 +1351,8 @@
   "featCategoryIcons": "اپنی زمروں کے لیے اپنے آئیکن اور رنگ",
   "categoryIconsPlain": "سادہ آئیکن، بغیر رنگ",
   "categoryIconsPlainHint": "سرمئی آئیکن جنہیں شکل سے پہچانا جاتا ہے۔ چارٹ اپنے رنگ برقرار رکھتے ہیں۔",
+  "errorReportsTitle": "گمنام خرابی رپورٹس بھیجیں",
+  "errorReportsHint": "کچھ غلط ہونے پر صرف خرابی کی قسم اور اس کی جگہ بھیجی جاتی ہے، آپ کا ڈیٹا کبھی نہیں۔",
   "settingsThemeStyleHint": "Pro رنگ: ہلکی تھیم کے لیے بیج، سیج اور انار، گہری تھیم کے لیے سیاہ سنہری۔",
   "settingsThemeStyle": "تھیم کے رنگ",
   "themeClassic": "کلاسیکی",

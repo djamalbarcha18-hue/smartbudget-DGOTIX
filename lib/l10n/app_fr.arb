@@ -1351,6 +1351,8 @@
   "featCategoryIcons": "Vos propres icônes et couleurs pour vos catégories",
   "categoryIconsPlain": "Icônes simples, sans couleurs",
   "categoryIconsPlainHint": "Des icônes grises que l'on distingue par leur forme. Les graphiques gardent leurs couleurs.",
+  "errorReportsTitle": "Envoyer des rapports d'erreurs anonymes",
+  "errorReportsHint": "En cas de problème, seuls le type d'erreur et son emplacement sont envoyés, jamais vos données.",
   "settingsThemeStyleHint": "Couleurs Pro : Beige, Sauge et Grenade pour le thème clair, Noir et or pour le thème sombre.",
   "settingsThemeStyle": "Couleurs du thème",
   "themeClassic": "Classique",

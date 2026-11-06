@@ -1351,6 +1351,8 @@
   "featCategoryIcons": "カテゴリーに自分だけのアイコンと色",
   "categoryIconsPlain": "色なしのシンプルなアイコン",
   "categoryIconsPlainHint": "形で見分けるグレーのアイコン。グラフの色はそのままです。",
+  "errorReportsTitle": "匿名のエラー報告を送信",
+  "errorReportsHint": "問題が起きたとき、エラーの種類と発生場所だけを送ります。あなたのデータは送りません。",
   "settingsThemeStyleHint": "Pro の色：ライトテーマにベージュ、セージ、ザクロ、ダークテーマにブラックゴールド。",
   "settingsThemeStyle": "テーマの色",
   "themeClassic": "クラシック",

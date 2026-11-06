@@ -17,6 +17,7 @@ import 'package:smartbudget/core/storage/record_lists_setup.dart';
 import 'package:smartbudget/core/storage/save_health.dart';
 import 'package:smartbudget/core/storage/unload_guard.dart';
 import 'package:smartbudget/core/time/network_time.dart';
+import 'package:smartbudget/core/errors/error_reporter.dart';
 import 'package:smartbudget/features/app_lock/application/app_lock_controller.dart';
 import 'package:smartbudget/features/app_lock/data/lock_store.dart';
 import 'package:smartbudget/features/app_lock/domain/lock_config.dart';
@@ -24,6 +25,10 @@ import 'package:smartbudget/features/reminders/data/reminder_notifications.dart'
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Last-resort handlers: an uncaught error is noted (and, once the owner
+  // turns reports on, counted anonymously), never silently lost.
+  installErrorHandlers(ErrorReporter(send: defaultErrorSender()));
 
   // A part of the screen that fails to draw shows a short line and a way
   // home, not the plain grey box that left the app looking stuck. (While

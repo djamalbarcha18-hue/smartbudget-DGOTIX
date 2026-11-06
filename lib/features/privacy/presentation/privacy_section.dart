@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/core/errors/error_reporter.dart';
 import 'package:smartbudget/core/stats/app_stats.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/privacy/application/privacy_controller.dart';
@@ -36,6 +37,14 @@ class PrivacySection extends ConsumerWidget {
           value: s.hideWhileEntering,
           onChanged: ctrl.setHideWhileEntering,
         ),
+        if (AppEnv.errorReports && AppEnv.hasSupabase)
+          SwitchListTile.adaptive(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l.errorReportsTitle, style: t.titleSmall),
+            subtitle: Text(l.errorReportsHint, style: t.bodySmall),
+            value: ref.watch(errorReportsOnProvider),
+            onChanged: ref.read(errorReportsOnProvider.notifier).set,
+          ),
         if (AppEnv.anonStats && AppEnv.hasSupabase && AppEnv.smartTrip)
           SwitchListTile.adaptive(
             contentPadding: EdgeInsets.zero,

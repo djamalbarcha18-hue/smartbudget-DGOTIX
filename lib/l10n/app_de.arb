@@ -1351,6 +1351,8 @@
   "featCategoryIcons": "Eigene Symbole und Farben für Ihre Kategorien",
   "categoryIconsPlain": "Einfache Symbole ohne Farben",
   "categoryIconsPlainHint": "Graue Symbole, die Sie an der Form erkennen. Diagramme behalten ihre Farben.",
+  "errorReportsTitle": "Anonyme Fehlerberichte senden",
+  "errorReportsHint": "Wenn etwas schiefgeht, werden nur Art und Ort des Fehlers gesendet, nie Ihre Daten.",
   "settingsThemeStyleHint": "Pro-Farben: Beige, Salbei und Granatapfel für das helle Design, Schwarz-Gold für das dunkle Design.",
   "settingsThemeStyle": "Designfarben",
   "themeClassic": "Klassisch",
