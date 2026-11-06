@@ -40,6 +40,8 @@ export const model = {
   asked: [] as string[],
   /** Never answers (until the caller's signal gives up). */
   hang: false,
+  /** The last request body sent to a model (parsed JSON). */
+  lastBody: null as any,
 };
 /** PayPal sales by id, as the sale lookup returns them. */
 export const paypalSales: Record<string, any> = {};
@@ -59,6 +61,7 @@ globalThis.fetch = (async (input: any, init?: any) => {
     model.calls++;
     const id = url.match(/models\/([^:]+):/)?.[1] ?? "";
     model.asked.push(id);
+    try { model.lastBody = JSON.parse(String(init?.body ?? "null")); } catch (_) { model.lastBody = null; }
     if (model.hang) {
       await new Promise((_, reject) => {
         const signal: AbortSignal | undefined = init?.signal;

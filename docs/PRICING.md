@@ -77,7 +77,7 @@ below is the count of **successful** assistant answers per period.
 
 | | FREE | PRO |
 |---|---|---|
-| DGOTIX AI answers | **5 total** (one-time) | **100 / month** |
+| DGOTIX AI answers | **5 total** (one-time) | **80 / month** |
 | Reset | never (lifetime intro) | monthly (calendar) |
 
 - FREE's 5 is a **lifetime** allowance to feel the value, not a monthly refill.
@@ -189,7 +189,7 @@ The catalog is the source of truth; this is the intended shape:
 | Markets: crypto, metals, commodities | — | ✅ |
 | Projects and investment portfolio | — | ✅ |
 | Cloud receipt OCR | 3 / mo | 50 / mo |
-| DGOTIX AI assistant | 5 lifetime | 100 / mo |
+| DGOTIX AI assistant | 5 lifetime | 80 / mo |
 | Priority support | — | ✅ |
 
 - **Counted features** (`QuotaWindow.items`) are checked where something new

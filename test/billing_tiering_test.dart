@@ -37,11 +37,11 @@ void main() {
   });
 
   group('FeatureCatalog quotas (locked)', () {
-    test('DGOTIX AI: 5 lifetime / 100 a month', () {
+    test('DGOTIX AI: 5 lifetime / 80 a month', () {
       expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.free)!.limit, 5);
       expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.free)!.window,
           QuotaWindow.lifetime);
-      expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.pro)!.limit, 100);
+      expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.pro)!.limit, 80);
     });
 
     test('Cloud OCR: 3 / 50 a month', () {
@@ -202,8 +202,8 @@ void main() {
       final GateDecision d =
           FeatureGate.evaluate(Feature.dgotixAi, plan: Plan.pro, used: 10);
       expect(d.allowed, isTrue);
-      expect(d.limit, 100);
-      expect(d.remaining, 90);
+      expect(d.limit, 80);
+      expect(d.remaining, 70);
       expect(d.isMetered, isTrue);
     });
 
@@ -218,7 +218,7 @@ void main() {
 
     test('usedFraction drives the 80/90/100 nudges', () {
       final GateDecision d =
-          FeatureGate.evaluate(Feature.dgotixAi, plan: Plan.pro, used: 80);
+          FeatureGate.evaluate(Feature.dgotixAi, plan: Plan.pro, used: 64);
       expect(d.usedFraction, closeTo(0.8, 1e-9));
     });
 

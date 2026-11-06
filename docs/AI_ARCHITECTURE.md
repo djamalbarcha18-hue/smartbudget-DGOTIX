@@ -101,8 +101,8 @@ allowance from `supabase/functions/_shared/quota.ts`, which mirrors the app's
 | plan | DGOTIX AI answers | window |
 |------|-------------------|--------|
 | free | 5 | one-time (lifetime) |
-| basic | 30 | monthly |
-| pro | 150 | monthly |
+| basic | 25 | monthly (retired plan) |
+| pro | 80 | monthly (not carried over) |
 
 FREE's one-time allowance is counted in `ai_usage_lifetime`; paid plans are
 counted in `ai_usage_monthly`. A per-plan monthly USD ceiling
@@ -124,6 +124,26 @@ update ai_provider_flags set enabled = false where provider_id = 'google';   -- 
 update ai_model_flags set enabled = false where model_id = 'gpt-4o';         -- kill one model
 update ai_entitlements set plan = 'pro' where user_id = '...';               -- change a user's tier
 ```
+
+## Request limits (owner's AI policy)
+
+One request is limited to **4,000 tokens in, 1,000 out, 5,000 in all**
+(`supabase/functions/_shared/ai/budget.ts`):
+
+- The output is capped at the provider (`maxOutputTokens = 1000`); keeping the
+  input at or under 4,000 keeps the total at or under 5,000.
+- The input is **fitted, never refused**: the system prompt, the question and
+  the financial context are counted with a cautious estimate (every digit is a
+  token, Arabic about two characters a token), the oldest conversation turns
+  are dropped first, then the tail of the context.
+- The PRO allowance is **80 a month, not carried over**, and the monthly cost
+  ceiling is $0.75 (80 requests of 5,000 tokens cost about $0.30).
+- The server tells the app the allowance with every answer and every refusal
+  (`quota: {limit, used, remaining, window, resetsAt}`), and
+  `{"task": "status"}` returns it without a model call or a count. The app
+  shows these numbers, not its own count.
+- A failed request (provider error, empty or blocked answer, timeout) is
+  never counted: its reservation is given back.
 
 ## Client wiring
 

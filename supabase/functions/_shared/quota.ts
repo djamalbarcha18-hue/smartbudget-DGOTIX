@@ -16,7 +16,9 @@ export interface Allowance {
 export const AI_QUOTA: Record<Plan, Allowance> = {
   free: { limit: 5, window: "lifetime" },
   basic: { limit: 25, window: "monthly" },
-  pro: { limit: 100, window: "monthly" },
+  // 80 a month (owner's AI policy, docs/AI_ARCHITECTURE.md): unused requests
+  // are not carried over.
+  pro: { limit: 80, window: "monthly" },
 };
 
 /** Cloud receipt OCR scans per period (docs/PRICING.md §3). */
@@ -35,7 +37,9 @@ export const OCR_QUOTA: Record<Plan, Allowance> = {
 export const AI_MONTHLY_COST_CEILING_USD: Record<Plan, number> = {
   free: 0.25,
   basic: 1.0,
-  pro: 2.0,
+  // 80 requests of at most 5,000 tokens cost about $0.30 even on the pricier
+  // model; this is the safety net above that.
+  pro: 0.75,
 };
 
 /**
@@ -148,4 +152,31 @@ export function allowanceFor(
   return trust === "new"
     ? { limit: Math.min(base.limit, NEW_ACCOUNT_QUOTA[kind]), window: base.window }
     : base;
+}
+
+/** What the app shows the user about their allowance (computed on the server). */
+export interface QuotaInfo {
+  readonly limit: number;
+  readonly used: number;
+  readonly remaining: number;
+  readonly window: QuotaWindow;
+  /** When a monthly allowance starts over (UTC); null for a one-time one. */
+  readonly resetsAt: string | null;
+}
+
+export function quotaInfo(
+  allow: Allowance,
+  used: number,
+  now: Date = new Date(),
+): QuotaInfo {
+  const u = Math.max(0, Math.min(used, allow.limit));
+  return {
+    limit: allow.limit,
+    used: u,
+    remaining: allow.limit - u,
+    window: allow.window,
+    resetsAt: allow.window === "monthly"
+      ? new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1)).toISOString()
+      : null,
+  };
 }

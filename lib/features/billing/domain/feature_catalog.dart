@@ -148,7 +148,7 @@ abstract final class FeatureCatalog {
       minTier: Plan.free,
       quotas: <Plan, Quota>{
         Plan.free: Quota(5, QuotaWindow.lifetime),
-        Plan.pro: Quota(100, QuotaWindow.monthly),
+        Plan.pro: Quota(80, QuotaWindow.monthly),
       },
     ),
     Feature.cloudOcr: FeatureRule(

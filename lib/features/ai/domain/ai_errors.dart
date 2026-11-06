@@ -6,6 +6,8 @@
 /// hammering every provider on a permanent error.
 library;
 
+import 'package:smartbudget/features/ai/domain/ai_quota.dart';
+
 enum AiErrorKind {
   // Do NOT fail over on these — the problem follows to the next provider.
   invalidRequest,
@@ -72,8 +74,12 @@ extension AiErrorKindX on AiErrorKind {
 /// A provider-agnostic failure. [detail] is the provider's own message (never a
 /// key), surfaced for diagnostics; the UI shows a generic message to the user.
 class AiFailure implements Exception {
-  const AiFailure(this.kind, {this.detail, this.provider, this.model});
+  const AiFailure(this.kind,
+      {this.detail, this.provider, this.model, this.quota});
   final AiErrorKind kind;
+
+  /// The allowance, when the server sent it with a refusal.
+  final AiQuotaInfo? quota;
   final String? detail;
   final String? provider;
   final String? model;
@@ -81,7 +87,6 @@ class AiFailure implements Exception {
   bool get isRetryable => kind.isRetryable;
 
   @override
-  String toString() =>
-      'AiFailure($kind${model == null ? '' : ' model=$model'}'
+  String toString() => 'AiFailure($kind${model == null ? '' : ' model=$model'}'
       '${detail == null ? '' : ': $detail'})';
 }

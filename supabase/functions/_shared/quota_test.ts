@@ -1,4 +1,4 @@
-import { AI_QUOTA, allowanceFor, OCR_QUOTA, trustOf } from "./quota.ts";
+import { AI_QUOTA, allowanceFor, OCR_QUOTA, quotaInfo, trustOf } from "./quota.ts";
 
 function expect(v: unknown, want: unknown, m: string) {
   if (JSON.stringify(v) !== JSON.stringify(want)) {
@@ -25,4 +25,19 @@ Deno.test("a new account gets at most the new-account allowance", () => {
   expect(allowanceFor(AI_QUOTA.free, "ai", "new"), AI_QUOTA.free, "free stays lower");
   expect(allowanceFor(AI_QUOTA.pro, "ai", "established"), AI_QUOTA.pro, "established");
   expect(allowanceFor(AI_QUOTA.pro, "ai", "paid"), AI_QUOTA.pro, "paid");
+});
+
+Deno.test("PRO gets 80 a month, none carried over", () => {
+  expect(AI_QUOTA.pro, { limit: 80, window: "monthly" }, "pro ai");
+});
+
+Deno.test("what the app is told: left, and when a month starts over", () => {
+  const info = quotaInfo(AI_QUOTA.pro, 30, now);
+  expect(info.remaining, 50, "left");
+  expect(info.resetsAt, "2026-11-01T00:00:00.000Z", "next month");
+  expect(quotaInfo(AI_QUOTA.pro, 80, now).remaining, 0, "spent");
+  expect(quotaInfo(AI_QUOTA.pro, 95, now).remaining, 0, "never negative");
+  expect(quotaInfo(AI_QUOTA.free, 2, now).resetsAt, null, "one-time has no reset");
+  expect(quotaInfo(AI_QUOTA.pro, 79, new Date("2026-12-31T23:59:00Z")).resetsAt,
+    "2027-01-01T00:00:00.000Z", "year end");
 });

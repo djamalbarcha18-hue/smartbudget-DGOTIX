@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/features/ai/application/ai_server_quota.dart';
 import 'package:smartbudget/features/assistant/application/ai_usage_controller.dart';
 import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
@@ -16,7 +17,9 @@ import 'package:smartbudget/features/referrals/application/referrals_controller.
 int _usedFor(Ref ref, Feature f) {
   switch (f) {
     case Feature.dgotixAi:
-      return ref.watch(aiUsageMonthProvider).requests;
+      // The server's own count when it has said; the device's otherwise.
+      return ref.watch(aiServerQuotaProvider)?.used ??
+          ref.watch(aiUsageMonthProvider).requests;
     case Feature.cloudOcr:
     case Feature.advancedReports:
     case Feature.cloudSyncFull:
