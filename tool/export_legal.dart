@@ -24,50 +24,8 @@ String _body(String s) {
       : e.replaceAll(mail, '<a href="mailto:$mail">$mail</a>');
 }
 
-String _article(LegalDoc doc, AppLang lang) {
-  final String title = switch (doc) {
-    LegalDoc.privacy => lang.pick('سياسة الخصوصية', 'Privacy Policy',
-        fr: 'Politique de confidentialité',
-        id: 'Kebijakan Privasi',
-        es: 'Política de privacidad',
-        tr: 'Gizlilik Politikası',
-        ms: 'Dasar Privasi',
-        ur: 'پرائیویسی پالیسی'),
-    LegalDoc.terms => lang.pick('شروط الاستخدام', 'Terms of Use',
-        fr: "Conditions d'utilisation",
-        id: 'Ketentuan Penggunaan',
-        es: 'Términos de uso',
-        tr: 'Kullanım Koşulları',
-        ms: 'Terma Penggunaan',
-        ur: 'استعمال کی شرائط'),
-  };
-  final String updated = lang.pick(
-      'آخر تحديث: ${LegalContent.lastUpdated}',
-      'Last updated: ${LegalContent.lastUpdated}',
-      fr: 'Dernière mise à jour\u202f: ${LegalContent.lastUpdated}',
-      id: 'Terakhir diperbarui: ${LegalContent.lastUpdated}',
-      es: 'Última actualización: ${LegalContent.lastUpdated}',
-      tr: 'Son güncelleme: ${LegalContent.lastUpdated}',
-      ms: 'Kemas kini terakhir: ${LegalContent.lastUpdated}',
-      ur: 'آخری اپ ڈیٹ: ${LegalContent.lastUpdated}');
-  final StringBuffer b = StringBuffer()
-    ..writeln(lang.pick(
-        '  <article>',
-        '  <article id="en" lang="en" dir="ltr">',
-        fr: '  <article id="fr" lang="fr" dir="ltr">',
-        id: '  <article id="id" lang="id" dir="ltr">',
-        es: '  <article id="es" lang="es" dir="ltr">',
-        tr: '  <article id="tr" lang="tr" dir="ltr">',
-        ms: '  <article id="ms" lang="ms" dir="ltr">',
-        ur: '  <article id="ur" lang="ur" dir="rtl">'))
-    ..writeln('    <h1>$title — ${AppConfig.appName}</h1>')
-    ..writeln('    <p class="meta">$updated</p>');
-  for (final LegalSection s in LegalContent.sections(doc, lang: lang)) {
-    b
-      ..writeln('    <h2>${_esc(s.heading)}</h2>')
-      ..writeln('    <p>${_body(s.body)}</p>');
-  }
-  final String links = lang.pick(
+String _links(AppLang lang) {
+  return lang.pick(
       '<a href="terms.html">شروط الاستخدام</a> · '
           '<a href="privacy.html">سياسة الخصوصية</a> · '
           '<a href="refund.html">سياسة الاسترجاع</a>',
@@ -92,11 +50,139 @@ String _article(LegalDoc doc, AppLang lang) {
       ur: '<a href="terms.html#ur">استعمال کی شرائط</a> · '
           '<a href="privacy.html#ur">پرائیویسی پالیسی</a> · '
           '<a href="refund.html#ur">رقم کی واپسی کی پالیسی</a>');
+}
+
+String _article(LegalDoc doc, AppLang lang) {
+  final String title = switch (doc) {
+    LegalDoc.privacy => lang.pick('سياسة الخصوصية', 'Privacy Policy',
+        fr: 'Politique de confidentialité',
+        id: 'Kebijakan Privasi',
+        es: 'Política de privacidad',
+        tr: 'Gizlilik Politikası',
+        ms: 'Dasar Privasi',
+        ur: 'پرائیویسی پالیسی'),
+    LegalDoc.terms => lang.pick('شروط الاستخدام', 'Terms of Use',
+        fr: "Conditions d'utilisation",
+        id: 'Ketentuan Penggunaan',
+        es: 'Términos de uso',
+        tr: 'Kullanım Koşulları',
+        ms: 'Terma Penggunaan',
+        ur: 'استعمال کی شرائط'),
+  };
+  final String updated = lang.pick('آخر تحديث: ${LegalContent.lastUpdated}',
+      'Last updated: ${LegalContent.lastUpdated}',
+      fr: 'Dernière mise à jour\u202f: ${LegalContent.lastUpdated}',
+      id: 'Terakhir diperbarui: ${LegalContent.lastUpdated}',
+      es: 'Última actualización: ${LegalContent.lastUpdated}',
+      tr: 'Son güncelleme: ${LegalContent.lastUpdated}',
+      ms: 'Kemas kini terakhir: ${LegalContent.lastUpdated}',
+      ur: 'آخری اپ ڈیٹ: ${LegalContent.lastUpdated}');
+  final StringBuffer b = StringBuffer()
+    ..writeln(lang.pick(
+        '  <article>', '  <article id="en" lang="en" dir="ltr">',
+        fr: '  <article id="fr" lang="fr" dir="ltr">',
+        id: '  <article id="id" lang="id" dir="ltr">',
+        es: '  <article id="es" lang="es" dir="ltr">',
+        tr: '  <article id="tr" lang="tr" dir="ltr">',
+        ms: '  <article id="ms" lang="ms" dir="ltr">',
+        ur: '  <article id="ur" lang="ur" dir="rtl">'))
+    ..writeln('    <h1>$title — ${AppConfig.appName}</h1>')
+    ..writeln('    <p class="meta">$updated</p>');
+  for (final LegalSection s in LegalContent.sections(doc, lang: lang)) {
+    b
+      ..writeln('    <h2>${_esc(s.heading)}</h2>')
+      ..writeln('    <p>${_body(s.body)}</p>');
+  }
+  final String links = _links(lang);
   b
     ..writeln('    <p class="meta" style="margin-top:20px">$links</p>')
     ..writeln('  </article>');
   return b.toString();
 }
+
+/// The languages the app and the website offer (the others stay hidden).
+final List<AppLang> _offered =
+    AppLang.values.where((AppLang l) => !l.hidden).toList();
+
+/// The three terms sections that make up the refund page: how plans renew,
+/// who takes the payment, and the refund rule itself. Found by their English
+/// headings (the sections run in the same order in every language).
+const List<String> _refundHeadings = <String>[
+  'Subscriptions, billing and renewals',
+  'Our payment provider: Whop',
+  'Refund policy',
+];
+
+String _refundArticle(AppLang lang) {
+  final List<LegalSection> en =
+      LegalContent.sections(LegalDoc.terms, lang: AppLang.en);
+  final List<LegalSection> mine =
+      LegalContent.sections(LegalDoc.terms, lang: lang);
+  final String title = lang.pick('سياسة الاسترجاع', 'Refund Policy',
+      fr: 'Politique de remboursement',
+      id: 'Kebijakan Pengembalian Dana',
+      es: 'Política de reembolso',
+      tr: 'İade Politikası',
+      ms: 'Dasar Bayaran Balik',
+      ur: 'رقم کی واپسی کی پالیسی');
+  final String updated = lang.pick('آخر تحديث: ${LegalContent.lastUpdated}',
+      'Last updated: ${LegalContent.lastUpdated}',
+      fr: 'Dernière mise à jour\u202f: ${LegalContent.lastUpdated}',
+      id: 'Terakhir diperbarui: ${LegalContent.lastUpdated}',
+      es: 'Última actualización: ${LegalContent.lastUpdated}',
+      tr: 'Son güncelleme: ${LegalContent.lastUpdated}',
+      ms: 'Kemas kini terakhir: ${LegalContent.lastUpdated}',
+      ur: 'آخری اپ ڈیٹ: ${LegalContent.lastUpdated}');
+  final StringBuffer b = StringBuffer()
+    ..writeln(lang == AppLang.ar
+        ? '  <article>'
+        : '  <article id="${lang.code}" lang="${lang.code}" dir="${lang.rtl ? 'rtl' : 'ltr'}">')
+    ..writeln('    <h1>$title — ${AppConfig.appName}</h1>')
+    ..writeln('    <p class="meta">$updated</p>');
+  for (final String h in _refundHeadings) {
+    final int i = en.indexWhere((LegalSection s) => s.heading == h);
+    if (i < 0 || mine.length != en.length) {
+      throw StateError('Refund section "$h" not found for ${lang.code}');
+    }
+    b
+      ..writeln('    <h2>${_esc(mine[i].heading)}</h2>')
+      ..writeln('    <p>${_body(mine[i].body)}</p>');
+  }
+  final String links = _links(lang);
+  b
+    ..writeln('    <p class="meta" style="margin-top:20px">$links</p>')
+    ..writeln('  </article>');
+  return b.toString();
+}
+
+String _refundPage() => '''<!doctype html>
+<!-- Generated by tool/export_legal.dart in the SmartBudget app repository;
+     edit lib/features/legal/domain/legal_content.dart there, not this file. -->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>سياسة الاسترجاع · Refund Policy · Politique de remboursement · Kebijakan Pengembalian Dana · Política de reembolso · İade Politikası · Dasar Bayaran Balik · رقم کی واپسی کی پالیسی — ${AppConfig.appName}</title>
+<meta name="description" content="SmartBudget refund policy: a full refund within 7 days of any charge. Payments are handled by Whop or PayPal.">
+<link rel="canonical" href="https://dgotix.com/refund.html">
+<link rel="icon" type="image/png" href="smartbudget-icon.png">
+<link rel="stylesheet" href="legal.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="/"><img src="logo.svg" alt="DGOTIX"></a>
+    <nav><a href="#en">English</a> · <a href="#fr">Français</a> · <a href="#id">Indonesia</a> · <a href="#es">Español</a> · <a href="#tr">Türkçe</a> · <a href="#ms">Melayu</a> · <a href="#ur">اردو</a></nav>
+  </header>
+
+${_offered.map(_refundArticle).join('\n')}
+  <footer><span dir="ltr">© ${DateTime.now().year} DGOTIX</span></footer>
+</div>
+</body>
+</html>
+''';
 
 String _page(LegalDoc doc, String file) {
   final String title = switch (doc) {
@@ -126,7 +212,7 @@ String _page(LegalDoc doc, String file) {
     <nav><a href="#en">English</a> · <a href="#fr">Français</a> · <a href="#id">Indonesia</a> · <a href="#es">Español</a> · <a href="#tr">Türkçe</a> · <a href="#ms">Melayu</a> · <a href="#ur">اردو</a></nav>
   </header>
 
-${AppLang.values.map((AppLang l) => _article(doc, l)).join('\n')}
+${_offered.map((AppLang l) => _article(doc, l)).join('\n')}
   <footer><span dir="ltr">© ${DateTime.now().year} DGOTIX</span></footer>
 </div>
 </body>
@@ -144,5 +230,7 @@ void main(List<String> args) {
       .writeAsStringSync(_page(LegalDoc.privacy, 'privacy.html'));
   File('${out.path}/terms.html')
       .writeAsStringSync(_page(LegalDoc.terms, 'terms.html'));
-  stdout.writeln('Wrote privacy.html and terms.html to ${out.path}');
+  File('${out.path}/refund.html').writeAsStringSync(_refundPage());
+  stdout
+      .writeln('Wrote privacy.html, terms.html and refund.html to ${out.path}');
 }
