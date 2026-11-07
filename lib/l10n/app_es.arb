@@ -264,6 +264,8 @@
   "betaPlansNote": "Los planes de pago empiezan tras el periodo de lanzamiento. Hasta entonces, disfruta de todas las funciones sin coste.",
   "payTestTitle": "Modo de prueba de pagos",
   "payTestBody": "Aquí los pagos van a cuentas de prueba (sandbox): no se cobra dinero real.",
+  "payTestLiveTitle": "Prueba de pago real (dinero real)",
+  "payTestLiveBody": "Esta compra es real: se cobra a tu tarjeta o PayPal. Pide el reembolso al soporte en un plazo de 7 días.",
   "emptyDashboardTitle": "Aún no hay datos para mostrar",
   "emptyDashboardMessage": "Conecta tus datos de SmartBudget para ver aquí tu resumen financiero en directo.",
   "comingSoon": "Próximamente",

@@ -264,6 +264,8 @@
   "betaPlansNote": "付费方案在上线期结束后开始。在此之前，免费享用所有功能。",
   "payTestTitle": "支付测试模式",
   "payTestBody": "这里的付款进入测试账户（沙盒）：不会扣真实的钱。",
+  "payTestLiveTitle": "真实支付测试（真金白银）",
+  "payTestLiveBody": "此次购买是真实的：将从你的银行卡或 PayPal 扣款。请在 7 天内向客服申请退款。",
   "emptyDashboardTitle": "暂无数据",
   "emptyDashboardMessage": "连接你的 SmartBudget 数据，在这里查看实时财务概览。",
   "comingSoon": "即将推出",

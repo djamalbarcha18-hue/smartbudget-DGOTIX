@@ -264,6 +264,8 @@
   "betaPlansNote": "Les formules payantes commencent après la période de lancement. D'ici là, profitez de toutes les fonctionnalités gratuitement.",
   "payTestTitle": "Mode test des paiements",
   "payTestBody": "Les paiements passent ici par des comptes de test (sandbox) : aucun argent réel n'est débité.",
+  "payTestLiveTitle": "Test de paiement réel (argent réel)",
+  "payTestLiveBody": "Cet achat est réel : votre carte ou PayPal est débité. Demandez un remboursement au support sous 7 jours.",
   "emptyDashboardTitle": "Aucune donnée à afficher pour l'instant",
   "emptyDashboardMessage": "Connectez vos données SmartBudget pour voir ici votre vue d'ensemble financière en direct.",
   "comingSoon": "Bientôt disponible",

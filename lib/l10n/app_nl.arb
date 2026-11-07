@@ -264,6 +264,8 @@
   "betaPlansNote": "Betaalde abonnementen starten na de introductieperiode. Tot die tijd gebruik je alle functies gratis.",
   "payTestTitle": "Testmodus voor betalingen",
   "payTestBody": "Betalingen gaan hier naar testaccounts (sandbox): er wordt geen echt geld afgeschreven.",
+  "payTestLiveTitle": "Echte betaaltest (echt geld)",
+  "payTestLiveBody": "Deze aankoop is echt: je kaart of PayPal wordt belast. Vraag binnen 7 dagen restitutie bij de support.",
   "emptyDashboardTitle": "Nog geen gegevens om te tonen",
   "emptyDashboardMessage": "Koppel je SmartBudget-gegevens om hier je actuele financiële overzicht te zien.",
   "comingSoon": "Binnenkort",

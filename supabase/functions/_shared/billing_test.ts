@@ -102,3 +102,9 @@ Deno.test("the founding offer runs only until its end date", () => {
   expect(foundingOffer({ endsAt: "2026-12-31", yearlyUsd: "29.99" }, now)?.yearlyUsd === 29.99, true, "own price");
   expect(foundingOffer({ endsAt: "2026-12-31", yearlyUsd: "free" }, now) === null, true, "bad price");
 });
+
+Deno.test("PAY_TEST_USER_IDS: ids are trimmed, lower-cased, blanks dropped", async () => {
+  const { parseIdList } = await import("./billing.ts");
+  if (JSON.stringify(parseIdList(" AbC-1 ,,x2 ")) !== JSON.stringify(["abc-1", "x2"])) throw new Error("parse");
+  if (parseIdList("").length !== 0 || parseIdList(" , ").length !== 0) throw new Error("empty means nobody");
+});

@@ -264,6 +264,8 @@
   "betaPlansNote": "Paketat me pagesë nisin pas periudhës së lansimit. Deri atëherë, gëzo çdo funksion pa pagesë.",
   "payTestTitle": "Modaliteti i provës së pagesave",
   "payTestBody": "Pagesat këtu shkojnë në llogari prove (sandbox): nuk tërhiqen para të vërteta.",
+  "payTestLiveTitle": "Test pagese reale (para reale)",
+  "payTestLiveBody": "Ky blerje është e vërtetë: tarifohet karta ose PayPal. Kërko rimbursim nga mbështetja brenda 7 ditëve.",
   "emptyDashboardTitle": "Ende nuk ka të dhëna për t'u shfaqur",
   "emptyDashboardMessage": "Lidh të dhënat e tua të SmartBudget për të parë këtu pasqyrën tënde financiare.",
   "comingSoon": "Së shpejti",

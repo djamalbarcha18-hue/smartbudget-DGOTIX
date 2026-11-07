@@ -264,6 +264,8 @@
   "betaPlansNote": "유료 플랜은 출시 기간이 끝난 뒤 시작돼요. 그때까지 모든 기능을 무료로 즐기세요.",
   "payTestTitle": "결제 테스트 모드",
   "payTestBody": "여기서의 결제는 테스트 계정(샌드박스)으로 가요: 실제 돈은 빠져나가지 않아요.",
+  "payTestLiveTitle": "실제 결제 테스트(실제 돈)",
+  "payTestLiveBody": "이 구매는 실제입니다. 카드 또는 PayPal로 결제됩니다. 7일 이내에 지원팀에 환불을 요청하세요.",
   "emptyDashboardTitle": "아직 데이터가 없어요",
   "emptyDashboardMessage": "SmartBudget 데이터를 연결하면 여기에서 실시간 재무 개요를 볼 수 있어요.",
   "comingSoon": "곧 출시",

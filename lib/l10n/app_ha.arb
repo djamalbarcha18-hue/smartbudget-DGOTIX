@@ -264,6 +264,8 @@
   "betaPlansNote": "Tsare-tsaren biyan kuɗi za su fara bayan lokacin ƙaddamarwa. Kafin nan, ji daɗin kowane fasali kyauta.",
   "payTestTitle": "Yanayin gwajin biya",
   "payTestBody": "Biyan kuɗi a nan yana zuwa asusun gwaji (sandbox): ba a cire kuɗi na gaske.",
+  "payTestLiveTitle": "Gwajin biyan kuɗi na gaske",
+  "payTestLiveBody": "Wannan siyayya ta gaske ce: za a caje katinka ko PayPal. Ka nemi dawo da kuɗi cikin kwanaki 7.",
   "emptyDashboardTitle": "Babu bayanan da za a nuna tukuna",
   "emptyDashboardMessage": "Haɗa bayananka na SmartBudget don ganin taƙaitaccen bayanin kuɗinka a nan.",
   "comingSoon": "Yana zuwa nan ba da daɗewa ba",

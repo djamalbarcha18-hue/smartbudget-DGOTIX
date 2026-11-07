@@ -264,6 +264,8 @@
   "betaPlansNote": "Ücretli planlar lansman döneminden sonra başlar. O zamana kadar tüm özelliklerin keyfini ücretsiz çıkar.",
   "payTestTitle": "Ödeme test modu",
   "payTestBody": "Buradaki ödemeler test (sandbox) hesaplarına gider: gerçek para çekilmez.",
+  "payTestLiveTitle": "Gerçek ödeme testi (gerçek para)",
+  "payTestLiveBody": "Bu satın alma gerçektir: kartınızdan veya PayPal'dan tahsilat yapılır. 7 gün içinde destekten iade isteyin.",
   "emptyDashboardTitle": "Henüz gösterilecek veri yok",
   "emptyDashboardMessage": "Canlı finansal genel bakışını burada görmek için SmartBudget verilerini bağla.",
   "comingSoon": "Yakında",

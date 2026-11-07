@@ -12,10 +12,12 @@ import 'package:smartbudget/features/billing/domain/user_subscription.dart';
 import 'package:smartbudget/features/billing/presentation/plans_page.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-Widget _host({required bool payTest}) => ProviderScope(
+Widget _host({required bool payTest, bool live = false}) => ProviderScope(
       overrides: <Override>[
         paymentTestModeProvider.overrideWith((_) async => payTest),
-        subscriptionProvider.overrideWith((_) async => null as UserSubscription?),
+        payTestLiveProvider.overrideWith((_) async => live),
+        subscriptionProvider
+            .overrideWith((_) async => null as UserSubscription?),
       ],
       child: MaterialApp(
         locale: const Locale('en'),
@@ -57,5 +59,35 @@ void main() {
     expect(find.textContaining('Upgrade'), findsOneWidget);
     expect(find.text('Pro'), findsWidgets);
     expect(find.text('Basic'), findsNothing);
+  });
+
+  testWidgets(
+      'a live test (the owner\'s real purchase) says plainly it is real',
+      (WidgetTester tester) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 2400));
+    await tester.pumpWidget(_host(payTest: true, live: true));
+    await tester.pumpAndSettle();
+    expect(find.text('Live payment test (real money)'), findsOneWidget);
+    expect(find.text('Payment test mode'), findsNothing);
+    expect(find.textContaining('Upgrade'), findsOneWidget);
+  });
+
+  group('who may open the payment test mode', () {
+    test('sandbox providers open it for everyone', () {
+      expect(payTestAllowed(<Object?, Object?>{'sandbox': true}), isTrue);
+    });
+
+    test('live providers open it only for the account the server names', () {
+      expect(payTestAllowed(<Object?, Object?>{'sandbox': false}), isFalse);
+      expect(
+          payTestAllowed(
+              <Object?, Object?>{'sandbox': false, 'liveTest': true}),
+          isTrue);
+    });
+
+    test('no answer from the server opens nothing', () {
+      expect(payTestAllowed(null), isFalse);
+      expect(payTestAllowed(<Object?, Object?>{}), isFalse);
+    });
   });
 }

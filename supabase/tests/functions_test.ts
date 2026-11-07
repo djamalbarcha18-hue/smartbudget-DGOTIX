@@ -9,7 +9,7 @@ import { check, db, finish, load, model, outbound, paypal, paypalSub, PRICES, wh
 
 // A short model deadline, so the "stuck model" scenario below runs quickly.
 Deno.env.set("OCR_TIMEOUT_MS", "300");
-const handlers = await load("whop-webhook", "paypal-webhook", "create-checkout", "receipt-scan", "ai-gateway");
+const handlers = await load("whop-webhook", "paypal-webhook", "create-checkout", "receipt-scan", "ai-gateway", "billing-config");
 db.tables.billing_prices = PRICES;
 const U1 = "11111111-1111-4111-8111-111111111111";
 const calls = () => db.calls.length;
@@ -192,5 +192,26 @@ for (let k = 0; k < 5; k++) await askBody("u23", { prompt: "q" + k });
 const spent = await askBody("u23", { prompt: "one more" });
 const spentJson = await spent.json();
 check("AI: when the allowance is spent the refusal says how much is left (none)", spent.status === 429 && spentJson.error === "quota_exceeded" && spentJson.quota?.remaining === 0 && spentJson.quota?.used === 5, spent.status + " " + JSON.stringify(spentJson));
+
+// ---- Live payment test: only the owner's own account is told it may try a real purchase ----
+const cfg = (u: string) => handlers["billing-config"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-" + u }, body: "{}" }));
+const sandboxCfg = await (await cfg("owner1")).json();
+check("Pay test: sandbox providers report sandbox and no live test", sandboxCfg.sandbox === true && sandboxCfg.liveTest === undefined, JSON.stringify(sandboxCfg));
+const savedPaypal = Deno.env.get("PAYPAL_API_URL")!, savedWhop = Deno.env.get("WHOP_API_URL")!;
+Deno.env.set("PAYPAL_API_URL", "https://api-m.paypal.com");
+Deno.env.set("WHOP_API_URL", "https://api.whop.com/api/v1");
+Deno.env.delete("PAY_TEST_USER_IDS");
+const liveNobody = await (await cfg("owner1")).json();
+check("Pay test: live providers and no list: nobody is offered a test", liveNobody.sandbox === false && liveNobody.liveTest === undefined, JSON.stringify(liveNobody));
+Deno.env.set("PAY_TEST_USER_IDS", " Owner1 , someone-else ");
+const liveOwner = await (await cfg("owner1")).json();
+const liveStranger = await (await cfg("stranger")).json();
+check("Pay test: the listed account (any case, spaces) is told it may test a real purchase", liveOwner.sandbox === false && liveOwner.liveTest === true, JSON.stringify(liveOwner));
+check("Pay test: any other account is told nothing about it", liveStranger.liveTest === undefined && liveStranger.sandbox === false, JSON.stringify(liveStranger));
+Deno.env.set("PAYPAL_API_URL", savedPaypal);
+Deno.env.set("WHOP_API_URL", savedWhop);
+Deno.env.delete("PAY_TEST_USER_IDS");
+const sandboxOwner = await (await cfg("owner1")).json();
+check("Pay test: in sandbox the list changes nothing", sandboxOwner.sandbox === true && sandboxOwner.liveTest === undefined, JSON.stringify(sandboxOwner));
 
 finish();

@@ -264,6 +264,8 @@
   "betaPlansNote": "Plaćeni paketi počinju nakon perioda lansiranja. Do tada koristi sve funkcije besplatno.",
   "payTestTitle": "Testni način plaćanja",
   "payTestBody": "Uplate ovdje idu na testne račune (sandbox): ne naplaćuje se pravi novac.",
+  "payTestLiveTitle": "Uživo test plaćanja (pravi novac)",
+  "payTestLiveBody": "Ova kupovina je stvarna: naplaćuje se tvoja kartica ili PayPal. Povrat zatraži u roku od 7 dana.",
   "emptyDashboardTitle": "Još nema podataka za prikaz",
   "emptyDashboardMessage": "Poveži svoje SmartBudget podatke da ovdje vidiš aktuelni finansijski pregled.",
   "comingSoon": "Uskoro",

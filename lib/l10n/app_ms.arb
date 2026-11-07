@@ -264,6 +264,8 @@
   "betaPlansNote": "Pelan berbayar bermula selepas tempoh pelancaran. Sehingga itu, nikmati semua ciri tanpa bayaran.",
   "payTestTitle": "Mod ujian bayaran",
   "payTestBody": "Bayaran di sini pergi ke akaun ujian (sandbox): tiada wang sebenar dicaj.",
+  "payTestLiveTitle": "Ujian bayaran sebenar (wang sebenar)",
+  "payTestLiveBody": "Pembelian ini sebenar: kad atau PayPal anda dicaj. Minta bayaran balik daripada sokongan dalam 7 hari.",
   "emptyDashboardTitle": "Belum ada data untuk dipaparkan",
   "emptyDashboardMessage": "Sambungkan data SmartBudget anda untuk melihat gambaran kewangan langsung di sini.",
   "comingSoon": "Akan datang",

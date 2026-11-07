@@ -264,6 +264,8 @@
   "betaPlansNote": "Bezahlte Tarife beginnen nach der Startphase. Bis dahin kannst du alle Funktionen kostenlos nutzen.",
   "payTestTitle": "Zahlungs-Testmodus",
   "payTestBody": "Zahlungen gehen hier an Testkonten (Sandbox): Es wird kein echtes Geld abgebucht.",
+  "payTestLiveTitle": "Echter Zahlungstest (echtes Geld)",
+  "payTestLiveBody": "Dieser Kauf ist echt: Ihre Karte oder PayPal wird belastet. Eine Rückerstattung ist innerhalb von 7 Tagen beim Support möglich.",
   "emptyDashboardTitle": "Noch keine Daten zum Anzeigen",
   "emptyDashboardMessage": "Verbinde deine SmartBudget-Daten, um hier deinen aktuellen Finanzüberblick zu sehen.",
   "comingSoon": "Demnächst",

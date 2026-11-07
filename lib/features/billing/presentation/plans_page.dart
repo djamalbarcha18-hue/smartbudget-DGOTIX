@@ -40,7 +40,8 @@ class PlansPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     // Payment test mode (beta, sandbox only): plans are offered from FREE up.
-    final bool payTest = ref.watch(paymentTestModeProvider).valueOrNull ?? false;
+    final bool payTest =
+        ref.watch(paymentTestModeProvider).valueOrNull ?? false;
     // Plans are on sale (not the beta, or its payment test mode).
     final bool selling = !AppEnv.betaAllAccess || payTest;
     // What is bought from: the paid plan, so a PRO trial can still subscribe.
@@ -138,8 +139,8 @@ class _BetaBanner extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(l.betaAllUnlocked,
-                      style: t.titleSmall
-                          ?.copyWith(fontWeight: FontWeight.w700)),
+                      style:
+                          t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 2),
                   Text(l.betaPlansNote,
                       style: t.labelSmall?.copyWith(color: c.textMuted)),
@@ -155,31 +156,35 @@ class _BetaBanner extends StatelessWidget {
 
 /// Payment test mode notice: checkout goes to sandbox accounts, so nothing is
 /// really charged.
-class _PayTestBanner extends StatelessWidget {
+class _PayTestBanner extends ConsumerWidget {
   const _PayTestBanner();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
+    // A live test charges real money: say so plainly, in the warning colour.
+    final bool live = ref.watch(payTestLiveProvider).valueOrNull ?? false;
+    final Color accent = live ? c.expense : c.warning;
     return Padding(
       padding: const EdgeInsets.only(bottom: DsSpacing.md),
       child: GlassCard(
-        accent: c.warning,
+        accent: accent,
         child: Row(
           children: <Widget>[
-            Icon(Icons.bug_report_outlined, size: 20, color: c.warning),
+            Icon(live ? Icons.payments_outlined : Icons.bug_report_outlined,
+                size: 20, color: accent),
             const SizedBox(width: DsSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(l.payTestTitle,
-                      style: t.titleSmall
-                          ?.copyWith(fontWeight: FontWeight.w700)),
+                  Text(live ? l.payTestLiveTitle : l.payTestTitle,
+                      style:
+                          t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 2),
-                  Text(l.payTestBody,
+                  Text(live ? l.payTestLiveBody : l.payTestBody,
                       style: t.labelSmall?.copyWith(color: c.textMuted)),
                 ],
               ),
@@ -227,8 +232,8 @@ class _CurrentPlanCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(l.subYoureOn(planName(l, sub.plan)),
-                      style: t.titleSmall
-                          ?.copyWith(fontWeight: FontWeight.w700)),
+                      style:
+                          t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                   if (sub.needsPaymentFix) ...<Widget>[
                     const SizedBox(height: 2),
                     Text(
@@ -315,10 +320,11 @@ class _TrialCardState extends ConsumerState<_TrialCard> {
                 children: <Widget>[
                   Text(
                       running
-                          ? l.trialActive(_ltr(_fmtDate(e.trialExpiresAt) ?? ''))
+                          ? l.trialActive(
+                              _ltr(_fmtDate(e.trialExpiresAt) ?? ''))
                           : l.trialTitle(kProTrialDays),
-                      style: t.titleSmall
-                          ?.copyWith(fontWeight: FontWeight.w700)),
+                      style:
+                          t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 2),
                   Text(running ? l.trialActiveBody : l.trialBody,
                       style: t.labelSmall?.copyWith(color: c.textMuted)),
@@ -353,8 +359,7 @@ class _ManageButtonState extends ConsumerState<_ManageButton> {
     final AppLocalizations l = AppLocalizations.of(context);
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
-    final String? url =
-        await ref.read(subscriptionServiceProvider).manageUrl();
+    final String? url = await ref.read(subscriptionServiceProvider).manageUrl();
     if (!mounted) return;
     setState(() => _busy = false);
     final Uri? link = PaymentLinks.trusted(url);
@@ -515,8 +520,8 @@ class _CouponBoxState extends ConsumerState<_CouponBox> {
                     r.valid
                         ? _validMessage(l, r)
                         : _invalidMessage(l, r.reason ?? CouponReason.invalid),
-                    style: t.bodySmall?.copyWith(
-                        color: r.valid ? c.income : c.expense),
+                    style: t.bodySmall
+                        ?.copyWith(color: r.valid ? c.income : c.expense),
                   ),
                 ),
               ],
@@ -621,8 +626,8 @@ class _PlanCard extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 child: Text(planName(l, plan),
-                    style: t.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w800, color: c.brand)),
+                    style: t.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800, color: c.brand)),
               ),
               if (highlight) _Pill(text: l.planMostPopular, color: c.brand),
               if (isCurrent && !highlight)
@@ -713,7 +718,8 @@ class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
   Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
     return DsButton(
-      label: _busy ? l.checkoutOpening : l.planUpgradeTo(planName(l, widget.plan)),
+      label:
+          _busy ? l.checkoutOpening : l.planUpgradeTo(planName(l, widget.plan)),
       icon: Icons.arrow_upward_rounded,
       expand: true,
       onPressed: _busy ? null : _onTap,
@@ -774,8 +780,9 @@ class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
                       : Icons.credit_card_outlined,
                   color: c.brand,
                 ),
-                title: Text(
-                    p == PayProvider.paypal ? l.payMethodPaypal : l.payMethodCard),
+                title: Text(p == PayProvider.paypal
+                    ? l.payMethodPaypal
+                    : l.payMethodCard),
                 onTap: () => Navigator.of(ctx).pop(p),
               ),
             const SizedBox(height: DsSpacing.sm),
@@ -855,13 +862,12 @@ class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
       messenger.showSnackBar(SnackBar(content: Text(l.checkoutError)));
     } else if (r.ok) {
       await launchUrl(link!,
-          mode: LaunchMode.externalApplication,
-          webOnlyWindowName: '_blank');
+          mode: LaunchMode.externalApplication, webOnlyWindowName: '_blank');
       // When they return, re-fetch so the new plan shows without a restart.
       if (mounted) ref.invalidate(remoteEntitlementProvider);
     } else if (r.error == CheckoutError.alreadySubscribed) {
-      messenger.showSnackBar(
-          SnackBar(content: Text(l.checkoutAlreadySubscribed)));
+      messenger
+          .showSnackBar(SnackBar(content: Text(l.checkoutAlreadySubscribed)));
       ref.invalidate(subscriptionProvider);
     } else if (r.error == CheckoutError.notConfigured) {
       messenger.showSnackBar(SnackBar(content: Text(l.planBillingSoon)));
@@ -920,7 +926,8 @@ class _Pill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: DsSpacing.sm, vertical: 3),
+      padding:
+          const EdgeInsets.symmetric(horizontal: DsSpacing.sm, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.14),
         borderRadius: DsRadius.brPill,
@@ -928,8 +935,10 @@ class _Pill extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: color, fontWeight: FontWeight.w700),
+        style: Theme.of(context)
+            .textTheme
+            .labelSmall
+            ?.copyWith(color: color, fontWeight: FontWeight.w700),
       ),
     );
   }

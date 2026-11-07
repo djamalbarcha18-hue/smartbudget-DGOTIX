@@ -264,6 +264,8 @@
   "betaPlansNote": "有料プランはリリース期間の終了後に始まります。それまではすべての機能を無料でお楽しみください。",
   "payTestTitle": "支払いテストモード",
   "payTestBody": "ここでの支払いはテスト用アカウント（サンドボックス）に送られます：実際のお金は引き落とされません。",
+  "payTestLiveTitle": "本番の決済テスト（実際のお金）",
+  "payTestLiveBody": "この購入は本物です。カードまたはPayPalに請求されます。7日以内にサポートへ返金を依頼できます。",
   "emptyDashboardTitle": "データがありません",
   "emptyDashboardMessage": "SmartBudget のデータを接続すると、ここに家計の概要がリアルタイムで表示されます。",
   "comingSoon": "近日公開",

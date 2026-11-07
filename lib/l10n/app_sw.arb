@@ -264,6 +264,8 @@
   "betaPlansNote": "Vifurushi vya kulipia vitaanza baada ya kipindi cha uzinduzi. Hadi wakati huo, furahia kila kipengele bila malipo.",
   "payTestTitle": "Hali ya majaribio ya malipo",
   "payTestBody": "Malipo hapa yanaenda kwenye akaunti za majaribio (sandbox): hakuna pesa halisi inayokatwa.",
+  "payTestLiveTitle": "Jaribio la malipo halisi (pesa halisi)",
+  "payTestLiveBody": "Ununuzi huu ni halisi: kadi au PayPal yako itatozwa. Omba kurejeshewa pesa kupitia msaada ndani ya siku 7.",
   "emptyDashboardTitle": "Bado hakuna data ya kuonyesha",
   "emptyDashboardMessage": "Unganisha data yako ya SmartBudget uone muhtasari wako wa fedha hapa.",
   "comingSoon": "Inakuja hivi karibuni",

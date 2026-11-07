@@ -126,7 +126,26 @@ final foundingOfferProvider = FutureProvider<FoundingOffer?>((ref) async {
 /// Payment test mode: during the beta nothing is sold, but the web app opened
 /// with `?paytest=1` offers checkout so payments can be tried end to end. Only
 /// while the server says every payment method is a sandbox account.
+///
+/// Also open to the owner's own account when the server says so (`liveTest`,
+/// from the secret PAY_TEST_USER_IDS): a REAL purchase, refundable within 7
+/// days, to prove the live payment path before it opens to everyone.
 final paymentTestModeProvider = FutureProvider<bool>((ref) async {
   if (!AppEnv.betaAllAccess || !AppEnv.payTestRequested) return false;
-  return (await ref.watch(billingConfigProvider.future))?['sandbox'] == true;
+  return payTestAllowed(await ref.watch(billingConfigProvider.future));
+});
+
+/// Whether `billing-config` opens the payment test mode: every payment method
+/// is a sandbox, or this account is the owner's live tester.
+bool payTestAllowed(Map<Object?, Object?>? config) =>
+    config?['sandbox'] == true || config?['liveTest'] == true;
+
+/// The test is a REAL purchase (live providers, owner's account), not a
+/// sandbox one: the Plans screen then says so.
+final payTestLiveProvider = FutureProvider<bool>((ref) async {
+  final bool on = await ref.watch(paymentTestModeProvider.future);
+  if (!on) return false;
+  final Map<Object?, Object?>? cfg =
+      await ref.watch(billingConfigProvider.future);
+  return cfg?['liveTest'] == true && cfg?['sandbox'] != true;
 });

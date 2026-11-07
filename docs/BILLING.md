@@ -188,6 +188,25 @@ flag does nothing, so it can never take real money. The store build ignores it.
 After paying with a sandbox buyer, the "You're on …" card shows the plan and
 `billing_subscriptions` holds the row; Manage cancels it.
 
+### Live payment test (owner only, real money)
+
+The test mode above only opens with sandbox providers, so once Whop and PayPal
+are live it stays shut. To prove the live path before it opens to everyone, the
+owner's own account can try a REAL purchase:
+
+1. In Supabase > Edge Functions > Secrets add `PAY_TEST_USER_IDS` with the
+   owner's user id (Authentication > Users > User UID; several ids are
+   comma-separated). Unset or empty: nobody, nothing changes.
+2. Signed in as that account, open
+   `https://smartbudget.dgotix.com/?paytest=1#/plans`. `billing-config` tells
+   only that account `liveTest: true`; the Plans screen then offers checkout
+   with a red "Live payment test (real money)" notice.
+3. Buy, check `billing_subscriptions`, manage/cancel, refund (7 days), then
+   remove the secret. Step by step: `docs/PAYMENT_TEST_CHECKLIST.md`.
+
+Anyone else, and the store app, see nothing (`?paytest=1` does nothing for
+them). `billing-config` never lists the allowed ids.
+
 > **Algeria note:** PayPal must be able to *receive* payments on your account.
 > Confirm this with PayPal before relying on it in production.
 

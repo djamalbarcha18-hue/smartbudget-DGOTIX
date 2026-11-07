@@ -264,6 +264,8 @@
   "betaPlansNote": "Paket berbayar dimulai setelah masa peluncuran. Sampai saat itu, nikmati semua fitur tanpa biaya.",
   "payTestTitle": "Mode uji pembayaran",
   "payTestBody": "Pembayaran di sini masuk ke akun uji (sandbox): tidak ada uang sungguhan yang ditagih.",
+  "payTestLiveTitle": "Uji pembayaran nyata (uang sungguhan)",
+  "payTestLiveBody": "Pembelian ini nyata: kartu atau PayPal Anda ditagih. Minta pengembalian dana ke dukungan dalam 7 hari.",
   "emptyDashboardTitle": "Belum ada data untuk ditampilkan",
   "emptyDashboardMessage": "Hubungkan data SmartBudget Anda untuk melihat ringkasan keuangan langsung di sini.",
   "comingSoon": "Segera hadir",

@@ -7,13 +7,13 @@
 // While the founding offer runs (FOUNDING_OFFER_ENDS_AT) and its Whop plan is
 // in billing_prices, it says so, so the app shows the first-year price.
 //
-//   POST -> { providers: ["whop", "paypal"], sandbox: false,
+//   POST -> { providers: ["whop", "paypal"], sandbox: false, liveTest?: true,
 //             offer?: { yearlyUsd: 39.99, endsAt: "2027-01-31T23:59:59.000Z" } }
 //
 // Deploy:  supabase functions deploy billing-config
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireUserId, serviceClient } from "../_shared/auth.ts";
-import { allSandbox, foundingOffer, planToPrice } from "../_shared/billing.ts";
+import { allSandbox, foundingOffer, isLiveTester, planToPrice } from "../_shared/billing.ts";
 import { paypalApiBase, paypalConfigured } from "../_shared/paypal.ts";
 import { whopApiBase, whopConfigured } from "../_shared/whop.ts";
 
@@ -22,7 +22,7 @@ Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
 
   try {
-    await requireUserId(req);
+    const userId = await requireUserId(req);
     const providers: string[] = [];
     if (whopConfigured()) providers.push("whop");
     if (paypalConfigured()) providers.push("paypal");
@@ -37,7 +37,14 @@ Deno.serve(async (req: Request) => {
         await planToPrice(serviceClient(), "pro", "yearly", "whop", "founding")
       ? running
       : null;
-    return jsonResponse({ providers, sandbox, ...(offer ? { offer } : {}) }, 200, cors);
+    // The owner's own account may try a real purchase during the beta
+    // (secret PAY_TEST_USER_IDS); nobody else is told it exists.
+    const liveTest = !sandbox && providers.length > 0 && isLiveTester(userId);
+    return jsonResponse(
+      { providers, sandbox, ...(liveTest ? { liveTest: true } : {}), ...(offer ? { offer } : {}) },
+      200,
+      cors,
+    );
   } catch (e) {
     const status = e instanceof HttpError ? e.status : 500;
     const code = e instanceof HttpError ? e.code : "server_error";

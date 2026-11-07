@@ -264,6 +264,8 @@
   "betaPlansNote": "Betaalde planne begin na die bekendstellingstydperk. Tot dan, geniet elke funksie gratis.",
   "payTestTitle": "Betalingstoetsmodus",
   "payTestBody": "Betalings hier gaan na toetsrekeninge (sandbox): geen regte geld word gehef nie.",
+  "payTestLiveTitle": "Lewendige betalingstoets (regte geld)",
+  "payTestLiveBody": "Hierdie aankoop is werklik: jou kaart of PayPal word gehef. Vra binne 7 dae vir 'n terugbetaling by die ondersteuning.",
   "emptyDashboardTitle": "Nog geen data om te wys nie",
   "emptyDashboardMessage": "Koppel jou SmartBudget-data om jou lewendige finansiële oorsig hier te sien.",
   "comingSoon": "Kom binnekort",

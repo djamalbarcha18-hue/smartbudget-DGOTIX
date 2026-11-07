@@ -137,3 +137,28 @@ export function allSandbox(
   return providers.length > 0 &&
     providers.every((p) => isSandboxUrl(urls[p] ?? ""));
 }
+
+/**
+ * The accounts allowed to try a REAL purchase while the beta is on (the Plans
+ * screen then offers checkout, with a "real money" notice): the Edge Function
+ * secret PAY_TEST_USER_IDS, a comma-separated list of Supabase user ids. Empty
+ * or unset: nobody, so nothing changes for anyone until the owner adds an id.
+ */
+export function payTestUserIds(): string[] {
+  let raw = "";
+  try {
+    raw = Deno.env.get("PAY_TEST_USER_IDS") ?? "";
+  } catch {
+    // No environment access: nobody.
+  }
+  return parseIdList(raw);
+}
+
+/** A comma-separated list of ids, trimmed and lower-cased, blanks dropped. */
+export function parseIdList(raw: string): string[] {
+  return raw.split(",").map((s) => s.trim().toLowerCase()).filter((s) => s.length > 0);
+}
+
+export function isLiveTester(userId: string): boolean {
+  return payTestUserIds().includes(userId.trim().toLowerCase());
+}
