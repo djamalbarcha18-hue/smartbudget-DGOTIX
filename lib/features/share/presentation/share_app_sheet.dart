@@ -20,7 +20,9 @@ import 'package:smartbudget/features/share/data/native_share.dart';
 import 'package:smartbudget/features/share/domain/share_channels.dart';
 import 'package:smartbudget/features/share/domain/share_highlight.dart';
 import 'package:smartbudget/features/referrals/application/referrals_controller.dart';
+import 'package:smartbudget/features/referrals/data/referral_service.dart';
 import 'package:smartbudget/features/referrals/domain/referral_link.dart';
+import 'package:smartbudget/features/referrals/domain/referral_reward.dart';
 import 'package:smartbudget/features/share/domain/share_qr.dart';
 import 'package:smartbudget/features/share/presentation/share_card_skin.dart';
 import 'package:smartbudget/features/share/presentation/share_progress_card.dart';
@@ -55,10 +57,12 @@ class _ShareAppSheetState extends ConsumerState<ShareAppSheet> {
 
   /// The app's address, carrying this member's invite code when they have
   /// one — so an ordinary share is also an invite, with nothing extra to do.
+  /// Read, not watched: handlers use it too. build() watches the code, so the
+  /// sheet redraws (link, QR) as soon as it arrives.
   String get _url => ReferralLink.invite(
-      ShareQr.appUrl(), ref.watch(referralCodeProvider).valueOrNull);
-  late final String _svg = ShareQr.svg(_url);
-  late final String _smallQr = ShareQr.svg(_url, size: 256);
+      ShareQr.appUrl(), ref.read(referralCodeProvider).valueOrNull);
+  String get _svg => ShareQr.svg(_url);
+  String get _smallQr => ShareQr.svg(_url, size: 256);
   late ShareTab _tab = widget.initialTab;
   String? _status; // inline feedback (snackbars sit behind the sheet)
   bool _busy = false;
@@ -229,6 +233,7 @@ class _ShareAppSheetState extends ConsumerState<ShareAppSheet> {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
+    ref.watch(referralCodeProvider); // redraw link and QR when it arrives
 
     return Container(
       decoration: BoxDecoration(
@@ -303,8 +308,9 @@ class _ShareAppSheetState extends ConsumerState<ShareAppSheet> {
   List<Widget> _inviteTab(
       BuildContext context, AppLocalizations l, DsColors c, TextTheme t) {
     return <Widget>[
-      Text(AppEnv.betaAllAccess ? l.shareInviteHookBeta : l.shareInviteHook,
-          style: t.bodySmall?.copyWith(color: c.textMuted)),
+      _InviteHero(
+        hook: AppEnv.betaAllAccess ? l.shareInviteHookBeta : l.shareInviteHook,
+      ),
       const SizedBox(height: DsSpacing.lg),
       if (canShareNatively) ...<Widget>[
         DsButton(
@@ -486,6 +492,75 @@ class _ShareAppSheetState extends ConsumerState<ShareAppSheet> {
         onTap: (ShareChannel ch) => _onChannel(l, ch),
       ),
     ];
+  }
+}
+
+/// The marketing card at the top of the invite tab: who we are, why share, and
+/// how far the member is toward the reward (when signed in).
+class _InviteHero extends ConsumerWidget {
+  const _InviteHero({required this.hook});
+  final String hook;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final bool signedIn = ref.watch(referralCodeProvider).valueOrNull != null;
+    final ReferralProgress progress =
+        ref.watch(referralProgressProvider).valueOrNull ??
+            ReferralProgress.none;
+    const Color ink = Colors.white;
+    return Container(
+      padding: const EdgeInsets.all(DsSpacing.lg),
+      decoration: BoxDecoration(
+        borderRadius: DsRadius.brMd,
+        gradient: LinearGradient(
+          begin: AlignmentDirectional.topStart,
+          end: AlignmentDirectional.bottomEnd,
+          colors: <Color>[c.brand, Color.lerp(c.brand, Colors.black, 0.35)!],
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              const Icon(Icons.card_giftcard_rounded, color: ink, size: 22),
+              const SizedBox(width: DsSpacing.sm),
+              Expanded(
+                child: Text(l.inviteTitle,
+                    style: t.titleMedium
+                        ?.copyWith(color: ink, fontWeight: FontWeight.w800)),
+              ),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.sm),
+          Text(hook,
+              style: t.bodyMedium
+                  ?.copyWith(color: ink.withValues(alpha: 0.92), height: 1.4)),
+          if (signedIn) ...<Widget>[
+            const SizedBox(height: DsSpacing.md),
+            Text(
+              l.inviteProgressLine(
+                  progress.activated, ReferralRewards.needed),
+              style: t.labelMedium
+                  ?.copyWith(color: ink, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: DsSpacing.xs),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(999),
+              child: LinearProgressIndicator(
+                value: progress.fraction,
+                minHeight: 8,
+                backgroundColor: ink.withValues(alpha: 0.25),
+                valueColor: const AlwaysStoppedAnimation<Color>(ink),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }
 

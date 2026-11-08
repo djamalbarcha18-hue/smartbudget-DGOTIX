@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:smartbudget/core/config/app_config.dart';
-import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -14,10 +11,8 @@ import 'package:smartbudget/features/billing/application/entitlement_controller.
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/feature_gate.dart';
 import 'package:smartbudget/features/referrals/application/referrals_controller.dart';
-import 'package:smartbudget/features/referrals/domain/referral_link.dart';
 import 'package:smartbudget/features/referrals/domain/referral_reward.dart';
-import 'package:smartbudget/features/share/data/native_share.dart';
-import 'package:smartbudget/features/share/domain/share_qr.dart';
+import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -50,40 +45,18 @@ String featureTitle(AppLocalizations l, Feature f) => switch (f) {
       Feature.categoryIcons => l.featCategoryIcons,
     };
 
-/// One tap to invite: the system share sheet with the app's ready-made
-/// message and this member's invite link (so whoever signs up through it counts
-/// toward the reward). Where there is no share sheet (most desktops) the text
-/// and link are copied instead. Without a code yet (signed out, or still
-/// loading) it opens Settings, where the invite card explains.
+/// One tap to invite: opens the app's own share sheet (branded card, progress
+/// to the reward, a button per channel, the personal invite link and QR), so
+/// whoever signs up through the link counts toward the reward. The sheet reads
+/// the invite code itself and updates when it arrives.
 Future<void> shareInviteLink(BuildContext context, WidgetRef ref,
     {bool closeSheet = false}) async {
-  final AppLocalizations l = AppLocalizations.of(context);
-  final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
   final NavigatorState navigator = Navigator.of(context);
-  // The code loads lazily: wait for it (briefly) instead of reading a value
-  // that may not be there yet. If it can't be had, still share the plain app
-  // link: the person asked to share, never send them to another screen.
-  String? code;
-  try {
-    code = await ref
-        .read(referralCodeProvider.future)
-        .timeout(const Duration(seconds: 3));
-  } catch (_) {
-    code = null;
-  }
+  // Start loading the code now so it is usually ready by the time it shows.
+  ref.read(referralCodeProvider);
   if (closeSheet) navigator.pop();
-  final String link = ReferralLink.looksValid(code)
-      ? ReferralLink.invite(ShareQr.appUrl(), code)
-      : ShareQr.appUrl();
-  final String base = l.shareMsgPersonal;
-  final String text =
-      AppEnv.betaAllAccess ? '$base ${l.shareMsgBetaTail}' : base;
-  final NativeShareResult r =
-      await shareNatively(title: AppConfig.appName, text: text, url: link);
-  if (r == NativeShareResult.unsupported) {
-    await Clipboard.setData(ClipboardData(text: '$text\n$link'));
-    messenger.showSnackBar(SnackBar(content: Text(l.inviteCopied)));
-  }
+  if (!navigator.mounted) return;
+  await ShareAppSheet.show(navigator.context);
 }
 
 /// Plan limits at the points where something new is added or opened. The
