@@ -19,7 +19,7 @@ is what caps the damage.
 | Category budgets | 5 | unlimited — nothing |
 | Goals · debts | 2 each | 5 each — nothing |
 | Wallets | 2 | 4 — nothing |
-| Recurring rules | 5 | 10 — nothing |
+| Recurring rules | unlimited for everyone | nothing to raise |
 | Darets · seasons | 1 each | 3 each — nothing |
 
 **Never granted this way:** the assistant and cloud receipt scanning (money per

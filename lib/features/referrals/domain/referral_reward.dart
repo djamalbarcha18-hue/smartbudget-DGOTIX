@@ -60,7 +60,6 @@ abstract final class ReferralRewards {
     Feature.goals: 5,
     Feature.debts: 5,
     Feature.wallets: 4,
-    Feature.recurringRules: 10,
     Feature.darets: 3,
     Feature.seasons: 3,
   };

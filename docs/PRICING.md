@@ -176,7 +176,7 @@ The catalog is the source of truth; this is the intended shape:
 | Category budgets (per month) | 5 | unlimited |
 | Goals / debts / darets | 1 / 2 / 1 | unlimited |
 | Season plans (still ahead or running) | 1 | unlimited |
-| Recurring rules | 5 | unlimited |
+| Recurring rules | unlimited | unlimited |
 | Reports | monthly: this month and the previous one | every period, any year |
 | Exchange rates | official rates + converter | + parallel / P2P / custom |
 | Financial health | score, risks, emergency fund | + strengths, pillars, recommendations |

@@ -229,10 +229,12 @@ abstract final class FeatureCatalog {
       minTier: Plan.free,
       quotas: _freeItems1,
     ),
+    // Recurring items live on the device and cost nothing to keep, so they
+    // are not metered for anyone: a limit here only pushed people away.
     Feature.recurringRules: FeatureRule(
       feature: Feature.recurringRules,
       minTier: Plan.free,
-      quotas: _freeItems5,
+      quotas: _unlimitedForAll,
     ),
     Feature.healthDetails: FeatureRule(
       feature: Feature.healthDetails,
@@ -274,6 +276,10 @@ abstract final class FeatureCatalog {
     Plan.pro: _unlimitedItems,
   };
   static const Quota _unlimitedItems = Quota(-1, QuotaWindow.items);
+  static const Map<Plan, Quota> _unlimitedForAll = <Plan, Quota>{
+    Plan.free: _unlimitedItems,
+    Plan.pro: _unlimitedItems,
+  };
 
   static FeatureRule ruleFor(Feature f) => _rules[f]!;
 

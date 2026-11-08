@@ -114,7 +114,6 @@ void main() {
         Feature.debts: 2,
         Feature.darets: 1,
         Feature.seasons: 1,
-        Feature.recurringRules: 5,
       };
       freeLimits.forEach((Feature f, int limit) {
         expect(
@@ -128,6 +127,16 @@ void main() {
         expect(d.window, QuotaWindow.items);
         expect(d.suggestedTier, Plan.pro);
       });
+    });
+
+    test('recurring items are unlimited for everyone, FREE included', () {
+      for (final Plan p in Plan.values) {
+        expect(
+            FeatureGate.evaluate(Feature.recurringRules, plan: p, used: 500)
+                .allowed,
+            isTrue,
+            reason: 'recurring items on $p');
+      }
     });
 
     test('Pro has no limit', () {
