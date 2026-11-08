@@ -61,6 +61,9 @@ jobs:
         run: |
           # The device database for the user's lists (docs/LOCAL_DATABASE.md).
           DEFINES="--dart-define=INDEXED_DB=true"
+          # Payments open (the end of the free beta). Pair it with the Supabase
+          # secret BETA_ALL_ACCESS=false (docs/LAUNCH_CHECKLIST.md).
+          DEFINES="$DEFINES --dart-define=BETA_ALL_ACCESS=false"
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
             DEFINES="$DEFINES --dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
             # Commodity prices (industrial metals, steel & iron, energy,
