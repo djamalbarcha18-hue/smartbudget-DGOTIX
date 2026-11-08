@@ -26,6 +26,35 @@ export function whopConfigured(): boolean {
   return Boolean(whopApiKey());
 }
 
+/** The dated API version to pin (Whop's `Api-Version-Date` header), from the
+ * secret WHOP_API_VERSION as YYYY-MM-DD. Anything else (or unset) pins
+ * nothing, so requests behave exactly as before. */
+export function whopApiVersion(raw?: string | null): string | null {
+  const v = String(raw ?? "").trim();
+  return /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null;
+}
+
+/** Headers for a Whop API call: the key, plus the pinned version when set. */
+export function buildWhopHeaders(
+  key: string,
+  version: string | null,
+  extra: Record<string, string> = {},
+): Record<string, string> {
+  return {
+    "Authorization": `Bearer ${key}`,
+    ...(version ? { "Api-Version-Date": version } : {}),
+    ...extra,
+  };
+}
+
+function whopHeaders(extra: Record<string, string> = {}) {
+  return buildWhopHeaders(
+    whopApiKey(),
+    whopApiVersion(Deno.env.get("WHOP_API_VERSION")),
+    extra,
+  );
+}
+
 // deno-lint-ignore no-explicit-any
 type Json = any;
 
@@ -38,10 +67,7 @@ export async function createWhopCheckout(
   const account = (Deno.env.get("WHOP_COMPANY_ID") ?? "").trim();
   const res = await fetch(`${whopApiBase()}/checkout_configurations`, {
     method: "POST",
-    headers: {
-      "Authorization": `Bearer ${whopApiKey()}`,
-      "Content-Type": "application/json",
-    },
+    headers: whopHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify({
       plan_id: planId,
       metadata,
@@ -66,7 +92,7 @@ export async function createWhopCheckout(
 export async function fetchWhopMembership(id: string): Promise<Json | null> {
   const res = await fetch(
     `${whopApiBase()}/memberships/${encodeURIComponent(id)}`,
-    { headers: { "Authorization": `Bearer ${whopApiKey()}` } },
+    { headers: whopHeaders() },
   );
   if (res.status === 404) return null;
   if (!res.ok) throw new Error("whop_membership_" + res.status);
