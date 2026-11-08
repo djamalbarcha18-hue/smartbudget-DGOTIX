@@ -59,15 +59,22 @@ Future<void> shareInviteLink(BuildContext context, WidgetRef ref,
     {bool closeSheet = false}) async {
   final AppLocalizations l = AppLocalizations.of(context);
   final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-  final GoRouter router = GoRouter.of(context);
   final NavigatorState navigator = Navigator.of(context);
-  final String? code = ref.read(referralCodeProvider).valueOrNull;
-  if (closeSheet) navigator.pop();
-  if (!ReferralLink.looksValid(code)) {
-    router.go('/settings');
-    return;
+  // The code loads lazily: wait for it (briefly) instead of reading a value
+  // that may not be there yet. If it can't be had, still share the plain app
+  // link: the person asked to share, never send them to another screen.
+  String? code;
+  try {
+    code = await ref
+        .read(referralCodeProvider.future)
+        .timeout(const Duration(seconds: 3));
+  } catch (_) {
+    code = null;
   }
-  final String link = ReferralLink.invite(ShareQr.appUrl(), code);
+  if (closeSheet) navigator.pop();
+  final String link = ReferralLink.looksValid(code)
+      ? ReferralLink.invite(ShareQr.appUrl(), code)
+      : ShareQr.appUrl();
   final String base = l.shareMsgPersonal;
   final String text =
       AppEnv.betaAllAccess ? '$base ${l.shareMsgBetaTail}' : base;
