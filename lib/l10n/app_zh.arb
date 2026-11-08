@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "设备间同步:最近 {months} 个月",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "同步全部历史记录和所有数据"
+  "planFeatSyncAll": "同步全部历史记录和所有数据",
+  "upPopTitle": "用 Pro 解锁全部功能",
+  "upPopSub": "更聪明地管理你的钱,在每台设备上。",
+  "upPopStart": "立即开始",
+  "upPopSeeAll": "查看全部功能",
+  "upPopReassure": "安全支付 · 随时取消"
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/features/billing/presentation/upgrade_popup.dart';
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/design_system/brand/dgotix_owl.dart';
 import 'package:smartbudget/design_system/components/ds_badge.dart';
@@ -411,7 +411,7 @@ class _UpgradeCard extends StatelessWidget {
             DsButton(
               label: l.upgradeCta,
               expand: true,
-              onPressed: () => context.go('/plans'),
+              onPressed: () => UpgradePopup.show(context),
             ),
         ],
       ),

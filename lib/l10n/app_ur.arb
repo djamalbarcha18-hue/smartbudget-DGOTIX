@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "آلات کے درمیان سنک: پچھلے {months} مہینے",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "آپ کی پوری تاریخ اور تمام ڈیٹا کا سنک"
+  "planFeatSyncAll": "آپ کی پوری تاریخ اور تمام ڈیٹا کا سنک",
+  "upPopTitle": "Pro کے ساتھ سب کچھ کھولیں",
+  "upPopSub": "اپنے پیسوں کو زیادہ سمجھداری سے سنبھالیں، ہر آلے پر۔",
+  "upPopStart": "ابھی شروع کریں",
+  "upPopSeeAll": "تمام خصوصیات دیکھیں",
+  "upPopReassure": "محفوظ ادائیگی · کسی بھی وقت منسوخ کریں"
 }

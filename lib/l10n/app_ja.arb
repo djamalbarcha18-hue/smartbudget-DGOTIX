@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "端末間の同期:直近{months}か月",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "全履歴とすべてのデータの同期"
+  "planFeatSyncAll": "全履歴とすべてのデータの同期",
+  "upPopTitle": "Proですべてを解放",
+  "upPopSub": "お金の管理をもっとスマートに、どの端末でも。",
+  "upPopStart": "今すぐ始める",
+  "upPopSeeAll": "すべての機能を見る",
+  "upPopReassure": "安全な支払い・いつでも解約可能"
 }

@@ -24,6 +24,7 @@ import 'package:smartbudget/features/billing/domain/founding_offer.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/billing/domain/user_subscription.dart';
 import 'package:smartbudget/features/billing/domain/payment_links.dart';
+import 'package:smartbudget/features/billing/presentation/checkout_flow.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:smartbudget/features/sync/domain/sync_scope.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -108,7 +109,7 @@ class PlansPage extends ConsumerWidget {
                 ],
               if (!AppEnv.betaAllAccess) ...<Widget>[
                 const SizedBox(height: DsSpacing.md),
-                const _CouponBox(),
+                const CouponBox(),
               ],
             ],
           ),
@@ -396,14 +397,14 @@ String? _fmtDate(DateTime? d) {
 /// "Have a coupon?" — validates a marketing code against the server and shows
 /// its effect. Pre-checkout preview only (probe mode): it never redeems the
 /// code. A coupon changes price/trial, never feature access.
-class _CouponBox extends ConsumerStatefulWidget {
-  const _CouponBox();
+class CouponBox extends ConsumerStatefulWidget {
+  const CouponBox({super.key});
 
   @override
-  ConsumerState<_CouponBox> createState() => _CouponBoxState();
+  ConsumerState<CouponBox> createState() => _CouponBoxState();
 }
 
-class _CouponBoxState extends ConsumerState<_CouponBox> {
+class _CouponBoxState extends ConsumerState<CouponBox> {
   final TextEditingController _ctrl = TextEditingController();
   bool _busy = false;
   CouponResult? _result;
@@ -731,67 +732,15 @@ class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
   Future<void> _onTap() async {
     final BillingPeriod? period = await _pickPeriod();
     if (period == null || !mounted) return;
-
-    // Which payment methods are actually configured?
-    List<PayProvider> providers;
-    try {
-      providers = await ref.read(enabledProvidersProvider.future);
-    } catch (_) {
-      providers = const <PayProvider>[];
-    }
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    setState(() => _busy = true);
+    final String? message =
+        await runProCheckout(context, ref, plan: widget.plan, period: period);
     if (!mounted) return;
-
-    final PayProvider provider;
-    if (providers.length >= 2) {
-      final PayProvider? chosen = await _pickProvider(providers);
-      if (chosen == null || !mounted) return;
-      provider = chosen;
-    } else {
-      provider = providers.isNotEmpty ? providers.first : PayProvider.whop;
+    setState(() => _busy = false);
+    if (message != null) {
+      messenger.showSnackBar(SnackBar(content: Text(message)));
     }
-    await _start(period, provider);
-  }
-
-  Future<PayProvider?> _pickProvider(List<PayProvider> providers) {
-    final AppLocalizations l = AppLocalizations.of(context);
-    final DsColors c = context.dsColors;
-    return showModalBottomSheet<PayProvider>(
-      context: context,
-      backgroundColor: c.bgElevated,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (BuildContext ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const SizedBox(height: DsSpacing.sm),
-            Padding(
-              padding: const EdgeInsets.all(DsSpacing.md),
-              child: Text(l.payChooseMethod,
-                  style: Theme.of(ctx)
-                      .textTheme
-                      .titleSmall
-                      ?.copyWith(fontWeight: FontWeight.w700)),
-            ),
-            for (final PayProvider p in providers)
-              ListTile(
-                leading: Icon(
-                  p == PayProvider.paypal
-                      ? Icons.account_balance_wallet_outlined
-                      : Icons.credit_card_outlined,
-                  color: c.brand,
-                ),
-                title: Text(p == PayProvider.paypal
-                    ? l.payMethodPaypal
-                    : l.payMethodCard),
-                onTap: () => Navigator.of(ctx).pop(p),
-              ),
-            const SizedBox(height: DsSpacing.sm),
-          ],
-        ),
-      ),
-    );
   }
 
   Future<BillingPeriod?> _pickPeriod() {
@@ -842,40 +791,6 @@ class _UpgradeCtaState extends ConsumerState<_UpgradeCta> {
         ),
       ),
     );
-  }
-
-  Future<void> _start(BillingPeriod period, PayProvider provider) async {
-    final AppLocalizations l = AppLocalizations.of(context);
-    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    if (!ref.read(authControllerProvider).isAuthenticated) {
-      messenger.showSnackBar(SnackBar(content: Text(l.checkoutSignIn)));
-      return;
-    }
-    setState(() => _busy = true);
-    final CheckoutStart r = await ref
-        .read(checkoutServiceProvider)
-        .start(plan: widget.plan, period: period, provider: provider);
-    if (!mounted) return;
-    setState(() => _busy = false);
-
-    final Uri? link = r.ok ? PaymentLinks.trusted(r.url) : null;
-    if (r.ok && link == null) {
-      // Never open a link that isn't the payment provider's or ours.
-      messenger.showSnackBar(SnackBar(content: Text(l.checkoutError)));
-    } else if (r.ok) {
-      await launchUrl(link!,
-          mode: LaunchMode.externalApplication, webOnlyWindowName: '_blank');
-      // When they return, re-fetch so the new plan shows without a restart.
-      if (mounted) ref.invalidate(remoteEntitlementProvider);
-    } else if (r.error == CheckoutError.alreadySubscribed) {
-      messenger
-          .showSnackBar(SnackBar(content: Text(l.checkoutAlreadySubscribed)));
-      ref.invalidate(subscriptionProvider);
-    } else if (r.error == CheckoutError.notConfigured) {
-      messenger.showSnackBar(SnackBar(content: Text(l.planBillingSoon)));
-    } else {
-      messenger.showSnackBar(SnackBar(content: Text(l.checkoutError)));
-    }
   }
 }
 

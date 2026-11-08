@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "Sinkronisasi antarperangkat: {months} bulan terakhir",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "Sinkronisasi seluruh riwayat dan semua data Anda"
+  "planFeatSyncAll": "Sinkronisasi seluruh riwayat dan semua data Anda",
+  "upPopTitle": "Buka semuanya dengan Pro",
+  "upPopSub": "Kelola uang Anda lebih cerdas, di setiap perangkat.",
+  "upPopStart": "Mulai sekarang",
+  "upPopSeeAll": "Lihat semua fitur",
+  "upPopReassure": "Pembayaran aman · batalkan kapan saja"
 }

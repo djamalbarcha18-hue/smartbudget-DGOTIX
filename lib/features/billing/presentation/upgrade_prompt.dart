@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/features/billing/presentation/upgrade_popup.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -187,8 +187,9 @@ class UpgradeSheet extends ConsumerWidget {
               label: l.upgradeSeePlans,
               icon: Icons.workspace_premium_outlined,
               onPressed: () {
-                Navigator.of(context).pop();
-                context.go('/plans');
+                final NavigatorState nav = Navigator.of(context);
+                nav.pop();
+                UpgradePopup.show(nav.context);
               },
             ),
             if (inviteLimit != null || inviteUnlock) ...<Widget>[
@@ -287,7 +288,7 @@ class LockedFeatureCard extends ConsumerWidget {
           DsButton(
             label: l.upgradeSeePlans,
             variant: DsButtonVariant.secondary,
-            onPressed: () => context.go('/plans'),
+            onPressed: () => UpgradePopup.show(context),
           ),
         ],
       ),

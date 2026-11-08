@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "उपकरणों के बीच सिंक: पिछले {months} महीने",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "आपके पूरे इतिहास और सारे डेटा का सिंक"
+  "planFeatSyncAll": "आपके पूरे इतिहास और सारे डेटा का सिंक",
+  "upPopTitle": "Pro के साथ सब कुछ खोलें",
+  "upPopSub": "अपने पैसे को और समझदारी से सँभालें, हर उपकरण पर।",
+  "upPopStart": "अभी शुरू करें",
+  "upPopSeeAll": "सभी सुविधाएँ देखें",
+  "upPopReassure": "सुरक्षित भुगतान · कभी भी रद्द करें"
 }

@@ -1947,5 +1947,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "Sync between devices: last {months} months",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "Sync of your full history and all your data"
+  "planFeatSyncAll": "Sync of your full history and all your data",
+  "upPopTitle": "Unlock everything with Pro",
+  "upPopSub": "Manage your money smarter, on every device.",
+  "upPopStart": "Start now",
+  "upPopSeeAll": "See all features",
+  "upPopReassure": "Secure payment · cancel anytime"
 }

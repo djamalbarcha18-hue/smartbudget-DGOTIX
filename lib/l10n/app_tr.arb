@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "Cihazlar arası senkronizasyon: son {months} ay",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "Tüm geçmişinizin ve tüm verilerinizin senkronizasyonu"
+  "planFeatSyncAll": "Tüm geçmişinizin ve tüm verilerinizin senkronizasyonu",
+  "upPopTitle": "Pro ile her şeyin kilidini açın",
+  "upPopSub": "Paranızı daha akıllıca yönetin, her cihazda.",
+  "upPopStart": "Şimdi başla",
+  "upPopSeeAll": "Tüm özellikleri gör",
+  "upPopReassure": "Güvenli ödeme · istediğiniz zaman iptal"
 }

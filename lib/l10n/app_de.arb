@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "Synchronisierung zwischen Geräten: letzte {months} Monate",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "Synchronisierung des gesamten Verlaufs und aller Daten"
+  "planFeatSyncAll": "Synchronisierung des gesamten Verlaufs und aller Daten",
+  "upPopTitle": "Alles freischalten mit Pro",
+  "upPopSub": "Verwalten Sie Ihr Geld klüger, auf jedem Gerät.",
+  "upPopStart": "Jetzt starten",
+  "upPopSeeAll": "Alle Funktionen ansehen",
+  "upPopReassure": "Sichere Zahlung · jederzeit kündbar"
 }

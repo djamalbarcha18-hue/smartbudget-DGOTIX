@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "Sincronização entre dispositivos: últimos {months} meses",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "Sincronização de todo o histórico e de todos os dados"
+  "planFeatSyncAll": "Sincronização de todo o histórico e de todos os dados",
+  "upPopTitle": "Desbloqueie tudo com o Pro",
+  "upPopSub": "Gira o seu dinheiro de forma mais inteligente, em qualquer dispositivo.",
+  "upPopStart": "Começar agora",
+  "upPopSeeAll": "Ver todas as funcionalidades",
+  "upPopReassure": "Pagamento seguro · cancele quando quiser"
 }

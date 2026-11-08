@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/features/billing/presentation/upgrade_popup.dart';
 import 'package:smartbudget/core/time/clock_sync_controller.dart';
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/core/env/app_env.dart';
@@ -1148,7 +1149,7 @@ class _SyncSection extends ConsumerWidget {
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: TextButton(
-              onPressed: () => context.go('/plans'),
+              onPressed: () => UpgradePopup.show(context),
               child: Text(l.upgradeCta),
             ),
           ),

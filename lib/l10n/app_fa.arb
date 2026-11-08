@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "همگام‌سازی بین دستگاه‌ها: {months} ماه اخیر",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "همگام‌سازی کل سابقه و همهٔ داده‌ها"
+  "planFeatSyncAll": "همگام‌سازی کل سابقه و همهٔ داده‌ها",
+  "upPopTitle": "با Pro همه‌چیز را باز کنید",
+  "upPopSub": "پول خود را هوشمندانه‌تر مدیریت کنید، روی هر دستگاه.",
+  "upPopStart": "همین حالا شروع کنید",
+  "upPopSeeAll": "دیدن همهٔ امکانات",
+  "upPopReassure": "پرداخت امن · لغو در هر زمان"
 }

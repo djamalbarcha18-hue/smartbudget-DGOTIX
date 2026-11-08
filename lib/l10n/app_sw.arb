@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "Usawazishaji kati ya vifaa: miezi {months} ya mwisho",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "Usawazishaji wa historia yako yote na data zako zote"
+  "planFeatSyncAll": "Usawazishaji wa historia yako yote na data zako zote",
+  "upPopTitle": "Fungua kila kitu na Pro",
+  "upPopSub": "Simamia pesa zako kwa busara zaidi, kwenye kila kifaa.",
+  "upPopStart": "Anza sasa",
+  "upPopSeeAll": "Tazama vipengele vyote",
+  "upPopReassure": "Malipo salama · ghairi wakati wowote"
 }

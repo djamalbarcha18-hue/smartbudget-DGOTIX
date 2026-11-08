@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/features/billing/presentation/upgrade_popup.dart';
 import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/network/connectivity.dart';
 import 'package:smartbudget/design_system/brand/dgotix_owl.dart';
@@ -402,7 +402,7 @@ class _UpgradeButton extends StatelessWidget {
       borderRadius: DsRadius.brPill,
       child: InkWell(
         borderRadius: DsRadius.brPill,
-        onTap: () => context.go('/plans'),
+        onTap: () => UpgradePopup.show(context),
         child: Padding(
           padding:
               const EdgeInsets.symmetric(horizontal: DsSpacing.md, vertical: 6),

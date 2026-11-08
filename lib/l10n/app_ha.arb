@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "Daidaitawa tsakanin na'urori: watanni {months} na ƙarshe",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "Daidaita dukan tarihinka da dukan bayananka"
+  "planFeatSyncAll": "Daidaita dukan tarihinka da dukan bayananka",
+  "upPopTitle": "Buɗe komai da Pro",
+  "upPopSub": "Sarrafa kuɗinka cikin wayo, a kowace na'ura.",
+  "upPopStart": "Fara yanzu",
+  "upPopSeeAll": "Duba dukkan fasaloli",
+  "upPopReassure": "Biyan kuɗi mai tsaro · soke a kowane lokaci"
 }

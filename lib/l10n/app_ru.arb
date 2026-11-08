@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "Синхронизация между устройствами: последние {months} мес.",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "Синхронизация всей истории и всех данных"
+  "planFeatSyncAll": "Синхронизация всей истории и всех данных",
+  "upPopTitle": "Откройте всё с Pro",
+  "upPopSub": "Управляйте деньгами умнее, на любом устройстве.",
+  "upPopStart": "Начать",
+  "upPopSeeAll": "Все возможности",
+  "upPopReassure": "Безопасная оплата · отмена в любой момент"
 }

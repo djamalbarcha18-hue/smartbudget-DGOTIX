@@ -1848,5 +1848,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "مزامنة بين الأجهزة لآخر {months} أشهر",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "مزامنة كل تاريخك وجميع بياناتك"
+  "planFeatSyncAll": "مزامنة كل تاريخك وجميع بياناتك",
+  "upPopTitle": "افتح كل شيء مع Pro",
+  "upPopSub": "أدِر أموالك بذكاء أكبر، على كل جهاز.",
+  "upPopStart": "ابدأ الآن",
+  "upPopSeeAll": "شاهد كل المزايا",
+  "upPopReassure": "دفع آمن · إلغاء في أي وقت"
 }

@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "Sinkronizim mes pajisjeve: {months} muajt e fundit",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "Sinkronizim i gjithë historikut dhe i të gjitha të dhënave"
+  "planFeatSyncAll": "Sinkronizim i gjithë historikut dhe i të gjitha të dhënave",
+  "upPopTitle": "Hap gjithçka me Pro",
+  "upPopSub": "Menaxho paratë më me zgjuarsi, në çdo pajisje.",
+  "upPopStart": "Fillo tani",
+  "upPopSeeAll": "Shih të gjitha veçoritë",
+  "upPopReassure": "Pagesë e sigurt · anulo kurdo"
 }

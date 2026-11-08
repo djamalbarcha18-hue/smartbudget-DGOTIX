@@ -1649,5 +1649,10 @@
   "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
   "planFeatSyncFree": "Sinkronisering tussen toestelle: laaste {months} maande",
   "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
-  "planFeatSyncAll": "Sinkronisering van jou volle geskiedenis en al jou data"
+  "planFeatSyncAll": "Sinkronisering van jou volle geskiedenis en al jou data",
+  "upPopTitle": "Ontsluit alles met Pro",
+  "upPopSub": "Bestuur jou geld slimmer, op elke toestel.",
+  "upPopStart": "Begin nou",
+  "upPopSeeAll": "Sien alle kenmerke",
+  "upPopReassure": "Veilige betaling · kanselleer enige tyd"
 }
