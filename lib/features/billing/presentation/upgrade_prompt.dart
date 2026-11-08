@@ -11,6 +11,7 @@ import 'package:smartbudget/features/billing/application/entitlement_controller.
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/feature_gate.dart';
 import 'package:smartbudget/features/referrals/application/referrals_controller.dart';
+import 'package:smartbudget/features/referrals/domain/referral_reward.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -53,14 +54,22 @@ abstract final class PlanLimits {
       int Function(ProviderContainer c) count) {
     final ProviderContainer c =
         ProviderScope.containerOf(context, listen: false);
+    final Set<ReferralReward> rewards = c.read(activeRewardsProvider);
     final GateDecision d = FeatureGate.evaluate(feature,
         plan: c.read(effectivePlanProvider),
         used: count(c),
         // The same rewards featureGateProvider applies. Without this the
         // screen would show a raised limit and the add would still refuse.
-        rewards: c.read(activeRewardsProvider));
+        rewards: rewards);
     if (d.allowed) return true;
-    UpgradeSheet.show(context, d);
+    // At a counted limit, someone who has not earned the invite reward yet is
+    // also shown what three invited friends would raise it to.
+    final int? invite = d.reason == GateReason.quotaReached &&
+            !rewards.contains(ReferralReward.higherLimits)
+        ? ReferralRewards.limitFor(
+            const <ReferralReward>{ReferralReward.higherLimits}, feature)
+        : null;
+    UpgradeSheet.show(context, d, inviteLimit: invite);
     return false;
   }
 
@@ -71,15 +80,21 @@ abstract final class PlanLimits {
 
 /// The sheet shown when a plan limit is reached or a feature is locked.
 class UpgradeSheet extends StatelessWidget {
-  const UpgradeSheet({super.key, required this.decision});
+  const UpgradeSheet({super.key, required this.decision, this.inviteLimit});
 
   final GateDecision decision;
 
-  static Future<void> show(BuildContext context, GateDecision decision) =>
+  /// What inviting three friends would raise this limit to (−1: no limit), or
+  /// null when that offer does not apply (a locked feature, or already earned).
+  final int? inviteLimit;
+
+  static Future<void> show(BuildContext context, GateDecision decision,
+          {int? inviteLimit}) =>
       showModalBottomSheet<void>(
         context: context,
         backgroundColor: Colors.transparent,
-        builder: (_) => UpgradeSheet(decision: decision),
+        builder: (_) =>
+            UpgradeSheet(decision: decision, inviteLimit: inviteLimit),
       );
 
   @override
@@ -139,6 +154,27 @@ class UpgradeSheet extends StatelessWidget {
                 context.go('/plans');
               },
             ),
+            if (inviteLimit != null) ...<Widget>[
+              const SizedBox(height: DsSpacing.lg),
+              Divider(color: c.border, height: 1),
+              const SizedBox(height: DsSpacing.md),
+              Text(
+                  inviteLimit! < 0
+                      ? l.upgradeInviteBodyUnlimited(name)
+                      : l.upgradeInviteBody(name, inviteLimit!),
+                  textAlign: TextAlign.center,
+                  style: t.bodySmall?.copyWith(color: c.textMuted)),
+              const SizedBox(height: DsSpacing.sm),
+              DsButton(
+                label: l.upgradeInviteCta,
+                icon: Icons.card_giftcard_rounded,
+                variant: DsButtonVariant.secondary,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  context.go('/settings');
+                },
+              ),
+            ],
             const SizedBox(height: DsSpacing.sm),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),

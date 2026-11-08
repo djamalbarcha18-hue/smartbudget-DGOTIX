@@ -22,6 +22,12 @@ is what caps the damage.
 | Recurring rules | 5 | 10 — nothing |
 | Darets · seasons | 1 each | 3 each — nothing |
 
+When someone reaches a counted free limit (recurring items, goals, debts,
+wallets, budgets, darets, seasons) the upgrade sheet also offers "Invite 3
+friends", with the number it would rise to, and a button to the invite card in
+Settings. It is not shown once the reward is earned, nor for locked features
+(`PlanLimits.allowAdd`, `UpgradeSheet.inviteLimit`).
+
 **Never granted this way:** the assistant and cloud receipt scanning (money per
 call), cloud sync (storage and transfer), parallel rates and multi-currency
 (our own function), PDF and advanced reports and smart alerts (what PRO sells),

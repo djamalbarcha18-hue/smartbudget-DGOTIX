@@ -11,6 +11,8 @@ import 'package:smartbudget/features/billing/application/entitlement_controller.
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
+import 'package:smartbudget/features/referrals/application/referrals_controller.dart';
+import 'package:smartbudget/features/referrals/domain/referral_reward.dart';
 import 'package:smartbudget/features/reports/application/reports_controller.dart';
 import 'package:smartbudget/features/reports/domain/report_period.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -31,8 +33,29 @@ class _Probe extends StatelessWidget {
       );
 }
 
-Widget _host(Plan plan, Widget child) => ProviderScope(
-      overrides: <Override>[effectivePlanProvider.overrideWithValue(plan)],
+/// A button that asks whether one more recurring item may be added when
+/// [used] exist.
+class _RecurringProbe extends StatelessWidget {
+  const _RecurringProbe(this.used);
+  final int used;
+
+  @override
+  Widget build(BuildContext context) => Center(
+        child: TextButton(
+          onPressed: () => PlanLimits.allowAdd(
+              context, Feature.recurringRules, (_) => used),
+          child: const Text('add'),
+        ),
+      );
+}
+
+Widget _host(Plan plan, Widget child,
+        {List<Override> extra = const <Override>[]}) =>
+    ProviderScope(
+      overrides: <Override>[
+        effectivePlanProvider.overrideWithValue(plan),
+        ...extra,
+      ],
       child: MaterialApp(
         locale: const Locale('en'),
         localizationsDelegates: const <LocalizationsDelegate<Object>>[
@@ -67,6 +90,45 @@ void main() {
     await tester.tap(find.text('Not now'));
     await tester.pumpAndSettle();
     expect(find.text('See plans'), findsNothing);
+  });
+
+  testWidgets('at the free limit, inviting three friends is offered too',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(_host(Plan.free, const _RecurringProbe(5)));
+    await tester.tap(find.text('add'));
+    await tester.pumpAndSettle();
+    expect(find.text('Invite 3 friends'), findsOneWidget);
+    expect(find.textContaining('rises to 10'), findsOneWidget);
+    expect(find.text('See plans'), findsOneWidget);
+  });
+
+  testWidgets('who already earned the reward is not offered it again',
+      (WidgetTester tester) async {
+    // The raised limit (10) is reached: only the upgrade is left to offer.
+    await tester.pumpWidget(_host(Plan.free, const _RecurringProbe(10),
+        extra: <Override>[
+          activeRewardsProvider.overrideWithValue(
+              const <ReferralReward>{ReferralReward.higherLimits}),
+        ]));
+    await tester.tap(find.text('add'));
+    await tester.pumpAndSettle();
+    expect(find.text('See plans'), findsOneWidget);
+    expect(find.text('Invite 3 friends'), findsNothing);
+  });
+
+  testWidgets('a locked feature offers the upgrade only, no invitation',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(_host(
+        Plan.free,
+        Builder(
+            builder: (BuildContext context) => TextButton(
+                onPressed: () =>
+                    PlanLimits.allow(context, Feature.advancedReports),
+                child: const Text('open')))));
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    expect(find.text('See plans'), findsOneWidget);
+    expect(find.text('Invite 3 friends'), findsNothing);
   });
 
   testWidgets('Plus adds without a prompt', (WidgetTester tester) async {
