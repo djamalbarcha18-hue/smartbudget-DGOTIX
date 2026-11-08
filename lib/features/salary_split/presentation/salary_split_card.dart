@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -12,6 +11,7 @@ import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/feature_gate.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/features/salary_split/presentation/salary_split_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -95,7 +95,7 @@ class SalarySplitCard extends ConsumerWidget {
                       : DsButtonVariant.secondary,
                   onPressed: () => gate.allowed
                       ? SalarySplitSheet.show(context)
-                      : context.go('/plans'),
+                      : PlanLimits.allow(context, Feature.salarySplit),
                 ),
               ],
             ),

@@ -1209,6 +1209,7 @@
   "upgradeInviteBody": "Oppure invita 3 amici: quando si registrano e confermano l’e-mail, il tuo limite per {feature} sale a {count}.",
   "upgradeInviteBodyUnlimited": "Oppure invita 3 amici: quando si registrano e confermano l’e-mail, {feature} diventa illimitato per te.",
   "upgradeInviteCta": "Invita 3 amici",
+  "upgradeInviteBodyUnlock": "Oppure invita 3 amici: quando si registrano e confermano l’e-mail, {feature} si sblocca per te.",
   "reportsFreeHint": "Il piano gratuito mostra il mese in corso e quello precedente.",
   "planFeatParallel": "Cambi paralleli",
   "planFeatPdf": "Esportazione dei report in PDF",

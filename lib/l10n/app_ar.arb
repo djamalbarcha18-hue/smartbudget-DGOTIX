@@ -1408,6 +1408,7 @@
   "upgradeInviteBody": "أو ادعُ 3 أصدقاء: عندما ينضمون ويؤكدون بريدهم، يرتفع حدّك في {feature} إلى {count}.",
   "upgradeInviteBodyUnlimited": "أو ادعُ 3 أصدقاء: عندما ينضمون ويؤكدون بريدهم، تصبح {feature} بلا حدود لك.",
   "upgradeInviteCta": "ادعُ 3 أصدقاء",
+  "upgradeInviteBodyUnlock": "أو ادعُ 3 أصدقاء: عندما ينضمون ويؤكدون بريدهم، تُفتح لك {feature}.",
   "reportsFreeHint": "الخطة المجانية تعرض الشهر الحالي والسابق.",
   "planFeatParallel": "السعر الموازي لأسعار الصرف",
   "planFeatPdf": "تصدير التقارير PDF",

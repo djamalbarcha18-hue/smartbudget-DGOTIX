@@ -1209,6 +1209,7 @@
   "upgradeInviteBody": "또는 친구 3명을 초대하세요. 가입하고 이메일을 인증하면 {feature} 한도가 {count}개로 늘어납니다.",
   "upgradeInviteBodyUnlimited": "또는 친구 3명을 초대하세요. 가입하고 이메일을 인증하면 {feature} 한도가 사라집니다.",
   "upgradeInviteCta": "친구 3명 초대",
+  "upgradeInviteBodyUnlock": "또는 친구 3명을 초대하세요. 가입하고 이메일을 인증하면 {feature}이(가) 열립니다.",
   "reportsFreeHint": "무료 플랜에서는 이번 달과 지난달을 볼 수 있어요.",
   "planFeatParallel": "병행 환율",
   "planFeatPdf": "PDF 보고서 내보내기",

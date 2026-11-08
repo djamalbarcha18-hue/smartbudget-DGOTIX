@@ -1209,6 +1209,7 @@
   "upgradeInviteBody": "Ou invitez 3 amis : dès qu’ils s’inscrivent et confirment leur e-mail, votre limite pour {feature} passe à {count}.",
   "upgradeInviteBodyUnlimited": "Ou invitez 3 amis : dès qu’ils s’inscrivent et confirment leur e-mail, {feature} devient illimité pour vous.",
   "upgradeInviteCta": "Inviter 3 amis",
+  "upgradeInviteBodyUnlock": "Ou invitez 3 amis : dès qu’ils s’inscrivent et confirment leur e-mail, {feature} est débloqué pour vous.",
   "reportsFreeHint": "La formule gratuite affiche le mois en cours et le mois précédent.",
   "planFeatParallel": "Taux de change parallèles",
   "planFeatPdf": "Export des rapports en PDF",

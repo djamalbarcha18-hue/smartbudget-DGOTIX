@@ -69,7 +69,14 @@ abstract final class PlanLimits {
         ? ReferralRewards.limitFor(
             const <ReferralReward>{ReferralReward.higherLimits}, feature)
         : null;
-    UpgradeSheet.show(context, d, inviteLimit: invite);
+    // A locked feature that a reward opens outright (salary split, financial
+    // health details) offers the invitation too, until it is earned.
+    final ReferralReward? opener = ReferralRewards.opensWith(feature);
+    final bool inviteUnlock = d.reason == GateReason.needsUpgrade &&
+        opener != null &&
+        !rewards.contains(opener);
+    UpgradeSheet.show(context, d,
+        inviteLimit: invite, inviteUnlock: inviteUnlock);
     return false;
   }
 
@@ -80,7 +87,12 @@ abstract final class PlanLimits {
 
 /// The sheet shown when a plan limit is reached or a feature is locked.
 class UpgradeSheet extends StatelessWidget {
-  const UpgradeSheet({super.key, required this.decision, this.inviteLimit});
+  const UpgradeSheet({
+    super.key,
+    required this.decision,
+    this.inviteLimit,
+    this.inviteUnlock = false,
+  });
 
   final GateDecision decision;
 
@@ -88,13 +100,18 @@ class UpgradeSheet extends StatelessWidget {
   /// null when that offer does not apply (a locked feature, or already earned).
   final int? inviteLimit;
 
+  /// A locked feature that inviting three friends opens outright.
+  final bool inviteUnlock;
+
   static Future<void> show(BuildContext context, GateDecision decision,
-          {int? inviteLimit}) =>
+          {int? inviteLimit, bool inviteUnlock = false}) =>
       showModalBottomSheet<void>(
         context: context,
         backgroundColor: Colors.transparent,
-        builder: (_) =>
-            UpgradeSheet(decision: decision, inviteLimit: inviteLimit),
+        builder: (_) => UpgradeSheet(
+            decision: decision,
+            inviteLimit: inviteLimit,
+            inviteUnlock: inviteUnlock),
       );
 
   @override
@@ -154,14 +171,16 @@ class UpgradeSheet extends StatelessWidget {
                 context.go('/plans');
               },
             ),
-            if (inviteLimit != null) ...<Widget>[
+            if (inviteLimit != null || inviteUnlock) ...<Widget>[
               const SizedBox(height: DsSpacing.lg),
               Divider(color: c.border, height: 1),
               const SizedBox(height: DsSpacing.md),
               Text(
-                  inviteLimit! < 0
-                      ? l.upgradeInviteBodyUnlimited(name)
-                      : l.upgradeInviteBody(name, inviteLimit!),
+                  inviteUnlock
+                      ? l.upgradeInviteBodyUnlock(name)
+                      : inviteLimit! < 0
+                          ? l.upgradeInviteBodyUnlimited(name)
+                          : l.upgradeInviteBody(name, inviteLimit!),
                   textAlign: TextAlign.center,
                   style: t.bodySmall?.copyWith(color: c.textMuted)),
               const SizedBox(height: DsSpacing.sm),
@@ -199,6 +218,11 @@ class LockedFeatureCard extends ConsumerWidget {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final Plan tier = FeatureCatalog.minTierFor(feature);
+    // A section that inviting three friends opens outright says so, until
+    // the reward is earned.
+    final ReferralReward? opener = ReferralRewards.opensWith(feature);
+    final bool invite =
+        opener != null && !ref.watch(activeRewardsProvider).contains(opener);
     return GlassCard(
       accent: c.brand,
       child: Row(
@@ -224,6 +248,19 @@ class LockedFeatureCard extends ConsumerWidget {
                     l.upgradeLockedBody(
                         featureTitle(l, feature), planName(l, tier)),
                     style: t.bodySmall?.copyWith(color: c.textMuted)),
+                if (invite) ...<Widget>[
+                  const SizedBox(height: DsSpacing.xs),
+                  Text(l.upgradeInviteBodyUnlock(featureTitle(l, feature)),
+                      style: t.bodySmall?.copyWith(color: c.textMuted)),
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: TextButton.icon(
+                      onPressed: () => context.go('/settings'),
+                      icon: const Icon(Icons.card_giftcard_rounded, size: 16),
+                      label: Text(l.upgradeInviteCta),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

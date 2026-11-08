@@ -1209,6 +1209,7 @@
   "upgradeInviteBody": "Ou convide 3 amigos: quando eles se cadastrarem e confirmarem o e-mail, seu limite de {feature} sobe para {count}.",
   "upgradeInviteBodyUnlimited": "Ou convide 3 amigos: quando eles se cadastrarem e confirmarem o e-mail, {feature} fica sem limite para você.",
   "upgradeInviteCta": "Convidar 3 amigos",
+  "upgradeInviteBodyUnlock": "Ou convide 3 amigos: quando eles se cadastrarem e confirmarem o e-mail, {feature} é liberado para você.",
   "reportsFreeHint": "O plano grátis mostra o mês atual e o anterior.",
   "planFeatParallel": "Cotações de câmbio paralelo",
   "planFeatPdf": "Exportação de relatório em PDF",

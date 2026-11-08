@@ -1209,6 +1209,7 @@
   "upgradeInviteBody": "または 3 人の友だちを招待：登録してメールを確認すると、{feature}の上限が {count} に上がります。",
   "upgradeInviteBodyUnlimited": "または 3 人の友だちを招待：登録してメールを確認すると、{feature}の上限がなくなります。",
   "upgradeInviteCta": "友だち3人を招待",
+  "upgradeInviteBodyUnlock": "または 3 人の友だちを招待：登録してメールを確認すると、{feature}が利用できるようになります。",
   "reportsFreeHint": "無料プランでは今月と先月が表示されます。",
   "planFeatParallel": "並行為替レート",
   "planFeatPdf": "PDF レポートの書き出し",

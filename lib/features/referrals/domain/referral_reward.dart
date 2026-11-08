@@ -65,6 +65,14 @@ abstract final class ReferralRewards {
     Feature.seasons: 3,
   };
 
+  /// The reward that opens [feature] outright (a locked one), or null.
+  static ReferralReward? opensWith(Feature feature) {
+    for (final MapEntry<ReferralReward, Feature> e in _opens.entries) {
+      if (e.value == feature) return e.key;
+    }
+    return null;
+  }
+
   /// Whether [rewards] open [feature] outright, regardless of plan.
   static bool opens(Set<ReferralReward> rewards, Feature feature) {
     for (final ReferralReward r in rewards) {

@@ -28,6 +28,12 @@ friends", with the number it would rise to, and a button to the invite card in
 Settings. It is not shown once the reward is earned, nor for locked features
 (`PlanLimits.allowAdd`, `UpgradeSheet.inviteLimit`).
 
+The two sections a reward opens outright (smart salary split, financial-health
+details) offer both choices too: their locked card and the salary-split button
+show "Invite 3 friends" next to "See plans" until the reward is earned. A
+locked feature that invitations do not open (reports, markets, sync...) shows
+the upgrade only.
+
 **Never granted this way:** the assistant and cloud receipt scanning (money per
 call), cloud sync (storage and transfer), parallel rates and multi-currency
 (our own function), PDF and advanced reports and smart alerts (what PRO sells),

@@ -1209,6 +1209,7 @@
   "upgradeInviteBody": "Atau undang 3 teman: setelah mereka mendaftar dan mengonfirmasi email, batas {feature} Anda naik menjadi {count}.",
   "upgradeInviteBodyUnlimited": "Atau undang 3 teman: setelah mereka mendaftar dan mengonfirmasi email, {feature} menjadi tanpa batas untuk Anda.",
   "upgradeInviteCta": "Undang 3 teman",
+  "upgradeInviteBodyUnlock": "Atau undang 3 teman: setelah mereka mendaftar dan mengonfirmasi email, {feature} terbuka untuk Anda.",
   "reportsFreeHint": "Paket gratis menampilkan bulan ini dan bulan sebelumnya.",
   "planFeatParallel": "Kurs paralel",
   "planFeatPdf": "Ekspor laporan PDF",

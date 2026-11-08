@@ -1209,6 +1209,7 @@
   "upgradeInviteBody": "Of nooi 3 vriende: sodra hulle aanmeld en hul e-pos bevestig, styg jou limiet vir {feature} na {count}.",
   "upgradeInviteBodyUnlimited": "Of nooi 3 vriende: sodra hulle aanmeld en hul e-pos bevestig, het jy geen limiet vir {feature} nie.",
   "upgradeInviteCta": "Nooi 3 vriende",
+  "upgradeInviteBodyUnlock": "Of nooi 3 vriende: sodra hulle aanmeld en hul e-pos bevestig, word {feature} vir jou oopgemaak.",
   "reportsFreeHint": "Die gratis plan wys die huidige en die vorige maand.",
   "planFeatParallel": "Parallelle wisselkoerse",
   "planFeatPdf": "PDF-verslaguitvoer",

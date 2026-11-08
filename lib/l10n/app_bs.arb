@@ -1209,6 +1209,7 @@
   "upgradeInviteBody": "Ili pozovi 3 prijatelja: kad se registruju i potvrde e-poštu, tvoje ograničenje za {feature} raste na {count}.",
   "upgradeInviteBodyUnlimited": "Ili pozovi 3 prijatelja: kad se registruju i potvrde e-poštu, {feature} postaje neograničeno za tebe.",
   "upgradeInviteCta": "Pozovi 3 prijatelja",
+  "upgradeInviteBodyUnlock": "Ili pozovi 3 prijatelja: kad se registruju i potvrde e-poštu, {feature} se otključava za tebe.",
   "reportsFreeHint": "Besplatni paket prikazuje tekući i prethodni mjesec.",
   "planFeatParallel": "Paralelni kursevi",
   "planFeatPdf": "Izvoz izvještaja u PDF",

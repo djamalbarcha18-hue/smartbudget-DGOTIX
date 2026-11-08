@@ -116,7 +116,7 @@ void main() {
     expect(find.text('Invite 3 friends'), findsNothing);
   });
 
-  testWidgets('a locked feature offers the upgrade only, no invitation',
+  testWidgets('a locked feature that invitations do not open: upgrade only',
       (WidgetTester tester) async {
     await tester.pumpWidget(_host(
         Plan.free,
@@ -128,6 +128,32 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
     expect(find.text('See plans'), findsOneWidget);
+    expect(find.text('Invite 3 friends'), findsNothing);
+  });
+
+  testWidgets('a locked feature that three friends open offers both',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(_host(
+        Plan.free,
+        Builder(
+            builder: (BuildContext context) => TextButton(
+                onPressed: () => PlanLimits.allow(context, Feature.salarySplit),
+                child: const Text('open')))));
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    expect(find.text('See plans'), findsOneWidget);
+    expect(find.text('Invite 3 friends'), findsOneWidget);
+    expect(find.textContaining('is unlocked for you'), findsOneWidget);
+  });
+
+  testWidgets('the locked card of such a section also invites',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(_host(
+        Plan.free, const LockedFeatureCard(feature: Feature.healthDetails)));
+    expect(find.text('Invite 3 friends'), findsOneWidget);
+    // And one the reward does not open does not.
+    await tester.pumpWidget(_host(
+        Plan.free, const LockedFeatureCard(feature: Feature.reportTrends)));
     expect(find.text('Invite 3 friends'), findsNothing);
   });
 

@@ -1209,6 +1209,7 @@
   "upgradeInviteBody": "Ose fto 3 miq: sapo të regjistrohen dhe të konfirmojnë email-in, kufiri yt për {feature} rritet në {count}.",
   "upgradeInviteBodyUnlimited": "Ose fto 3 miq: sapo të regjistrohen dhe të konfirmojnë email-in, {feature} bëhet pa limit për ty.",
   "upgradeInviteCta": "Fto 3 miq",
+  "upgradeInviteBodyUnlock": "Ose fto 3 miq: sapo të regjistrohen dhe të konfirmojnë email-in, {feature} zhbllokohet për ty.",
   "reportsFreeHint": "Paketa falas tregon muajin aktual dhe atë të mëparshëm.",
   "planFeatParallel": "Kurse paralele këmbimi",
   "planFeatPdf": "Eksportim raportesh në PDF",

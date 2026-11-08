@@ -1209,6 +1209,7 @@
   "upgradeInviteBody": "Atau jemput 3 rakan: apabila mereka mendaftar dan mengesahkan e-mel, had {feature} anda naik kepada {count}.",
   "upgradeInviteBodyUnlimited": "Atau jemput 3 rakan: apabila mereka mendaftar dan mengesahkan e-mel, {feature} menjadi tanpa had untuk anda.",
   "upgradeInviteCta": "Jemput 3 rakan",
+  "upgradeInviteBodyUnlock": "Atau jemput 3 rakan: apabila mereka mendaftar dan mengesahkan e-mel, {feature} dibuka untuk anda.",
   "reportsFreeHint": "Pelan percuma menunjukkan bulan semasa dan bulan sebelumnya.",
   "planFeatParallel": "Kadar pertukaran selari",
   "planFeatPdf": "Eksport laporan PDF",

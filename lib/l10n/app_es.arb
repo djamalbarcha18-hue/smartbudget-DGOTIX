@@ -1209,6 +1209,7 @@
   "upgradeInviteBody": "O invita a 3 amigos: cuando se registren y confirmen su correo, tu límite de {feature} sube a {count}.",
   "upgradeInviteBodyUnlimited": "O invita a 3 amigos: cuando se registren y confirmen su correo, {feature} queda sin límite para ti.",
   "upgradeInviteCta": "Invitar a 3 amigos",
+  "upgradeInviteBodyUnlock": "O invita a 3 amigos: cuando se registren y confirmen su correo, {feature} se desbloquea para ti.",
   "reportsFreeHint": "El plan gratis muestra el mes actual y el anterior.",
   "planFeatParallel": "Tipos de cambio paralelos",
   "planFeatPdf": "Exportar informes en PDF",

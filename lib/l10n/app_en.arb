@@ -1422,6 +1422,8 @@
   "upgradeInviteBodyUnlimited": "Or invite 3 friends: once they join and confirm their email, {feature} has no limit for you.",
   "@upgradeInviteBodyUnlimited": { "placeholders": { "feature": { "type": "String" } } },
   "upgradeInviteCta": "Invite 3 friends",
+  "upgradeInviteBodyUnlock": "Or invite 3 friends: once they join and confirm their email, {feature} is unlocked for you.",
+  "@upgradeInviteBodyUnlock": { "placeholders": { "feature": { "type": "String" } } },
   "reportsFreeHint": "The free plan shows the current and the previous month.",
   "planFeatParallel": "Parallel exchange rates",
   "planFeatPdf": "PDF report export",
