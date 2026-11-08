@@ -49,7 +49,13 @@ export async function createWhopCheckout(
       ...(redirectUrl ? { redirect_url: redirectUrl } : {}),
     }),
   });
-  if (!res.ok) return null;
+  if (!res.ok) {
+    // Why Whop refused (a wrong plan id, a key without the permission, a
+    // sandbox/live mix-up) goes to the function log; never the key itself.
+    const detail = (await res.text().catch(() => "")).slice(0, 300);
+    console.error(`whop checkout refused: ${res.status} ${detail}`);
+    return null;
+  }
   const data: Json = await res.json().catch(() => ({}));
   const url = data?.purchase_url;
   return typeof url === "string" && url ? url : null;
