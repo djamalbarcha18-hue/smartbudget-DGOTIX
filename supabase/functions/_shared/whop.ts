@@ -27,11 +27,17 @@ export function whopConfigured(): boolean {
 }
 
 /** The dated API version to pin (Whop's `Api-Version-Date` header), from the
- * secret WHOP_API_VERSION as YYYY-MM-DD. Anything else (or unset) pins
- * nothing, so requests behave exactly as before. */
+ * secret WHOP_API_VERSION: YYYY-MM-DD, or YYYY-MM-DD-N for a second release
+ * on a day (e.g. 2026-10-27-1). Anything else (or unset) pins nothing, so
+ * requests behave exactly as before.
+ *
+ * Why 2026-10-27-1: from 2026-10-27-2 Whop renames plan_id to variant_id on
+ * checkout configurations AND on memberships, which the webhook reads. A key
+ * created recently defaults to the newest version, so we pin the last one
+ * that still speaks plan_id. */
 export function whopApiVersion(raw?: string | null): string | null {
   const v = String(raw ?? "").trim();
-  return /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null;
+  return /^\d{4}-\d{2}-\d{2}(-\d{1,2})?$/.test(v) ? v : null;
 }
 
 /** Headers for a Whop API call: the key, plus the pinned version when set. */

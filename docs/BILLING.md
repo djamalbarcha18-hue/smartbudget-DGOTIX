@@ -64,6 +64,7 @@ as in the official `@whop/sdk`.
    supabase secrets set WHOP_API_KEY=...                 # company API key
    supabase secrets set WHOP_WEBHOOK_SECRET=ws_...       # from the webhook, as shown
    supabase secrets set WHOP_COMPANY_ID=biz_...          # optional: the account to sell from
+   supabase secrets set WHOP_API_VERSION=2026-10-27-1    # pins Whop's API: newer versions rename plan_id to variant_id
    supabase secrets set WHOP_API_URL=https://sandbox-api.whop.com/api/v1   # sandbox only
    supabase secrets set CHECKOUT_SUCCESS_URL=https://smartbudget.dgotix.com/#/plans
    supabase secrets unset PADDLE_API_KEY PADDLE_API_URL PADDLE_WEBHOOK_SECRET PADDLE_CLIENT_TOKEN PADDLE_CHECKOUT_PAGE

@@ -11,6 +11,9 @@ Deno.test("whopApiVersion: only a YYYY-MM-DD date pins a version", () => {
   eq(whopApiVersion(""), null);
   eq(whopApiVersion("latest"), null);
   eq(whopApiVersion("2026-7-23"), null);
+  eq(whopApiVersion("2026-10-27-1"), "2026-10-27-1");
+  eq(whopApiVersion("2026-10-27-"), null);
+  eq(whopApiVersion("2026-10-27-abc"), null);
 });
 
 Deno.test("buildWhopHeaders: the version header appears only when pinned", () => {
