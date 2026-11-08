@@ -324,7 +324,7 @@ int? _savePercent(double? m, double? y) {
 }
 
 /// A price kept in its own left-to-right order inside a sentence.
-String _ltr(String s) => '⁦$s⁩';
+String _ltr(String s) => '\u2066$s\u2069';
 
 String _money(double? v) {
   if (v == null) return '—';
