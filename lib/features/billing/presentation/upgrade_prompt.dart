@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/core/config/app_config.dart';
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -11,7 +14,10 @@ import 'package:smartbudget/features/billing/application/entitlement_controller.
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/feature_gate.dart';
 import 'package:smartbudget/features/referrals/application/referrals_controller.dart';
+import 'package:smartbudget/features/referrals/domain/referral_link.dart';
 import 'package:smartbudget/features/referrals/domain/referral_reward.dart';
+import 'package:smartbudget/features/share/data/native_share.dart';
+import 'package:smartbudget/features/share/domain/share_qr.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -43,6 +49,35 @@ String featureTitle(AppLocalizations l, Feature f) => switch (f) {
       Feature.proThemes => l.featProThemes,
       Feature.categoryIcons => l.featCategoryIcons,
     };
+
+/// One tap to invite: the system share sheet with the app's ready-made
+/// message and this member's invite link (so whoever signs up through it counts
+/// toward the reward). Where there is no share sheet (most desktops) the text
+/// and link are copied instead. Without a code yet (signed out, or still
+/// loading) it opens Settings, where the invite card explains.
+Future<void> shareInviteLink(BuildContext context, WidgetRef ref,
+    {bool closeSheet = false}) async {
+  final AppLocalizations l = AppLocalizations.of(context);
+  final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+  final GoRouter router = GoRouter.of(context);
+  final NavigatorState navigator = Navigator.of(context);
+  final String? code = ref.read(referralCodeProvider).valueOrNull;
+  if (closeSheet) navigator.pop();
+  if (!ReferralLink.looksValid(code)) {
+    router.go('/settings');
+    return;
+  }
+  final String link = ReferralLink.invite(ShareQr.appUrl(), code);
+  final String base = l.shareMsgPersonal;
+  final String text =
+      AppEnv.betaAllAccess ? '$base ${l.shareMsgBetaTail}' : base;
+  final NativeShareResult r =
+      await shareNatively(title: AppConfig.appName, text: text, url: link);
+  if (r == NativeShareResult.unsupported) {
+    await Clipboard.setData(ClipboardData(text: '$text\n$link'));
+    messenger.showSnackBar(SnackBar(content: Text(l.inviteCopied)));
+  }
+}
 
 /// Plan limits at the points where something new is added or opened. The
 /// gate decides; this shows the upgrade sheet when it says no.
@@ -86,7 +121,7 @@ abstract final class PlanLimits {
 }
 
 /// The sheet shown when a plan limit is reached or a feature is locked.
-class UpgradeSheet extends StatelessWidget {
+class UpgradeSheet extends ConsumerWidget {
   const UpgradeSheet({
     super.key,
     required this.decision,
@@ -115,7 +150,7 @@ class UpgradeSheet extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
@@ -188,10 +223,8 @@ class UpgradeSheet extends StatelessWidget {
                 label: l.upgradeInviteCta,
                 icon: Icons.card_giftcard_rounded,
                 variant: DsButtonVariant.secondary,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  context.go('/settings');
-                },
+                onPressed: () =>
+                    shareInviteLink(context, ref, closeSheet: true),
               ),
             ],
             const SizedBox(height: DsSpacing.sm),
@@ -255,7 +288,7 @@ class LockedFeatureCard extends ConsumerWidget {
                   Align(
                     alignment: AlignmentDirectional.centerStart,
                     child: TextButton.icon(
-                      onPressed: () => context.go('/settings'),
+                      onPressed: () => shareInviteLink(context, ref),
                       icon: const Icon(Icons.card_giftcard_rounded, size: 16),
                       label: Text(l.upgradeInviteCta),
                     ),

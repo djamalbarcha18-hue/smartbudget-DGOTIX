@@ -28,6 +28,12 @@ friends", with the number it would rise to, and a button to the invite card in
 Settings. It is not shown once the reward is earned, nor for locked features
 (`PlanLimits.allowAdd`, `UpgradeSheet.inviteLimit`).
 
+The "Invite 3 friends" button is **one tap**: it opens the system share sheet
+with the app's ready-made message and the member's own invite link
+(`shareInviteLink`), or copies them where there is no share sheet (most
+desktops). Whoever signs up through that link counts toward the reward. With no
+invite code yet (signed out, still loading) it opens Settings instead.
+
 The two sections a reward opens outright (smart salary split, financial-health
 details) offer both choices too: their locked card and the salary-split button
 show "Invite 3 friends" next to "See plans" until the reward is earned. A
