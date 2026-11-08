@@ -30,8 +30,8 @@ import {
   type TaskType,
 } from "../_shared/ai/gateway.ts";
 import {
-  AI_MONTHLY_COST_CEILING_USD,
-  AI_QUOTA,
+  aiAllowance,
+  aiCostCeiling,
   allowanceFor,
   DAILY_LIMIT,
   effectivePlan,
@@ -106,8 +106,9 @@ Deno.serve(async (req: Request) => {
     // A new or unconfirmed account doesn't get the plan's full allowance
     // (beta gives everyone PRO): see supabase/abuse_limits.sql.
     const trust = trustOf(paidPlan, account);
-    const allow = allowanceFor(AI_QUOTA[plan], "ai", trust);
-    const costCeiling = AI_MONTHLY_COST_CEILING_USD[plan];
+    // A trial gets a small fixed allowance (the rest of PRO is open to it).
+    const allow = allowanceFor(aiAllowance(plan, paidPlan), "ai", trust);
+    const costCeiling = aiCostCeiling(plan, paidPlan);
 
     // Monthly cost is always the secondary guard; the request count is checked
     // against the plan's window (FREE = one-time lifetime, paid = monthly).

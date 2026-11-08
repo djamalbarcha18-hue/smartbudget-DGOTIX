@@ -37,7 +37,7 @@ import {
   DAILY_LIMIT,
   effectivePlan,
   normalizePlan,
-  OCR_QUOTA,
+  ocrAllowance,
   type Plan,
   trustOf,
 } from "../_shared/quota.ts";
@@ -235,7 +235,8 @@ Deno.serve(async (req: Request) => {
     // A new or unconfirmed account doesn't get the plan's full allowance
     // (beta gives everyone PRO): see supabase/abuse_limits.sql.
     const trust = trustOf(paidPlan, account);
-    const allow = allowanceFor(OCR_QUOTA[plan], "ocr", trust);
+    // A trial gets a small fixed allowance (the rest of PRO is open to it).
+    const allow = allowanceFor(ocrAllowance(plan, paidPlan), "ocr", trust);
     if (await ocrQuotaExceeded(db, userId, month, allow)) {
       return jsonResponse({ error: "quota_exceeded" }, 429, cors);
     }

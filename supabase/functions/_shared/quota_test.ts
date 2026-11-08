@@ -1,4 +1,14 @@
-import { AI_QUOTA, allowanceFor, OCR_QUOTA, quotaInfo, trustOf } from "./quota.ts";
+import {
+  AI_QUOTA,
+  aiAllowance,
+  aiCostCeiling,
+  allowanceFor,
+  OCR_QUOTA,
+  ocrAllowance,
+  onTrial,
+  quotaInfo,
+  trustOf,
+} from "./quota.ts";
 
 function expect(v: unknown, want: unknown, m: string) {
   if (JSON.stringify(v) !== JSON.stringify(want)) {
@@ -40,4 +50,26 @@ Deno.test("what the app is told: left, and when a month starts over", () => {
   expect(quotaInfo(AI_QUOTA.free, 2, now).resetsAt, null, "one-time has no reset");
   expect(quotaInfo(AI_QUOTA.pro, 79, new Date("2026-12-31T23:59:00Z")).resetsAt,
     "2027-01-01T00:00:00.000Z", "year end");
+});
+
+Deno.test("a PRO trial gets 25 answers and 10 scans; a purchase gets the plan's", () => {
+  // The trial puts the account above what it pays for: free paid, pro in force.
+  expect(onTrial("pro", "free", false), true, "trial");
+  expect(onTrial("pro", "pro", false), false, "bought");
+  expect(onTrial("free", "free", false), false, "plain free");
+  // The beta also shows "pro" in force, but it is not a trial.
+  expect(onTrial("pro", "free", true), false, "beta");
+
+  expect(aiAllowance("pro", "free", false), { limit: 25, window: "monthly" }, "trial ai");
+  expect(ocrAllowance("pro", "free", false), { limit: 10, window: "monthly" }, "trial ocr");
+  expect(aiAllowance("pro", "pro", false), AI_QUOTA.pro, "bought ai");
+  expect(ocrAllowance("pro", "pro", false), OCR_QUOTA.pro, "bought ocr");
+  expect(aiAllowance("free", "free", false), AI_QUOTA.free, "free ai");
+  expect(aiAllowance("pro", "free", true), AI_QUOTA.pro, "beta ai unchanged");
+  expect(ocrAllowance("pro", "free", true), OCR_QUOTA.pro, "beta ocr unchanged");
+});
+
+Deno.test("a trial has a smaller monthly cost guard than PRO", () => {
+  expect(aiCostCeiling("pro", "free", false) < aiCostCeiling("pro", "pro", false), true, "smaller");
+  expect(aiCostCeiling("pro", "free", true), aiCostCeiling("pro", "pro", true), "beta unchanged");
 });

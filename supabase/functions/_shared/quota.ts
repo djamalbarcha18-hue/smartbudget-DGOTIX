@@ -43,6 +43,17 @@ export const AI_MONTHLY_COST_CEILING_USD: Record<Plan, number> = {
 };
 
 /**
+ * The costly part of a PRO trial is a small, fixed allowance (owner's decision,
+ * 2026-11-08): the rest of PRO is open for the trial, but the assistant and
+ * cloud scans cost money per call, so a trial gets 25 answers and 10 scans
+ * (counted in the calendar month, so a trial that crosses a month can use
+ * them twice at worst: about $1 in total). docs/PRICING.md §7.
+ */
+export const TRIAL_AI_QUOTA: Allowance = { limit: 25, window: "monthly" };
+export const TRIAL_OCR_QUOTA: Allowance = { limit: 10, window: "monthly" };
+export const TRIAL_AI_COST_CEILING_USD = 0.3;
+
+/**
  * Display prices in USD (mirrors lib/features/billing/domain/plan.dart and
  * docs/PRICING.md). Used by coupon math to compute a discounted price. The
  * billing provider remains authoritative at real checkout. `yearly` is null
@@ -97,6 +108,47 @@ export function effectivePlan(
     }
   }
   return plan;
+}
+
+/**
+ * Whether a trial (not a purchase, and not the beta) is what puts the account
+ * above the plan it pays for. [beta] is a parameter so tests can set it.
+ */
+export function onTrial(
+  plan: Plan,
+  paidPlan: Plan,
+  beta: boolean = betaAllAccess(),
+): boolean {
+  return !beta && RANK[plan] > RANK[paidPlan];
+}
+
+/** AI answers allowed: the plan's, or the small trial allowance on a trial. */
+export function aiAllowance(
+  plan: Plan,
+  paidPlan: Plan,
+  beta: boolean = betaAllAccess(),
+): Allowance {
+  return onTrial(plan, paidPlan, beta) ? TRIAL_AI_QUOTA : AI_QUOTA[plan];
+}
+
+/** Cloud scans allowed: the plan's, or the small trial allowance on a trial. */
+export function ocrAllowance(
+  plan: Plan,
+  paidPlan: Plan,
+  beta: boolean = betaAllAccess(),
+): Allowance {
+  return onTrial(plan, paidPlan, beta) ? TRIAL_OCR_QUOTA : OCR_QUOTA[plan];
+}
+
+/** The monthly AI cost guard: the plan's, or a smaller one on a trial. */
+export function aiCostCeiling(
+  plan: Plan,
+  paidPlan: Plan,
+  beta: boolean = betaAllAccess(),
+): number {
+  return onTrial(plan, paidPlan, beta)
+    ? TRIAL_AI_COST_CEILING_USD
+    : AI_MONTHLY_COST_CEILING_USD[plan];
 }
 
 // ---- Limits against mass sign-ups (supabase/abuse_limits.sql) ----
