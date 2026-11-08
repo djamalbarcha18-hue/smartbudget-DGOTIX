@@ -1644,5 +1644,10 @@
   "reportTopCategories": "Principaux postes de dépense",
   "reportBudgetUsed": "{percent} du budget · {count} catégories",
   "reportPointsChange": "{value} pts",
-  "reportExcludedNote": "{count} opérations en {currencies} ne sont pas comptées : aucun taux de change n’a été enregistré avec elles."
+  "reportExcludedNote": "{count} opérations en {currencies} ne sont pas comptées : aucun taux de change n’a été enregistré avec elles.",
+  "syncFreeNote": "La synchronisation gratuite garde vos opérations, budgets et catégories à jour sur vos appareils pour les {months} derniers mois. L'historique plus ancien reste sur l'appareil où il a été saisi (rien n'est supprimé) ; PRO synchronise tout.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Synchronisation entre appareils : {months} derniers mois",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Synchronisation de tout votre historique et de toutes vos données"
 }

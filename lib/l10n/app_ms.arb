@@ -1644,5 +1644,10 @@
   "reportTopCategories": "Kategori perbelanjaan terbesar",
   "reportBudgetUsed": "{percent} daripada bajet · {count} kategori",
   "reportPointsChange": "{value} mata",
-  "reportExcludedNote": "{count} rekod dalam {currencies} tidak dikira: tiada kadar tukaran direkodkan bersamanya."
+  "reportExcludedNote": "{count} rekod dalam {currencies} tidak dikira: tiada kadar tukaran direkodkan bersamanya.",
+  "syncFreeNote": "Penyegerakan percuma memastikan transaksi, bajet dan kategori anda sama pada semua peranti untuk {months} bulan terakhir. Sejarah yang lebih lama kekal pada peranti tempat ia dimasukkan (tiada apa dipadam); PRO menyegerakkan semuanya.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Penyegerakan antara peranti: {months} bulan terakhir",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Penyegerakan seluruh sejarah dan semua data anda"
 }

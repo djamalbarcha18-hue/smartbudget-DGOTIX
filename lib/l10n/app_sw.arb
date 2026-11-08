@@ -1644,5 +1644,10 @@
   "reportTopCategories": "Kategoria kubwa za matumizi",
   "reportBudgetUsed": "{percent} ya bajeti · kategoria {count}",
   "reportPointsChange": "pointi {value}",
-  "reportExcludedNote": "Rekodi {count} za {currencies} hazijahesabiwa: hakuna kiwango cha ubadilishaji kilichohifadhiwa nazo."
+  "reportExcludedNote": "Rekodi {count} za {currencies} hazijahesabiwa: hakuna kiwango cha ubadilishaji kilichohifadhiwa nazo.",
+  "syncFreeNote": "Usawazishaji wa bure huweka miamala, bajeti na kategoria zako sawa kwenye vifaa vyako kwa miezi {months} ya mwisho. Historia ya zamani hubaki kwenye kifaa ilipoingizwa (hakuna kinachofutwa); PRO husawazisha kila kitu.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Usawazishaji kati ya vifaa: miezi {months} ya mwisho",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Usawazishaji wa historia yako yote na data zako zote"
 }

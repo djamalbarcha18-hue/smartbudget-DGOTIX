@@ -1644,5 +1644,10 @@
   "reportTopCategories": "Principali categorie di spesa",
   "reportBudgetUsed": "{percent} del budget · {count} categorie",
   "reportPointsChange": "{value} pt",
-  "reportExcludedNote": "{count} movimenti in {currencies} non sono conteggiati: non è stato registrato alcun tasso di cambio."
+  "reportExcludedNote": "{count} movimenti in {currencies} non sono conteggiati: non è stato registrato alcun tasso di cambio.",
+  "syncFreeNote": "La sincronizzazione gratuita mantiene allineati movimenti, budget e categorie sui tuoi dispositivi per gli ultimi {months} mesi. La cronologia più vecchia resta sul dispositivo in cui è stata inserita (non si cancella nulla); PRO sincronizza tutto.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Sincronizzazione tra dispositivi: ultimi {months} mesi",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Sincronizzazione di tutta la cronologia e di tutti i dati"
 }

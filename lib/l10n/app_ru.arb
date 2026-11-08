@@ -1644,5 +1644,10 @@
   "reportTopCategories": "Крупнейшие статьи расходов",
   "reportBudgetUsed": "{percent} бюджета · категорий: {count}",
   "reportPointsChange": "{value} п.",
-  "reportExcludedNote": "Записи в {currencies} не учтены ({count}): для них не сохранён курс обмена."
+  "reportExcludedNote": "Записи в {currencies} не учтены ({count}): для них не сохранён курс обмена.",
+  "syncFreeNote": "Бесплатная синхронизация поддерживает одинаковыми ваши операции, бюджеты и категории на всех устройствах за последние {months} мес. Более старая история остаётся на устройстве, где она введена (ничего не удаляется); PRO синхронизирует всё.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Синхронизация между устройствами: последние {months} мес.",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Синхронизация всей истории и всех данных"
 }

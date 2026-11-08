@@ -1644,5 +1644,10 @@
   "reportTopCategories": "सबसे बड़ी खर्च श्रेणियाँ",
   "reportBudgetUsed": "बजट का {percent} · {count} श्रेणियाँ",
   "reportPointsChange": "{value} अंक",
-  "reportExcludedNote": "{currencies} में {count} प्रविष्टियाँ नहीं गिनी गईं: उनके साथ कोई विनिमय दर दर्ज नहीं है।"
+  "reportExcludedNote": "{currencies} में {count} प्रविष्टियाँ नहीं गिनी गईं: उनके साथ कोई विनिमय दर दर्ज नहीं है।",
+  "syncFreeNote": "मुफ़्त सिंक आपके लेन-देन, बजट और श्रेणियों को पिछले {months} महीनों के लिए आपके सभी उपकरणों पर एक जैसा रखता है। पुराना इतिहास उसी उपकरण पर रहता है जहाँ दर्ज किया गया था (कुछ भी हटाया नहीं जाता); PRO सब कुछ सिंक करता है।",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "उपकरणों के बीच सिंक: पिछले {months} महीने",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "आपके पूरे इतिहास और सारे डेटा का सिंक"
 }

@@ -1644,5 +1644,10 @@
   "reportTopCategories": "Najveće kategorije troškova",
   "reportBudgetUsed": "{percent} budžeta · kategorija: {count}",
   "reportPointsChange": "{value} bodova",
-  "reportExcludedNote": "{count} zapisa u {currencies} nije uračunato: uz njih nije zabilježen kurs."
+  "reportExcludedNote": "{count} zapisa u {currencies} nije uračunato: uz njih nije zabilježen kurs.",
+  "syncFreeNote": "Besplatna sinhronizacija usklađuje vaše transakcije, budžete i kategorije na svim uređajima za posljednjih {months} mjeseca. Starija historija ostaje na uređaju na kojem je unesena (ništa se ne briše); PRO sinhronizira sve.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Sinhronizacija između uređaja: posljednjih {months} mjeseca",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Sinhronizacija cijele historije i svih podataka"
 }

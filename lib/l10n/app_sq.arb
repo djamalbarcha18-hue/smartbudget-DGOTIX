@@ -1644,5 +1644,10 @@
   "reportTopCategories": "Kategoritë më të mëdha të shpenzimeve",
   "reportBudgetUsed": "{percent} e buxhetit · {count} kategori",
   "reportPointsChange": "{value} pikë",
-  "reportExcludedNote": "{count} regjistrime në {currencies} nuk janë llogaritur: nuk u regjistrua asnjë kurs këmbimi me to."
+  "reportExcludedNote": "{count} regjistrime në {currencies} nuk janë llogaritur: nuk u regjistrua asnjë kurs këmbimi me to.",
+  "syncFreeNote": "Sinkronizimi falas i mban transaksionet, buxhetet dhe kategoritë e njëjta në pajisjet tuaja për {months} muajt e fundit. Historiku më i vjetër mbetet në pajisjen ku u fut (asgjë nuk fshihet); PRO sinkronizon gjithçka.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Sinkronizim mes pajisjeve: {months} muajt e fundit",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Sinkronizim i gjithë historikut dhe i të gjitha të dhënave"
 }

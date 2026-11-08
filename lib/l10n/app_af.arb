@@ -1644,5 +1644,10 @@
   "reportTopCategories": "Grootste uitgawekategorieë",
   "reportBudgetUsed": "{percent} van die begroting · {count} kategorieë",
   "reportPointsChange": "{value} pte",
-  "reportExcludedNote": "{count} inskrywings in {currencies} tel nie: geen wisselkoers is daarmee opgeteken nie."
+  "reportExcludedNote": "{count} inskrywings in {currencies} tel nie: geen wisselkoers is daarmee opgeteken nie.",
+  "syncFreeNote": "Gratis-sinkronisering hou jou transaksies, begrotings en kategorieë dieselfde oor jou toestelle vir die laaste {months} maande. Ouer geskiedenis bly op die toestel waar dit ingevoer is (niks word uitgevee nie); PRO sinkroniseer alles.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Sinkronisering tussen toestelle: laaste {months} maande",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Sinkronisering van jou volle geskiedenis en al jou data"
 }

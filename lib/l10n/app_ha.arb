@@ -1644,5 +1644,10 @@
   "reportTopCategories": "Manyan rukunan kashe kuɗi",
   "reportBudgetUsed": "{percent} na kasafin · rukunoni {count}",
   "reportPointsChange": "maki {value}",
-  "reportExcludedNote": "Bayanai {count} na {currencies} ba a lissafa su ba: ba a adana farashin musaya tare da su ba."
+  "reportExcludedNote": "Bayanai {count} na {currencies} ba a lissafa su ba: ba a adana farashin musaya tare da su ba.",
+  "syncFreeNote": "Daidaitawa kyauta tana sa mu'amalolinku, kasafin kuɗi da rukunai su zama iri ɗaya a na'urorinku na watanni {months} na ƙarshe. Tsofaffin bayanai suna nan a na'urar da aka shigar da su (ba a share komai ba); PRO yana daidaita komai.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Daidaitawa tsakanin na'urori: watanni {months} na ƙarshe",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Daidaita dukan tarihinka da dukan bayananka"
 }

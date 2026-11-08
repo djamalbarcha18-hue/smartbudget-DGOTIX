@@ -26,6 +26,7 @@ import 'package:smartbudget/features/metals/application/metals_controller.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/sync/data/sync_remote.dart';
 import 'package:smartbudget/features/sync/domain/sync_merge.dart';
+import 'package:smartbudget/features/sync/domain/sync_scope.dart';
 import 'package:smartbudget/features/transactions/application/custom_categories_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
@@ -119,6 +120,10 @@ class SyncController extends Notifier<SyncStatus> {
   /// listener may fire while build() runs).
   bool _active = false;
 
+  /// PRO (and the trial, and the beta) syncs everything; FREE syncs the
+  /// basics for the last few months (see [SyncScope]).
+  bool _full = false;
+
   @override
   SyncStatus build() {
     _disposed = false;
@@ -126,13 +131,9 @@ class SyncController extends Notifier<SyncStatus> {
     final String? account = ref.watch(currentAccountIdProvider);
     final bool enabled = ref.watch(syncEnabledProvider);
     ref.onDispose(_stop);
-    // Automatic sync across devices is part of the paid plans.
-    final bool included =
-        ref.watch(featureGateProvider(Feature.cloudSyncFull)).allowed;
-    if (!ref.watch(syncAvailableProvider) ||
-        account == null ||
-        !enabled ||
-        !included) {
+    // Everyone syncs; what is covered depends on the plan.
+    _full = ref.watch(featureGateProvider(Feature.cloudSyncFull)).allowed;
+    if (!ref.watch(syncAvailableProvider) || account == null || !enabled) {
       return const SyncStatus(SyncPhase.off);
     }
     _account = account;
@@ -248,8 +249,12 @@ class SyncController extends Notifier<SyncStatus> {
     //    must not replace the account's own.
     //    (Once this device has synced one, it stays, so it is never sent as
     //    a deletion.)
-    Records records = await _records(backup);
-    final Entries ledger = _ledger(prefs.getString(ledgerKey));
+    final SyncScope scope =
+        _full ? const SyncScope.full() : SyncScope.free(AppClock.now());
+    Records all = await _records(backup);
+    final Records records = scope.filter(all);
+    final Entries ledger =
+        scope.pruneLedger(_ledger(prefs.getString(ledgerKey)), all);
     if (!ref.read(baseCurrencyProvider.notifier).isChosen &&
         ledger['settings']?['baseCurrency'] == null) {
       records['settings']?.remove('baseCurrency');
@@ -290,24 +295,29 @@ class SyncController extends Notifier<SyncStatus> {
     for (int attempt = 0; attempt < 3; attempt++) {
       final RemoteCopy copy = await remote.pull();
       if (_disposed || _account != account) return;
-      final Entries cloud = SyncMerge.fromCloud(copy.doc);
+      final Entries cloudAll = SyncMerge.fromCloud(copy.doc);
+      final Entries cloud = scope.cloudIn(cloudAll);
+      final Entries held = scope.cloudHeld(cloudAll);
       Entries merged = SyncMerge.merge(local, cloud, now: now);
-      final Records target = SyncMerge.recordsOf(merged);
-      if (!SyncMerge.sameRecords(records, target)) {
+      // What the device holds afterwards: everything it had (so nothing
+      // outside the scope is touched) with the merge applied on top.
+      final Records target = scope.compose(all, merged);
+      if (!SyncMerge.sameRecords(all, target)) {
         _quietUntil = AppClock.now().add(const Duration(seconds: 3));
         await backup.replaceAll(
           BackupData.fromJson(SyncMerge.backupFromRecords(target)),
           setBaseCurrency: target['settings']?['baseCurrency'] != null,
         );
-        records = await _records(backup);
+        all = await _records(backup);
         _quietUntil = AppClock.now().add(const Duration(seconds: 2));
       }
-      merged = SyncMerge.rebase(merged, records);
+      merged = SyncMerge.rebase(merged, all);
       await prefs.setString(
           ledgerKey, jsonEncode(SyncMerge.ledgerToJson(merged)));
       local = merged;
       final bool unchanged = SyncMerge.same(merged, cloud);
-      if (unchanged || await remote.push(SyncMerge.toCloud(merged), copy)) {
+      if (unchanged || await remote.push(
+              SyncMerge.toCloud(scope.withHeld(merged, held)), copy)) {
         // The version this device now matches (an upload makes the next one).
         final int? matched = !copy.versioned
             ? null

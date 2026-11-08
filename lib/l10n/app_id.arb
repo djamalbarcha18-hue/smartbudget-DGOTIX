@@ -1644,5 +1644,10 @@
   "reportTopCategories": "Kategori pengeluaran terbesar",
   "reportBudgetUsed": "{percent} dari anggaran · {count} kategori",
   "reportPointsChange": "{value} poin",
-  "reportExcludedNote": "{count} catatan dalam {currencies} tidak dihitung: tidak ada kurs yang tercatat bersamanya."
+  "reportExcludedNote": "{count} catatan dalam {currencies} tidak dihitung: tidak ada kurs yang tercatat bersamanya.",
+  "syncFreeNote": "Sinkronisasi gratis menjaga transaksi, anggaran, dan kategori Anda tetap sama di semua perangkat untuk {months} bulan terakhir. Riwayat yang lebih lama tetap di perangkat tempat data dimasukkan (tidak ada yang dihapus); PRO menyinkronkan semuanya.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Sinkronisasi antarperangkat: {months} bulan terakhir",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Sinkronisasi seluruh riwayat dan semua data Anda"
 }

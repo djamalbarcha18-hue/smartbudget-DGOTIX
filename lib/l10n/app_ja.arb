@@ -1644,5 +1644,10 @@
   "reportTopCategories": "支出の多いカテゴリ",
   "reportBudgetUsed": "予算の {percent} · {count} カテゴリ",
   "reportPointsChange": "{value} ポイント",
-  "reportExcludedNote": "{currencies} の {count} 件は未集計です。為替レートが記録されていません。"
+  "reportExcludedNote": "{currencies} の {count} 件は未集計です。為替レートが記録されていません。",
+  "syncFreeNote": "無料の同期では、直近{months}か月分の取引・予算・カテゴリをすべての端末で同じに保ちます。それより古い履歴は入力した端末に残ります(何も削除されません)。PROならすべてを同期します。",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "端末間の同期:直近{months}か月",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "全履歴とすべてのデータの同期"
 }

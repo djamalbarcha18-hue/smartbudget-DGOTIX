@@ -1644,5 +1644,10 @@
   "reportTopCategories": "Größte Ausgabenkategorien",
   "reportBudgetUsed": "{percent} des Budgets · {count} Kategorien",
   "reportPointsChange": "{value} Pkt.",
-  "reportExcludedNote": "{count} Buchungen in {currencies} sind nicht enthalten: Zu ihnen wurde kein Wechselkurs erfasst."
+  "reportExcludedNote": "{count} Buchungen in {currencies} sind nicht enthalten: Zu ihnen wurde kein Wechselkurs erfasst.",
+  "syncFreeNote": "Die kostenlose Synchronisierung hält Ihre Buchungen, Budgets und Kategorien auf Ihren Geräten für die letzten {months} Monate auf demselben Stand. Ältere Einträge bleiben auf dem Gerät, auf dem sie erfasst wurden (nichts wird gelöscht); PRO synchronisiert alles.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Synchronisierung zwischen Geräten: letzte {months} Monate",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Synchronisierung des gesamten Verlaufs und aller Daten"
 }

@@ -1644,5 +1644,10 @@
   "reportTopCategories": "En büyük harcama kategorileri",
   "reportBudgetUsed": "Bütçenin {percent} kadarı · {count} kategori",
   "reportPointsChange": "{value} puan",
-  "reportExcludedNote": "{currencies} cinsinden {count} kayıt sayılmadı: yanlarında döviz kuru kaydedilmemiş."
+  "reportExcludedNote": "{currencies} cinsinden {count} kayıt sayılmadı: yanlarında döviz kuru kaydedilmemiş.",
+  "syncFreeNote": "Ücretsiz senkronizasyon, işlemlerinizi, bütçelerinizi ve kategorilerinizi son {months} ay için cihazlarınızda aynı tutar. Daha eski geçmiş, girildiği cihazda kalır (hiçbir şey silinmez); PRO her şeyi senkronize eder.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Cihazlar arası senkronizasyon: son {months} ay",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Tüm geçmişinizin ve tüm verilerinizin senkronizasyonu"
 }

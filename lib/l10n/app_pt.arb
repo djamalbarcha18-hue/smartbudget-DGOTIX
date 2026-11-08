@@ -1644,5 +1644,10 @@
   "reportTopCategories": "Maiores categorias de despesa",
   "reportBudgetUsed": "{percent} do orçamento · {count} categorias",
   "reportPointsChange": "{value} pts",
-  "reportExcludedNote": "{count} registos em {currencies} não são contados: não foi registada nenhuma taxa de câmbio com eles."
+  "reportExcludedNote": "{count} registos em {currencies} não são contados: não foi registada nenhuma taxa de câmbio com eles.",
+  "syncFreeNote": "A sincronização gratuita mantém os seus lançamentos, orçamentos e categorias iguais nos seus dispositivos nos últimos {months} meses. O histórico mais antigo fica no dispositivo onde foi registado (nada é apagado); o PRO sincroniza tudo.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Sincronização entre dispositivos: últimos {months} meses",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Sincronização de todo o histórico e de todos os dados"
 }

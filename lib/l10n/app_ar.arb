@@ -1843,5 +1843,10 @@
   "reportTopCategories": "أكبر فئات الإنفاق",
   "reportBudgetUsed": "{percent} من الميزانية · {count} فئة",
   "reportPointsChange": "{value} نقطة",
-  "reportExcludedNote": "{count} عملية بعملة {currencies} غير محتسبة: لم يُسجَّل معها سعر صرف."
+  "reportExcludedNote": "{count} عملية بعملة {currencies} غير محتسبة: لم يُسجَّل معها سعر صرف.",
+  "syncFreeNote": "المزامنة المجانية توحّد معاملاتك وميزانياتك وفئاتك بين أجهزتك لآخر {months} أشهر. أما التاريخ الأقدم فيبقى على الجهاز الذي أُدخل فيه (ولا يُحذف شيء)، وتُزامن Pro كل شيء.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "مزامنة بين الأجهزة لآخر {months} أشهر",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "مزامنة كل تاريخك وجميع بياناتك"
 }

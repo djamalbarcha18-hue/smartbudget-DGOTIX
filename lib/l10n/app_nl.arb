@@ -1644,5 +1644,10 @@
   "reportTopCategories": "Grootste uitgavencategorieën",
   "reportBudgetUsed": "{percent} van het budget · {count} categorieën",
   "reportPointsChange": "{value} ptn",
-  "reportExcludedNote": "{count} boekingen in {currencies} tellen niet mee: er is geen wisselkoers bij vastgelegd."
+  "reportExcludedNote": "{count} boekingen in {currencies} tellen niet mee: er is geen wisselkoers bij vastgelegd.",
+  "syncFreeNote": "Gratis synchronisatie houdt je transacties, budgetten en categorieën de laatste {months} maanden gelijk op al je apparaten. Oudere geschiedenis blijft op het apparaat waar die is ingevoerd (er wordt niets verwijderd); PRO synchroniseert alles.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "Synchronisatie tussen apparaten: laatste {months} maanden",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "Synchronisatie van je hele geschiedenis en al je gegevens"
 }

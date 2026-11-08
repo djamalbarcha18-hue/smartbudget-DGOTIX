@@ -1644,5 +1644,10 @@
   "reportTopCategories": "最大支出类别",
   "reportBudgetUsed": "预算的 {percent} · {count} 个类别",
   "reportPointsChange": "{value} 点",
-  "reportExcludedNote": "{currencies} 的 {count} 笔记录未计入：未随之记录汇率。"
+  "reportExcludedNote": "{currencies} 的 {count} 笔记录未计入：未随之记录汇率。",
+  "syncFreeNote": "免费同步会让你的交易、预算和分类在各设备上保持一致,覆盖最近 {months} 个月。更早的记录会保留在录入它的设备上(不会删除任何内容);PRO 会同步全部内容。",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "设备间同步:最近 {months} 个月",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "同步全部历史记录和所有数据"
 }

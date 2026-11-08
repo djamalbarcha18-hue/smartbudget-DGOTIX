@@ -25,6 +25,7 @@ import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/billing/domain/user_subscription.dart';
 import 'package:smartbudget/features/billing/domain/payment_links.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
+import 'package:smartbudget/features/sync/domain/sync_scope.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Plans & upgrade screen — a transparent side-by-side of FREE / PRO.
@@ -568,6 +569,7 @@ class _PlanCard extends StatelessWidget {
           l.planFeatAiLifetime(_limit(Feature.dgotixAi)),
           l.planFeatOcrMonthly(_limit(Feature.cloudOcr)),
           l.planFeatOnDeviceOcr,
+          l.planFeatSyncFree(SyncScope.freeMonths),
         ];
       case Plan.pro:
         // The strongest reasons first: currencies and the parallel rate,
@@ -576,7 +578,7 @@ class _PlanCard extends StatelessWidget {
           l.planFeatEverythingIn(l.planFree),
           l.planFeatMultiCurrency,
           l.planFeatParallel,
-          l.planFeatCloudSync,
+          l.planFeatSyncAll,
           l.planFeatAiMonthly(_limit(Feature.dgotixAi)),
           l.planFeatOcrMonthly(_limit(Feature.cloudOcr)),
           l.planFeatAdvancedReports,

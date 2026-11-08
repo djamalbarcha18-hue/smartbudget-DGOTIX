@@ -1644,5 +1644,10 @@
   "reportTopCategories": "지출이 가장 큰 항목",
   "reportBudgetUsed": "예산의 {percent} · {count}개 항목",
   "reportPointsChange": "{value}포인트",
-  "reportExcludedNote": "{currencies} 기록 {count}건은 합계에 없습니다. 환율이 함께 기록되지 않았습니다."
+  "reportExcludedNote": "{currencies} 기록 {count}건은 합계에 없습니다. 환율이 함께 기록되지 않았습니다.",
+  "syncFreeNote": "무료 동기화는 최근 {months}개월의 거래, 예산, 카테고리를 모든 기기에서 동일하게 유지합니다. 그보다 오래된 내역은 입력한 기기에 남아 있으며(아무것도 삭제되지 않음), PRO는 모든 것을 동기화합니다.",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "기기 간 동기화: 최근 {months}개월",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "전체 내역과 모든 데이터 동기화"
 }

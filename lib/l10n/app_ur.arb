@@ -1644,5 +1644,10 @@
   "reportTopCategories": "سب سے بڑے اخراجات کے زمرے",
   "reportBudgetUsed": "بجٹ کا {percent} · {count} زمرے",
   "reportPointsChange": "{value} پوائنٹ",
-  "reportExcludedNote": "{currencies} میں {count} اندراجات شمار نہیں ہوئے: اُن کے ساتھ شرحِ تبادلہ محفوظ نہیں۔"
+  "reportExcludedNote": "{currencies} میں {count} اندراجات شمار نہیں ہوئے: اُن کے ساتھ شرحِ تبادلہ محفوظ نہیں۔",
+  "syncFreeNote": "مفت سنک آپ کے لین دین، بجٹ اور زمروں کو پچھلے {months} مہینوں کے لیے آپ کے تمام آلات پر یکساں رکھتا ہے۔ پرانی تاریخ اسی آلے پر رہتی ہے جہاں درج کی گئی تھی (کچھ حذف نہیں ہوتا)؛ PRO سب کچھ سنک کرتا ہے۔",
+  "@syncFreeNote": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncFree": "آلات کے درمیان سنک: پچھلے {months} مہینے",
+  "@planFeatSyncFree": { "placeholders": { "months": { "type": "int" } } },
+  "planFeatSyncAll": "آپ کی پوری تاریخ اور تمام ڈیٹا کا سنک"
 }

@@ -26,6 +26,7 @@ import 'package:smartbudget/features/backup/application/backup_status_controller
 import 'package:smartbudget/features/backup/domain/backup_reminder.dart';
 import 'package:smartbudget/features/backup/data/file_io.dart';
 import 'package:smartbudget/features/sync/application/sync_controller.dart';
+import 'package:smartbudget/features/sync/domain/sync_scope.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
 import 'package:smartbudget/features/billing/domain/entitlement.dart';
@@ -1110,9 +1111,8 @@ class _SyncSection extends ConsumerWidget {
     if (!ref.watch(authControllerProvider).isAuthenticated) {
       return Text(l.cloudBackupSignIn, style: t.bodySmall);
     }
-    if (!ref.watch(featureGateProvider(Feature.cloudSyncFull)).allowed) {
-      return const LockedFeatureCard(feature: Feature.cloudSyncFull);
-    }
+    final bool fullSync =
+        ref.watch(featureGateProvider(Feature.cloudSyncFull)).allowed;
     final bool enabled = ref.watch(syncEnabledProvider);
     final SyncStatus status = ref.watch(syncControllerProvider);
     final DateTime? last = status.lastSyncedAt;
@@ -1139,6 +1139,20 @@ class _SyncSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Text(l.syncHint, style: t.bodySmall),
+        if (!fullSync) ...<Widget>[
+          const SizedBox(height: DsSpacing.sm),
+          // FREE syncs the basics for the last few months: say so, and what
+          // PRO adds, instead of leaving it to be discovered.
+          Text(l.syncFreeNote(SyncScope.freeMonths),
+              style: t.bodySmall?.copyWith(color: c.textMuted)),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton(
+              onPressed: () => context.go('/plans'),
+              child: Text(l.upgradeCta),
+            ),
+          ),
+        ],
         const SizedBox(height: DsSpacing.sm),
         SwitchListTile.adaptive(
           contentPadding: EdgeInsets.zero,
