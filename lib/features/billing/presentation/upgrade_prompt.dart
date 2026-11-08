@@ -142,6 +142,9 @@ class UpgradeSheet extends ConsumerWidget {
           {int? inviteLimit, bool inviteUnlock = false}) =>
       showModalBottomSheet<void>(
         context: context,
+        // The default caps a sheet at 9/16 of the screen, which cuts the
+        // buttons off on a short phone once the invitation is shown.
+        isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (_) => UpgradeSheet(
             decision: decision,
@@ -170,7 +173,9 @@ class UpgradeSheet extends ConsumerWidget {
       padding: const EdgeInsets.all(DsSpacing.xl),
       child: SafeArea(
         top: false,
-        child: Column(
+        // Scrolls when the screen is too short for everything at once.
+        child: SingleChildScrollView(
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -233,6 +238,7 @@ class UpgradeSheet extends ConsumerWidget {
               child: Text(l.upgradeNotNow),
             ),
           ],
+        ),
         ),
       ),
     );
