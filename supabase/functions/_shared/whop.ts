@@ -101,7 +101,12 @@ export async function fetchWhopMembership(id: string): Promise<Json | null> {
     { headers: whopHeaders() },
   );
   if (res.status === 404) return null;
-  if (!res.ok) throw new Error("whop_membership_" + res.status);
+  if (!res.ok) {
+    // Whop's own reason (a missing permission, a bad version) for the log.
+    const detail = (await res.text().catch(() => "")).slice(0, 300);
+    console.error(`whop membership read refused: ${res.status} ${detail}`);
+    throw new Error("whop_membership_" + res.status);
+  }
   return await res.json();
 }
 

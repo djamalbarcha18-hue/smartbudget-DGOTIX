@@ -74,6 +74,11 @@ Deno.serve(async (req: Request) => {
     }
   } catch (e) {
     const status = e instanceof HttpError ? e.status : 500;
+    // Why it failed goes to the function log (an error name, never the
+    // payload, the key or the secret); the reply stays generic.
+    console.error(
+      `whop-webhook failed: ${e instanceof Error ? e.message : String(e)}`,
+    );
     return reply({ error: "server_error" }, status);
   }
 });
