@@ -1653,5 +1653,7 @@
   "upPopTitle": "Otključajte sve uz Pro",
   "upPopSub": "Upravljajte novcem pametnije, na svakom uređaju.",
   "upPopStart": "Počni odmah",
-  "upPopSeeAll": "Pogledaj sve mogućnosti"
+  "upPopSeeAll": "Pogledaj sve mogućnosti",
+  "featMetals": "Vrste plemenitih metala koje pratite",
+  "featMetalsAdvanced": "Upozorenja o cijenama metala, historija vrijednosti i prodaje"
 }

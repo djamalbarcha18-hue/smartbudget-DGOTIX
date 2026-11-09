@@ -1653,5 +1653,7 @@
   "upPopTitle": "Alles freischalten mit Pro",
   "upPopSub": "Verwalten Sie Ihr Geld klüger, auf jedem Gerät.",
   "upPopStart": "Jetzt starten",
-  "upPopSeeAll": "Alle Funktionen ansehen"
+  "upPopSeeAll": "Alle Funktionen ansehen",
+  "featMetals": "Edelmetallarten, die Sie verfolgen",
+  "featMetalsAdvanced": "Preisalarme für Metalle, Wertverlauf und Verkäufe"
 }

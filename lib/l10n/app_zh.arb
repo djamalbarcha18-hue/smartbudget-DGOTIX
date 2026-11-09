@@ -1653,5 +1653,7 @@
   "upPopTitle": "用 Pro 解锁全部功能",
   "upPopSub": "更聪明地管理你的钱,在每台设备上。",
   "upPopStart": "立即开始",
-  "upPopSeeAll": "查看全部功能"
+  "upPopSeeAll": "查看全部功能",
+  "featMetals": "你关注的贵金属种类",
+  "featMetalsAdvanced": "金属价格提醒、价值历史和出售记录"
 }

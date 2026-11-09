@@ -1653,5 +1653,7 @@
   "upPopTitle": "Sblocca tutto con Pro",
   "upPopSub": "Gestisci il tuo denaro in modo più intelligente, su ogni dispositivo.",
   "upPopStart": "Inizia ora",
-  "upPopSeeAll": "Vedi tutte le funzioni"
+  "upPopSeeAll": "Vedi tutte le funzioni",
+  "featMetals": "Tipi di metalli preziosi che segui",
+  "featMetalsAdvanced": "Avvisi di prezzo dei metalli, storico del valore e vendite"
 }

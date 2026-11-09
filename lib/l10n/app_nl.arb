@@ -1653,5 +1653,7 @@
   "upPopTitle": "Ontgrendel alles met Pro",
   "upPopSub": "Beheer je geld slimmer, op elk apparaat.",
   "upPopStart": "Nu beginnen",
-  "upPopSeeAll": "Alle functies bekijken"
+  "upPopSeeAll": "Alle functies bekijken",
+  "featMetals": "Soorten edelmetaal die je volgt",
+  "featMetalsAdvanced": "Prijsmeldingen voor metalen, waardeverloop en verkopen"
 }

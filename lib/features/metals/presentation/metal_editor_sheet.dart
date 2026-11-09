@@ -13,6 +13,8 @@ import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
@@ -115,6 +117,20 @@ class _MetalEditorSheetState extends ConsumerState<MetalEditorSheet> {
   Future<void> _save() async {
     if (_saving) return; // a second tap while saving
     if (!_formKey.currentState!.validate()) return;
+    // FREE follows one kind of metal. Another purchase of a metal already
+    // held is always fine; a new kind is what the limit counts (what the
+    // person already has is never taken away).
+    final List<MetalHolding> held =
+        ref.read(metalHoldingsProvider).valueOrNull ?? const <MetalHolding>[];
+    final Set<Metal> otherKinds = <Metal>{
+      for (final MetalHolding h in held)
+        if (h.id != widget.existing?.id) h.metal,
+    };
+    if (!otherKinds.contains(_metal) &&
+        !PlanLimits.allowAdd(
+            context, Feature.metals, (_) => otherKinds.length)) {
+      return;
+    }
     setState(() => _saving = true);
     final double grams = AmountInput.parse(_grams.text) ?? 0;
     final double? paid = AmountInput.parse(_paid.text);

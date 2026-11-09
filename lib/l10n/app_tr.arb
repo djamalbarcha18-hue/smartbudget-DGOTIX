@@ -1653,5 +1653,7 @@
   "upPopTitle": "Pro ile her şeyin kilidini açın",
   "upPopSub": "Paranızı daha akıllıca yönetin, her cihazda.",
   "upPopStart": "Şimdi başla",
-  "upPopSeeAll": "Tüm özellikleri gör"
+  "upPopSeeAll": "Tüm özellikleri gör",
+  "featMetals": "Takip ettiğiniz değerli maden türleri",
+  "featMetalsAdvanced": "Maden fiyat uyarıları, değer geçmişi ve satışlar"
 }

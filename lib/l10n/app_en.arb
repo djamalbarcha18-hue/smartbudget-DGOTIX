@@ -1951,5 +1951,7 @@
   "upPopTitle": "Unlock everything with Pro",
   "upPopSub": "Manage your money smarter, on every device.",
   "upPopStart": "Start now",
-  "upPopSeeAll": "See all features"
+  "upPopSeeAll": "See all features",
+  "featMetals": "Kinds of precious metal you follow",
+  "featMetalsAdvanced": "Metal price alerts, value history and sales"
 }

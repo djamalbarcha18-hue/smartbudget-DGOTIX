@@ -1653,5 +1653,7 @@
   "upPopTitle": "Débloquez tout avec Pro",
   "upPopSub": "Gérez votre argent plus intelligemment, sur tous vos appareils.",
   "upPopStart": "Commencer",
-  "upPopSeeAll": "Voir toutes les fonctions"
+  "upPopSeeAll": "Voir toutes les fonctions",
+  "featMetals": "Types de métaux précieux suivis",
+  "featMetalsAdvanced": "Alertes de prix des métaux, historique de valeur et ventes"
 }

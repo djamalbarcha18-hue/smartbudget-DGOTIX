@@ -91,6 +91,14 @@ enum Feature {
   /// Own icon and colour for the categories the user makes (the built-in
   /// ones always have theirs, free). PRO.
   categoryIcons,
+
+  /// Precious metals followed at once, counted by kind (gold, silver…).
+  /// FREE: one, and no reward raises it; PRO: all.
+  metals,
+
+  /// Around the metals: price alerts, the value history and recording a
+  /// sale. PRO only (a reward does not open it).
+  metalsAdvanced,
 }
 
 /// How a metered quota resets.
@@ -199,6 +207,15 @@ abstract final class FeatureCatalog {
       feature: Feature.categoryIcons,
       minTier: Plan.pro,
     ),
+    Feature.metals: FeatureRule(
+      feature: Feature.metals,
+      minTier: Plan.free,
+      quotas: _freeItems1,
+    ),
+    Feature.metalsAdvanced: FeatureRule(
+      feature: Feature.metalsAdvanced,
+      minTier: Plan.pro,
+    ),
     Feature.multiCurrency: FeatureRule(
       feature: Feature.multiCurrency,
       minTier: Plan.pro,
@@ -261,6 +278,10 @@ abstract final class FeatureCatalog {
   };
 
   // Counted features: FREE gets a few, the paid plans as many as they like.
+  static const Map<Plan, Quota> _freeItems1 = <Plan, Quota>{
+    Plan.free: Quota(1, QuotaWindow.items),
+    Plan.pro: _unlimitedItems,
+  };
   static const Map<Plan, Quota> _freeItems1 = <Plan, Quota>{
     Plan.free: Quota(1, QuotaWindow.items),
     Plan.pro: _unlimitedItems,

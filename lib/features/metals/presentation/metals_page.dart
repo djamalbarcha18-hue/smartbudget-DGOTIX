@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money.dart';
@@ -100,7 +103,11 @@ class MetalsPage extends ConsumerWidget {
           const _SoldCard(),
           const SizedBox(height: DsSpacing.lg),
           if (holdings.isNotEmpty) ...<Widget>[
-            const MetalHistoryCard(),
+            // The history keeps recording for everyone; seeing it is PRO.
+            if (ref.watch(featureGateProvider(Feature.metalsAdvanced)).allowed)
+              const MetalHistoryCard()
+            else
+              const LockedFeatureCard(feature: Feature.metalsAdvanced),
             const SizedBox(height: DsSpacing.lg),
           ],
           const _PricesCard(),
@@ -542,6 +549,7 @@ class _HoldingTile extends ConsumerWidget {
                 color: c.bgElevated,
                 onSelected: (String v) async {
                   if (v == 'sell') {
+                    if (!PlanLimits.allow(context, Feature.metalsAdvanced)) return;
                     await MetalSaleSheet.show(context, h);
                   } else if (v == 'edit') {
                     await MetalEditorSheet.show(context, existing: h);
@@ -745,6 +753,12 @@ class _PricesCard extends ConsumerWidget {
 
   Future<void> _setAlert(BuildContext context, WidgetRef ref, Metal m,
       MetalPrice? now, MetalAlert? existing) async {
+    // An alert already set can always be changed or removed; setting a new
+    // one is PRO.
+    if (existing == null &&
+        !PlanLimits.allow(context, Feature.metalsAdvanced)) {
+      return;
+    }
     final AppLocalizations l = AppLocalizations.of(context);
     final String currency = ref.read(baseCurrencyProvider);
     final (String, String)? result = await showDialog<(String, String)>(

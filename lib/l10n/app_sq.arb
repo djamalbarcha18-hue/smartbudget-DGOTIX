@@ -1653,5 +1653,7 @@
   "upPopTitle": "Hap gjithçka me Pro",
   "upPopSub": "Menaxho paratë më me zgjuarsi, në çdo pajisje.",
   "upPopStart": "Fillo tani",
-  "upPopSeeAll": "Shih të gjitha veçoritë"
+  "upPopSeeAll": "Shih të gjitha veçoritë",
+  "featMetals": "Llojet e metaleve të çmuara që ndiqni",
+  "featMetalsAdvanced": "Njoftime për çmimet e metaleve, historiku i vlerës dhe shitjet"
 }

@@ -44,6 +44,8 @@ int _usedFor(Ref ref, Feature f) {
     case Feature.reportPdf:
     case Feature.reportTrends:
     case Feature.projects:
+    case Feature.metals:
+    case Feature.metalsAdvanced:
       return 0;
   }
 }
