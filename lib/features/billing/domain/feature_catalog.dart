@@ -282,10 +282,6 @@ abstract final class FeatureCatalog {
     Plan.free: Quota(1, QuotaWindow.items),
     Plan.pro: _unlimitedItems,
   };
-  static const Map<Plan, Quota> _freeItems1 = <Plan, Quota>{
-    Plan.free: Quota(1, QuotaWindow.items),
-    Plan.pro: _unlimitedItems,
-  };
   static const Map<Plan, Quota> _freeItems2 = <Plan, Quota>{
     Plan.free: Quota(2, QuotaWindow.items),
     Plan.pro: _unlimitedItems,
