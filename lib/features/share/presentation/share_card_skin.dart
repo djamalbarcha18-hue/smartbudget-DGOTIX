@@ -55,6 +55,12 @@ class ShareCardSkin {
     border: Color(0x80D4AF37),
   );
 
+  static const ShareCardSkin aurora = ShareCardSkin(
+    gradient: <Color>[Color(0xFF050816), Color(0xFF101C3D), Color(0xFF1B2F63)],
+    accent: Color(0xFFFFB066),
+    border: Color(0x66FFB066),
+  );
+
   /// The skin of a Pro theme, or null for Classic.
   static ShareCardSkin? ofStyle(AppThemeStyle style) => switch (style) {
         AppThemeStyle.classic => null,
@@ -62,6 +68,7 @@ class ShareCardSkin {
         AppThemeStyle.sage => sage,
         AppThemeStyle.pomegranate => pomegranate,
         AppThemeStyle.black => blackGold,
+        AppThemeStyle.aurora => aurora,
       };
 
   /// One flat colour of the skin (the trip card's background).

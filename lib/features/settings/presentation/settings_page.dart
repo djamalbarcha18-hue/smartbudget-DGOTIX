@@ -384,6 +384,7 @@ class _ThemeStylePicker extends ConsumerWidget {
         AppThemeStyle.sage => DsColors.sage,
         AppThemeStyle.pomegranate => DsColors.pomegranate,
         AppThemeStyle.black => DsColors.black,
+        AppThemeStyle.aurora => DsColors.aurora,
       };
 
   static String _label(AppLocalizations l, AppThemeStyle s) => switch (s) {
@@ -392,6 +393,7 @@ class _ThemeStylePicker extends ConsumerWidget {
         AppThemeStyle.sage => l.themeSage,
         AppThemeStyle.pomegranate => l.themePomegranate,
         AppThemeStyle.black => l.themeBlack,
+        AppThemeStyle.aurora => l.themeAurora,
       };
 
   @override
@@ -405,12 +407,15 @@ class _ThemeStylePicker extends ConsumerWidget {
       if (style == current) return;
       final bool pro = style != AppThemeStyle.classic;
       if (pro && !PlanLimits.allow(context, Feature.proThemes)) return;
-      final bool dark = style == AppThemeStyle.black ||
+      final bool darkStyle =
+          style == AppThemeStyle.black || style == AppThemeStyle.aurora;
+      final bool dark = darkStyle ||
           (!pro && Theme.of(context).brightness == Brightness.dark);
       ThemeReveal.run(from, to: themeColors(style, dark: dark).bgPage, () {
         ref.read(themeStyleProvider.notifier).set(style);
-        // Black is a dark theme, the other Pro themes are light: show it.
-        if (style == AppThemeStyle.black) {
+        // Black Gold and Aurora are dark themes, the other Pro themes are
+        // light: show it.
+        if (darkStyle) {
           if (mode != ThemeMode.dark) {
             ref.read(themeModeProvider.notifier).set(ThemeMode.dark);
           }

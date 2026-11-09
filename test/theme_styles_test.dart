@@ -92,6 +92,30 @@ void main() {
       expect(contrast(c.onBrand, c.brand), greaterThan(4.5));
     });
 
+    test('aurora: a dark theme with glass over soft glows, easy to read', () {
+      final ThemeData t = DsTheme.aurora();
+      const DsColors c = DsColors.aurora;
+      expect(t.brightness, Brightness.dark);
+      expect(t.extension<DsColors>(), c);
+      expect(t.extension<DsGlass>(), DsGlass.aurora);
+      expect(t.scaffoldBackgroundColor, c.bgPage);
+      for (final Color fg in <Color>[
+        c.textPrimary,
+        c.textMuted,
+        c.income,
+        c.expense,
+        c.brand
+      ]) {
+        expect(contrast(fg, c.surface), greaterThan(4.5), reason: '$fg');
+        expect(contrast(fg, c.bgPage), greaterThan(4.5), reason: '$fg');
+      }
+      // Dark text on the blue buttons.
+      expect(contrast(c.onBrand, c.brand), greaterThan(4.5));
+      // Dark side of the Aurora style, the classic light side.
+      expect(themeColors(AppThemeStyle.aurora, dark: true), c);
+      expect(themeColors(AppThemeStyle.aurora, dark: false), DsColors.light);
+    });
+
     test('Pro themes are a Pro feature', () {
       expect(FeatureCatalog.minTierFor(Feature.proThemes), Plan.pro);
       expect(FeatureGate.evaluate(Feature.proThemes, plan: Plan.free).allowed,

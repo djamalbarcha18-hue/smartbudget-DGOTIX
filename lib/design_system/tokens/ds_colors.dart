@@ -202,6 +202,30 @@ class DsColors extends ThemeExtension<DsColors> {
     shadow: Color(0x80000000),
   );
 
+  /// Aurora (Pro): a near-black blue with frosted glass and soft blue, orange
+  /// and teal glows behind it (see DsBackdrop). Every text colour keeps a
+  /// contrast of at least 4.5 on the surfaces.
+  static const DsColors aurora = DsColors(
+    brand: Color(0xFF5B9DFF),
+    brandStrong: Color(0xFF8DBBFF),
+    income: Color(0xFF34D399),
+    expense: Color(0xFFFB7185),
+    saving: Color(0xFF60A5FA),
+    net: Color(0xFF5EEAD4),
+    warning: Color(0xFFFDA65A),
+    bgPage: Color(0xFF070A12),
+    bgElevated: Color(0xFF0B101C),
+    surface: Color(0xFF121A2B),
+    surfaceMuted: Color(0xFF18223A),
+    border: Color(0x24FFFFFF), // white @ 14%
+    borderStrong: Color(0x3DFFFFFF),
+    textPrimary: Color(0xFFF3F6FF),
+    textMuted: Color(0xFFA3B2CE),
+    textFaint: Color(0xFF6B7A99),
+    onBrand: Color(0xFF04122E),
+    shadow: Color(0x80000000),
+  );
+
   @override
   DsColors copyWith({
     Color? brand,

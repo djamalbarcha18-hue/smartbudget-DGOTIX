@@ -162,6 +162,25 @@ class DsGlass extends ThemeExtension<DsGlass> {
     ],
   );
 
+  /// Frosted blue-black glass over the Aurora glows: a little more blur and
+  /// see-through than the other dark themes, the text still on a dark fill.
+  static const DsGlass aurora = DsGlass(
+    blurSigma: 18,
+    fill: Color(0xCC111A2E),
+    fillTop: Color(0xD91A2440),
+    fillStrong: Color(0xE60C1322),
+    borderColor: Color(0x24FFFFFF),
+    hoverBorder: Color(0x665B9DFF),
+    highlight: Color(0x1FFFFFFF),
+    glow: Color(0x2E5B9DFF),
+    shadow: <BoxShadow>[
+      BoxShadow(color: Color(0x73000000), blurRadius: 28, offset: Offset(0, 12)),
+    ],
+    hoverShadow: <BoxShadow>[
+      BoxShadow(color: Color(0x8C000000), blurRadius: 34, offset: Offset(0, 16)),
+    ],
+  );
+
   @override
   DsGlass copyWith({
     double? blurSigma,

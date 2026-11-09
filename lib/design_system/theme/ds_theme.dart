@@ -42,6 +42,14 @@ abstract final class DsTheme {
         lang: lang,
       );
 
+  /// Aurora (Pro): frosted glass over soft blue, orange and teal glows.
+  static ThemeData aurora({AppLang lang = AppLang.en}) => _build(
+        brightness: Brightness.dark,
+        colors: DsColors.aurora,
+        glass: DsGlass.aurora,
+        lang: lang,
+      );
+
   /// Pomegranate (Pro): rose and deep wine.
   static ThemeData pomegranate({AppLang lang = AppLang.en}) => _build(
         brightness: Brightness.light,

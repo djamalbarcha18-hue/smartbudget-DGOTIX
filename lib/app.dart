@@ -89,12 +89,15 @@ class SmartBudgetApp extends ConsumerWidget {
         AppThemeStyle.beige => DsTheme.beige(lang: lang),
         AppThemeStyle.sage => DsTheme.sage(lang: lang),
         AppThemeStyle.pomegranate => DsTheme.pomegranate(lang: lang),
-        // Black is the dark Pro theme: the light theme stays classic.
-        AppThemeStyle.black => DsTheme.light(lang: lang),
+        // Black Gold and Aurora are the dark Pro themes: the light theme stays
+        // classic.
+        AppThemeStyle.black || AppThemeStyle.aurora => DsTheme.light(lang: lang),
       },
-      darkTheme: style == AppThemeStyle.black
-          ? DsTheme.black(lang: lang)
-          : DsTheme.dark(lang: lang),
+      darkTheme: switch (style) {
+        AppThemeStyle.black => DsTheme.black(lang: lang),
+        AppThemeStyle.aurora => DsTheme.aurora(lang: lang),
+        _ => DsTheme.dark(lang: lang),
+      },
       themeMode: themeMode,
       // Theme changes are shown by ThemeReveal; a lerp under it would show
       // half-mixed colours as the circle passes.

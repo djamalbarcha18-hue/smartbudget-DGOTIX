@@ -18,7 +18,9 @@ class DsBackdrop extends StatelessWidget {
     final DsColors? colors = theme.extension<DsColors>();
     return RepaintBoundary(
       child: CustomPaint(
-        painter: colors == DsColors.black
+        painter: colors == DsColors.aurora
+            ? _BackdropPainter.aurora
+            : colors == DsColors.black
             ? _BackdropPainter.black
             : dark
                 ? _BackdropPainter.dark
@@ -65,6 +67,18 @@ class _BackdropPainter extends CustomPainter {
     glows: <_Glow>[
       _Glow(Offset(0.92, 0.02), 0.55, Color(0x261680F7)),
       _Glow(Offset(0.10, 0.90), 0.50, Color(0x141680F7)),
+    ],
+  );
+
+  // Aurora: a near-black blue with three soft glows (blue, orange, teal), the
+  // colours seen through frosted glass. Kept faint so the numbers stay clear.
+  static const _BackdropPainter aurora = _BackdropPainter(
+    top: Color(0xFF0A0F1C),
+    bottom: Color(0xFF070A12),
+    glows: <_Glow>[
+      _Glow(Offset(0.08, 0.05), 0.60, Color(0x3D3B82F6)),
+      _Glow(Offset(0.95, 0.30), 0.50, Color(0x2EF59E0B)),
+      _Glow(Offset(0.55, 0.98), 0.55, Color(0x2610B981)),
     ],
   );
 
