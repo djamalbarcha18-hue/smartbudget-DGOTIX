@@ -603,6 +603,13 @@ class _PricesCard extends ConsumerWidget {
     };
     final List<MetalHolding> holdings =
         ref.watch(metalHoldingsProvider).valueOrNull ?? const <MetalHolding>[];
+    final bool allowed =
+        ref.watch(featureGateProvider(Feature.metals)).allowed;
+    bool show(Metal m) =>
+        allowed ||
+        m == Metal.gold ||
+        alerts.containsKey(m) ||
+        holdings.any((MetalHolding h) => h.metal == m);
     return GlassCard(
       hoverable: false,
       child: Column(
@@ -611,17 +618,21 @@ class _PricesCard extends ConsumerWidget {
           DsSectionHeader(
               title: l.metalsPrices, icon: Icons.show_chart_rounded),
           const SizedBox(height: DsSpacing.sm),
-          for (final Metal m in _precious)
+          for (final Metal m in _precious.where(show))
             _plate(context, ref, m, prices, alerts),
-          _IndustrialFold(
-            open: _industrial.any((Metal m) =>
-                alerts.containsKey(m) ||
-                holdings.any((MetalHolding h) => h.metal == m)),
-            children: <Widget>[
-              for (final Metal m in _industrial)
-                _plate(context, ref, m, prices, alerts),
-            ],
-          ),
+          if (_industrial.any(show))
+            _IndustrialFold(
+              open: _industrial.any((Metal m) =>
+                  alerts.containsKey(m) ||
+                  holdings.any((MetalHolding h) => h.metal == m)),
+              children: <Widget>[
+                for (final Metal m in _industrial.where(show))
+                  _plate(context, ref, m, prices, alerts),
+              ],
+            ),
+          // Gold is free; the other metals' prices are PRO (a metal the person
+          // already holds, or has an alert on, stays visible).
+          if (!allowed) const LockedFeatureCard(feature: Feature.metals),
         ],
       ),
     );

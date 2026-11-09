@@ -92,8 +92,9 @@ enum Feature {
   /// ones always have theirs, free). PRO.
   categoryIcons,
 
-  /// Precious metals followed at once, counted by kind (gold, silver…).
-  /// FREE: one, and no reward raises it; PRO: all.
+  /// Metals other than gold (silver, platinum, palladium): holding them and
+  /// seeing their prices. Gold is free; the rest is PRO only (a reward does
+  /// not open it).
   metals,
 
   /// Around the metals: price alerts, the value history and recording a
@@ -209,8 +210,7 @@ abstract final class FeatureCatalog {
     ),
     Feature.metals: FeatureRule(
       feature: Feature.metals,
-      minTier: Plan.free,
-      quotas: _freeItems1,
+      minTier: Plan.pro,
     ),
     Feature.metalsAdvanced: FeatureRule(
       feature: Feature.metalsAdvanced,

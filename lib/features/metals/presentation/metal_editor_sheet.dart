@@ -117,18 +117,12 @@ class _MetalEditorSheetState extends ConsumerState<MetalEditorSheet> {
   Future<void> _save() async {
     if (_saving) return; // a second tap while saving
     if (!_formKey.currentState!.validate()) return;
-    // FREE follows one kind of metal. Another purchase of a metal already
-    // held is always fine; a new kind is what the limit counts (what the
-    // person already has is never taken away).
-    final List<MetalHolding> held =
-        ref.read(metalHoldingsProvider).valueOrNull ?? const <MetalHolding>[];
-    final Set<Metal> otherKinds = <Metal>{
-      for (final MetalHolding h in held)
-        if (h.id != widget.existing?.id) h.metal,
-    };
-    if (!otherKinds.contains(_metal) &&
-        !PlanLimits.allowAdd(
-            context, Feature.metals, (_) => otherKinds.length)) {
+    // Gold is free; the other metals are PRO. Saving a holding as it already
+    // is (editing it without changing its metal) is always fine: what the
+    // person already has is never taken away.
+    if (_metal != Metal.gold &&
+        _metal != widget.existing?.metal &&
+        !PlanLimits.allow(context, Feature.metals)) {
       return;
     }
     setState(() => _saving = true);
