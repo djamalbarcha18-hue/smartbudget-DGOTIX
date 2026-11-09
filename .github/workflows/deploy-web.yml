@@ -60,7 +60,7 @@ jobs:
           TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY || '0x4AAAAAAFQb5tnXUE643C_f' }}
         run: |
           # The device database for the user's lists (docs/LOCAL_DATABASE.md).
-          DEFINES="--dart-define=INDEXED_DB=true"
+          DEFINES="--dart-define=INDEXED_DB=true --dart-define=ERROR_REPORTS=true"
           # Payments open (the end of the free beta). Pair it with the Supabase
           # secret BETA_ALL_ACCESS=false (docs/LAUNCH_CHECKLIST.md).
           DEFINES="$DEFINES --dart-define=BETA_ALL_ACCESS=false"
