@@ -71,14 +71,15 @@ class _BackdropPainter extends CustomPainter {
   );
 
   // Aurora: a near-black blue with three soft glows (blue, orange, teal), the
-  // colours seen through frosted glass. Kept faint so the numbers stay clear.
+  // colours seen through frosted glass. Strong enough to show through the
+  // cards, never behind the numbers without a dark fill.
   static const _BackdropPainter aurora = _BackdropPainter(
     top: Color(0xFF0A0F1C),
     bottom: Color(0xFF070A12),
     glows: <_Glow>[
-      _Glow(Offset(0.08, 0.05), 0.60, Color(0x3D3B82F6)),
-      _Glow(Offset(0.95, 0.30), 0.50, Color(0x2EF59E0B)),
-      _Glow(Offset(0.55, 0.98), 0.55, Color(0x2610B981)),
+      _Glow(Offset(0.08, 0.05), 0.65, Color(0x663B82F6)),
+      _Glow(Offset(0.95, 0.32), 0.55, Color(0x4DF59E0B)),
+      _Glow(Offset(0.50, 0.98), 0.60, Color(0x4010B981)),
     ],
   );
 
