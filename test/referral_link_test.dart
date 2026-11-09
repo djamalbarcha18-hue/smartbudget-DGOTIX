@@ -31,6 +31,8 @@ class _FakeService implements ReferralService {
   Future<ReferralProgress> progress() async => ReferralProgress.none;
   @override
   Future<Set<ReferralReward>> grants() async => const <ReferralReward>{};
+  @override
+  Future<bool> choose(ReferralReward reward) async => true;
 }
 
 const String _app = 'https://smartbudget.dgotix.com/';

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/features/referrals/presentation/referral_celebration.dart';
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/features/referrals/application/referral_claim.dart';
@@ -115,8 +116,11 @@ class SmartBudgetApp extends ConsumerWidget {
                 child: MoneyPrivacyHost(
                     child: OfflineBanner(
                         child: SaveProblemBanner(
-                            child: UpdateBanner(
-                                child: child ?? const SizedBox.shrink()))))),
+                            child: ReferralCelebration(
+                                router: router,
+                                child: UpdateBanner(
+                                    child:
+                                        child ?? const SizedBox.shrink())))))),
           ),
         ),
       ),

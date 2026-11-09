@@ -69,6 +69,9 @@ select assert(complete_referral() = false, 'activating twice counts once');
 select assert((select count(*) from reward_grants
          where user_id = '11111111-1111-1111-1111-111111111111') = 0,
        'one activation earns nothing yet');
+select set_config('request.jwt.claim.sub', '11111111-1111-1111-1111-111111111111', false);
+select assert(choose_reward('salary_split') = false,
+       'a reward cannot be picked before three friends');
 
 -- ------------------------------------------------------------ the milestone
 select set_config('request.jwt.claim.sub', '33333333-3333-3333-3333-333333333333', false);
@@ -85,15 +88,39 @@ update auth.users set email_confirmed_at = now()
 select set_config('request.jwt.claim.sub', '44444444-4444-4444-4444-444444444444', false);
 select assert(complete_referral() = true, 'confirming later then activates');
 select assert((select count(*) from reward_grants
-         where user_id = '11111111-1111-1111-1111-111111111111') = 3,
-       'the third activation unlocks all three rewards');
+         where user_id = '11111111-1111-1111-1111-111111111111') = 0,
+       'the third activation grants nothing by itself: the inviter chooses');
 
--- --------------------------------------------------------- granted only once
+-- ------------------------------------------------------------ choosing a pick
 select set_config('request.jwt.claim.sub', '11111111-1111-1111-1111-111111111111', false);
+select assert(choose_reward('not_a_reward') = false, 'an unknown reward is refused');
+select assert(choose_reward(null) = false, 'a null reward is refused');
+select assert(choose_reward('salary_split') = true,
+       'three friends earn one pick, and it is granted');
+select assert((select count(*) from reward_grants
+         where user_id = '11111111-1111-1111-1111-111111111111') = 1,
+       'exactly one reward is held after one pick');
+select assert(choose_reward('health_details') = false,
+       'a second pick is refused until six friends');
+select assert(choose_reward('salary_split') = false,
+       'the same reward cannot be picked twice');
 select assert((select count(*) from reward_grants
          where user_id = '11111111-1111-1111-1111-111111111111'
            and reward = 'salary_split') = 1,
-       'a reward is held once, not once per referral');
+       'a reward is held once');
+
+-- ---------------------------------------------- the picks follow the count
+select assert(referral_picks_for(0) = 0 and referral_picks_for(2) = 0
+          and referral_picks_for(3) = 1 and referral_picks_for(5) = 1
+          and referral_picks_for(6) = 2 and referral_picks_for(9) = 3
+          and referral_picks_for(30) = 3,
+       'one pick per three friends, never more than the three rewards');
+
+-- ------------------------------------------- an invitee cannot pick anything
+select set_config('request.jwt.claim.sub', '22222222-2222-2222-2222-222222222222', false);
+select assert(choose_reward('higher_limits') = false,
+       'someone with no activated friends cannot pick');
+select set_config('request.jwt.claim.sub', '11111111-1111-1111-1111-111111111111', false);
 
 -- ------------------------------------------------------------- what is shown
 select assert((select activated from my_referral_progress()) = 3,

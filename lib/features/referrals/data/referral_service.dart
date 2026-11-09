@@ -105,15 +105,30 @@ class ReferralService {
     }
   }
 
-  /// The rewards this account holds. An empty set is the safe answer: it
-  /// locks nothing the plan already allows, it only withholds the extras.
+  /// Picks [reward] with one of the picks the friends have earned. The server
+  /// counts the friends itself and refuses a pick that isn't earned yet.
+  Future<bool> choose(ReferralReward reward) async {
+    if (!_ready) return false;
+    try {
+      final Object? res = await _client.rpc<Object?>('choose_reward',
+          params: <String, dynamic>{'p_reward': reward.id});
+      return res == true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// The rewards this account holds, in the order they were picked. An empty
+  /// set is the safe answer: it locks nothing the plan already allows, it only
+  /// withholds the extras.
   Future<Set<ReferralReward>> grants() async {
     if (!_ready) return const <ReferralReward>{};
     try {
       final List<Map<String, dynamic>> rows = await _client
           .from('reward_grants')
           .select('reward')
-          .eq('user_id', _client.auth.currentUser!.id);
+          .eq('user_id', _client.auth.currentUser!.id)
+          .order('granted_at');
       return <ReferralReward>{
         for (final Map<String, dynamic> row in rows)
           if (ReferralReward.byId('${row['reward']}')

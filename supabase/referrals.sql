@@ -1,9 +1,10 @@
 -- ============================================================================
 -- Invite friends & unlock rewards.
 --
--- A member invites; when three people they invited have each made their own
--- confirmed account and started using the app, a set of rewards unlocks for
--- the inviter, permanently.
+-- A member invites; every three people they invited who have each made their
+-- own confirmed account and started using the app earn the inviter ONE reward
+-- of their choice (up to three), permanently: at 3 friends the first pick, at 6
+-- the second, at 9 the last.
 --
 -- WHY THIS IS SAFE TO GAME
 --   Every reward is computed on the member's own device from data already on
@@ -75,13 +76,18 @@ create policy reward_grants_own on reward_grants
 -- referrals is never read by the client: it holds who invited whom, and the
 -- progress function returns counts only, never an invited person's identity.
 
--- ---- The rewards one milestone unlocks --------------------------------------
--- Keep in step with ReferralRewards in the app (lib/features/referrals).
-create or replace function public.referral_rewards_for(p_count int)
+-- ---- The rewards, and how many picks a count earns --------------------------
+-- Keep in step with ReferralReward / RewardJourney in the app
+-- (lib/features/referrals).
+create or replace function public.referral_rewards()
 returns text[] language sql immutable as $$
-  select case when p_count >= 3
-    then array['salary_split', 'health_details', 'higher_limits']
-    else array[]::text[] end;
+  select array['salary_split', 'health_details', 'higher_limits'];
+$$;
+
+-- One pick for every three activated friends, at most one per reward.
+create or replace function public.referral_picks_for(p_count int)
+returns int language sql immutable as $$
+  select least(3, greatest(0, p_count) / 3);
 $$;
 
 -- ---- Your code, made on first ask -------------------------------------------
@@ -160,8 +166,6 @@ declare
   uid       uuid := auth.uid();
   confirmed timestamptz;
   ref       referrals%rowtype;
-  done      int;
-  r         text;
 begin
   if uid is null then return false; end if;
 
@@ -173,18 +177,37 @@ begin
     returning * into ref;
   if ref.invitee_id is null then return false; end if; -- no referral, or already done
 
-  -- Count and grant under one lock, so two invitees finishing at the same
-  -- moment cannot both read "2" and leave the inviter at two.
-  perform pg_advisory_xact_lock(hashtextextended('referral:' || ref.referrer_id::text, 0));
-  select count(*) into done from referrals
-    where referrer_id = ref.referrer_id and activated_at is not null;
-
-  foreach r in array referral_rewards_for(done) loop
-    insert into reward_grants (user_id, reward) values (ref.referrer_id, r)
-      on conflict (user_id, reward) do nothing;   -- granted once, kept for good
-  end loop;
-
+  -- Nothing is granted here any more: the inviter now CHOOSES what each three
+  -- friends earn (choose_reward below), so activating only counts.
   return true;
+end $$;
+
+-- ---- The inviter picks a reward ---------------------------------------------
+-- Every three activated friends earn one pick (referral_picks_for); a pick
+-- cannot be repeated and the count is read on the server, never from the app.
+-- Returns whether the pick was granted.
+create or replace function public.choose_reward(p_reward text) returns boolean
+language plpgsql security definer set search_path = public as $$
+declare
+  uid   uuid := auth.uid();
+  done  int;
+  taken int;
+begin
+  if uid is null then return false; end if;
+  if p_reward is null or not (p_reward = any (referral_rewards())) then
+    return false;
+  end if;
+
+  -- Same lock as the counting, so a pick and a late activation can't race.
+  perform pg_advisory_xact_lock(hashtextextended('referral:' || uid::text, 0));
+  select count(*) into done from referrals
+    where referrer_id = uid and activated_at is not null;
+  select count(*) into taken from reward_grants where user_id = uid;
+  if taken >= referral_picks_for(done) then return false; end if;
+
+  insert into reward_grants (user_id, reward) values (uid, p_reward)
+    on conflict (user_id, reward) do nothing;
+  return found;
 end $$;
 
 -- ---- What to show the inviter -----------------------------------------------
@@ -209,10 +232,13 @@ $$;
 revoke all on function public.my_referral_code()        from public, anon;
 revoke all on function public.claim_referral(text)      from public, anon;
 revoke all on function public.complete_referral()       from public, anon;
+revoke all on function public.choose_reward(text)        from public, anon;
 revoke all on function public.my_referral_progress()    from public, anon;
-revoke all on function public.referral_rewards_for(int) from public, anon;
+revoke all on function public.referral_rewards()         from public, anon;
+revoke all on function public.referral_picks_for(int)    from public, anon;
 
 grant execute on function public.my_referral_code()     to authenticated;
 grant execute on function public.claim_referral(text)   to authenticated;
 grant execute on function public.complete_referral()    to authenticated;
+grant execute on function public.choose_reward(text)    to authenticated;
 grant execute on function public.my_referral_progress() to authenticated;

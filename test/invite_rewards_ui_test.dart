@@ -82,17 +82,21 @@ void main() {
     expect(bar.value, closeTo(2 / 3, 0.001));
   });
 
-  testWidgets('every reward is listed, locked until it is earned',
+  testWidgets('the three steps are locked until the friends are there',
       (WidgetTester tester) async {
     await tester.pumpWidget(_host(code: 'AB23CD45'));
     await tester.pumpAndSettle();
+    final AppLocalizations l = await _l();
     expect(find.byIcon(Icons.lock_outline_rounded),
         findsNWidgets(ReferralReward.values.length));
     expect(find.byIcon(Icons.check_circle_rounded), findsNothing);
-    expect(find.text((await _l()).inviteUnlocked), findsNothing);
+    for (final int n in <int>[3, 6, 9]) {
+      expect(find.text(l.journeyStepFriends(n)), findsOneWidget);
+    }
+    expect(find.text(l.journeyPickTitle), findsNothing);
   });
 
-  testWidgets('earned rewards are marked, and only those',
+  testWidgets('a picked reward is marked on its step, and only that one',
       (WidgetTester tester) async {
     await tester.pumpWidget(_host(
       code: 'AB23CD45',
@@ -100,10 +104,30 @@ void main() {
       earned: const <ReferralReward>{ReferralReward.salarySplit},
     ));
     await tester.pumpAndSettle();
+    final AppLocalizations l = await _l();
     expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
     expect(find.byIcon(Icons.lock_outline_rounded),
         findsNWidgets(ReferralReward.values.length - 1));
-    expect(find.text((await _l()).inviteUnlocked), findsOneWidget);
+    expect(find.text(l.planFeatSalarySplit), findsOneWidget);
+    // The one pick is used: nothing is waiting.
+    expect(find.text(l.journeyPickTitle), findsNothing);
+  });
+
+  testWidgets('three friends and nothing picked: the pick is offered',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(_host(
+      code: 'AB23CD45',
+      progress: const ReferralProgress(joined: 3, activated: 3),
+    ));
+    // The waiting gift breathes forever, so this never "settles".
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    final AppLocalizations l = await _l();
+    expect(find.text(l.journeyPickTitle), findsOneWidget);
+    // Every reward is on offer.
+    expect(find.text(l.planFeatSalarySplit), findsOneWidget);
+    expect(find.text(l.featHealthDetails), findsOneWidget);
+    expect(find.text(l.rewardHigherLimits), findsOneWidget);
   });
 
   testWidgets('it reads in English too, and names no invited person',
@@ -114,7 +138,7 @@ void main() {
         locale: const Locale('en')));
     await tester.pumpAndSettle();
     final AppLocalizations l = await _l(const Locale('en'));
-    expect(find.text(l.inviteTitle), findsOneWidget);
+    expect(find.text(l.journeyTitle), findsOneWidget);
     expect(find.text(l.inviteProgressLine(1, 3)), findsOneWidget);
     // The card shows counts; it must never have a name or an address on it.
     expect(find.textContaining('@'), findsNothing);
@@ -124,7 +148,14 @@ void main() {
     for (final Locale loc in AppLocalizations.supportedLocales) {
       final AppLocalizations l = await AppLocalizations.delegate.load(loc);
       for (final String s in <String>[
-        l.inviteTitle,
+        l.journeyTitle,
+        l.journeyPickTitle,
+        l.journeyPickHint,
+        l.journeyPickFailed,
+        l.journeyAllDone,
+        l.journeyCelebrateReady,
+        l.journeyStepFriends(3),
+        l.journeyCelebrateJoined(2),
         l.inviteBody,
         l.inviteLink,
         l.inviteCopied,
