@@ -41,26 +41,20 @@ import 'package:smartbudget/core/l10n/app_lang_context.dart';
 /// The share of the logo's width that is the "DG" mark (the rest is "OTIX").
 const double _markShare = 0.37;
 
-/// The menu button of a phone: the logo's "DG" mark, in its colours, on a soft
-/// brand-tinted square so it reads as a button.
+/// The menu button of a phone: the logo's "DG" mark, in its colours, drawn
+/// straight on the top bar.
 class _LogoMenuButton extends StatelessWidget {
   const _LogoMenuButton({required this.onPressed});
   final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    final DsColors c = context.dsColors;
-    const double h = 22;
+    const double h = 24;
     return IconButton(
       onPressed: onPressed,
       tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-      style: IconButton.styleFrom(
-        backgroundColor: c.brand.withValues(alpha: 0.10),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: BorderSide(color: c.brand.withValues(alpha: 0.28)),
-        ),
-      ),
+      // No box of its own: the mark sits on the bar itself, so nothing sticks
+      // out of the bar's rounded corner. The press shows the usual ripple.
       icon: Semantics(
         label: AppConfig.parentBrand,
         image: true,
