@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
@@ -32,6 +33,7 @@ import 'package:smartbudget/features/notifications/application/notifications_con
 import 'package:smartbudget/features/notifications/domain/notification_feed.dart';
 import 'package:smartbudget/features/search/app_search.dart';
 import 'package:smartbudget/features/shell/brand_controls.dart';
+import 'package:smartbudget/features/shell/menu_hint.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
@@ -42,37 +44,140 @@ import 'package:smartbudget/core/l10n/app_lang_context.dart';
 const double _markShare = 0.37;
 
 /// The menu button of a phone: the logo's "DG" mark, in its colours, drawn
-/// straight on the top bar.
-class _LogoMenuButton extends StatelessWidget {
+/// straight on the top bar, with a small chevron under it ("this opens
+/// something"). For the first launches it also pulses a few times and says
+/// what it is, until the menu has been opened once (see [MenuHint]); a tap
+/// makes the mark bounce. Nothing moves when the system asks for less motion.
+class _LogoMenuButton extends StatefulWidget {
   const _LogoMenuButton({required this.onPressed});
   final VoidCallback? onPressed;
 
   @override
+  State<_LogoMenuButton> createState() => _LogoMenuButtonState();
+}
+
+class _LogoMenuButtonState extends State<_LogoMenuButton>
+    with TickerProviderStateMixin {
+  final GlobalKey<TooltipState> _tip = GlobalKey<TooltipState>();
+  late final AnimationController _pulse = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 1600));
+  late final AnimationController _bounce = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 320));
+  bool _hint = false;
+  Timer? _tipTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startHint();
+  }
+
+  Future<void> _startHint() async {
+    final bool on = await MenuHint.active();
+    if (!on || !mounted) return;
+    setState(() => _hint = true);
+    if (MediaQuery.disableAnimationsOf(context)) return;
+    // Three gentle pulses, not a loop: it is a nudge, not a nag.
+    _pulse.repeat(count: 3);
+    _tipTimer = Timer(const Duration(milliseconds: 900), () {
+      if (mounted && _hint) _tip.currentState?.ensureTooltipVisible();
+    });
+  }
+
+  void _tap() {
+    if (_hint) {
+      setState(() => _hint = false);
+      _pulse.stop();
+      MenuHint.markTapped().ignore();
+    }
+    if (!MediaQuery.disableAnimationsOf(context)) _bounce.forward(from: 0);
+    widget.onPressed?.call();
+  }
+
+  @override
+  void dispose() {
+    _tipTimer?.cancel();
+    _pulse.dispose();
+    _bounce.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    const double h = 24;
-    return IconButton(
-      onPressed: onPressed,
-      tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-      // No box of its own: the mark sits on the bar itself, so nothing sticks
-      // out of the bar's rounded corner. The press shows the usual ripple.
-      icon: Semantics(
-        label: AppConfig.parentBrand,
-        image: true,
-        child: ClipRect(
-          child: Align(
-            // The logo reads left to right in every language: "DG" is its
-            // left end even in an Arabic layout.
-            alignment: Alignment.centerLeft,
-            widthFactor: _markShare,
-            child: SvgPicture.asset(
-              // The coloured logo in both themes: its blue mark reads on dark.
-              BrandAssets.dgotixColored,
-              height: h,
-              width: DgotixBrandLockup.logoWidthFor(h),
-              fit: BoxFit.contain,
-              alignment: Alignment.centerLeft,
-            ),
-          ),
+    final DsColors c = context.dsColors;
+    final AppLocalizations l = AppLocalizations.of(context);
+    const double h = 22;
+    final Widget mark = ClipRect(
+      child: Align(
+        // The logo reads left to right in every language: "DG" is its left end
+        // even in an Arabic layout.
+        alignment: Alignment.centerLeft,
+        widthFactor: _markShare,
+        child: SvgPicture.asset(
+          // The coloured logo in both themes: its blue mark reads on dark.
+          BrandAssets.dgotixColored,
+          height: h,
+          width: DgotixBrandLockup.logoWidthFor(h),
+          fit: BoxFit.contain,
+          alignment: Alignment.centerLeft,
+        ),
+      ),
+    );
+
+    final Widget face = AnimatedBuilder(
+      animation: Listenable.merge(<Listenable>[_pulse, _bounce]),
+      builder: (BuildContext context, Widget? child) {
+        // A soft ring spreading from the mark while the hint runs.
+        final double p = _pulse.isAnimating ? _pulse.value : 0;
+        // The bounce: a quick dip, then a small overshoot.
+        final double b = _bounce.isAnimating
+            ? 1 - 0.18 * math.sin(_bounce.value * math.pi) +
+                0.10 * math.sin(_bounce.value * math.pi * 2) * _bounce.value
+            : 1;
+        return Stack(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
+          children: <Widget>[
+            if (p > 0)
+              Container(
+                width: 30 + 22 * p,
+                height: 30 + 22 * p,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                      color: c.brand.withValues(alpha: 0.5 * (1 - p)),
+                      width: 2),
+                ),
+              ),
+            Transform.scale(scale: b, child: child),
+          ],
+        );
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Semantics(label: AppConfig.parentBrand, image: true, child: mark),
+          // "This opens something": a small chevron under the mark.
+          Icon(Icons.keyboard_arrow_down_rounded,
+              size: 14, color: c.brand.withValues(alpha: 0.75)),
+        ],
+      ),
+    );
+
+    return Tooltip(
+      key: _tip,
+      message: _hint
+          ? l.menuHint
+          : MaterialLocalizations.of(context).openAppDrawerTooltip,
+      showDuration: const Duration(seconds: 6),
+      child: Semantics(
+        button: true,
+        label: MaterialLocalizations.of(context).openAppDrawerTooltip,
+        child: IconButton(
+          onPressed: _tap,
+          // No box of its own: the mark sits on the bar itself, so nothing
+          // sticks out of the bar's rounded corner.
+          icon: ExcludeSemantics(child: face),
         ),
       ),
     );

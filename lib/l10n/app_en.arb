@@ -1977,5 +1977,6 @@
   "@shareProgAmbassador": { "placeholders": { "count": { "type": "int" } } },
   "shareCardAmbassadorLabel": "friends joined through my link · DGOTIX Ambassador",
   "shareMomentGoal": "You reached a goal! Share the good news with your friends.",
-  "shareMomentAmbassador": "You're now a DGOTIX Ambassador! Share your card."
+  "shareMomentAmbassador": "You're now a DGOTIX Ambassador! Share your card.",
+  "menuHint": "Tap the logo to open the menu"
 }

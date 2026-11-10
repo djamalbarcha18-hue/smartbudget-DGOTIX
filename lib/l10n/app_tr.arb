@@ -1672,5 +1672,6 @@
   "shareProgAmbassador": "Ben bir DGOTIX Elçisiyim: {count} arkadaşım bağlantımla SmartBudget'a katıldı 🌟 Sen de katıl:",
   "shareCardAmbassadorLabel": "arkadaş bağlantımla katıldı · DGOTIX Elçisi",
   "shareMomentGoal": "Bir hedefe ulaştın! İyi haberi arkadaşlarınla paylaş.",
-  "shareMomentAmbassador": "Artık bir DGOTIX Elçisisin! Kartını paylaş."
+  "shareMomentAmbassador": "Artık bir DGOTIX Elçisisin! Kartını paylaş.",
+  "menuHint": "Menüyü açmak için logoya dokunun"
 }

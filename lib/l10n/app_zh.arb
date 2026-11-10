@@ -1672,5 +1672,6 @@
   "shareProgAmbassador": "我是 DGOTIX 大使:{count} 位朋友通过我的链接加入了 SmartBudget 🌟 一起来:",
   "shareCardAmbassadorLabel": "位朋友通过我的链接加入 · DGOTIX 大使",
   "shareMomentGoal": "你达成了一个目标!把好消息分享给朋友吧。",
-  "shareMomentAmbassador": "你现在是 DGOTIX 大使了!分享你的卡片吧。"
+  "shareMomentAmbassador": "你现在是 DGOTIX 大使了!分享你的卡片吧。",
+  "menuHint": "点按徽标打开菜单"
 }

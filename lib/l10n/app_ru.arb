@@ -1672,5 +1672,6 @@
   "shareProgAmbassador": "Я посол DGOTIX: {count} друзей присоединились к SmartBudget по моей ссылке 🌟 Присоединяйтесь:",
   "shareCardAmbassadorLabel": "друзей присоединились по моей ссылке · Посол DGOTIX",
   "shareMomentGoal": "Вы достигли цели! Поделитесь хорошей новостью с друзьями.",
-  "shareMomentAmbassador": "Теперь вы посол DGOTIX! Поделитесь своей карточкой."
+  "shareMomentAmbassador": "Теперь вы посол DGOTIX! Поделитесь своей карточкой.",
+  "menuHint": "Нажмите на логотип, чтобы открыть меню"
 }

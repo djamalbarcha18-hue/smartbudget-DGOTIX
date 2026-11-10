@@ -1672,5 +1672,6 @@
   "shareProgAmbassador": "Ich bin DGOTIX-Botschafter: {count} Freunde sind über meinen Link zu SmartBudget gekommen 🌟 Mach mit:",
   "shareCardAmbassadorLabel": "Freunde über meinen Link beigetreten · DGOTIX-Botschafter",
   "shareMomentGoal": "Du hast ein Ziel erreicht! Teile die gute Nachricht mit deinen Freunden.",
-  "shareMomentAmbassador": "Du bist jetzt DGOTIX-Botschafter! Teile deine Karte."
+  "shareMomentAmbassador": "Du bist jetzt DGOTIX-Botschafter! Teile deine Karte.",
+  "menuHint": "Tippe auf das Logo, um das Menü zu öffnen"
 }
