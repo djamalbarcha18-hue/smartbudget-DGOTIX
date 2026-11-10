@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
+import 'package:smartbudget/design_system/tokens/ds_radius.dart';
+import 'package:smartbudget/features/referrals/application/referral_claim.dart';
+import 'package:smartbudget/features/referrals/domain/referral_reward.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/auth/presentation/auth_helpers.dart';
@@ -75,6 +78,32 @@ class _SignupPageState extends ConsumerState<SignupPage> {
       title: l.authSignUpTitle,
       subtitle: l.authSignUpSubtitle,
       children: <Widget>[
+        // Came from a friend's link: say there is a gift waiting.
+        if (ref.watch(pendingInviteProvider).valueOrNull == true) ...<Widget>[
+          Container(
+            padding: const EdgeInsets.all(DsSpacing.md),
+            decoration: BoxDecoration(
+              borderRadius: DsRadius.brMd,
+              color: c.brand.withValues(alpha: 0.10),
+              border: Border.all(color: c.brand.withValues(alpha: 0.6)),
+            ),
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.card_giftcard_rounded, color: c.brand),
+                const SizedBox(width: DsSpacing.md),
+                Expanded(
+                  child: Text(
+                      l.inviteGiftSignup(ReferralRewards.welcomeGiftDays),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w700)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: DsSpacing.lg),
+        ],
         Form(
           key: _formKey,
           child: Column(

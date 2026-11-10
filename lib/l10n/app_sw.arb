@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "Imeshindwa kuhifadhi chaguo lako. Jaribu tena baada ya muda mfupi.",
   "journeyAllDone": "Umefungua zawadi zote. Asante kwa kueneza habari!",
   "journeyCelebrateJoined": "Rafiki amejiunga! Zimebaki {left}.",
-  "journeyCelebrateReady": "Zawadi yako iko tayari. Fungua Mipangilio kuichagua."
+  "journeyCelebrateReady": "Zawadi yako iko tayari. Fungua Mipangilio kuichagua.",
+  "inviteGiftSignup": "Rafiki amekualika: jiunge upate mgawanyo mahiri wa mshahara bila malipo kwa siku {days}.",
+  "inviteGiftReceived": "Rafiki amekualika, na hii hapa zawadi yako: mgawanyo mahiri wa mshahara, bila malipo kwa siku {days}.",
+  "inviteGiftUntil": "Zawadi yako ya kukaribisha: mgawanyo mahiri wa mshahara hadi {date}"
 }

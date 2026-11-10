@@ -44,6 +44,22 @@ abstract final class ReferralRewards {
   /// How many referrals earn the set above.
   static const int needed = 3;
 
+  /// The welcome gift of an invited person: the smart salary split, free for
+  /// [welcomeGiftDays] days from the day they activate. A separate reward id
+  /// (`reward_grants.reward`), so it never counts as a pick.
+  static const String welcomeGiftId = 'welcome_salary_split';
+  static const int welcomeGiftDays = 30;
+
+  /// When the gift given at [grantedAt] ends, or null when there is none.
+  static DateTime? welcomeGiftEnds(DateTime? grantedAt) =>
+      grantedAt?.add(const Duration(days: welcomeGiftDays));
+
+  /// Whether the gift given at [grantedAt] is still running at [now].
+  static bool welcomeGiftActive(DateTime? grantedAt, DateTime now) {
+    final DateTime? ends = welcomeGiftEnds(grantedAt);
+    return ends != null && now.isBefore(ends);
+  }
+
   /// Boolean gates a reward opens outright.
   static const Map<ReferralReward, Feature> _opens = <ReferralReward, Feature>{
     ReferralReward.salarySplit: Feature.salarySplit,

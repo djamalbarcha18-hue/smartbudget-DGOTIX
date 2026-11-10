@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_section_header.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -60,6 +61,12 @@ class _InviteRewardsCardState extends ConsumerState<InviteRewardsCard> {
 
     final String? code = ref.watch(referralCodeProvider).valueOrNull;
     final RewardJourney journey = ref.watch(rewardJourneyProvider);
+    // The welcome gift of someone who was invited, while it runs.
+    final DateTime? giftAt = ref.watch(welcomeGiftProvider).valueOrNull;
+    final DateTime? giftEnds =
+        ReferralRewards.welcomeGiftActive(giftAt, AppClock.now())
+            ? ReferralRewards.welcomeGiftEnds(giftAt)
+            : null;
 
     return GlassCard(
       accent: c.brand,
@@ -72,6 +79,22 @@ class _InviteRewardsCardState extends ConsumerState<InviteRewardsCard> {
           ),
           const SizedBox(height: DsSpacing.sm),
           Text(l.inviteBody, style: t.bodySmall?.copyWith(color: c.textMuted)),
+          if (giftEnds != null) ...<Widget>[
+            const SizedBox(height: DsSpacing.sm),
+            Row(
+              children: <Widget>[
+                Icon(Icons.card_giftcard_rounded, size: 16, color: c.income),
+                const SizedBox(width: DsSpacing.xs),
+                Expanded(
+                  child: Text(
+                      l.inviteGiftUntil(MaterialLocalizations.of(context)
+                          .formatMediumDate(giftEnds)),
+                      style: t.labelMedium?.copyWith(
+                          color: c.income, fontWeight: FontWeight.w700)),
+                ),
+              ],
+            ),
+          ],
           const SizedBox(height: DsSpacing.lg),
           if (code == null)
             // Signed out: the link belongs to an account, so say so plainly

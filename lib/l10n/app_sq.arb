@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "Zgjedhja nuk u ruajt. Provoni përsëri pas pak.",
   "journeyAllDone": "I hapët të gjitha shpërblimet. Faleminderit që e përhapët!",
   "journeyCelebrateJoined": "Një mik u bashkua! Edhe {left} për të vazhduar.",
-  "journeyCelebrateReady": "Shpërblimi juaj është gati. Hapni Cilësimet për ta zgjedhur."
+  "journeyCelebrateReady": "Shpërblimi juaj është gati. Hapni Cilësimet për ta zgjedhur.",
+  "inviteGiftSignup": "Një mik ju ftoi: bashkohuni dhe merrni ndarjen e zgjuar të pagës falas për {days} ditë.",
+  "inviteGiftReceived": "Një mik ju ftoi, dhe ja dhurata juaj: ndarja e zgjuar e pagës, falas për {days} ditë.",
+  "inviteGiftUntil": "Dhurata juaj e mirëseardhjes: ndarje e zgjuar e pagës deri më {date}"
 }

@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/referrals/data/referral_service.dart';
 import 'package:smartbudget/features/referrals/domain/referral_reward.dart';
@@ -32,15 +33,28 @@ final referralGrantsProvider =
   return ref.watch(referralServiceProvider).grants();
 });
 
-/// The rewards in force right now, for the feature gate.
+/// When the invited member got the welcome gift (null: none).
+final welcomeGiftProvider = FutureProvider<DateTime?>((Ref ref) async {
+  if (_uid(ref) == null) return null;
+  return ref.watch(referralServiceProvider).welcomeGiftGrantedAt();
+});
+
+/// The rewards in force right now, for the feature gate: the picks, plus the
+/// smart salary split while the welcome gift runs.
 ///
 /// Synchronous and never null: while the answer is in flight, or when it
 /// failed, this is empty — which withholds the extras and changes nothing
 /// else. A reward only ever adds, so an empty set is always the safe guess.
-final activeRewardsProvider = Provider<Set<ReferralReward>>(
-  (Ref ref) =>
-      ref.watch(referralGrantsProvider).valueOrNull ?? const <ReferralReward>{},
-);
+final activeRewardsProvider = Provider<Set<ReferralReward>>((Ref ref) {
+  final Set<ReferralReward> picks =
+      ref.watch(referralGrantsProvider).valueOrNull ??
+          const <ReferralReward>{};
+  final DateTime? gift = ref.watch(welcomeGiftProvider).valueOrNull;
+  if (ReferralRewards.welcomeGiftActive(gift, AppClock.now())) {
+    return <ReferralReward>{...picks, ReferralReward.salarySplit};
+  }
+  return picks;
+});
 
 /// Where this member stands on the rewards journey: friends so far and what
 /// has been picked. While the answers are in flight it is the start (nothing

@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "Nije moguće sačuvati vaš izbor. Pokušajte ponovo za trenutak.",
   "journeyAllDone": "Otključali ste sve nagrade. Hvala što širite riječ!",
   "journeyCelebrateJoined": "Prijatelj se pridružio! Još {left} do kraja.",
-  "journeyCelebrateReady": "Vaša nagrada je spremna. Otvorite Postavke da je odaberete."
+  "journeyCelebrateReady": "Vaša nagrada je spremna. Otvorite Postavke da je odaberete.",
+  "inviteGiftSignup": "Prijatelj vas je pozvao: pridružite se i dobijte pametnu podjelu plate besplatno {days} dana.",
+  "inviteGiftReceived": "Prijatelj vas je pozvao, a evo i vašeg poklona: pametna podjela plate, besplatno {days} dana.",
+  "inviteGiftUntil": "Vaš poklon dobrodošlice: pametna podjela plate do {date}"
 }

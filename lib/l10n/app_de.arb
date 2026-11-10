@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "Auswahl konnte nicht gespeichert werden. Versuche es gleich noch einmal.",
   "journeyAllDone": "Du hast alle Belohnungen freigeschaltet. Danke, dass du die App weiterempfiehlst!",
   "journeyCelebrateJoined": "Ein Freund ist beigetreten! Noch {left} bis zur nächsten.",
-  "journeyCelebrateReady": "Deine Belohnung ist bereit. Öffne die Einstellungen, um sie zu wählen."
+  "journeyCelebrateReady": "Deine Belohnung ist bereit. Öffne die Einstellungen, um sie zu wählen.",
+  "inviteGiftSignup": "Ein Freund hat dich eingeladen: Tritt bei und erhalte die smarte Gehaltsaufteilung {days} Tage kostenlos.",
+  "inviteGiftReceived": "Ein Freund hat dich eingeladen, und hier ist dein Geschenk: die smarte Gehaltsaufteilung, {days} Tage kostenlos.",
+  "inviteGiftUntil": "Dein Willkommensgeschenk: smarte Gehaltsaufteilung bis {date}"
 }

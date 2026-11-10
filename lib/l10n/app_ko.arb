@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "선택을 저장하지 못했어요. 잠시 후 다시 시도해 주세요.",
   "journeyAllDone": "모든 보상을 열었어요. 앱을 알려 주셔서 고마워요!",
   "journeyCelebrateJoined": "친구가 가입했어요! {left}명 남았어요.",
-  "journeyCelebrateReady": "보상이 준비됐어요. 설정을 열어 골라 보세요."
+  "journeyCelebrateReady": "보상이 준비됐어요. 설정을 열어 골라 보세요.",
+  "inviteGiftSignup": "친구가 당신을 초대했어요. 가입하면 스마트 급여 배분을 {days}일 동안 무료로 드려요.",
+  "inviteGiftReceived": "친구가 당신을 초대했어요. 선물로 스마트 급여 배분을 {days}일 동안 무료로 드려요.",
+  "inviteGiftUntil": "환영 선물: 스마트 급여 배분 {date}까지"
 }

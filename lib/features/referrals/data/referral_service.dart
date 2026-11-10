@@ -118,6 +118,24 @@ class ReferralService {
     }
   }
 
+  /// When this account got its welcome gift (it was invited and has started),
+  /// or null when it has none.
+  Future<DateTime?> welcomeGiftGrantedAt() async {
+    if (!_ready) return null;
+    try {
+      final Map<String, dynamic>? row = await _client
+          .from('reward_grants')
+          .select('granted_at')
+          .eq('user_id', _client.auth.currentUser!.id)
+          .eq('reward', ReferralRewards.welcomeGiftId)
+          .maybeSingle();
+      final Object? at = row?['granted_at'];
+      return at is String ? DateTime.tryParse(at) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   /// The rewards this account holds, in the order they were picked. An empty
   /// set is the safe answer: it locks nothing the plan already allows, it only
   /// withholds the extras.

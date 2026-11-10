@@ -9,6 +9,15 @@ short celebration shows when a pick is made, and a note over the app when
 another friend joins (the count is read again every five minutes and when the
 app comes back to the screen).
 
+**A gift for the invited person too.** Whoever signs up through an invite link
+and starts using the app (mailbox confirmed) gets the smart salary split free
+for 30 days, given by `complete_referral` as its own reward id
+(`welcome_salary_split`, never a pick, so it cannot use up the picks that three
+friends of their own would earn). The sign-up page mentions it while an invite
+code waits on the device, the Settings card shows when it ends, and a note over
+the app says it once. It is local arithmetic like every reward, so it costs
+nothing to give.
+
 The pick is decided on the server (`choose_reward`, `referral_picks_for`): one
 pick per three activated friends, never repeated, counted there and not in the
 app. `complete_referral` only counts now; it grants nothing by itself.

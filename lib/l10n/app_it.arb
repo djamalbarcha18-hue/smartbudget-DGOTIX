@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "Impossibile salvare la scelta. Riprova tra un momento.",
   "journeyAllDone": "Hai sbloccato tutti i premi. Grazie per aver fatto girare la voce!",
   "journeyCelebrateJoined": "Un amico si è unito! Ne mancano {left}.",
-  "journeyCelebrateReady": "Il tuo premio è pronto. Apri Impostazioni per sceglierlo."
+  "journeyCelebrateReady": "Il tuo premio è pronto. Apri Impostazioni per sceglierlo.",
+  "inviteGiftSignup": "Un amico ti ha invitato: unisciti e ottieni la ripartizione intelligente dello stipendio gratis per {days} giorni.",
+  "inviteGiftReceived": "Un amico ti ha invitato, ed ecco il tuo regalo: la ripartizione intelligente dello stipendio, gratis per {days} giorni.",
+  "inviteGiftUntil": "Il tuo regalo di benvenuto: ripartizione intelligente dello stipendio fino al {date}"
 }

@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "Seçimin kaydedilemedi. Biraz sonra tekrar dene.",
   "journeyAllDone": "Tüm ödülleri açtın. Uygulamayı duyurduğun için teşekkürler!",
   "journeyCelebrateJoined": "Bir arkadaşın katıldı! {left} kaldı.",
-  "journeyCelebrateReady": "Ödülün hazır. Seçmek için Ayarlar'ı aç."
+  "journeyCelebrateReady": "Ödülün hazır. Seçmek için Ayarlar'ı aç.",
+  "inviteGiftSignup": "Bir arkadaşın seni davet etti: katıl ve akıllı maaş dağıtımını {days} gün ücretsiz kullan.",
+  "inviteGiftReceived": "Bir arkadaşın seni davet etti, işte hediyen: akıllı maaş dağıtımı, {days} gün ücretsiz.",
+  "inviteGiftUntil": "Hoş geldin hediyen: akıllı maaş dağıtımı {date} tarihine kadar"
 }

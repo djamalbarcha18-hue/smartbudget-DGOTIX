@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "選択を保存できませんでした。少ししてからもう一度お試しください。",
   "journeyAllDone": "すべての特典を解放しました。広めてくれてありがとう!",
   "journeyCelebrateJoined": "友達が参加しました!あと{left}人です。",
-  "journeyCelebrateReady": "特典の準備ができました。設定を開いて選んでください。"
+  "journeyCelebrateReady": "特典の準備ができました。設定を開いて選んでください。",
+  "inviteGiftSignup": "友達があなたを招待しました。参加すると、スマート給与配分を{days}日間無料で使えます。",
+  "inviteGiftReceived": "友達があなたを招待しました。プレゼントはスマート給与配分を{days}日間無料で。",
+  "inviteGiftUntil": "ウェルカムギフト:スマート給与配分を{date}まで"
 }

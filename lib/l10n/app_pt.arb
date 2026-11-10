@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "Não foi possível guardar a sua escolha. Tente de novo daqui a pouco.",
   "journeyAllDone": "Desbloqueou todas as recompensas. Obrigado por espalhar a palavra!",
   "journeyCelebrateJoined": "Um amigo entrou! Faltam {left}.",
-  "journeyCelebrateReady": "A sua recompensa está pronta. Abra as Definições para a escolher."
+  "journeyCelebrateReady": "A sua recompensa está pronta. Abra as Definições para a escolher.",
+  "inviteGiftSignup": "Um amigo convidou-o: junte-se e receba a divisão inteligente do salário grátis durante {days} dias.",
+  "inviteGiftReceived": "Um amigo convidou-o, e aqui está a sua oferta: a divisão inteligente do salário, grátis durante {days} dias.",
+  "inviteGiftUntil": "A sua oferta de boas-vindas: divisão inteligente do salário até {date}"
 }

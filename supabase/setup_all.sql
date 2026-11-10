@@ -1647,8 +1647,13 @@ begin
     returning * into ref;
   if ref.invitee_id is null then return false; end if; -- no referral, or already done
 
-  -- Nothing is granted here any more: the inviter now CHOOSES what each three
-  -- friends earn (choose_reward below), so activating only counts.
+  -- The inviter is not granted anything here: they CHOOSE what each three
+  -- friends earn (choose_reward below), so activating only counts for them.
+  -- The invited person gets a welcome gift of their own: the smart salary
+  -- split, free for a while (the app reads granted_at and applies the days).
+  -- A separate reward id, so it never counts as one of the inviter-side picks.
+  insert into reward_grants (user_id, reward) values (uid, 'welcome_salary_split')
+    on conflict (user_id, reward) do nothing;
   return true;
 end $$;
 
@@ -1672,7 +1677,9 @@ begin
   perform pg_advisory_xact_lock(hashtextextended('referral:' || uid::text, 0));
   select count(*) into done from referrals
     where referrer_id = uid and activated_at is not null;
-  select count(*) into taken from reward_grants where user_id = uid;
+  -- Only the picks count: the welcome gift (another reward id) does not.
+  select count(*) into taken from reward_grants
+    where user_id = uid and reward = any (referral_rewards());
   if taken >= referral_picks_for(done) then return false; end if;
 
   insert into reward_grants (user_id, reward) values (uid, p_reward)

@@ -33,6 +33,8 @@ class _FakeService implements ReferralService {
   Future<Set<ReferralReward>> grants() async => const <ReferralReward>{};
   @override
   Future<bool> choose(ReferralReward reward) async => true;
+  @override
+  Future<DateTime?> welcomeGiftGrantedAt() async => null;
 }
 
 const String _app = 'https://smartbudget.dgotix.com/';

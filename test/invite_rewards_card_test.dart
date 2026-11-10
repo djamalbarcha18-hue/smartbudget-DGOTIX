@@ -15,6 +15,8 @@ class _Service implements ReferralService {
   final List<ReferralReward> chosen = <ReferralReward>[];
   bool accept = true;
   @override
+  Future<DateTime?> welcomeGiftGrantedAt() async => null;
+  @override
   Future<bool> choose(ReferralReward r) async {
     chosen.add(r);
     return accept;
@@ -35,7 +37,8 @@ class _Service implements ReferralService {
 Future<_Service> _pump(WidgetTester tester,
     {required int activated,
     List<ReferralReward> picked = const <ReferralReward>[],
-    String? code = 'AB23CD45'}) async {
+    String? code = 'AB23CD45',
+    DateTime? gift}) async {
   SharedPreferences.setMockInitialValues(<String, Object>{});
   tester.view.physicalSize = const Size(900, 1500);
   tester.view.devicePixelRatio = 2;
@@ -48,6 +51,7 @@ Future<_Service> _pump(WidgetTester tester,
       referralProgressProvider
           .overrideWith((_) async => ReferralProgress(activated: activated)),
       referralGrantsProvider.overrideWith((_) async => picked.toSet()),
+      welcomeGiftProvider.overrideWith((_) async => gift),
     ],
     child: MaterialApp(
       theme: DsTheme.dark(),
@@ -109,6 +113,20 @@ void main() {
     expect(find.text('You unlocked every reward. Thank you for spreading the word!'),
         findsOneWidget);
     expect(find.text('Your reward is ready: pick it'), findsNothing);
+  });
+
+  testWidgets('an invited member sees how long the welcome gift runs',
+      (WidgetTester tester) async {
+    await _pump(tester,
+        activated: 0,
+        gift: DateTime.now().subtract(const Duration(days: 2)));
+    expect(find.textContaining('Your welcome gift: smart salary split until'),
+        findsOneWidget);
+  });
+
+  testWidgets('no gift, no line about it', (WidgetTester tester) async {
+    await _pump(tester, activated: 0);
+    expect(find.textContaining('welcome gift'), findsNothing);
   });
 
   testWidgets('signed out: no ladder, a plain explanation',

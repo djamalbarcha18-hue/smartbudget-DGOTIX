@@ -6,11 +6,13 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/storage/account_keys.dart';
+import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/referrals/application/referrals_controller.dart';
 import 'package:smartbudget/features/referrals/data/referral_service.dart';
+import 'package:smartbudget/features/referrals/domain/referral_reward.dart';
 import 'package:smartbudget/features/referrals/domain/reward_journey.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
@@ -40,6 +42,7 @@ class ReferralCelebration extends ConsumerStatefulWidget {
 
 class _ReferralCelebrationState extends ConsumerState<ReferralCelebration> {
   static const String _seenBase = 'sb_referral_seen';
+  static const String _giftSeenBase = 'sb_welcome_gift_seen';
 
   Timer? _timer;
   Timer? _hide;
@@ -55,6 +58,13 @@ class _ReferralCelebrationState extends ConsumerState<ReferralCelebration> {
       currentAccountIdProvider,
       (String? _, String? uid) => _setUp(uid),
       fireImmediately: true,
+    );
+    ref.listenManual<AsyncValue<DateTime?>>(
+      welcomeGiftProvider,
+      (_, AsyncValue<DateTime?> next) {
+        final DateTime? at = next.valueOrNull;
+        if (at != null) _onGift(at);
+      },
     );
     ref.listenManual<AsyncValue<ReferralProgress>>(
       referralProgressProvider,
@@ -79,6 +89,33 @@ class _ReferralCelebrationState extends ConsumerState<ReferralCelebration> {
     ref.invalidate(referralGrantsProvider);
   }
 
+  /// The welcome gift of an invited person: said once, the first time it is
+  /// seen on this device.
+  Future<void> _onGift(DateTime at) async {
+    final String? uid = _uid;
+    if (uid == null) return;
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String key = AccountKeys.of(_giftSeenBase, uid);
+      if (prefs.getBool(key) ?? false) return;
+      await prefs.setBool(key, true);
+      if (!mounted || _uid != uid) return;
+      if (!ReferralRewards.welcomeGiftActive(at, AppClock.now())) return;
+      _show(AppLocalizations.of(context)
+          .inviteGiftReceived(ReferralRewards.welcomeGiftDays));
+    } catch (_) {
+      // A note is a nicety: never let it break anything.
+    }
+  }
+
+  void _show(String note) {
+    setState(() => _note = note);
+    _hide?.cancel();
+    _hide = Timer(const Duration(seconds: 9), () {
+      if (mounted) setState(() => _note = null);
+    });
+  }
+
   Future<void> _onCount(int activated) async {
     final String? uid = _uid;
     if (uid == null) return;
@@ -96,13 +133,9 @@ class _ReferralCelebrationState extends ConsumerState<ReferralCelebration> {
       if (!mounted) return;
       final RewardJourney j = ref.read(rewardJourneyProvider);
       final AppLocalizations l = AppLocalizations.of(context);
-      setState(() => _note = j.picksAvailable > 0
+      _show(j.picksAvailable > 0
           ? l.journeyCelebrateReady
           : l.journeyCelebrateJoined(j.friendsToNext));
-      _hide?.cancel();
-      _hide = Timer(const Duration(seconds: 9), () {
-        if (mounted) setState(() => _note = null);
-      });
     } catch (_) {
       // A note is a nicety: never let it break anything.
     }

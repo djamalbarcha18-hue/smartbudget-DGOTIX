@@ -109,6 +109,47 @@ void main() {
     expect(find.byIcon(Icons.celebration_rounded), findsNothing);
   });
 
+  testWidgets('the welcome gift of an invited person is said once',
+      (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    final GoRouter router = GoRouter(routes: <RouteBase>[
+      GoRoute(path: '/', builder: (_, __) => const SizedBox.shrink()),
+    ]);
+    final ProviderContainer container = ProviderContainer(overrides: <Override>[
+      currentAccountIdProvider.overrideWithValue('u1'),
+      referralProgressProvider
+          .overrideWith((_) async => const ReferralProgress(activated: 0)),
+      referralGrantsProvider
+          .overrideWith((_) async => const <ReferralReward>{}),
+      welcomeGiftProvider.overrideWith(
+          (_) async => DateTime.now().subtract(const Duration(days: 1))),
+    ]);
+    addTearDown(container.dispose);
+    Widget app() => UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            theme: DsTheme.dark(),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            builder: (BuildContext context, Widget? child) =>
+                ReferralCelebration(router: router, child: child!),
+            home: const Scaffold(body: Text('home')),
+          ),
+        );
+    await tester.pumpWidget(app());
+    await _settle(tester);
+    expect(
+        find.text(
+            'A friend invited you, and here is your gift: the smart salary split, free for 30 days.'),
+        findsOneWidget);
+    // Opening the app again on this device does not repeat it.
+    await tester.pump(const Duration(seconds: 10));
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpWidget(app());
+    await _settle(tester);
+    expect(find.byIcon(Icons.celebration_rounded), findsNothing);
+  });
+
   testWidgets('signed out: nothing happens', (WidgetTester tester) async {
     final ProviderContainer c = await _pump(tester, uid: null);
     c.read(_count.notifier).state = 5;

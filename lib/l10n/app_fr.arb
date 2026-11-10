@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "Impossible d'enregistrer votre choix. Réessayez dans un instant.",
   "journeyAllDone": "Vous avez débloqué toutes les récompenses. Merci d'avoir fait passer le mot !",
   "journeyCelebrateJoined": "Un ami a rejoint ! Encore {left} à parcourir.",
-  "journeyCelebrateReady": "Votre récompense est prête. Ouvrez les Réglages pour la choisir."
+  "journeyCelebrateReady": "Votre récompense est prête. Ouvrez les Réglages pour la choisir.",
+  "inviteGiftSignup": "Un ami vous a invité : rejoignez-nous et profitez de la répartition intelligente du salaire gratuitement pendant {days} jours.",
+  "inviteGiftReceived": "Un ami vous a invité, et voici votre cadeau : la répartition intelligente du salaire, gratuite pendant {days} jours.",
+  "inviteGiftUntil": "Votre cadeau de bienvenue : répartition intelligente du salaire jusqu'au {date}"
 }

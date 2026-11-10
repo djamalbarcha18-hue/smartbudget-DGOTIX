@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "Ba a iya adana zaɓinka ba. Sake gwadawa bayan ɗan lokaci.",
   "journeyAllDone": "Ka buɗe dukkan kyaututtuka. Na gode da yaɗa manhajar!",
   "journeyCelebrateJoined": "Aboki ya shiga! Saura {left}.",
-  "journeyCelebrateReady": "Kyautarka ta shirya. Buɗe Saituna don zaɓe ta."
+  "journeyCelebrateReady": "Kyautarka ta shirya. Buɗe Saituna don zaɓe ta.",
+  "inviteGiftSignup": "Aboki ya gayyace ka: shiga ka samu rabon albashi mai wayo kyauta na kwanaki {days}.",
+  "inviteGiftReceived": "Aboki ya gayyace ka, ga kyautarka: rabon albashi mai wayo, kyauta na kwanaki {days}.",
+  "inviteGiftUntil": "Kyautar maraba taka: rabon albashi mai wayo har zuwa {date}"
 }

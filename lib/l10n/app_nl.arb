@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "Je keuze kon niet worden opgeslagen. Probeer het zo opnieuw.",
   "journeyAllDone": "Je hebt alle beloningen vrijgespeeld. Bedankt voor het delen!",
   "journeyCelebrateJoined": "Een vriend doet mee! Nog {left} te gaan.",
-  "journeyCelebrateReady": "Je beloning staat klaar. Open Instellingen om hem te kiezen."
+  "journeyCelebrateReady": "Je beloning staat klaar. Open Instellingen om hem te kiezen.",
+  "inviteGiftSignup": "Een vriend heeft je uitgenodigd: doe mee en krijg de slimme salarisverdeling {days} dagen gratis.",
+  "inviteGiftReceived": "Een vriend heeft je uitgenodigd, en hier is je cadeau: de slimme salarisverdeling, {days} dagen gratis.",
+  "inviteGiftUntil": "Je welkomstcadeau: slimme salarisverdeling tot {date}"
 }

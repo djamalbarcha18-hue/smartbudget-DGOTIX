@@ -1963,5 +1963,11 @@
   "journeyAllDone": "You unlocked every reward. Thank you for spreading the word!",
   "journeyCelebrateJoined": "A friend joined! {left} more to go.",
   "@journeyCelebrateJoined": { "placeholders": { "left": { "type": "int" } } },
-  "journeyCelebrateReady": "Your reward is ready. Open Settings to pick it."
+  "journeyCelebrateReady": "Your reward is ready. Open Settings to pick it.",
+  "inviteGiftSignup": "A friend invited you: join and get the smart salary split free for {days} days.",
+  "@inviteGiftSignup": { "placeholders": { "days": { "type": "int" } } },
+  "inviteGiftReceived": "A friend invited you, and here is your gift: the smart salary split, free for {days} days.",
+  "@inviteGiftReceived": { "placeholders": { "days": { "type": "int" } } },
+  "inviteGiftUntil": "Your welcome gift: smart salary split until {date}",
+  "@inviteGiftUntil": { "placeholders": { "date": { "type": "String" } } }
 }

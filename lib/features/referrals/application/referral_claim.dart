@@ -74,6 +74,18 @@ class ReferralClaim {
   }
 }
 
+/// Whether an invite code is waiting on this device (someone opened an invite
+/// link and has not signed up yet): the sign-up page then mentions the welcome
+/// gift. Read once; false when there is no store.
+final pendingInviteProvider = FutureProvider<bool>((Ref ref) async {
+  try {
+    final SharedPreferences p = await SharedPreferences.getInstance();
+    return ReferralLink.looksValid(p.getString(ReferralClaim.prefKey));
+  } catch (_) {
+    return false;
+  }
+});
+
 final referralClaimProvider = Provider<ReferralClaim>(
     (Ref ref) => ReferralClaim(ref.watch(referralServiceProvider)));
 

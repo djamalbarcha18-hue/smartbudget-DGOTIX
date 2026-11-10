@@ -130,7 +130,34 @@ select assert((select needed from my_referral_progress()) = 3,
 
 -- ------------------------------------------- the invitee earns nothing itself
 select assert((select count(*) from reward_grants
-         where user_id = '22222222-2222-2222-2222-222222222222') = 0,
-       'being invited is not itself a reward');
+         where user_id = '22222222-2222-2222-2222-222222222222'
+           and reward = any (referral_rewards())) = 0,
+       'being invited earns no inviter-side reward');
+select assert((select count(*) from reward_grants
+         where user_id = '22222222-2222-2222-2222-222222222222'
+           and reward = 'welcome_salary_split') = 1,
+       'an invited person gets the welcome gift once, when they activate');
+select assert((select count(*) from reward_grants
+         where user_id = '44444444-4444-4444-4444-444444444444'
+           and reward = 'welcome_salary_split') = 1,
+       'every activated invitee gets it');
+select assert((select count(*) from reward_grants
+         where user_id = '55555555-5555-5555-5555-555555555555') = 0,
+       'someone who was never invited gets nothing');
+
+-- ------------------------------ the gift never uses up the invitee's own picks
+-- Give the first invitee three friends of their own: they still have a pick.
+insert into auth.users (id, email, created_at, email_confirmed_at) values
+  ('66666666-6666-6666-6666-666666666666', 'a@ref.test', now(), now()),
+  ('77777777-7777-7777-7777-777777777777', 'b@ref.test', now(), now()),
+  ('88888888-8888-8888-8888-888888888888', 'c@ref.test', now(), now());
+insert into referrals (invitee_id, referrer_id, code, activated_at)
+select u, '22222222-2222-2222-2222-222222222222', 'X', now()
+from unnest(array['66666666-6666-6666-6666-666666666666',
+                  '77777777-7777-7777-7777-777777777777',
+                  '88888888-8888-8888-8888-888888888888']::uuid[]) as u;
+select set_config('request.jwt.claim.sub', '22222222-2222-2222-2222-222222222222', false);
+select assert(choose_reward('higher_limits') = true,
+       'the welcome gift does not use up a pick earned by three friends');
 
 select 'ALL REFERRAL TESTS PASSED' as result;

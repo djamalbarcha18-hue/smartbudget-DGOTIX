@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "No se pudo guardar tu elección. Inténtalo de nuevo en un momento.",
   "journeyAllDone": "Has desbloqueado todas las recompensas. ¡Gracias por correr la voz!",
   "journeyCelebrateJoined": "¡Un amigo se ha unido! Faltan {left}.",
-  "journeyCelebrateReady": "Tu recompensa está lista. Abre Ajustes para elegirla."
+  "journeyCelebrateReady": "Tu recompensa está lista. Abre Ajustes para elegirla.",
+  "inviteGiftSignup": "Un amigo te ha invitado: únete y obtén el reparto inteligente del sueldo gratis durante {days} días.",
+  "inviteGiftReceived": "Un amigo te invitó, y aquí tienes tu regalo: el reparto inteligente del sueldo, gratis durante {days} días.",
+  "inviteGiftUntil": "Tu regalo de bienvenida: reparto inteligente del sueldo hasta el {date}"
 }

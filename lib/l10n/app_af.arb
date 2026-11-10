@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "Kon nie jou keuse stoor nie. Probeer weer oor 'n oomblik.",
   "journeyAllDone": "Jy het elke beloning ontsluit. Dankie dat jy die woord versprei!",
   "journeyCelebrateJoined": "'n Vriend het aangesluit! Nog {left} te gaan.",
-  "journeyCelebrateReady": "Jou beloning is gereed. Maak Instellings oop om dit te kies."
+  "journeyCelebrateReady": "Jou beloning is gereed. Maak Instellings oop om dit te kies.",
+  "inviteGiftSignup": "'n Vriend het jou genooi: sluit aan en kry die slim salarisverdeling {days} dae gratis.",
+  "inviteGiftReceived": "'n Vriend het jou genooi, en hier is jou geskenk: die slim salarisverdeling, {days} dae gratis.",
+  "inviteGiftUntil": "Jou verwelkomingsgeskenk: slim salarisverdeling tot {date}"
 }

@@ -1663,5 +1663,8 @@
   "journeyPickFailed": "无法保存你的选择,请稍后再试。",
   "journeyAllDone": "你已解锁全部奖励。感谢你帮忙推广!",
   "journeyCelebrateJoined": "有朋友加入了!还差 {left} 位。",
-  "journeyCelebrateReady": "奖励已就绪,请打开设置进行选择。"
+  "journeyCelebrateReady": "奖励已就绪,请打开设置进行选择。",
+  "inviteGiftSignup": "朋友邀请了你:加入即可免费使用智能工资分配 {days} 天。",
+  "inviteGiftReceived": "朋友邀请了你,这是你的礼物:智能工资分配,免费 {days} 天。",
+  "inviteGiftUntil": "你的欢迎礼物:智能工资分配,有效至 {date}"
 }
