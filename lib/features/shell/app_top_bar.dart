@@ -106,7 +106,9 @@ class _LogoMenuButtonState extends State<_LogoMenuButton>
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
-    const double h = 22;
+    // Tall enough to fill most of the bar's height, like the logo block at the
+    // top of the side menu on a computer.
+    const double h = 28;
     final Widget mark = ClipRect(
       child: Align(
         // The logo reads left to right in every language: "DG" is its left end
@@ -140,8 +142,8 @@ class _LogoMenuButtonState extends State<_LogoMenuButton>
           children: <Widget>[
             if (p > 0)
               Container(
-                width: 30 + 22 * p,
-                height: 30 + 22 * p,
+                width: 40 + 22 * p,
+                height: 40 + 22 * p,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
@@ -159,7 +161,7 @@ class _LogoMenuButtonState extends State<_LogoMenuButton>
           Semantics(label: AppConfig.parentBrand, image: true, child: mark),
           // "This opens something": a small chevron under the mark.
           Icon(Icons.keyboard_arrow_down_rounded,
-              size: 14, color: c.brand.withValues(alpha: 0.75)),
+              size: 12, color: c.brand.withValues(alpha: 0.75)),
         ],
       ),
     );
@@ -175,8 +177,11 @@ class _LogoMenuButtonState extends State<_LogoMenuButton>
         label: MaterialLocalizations.of(context).openAppDrawerTooltip,
         child: IconButton(
           onPressed: _tap,
-          // No box of its own: the mark sits on the bar itself, so nothing
-          // sticks out of the bar's rounded corner.
+          // The whole height of the bar is the touch area, and the mark is
+          // centred in it; no box of its own, so nothing sticks out of the
+          // bar's rounded corner.
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          constraints: const BoxConstraints(minWidth: 48, minHeight: 56),
           icon: ExcludeSemantics(child: face),
         ),
       ),
