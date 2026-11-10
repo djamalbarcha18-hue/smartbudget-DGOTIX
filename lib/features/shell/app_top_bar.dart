@@ -3,8 +3,12 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/core/config/app_config.dart';
+import 'package:smartbudget/design_system/brand/brand_assets.dart';
+import 'package:smartbudget/design_system/brand/dgotix_brand_lockup.dart';
 import 'package:smartbudget/core/l10n/month_names.dart';
 import 'package:smartbudget/core/money/currency.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -34,6 +38,9 @@ import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
 /// Top application bar: menu (mobile) + search + actions (language, theme,
 /// notifications, profile). Purely presentational in P1 — no fabricated data.
+/// The share of the logo's width that is the "DG" mark (the rest is "OTIX").
+const double _markShare = 0.37;
+
 class AppTopBar extends StatelessWidget {
   const AppTopBar({super.key, this.onOpenMenu});
 
@@ -92,6 +99,33 @@ class AppTopBar extends StatelessWidget {
           tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
           icon: Icon(Icons.menu_rounded, color: c.brand),
         ),
+        // The brand stays in view on every page: the side menu that holds the
+        // logo is hidden on a phone. Only the "DG" mark (the left part of the
+        // logo), so the period and currency chips keep their room; dropped on
+        // the narrowest screens, where even that would push a chip out.
+        if (MediaQuery.sizeOf(context).width >= 380)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(end: DsSpacing.xs),
+            child: Semantics(
+              label: AppConfig.parentBrand,
+              image: true,
+              child: ClipRect(
+                child: Align(
+                  // The logo reads left to right in every language: "DG" is its
+                  // left end even in an Arabic layout.
+                  alignment: Alignment.centerLeft,
+                  widthFactor: _markShare,
+                  child: SvgPicture.asset(
+                    BrandAssets.dgotixFor(Theme.of(context).brightness),
+                    height: 22,
+                    width: DgotixBrandLockup.logoWidthFor(22),
+                    fit: BoxFit.contain,
+                    alignment: Alignment.centerLeft,
+                  ),
+                ),
+              ),
+            ),
+          ),
         const Expanded(
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,

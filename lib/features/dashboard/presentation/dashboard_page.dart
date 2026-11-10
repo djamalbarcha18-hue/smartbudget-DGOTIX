@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
+import 'package:smartbudget/core/config/app_config.dart';
+import 'package:smartbudget/design_system/brand/brand_assets.dart';
+import 'package:smartbudget/design_system/brand/dgotix_brand_lockup.dart';
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/l10n/month_names.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
-import 'package:smartbudget/design_system/brand/branded_title.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/monthly_bars_chart.dart';
 import 'package:smartbudget/design_system/icons/sb_icons.dart';
@@ -91,7 +94,6 @@ class DashboardPage extends ConsumerWidget {
 
     // "Welcome back" only once there is something to come back to.
     final String hello = nothingYet ? l.welcomeFirst : l.welcomeGreeting;
-    final String greeting = name == null ? hello : '$hello، $name';
 
     // KPI cards: income and expenses side by side first, then what's left
     // (net) and the savings rate under them (two pairs on a phone).
@@ -147,7 +149,7 @@ class DashboardPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _Header(greeting: greeting, scope: scope),
+          _Header(hello: hello, name: name, scope: scope),
           const SizedBox(height: DsSpacing.xl),
           const WelcomeCard(),
           const BackupReminderCard(),
@@ -367,8 +369,9 @@ KpiTone _toneOf(KpiSentiment s) => switch (s) {
     };
 
 class _Header extends ConsumerWidget {
-  const _Header({required this.greeting, required this.scope});
-  final String greeting;
+  const _Header({required this.hello, required this.name, required this.scope});
+  final String hello;
+  final String? name;
   final DashboardScope scope;
 
   @override
@@ -412,21 +415,41 @@ class _Header extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        // A small, quiet brand mark (same in every language and theme).
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: BrandedTitle(
-            'DGOTIX · SmartBudget',
-            style: t.labelSmall?.copyWith(
-              color: c.textFaint,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.6,
+        // On a phone the side menu that holds the logo is hidden: the full logo
+        // sits above the greeting on the first screen (the top bar carries the
+        // "DG" mark on every page). The desktop sidebar already shows it.
+        if (isMobile) ...<Widget>[
+          Semantics(
+            label: AppConfig.parentBrand,
+            image: true,
+            child: SvgPicture.asset(
+              BrandAssets.dgotixFor(Theme.of(context).brightness),
+              height: 26,
+              width: DgotixBrandLockup.logoWidthFor(26),
+              fit: BoxFit.contain,
             ),
+          ),
+          const SizedBox(height: DsSpacing.sm),
+        ],
+        // One line: the name in the brand colour, isolated from the sentence
+        // so a Latin name does not pull the comma across it in Arabic.
+        Text.rich(
+          TextSpan(
+            style: t.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            children: <InlineSpan>[
+              if (name == null)
+                TextSpan(text: hello)
+              else ...<InlineSpan>[
+                TextSpan(text: '$hello، '),
+                TextSpan(
+                  text: '\u2068$name\u2069',
+                  style: TextStyle(color: c.brand, fontWeight: FontWeight.w800),
+                ),
+              ],
+            ],
           ),
         ),
         const SizedBox(height: 2),
-        Text(greeting, style: t.headlineSmall),
-        const SizedBox(height: 4),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
