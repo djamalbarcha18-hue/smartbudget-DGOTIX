@@ -116,8 +116,11 @@ class _LogoMenuButtonState extends State<_LogoMenuButton>
         alignment: Alignment.centerLeft,
         widthFactor: _markShare,
         child: SvgPicture.asset(
-          // The coloured logo in both themes: its blue mark reads on dark.
+          // Painted in the theme's own accent, like the icons beside it, so
+          // the mark belongs to the bar in every theme (dark, Black Gold, the
+          // light Pro themes and any added later).
           BrandAssets.dgotixColored,
+          colorFilter: ColorFilter.mode(c.brand, BlendMode.srcIn),
           height: h,
           width: DgotixBrandLockup.logoWidthFor(h),
           fit: BoxFit.contain,
