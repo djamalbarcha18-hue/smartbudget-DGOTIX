@@ -41,6 +41,50 @@ import 'package:smartbudget/core/l10n/app_lang_context.dart';
 /// The share of the logo's width that is the "DG" mark (the rest is "OTIX").
 const double _markShare = 0.37;
 
+/// The menu button of a phone: the logo's "DG" mark, in its colours, on a soft
+/// brand-tinted square so it reads as a button.
+class _LogoMenuButton extends StatelessWidget {
+  const _LogoMenuButton({required this.onPressed});
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    const double h = 22;
+    return IconButton(
+      onPressed: onPressed,
+      tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+      style: IconButton.styleFrom(
+        backgroundColor: c.brand.withValues(alpha: 0.10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: BorderSide(color: c.brand.withValues(alpha: 0.28)),
+        ),
+      ),
+      icon: Semantics(
+        label: AppConfig.parentBrand,
+        image: true,
+        child: ClipRect(
+          child: Align(
+            // The logo reads left to right in every language: "DG" is its
+            // left end even in an Arabic layout.
+            alignment: Alignment.centerLeft,
+            widthFactor: _markShare,
+            child: SvgPicture.asset(
+              // The coloured logo in both themes: its blue mark reads on dark.
+              BrandAssets.dgotixColored,
+              height: h,
+              width: DgotixBrandLockup.logoWidthFor(h),
+              fit: BoxFit.contain,
+              alignment: Alignment.centerLeft,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class AppTopBar extends StatelessWidget {
   const AppTopBar({super.key, this.onOpenMenu});
 
@@ -94,38 +138,11 @@ class AppTopBar extends StatelessWidget {
   Widget _mobile(BuildContext context, DsColors c) {
     return Row(
       children: <Widget>[
-        IconButton(
-          onPressed: onOpenMenu,
-          tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-          icon: Icon(Icons.menu_rounded, color: c.brand),
-        ),
-        // The brand stays in view on every page: the side menu that holds the
-        // logo is hidden on a phone. Only the "DG" mark (the left part of the
-        // logo), so the period and currency chips keep their room; dropped on
-        // the narrowest screens, where even that would push a chip out.
-        if (MediaQuery.sizeOf(context).width >= 380)
-          Padding(
-            padding: const EdgeInsetsDirectional.only(end: DsSpacing.xs),
-            child: Semantics(
-              label: AppConfig.parentBrand,
-              image: true,
-              child: ClipRect(
-                child: Align(
-                  // The logo reads left to right in every language: "DG" is its
-                  // left end even in an Arabic layout.
-                  alignment: Alignment.centerLeft,
-                  widthFactor: _markShare,
-                  child: SvgPicture.asset(
-                    BrandAssets.dgotixFor(Theme.of(context).brightness),
-                    height: 22,
-                    width: DgotixBrandLockup.logoWidthFor(22),
-                    fit: BoxFit.contain,
-                    alignment: Alignment.centerLeft,
-                  ),
-                ),
-              ),
-            ),
-          ),
+        // The logo's "DG" mark IS the menu button, in the logo's own colours:
+        // the brand stays in view on every page of a phone (the side menu that
+        // holds the logo is hidden there) without a second control beside the
+        // menu, so the period and currency chips keep their room.
+        _LogoMenuButton(onPressed: onOpenMenu),
         const Expanded(
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
