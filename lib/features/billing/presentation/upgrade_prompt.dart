@@ -43,6 +43,8 @@ String featureTitle(AppLocalizations l, Feature f) => switch (f) {
       Feature.tripPhotoCard => l.featTripPhotoCard,
       Feature.proThemes => l.featProThemes,
       Feature.categoryIcons => l.featCategoryIcons,
+      Feature.metals => l.featMetals,
+      Feature.metalsAdvanced => l.featMetalsAdvanced,
     };
 
 /// One tap to invite: opens the app's own share sheet (branded card, progress

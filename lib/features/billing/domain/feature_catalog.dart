@@ -91,6 +91,15 @@ enum Feature {
   /// Own icon and colour for the categories the user makes (the built-in
   /// ones always have theirs, free). PRO.
   categoryIcons,
+
+  /// Metals other than gold (silver, platinum, palladium): holding them and
+  /// seeing their prices. Gold is free; the rest is PRO only (a reward does
+  /// not open it).
+  metals,
+
+  /// Around the metals: price alerts, the value history and recording a
+  /// sale. PRO only (a reward does not open it).
+  metalsAdvanced,
 }
 
 /// How a metered quota resets.
@@ -197,6 +206,14 @@ abstract final class FeatureCatalog {
     ),
     Feature.categoryIcons: FeatureRule(
       feature: Feature.categoryIcons,
+      minTier: Plan.pro,
+    ),
+    Feature.metals: FeatureRule(
+      feature: Feature.metals,
+      minTier: Plan.pro,
+    ),
+    Feature.metalsAdvanced: FeatureRule(
+      feature: Feature.metalsAdvanced,
       minTier: Plan.pro,
     ),
     Feature.multiCurrency: FeatureRule(

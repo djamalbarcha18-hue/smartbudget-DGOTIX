@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/referrals/data/referral_service.dart';
 import 'package:smartbudget/features/referrals/domain/referral_reward.dart';
+import 'package:smartbudget/features/referrals/domain/reward_journey.dart';
 
 /// The signed-in account, so every provider below re-reads when it changes
 /// (signing out must not leave another account's rewards on screen).
@@ -40,3 +41,25 @@ final activeRewardsProvider = Provider<Set<ReferralReward>>(
   (Ref ref) =>
       ref.watch(referralGrantsProvider).valueOrNull ?? const <ReferralReward>{},
 );
+
+/// Where this member stands on the rewards journey: friends so far and what
+/// has been picked. While the answers are in flight it is the start (nothing
+/// earned), which withholds, never grants.
+final rewardJourneyProvider = Provider<RewardJourney>((Ref ref) {
+  final ReferralProgress progress =
+      ref.watch(referralProgressProvider).valueOrNull ?? ReferralProgress.none;
+  final Set<ReferralReward> grants = ref.watch(referralGrantsProvider)
+          .valueOrNull ??
+      const <ReferralReward>{};
+  return RewardJourney(
+      activated: progress.activated,
+      picked: grants.toList(growable: false));
+});
+
+/// Uses a pick on [reward]. True when the server granted it; the grants are
+/// read again so the gates open at once.
+Future<bool> chooseReward(WidgetRef ref, ReferralReward reward) async {
+  final bool ok = await ref.read(referralServiceProvider).choose(reward);
+  if (ok) ref.invalidate(referralGrantsProvider);
+  return ok;
+}

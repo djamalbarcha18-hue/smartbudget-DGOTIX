@@ -13,6 +13,8 @@ import 'package:smartbudget/design_system/components/ds_text_field.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
@@ -115,6 +117,14 @@ class _MetalEditorSheetState extends ConsumerState<MetalEditorSheet> {
   Future<void> _save() async {
     if (_saving) return; // a second tap while saving
     if (!_formKey.currentState!.validate()) return;
+    // Gold is free; the other metals are PRO. Saving a holding as it already
+    // is (editing it without changing its metal) is always fine: what the
+    // person already has is never taken away.
+    if (_metal != Metal.gold &&
+        _metal != widget.existing?.metal &&
+        !PlanLimits.allow(context, Feature.metals)) {
+      return;
+    }
     setState(() => _saving = true);
     final double grams = AmountInput.parse(_grams.text) ?? 0;
     final double? paid = AmountInput.parse(_paid.text);

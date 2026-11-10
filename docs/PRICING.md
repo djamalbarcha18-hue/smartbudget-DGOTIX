@@ -187,6 +187,9 @@ The catalog is the source of truth; this is the intended shape:
 | Yearly trend chart (months compared) | — | ✅ |
 | Smart alerts (forecasts, unusual spending, summaries) | — | ✅ |
 | Markets: crypto, metals, commodities | — | ✅ |
+| Gold (holdings and price) | ✅ | ✅ |
+| Silver, platinum, palladium (holdings and prices) | — (no reward opens it) | ✅ |
+| Metal price alerts, value history, recording a sale | — | ✅ |
 | Projects and investment portfolio | — | ✅ |
 | Cloud receipt OCR | 3 / mo | 50 / mo |
 | DGOTIX AI assistant | 5 lifetime | 80 / mo |

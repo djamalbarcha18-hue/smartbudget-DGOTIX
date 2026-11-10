@@ -1,7 +1,17 @@
 # Invite friends & unlock rewards
 
-Three people join through a member's link, confirm their mailbox and start
-using the app; the member keeps a set of extra features for good.
+Every three people who join through a member's link, confirm their mailbox and
+start using the app earn the member **one reward of their choice**, kept for
+good: at 3 friends the first pick, at 6 the second, at 9 the last (there are
+three rewards). The Settings card is a small journey: a ladder of the three
+steps, the progress to the next, the pick, a one-tap share and the link; a
+short celebration shows when a pick is made, and a note over the app when
+another friend joins (the count is read again every five minutes and when the
+app comes back to the screen).
+
+The pick is decided on the server (`choose_reward`, `referral_picks_for`): one
+pick per three activated friends, never repeated, counted there and not in the
+app. `complete_referral` only counts now; it grants nothing by itself.
 
 ## Why these rewards and not others
 
@@ -24,7 +34,8 @@ is what caps the damage.
 
 When someone reaches a counted free limit (recurring items, goals, debts,
 wallets, budgets, darets, seasons) the upgrade sheet also offers "Invite 3
-friends", with the number it would rise to, and a button to the invite card in
+friends" (once they join, the member can pick the reward that raises it, with
+the number it would rise to), and a button to the invite card in
 Settings. It is not shown once the reward is earned, nor for locked features
 (`PlanLimits.allowAdd`, `UpgradeSheet.inviteLimit`).
 

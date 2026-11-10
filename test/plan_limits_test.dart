@@ -98,7 +98,7 @@ void main() {
     await tester.tap(find.text('add'));
     await tester.pumpAndSettle();
     expect(find.text('Invite 3 friends'), findsOneWidget);
-    expect(find.textContaining('rises to 10'), findsOneWidget);
+    expect(find.textContaining('raises your limit for'), findsOneWidget);
     expect(find.text('See plans'), findsOneWidget);
   });
 
@@ -143,7 +143,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('See plans'), findsOneWidget);
     expect(find.text('Invite 3 friends'), findsOneWidget);
-    expect(find.textContaining('is unlocked for you'), findsOneWidget);
+    expect(find.textContaining('as your reward'), findsOneWidget);
   });
 
   testWidgets('the locked card of such a section also invites',

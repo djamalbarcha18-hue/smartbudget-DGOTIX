@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money.dart';
@@ -100,7 +103,11 @@ class MetalsPage extends ConsumerWidget {
           const _SoldCard(),
           const SizedBox(height: DsSpacing.lg),
           if (holdings.isNotEmpty) ...<Widget>[
-            const MetalHistoryCard(),
+            // The history keeps recording for everyone; seeing it is PRO.
+            if (ref.watch(featureGateProvider(Feature.metalsAdvanced)).allowed)
+              const MetalHistoryCard()
+            else
+              const LockedFeatureCard(feature: Feature.metalsAdvanced),
             const SizedBox(height: DsSpacing.lg),
           ],
           const _PricesCard(),
@@ -542,6 +549,7 @@ class _HoldingTile extends ConsumerWidget {
                 color: c.bgElevated,
                 onSelected: (String v) async {
                   if (v == 'sell') {
+                    if (!PlanLimits.allow(context, Feature.metalsAdvanced)) return;
                     await MetalSaleSheet.show(context, h);
                   } else if (v == 'edit') {
                     await MetalEditorSheet.show(context, existing: h);
@@ -595,6 +603,13 @@ class _PricesCard extends ConsumerWidget {
     };
     final List<MetalHolding> holdings =
         ref.watch(metalHoldingsProvider).valueOrNull ?? const <MetalHolding>[];
+    final bool allowed =
+        ref.watch(featureGateProvider(Feature.metals)).allowed;
+    bool show(Metal m) =>
+        allowed ||
+        m == Metal.gold ||
+        alerts.containsKey(m) ||
+        holdings.any((MetalHolding h) => h.metal == m);
     return GlassCard(
       hoverable: false,
       child: Column(
@@ -603,17 +618,21 @@ class _PricesCard extends ConsumerWidget {
           DsSectionHeader(
               title: l.metalsPrices, icon: Icons.show_chart_rounded),
           const SizedBox(height: DsSpacing.sm),
-          for (final Metal m in _precious)
+          for (final Metal m in _precious.where(show))
             _plate(context, ref, m, prices, alerts),
-          _IndustrialFold(
-            open: _industrial.any((Metal m) =>
-                alerts.containsKey(m) ||
-                holdings.any((MetalHolding h) => h.metal == m)),
-            children: <Widget>[
-              for (final Metal m in _industrial)
-                _plate(context, ref, m, prices, alerts),
-            ],
-          ),
+          if (_industrial.any(show))
+            _IndustrialFold(
+              open: _industrial.any((Metal m) =>
+                  alerts.containsKey(m) ||
+                  holdings.any((MetalHolding h) => h.metal == m)),
+              children: <Widget>[
+                for (final Metal m in _industrial.where(show))
+                  _plate(context, ref, m, prices, alerts),
+              ],
+            ),
+          // Gold is free; the other metals' prices are PRO (a metal the person
+          // already holds, or has an alert on, stays visible).
+          if (!allowed) const LockedFeatureCard(feature: Feature.metals),
         ],
       ),
     );
@@ -745,6 +764,12 @@ class _PricesCard extends ConsumerWidget {
 
   Future<void> _setAlert(BuildContext context, WidgetRef ref, Metal m,
       MetalPrice? now, MetalAlert? existing) async {
+    // An alert already set can always be changed or removed; setting a new
+    // one is PRO.
+    if (existing == null &&
+        !PlanLimits.allow(context, Feature.metalsAdvanced)) {
+      return;
+    }
     final AppLocalizations l = AppLocalizations.of(context);
     final String currency = ref.read(baseCurrencyProvider);
     final (String, String)? result = await showDialog<(String, String)>(

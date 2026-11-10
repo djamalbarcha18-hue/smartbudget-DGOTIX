@@ -20,9 +20,8 @@ import 'package:smartbudget/features/share/data/native_share.dart';
 import 'package:smartbudget/features/share/domain/share_channels.dart';
 import 'package:smartbudget/features/share/domain/share_highlight.dart';
 import 'package:smartbudget/features/referrals/application/referrals_controller.dart';
-import 'package:smartbudget/features/referrals/data/referral_service.dart';
 import 'package:smartbudget/features/referrals/domain/referral_link.dart';
-import 'package:smartbudget/features/referrals/domain/referral_reward.dart';
+import 'package:smartbudget/features/referrals/domain/reward_journey.dart';
 import 'package:smartbudget/features/share/domain/share_qr.dart';
 import 'package:smartbudget/features/share/presentation/share_card_skin.dart';
 import 'package:smartbudget/features/share/presentation/share_progress_card.dart';
@@ -507,9 +506,7 @@ class _InviteHero extends ConsumerWidget {
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
     final bool signedIn = ref.watch(referralCodeProvider).valueOrNull != null;
-    final ReferralProgress progress =
-        ref.watch(referralProgressProvider).valueOrNull ??
-            ReferralProgress.none;
+    final RewardJourney journey = ref.watch(rewardJourneyProvider);
     const Color ink = Colors.white;
     return Container(
       padding: const EdgeInsets.all(DsSpacing.lg),
@@ -542,8 +539,7 @@ class _InviteHero extends ConsumerWidget {
           if (signedIn) ...<Widget>[
             const SizedBox(height: DsSpacing.md),
             Text(
-              l.inviteProgressLine(
-                  progress.activated, ReferralRewards.needed),
+              l.inviteProgressLine(journey.activated, journey.nextMilestone),
               style: t.labelMedium
                   ?.copyWith(color: ink, fontWeight: FontWeight.w700),
             ),
@@ -551,7 +547,7 @@ class _InviteHero extends ConsumerWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(999),
               child: LinearProgressIndicator(
-                value: progress.fraction,
+                value: journey.fractionToNext,
                 minHeight: 8,
                 backgroundColor: ink.withValues(alpha: 0.25),
                 valueColor: const AlwaysStoppedAnimation<Color>(ink),
