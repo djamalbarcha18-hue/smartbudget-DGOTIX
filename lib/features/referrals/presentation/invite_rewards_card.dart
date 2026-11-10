@@ -27,40 +27,16 @@ import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/features/share/domain/share_qr.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-class InviteRewardsCard extends ConsumerStatefulWidget {
+class InviteRewardsCard extends ConsumerWidget {
   const InviteRewardsCard({super.key});
 
   @override
-  ConsumerState<InviteRewardsCard> createState() => _InviteRewardsCardState();
-}
-
-class _InviteRewardsCardState extends ConsumerState<InviteRewardsCard> {
-  bool _busy = false;
-
-  Future<void> _pick(ReferralReward r) async {
-    if (_busy) return;
-    setState(() => _busy = true);
-    final AppLocalizations l = AppLocalizations.of(context);
-    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    final NavigatorState nav = Navigator.of(context);
-    final bool ok = await chooseReward(ref, r);
-    if (!mounted) return;
-    setState(() => _busy = false);
-    if (ok) {
-      await showRewardCelebration(nav.context, rewardName(l, r));
-    } else {
-      messenger.showSnackBar(SnackBar(content: Text(l.journeyPickFailed)));
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
 
     final String? code = ref.watch(referralCodeProvider).valueOrNull;
-    final RewardJourney journey = ref.watch(rewardJourneyProvider);
     // The welcome gift of someone who was invited, while it runs.
     final DateTime? giftAt = ref.watch(welcomeGiftProvider).valueOrNull;
     final DateTime? giftEnds =
@@ -96,28 +72,13 @@ class _InviteRewardsCardState extends ConsumerState<InviteRewardsCard> {
             ),
           ],
           const SizedBox(height: DsSpacing.lg),
-          if (code != null && journey.isAmbassador) ...<Widget>[
-            _AmbassadorBadge(friends: journey.activated),
-            const SizedBox(height: DsSpacing.lg),
-          ],
           if (code == null)
             // Signed out: the link belongs to an account, so say so plainly
             // rather than showing a button that cannot work.
             Text(l.inviteNeedAccount,
                 style: t.bodySmall?.copyWith(color: c.textMuted))
           else ...<Widget>[
-            _Ladder(journey: journey),
-            const SizedBox(height: DsSpacing.lg),
-            if (journey.picksAvailable > 0) ...<Widget>[
-              _PickPanel(journey: journey, busy: _busy, onPick: _pick),
-              const SizedBox(height: DsSpacing.lg),
-            ],
-            if (journey.complete)
-              Text(l.journeyAllDone,
-                  style: t.bodyMedium?.copyWith(
-                      color: c.income, fontWeight: FontWeight.w700))
-            else
-              _Progress(journey: journey),
+            const RewardJourneySection(),
             const SizedBox(height: DsSpacing.lg),
             DsButton(
               label: l.shareTabInvite,
@@ -134,11 +95,79 @@ class _InviteRewardsCardState extends ConsumerState<InviteRewardsCard> {
   }
 }
 
+/// The journey itself, on its own: the ambassador badge (once earned), the
+/// ladder of the three steps, the pick panel when a reward is waiting and the
+/// progress to the next step. Shown on the Settings card and on the share
+/// sheet, so the rewards are in front of the member where they share.
+class RewardJourneySection extends ConsumerStatefulWidget {
+  const RewardJourneySection({super.key, this.shareButton = true});
+
+  /// Whether the ambassador badge carries a button that opens the share sheet
+  /// (not wanted when this is already shown inside it).
+  final bool shareButton;
+
+  @override
+  ConsumerState<RewardJourneySection> createState() =>
+      _RewardJourneySectionState();
+}
+
+class _RewardJourneySectionState extends ConsumerState<RewardJourneySection> {
+  bool _busy = false;
+
+  Future<void> _pick(ReferralReward r) async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    final AppLocalizations l = AppLocalizations.of(context);
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final NavigatorState nav = Navigator.of(context);
+    final bool ok = await chooseReward(ref, r);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    if (ok) {
+      await showRewardCelebration(nav.context, rewardName(l, r));
+    } else {
+      // Snackbars sit behind a sheet: say it where the person is looking.
+      messenger.showSnackBar(SnackBar(content: Text(l.journeyPickFailed)));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    final RewardJourney journey = ref.watch(rewardJourneyProvider);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        if (journey.isAmbassador) ...<Widget>[
+          _AmbassadorBadge(
+              friends: journey.activated, showShare: widget.shareButton),
+          const SizedBox(height: DsSpacing.lg),
+        ],
+        _Ladder(journey: journey),
+        const SizedBox(height: DsSpacing.lg),
+        if (journey.picksAvailable > 0) ...<Widget>[
+          _PickPanel(journey: journey, busy: _busy, onPick: _pick),
+          const SizedBox(height: DsSpacing.lg),
+        ],
+        if (journey.complete)
+          Text(l.journeyAllDone,
+              style: t.bodyMedium
+                  ?.copyWith(color: c.income, fontWeight: FontWeight.w700))
+        else
+          _Progress(journey: journey),
+      ],
+    );
+  }
+}
+
 /// The title at the end of the journey, with a button to share the card that
 /// goes with it.
 class _AmbassadorBadge extends StatelessWidget {
-  const _AmbassadorBadge({required this.friends});
+  const _AmbassadorBadge({required this.friends, this.showShare = true});
   final int friends;
+  final bool showShare;
 
   @override
   Widget build(BuildContext context) {
@@ -173,17 +202,19 @@ class _AmbassadorBadge extends StatelessWidget {
           Text(l.ambassadorNote(friends),
               style: t.bodySmall?.copyWith(
                   color: Colors.white.withValues(alpha: 0.92), height: 1.35)),
-          const SizedBox(height: DsSpacing.sm),
-          Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: TextButton.icon(
-              style: TextButton.styleFrom(foregroundColor: Colors.white),
-              onPressed: () =>
-                  ShareAppSheet.show(context, tab: ShareTab.progress),
-              icon: const Icon(Icons.ios_share_rounded, size: 18),
-              label: Text(l.shareTabProgress),
+          if (showShare) ...<Widget>[
+            const SizedBox(height: DsSpacing.sm),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: TextButton.icon(
+                style: TextButton.styleFrom(foregroundColor: Colors.white),
+                onPressed: () =>
+                    ShareAppSheet.show(context, tab: ShareTab.progress),
+                icon: const Icon(Icons.ios_share_rounded, size: 18),
+                label: Text(l.shareTabProgress),
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );

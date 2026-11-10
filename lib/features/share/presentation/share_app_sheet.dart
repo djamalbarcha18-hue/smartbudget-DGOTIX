@@ -21,7 +21,7 @@ import 'package:smartbudget/features/share/domain/share_channels.dart';
 import 'package:smartbudget/features/share/domain/share_highlight.dart';
 import 'package:smartbudget/features/referrals/application/referrals_controller.dart';
 import 'package:smartbudget/features/referrals/domain/referral_link.dart';
-import 'package:smartbudget/features/referrals/domain/reward_journey.dart';
+import 'package:smartbudget/features/referrals/presentation/invite_rewards_card.dart';
 import 'package:smartbudget/features/share/domain/share_qr.dart';
 import 'package:smartbudget/features/share/presentation/share_card_skin.dart';
 import 'package:smartbudget/features/share/presentation/share_progress_card.dart';
@@ -312,6 +312,12 @@ class _ShareAppSheetState extends ConsumerState<ShareAppSheet> {
         hook: AppEnv.betaAllAccess ? l.shareInviteHookBeta : l.shareInviteHook,
       ),
       const SizedBox(height: DsSpacing.lg),
+      // The rewards the invitations earn, where the member is about to share:
+      // the ladder (3 / 6 / 9), the pick when one is waiting, the progress.
+      if (ref.watch(referralCodeProvider).valueOrNull != null) ...<Widget>[
+        const RewardJourneySection(shareButton: false),
+        const SizedBox(height: DsSpacing.lg),
+      ],
       if (canShareNatively) ...<Widget>[
         DsButton(
           label: l.shareNative,
@@ -497,17 +503,15 @@ class _ShareAppSheetState extends ConsumerState<ShareAppSheet> {
 
 /// The marketing card at the top of the invite tab: who we are, why share, and
 /// how far the member is toward the reward (when signed in).
-class _InviteHero extends ConsumerWidget {
+class _InviteHero extends StatelessWidget {
   const _InviteHero({required this.hook});
   final String hook;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
     final TextTheme t = Theme.of(context).textTheme;
-    final bool signedIn = ref.watch(referralCodeProvider).valueOrNull != null;
-    final RewardJourney journey = ref.watch(rewardJourneyProvider);
     const Color ink = Colors.white;
     return Container(
       padding: const EdgeInsets.all(DsSpacing.lg),
@@ -537,24 +541,6 @@ class _InviteHero extends ConsumerWidget {
           Text(hook,
               style: t.bodyMedium
                   ?.copyWith(color: ink.withValues(alpha: 0.92), height: 1.4)),
-          if (signedIn) ...<Widget>[
-            const SizedBox(height: DsSpacing.md),
-            Text(
-              l.inviteProgressLine(journey.activated, journey.nextMilestone),
-              style: t.labelMedium
-                  ?.copyWith(color: ink, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: DsSpacing.xs),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(999),
-              child: LinearProgressIndicator(
-                value: journey.fractionToNext,
-                minHeight: 8,
-                backgroundColor: ink.withValues(alpha: 0.25),
-                valueColor: const AlwaysStoppedAnimation<Color>(ink),
-              ),
-            ),
-          ],
         ],
       ),
     );
