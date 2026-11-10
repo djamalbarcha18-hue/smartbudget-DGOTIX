@@ -108,7 +108,7 @@ class _LogoMenuButtonState extends State<_LogoMenuButton>
     final AppLocalizations l = AppLocalizations.of(context);
     // Tall enough to fill most of the bar's height, like the logo block at the
     // top of the side menu on a computer.
-    const double h = 28;
+    const double h = 30;
     final Widget mark = ClipRect(
       child: Align(
         // The logo reads left to right in every language: "DG" is its left end
@@ -155,13 +155,19 @@ class _LogoMenuButtonState extends State<_LogoMenuButton>
           ],
         );
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      // The mark alone is centred in the bar, on the same line as the period
+      // and currency chips; the chevron hangs below it without moving it.
+      child: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none,
         children: <Widget>[
           Semantics(label: AppConfig.parentBrand, image: true, child: mark),
           // "This opens something": a small chevron under the mark.
-          Icon(Icons.keyboard_arrow_down_rounded,
-              size: 12, color: c.brand.withValues(alpha: 0.75)),
+          Transform.translate(
+            offset: const Offset(0, 19),
+            child: Icon(Icons.keyboard_arrow_down_rounded,
+                size: 12, color: c.brand.withValues(alpha: 0.75)),
+          ),
         ],
       ),
     );
