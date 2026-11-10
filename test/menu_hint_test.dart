@@ -50,9 +50,8 @@ Future<void> _end(WidgetTester tester, ProviderContainer c) async {
   await tester.pump(const Duration(minutes: 1));
 }
 
-Finder get _menuTip => find.ancestor(
-    of: find.byIcon(Icons.keyboard_arrow_down_rounded),
-    matching: find.byType(Tooltip));
+Finder get _menuTip => find.descendant(
+    of: find.byType(AppTopBar), matching: find.byType(Tooltip)).first;
 
 String _tipText(WidgetTester t) => t.widget<Tooltip>(_menuTip).message!;
 
@@ -70,10 +69,9 @@ void main() {
     expect(MenuHint.shouldShow(tapped: true, launches: 1), isFalse);
   });
 
-  testWidgets('a new person is told what the logo is, with a chevron under it',
+  testWidgets('a new person is told what the logo is, with a bubble',
       (WidgetTester tester) async {
     final ProviderContainer c = await _pump(tester);
-    expect(find.byIcon(Icons.keyboard_arrow_down_rounded), findsOneWidget);
     expect(_tipText(tester), 'Tap the logo to open the menu');
     await _end(tester, c);
   });
@@ -82,7 +80,7 @@ void main() {
       (WidgetTester tester) async {
     int opened = 0;
     final ProviderContainer c = await _pump(tester, onMenu: () => opened++);
-    await tester.tap(find.byIcon(Icons.keyboard_arrow_down_rounded));
+    await tester.tap(find.byType(IconButton).first);
     await tester.pump(const Duration(milliseconds: 400));
     expect(opened, 1);
     expect(_tipText(tester), 'Open navigation menu');

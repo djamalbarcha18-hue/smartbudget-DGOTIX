@@ -108,7 +108,7 @@ class _LogoMenuButtonState extends State<_LogoMenuButton>
     final AppLocalizations l = AppLocalizations.of(context);
     // Tall enough to fill most of the bar's height, like the logo block at the
     // top of the side menu on a computer.
-    const double h = 35;
+    const double h = 30;
     final Widget mark = ClipRect(
       child: Align(
         // The logo reads left to right in every language: "DG" is its left end
@@ -155,19 +155,13 @@ class _LogoMenuButtonState extends State<_LogoMenuButton>
           ],
         );
       },
-      // The mark alone is centred in the bar, on the same line as the period
-      // and currency chips; the chevron hangs below it without moving it.
+      // The mark alone, centred in the bar on the same line as the period and
+      // currency chips. The first-days pulse and bubble say it is a button.
       child: Stack(
         alignment: Alignment.center,
         clipBehavior: Clip.none,
         children: <Widget>[
           Semantics(label: AppConfig.parentBrand, image: true, child: mark),
-          // "This opens something": a small chevron under the mark.
-          Transform.translate(
-            offset: const Offset(0, 22),
-            child: Icon(Icons.keyboard_arrow_down_rounded,
-                size: 12, color: c.brand.withValues(alpha: 0.75)),
-          ),
         ],
       ),
     );
@@ -186,8 +180,8 @@ class _LogoMenuButtonState extends State<_LogoMenuButton>
           // The whole height of the bar is the touch area, and the mark is
           // centred in it; no box of its own, so nothing sticks out of the
           // bar's rounded corner.
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          constraints: const BoxConstraints(minWidth: 48, minHeight: 56),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          constraints: const BoxConstraints(minWidth: 52, minHeight: 56),
           icon: ExcludeSemantics(child: face),
         ),
       ),
