@@ -1666,5 +1666,11 @@
   "journeyCelebrateReady": "Vaša nagrada je spremna. Otvorite Postavke da je odaberete.",
   "inviteGiftSignup": "Prijatelj vas je pozvao: pridružite se i dobijte pametnu podjelu plate besplatno {days} dana.",
   "inviteGiftReceived": "Prijatelj vas je pozvao, a evo i vašeg poklona: pametna podjela plate, besplatno {days} dana.",
-  "inviteGiftUntil": "Vaš poklon dobrodošlice: pametna podjela plate do {date}"
+  "inviteGiftUntil": "Vaš poklon dobrodošlice: pametna podjela plate do {date}",
+  "ambassadorTitle": "DGOTIX ambasador",
+  "ambassadorNote": "{count} prijatelja se pridružilo preko vašeg linka. Hvala što širite riječ!",
+  "shareProgAmbassador": "Ja sam DGOTIX ambasador: {count} prijatelja se pridružilo aplikaciji SmartBudget preko mog linka 🌟 Pridružite nam se:",
+  "shareCardAmbassadorLabel": "prijatelja se pridružilo preko mog linka · DGOTIX ambasador",
+  "shareMomentGoal": "Postigli ste cilj! Podijelite dobre vijesti s prijateljima.",
+  "shareMomentAmbassador": "Sada ste DGOTIX ambasador! Podijelite svoju karticu."
 }

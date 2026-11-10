@@ -1666,5 +1666,11 @@
   "journeyCelebrateReady": "特典の準備ができました。設定を開いて選んでください。",
   "inviteGiftSignup": "友達があなたを招待しました。参加すると、スマート給与配分を{days}日間無料で使えます。",
   "inviteGiftReceived": "友達があなたを招待しました。プレゼントはスマート給与配分を{days}日間無料で。",
-  "inviteGiftUntil": "ウェルカムギフト:スマート給与配分を{date}まで"
+  "inviteGiftUntil": "ウェルカムギフト:スマート給与配分を{date}まで",
+  "ambassadorTitle": "DGOTIXアンバサダー",
+  "ambassadorNote": "あなたのリンクから{count}人の友達が参加しました。広めてくれてありがとう!",
+  "shareProgAmbassador": "私はDGOTIXアンバサダーです。私のリンクから{count}人の友達がSmartBudgetに参加しました🌟 あなたもぜひ:",
+  "shareCardAmbassadorLabel": "人の友達が私のリンクから参加 · DGOTIXアンバサダー",
+  "shareMomentGoal": "目標を達成しました!嬉しい知らせを友達にシェアしましょう。",
+  "shareMomentAmbassador": "あなたはDGOTIXアンバサダーになりました!カードをシェアしましょう。"
 }

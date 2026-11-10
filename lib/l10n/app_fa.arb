@@ -1666,5 +1666,11 @@
   "journeyCelebrateReady": "پاداش شما آماده است. برای انتخاب آن تنظیمات را باز کنید.",
   "inviteGiftSignup": "یک دوست شما را دعوت کرده: بپیوندید و تقسیم هوشمند حقوق را {days} روز رایگان بگیرید.",
   "inviteGiftReceived": "یک دوست شما را دعوت کرد و این هدیهٔ شماست: تقسیم هوشمند حقوق، {days} روز رایگان.",
-  "inviteGiftUntil": "هدیهٔ خوش‌آمدگویی شما: تقسیم هوشمند حقوق تا {date}"
+  "inviteGiftUntil": "هدیهٔ خوش‌آمدگویی شما: تقسیم هوشمند حقوق تا {date}",
+  "ambassadorTitle": "سفیر DGOTIX",
+  "ambassadorNote": "{count} دوست با پیوند شما پیوستند. ممنون که برنامه را معرفی کردید!",
+  "shareProgAmbassador": "من سفیر DGOTIX هستم: {count} دوست با پیوند من به SmartBudget پیوستند 🌟 شما هم بپیوندید:",
+  "shareCardAmbassadorLabel": "دوست با پیوند من پیوستند · سفیر DGOTIX",
+  "shareMomentGoal": "به یک هدف رسیدید! خبر خوب را با دوستانتان در میان بگذارید.",
+  "shareMomentAmbassador": "اکنون سفیر DGOTIX هستید! کارت خود را به اشتراک بگذارید."
 }

@@ -1666,5 +1666,11 @@
   "journeyCelebrateReady": "Kyautarka ta shirya. Buɗe Saituna don zaɓe ta.",
   "inviteGiftSignup": "Aboki ya gayyace ka: shiga ka samu rabon albashi mai wayo kyauta na kwanaki {days}.",
   "inviteGiftReceived": "Aboki ya gayyace ka, ga kyautarka: rabon albashi mai wayo, kyauta na kwanaki {days}.",
-  "inviteGiftUntil": "Kyautar maraba taka: rabon albashi mai wayo har zuwa {date}"
+  "inviteGiftUntil": "Kyautar maraba taka: rabon albashi mai wayo har zuwa {date}",
+  "ambassadorTitle": "Jakadan DGOTIX",
+  "ambassadorNote": "Abokai {count} sun shiga ta mahaɗarka. Na gode da yaɗa manhajar!",
+  "shareProgAmbassador": "Ni jakadan DGOTIX ne: abokai {count} sun shiga SmartBudget ta mahaɗata 🌟 Ku shigo tare da mu:",
+  "shareCardAmbassadorLabel": "abokai sun shiga ta mahaɗata · Jakadan DGOTIX",
+  "shareMomentGoal": "Ka cimma buri! Raba albishirin da abokanka.",
+  "shareMomentAmbassador": "Yanzu kai Jakadan DGOTIX ne! Raba katinka."
 }

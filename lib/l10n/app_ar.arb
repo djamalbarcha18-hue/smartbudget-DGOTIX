@@ -1865,5 +1865,11 @@
   "journeyCelebrateReady": "مكافأتك جاهزة. افتح الإعدادات لتختارها.",
   "inviteGiftSignup": "دعاك صديق: سجّل واحصل على «التقسيم الذكي للراتب» مجانًا لمدة {days} يومًا.",
   "inviteGiftReceived": "دعاك صديق، وهذه هديتك: «التقسيم الذكي للراتب» مجانًا لمدة {days} يومًا.",
-  "inviteGiftUntil": "هديتك الترحيبية: التقسيم الذكي للراتب حتى {date}"
+  "inviteGiftUntil": "هديتك الترحيبية: التقسيم الذكي للراتب حتى {date}",
+  "ambassadorTitle": "سفير DGOTIX",
+  "ambassadorNote": "انضم {count} من الأصدقاء عبر رابطك. شكرًا لنشرك التطبيق!",
+  "shareProgAmbassador": "أنا سفير DGOTIX: انضم {count} من الأصدقاء إلى SmartBudget عبر رابطي 🌟 انضم إلينا:",
+  "shareCardAmbassadorLabel": "أصدقاء انضموا عبر رابطي · سفير DGOTIX",
+  "shareMomentGoal": "حقّقت هدفًا! شارك الخبر السعيد مع أصدقائك.",
+  "shareMomentAmbassador": "أصبحت الآن سفير DGOTIX! شارك بطاقتك."
 }

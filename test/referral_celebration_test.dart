@@ -11,9 +11,12 @@ import 'package:smartbudget/features/referrals/application/referrals_controller.
 import 'package:smartbudget/features/referrals/data/referral_service.dart';
 import 'package:smartbudget/features/referrals/domain/referral_reward.dart';
 import 'package:smartbudget/features/referrals/presentation/referral_celebration.dart';
+import 'package:smartbudget/features/share/application/share_controller.dart';
+import 'package:smartbudget/features/share/domain/share_highlight.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 final StateProvider<int> _count = StateProvider<int>((_) => 1);
+final StateProvider<int> _goals = StateProvider<int>((_) => 1);
 
 Future<ProviderContainer> _pump(WidgetTester tester,
     {String? uid = 'u1', int seen = 1}) async {
@@ -143,6 +146,121 @@ void main() {
             'A friend invited you, and here is your gift: the smart salary split, free for 30 days.'),
         findsOneWidget);
     // Opening the app again on this device does not repeat it.
+    await tester.pump(const Duration(seconds: 10));
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpWidget(app());
+    await _settle(tester);
+    expect(find.byIcon(Icons.celebration_rounded), findsNothing);
+  });
+
+  testWidgets('a goal reached is a moment to share, but not more than weekly',
+      (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues(<String, Object>{
+      'flutter.${AccountKeys.of('sb_moment_goals_seen', 'u1')}': 1,
+    });
+    final GoRouter router = GoRouter(routes: <RouteBase>[
+      GoRoute(path: '/', builder: (_, __) => const SizedBox.shrink()),
+    ]);
+    final ProviderContainer c = ProviderContainer(overrides: <Override>[
+      currentAccountIdProvider.overrideWithValue('u1'),
+      referralProgressProvider
+          .overrideWith((_) async => const ReferralProgress(activated: 0)),
+      referralGrantsProvider
+          .overrideWith((_) async => const <ReferralReward>{}),
+      welcomeGiftProvider.overrideWith((_) async => null),
+      shareHighlightProvider.overrideWith((Ref ref) => ShareHighlight(
+          kind: HighlightKind.goals, goalsCompleted: ref.watch(_goals))),
+    ]);
+    addTearDown(c.dispose);
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: c,
+      child: MaterialApp(
+        theme: DsTheme.dark(),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        builder: (BuildContext context, Widget? child) =>
+            ReferralCelebration(router: router, child: child!),
+        home: const Scaffold(body: Text('home')),
+      ),
+    ));
+    await _settle(tester);
+    c.read(_goals.notifier).state = 2;
+    await _settle(tester);
+    expect(find.text('You reached a goal! Share the good news with your friends.'),
+        findsOneWidget);
+    await tester.pump(const Duration(seconds: 10));
+    // Another goal the same week: no second prompt.
+    c.read(_goals.notifier).state = 3;
+    await _settle(tester);
+    expect(find.byIcon(Icons.celebration_rounded), findsNothing);
+  });
+
+  testWidgets('goals already done when the device first sees them are no news',
+      (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    final GoRouter router = GoRouter(routes: <RouteBase>[
+      GoRoute(path: '/', builder: (_, __) => const SizedBox.shrink()),
+    ]);
+    final ProviderContainer c = ProviderContainer(overrides: <Override>[
+      currentAccountIdProvider.overrideWithValue('u1'),
+      referralProgressProvider
+          .overrideWith((_) async => const ReferralProgress(activated: 0)),
+      referralGrantsProvider
+          .overrideWith((_) async => const <ReferralReward>{}),
+      welcomeGiftProvider.overrideWith((_) async => null),
+      shareHighlightProvider.overrideWith((Ref ref) => ShareHighlight(
+          kind: HighlightKind.goals, goalsCompleted: ref.watch(_goals))),
+    ]);
+    addTearDown(c.dispose);
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: c,
+      child: MaterialApp(
+        theme: DsTheme.dark(),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        builder: (BuildContext context, Widget? child) =>
+            ReferralCelebration(router: router, child: child!),
+        home: const Scaffold(body: Text('home')),
+      ),
+    ));
+    await _settle(tester);
+    c.read(_goals.notifier).state = 4; // loaded after the start
+    await _settle(tester);
+    expect(find.byIcon(Icons.celebration_rounded), findsNothing);
+  });
+
+  testWidgets('becoming an ambassador is said once',
+      (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues(<String, Object>{
+      'flutter.${AccountKeys.of('sb_referral_seen', 'u1')}': 9,
+    });
+    final GoRouter router = GoRouter(routes: <RouteBase>[
+      GoRoute(path: '/', builder: (_, __) => const SizedBox.shrink()),
+    ]);
+    final ProviderContainer c = ProviderContainer(overrides: <Override>[
+      currentAccountIdProvider.overrideWithValue('u1'),
+      referralProgressProvider
+          .overrideWith((_) async => const ReferralProgress(activated: 9)),
+      referralGrantsProvider
+          .overrideWith((_) async => const <ReferralReward>{}),
+      welcomeGiftProvider.overrideWith((_) async => null),
+    ]);
+    addTearDown(c.dispose);
+    Widget app() => UncontrolledProviderScope(
+          container: c,
+          child: MaterialApp(
+            theme: DsTheme.dark(),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            builder: (BuildContext context, Widget? child) =>
+                ReferralCelebration(router: router, child: child!),
+            home: const Scaffold(body: Text('home')),
+          ),
+        );
+    await tester.pumpWidget(app());
+    await _settle(tester);
+    expect(find.text("You're now a DGOTIX Ambassador! Share your card."),
+        findsOneWidget);
     await tester.pump(const Duration(seconds: 10));
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pumpWidget(app());

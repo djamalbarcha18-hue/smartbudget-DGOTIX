@@ -1666,5 +1666,11 @@
   "journeyCelebrateReady": "Ödülün hazır. Seçmek için Ayarlar'ı aç.",
   "inviteGiftSignup": "Bir arkadaşın seni davet etti: katıl ve akıllı maaş dağıtımını {days} gün ücretsiz kullan.",
   "inviteGiftReceived": "Bir arkadaşın seni davet etti, işte hediyen: akıllı maaş dağıtımı, {days} gün ücretsiz.",
-  "inviteGiftUntil": "Hoş geldin hediyen: akıllı maaş dağıtımı {date} tarihine kadar"
+  "inviteGiftUntil": "Hoş geldin hediyen: akıllı maaş dağıtımı {date} tarihine kadar",
+  "ambassadorTitle": "DGOTIX Elçisi",
+  "ambassadorNote": "{count} arkadaşın bağlantınla katıldı. Uygulamayı duyurduğun için teşekkürler!",
+  "shareProgAmbassador": "Ben bir DGOTIX Elçisiyim: {count} arkadaşım bağlantımla SmartBudget'a katıldı 🌟 Sen de katıl:",
+  "shareCardAmbassadorLabel": "arkadaş bağlantımla katıldı · DGOTIX Elçisi",
+  "shareMomentGoal": "Bir hedefe ulaştın! İyi haberi arkadaşlarınla paylaş.",
+  "shareMomentAmbassador": "Artık bir DGOTIX Elçisisin! Kartını paylaş."
 }

@@ -106,6 +106,7 @@ class _ShareAppSheetState extends ConsumerState<ShareAppSheet> {
       HighlightKind.health => l.shareProgHealth(h.healthScore!),
       HighlightKind.savings => l.shareProgSavings(h.savingsPct!),
       HighlightKind.journey => l.shareProgJourney,
+      HighlightKind.ambassador => l.shareProgAmbassador(h.friends),
     };
     return SharePayload(text: text, link: _url, subject: l.shareEmailSubject);
   }

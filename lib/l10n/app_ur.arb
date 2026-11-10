@@ -1666,5 +1666,11 @@
   "journeyCelebrateReady": "آپ کا انعام تیار ہے۔ اسے چننے کے لیے سیٹنگز کھولیں۔",
   "inviteGiftSignup": "ایک دوست نے آپ کو مدعو کیا ہے: شامل ہوں اور اسمارٹ تنخواہ تقسیم {days} دن مفت پائیں۔",
   "inviteGiftReceived": "ایک دوست نے آپ کو مدعو کیا، اور یہ ہے آپ کا تحفہ: اسمارٹ تنخواہ تقسیم، {days} دن مفت۔",
-  "inviteGiftUntil": "آپ کا خیرمقدمی تحفہ: اسمارٹ تنخواہ تقسیم {date} تک"
+  "inviteGiftUntil": "آپ کا خیرمقدمی تحفہ: اسمارٹ تنخواہ تقسیم {date} تک",
+  "ambassadorTitle": "DGOTIX سفیر",
+  "ambassadorNote": "{count} دوست آپ کے لنک سے شامل ہوئے۔ ایپ کا چرچا کرنے کا شکریہ!",
+  "shareProgAmbassador": "میں DGOTIX سفیر ہوں: {count} دوست میرے لنک سے SmartBudget میں شامل ہوئے 🌟 آپ بھی شامل ہوں:",
+  "shareCardAmbassadorLabel": "دوست میرے لنک سے شامل ہوئے · DGOTIX سفیر",
+  "shareMomentGoal": "آپ نے ایک ہدف حاصل کر لیا! یہ خوشخبری دوستوں کے ساتھ شیئر کریں۔",
+  "shareMomentAmbassador": "اب آپ DGOTIX سفیر ہیں! اپنا کارڈ شیئر کریں۔"
 }

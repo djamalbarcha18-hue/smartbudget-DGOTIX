@@ -1666,5 +1666,11 @@
   "journeyCelebrateReady": "Je beloning staat klaar. Open Instellingen om hem te kiezen.",
   "inviteGiftSignup": "Een vriend heeft je uitgenodigd: doe mee en krijg de slimme salarisverdeling {days} dagen gratis.",
   "inviteGiftReceived": "Een vriend heeft je uitgenodigd, en hier is je cadeau: de slimme salarisverdeling, {days} dagen gratis.",
-  "inviteGiftUntil": "Je welkomstcadeau: slimme salarisverdeling tot {date}"
+  "inviteGiftUntil": "Je welkomstcadeau: slimme salarisverdeling tot {date}",
+  "ambassadorTitle": "DGOTIX-ambassadeur",
+  "ambassadorNote": "{count} vrienden deden mee via jouw link. Bedankt voor het delen!",
+  "shareProgAmbassador": "Ik ben DGOTIX-ambassadeur: {count} vrienden deden via mijn link mee aan SmartBudget 🌟 Doe mee:",
+  "shareCardAmbassadorLabel": "vrienden deden mee via mijn link · DGOTIX-ambassadeur",
+  "shareMomentGoal": "Je hebt een doel bereikt! Deel het goede nieuws met je vrienden.",
+  "shareMomentAmbassador": "Je bent nu DGOTIX-ambassadeur! Deel je kaart."
 }

@@ -56,6 +56,34 @@ void main() {
   });
 
   group('ShareHighlight.pick', () {
+    test('an ambassador leads, with the friend count and other good news', () {
+      final ShareHighlight h = ShareHighlight.pick(
+          hasData: true,
+          healthScore: 80,
+          savingsRate: 0.2,
+          goalsCompleted: 1,
+          friends: 9,
+          ambassador: true);
+      expect(h.kind, HighlightKind.ambassador);
+      expect(h.friends, 9);
+      expect(h.extras, containsAll(<HighlightKind>[
+        HighlightKind.health,
+        HighlightKind.savings,
+        HighlightKind.goals,
+      ]));
+    });
+
+    test('without the title the friend count is never put forward', () {
+      final ShareHighlight h = ShareHighlight.pick(
+          hasData: true,
+          healthScore: 80,
+          savingsRate: 0.2,
+          goalsCompleted: 0,
+          friends: 5);
+      expect(h.kind, isNot(HighlightKind.ambassador));
+      expect(h.friends, 0);
+    });
+
     test('a completed goal leads, with other good news as extras', () {
       final ShareHighlight h = ShareHighlight.pick(
           hasData: true, healthScore: 88.4, savingsRate: 0.24, goalsCompleted: 2);

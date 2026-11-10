@@ -8,7 +8,7 @@ library;
 
 import 'package:smartbudget/features/financial_health/domain/health_engine.dart';
 
-enum HighlightKind { goals, health, savings, journey }
+enum HighlightKind { goals, health, savings, journey, ambassador }
 
 class ShareHighlight {
   const ShareHighlight({
@@ -17,6 +17,7 @@ class ShareHighlight {
     this.healthStatus,
     this.savingsPct,
     this.goalsCompleted = 0,
+    this.friends = 0,
   });
 
   final HighlightKind kind;
@@ -30,6 +31,9 @@ class ShareHighlight {
 
   final int goalsCompleted;
 
+  /// Friends who joined through the member's link (an ambassador's card).
+  final int friends;
+
   static const int minHealthScore = 55;
   static const int minSavingsPct = 10;
 
@@ -38,12 +42,16 @@ class ShareHighlight {
     required double healthScore,
     required double savingsRate,
     required int goalsCompleted,
+    int friends = 0,
+    bool ambassador = false,
   }) {
     final int score = healthScore.round().clamp(0, 100);
     final int pct = (savingsRate * 100).round().clamp(0, 100);
     final bool showHealth = hasData && score >= minHealthScore;
     final bool showSavings = hasData && pct >= minSavingsPct;
-    final HighlightKind kind = goalsCompleted > 0
+    final HighlightKind kind = ambassador
+        ? HighlightKind.ambassador
+        : goalsCompleted > 0
         ? HighlightKind.goals
         : showHealth
             ? HighlightKind.health
@@ -56,6 +64,7 @@ class ShareHighlight {
       healthStatus: showHealth ? statusOf(score.toDouble()) : null,
       savingsPct: showSavings ? pct : null,
       goalsCompleted: goalsCompleted < 0 ? 0 : goalsCompleted,
+      friends: ambassador ? friends : 0,
     );
   }
 

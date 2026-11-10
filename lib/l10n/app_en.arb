@@ -1969,5 +1969,13 @@
   "inviteGiftReceived": "A friend invited you, and here is your gift: the smart salary split, free for {days} days.",
   "@inviteGiftReceived": { "placeholders": { "days": { "type": "int" } } },
   "inviteGiftUntil": "Your welcome gift: smart salary split until {date}",
-  "@inviteGiftUntil": { "placeholders": { "date": { "type": "String" } } }
+  "@inviteGiftUntil": { "placeholders": { "date": { "type": "String" } } },
+  "ambassadorTitle": "DGOTIX Ambassador",
+  "ambassadorNote": "{count} friends joined through your link. Thank you for spreading the word!",
+  "@ambassadorNote": { "placeholders": { "count": { "type": "int" } } },
+  "shareProgAmbassador": "I'm a DGOTIX Ambassador: {count} friends joined SmartBudget through my link 🌟 Join us:",
+  "@shareProgAmbassador": { "placeholders": { "count": { "type": "int" } } },
+  "shareCardAmbassadorLabel": "friends joined through my link · DGOTIX Ambassador",
+  "shareMomentGoal": "You reached a goal! Share the good news with your friends.",
+  "shareMomentAmbassador": "You're now a DGOTIX Ambassador! Share your card."
 }

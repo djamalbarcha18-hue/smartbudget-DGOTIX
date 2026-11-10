@@ -62,6 +62,13 @@ void main() {
         ]);
   });
 
+  test('nine friends make an ambassador, picks used or not', () {
+    expect(j(8).isAmbassador, isFalse);
+    expect(j(9).isAmbassador, isTrue);
+    expect(j(12, <ReferralReward>[ReferralReward.salarySplit]).isAmbassador,
+        isTrue);
+  });
+
   test('the milestones match the server: one pick per three', () {
     expect(RewardJourney.friendsPerPick, 3);
     expect(RewardJourney.maxPicks, 3);

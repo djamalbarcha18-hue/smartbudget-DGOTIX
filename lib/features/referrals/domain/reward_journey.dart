@@ -66,6 +66,10 @@ class RewardJourney {
     return n < 0 ? 0 : n;
   }
 
+  /// The title at the end of the journey: nine friends in all, whether or
+  /// not every pick has been used yet.
+  bool get isAmbassador => activated >= maxPicks * friendsPerPick;
+
   /// Every reward is picked: nothing is left to earn.
   bool get complete => picked.length >= maxPicks;
 

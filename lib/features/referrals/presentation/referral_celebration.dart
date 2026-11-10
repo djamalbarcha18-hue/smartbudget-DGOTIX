@@ -14,6 +14,9 @@ import 'package:smartbudget/features/referrals/application/referrals_controller.
 import 'package:smartbudget/features/referrals/data/referral_service.dart';
 import 'package:smartbudget/features/referrals/domain/referral_reward.dart';
 import 'package:smartbudget/features/referrals/domain/reward_journey.dart';
+import 'package:smartbudget/features/share/application/share_controller.dart';
+import 'package:smartbudget/features/share/domain/share_highlight.dart';
+import 'package:smartbudget/features/share/presentation/share_app_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Keeps the invite count fresh while the app is open and, when it rises,
@@ -43,12 +46,19 @@ class ReferralCelebration extends ConsumerStatefulWidget {
 class _ReferralCelebrationState extends ConsumerState<ReferralCelebration> {
   static const String _seenBase = 'sb_referral_seen';
   static const String _giftSeenBase = 'sb_welcome_gift_seen';
+  static const String _goalsSeenBase = 'sb_moment_goals_seen';
+  static const String _momentLastBase = 'sb_moment_last';
+  static const String _ambassadorSeenBase = 'sb_ambassador_seen';
+
+  /// At most one "share this" note this often.
+  static const Duration momentGap = Duration(days: 7);
 
   Timer? _timer;
   Timer? _hide;
   AppLifecycleListener? _life;
   String? _uid;
   String? _note;
+  bool _noteOpensShare = false;
 
   @override
   void initState() {
@@ -58,6 +68,16 @@ class _ReferralCelebrationState extends ConsumerState<ReferralCelebration> {
       currentAccountIdProvider,
       (String? _, String? uid) => _setUp(uid),
       fireImmediately: true,
+    );
+    ref.listenManual<int>(
+      shareHighlightProvider.select((ShareHighlight h) => h.goalsCompleted),
+      (_, int n) => _onGoals(n),
+    );
+    ref.listenManual<bool>(
+      rewardJourneyProvider.select((RewardJourney j) => j.isAmbassador),
+      (_, bool yes) {
+        if (yes) _onAmbassador();
+      },
     );
     ref.listenManual<AsyncValue<DateTime?>>(
       welcomeGiftProvider,
@@ -108,7 +128,55 @@ class _ReferralCelebrationState extends ConsumerState<ReferralCelebration> {
     }
   }
 
-  void _show(String note) {
+  /// A good moment to share: a goal was just reached. Offered at most once a
+  /// week, and never for goals already completed when this device first saw
+  /// the count.
+  Future<void> _onGoals(int completed) async {
+    final String? uid = _uid;
+    if (uid == null) return;
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String seenKey = AccountKeys.of(_goalsSeenBase, uid);
+      final String lastKey = AccountKeys.of(_momentLastBase, uid);
+      final int? seen = prefs.getInt(seenKey);
+      await prefs.setInt(seenKey, completed);
+      if (seen == null || completed <= seen || !mounted || _uid != uid) return;
+      final int now = AppClock.now().millisecondsSinceEpoch;
+      final int? last = prefs.getInt(lastKey);
+      if (last != null && now - last < momentGap.inMilliseconds) return;
+      await prefs.setInt(lastKey, now);
+      if (!mounted) return;
+      _show(AppLocalizations.of(context).shareMomentGoal, share: true);
+    } catch (_) {
+      // A note is a nicety: never let it break anything.
+    }
+  }
+
+  /// The ambassador title was just earned: said once.
+  Future<void> _onAmbassador() async {
+    final String? uid = _uid;
+    if (uid == null) return;
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String key = AccountKeys.of(_ambassadorSeenBase, uid);
+      if (prefs.getBool(key) ?? false) return;
+      await prefs.setBool(key, true);
+      if (!mounted || _uid != uid) return;
+      _show(AppLocalizations.of(context).shareMomentAmbassador, share: true);
+    } catch (_) {
+      // A note is a nicety: never let it break anything.
+    }
+  }
+
+  /// Opens the share sheet on the achievement card, from above the Navigator.
+  void _openShare() {
+    final BuildContext? nav =
+        widget.router.routerDelegate.navigatorKey.currentContext;
+    if (nav != null) ShareAppSheet.show(nav, tab: ShareTab.progress);
+  }
+
+  void _show(String note, {bool share = false}) {
+    _noteOpensShare = share;
     setState(() => _note = note);
     _hide?.cancel();
     _hide = Timer(const Duration(seconds: 9), () {
@@ -172,7 +240,11 @@ class _ReferralCelebrationState extends ConsumerState<ReferralCelebration> {
                   borderRadius: BorderRadius.circular(18),
                   onTap: () {
                     setState(() => _note = null);
-                    widget.router.go('/settings');
+                    if (_noteOpensShare) {
+                      _openShare();
+                    } else {
+                      widget.router.go('/settings');
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsetsDirectional.fromSTEB(

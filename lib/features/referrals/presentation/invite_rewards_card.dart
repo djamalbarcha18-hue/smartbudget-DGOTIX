@@ -96,6 +96,10 @@ class _InviteRewardsCardState extends ConsumerState<InviteRewardsCard> {
             ),
           ],
           const SizedBox(height: DsSpacing.lg),
+          if (code != null && journey.isAmbassador) ...<Widget>[
+            _AmbassadorBadge(friends: journey.activated),
+            const SizedBox(height: DsSpacing.lg),
+          ],
           if (code == null)
             // Signed out: the link belongs to an account, so say so plainly
             // rather than showing a button that cannot work.
@@ -124,6 +128,62 @@ class _InviteRewardsCardState extends ConsumerState<InviteRewardsCard> {
             const SizedBox(height: DsSpacing.md),
             _LinkRow(code: code),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+/// The title at the end of the journey, with a button to share the card that
+/// goes with it.
+class _AmbassadorBadge extends StatelessWidget {
+  const _AmbassadorBadge({required this.friends});
+  final int friends;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    return Container(
+      padding: const EdgeInsets.all(DsSpacing.md),
+      decoration: BoxDecoration(
+        borderRadius: DsRadius.brMd,
+        gradient: LinearGradient(
+          begin: AlignmentDirectional.topStart,
+          end: AlignmentDirectional.bottomEnd,
+          colors: <Color>[c.brand, Color.lerp(c.brand, Colors.black, 0.4)!],
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              const Icon(Icons.verified_rounded, color: Colors.white, size: 26),
+              const SizedBox(width: DsSpacing.sm),
+              Expanded(
+                child: Text(l.ambassadorTitle,
+                    style: t.titleMedium?.copyWith(
+                        color: Colors.white, fontWeight: FontWeight.w800)),
+              ),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.xs),
+          Text(l.ambassadorNote(friends),
+              style: t.bodySmall?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.92), height: 1.35)),
+          const SizedBox(height: DsSpacing.sm),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              style: TextButton.styleFrom(foregroundColor: Colors.white),
+              onPressed: () =>
+                  ShareAppSheet.show(context, tab: ShareTab.progress),
+              icon: const Icon(Icons.ios_share_rounded, size: 18),
+              label: Text(l.shareTabProgress),
+            ),
+          ),
         ],
       ),
     );

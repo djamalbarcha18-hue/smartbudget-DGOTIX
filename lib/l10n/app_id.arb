@@ -1666,5 +1666,11 @@
   "journeyCelebrateReady": "Hadiahmu siap. Buka Pengaturan untuk memilihnya.",
   "inviteGiftSignup": "Seorang teman mengundangmu: bergabunglah dan dapatkan pembagian gaji pintar gratis selama {days} hari.",
   "inviteGiftReceived": "Seorang teman mengundangmu, dan ini hadiahmu: pembagian gaji pintar, gratis selama {days} hari.",
-  "inviteGiftUntil": "Hadiah selamat datangmu: pembagian gaji pintar sampai {date}"
+  "inviteGiftUntil": "Hadiah selamat datangmu: pembagian gaji pintar sampai {date}",
+  "ambassadorTitle": "Duta DGOTIX",
+  "ambassadorNote": "{count} teman bergabung lewat tautanmu. Terima kasih sudah menyebarkan aplikasi ini!",
+  "shareProgAmbassador": "Aku Duta DGOTIX: {count} teman bergabung ke SmartBudget lewat tautanku 🌟 Ayo gabung:",
+  "shareCardAmbassadorLabel": "teman bergabung lewat tautanku · Duta DGOTIX",
+  "shareMomentGoal": "Kamu mencapai sebuah target! Bagikan kabar baik ini ke teman-temanmu.",
+  "shareMomentAmbassador": "Kini kamu Duta DGOTIX! Bagikan kartumu."
 }

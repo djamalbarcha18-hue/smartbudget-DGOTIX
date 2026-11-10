@@ -1666,5 +1666,11 @@
   "journeyCelebrateReady": "Deine Belohnung ist bereit. Öffne die Einstellungen, um sie zu wählen.",
   "inviteGiftSignup": "Ein Freund hat dich eingeladen: Tritt bei und erhalte die smarte Gehaltsaufteilung {days} Tage kostenlos.",
   "inviteGiftReceived": "Ein Freund hat dich eingeladen, und hier ist dein Geschenk: die smarte Gehaltsaufteilung, {days} Tage kostenlos.",
-  "inviteGiftUntil": "Dein Willkommensgeschenk: smarte Gehaltsaufteilung bis {date}"
+  "inviteGiftUntil": "Dein Willkommensgeschenk: smarte Gehaltsaufteilung bis {date}",
+  "ambassadorTitle": "DGOTIX-Botschafter",
+  "ambassadorNote": "{count} Freunde sind über deinen Link beigetreten. Danke, dass du die App weiterempfiehlst!",
+  "shareProgAmbassador": "Ich bin DGOTIX-Botschafter: {count} Freunde sind über meinen Link zu SmartBudget gekommen 🌟 Mach mit:",
+  "shareCardAmbassadorLabel": "Freunde über meinen Link beigetreten · DGOTIX-Botschafter",
+  "shareMomentGoal": "Du hast ein Ziel erreicht! Teile die gute Nachricht mit deinen Freunden.",
+  "shareMomentAmbassador": "Du bist jetzt DGOTIX-Botschafter! Teile deine Karte."
 }

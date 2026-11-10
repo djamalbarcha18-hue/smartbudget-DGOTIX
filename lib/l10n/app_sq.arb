@@ -1666,5 +1666,11 @@
   "journeyCelebrateReady": "Shpërblimi juaj është gati. Hapni Cilësimet për ta zgjedhur.",
   "inviteGiftSignup": "Një mik ju ftoi: bashkohuni dhe merrni ndarjen e zgjuar të pagës falas për {days} ditë.",
   "inviteGiftReceived": "Një mik ju ftoi, dhe ja dhurata juaj: ndarja e zgjuar e pagës, falas për {days} ditë.",
-  "inviteGiftUntil": "Dhurata juaj e mirëseardhjes: ndarje e zgjuar e pagës deri më {date}"
+  "inviteGiftUntil": "Dhurata juaj e mirëseardhjes: ndarje e zgjuar e pagës deri më {date}",
+  "ambassadorTitle": "Ambasador i DGOTIX",
+  "ambassadorNote": "{count} miq u bashkuan me lidhjen tuaj. Faleminderit që e përhapët!",
+  "shareProgAmbassador": "Jam ambasador i DGOTIX: {count} miq u bashkuan në SmartBudget me lidhjen time 🌟 Bashkohuni:",
+  "shareCardAmbassadorLabel": "miq u bashkuan me lidhjen time · Ambasador i DGOTIX",
+  "shareMomentGoal": "Arritët një objektiv! Ndajeni lajmin e mirë me miqtë.",
+  "shareMomentAmbassador": "Tani jeni ambasador i DGOTIX! Ndani kartën tuaj."
 }

@@ -129,6 +129,21 @@ void main() {
     expect(find.textContaining('welcome gift'), findsNothing);
   });
 
+  testWidgets('nine friends: the ambassador badge and its share button',
+      (WidgetTester tester) async {
+    await _pump(tester, activated: 9, picked: ReferralReward.values);
+    expect(find.text('DGOTIX Ambassador'), findsOneWidget);
+    expect(find.textContaining('9 friends joined through your link'),
+        findsOneWidget);
+    expect(find.text('Share your progress'), findsOneWidget);
+  });
+
+  testWidgets('before nine friends there is no badge',
+      (WidgetTester tester) async {
+    await _pump(tester, activated: 8);
+    expect(find.text('DGOTIX Ambassador'), findsNothing);
+  });
+
   testWidgets('signed out: no ladder, a plain explanation',
       (WidgetTester tester) async {
     await _pump(tester, activated: 0, code: null);

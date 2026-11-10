@@ -1666,5 +1666,11 @@
   "journeyCelebrateReady": "Il tuo premio è pronto. Apri Impostazioni per sceglierlo.",
   "inviteGiftSignup": "Un amico ti ha invitato: unisciti e ottieni la ripartizione intelligente dello stipendio gratis per {days} giorni.",
   "inviteGiftReceived": "Un amico ti ha invitato, ed ecco il tuo regalo: la ripartizione intelligente dello stipendio, gratis per {days} giorni.",
-  "inviteGiftUntil": "Il tuo regalo di benvenuto: ripartizione intelligente dello stipendio fino al {date}"
+  "inviteGiftUntil": "Il tuo regalo di benvenuto: ripartizione intelligente dello stipendio fino al {date}",
+  "ambassadorTitle": "Ambasciatore DGOTIX",
+  "ambassadorNote": "{count} amici si sono uniti con il tuo link. Grazie per aver fatto girare la voce!",
+  "shareProgAmbassador": "Sono ambasciatore DGOTIX: {count} amici sono entrati in SmartBudget con il mio link 🌟 Unisciti a noi:",
+  "shareCardAmbassadorLabel": "amici entrati con il mio link · Ambasciatore DGOTIX",
+  "shareMomentGoal": "Hai raggiunto un obiettivo! Condividi la bella notizia con i tuoi amici.",
+  "shareMomentAmbassador": "Ora sei ambasciatore DGOTIX! Condividi la tua carta."
 }

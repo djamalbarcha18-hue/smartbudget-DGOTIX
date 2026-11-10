@@ -72,6 +72,12 @@ class ShareProgressCard extends StatelessWidget {
           null,
           l.shareCardJourneyLabel,
         ),
+      HighlightKind.ambassador => (
+          Icons.verified_rounded,
+          '${h.friends}',
+          null,
+          l.shareCardAmbassadorLabel,
+        ),
     };
 
     return Container(
@@ -145,6 +151,7 @@ class ShareProgressCard extends StatelessWidget {
                     HighlightKind.savings => l.shareChipSavings(h.savingsPct!),
                     HighlightKind.goals => l.shareChipGoals(h.goalsCompleted),
                     HighlightKind.journey => '',
+                    HighlightKind.ambassador => '',
                   }),
               ],
             ),

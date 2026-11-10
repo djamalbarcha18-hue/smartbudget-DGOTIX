@@ -1666,5 +1666,11 @@
   "journeyCelebrateReady": "보상이 준비됐어요. 설정을 열어 골라 보세요.",
   "inviteGiftSignup": "친구가 당신을 초대했어요. 가입하면 스마트 급여 배분을 {days}일 동안 무료로 드려요.",
   "inviteGiftReceived": "친구가 당신을 초대했어요. 선물로 스마트 급여 배분을 {days}일 동안 무료로 드려요.",
-  "inviteGiftUntil": "환영 선물: 스마트 급여 배분 {date}까지"
+  "inviteGiftUntil": "환영 선물: 스마트 급여 배분 {date}까지",
+  "ambassadorTitle": "DGOTIX 앰배서더",
+  "ambassadorNote": "내 링크로 친구 {count}명이 가입했어요. 앱을 알려 주셔서 고마워요!",
+  "shareProgAmbassador": "저는 DGOTIX 앰배서더예요. 제 링크로 친구 {count}명이 SmartBudget에 가입했어요 🌟 함께해요:",
+  "shareCardAmbassadorLabel": "명의 친구가 내 링크로 가입 · DGOTIX 앰배서더",
+  "shareMomentGoal": "목표를 달성했어요! 좋은 소식을 친구들과 나눠 보세요.",
+  "shareMomentAmbassador": "이제 DGOTIX 앰배서더가 됐어요! 카드를 공유해 보세요."
 }

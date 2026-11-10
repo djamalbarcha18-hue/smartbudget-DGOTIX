@@ -18,6 +18,14 @@ code waits on the device, the Settings card shows when it ends, and a note over
 the app says it once. It is local arithmetic like every reward, so it costs
 nothing to give.
 
+**The title, and good moments to share.** At nine friends the member becomes a
+**DGOTIX Ambassador**: a badge on the journey card, and an ambassador card on
+the share sheet's "progress" tab (the friend count, with the member's link and
+QR). Two gentle prompts, both opened with one tap on the share sheet: when a
+goal is reached (at most once a week, never for goals already done when the
+device first sees the count) and when the title is earned (once). Nothing here
+costs the server anything, and only a count ever leaves the app on the card.
+
 The pick is decided on the server (`choose_reward`, `referral_picks_for`): one
 pick per three activated friends, never repeated, counted there and not in the
 app. `complete_referral` only counts now; it grants nothing by itself.

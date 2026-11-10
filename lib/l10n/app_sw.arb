@@ -1666,5 +1666,11 @@
   "journeyCelebrateReady": "Zawadi yako iko tayari. Fungua Mipangilio kuichagua.",
   "inviteGiftSignup": "Rafiki amekualika: jiunge upate mgawanyo mahiri wa mshahara bila malipo kwa siku {days}.",
   "inviteGiftReceived": "Rafiki amekualika, na hii hapa zawadi yako: mgawanyo mahiri wa mshahara, bila malipo kwa siku {days}.",
-  "inviteGiftUntil": "Zawadi yako ya kukaribisha: mgawanyo mahiri wa mshahara hadi {date}"
+  "inviteGiftUntil": "Zawadi yako ya kukaribisha: mgawanyo mahiri wa mshahara hadi {date}",
+  "ambassadorTitle": "Balozi wa DGOTIX",
+  "ambassadorNote": "Marafiki {count} wamejiunga kupitia kiungo chako. Asante kwa kueneza habari!",
+  "shareProgAmbassador": "Mimi ni Balozi wa DGOTIX: marafiki {count} wamejiunga na SmartBudget kupitia kiungo changu 🌟 Jiunge nasi:",
+  "shareCardAmbassadorLabel": "marafiki wamejiunga kupitia kiungo changu · Balozi wa DGOTIX",
+  "shareMomentGoal": "Umefikia lengo! Shiriki habari njema na marafiki zako.",
+  "shareMomentAmbassador": "Sasa wewe ni Balozi wa DGOTIX! Shiriki kadi yako."
 }
