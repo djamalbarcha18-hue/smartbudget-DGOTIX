@@ -108,7 +108,7 @@ class _LogoMenuButtonState extends State<_LogoMenuButton>
     final AppLocalizations l = AppLocalizations.of(context);
     // Tall enough to fill most of the bar's height, like the logo block at the
     // top of the side menu on a computer.
-    const double h = 30;
+    const double h = 35;
     final Widget mark = ClipRect(
       child: Align(
         // The logo reads left to right in every language: "DG" is its left end
@@ -164,7 +164,7 @@ class _LogoMenuButtonState extends State<_LogoMenuButton>
           Semantics(label: AppConfig.parentBrand, image: true, child: mark),
           // "This opens something": a small chevron under the mark.
           Transform.translate(
-            offset: const Offset(0, 19),
+            offset: const Offset(0, 22),
             child: Icon(Icons.keyboard_arrow_down_rounded,
                 size: 12, color: c.brand.withValues(alpha: 0.75)),
           ),
