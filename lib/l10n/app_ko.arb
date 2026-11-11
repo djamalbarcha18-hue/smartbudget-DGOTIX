@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "이제 DGOTIX 앰배서더가 됐어요! 카드를 공유해 보세요.",
   "menuHint": "로고를 눌러 메뉴를 여세요",
   "onbFirstExpense": "첫 지출 기록하기",
-  "onbOrIncome": "또는 수입 추가",
+  "onbFirstIncome": "수입 추가하기",
+  "onbOrExpense": "또는 지출 기록",
+  "onbAfterIncomeSubtitle": "이제 첫 지출을 기록해 얼마가 남는지 확인해 보세요.",
   "onbCurrencyLine": "내 통화: {code}",
   "onbChange": "변경",
-  "onbStartSubtitle": "지출 한 건으로 시작하세요. 몇 초면 됩니다.",
+  "onbStartSubtitle": "수입부터 입력한 뒤, 거기서 쓴 돈을 기록하세요.",
   "onbFirstDoneTitle": "잘했어요! 첫 기록이 저장됐어요",
   "onbFirstDoneSubtitle": "이제 월 예산을 정하면 앱이 얼마가 남았는지 알려 줘요."
 }

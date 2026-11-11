@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "Vous êtes maintenant ambassadeur DGOTIX ! Partagez votre carte.",
   "menuHint": "Touchez le logo pour ouvrir le menu",
   "onbFirstExpense": "Enregistrez votre première dépense",
-  "onbOrIncome": "ou ajoutez un revenu",
+  "onbFirstIncome": "Ajoutez votre revenu",
+  "onbOrExpense": "ou enregistrez une dépense",
+  "onbAfterIncomeSubtitle": "Enregistrez maintenant votre première dépense pour voir ce qu'il vous reste.",
   "onbCurrencyLine": "Votre devise : {code}",
   "onbChange": "Modifier",
-  "onbStartSubtitle": "Commencez par une seule dépense. Cela prend quelques secondes.",
+  "onbStartSubtitle": "Commencez par votre revenu, puis enregistrez ce que vous en dépensez.",
   "onbFirstDoneTitle": "Bravo ! Votre première saisie est enregistrée",
   "onbFirstDoneSubtitle": "Fixez maintenant un budget mensuel et l'appli vous dira combien il vous reste."
 }

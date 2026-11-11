@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "Tani jeni ambasador i DGOTIX! Ndani kartën tuaj.",
   "menuHint": "Prekni logon për të hapur menynë",
   "onbFirstExpense": "Regjistroni shpenzimin e parë",
-  "onbOrIncome": "ose shtoni të ardhura",
+  "onbFirstIncome": "Shtoni të ardhurat tuaja",
+  "onbOrExpense": "ose regjistroni një shpenzim",
+  "onbAfterIncomeSubtitle": "Tani regjistroni shpenzimin e parë për të parë sa ka mbetur.",
   "onbCurrencyLine": "Monedha juaj: {code}",
   "onbChange": "Ndrysho",
-  "onbStartSubtitle": "Filloni me një shpenzim. Duhen vetëm pak sekonda.",
+  "onbStartSubtitle": "Filloni me të ardhurat, pastaj regjistroni çfarë shpenzoni prej tyre.",
   "onbFirstDoneTitle": "Të lumtë! Regjistrimi i parë u ruajt",
   "onbFirstDoneSubtitle": "Tani caktoni një buxhet mujor dhe aplikacioni ju tregon sa ka mbetur."
 }

@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "Sada ste DGOTIX ambasador! Podijelite svoju karticu.",
   "menuHint": "Dodirnite logo da otvorite meni",
   "onbFirstExpense": "Zabilježite prvi trošak",
-  "onbOrIncome": "ili dodajte prihod",
+  "onbFirstIncome": "Dodajte svoj prihod",
+  "onbOrExpense": "ili zabilježite trošak",
+  "onbAfterIncomeSubtitle": "Sada zabilježite prvi trošak da vidite koliko je ostalo.",
   "onbCurrencyLine": "Vaša valuta: {code}",
   "onbChange": "Promijeni",
-  "onbStartSubtitle": "Počnite s jednim troškom. Traje nekoliko sekundi.",
+  "onbStartSubtitle": "Počnite s prihodom, a zatim bilježite šta iz njega trošite.",
   "onbFirstDoneTitle": "Bravo! Vaš prvi unos je sačuvan",
   "onbFirstDoneSubtitle": "Sada postavite mjesečni budžet i aplikacija će vam reći koliko je ostalo."
 }

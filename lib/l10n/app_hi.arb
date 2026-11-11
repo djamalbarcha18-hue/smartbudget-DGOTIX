@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "अब आप DGOTIX एंबेसडर हैं! अपना कार्ड साझा करें।",
   "menuHint": "मेन्यू खोलने के लिए लोगो पर टैप करें",
   "onbFirstExpense": "अपना पहला खर्च दर्ज करें",
-  "onbOrIncome": "या आय जोड़ें",
+  "onbFirstIncome": "अपनी आय जोड़ें",
+  "onbOrExpense": "या कोई खर्च दर्ज करें",
+  "onbAfterIncomeSubtitle": "अब अपना पहला खर्च दर्ज करें और देखें कि कितना बचा है।",
   "onbCurrencyLine": "आपकी मुद्रा: {code}",
   "onbChange": "बदलें",
-  "onbStartSubtitle": "एक खर्च से शुरू करें। बस कुछ सेकंड लगते हैं।",
+  "onbStartSubtitle": "अपनी आय से शुरू करें, फिर उसमें से जो खर्च करें वह दर्ज करें।",
   "onbFirstDoneTitle": "बहुत बढ़िया! आपकी पहली प्रविष्टि सहेज ली गई",
   "onbFirstDoneSubtitle": "अब मासिक बजट तय करें, ऐप बताएगा कि कितना बचा है।"
 }

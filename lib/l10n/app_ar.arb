@@ -1874,10 +1874,12 @@
   "shareMomentAmbassador": "أصبحت الآن سفير DGOTIX! شارك بطاقتك.",
   "menuHint": "اضغط على الشعار لفتح القائمة",
   "onbFirstExpense": "سجّل أول مصروف",
-  "onbOrIncome": "أو أضف دخلًا",
+  "onbFirstIncome": "أضف دخلك",
+  "onbOrExpense": "أو سجّل مصروفًا",
+  "onbAfterIncomeSubtitle": "الآن سجّل أول مصروف لترى كم بقي لك.",
   "onbCurrencyLine": "عملتك: {code}",
   "onbChange": "تغيير",
-  "onbStartSubtitle": "ابدأ بمصروف واحد. يأخذ ثوانيَ فقط.",
+  "onbStartSubtitle": "ابدأ بدخلك، ثم سجّل ما تصرفه منه.",
   "onbFirstDoneTitle": "أحسنت! سجّلت أول معاملة",
   "onbFirstDoneSubtitle": "الآن حدّد ميزانية شهرية، وسيخبرك التطبيق كم بقي لك."
 }

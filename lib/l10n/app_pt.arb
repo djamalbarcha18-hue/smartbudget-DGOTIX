@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "Agora é embaixador DGOTIX! Partilhe o seu cartão.",
   "menuHint": "Toque no logótipo para abrir o menu",
   "onbFirstExpense": "Registe a sua primeira despesa",
-  "onbOrIncome": "ou adicione um rendimento",
+  "onbFirstIncome": "Adicione o seu rendimento",
+  "onbOrExpense": "ou registe uma despesa",
+  "onbAfterIncomeSubtitle": "Agora registe a sua primeira despesa para ver quanto resta.",
   "onbCurrencyLine": "A sua moeda: {code}",
   "onbChange": "Alterar",
-  "onbStartSubtitle": "Comece com uma só despesa. Demora uns segundos.",
+  "onbStartSubtitle": "Comece pelo seu rendimento e depois registe o que gasta dele.",
   "onbFirstDoneTitle": "Muito bem! O seu primeiro registo está guardado",
   "onbFirstDoneSubtitle": "Agora defina um orçamento mensal e a app diz-lhe quanto resta."
 }

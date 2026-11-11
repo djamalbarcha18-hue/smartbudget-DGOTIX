@@ -4,13 +4,15 @@ import 'package:smartbudget/features/onboarding/domain/onboarding.dart';
 
 void main() {
   welcomeTests();
-  test('a brand-new user has three steps, the first entry first', () {
+  test('a brand-new user has four steps, income first', () {
     final List<OnboardingStep> steps = buildOnboardingSteps(
-      hasTransaction: false,
+      hasIncome: false,
+      hasExpense: false,
       hasBudget: false,
       hasGoal: false,
     );
     expect(steps.map((OnboardingStep s) => s.id).toList(), <OnboardingStepId>[
+      OnboardingStepId.income,
       OnboardingStepId.transaction,
       OnboardingStepId.budget,
       OnboardingStepId.goal,
@@ -20,33 +22,39 @@ void main() {
 
   test('steps tick off from real data', () {
     final List<OnboardingStep> steps = buildOnboardingSteps(
-      hasTransaction: true,
+      hasIncome: false,
+      hasExpense: true,
       hasBudget: false,
       hasGoal: true,
     );
     final Map<OnboardingStepId, bool> done = <OnboardingStepId, bool>{
       for (final OnboardingStep s in steps) s.id: s.done,
     };
+    expect(done[OnboardingStepId.income], isFalse);
     expect(done[OnboardingStepId.transaction], isTrue);
     expect(done[OnboardingStepId.budget], isFalse);
     expect(done[OnboardingStepId.goal], isTrue);
   });
 
   test('the next step is the first one left, in order', () {
-    OnboardingStepId? next({bool tx = false, bool b = false, bool g = false}) =>
+    OnboardingStepId? next(
+            {bool inc = false, bool exp = false, bool b = false, bool g = false}) =>
         nextOnboardingStep(buildOnboardingSteps(
-                hasTransaction: tx, hasBudget: b, hasGoal: g))
+                hasIncome: inc, hasExpense: exp, hasBudget: b, hasGoal: g))
             ?.id;
-    expect(next(), OnboardingStepId.transaction);
-    expect(next(tx: true), OnboardingStepId.budget);
-    expect(next(tx: true, g: true), OnboardingStepId.budget);
-    expect(next(tx: true, b: true), OnboardingStepId.goal);
-    expect(next(tx: true, b: true, g: true), isNull);
+    expect(next(), OnboardingStepId.income);
+    expect(next(inc: true), OnboardingStepId.transaction);
+    // An expense recorded first: the income is still asked for.
+    expect(next(exp: true), OnboardingStepId.income);
+    expect(next(inc: true, exp: true), OnboardingStepId.budget);
+    expect(next(inc: true, exp: true, b: true), OnboardingStepId.goal);
+    expect(next(inc: true, exp: true, b: true, g: true), isNull);
   });
 
   test('every step links to an app route', () {
     for (final OnboardingStep s in buildOnboardingSteps(
-      hasTransaction: false,
+      hasIncome: false,
+      hasExpense: false,
       hasBudget: false,
       hasGoal: false,
     )) {
@@ -76,7 +84,8 @@ void welcomeTests() {
     bool goal = false,
   }) =>
       buildOnboardingSteps(
-        hasTransaction: tx,
+        hasIncome: tx,
+        hasExpense: tx,
         hasBudget: budget,
         hasGoal: goal,
       );
@@ -117,7 +126,7 @@ void welcomeTests() {
           isTrue);
     });
 
-    test('the three steps done: it leaves the dashboard to the figures', () {
+    test('every step done: it leaves the dashboard to the figures', () {
       expect(
           shouldShowWelcome(
               flags: OnboardingFlags(firstSeenMs: ms(now)),

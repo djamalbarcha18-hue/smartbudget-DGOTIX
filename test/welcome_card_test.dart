@@ -14,7 +14,8 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// The card with the checklist in a given state, shown or not.
 Future<void> _pump(WidgetTester tester,
-    {bool tx = false,
+    {bool income = false,
+    bool tx = false,
     bool budget = false,
     bool goal = false,
     bool visible = true}) async {
@@ -25,7 +26,10 @@ Future<void> _pump(WidgetTester tester,
   await tester.pumpWidget(ProviderScope(
     overrides: <Override>[
       onboardingStepsProvider.overrideWithValue(buildOnboardingSteps(
-          hasTransaction: tx, hasBudget: budget, hasGoal: goal)),
+          hasIncome: income,
+          hasExpense: tx,
+          hasBudget: budget,
+          hasGoal: goal)),
       welcomeVisibleProvider.overrideWithValue(visible),
       baseCurrencyProvider.overrideWith(() => _Dzd()),
     ],
@@ -50,16 +54,16 @@ class _Dzd extends BaseCurrencyController {
 void main() {
   setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
 
-  testWidgets('a new user is offered one thing: the first expense',
+  Finder next(String label) => find.descendant(
+      of: find.byKey(const ValueKey<String>('onb-next')),
+      matching: find.text(label));
+
+  testWidgets('a new user is offered one thing: their income',
       (WidgetTester tester) async {
     await _pump(tester);
-    expect(
-        find.descendant(
-            of: find.byKey(const ValueKey<String>('onb-next')),
-            matching: find.text('Record your first expense')),
-        findsOneWidget);
-    expect(find.text('or add income'), findsOneWidget);
-    expect(find.text('0 of 3 done'), findsOneWidget);
+    expect(next('Add your income'), findsOneWidget);
+    expect(find.text('or record an expense'), findsOneWidget);
+    expect(find.text('0 of 4 done'), findsOneWidget);
     // The currency is said on the card, with a way to change it.
     expect(find.text('Your currency: DZD'), findsOneWidget);
     expect(find.text('Change'), findsOneWidget);
@@ -68,30 +72,32 @@ void main() {
     expect(find.text('Choose your language and base currency'), findsNothing);
   });
 
-  testWidgets('after the first entry it congratulates and leads to the budget',
+  testWidgets('with the income in, the first expense is next',
       (WidgetTester tester) async {
-    await _pump(tester, tx: true);
+    await _pump(tester, income: true);
     expect(find.text('Well done! Your first entry is saved'), findsOneWidget);
-    expect(find.text('1 of 3 done'), findsOneWidget);
-    expect(
-        find.descendant(
-            of: find.byKey(const ValueKey<String>('onb-next')),
-            matching: find.text('Set a monthly budget')),
-        findsOneWidget);
-    // The currency line belongs to the very first step only.
+    expect(next('Record your first expense'), findsOneWidget);
+    expect(find.text('1 of 4 done'), findsOneWidget);
+    // The currency line and the other way in belong to the very start only.
     expect(find.byKey(const ValueKey<String>('onb-currency')), findsNothing);
-    expect(find.text('or add income'), findsNothing);
+    expect(find.byKey(const ValueKey<String>('onb-expense')), findsNothing);
   });
 
-  testWidgets('with a budget set, the goal is next',
+  testWidgets('an expense recorded first: the income is still asked for',
       (WidgetTester tester) async {
-    await _pump(tester, tx: true, budget: true);
-    expect(
-        find.descendant(
-            of: find.byKey(const ValueKey<String>('onb-next')),
-            matching: find.text('Create a savings goal')),
-        findsOneWidget);
-    expect(find.text('2 of 3 done'), findsOneWidget);
+    await _pump(tester, tx: true);
+    expect(next('Add your income'), findsOneWidget);
+    expect(find.text('1 of 4 done'), findsOneWidget);
+  });
+
+  testWidgets('income and expense in: the budget, then the goal',
+      (WidgetTester tester) async {
+    await _pump(tester, income: true, tx: true);
+    expect(next('Set a monthly budget'), findsOneWidget);
+    expect(find.text('2 of 4 done'), findsOneWidget);
+    await _pump(tester, income: true, tx: true, budget: true);
+    expect(next('Create a savings goal'), findsOneWidget);
+    expect(find.text('3 of 4 done'), findsOneWidget);
   });
 
   testWidgets('not for this user: nothing is drawn',

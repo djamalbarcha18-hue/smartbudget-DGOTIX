@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "Kini anda Duta DGOTIX! Kongsikan kad anda.",
   "menuHint": "Ketik logo untuk membuka menu",
   "onbFirstExpense": "Rekod perbelanjaan pertama anda",
-  "onbOrIncome": "atau tambah pendapatan",
+  "onbFirstIncome": "Tambah pendapatan anda",
+  "onbOrExpense": "atau rekod perbelanjaan",
+  "onbAfterIncomeSubtitle": "Sekarang rekod perbelanjaan pertama anda untuk melihat bakinya.",
   "onbCurrencyLine": "Mata wang anda: {code}",
   "onbChange": "Tukar",
-  "onbStartSubtitle": "Mulakan dengan satu perbelanjaan. Hanya beberapa saat.",
+  "onbStartSubtitle": "Mulakan dengan pendapatan anda, kemudian rekod apa yang anda belanjakan.",
   "onbFirstDoneTitle": "Syabas! Rekod pertama anda disimpan",
   "onbFirstDoneSubtitle": "Sekarang tetapkan bajet bulanan, dan aplikasi akan memberitahu baki anda."
 }

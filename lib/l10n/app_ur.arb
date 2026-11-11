@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "اب آپ DGOTIX سفیر ہیں! اپنا کارڈ شیئر کریں۔",
   "menuHint": "مینو کھولنے کے لیے لوگو پر ٹیپ کریں",
   "onbFirstExpense": "اپنا پہلا خرچ درج کریں",
-  "onbOrIncome": "یا آمدنی شامل کریں",
+  "onbFirstIncome": "اپنی آمدنی شامل کریں",
+  "onbOrExpense": "یا کوئی خرچ درج کریں",
+  "onbAfterIncomeSubtitle": "اب اپنا پہلا خرچ درج کریں اور دیکھیں کہ کتنا باقی ہے۔",
   "onbCurrencyLine": "آپ کی کرنسی: {code}",
   "onbChange": "تبدیل کریں",
-  "onbStartSubtitle": "ایک خرچ سے شروع کریں۔ صرف چند سیکنڈ لگتے ہیں۔",
+  "onbStartSubtitle": "اپنی آمدنی سے شروع کریں، پھر اس میں سے جو خرچ کریں وہ درج کریں۔",
   "onbFirstDoneTitle": "شاباش! آپ کا پہلا اندراج محفوظ ہو گیا",
   "onbFirstDoneSubtitle": "اب ماہانہ بجٹ مقرر کریں، ایپ بتائے گی کہ کتنا باقی ہے۔"
 }

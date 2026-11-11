@@ -36,6 +36,7 @@ class _OnboardingVisitMarkerState extends ConsumerState<OnboardingVisitMarker> {
           ctl.markSettingsVisited();
         case OnboardingStepId.guide:
           ctl.markGuideVisited();
+        case OnboardingStepId.income:
         case OnboardingStepId.transaction:
         case OnboardingStepId.budget:
         case OnboardingStepId.goal:

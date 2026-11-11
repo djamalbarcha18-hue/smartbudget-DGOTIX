@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "Sasa wewe ni Balozi wa DGOTIX! Shiriki kadi yako.",
   "menuHint": "Gusa nembo kufungua menyu",
   "onbFirstExpense": "Rekodi matumizi yako ya kwanza",
-  "onbOrIncome": "au ongeza mapato",
+  "onbFirstIncome": "Ongeza mapato yako",
+  "onbOrExpense": "au rekodi matumizi",
+  "onbAfterIncomeSubtitle": "Sasa rekodi matumizi yako ya kwanza uone kilichobaki.",
   "onbCurrencyLine": "Sarafu yako: {code}",
   "onbChange": "Badilisha",
-  "onbStartSubtitle": "Anza na matumizi moja. Inachukua sekunde chache.",
+  "onbStartSubtitle": "Anza na mapato yako, kisha rekodi unachotumia kutoka humo.",
   "onbFirstDoneTitle": "Hongera! Rekodi yako ya kwanza imehifadhiwa",
   "onbFirstDoneSubtitle": "Sasa weka bajeti ya mwezi, na programu itakuambia kilichobaki."
 }

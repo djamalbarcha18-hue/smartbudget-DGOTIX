@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "Artık bir DGOTIX Elçisisin! Kartını paylaş.",
   "menuHint": "Menüyü açmak için logoya dokunun",
   "onbFirstExpense": "İlk harcamanı kaydet",
-  "onbOrIncome": "veya gelir ekle",
+  "onbFirstIncome": "Gelirini ekle",
+  "onbOrExpense": "veya bir harcama kaydet",
+  "onbAfterIncomeSubtitle": "Şimdi ilk harcamanı kaydet ve ne kadar kaldığını gör.",
   "onbCurrencyLine": "Para birimin: {code}",
   "onbChange": "Değiştir",
-  "onbStartSubtitle": "Tek bir harcamayla başla. Birkaç saniye sürer.",
+  "onbStartSubtitle": "Gelirinle başla, sonra ondan harcadıklarını kaydet.",
   "onbFirstDoneTitle": "Harika! İlk kaydın kaydedildi",
   "onbFirstDoneSubtitle": "Şimdi aylık bir bütçe belirle, uygulama ne kadar kaldığını söylesin."
 }

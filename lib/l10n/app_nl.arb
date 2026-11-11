@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "Je bent nu DGOTIX-ambassadeur! Deel je kaart.",
   "menuHint": "Tik op het logo om het menu te openen",
   "onbFirstExpense": "Leg je eerste uitgave vast",
-  "onbOrIncome": "of voeg inkomen toe",
+  "onbFirstIncome": "Voeg je inkomen toe",
+  "onbOrExpense": "of leg een uitgave vast",
+  "onbAfterIncomeSubtitle": "Leg nu je eerste uitgave vast om te zien hoeveel er over is.",
   "onbCurrencyLine": "Jouw valuta: {code}",
   "onbChange": "Wijzigen",
-  "onbStartSubtitle": "Begin met één uitgave. Het kost een paar seconden.",
+  "onbStartSubtitle": "Begin met je inkomen en leg daarna vast wat je ervan uitgeeft.",
   "onbFirstDoneTitle": "Goed gedaan! Je eerste invoer is opgeslagen",
   "onbFirstDoneSubtitle": "Stel nu een maandbudget in, dan vertelt de app hoeveel er over is."
 }

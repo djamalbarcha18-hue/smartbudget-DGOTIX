@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "Du bist jetzt DGOTIX-Botschafter! Teile deine Karte.",
   "menuHint": "Tippe auf das Logo, um das Menü zu öffnen",
   "onbFirstExpense": "Erste Ausgabe erfassen",
-  "onbOrIncome": "oder Einnahme hinzufügen",
+  "onbFirstIncome": "Einkommen hinzufügen",
+  "onbOrExpense": "oder eine Ausgabe erfassen",
+  "onbAfterIncomeSubtitle": "Erfasse jetzt deine erste Ausgabe und sieh, wie viel übrig bleibt.",
   "onbCurrencyLine": "Deine Währung: {code}",
   "onbChange": "Ändern",
-  "onbStartSubtitle": "Beginne mit einer einzigen Ausgabe. Das dauert nur Sekunden.",
+  "onbStartSubtitle": "Beginne mit deinem Einkommen und erfasse dann, was du davon ausgibst.",
   "onbFirstDoneTitle": "Gut gemacht! Dein erster Eintrag ist gespeichert",
   "onbFirstDoneSubtitle": "Lege jetzt ein Monatsbudget fest, dann zeigt dir die App, wie viel übrig ist."
 }

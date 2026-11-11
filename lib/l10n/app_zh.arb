@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "你现在是 DGOTIX 大使了!分享你的卡片吧。",
   "menuHint": "点按徽标打开菜单",
   "onbFirstExpense": "记录你的第一笔支出",
-  "onbOrIncome": "或添加收入",
+  "onbFirstIncome": "添加你的收入",
+  "onbOrExpense": "或记录一笔支出",
+  "onbAfterIncomeSubtitle": "现在记录第一笔支出,看看还剩多少。",
   "onbCurrencyLine": "你的货币:{code}",
   "onbChange": "更改",
-  "onbStartSubtitle": "从一笔支出开始,只需几秒钟。",
+  "onbStartSubtitle": "先填收入,再记录从中花掉的钱。",
   "onbFirstDoneTitle": "做得好!第一笔记录已保存",
   "onbFirstDoneSubtitle": "现在设置每月预算,应用会告诉你还剩多少。"
 }

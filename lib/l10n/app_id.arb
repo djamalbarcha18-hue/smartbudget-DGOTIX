@@ -1675,10 +1675,12 @@
   "shareMomentAmbassador": "Kini kamu Duta DGOTIX! Bagikan kartumu.",
   "menuHint": "Ketuk logo untuk membuka menu",
   "onbFirstExpense": "Catat pengeluaran pertamamu",
-  "onbOrIncome": "atau tambah pemasukan",
+  "onbFirstIncome": "Tambahkan pemasukanmu",
+  "onbOrExpense": "atau catat pengeluaran",
+  "onbAfterIncomeSubtitle": "Sekarang catat pengeluaran pertamamu untuk melihat sisanya.",
   "onbCurrencyLine": "Mata uangmu: {code}",
   "onbChange": "Ubah",
-  "onbStartSubtitle": "Mulai dengan satu pengeluaran. Hanya beberapa detik.",
+  "onbStartSubtitle": "Mulai dari pemasukanmu, lalu catat apa yang kamu belanjakan.",
   "onbFirstDoneTitle": "Bagus! Catatan pertamamu tersimpan",
   "onbFirstDoneSubtitle": "Sekarang tetapkan anggaran bulanan, dan aplikasi akan memberi tahu sisanya."
 }

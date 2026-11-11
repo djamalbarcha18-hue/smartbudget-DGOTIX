@@ -2,7 +2,8 @@
 /// ticked off from the user's real data where possible.
 library;
 
-enum OnboardingStepId { settings, transaction, budget, goal, guide }
+/// [transaction] is the first expense; [income] the first income.
+enum OnboardingStepId { settings, income, transaction, budget, goal, guide }
 
 class OnboardingStep {
   const OnboardingStep({
@@ -18,23 +19,28 @@ class OnboardingStep {
   final bool done;
 }
 
-/// The checklist in display order: the three things that make the app useful,
-/// the first expense first. Pure, so it is trivially testable.
+/// The checklist in display order: income first, because what one spends
+/// comes out of it, then the first expense, a budget and a goal. Pure, so it
+/// is trivially testable.
 ///
 /// Choosing a language and currency and reading the guide used to be steps
 /// too. The currency is now picked from the device's country and confirmed on
-/// the card itself, and the guide is a link under it, so a new user's first
-/// step is the one that matters.
+/// the card itself, and the guide is a link under it.
 List<OnboardingStep> buildOnboardingSteps({
-  required bool hasTransaction,
+  required bool hasIncome,
+  required bool hasExpense,
   required bool hasBudget,
   required bool hasGoal,
 }) =>
     <OnboardingStep>[
       OnboardingStep(
+          id: OnboardingStepId.income,
+          route: '/transactions',
+          done: hasIncome),
+      OnboardingStep(
           id: OnboardingStepId.transaction,
           route: '/transactions',
-          done: hasTransaction),
+          done: hasExpense),
       OnboardingStep(
           id: OnboardingStepId.budget, route: '/budget', done: hasBudget),
       OnboardingStep(id: OnboardingStepId.goal, route: '/goals', done: hasGoal),
@@ -110,8 +116,8 @@ const Duration kWelcomeWindow = Duration(days: 7);
 const int kEstablishedTransactions = 5;
 
 /// Whether the dashboard shows the welcome checklist. It is for a NEW user:
-/// not once dismissed, not after the first week, not once the three steps (a
-/// transaction, a budget, a goal) are done, and not for someone who already
+/// not once dismissed, not after the first week, not once the four steps (an
+/// income, an expense, a budget, a goal) are done, and not for someone who already
 /// has plenty of records, such as an existing user signing in on another
 /// device.
 bool shouldShowWelcome({

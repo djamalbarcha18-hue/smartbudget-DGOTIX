@@ -1980,11 +1980,13 @@
   "shareMomentAmbassador": "You're now a DGOTIX Ambassador! Share your card.",
   "menuHint": "Tap the logo to open the menu",
   "onbFirstExpense": "Record your first expense",
-  "onbOrIncome": "or add income",
+  "onbFirstIncome": "Add your income",
+  "onbOrExpense": "or record an expense",
+  "onbAfterIncomeSubtitle": "Now record your first expense to see how much is left.",
   "onbCurrencyLine": "Your currency: {code}",
   "@onbCurrencyLine": {"placeholders": {"code": {"type": "String"}}},
   "onbChange": "Change",
-  "onbStartSubtitle": "Start with one expense. It takes a few seconds.",
+  "onbStartSubtitle": "Start with your income, then record what you spend from it.",
   "onbFirstDoneTitle": "Well done! Your first entry is saved",
   "onbFirstDoneSubtitle": "Next, set a monthly budget and the app will tell you how much is left."
 }

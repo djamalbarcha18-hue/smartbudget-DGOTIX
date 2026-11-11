@@ -90,17 +90,15 @@ class OnboardingController extends Notifier<OnboardingFlags?> {
 /// is shown half-computed).
 final onboardingStepsProvider = Provider<List<OnboardingStep>?>((ref) {
   final OnboardingFlags? flags = ref.watch(onboardingFlagsProvider);
-  final int? txCount = ref.watch(transactionsProvider).valueOrNull?.length;
+  final List<Transaction>? txns = ref.watch(transactionsProvider).valueOrNull;
   final int? budgetCount = ref.watch(budgetsProvider).valueOrNull?.length;
   final int? goalCount = ref.watch(goalsProvider).valueOrNull?.length;
-  if (flags == null ||
-      txCount == null ||
-      budgetCount == null ||
-      goalCount == null) {
+  if (flags == null || txns == null || budgetCount == null || goalCount == null) {
     return null;
   }
   return buildOnboardingSteps(
-    hasTransaction: txCount > 0,
+    hasIncome: txns.any((Transaction t) => t.type == TransactionType.income),
+    hasExpense: txns.any((Transaction t) => t.type == TransactionType.expense),
     hasBudget: budgetCount > 0,
     hasGoal: goalCount > 0,
   );

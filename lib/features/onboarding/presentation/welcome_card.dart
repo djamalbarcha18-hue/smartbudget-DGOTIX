@@ -72,8 +72,11 @@ class WelcomeCard extends ConsumerWidget {
                           allDone
                               ? l.onbDoneSubtitle
                               : switch (next?.id) {
+                                  OnboardingStepId.income => started
+                                      ? l.onbSubtitle
+                                      : l.onbStartSubtitle,
                                   OnboardingStepId.transaction =>
-                                    l.onbStartSubtitle,
+                                    l.onbAfterIncomeSubtitle,
                                   OnboardingStepId.budget =>
                                     l.onbFirstDoneSubtitle,
                                   _ => l.onbSubtitle,
@@ -114,15 +117,17 @@ class WelcomeCard extends ConsumerWidget {
               DsButton(
                 key: const ValueKey<String>('onb-next'),
                 expand: true,
-                label: next.id == OnboardingStepId.transaction
-                    ? l.onbFirstExpense
-                    : _label(l, next.id),
-                icon: next.id == OnboardingStepId.transaction
-                    ? Icons.north_east_rounded
-                    : Icons.arrow_forward_rounded,
+                label: _label(l, next.id),
+                icon: switch (next.id) {
+                  OnboardingStepId.income => Icons.south_west_rounded,
+                  OnboardingStepId.transaction => Icons.north_east_rounded,
+                  _ => Icons.arrow_forward_rounded,
+                },
                 onPressed: () => _open(context, next),
               ),
-              if (next.id == OnboardingStepId.transaction) ...<Widget>[
+              // Before anything is recorded: the other way in, and the
+              // currency the figures will be in.
+              if (!started) ...<Widget>[
                 const SizedBox(height: DsSpacing.xs),
                 Wrap(
                   alignment: WrapAlignment.spaceBetween,
@@ -130,10 +135,10 @@ class WelcomeCard extends ConsumerWidget {
                   spacing: DsSpacing.sm,
                   children: <Widget>[
                     TextButton(
-                      key: const ValueKey<String>('onb-income'),
+                      key: const ValueKey<String>('onb-expense'),
                       onPressed: () => TransactionEditorSheet.show(context,
-                          type: TransactionType.income),
-                      child: Text(l.onbOrIncome),
+                          type: TransactionType.expense),
+                      child: Text(l.onbOrExpense),
                     ),
                     // The currency was picked from the device's country: said
                     // here, with a way to change it, instead of sending a new
@@ -166,7 +171,7 @@ class WelcomeCard extends ConsumerWidget {
                 ),
               ],
               const SizedBox(height: DsSpacing.sm),
-              // Where the user stands: three steps, slim, under the button.
+              // Where the user stands: the steps, slim, under the button.
               Wrap(
                 spacing: DsSpacing.sm,
                 runSpacing: DsSpacing.sm,
@@ -197,10 +202,12 @@ class WelcomeCard extends ConsumerWidget {
     );
   }
 
-  /// A step's own place. The first entry opens right here, over the
-  /// dashboard: no page to find first.
+  /// A step's own place. The first income and the first expense open right
+  /// here, over the dashboard: no page to find first.
   void _open(BuildContext context, OnboardingStep step) {
-    if (step.id == OnboardingStepId.transaction && !step.done) {
+    if (!step.done && step.id == OnboardingStepId.income) {
+      TransactionEditorSheet.show(context, type: TransactionType.income);
+    } else if (!step.done && step.id == OnboardingStepId.transaction) {
       TransactionEditorSheet.show(context, type: TransactionType.expense);
     } else {
       context.go(step.route);
@@ -208,7 +215,8 @@ class WelcomeCard extends ConsumerWidget {
   }
 
   String _label(AppLocalizations l, OnboardingStepId id) => switch (id) {
-        OnboardingStepId.transaction => l.onbStepTransaction,
+        OnboardingStepId.income => l.onbFirstIncome,
+        OnboardingStepId.transaction => l.onbFirstExpense,
         OnboardingStepId.budget => l.onbStepBudget,
         OnboardingStepId.goal => l.onbStepGoal,
         // No longer steps of the checklist (kept for the visit markers).
