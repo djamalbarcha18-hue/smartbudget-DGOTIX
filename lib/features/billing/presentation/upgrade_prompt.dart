@@ -34,6 +34,7 @@ String featureTitle(AppLocalizations l, Feature f) => switch (f) {
       Feature.goals => l.featGoals,
       Feature.debts => l.featDebts,
       Feature.darets => l.featDarets,
+      Feature.daretMembers => l.featDaretMembers,
       Feature.seasons => l.featSeasons,
       Feature.recurringRules => l.featRecurring,
       Feature.healthDetails => l.featHealthDetails,

@@ -37,6 +37,7 @@ int _usedFor(Ref ref, Feature f) {
     case Feature.goals:
     case Feature.debts:
     case Feature.darets:
+    case Feature.daretMembers:
     case Feature.seasons:
     case Feature.recurringRules:
     case Feature.healthDetails:

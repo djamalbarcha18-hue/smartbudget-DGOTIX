@@ -60,6 +60,9 @@ enum Feature {
   /// Daret / jam'iya circles, counted.
   darets,
 
+  /// Members in one daret, counted: small circles free, larger ones on Pro.
+  daretMembers,
+
   /// Season plans (Ramadan, Eid, school…), counted.
   seasons,
 
@@ -241,6 +244,14 @@ abstract final class FeatureCatalog {
       minTier: Plan.free,
       quotas: _freeItems1,
     ),
+    // A circle of up to four (a couple, a few friends) is free; the larger
+    // circles an organizer runs are on Pro. A daret that arrives by a
+    // member's link is not counted here: joining one is free at any size.
+    Feature.daretMembers: FeatureRule(
+      feature: Feature.daretMembers,
+      minTier: Plan.free,
+      quotas: _freeItems4,
+    ),
     Feature.seasons: FeatureRule(
       feature: Feature.seasons,
       minTier: Plan.free,
@@ -284,6 +295,10 @@ abstract final class FeatureCatalog {
   };
   static const Map<Plan, Quota> _freeItems2 = <Plan, Quota>{
     Plan.free: Quota(2, QuotaWindow.items),
+    Plan.pro: _unlimitedItems,
+  };
+  static const Map<Plan, Quota> _freeItems4 = <Plan, Quota>{
+    Plan.free: Quota(4, QuotaWindow.items),
     Plan.pro: _unlimitedItems,
   };
   static const Map<Plan, Quota> _freeItems5 = <Plan, Quota>{

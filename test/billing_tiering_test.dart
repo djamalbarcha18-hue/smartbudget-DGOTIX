@@ -113,6 +113,7 @@ void main() {
         Feature.goals: 2,
         Feature.debts: 2,
         Feature.darets: 1,
+        Feature.daretMembers: 4,
         Feature.seasons: 1,
         Feature.recurringRules: 5,
       };

@@ -48,8 +48,10 @@ class _DaretImportSheetState extends ConsumerState<DaretImportSheet> {
     final AppLocalizations l = AppLocalizations.of(context);
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     final NavigatorState navigator = Navigator.of(context);
-    // The same limit as adding one by hand. Refused: the offer stays for
-    // later (an upgrade, or a daret that ends).
+    // The same limit on how many darets as adding one by hand. Refused: the
+    // offer stays for later (an upgrade, or a daret that ends). The size of
+    // the circle is not checked: joining one is free whatever its size, the
+    // limit on members is for whoever builds it.
     if (!PlanLimits.allowAdd(
         context,
         Feature.darets,
