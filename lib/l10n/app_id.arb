@@ -1682,5 +1682,16 @@
   "onbChange": "Ubah",
   "onbStartSubtitle": "Mulai dari pemasukanmu, lalu catat apa yang kamu belanjakan.",
   "onbFirstDoneTitle": "Bagus! Catatan pertamamu tersimpan",
-  "onbFirstDoneSubtitle": "Sekarang tetapkan anggaran bulanan, dan aplikasi akan memberi tahu sisanya."
+  "onbFirstDoneSubtitle": "Sekarang tetapkan anggaran bulanan, dan aplikasi akan memberi tahu sisanya.",
+  "daretShare": "Bagikan ke anggota",
+  "daretShareHint": "Kirim tautan ke para anggota. Masing-masing membukanya, memilih namanya, lalu mengikuti giliran dan pembayarannya.",
+  "daretShareLink": "Bagikan tautan",
+  "daretShareMessage": "Arisan kami “{name}”: buka tautan untuk melihat giliranmu dan tanggal pembayaran di SmartBudget.",
+  "daretSharePrivacy": "Tautan itu sendiri memuat jadwal (nama, jumlah, tanggal). Tidak ada yang disimpan di server kami; siapa pun yang punya tautan dapat membacanya.",
+  "daretScheduleRound": "Putaran",
+  "daretImportTitle": "Kamu diundang ke arisan",
+  "daretImportWho": "Kamu yang mana?",
+  "daretImportAdd": "Tambahkan ke arisanku",
+  "daretImportSkip": "Nanti saja",
+  "daretImportDone": "Ditambahkan. Giliranmu: {date}"
 }

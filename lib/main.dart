@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:smartbudget/features/daret/application/daret_import.dart';
 import 'package:smartbudget/app.dart';
 import 'package:smartbudget/core/app_restart.dart';
 import 'package:smartbudget/core/env/app_env.dart';
@@ -63,6 +64,8 @@ Future<void> main() async {
   // An invite link carries its code in the address; note it now, long before
   // there is an account to attach it to.
   const ReferralClaim(ReferralService()).remember(Uri.base).ignore();
+  // The same for a daret a member shared by link.
+  DaretPending.remember(Uri.base).ignore();
 
   // Notes a tap on the daily reminder that opened the app.
   if (ReminderNotifications.supported) {

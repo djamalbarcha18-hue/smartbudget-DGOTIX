@@ -1682,5 +1682,16 @@
   "onbChange": "Promijeni",
   "onbStartSubtitle": "Počnite s prihodom, a zatim bilježite šta iz njega trošite.",
   "onbFirstDoneTitle": "Bravo! Vaš prvi unos je sačuvan",
-  "onbFirstDoneSubtitle": "Sada postavite mjesečni budžet i aplikacija će vam reći koliko je ostalo."
+  "onbFirstDoneSubtitle": "Sada postavite mjesečni budžet i aplikacija će vam reći koliko je ostalo.",
+  "daretShare": "Podijeli s članovima",
+  "daretShareHint": "Pošaljite link članovima. Svako ga otvori, izabere svoje ime i prati svoj red i uplate.",
+  "daretShareLink": "Podijeli link",
+  "daretShareMessage": "Naša štedna grupa „{name}“: otvorite link da vidite svoj red i datume uplata u SmartBudgetu.",
+  "daretSharePrivacy": "Sam link nosi raspored (imena, iznos, datume). Ništa se ne čuva na našim serverima; ko ima link, može ga pročitati.",
+  "daretScheduleRound": "Krug",
+  "daretImportTitle": "Pozvani ste u štednu grupu",
+  "daretImportWho": "Koji ste vi?",
+  "daretImportAdd": "Dodaj u moje grupe",
+  "daretImportSkip": "Ne sada",
+  "daretImportDone": "Dodano. Vaš red: {date}"
 }

@@ -1682,5 +1682,16 @@
   "onbChange": "Tukar",
   "onbStartSubtitle": "Mulakan dengan pendapatan anda, kemudian rekod apa yang anda belanjakan.",
   "onbFirstDoneTitle": "Syabas! Rekod pertama anda disimpan",
-  "onbFirstDoneSubtitle": "Sekarang tetapkan bajet bulanan, dan aplikasi akan memberitahu baki anda."
+  "onbFirstDoneSubtitle": "Sekarang tetapkan bajet bulanan, dan aplikasi akan memberitahu baki anda.",
+  "daretShare": "Kongsi dengan ahli",
+  "daretShareHint": "Hantar pautan kepada ahli. Setiap orang membukanya, memilih namanya, dan mengikuti giliran serta bayarannya.",
+  "daretShareLink": "Kongsi pautan",
+  "daretShareMessage": "Kutu kami “{name}”: buka pautan untuk melihat giliran anda dan tarikh bayaran dalam SmartBudget.",
+  "daretSharePrivacy": "Pautan itu sendiri membawa jadual (nama, jumlah, tarikh). Tiada apa-apa disimpan di pelayan kami; sesiapa yang ada pautan boleh membacanya.",
+  "daretScheduleRound": "Pusingan",
+  "daretImportTitle": "Anda dijemput ke kutu",
+  "daretImportWho": "Anda yang mana?",
+  "daretImportAdd": "Tambah ke kutu saya",
+  "daretImportSkip": "Bukan sekarang",
+  "daretImportDone": "Ditambah. Giliran anda: {date}"
 }

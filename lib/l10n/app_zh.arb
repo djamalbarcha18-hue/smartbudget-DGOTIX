@@ -1682,5 +1682,16 @@
   "onbChange": "更改",
   "onbStartSubtitle": "先填收入,再记录从中花掉的钱。",
   "onbFirstDoneTitle": "做得好!第一笔记录已保存",
-  "onbFirstDoneSubtitle": "现在设置每月预算,应用会告诉你还剩多少。"
+  "onbFirstDoneSubtitle": "现在设置每月预算,应用会告诉你还剩多少。",
+  "daretShare": "分享给成员",
+  "daretShareHint": "把链接发给成员。每个人打开后选择自己的名字,即可查看自己的轮次和付款。",
+  "daretShareLink": "分享链接",
+  "daretShareMessage": "我们的互助会“{name}”:打开链接,在 SmartBudget 中查看你的轮次和付款日期。",
+  "daretSharePrivacy": "链接本身包含日程(姓名、金额、日期)。我们的服务器不保存任何内容;任何拥有链接的人都能读取。",
+  "daretScheduleRound": "轮次",
+  "daretImportTitle": "你被邀请加入一个互助会",
+  "daretImportWho": "你是哪一位?",
+  "daretImportAdd": "添加到我的互助会",
+  "daretImportSkip": "暂不",
+  "daretImportDone": "已添加。你的轮次:{date}"
 }

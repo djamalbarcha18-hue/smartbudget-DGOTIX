@@ -1682,5 +1682,16 @@
   "onbChange": "Wijzigen",
   "onbStartSubtitle": "Begin met je inkomen en leg daarna vast wat je ervan uitgeeft.",
   "onbFirstDoneTitle": "Goed gedaan! Je eerste invoer is opgeslagen",
-  "onbFirstDoneSubtitle": "Stel nu een maandbudget in, dan vertelt de app hoeveel er over is."
+  "onbFirstDoneSubtitle": "Stel nu een maandbudget in, dan vertelt de app hoeveel er over is.",
+  "daretShare": "Delen met de leden",
+  "daretShareHint": "Stuur de link naar de leden. Ieder opent hem, kiest zijn naam en volgt zijn beurt en betalingen.",
+  "daretShareLink": "Link delen",
+  "daretShareMessage": "Onze spaarkring “{name}”: open de link om je beurt en de betaaldata in SmartBudget te zien.",
+  "daretSharePrivacy": "De link zelf bevat het schema (namen, bedrag, data). Er wordt niets op onze servers bewaard; wie de link heeft, kan het lezen.",
+  "daretScheduleRound": "Ronde",
+  "daretImportTitle": "Je bent uitgenodigd voor een spaarkring",
+  "daretImportWho": "Wie ben jij?",
+  "daretImportAdd": "Toevoegen aan mijn spaarkringen",
+  "daretImportSkip": "Niet nu",
+  "daretImportDone": "Toegevoegd. Jouw beurt: {date}"
 }

@@ -1682,5 +1682,16 @@
   "onbChange": "Verander",
   "onbStartSubtitle": "Begin met jou inkomste en teken dan aan wat jy daaruit spandeer.",
   "onbFirstDoneTitle": "Mooi so! Jou eerste inskrywing is gestoor",
-  "onbFirstDoneSubtitle": "Stel nou 'n maandelikse begroting, dan sê die app hoeveel oor is."
+  "onbFirstDoneSubtitle": "Stel nou 'n maandelikse begroting, dan sê die app hoeveel oor is.",
+  "daretShare": "Deel met die lede",
+  "daretShareHint": "Stuur die skakel aan die lede. Elkeen maak dit oop, kies sy naam en volg sy beurt en betalings.",
+  "daretShareLink": "Deel die skakel",
+  "daretShareMessage": "Ons stokvel “{name}”: maak die skakel oop om jou beurt en die betaaldatums in SmartBudget te sien.",
+  "daretSharePrivacy": "Die skakel self dra die skedule (name, bedrag, datums). Niks word op ons bedieners gestoor nie; enigeen met die skakel kan dit lees.",
+  "daretScheduleRound": "Rondte",
+  "daretImportTitle": "Jy is na 'n stokvel genooi",
+  "daretImportWho": "Watter een is jy?",
+  "daretImportAdd": "Voeg by my stokvels",
+  "daretImportSkip": "Nie nou nie",
+  "daretImportDone": "Bygevoeg. Jou beurt: {date}"
 }

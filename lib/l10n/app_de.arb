@@ -1682,5 +1682,16 @@
   "onbChange": "Ändern",
   "onbStartSubtitle": "Beginne mit deinem Einkommen und erfasse dann, was du davon ausgibst.",
   "onbFirstDoneTitle": "Gut gemacht! Dein erster Eintrag ist gespeichert",
-  "onbFirstDoneSubtitle": "Lege jetzt ein Monatsbudget fest, dann zeigt dir die App, wie viel übrig ist."
+  "onbFirstDoneSubtitle": "Lege jetzt ein Monatsbudget fest, dann zeigt dir die App, wie viel übrig ist.",
+  "daretShare": "Mit den Mitgliedern teilen",
+  "daretShareHint": "Sende den Link an die Mitglieder. Jeder öffnet ihn, wählt seinen Namen und verfolgt seine Runde und Zahlungen.",
+  "daretShareLink": "Link teilen",
+  "daretShareMessage": "Unser Sparkreis „{name}“: Öffne den Link, um deine Runde und die Zahltermine in SmartBudget zu sehen.",
+  "daretSharePrivacy": "Der Link selbst enthält den Plan (Namen, Betrag, Termine). Auf unseren Servern wird nichts gespeichert; wer den Link hat, kann ihn lesen.",
+  "daretScheduleRound": "Runde",
+  "daretImportTitle": "Du wurdest zu einem Sparkreis eingeladen",
+  "daretImportWho": "Wer bist du?",
+  "daretImportAdd": "Zu meinen Sparkreisen hinzufügen",
+  "daretImportSkip": "Nicht jetzt",
+  "daretImportDone": "Hinzugefügt. Deine Runde: {date}"
 }

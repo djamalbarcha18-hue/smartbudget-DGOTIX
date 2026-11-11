@@ -1682,5 +1682,16 @@
   "onbChange": "Cambiar",
   "onbStartSubtitle": "Empieza por tu ingreso y luego registra lo que gastas de él.",
   "onbFirstDoneTitle": "¡Bien hecho! Tu primer registro está guardado",
-  "onbFirstDoneSubtitle": "Ahora fija un presupuesto mensual y la app te dirá cuánto te queda."
+  "onbFirstDoneSubtitle": "Ahora fija un presupuesto mensual y la app te dirá cuánto te queda.",
+  "daretShare": "Compartir con los miembros",
+  "daretShareHint": "Envía el enlace a los miembros. Cada uno lo abre, elige su nombre y sigue su turno y sus pagos.",
+  "daretShareLink": "Compartir el enlace",
+  "daretShareMessage": "Nuestra tanda «{name}»: abre el enlace para ver tu turno y las fechas de pago en SmartBudget.",
+  "daretSharePrivacy": "El propio enlace lleva el calendario (nombres, importe, fechas). No se guarda nada en nuestros servidores; quien tenga el enlace puede leerlo.",
+  "daretScheduleRound": "Ronda",
+  "daretImportTitle": "Te han invitado a una tanda",
+  "daretImportWho": "¿Cuál eres tú?",
+  "daretImportAdd": "Añadirla a mis tandas",
+  "daretImportSkip": "Ahora no",
+  "daretImportDone": "Añadida. Tu turno: {date}"
 }

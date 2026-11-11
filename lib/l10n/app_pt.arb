@@ -1682,5 +1682,16 @@
   "onbChange": "Alterar",
   "onbStartSubtitle": "Comece pelo seu rendimento e depois registe o que gasta dele.",
   "onbFirstDoneTitle": "Muito bem! O seu primeiro registo está guardado",
-  "onbFirstDoneSubtitle": "Agora defina um orçamento mensal e a app diz-lhe quanto resta."
+  "onbFirstDoneSubtitle": "Agora defina um orçamento mensal e a app diz-lhe quanto resta.",
+  "daretShare": "Partilhar com os membros",
+  "daretShareHint": "Envie a ligação aos membros. Cada um abre-a, escolhe o seu nome e acompanha a sua vez e os seus pagamentos.",
+  "daretShareLink": "Partilhar a ligação",
+  "daretShareMessage": "O nosso grupo de poupança «{name}»: abra a ligação para ver a sua vez e as datas de pagamento no SmartBudget.",
+  "daretSharePrivacy": "A própria ligação contém o calendário (nomes, valor, datas). Nada fica guardado nos nossos servidores; quem tiver a ligação pode lê-la.",
+  "daretScheduleRound": "Ronda",
+  "daretImportTitle": "Foi convidado para um grupo de poupança",
+  "daretImportWho": "Qual é você?",
+  "daretImportAdd": "Adicionar aos meus grupos",
+  "daretImportSkip": "Agora não",
+  "daretImportDone": "Adicionado. A sua vez: {date}"
 }

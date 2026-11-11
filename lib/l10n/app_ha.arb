@@ -1682,5 +1682,16 @@
   "onbChange": "Canza",
   "onbStartSubtitle": "Fara da kuɗin shigarka, sannan ka rubuta abin da kake kashewa daga ciki.",
   "onbFirstDoneTitle": "Madalla! An adana rubutunka na farko",
-  "onbFirstDoneSubtitle": "Yanzu saita kasafin wata, manhajar za ta gaya maka abin da ya rage."
+  "onbFirstDoneSubtitle": "Yanzu saita kasafin wata, manhajar za ta gaya maka abin da ya rage.",
+  "daretShare": "Raba da mambobi",
+  "daretShareHint": "Aika mahaɗar ga mambobi. Kowa zai buɗe ta, ya zaɓi sunansa, ya bi sawun lokacinsa da biyan kuɗinsa.",
+  "daretShareLink": "Raba mahaɗar",
+  "daretShareMessage": "Adashinmu “{name}”: buɗe mahaɗar don ganin lokacinka da ranakun biya a SmartBudget.",
+  "daretSharePrivacy": "Mahaɗar kanta tana ɗauke da jadawalin (sunaye, adadi, ranaku). Ba a adana komai a sabar mu ba; duk wanda yake da mahaɗar zai iya karanta shi.",
+  "daretScheduleRound": "Zagaye",
+  "daretImportTitle": "An gayyace ka zuwa adashi",
+  "daretImportWho": "Wanne ne kai?",
+  "daretImportAdd": "Ƙara zuwa adashina",
+  "daretImportSkip": "Ba yanzu ba",
+  "daretImportDone": "An ƙara. Lokacinka: {date}"
 }

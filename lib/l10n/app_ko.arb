@@ -1682,5 +1682,16 @@
   "onbChange": "변경",
   "onbStartSubtitle": "수입부터 입력한 뒤, 거기서 쓴 돈을 기록하세요.",
   "onbFirstDoneTitle": "잘했어요! 첫 기록이 저장됐어요",
-  "onbFirstDoneSubtitle": "이제 월 예산을 정하면 앱이 얼마가 남았는지 알려 줘요."
+  "onbFirstDoneSubtitle": "이제 월 예산을 정하면 앱이 얼마가 남았는지 알려 줘요.",
+  "daretShare": "멤버와 공유",
+  "daretShareHint": "링크를 멤버들에게 보내세요. 각자 열어서 자기 이름을 고르면 자기 차례와 납입을 확인할 수 있어요.",
+  "daretShareLink": "링크 공유",
+  "daretShareMessage": "우리 계 “{name}”: 링크를 열어 SmartBudget에서 내 차례와 납입일을 확인하세요.",
+  "daretSharePrivacy": "링크 자체에 일정(이름, 금액, 날짜)이 담겨 있어요. 서버에는 아무것도 저장되지 않으며, 링크를 가진 사람은 누구나 읽을 수 있어요.",
+  "daretScheduleRound": "회차",
+  "daretImportTitle": "계에 초대되었어요",
+  "daretImportWho": "누구세요?",
+  "daretImportAdd": "내 계에 추가",
+  "daretImportSkip": "나중에",
+  "daretImportDone": "추가했어요. 내 차례: {date}"
 }

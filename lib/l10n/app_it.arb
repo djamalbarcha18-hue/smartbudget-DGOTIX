@@ -1682,5 +1682,16 @@
   "onbChange": "Cambia",
   "onbStartSubtitle": "Inizia dalla tua entrata, poi registra ciò che spendi.",
   "onbFirstDoneTitle": "Ben fatto! La tua prima voce è salvata",
-  "onbFirstDoneSubtitle": "Ora imposta un budget mensile e l'app ti dirà quanto ti resta."
+  "onbFirstDoneSubtitle": "Ora imposta un budget mensile e l'app ti dirà quanto ti resta.",
+  "daretShare": "Condividi con i membri",
+  "daretShareHint": "Invia il link ai membri. Ognuno lo apre, sceglie il proprio nome e segue il proprio turno e i pagamenti.",
+  "daretShareLink": "Condividi il link",
+  "daretShareMessage": "Il nostro gruppo di risparmio «{name}»: apri il link per vedere il tuo turno e le date di pagamento in SmartBudget.",
+  "daretSharePrivacy": "Il link stesso contiene il calendario (nomi, importo, date). Nulla viene salvato sui nostri server; chiunque abbia il link può leggerlo.",
+  "daretScheduleRound": "Turno",
+  "daretImportTitle": "Sei stato invitato a un gruppo di risparmio",
+  "daretImportWho": "Chi sei tu?",
+  "daretImportAdd": "Aggiungilo ai miei gruppi",
+  "daretImportSkip": "Non ora",
+  "daretImportDone": "Aggiunto. Il tuo turno: {date}"
 }

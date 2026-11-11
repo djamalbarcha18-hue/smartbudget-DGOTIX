@@ -1682,5 +1682,16 @@
   "onbChange": "Değiştir",
   "onbStartSubtitle": "Gelirinle başla, sonra ondan harcadıklarını kaydet.",
   "onbFirstDoneTitle": "Harika! İlk kaydın kaydedildi",
-  "onbFirstDoneSubtitle": "Şimdi aylık bir bütçe belirle, uygulama ne kadar kaldığını söylesin."
+  "onbFirstDoneSubtitle": "Şimdi aylık bir bütçe belirle, uygulama ne kadar kaldığını söylesin.",
+  "daretShare": "Üyelerle paylaş",
+  "daretShareHint": "Bağlantıyı üyelere gönder. Herkes açar, adını seçer ve kendi sırasını ve ödemelerini takip eder.",
+  "daretShareLink": "Bağlantıyı paylaş",
+  "daretShareMessage": "Altın günümüz “{name}”: Sıranı ve ödeme tarihlerini SmartBudget'ta görmek için bağlantıyı aç.",
+  "daretSharePrivacy": "Bağlantının kendisi takvimi taşır (adlar, tutar, tarihler). Sunucularımızda hiçbir şey saklanmaz; bağlantıya sahip olan herkes okuyabilir.",
+  "daretScheduleRound": "Tur",
+  "daretImportTitle": "Bir güne davet edildin",
+  "daretImportWho": "Sen hangisisin?",
+  "daretImportAdd": "Günlerime ekle",
+  "daretImportSkip": "Şimdi değil",
+  "daretImportDone": "Eklendi. Sıran: {date}"
 }

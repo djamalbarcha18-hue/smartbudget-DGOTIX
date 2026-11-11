@@ -1881,5 +1881,16 @@
   "onbChange": "تغيير",
   "onbStartSubtitle": "ابدأ بدخلك، ثم سجّل ما تصرفه منه.",
   "onbFirstDoneTitle": "أحسنت! سجّلت أول معاملة",
-  "onbFirstDoneSubtitle": "الآن حدّد ميزانية شهرية، وسيخبرك التطبيق كم بقي لك."
+  "onbFirstDoneSubtitle": "الآن حدّد ميزانية شهرية، وسيخبرك التطبيق كم بقي لك.",
+  "daretShare": "مشاركة مع الأعضاء",
+  "daretShareHint": "أرسل الرابط إلى الأعضاء. كل واحد يفتحه، يختار اسمه، ويتابع دوره ودفعاته.",
+  "daretShareLink": "مشاركة الرابط",
+  "daretShareMessage": "جمعيتنا «{name}»: افتح الرابط لترى دورك ومواعيد الدفع في SmartBudget.",
+  "daretSharePrivacy": "الرابط نفسه يحمل الجدول (الأسماء والمبلغ والتواريخ). لا يُخزَّن شيء على خوادمنا، ومن يملك الرابط يستطيع قراءته.",
+  "daretScheduleRound": "الدورة",
+  "daretImportTitle": "دُعيت إلى جمعية",
+  "daretImportWho": "من أنت في القائمة؟",
+  "daretImportAdd": "أضفها إلى جمعياتي",
+  "daretImportSkip": "ليس الآن",
+  "daretImportDone": "أُضيفت. دورك: {date}"
 }

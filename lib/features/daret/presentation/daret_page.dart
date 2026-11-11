@@ -12,6 +12,7 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/daret/application/daret_controller.dart';
 import 'package:smartbudget/features/daret/domain/daret.dart';
 import 'package:smartbudget/features/daret/presentation/daret_editor_sheet.dart';
+import 'package:smartbudget/features/daret/presentation/daret_share_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 String _ymd(DateTime d) =>
@@ -135,18 +136,31 @@ class _DaretCard extends ConsumerWidget {
                   ],
                 ),
               ),
+              // Sharing is what a circle is for: in sight, not in the menu
+              // only.
+              IconButton(
+                key: ValueKey<String>('daret-share-${d.id}'),
+                tooltip: l.daretShare,
+                visualDensity: VisualDensity.compact,
+                icon: Icon(Icons.ios_share_rounded, size: 18, color: c.brand),
+                onPressed: () => DaretShareSheet.show(context, d),
+              ),
               PopupMenuButton<String>(
                 icon: Icon(Icons.more_vert_rounded,
                     size: 18, color: c.textFaint),
                 color: c.bgElevated,
                 onSelected: (String v) async {
-                  if (v == 'edit') {
+                  if (v == 'share') {
+                    await DaretShareSheet.show(context, d);
+                  } else if (v == 'edit') {
                     await DaretEditorSheet.show(context, existing: d);
                   } else if (v == 'delete') {
                     await actions.delete(d.id);
                   }
                 },
                 itemBuilder: (_) => <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(
+                      value: 'share', child: Text(l.daretShare)),
                   PopupMenuItem<String>(value: 'edit', child: Text(l.edit)),
                   PopupMenuItem<String>(
                       value: 'delete', child: Text(l.delete)),

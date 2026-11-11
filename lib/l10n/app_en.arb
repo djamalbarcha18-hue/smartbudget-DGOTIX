@@ -1988,5 +1988,18 @@
   "onbChange": "Change",
   "onbStartSubtitle": "Start with your income, then record what you spend from it.",
   "onbFirstDoneTitle": "Well done! Your first entry is saved",
-  "onbFirstDoneSubtitle": "Next, set a monthly budget and the app will tell you how much is left."
+  "onbFirstDoneSubtitle": "Next, set a monthly budget and the app will tell you how much is left.",
+  "daretShare": "Share with the members",
+  "daretShareHint": "Send the link to the members. Each one opens it, picks their name, and follows their own turn and payments.",
+  "daretShareLink": "Share the link",
+  "daretShareMessage": "Our daret “{name}”: open the link to see your turn and the payment dates in SmartBudget.",
+  "@daretShareMessage": {"placeholders": {"name": {"type": "String"}}},
+  "daretSharePrivacy": "The link itself carries the schedule (names, amount, dates). Nothing is stored on our servers; anyone who has the link can read it.",
+  "daretScheduleRound": "Round",
+  "daretImportTitle": "You were invited to a daret",
+  "daretImportWho": "Which one are you?",
+  "daretImportAdd": "Add it to my darets",
+  "daretImportSkip": "Not now",
+  "daretImportDone": "Added. Your turn: {date}",
+  "@daretImportDone": {"placeholders": {"date": {"type": "String"}}}
 }

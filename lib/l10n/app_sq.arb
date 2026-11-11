@@ -1682,5 +1682,16 @@
   "onbChange": "Ndrysho",
   "onbStartSubtitle": "Filloni me të ardhurat, pastaj regjistroni çfarë shpenzoni prej tyre.",
   "onbFirstDoneTitle": "Të lumtë! Regjistrimi i parë u ruajt",
-  "onbFirstDoneSubtitle": "Tani caktoni një buxhet mujor dhe aplikacioni ju tregon sa ka mbetur."
+  "onbFirstDoneSubtitle": "Tani caktoni një buxhet mujor dhe aplikacioni ju tregon sa ka mbetur.",
+  "daretShare": "Ndaje me anëtarët",
+  "daretShareHint": "Dërgojuni lidhjen anëtarëve. Secili e hap, zgjedh emrin e vet dhe ndjek radhën dhe pagesat e veta.",
+  "daretShareLink": "Ndaj lidhjen",
+  "daretShareMessage": "Grupi ynë i kursimit «{name}»: hapni lidhjen për të parë radhën tuaj dhe datat e pagesave në SmartBudget.",
+  "daretSharePrivacy": "Vetë lidhja mban planin (emrat, shumën, datat). Asgjë nuk ruhet në serverët tanë; kushdo që ka lidhjen mund ta lexojë.",
+  "daretScheduleRound": "Raundi",
+  "daretImportTitle": "Jeni ftuar në një grup kursimi",
+  "daretImportWho": "Cili jeni ju?",
+  "daretImportAdd": "Shtoje te grupet e mia",
+  "daretImportSkip": "Jo tani",
+  "daretImportDone": "U shtua. Radha juaj: {date}"
 }

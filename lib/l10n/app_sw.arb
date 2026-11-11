@@ -1682,5 +1682,16 @@
   "onbChange": "Badilisha",
   "onbStartSubtitle": "Anza na mapato yako, kisha rekodi unachotumia kutoka humo.",
   "onbFirstDoneTitle": "Hongera! Rekodi yako ya kwanza imehifadhiwa",
-  "onbFirstDoneSubtitle": "Sasa weka bajeti ya mwezi, na programu itakuambia kilichobaki."
+  "onbFirstDoneSubtitle": "Sasa weka bajeti ya mwezi, na programu itakuambia kilichobaki.",
+  "daretShare": "Shiriki na wanachama",
+  "daretShareHint": "Tuma kiungo kwa wanachama. Kila mmoja anakifungua, anachagua jina lake, na kufuatilia zamu na malipo yake.",
+  "daretShareLink": "Shiriki kiungo",
+  "daretShareMessage": "Mchezo wetu “{name}”: fungua kiungo uone zamu yako na tarehe za malipo katika SmartBudget.",
+  "daretSharePrivacy": "Kiungo chenyewe kinabeba ratiba (majina, kiasi, tarehe). Hakuna kinachohifadhiwa kwenye seva zetu; yeyote mwenye kiungo anaweza kuisoma.",
+  "daretScheduleRound": "Mzunguko",
+  "daretImportTitle": "Umealikwa kwenye mchezo",
+  "daretImportWho": "Wewe ni yupi?",
+  "daretImportAdd": "Ongeza kwenye michezo yangu",
+  "daretImportSkip": "Si sasa",
+  "daretImportDone": "Imeongezwa. Zamu yako: {date}"
 }

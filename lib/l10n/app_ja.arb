@@ -1682,5 +1682,16 @@
   "onbChange": "変更",
   "onbStartSubtitle": "まず収入を入れて、そこから使った分を記録しましょう。",
   "onbFirstDoneTitle": "お見事!最初の記録を保存しました",
-  "onbFirstDoneSubtitle": "次は月の予算を決めましょう。残りの金額をアプリがお知らせします。"
+  "onbFirstDoneSubtitle": "次は月の予算を決めましょう。残りの金額をアプリがお知らせします。",
+  "daretShare": "メンバーと共有",
+  "daretShareHint": "リンクをメンバーに送りましょう。各自が開いて自分の名前を選ぶと、自分の順番と支払いを確認できます。",
+  "daretShareLink": "リンクを共有",
+  "daretShareMessage": "私たちの頼母子講「{name}」:リンクを開いて、SmartBudgetで自分の順番と支払日を確認してください。",
+  "daretSharePrivacy": "リンク自体に予定(名前・金額・日付)が含まれます。サーバーには何も保存されません。リンクを持つ人は誰でも読めます。",
+  "daretScheduleRound": "回",
+  "daretImportTitle": "頼母子講に招待されました",
+  "daretImportWho": "あなたはどれですか?",
+  "daretImportAdd": "自分の講に追加",
+  "daretImportSkip": "今はしない",
+  "daretImportDone": "追加しました。あなたの順番:{date}"
 }

@@ -1682,5 +1682,16 @@
   "onbChange": "Modifier",
   "onbStartSubtitle": "Commencez par votre revenu, puis enregistrez ce que vous en dépensez.",
   "onbFirstDoneTitle": "Bravo ! Votre première saisie est enregistrée",
-  "onbFirstDoneSubtitle": "Fixez maintenant un budget mensuel et l'appli vous dira combien il vous reste."
+  "onbFirstDoneSubtitle": "Fixez maintenant un budget mensuel et l'appli vous dira combien il vous reste.",
+  "daretShare": "Partager avec les membres",
+  "daretShareHint": "Envoyez le lien aux membres. Chacun l'ouvre, choisit son nom et suit son tour et ses versements.",
+  "daretShareLink": "Partager le lien",
+  "daretShareMessage": "Notre tontine « {name} » : ouvrez le lien pour voir votre tour et les dates de versement dans SmartBudget.",
+  "daretSharePrivacy": "Le lien contient lui-même le calendrier (noms, montant, dates). Rien n'est stocké sur nos serveurs ; toute personne ayant le lien peut le lire.",
+  "daretScheduleRound": "Tour",
+  "daretImportTitle": "Vous êtes invité à une tontine",
+  "daretImportWho": "Lequel êtes-vous ?",
+  "daretImportAdd": "L'ajouter à mes tontines",
+  "daretImportSkip": "Plus tard",
+  "daretImportDone": "Ajoutée. Votre tour : {date}"
 }

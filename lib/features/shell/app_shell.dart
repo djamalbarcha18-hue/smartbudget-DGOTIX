@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartbudget/features/daret/presentation/daret_import_sheet.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -60,12 +61,14 @@ class AppShell extends StatelessWidget {
     // message shared with the app opens a filled-in transaction.
     Widget sceneOnly(Widget scaffold) => ReminderTapListener(
           child: SharedTextListener(
-            child: Stack(
+            // A daret a member shared by link is offered here.
+            child: DaretImportListener(
+                child: Stack(
               children: <Widget>[
                 const Positioned.fill(child: DsBackdrop()),
                 BackdropGroup(child: scaffold),
               ],
-            ),
+            )),
           ),
         );
 
