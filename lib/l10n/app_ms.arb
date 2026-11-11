@@ -1694,5 +1694,8 @@
   "daretImportWho": "Anda yang mana?",
   "daretImportAdd": "Tambah ke kutu saya",
   "daretImportSkip": "Bukan sekarang",
-  "daretImportDone": "Ditambah. Giliran anda: {date}"
+  "daretImportDone": "Ditambah. Giliran anda: {date}",
+  "storePlanTitle": "Ciri Pro",
+  "storePlanBody": "Sesetengah ciri adalah sebahagian daripada pelan Pro. Jika akaun anda ada Pro, ia berfungsi di sini sebaik anda log masuk dengannya.",
+  "storeLimitBody": "{feature}: pelan percuma membenarkan {count}. Akaun Pro tiada had di sini; apa yang anda ada kekal."
 }

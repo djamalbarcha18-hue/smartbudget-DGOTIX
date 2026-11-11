@@ -41,6 +41,8 @@ class PlansPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l = AppLocalizations.of(context);
+    // The store app does not sell: no plans, prices, coupons or trial here.
+    if (AppEnv.storeFreeMode) return const _StorePlansNote();
     // Payment test mode (beta, sandbox only): plans are offered from FREE up.
     final bool payTest =
         ref.watch(paymentTestModeProvider).valueOrNull ?? false;
@@ -255,7 +257,8 @@ class _CurrentPlanCard extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: DsSpacing.sm),
-            const _ManageButton(),
+            // The provider's portal is a payment page: not in the store app.
+            if (!AppEnv.storeFreeMode) const _ManageButton(),
           ],
         ),
       ),
@@ -856,6 +859,46 @@ class _Pill extends StatelessWidget {
             .textTheme
             .labelSmall
             ?.copyWith(color: color, fontWeight: FontWeight.w700),
+      ),
+    );
+  }
+}
+
+/// The plans page in the store app: what Pro is for and that it works with
+/// the account that has it. No prices, no purchase, no link (Google Play's
+/// payment policy).
+class _StorePlansNote extends StatelessWidget {
+  const _StorePlansNote();
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    final TextTheme t = Theme.of(context).textTheme;
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(DsSpacing.pageGutter),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 640),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Icon(Icons.workspace_premium_outlined, color: c.brand),
+                  const SizedBox(width: DsSpacing.sm),
+                  BrandedTitle(l.storePlanTitle, style: t.headlineSmall),
+                ],
+              ),
+              const SizedBox(height: DsSpacing.md),
+              const _CurrentPlanCard(),
+              GlassCard(
+                child: Text(l.storePlanBody,
+                    style: t.bodyMedium?.copyWith(color: c.textMuted)),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

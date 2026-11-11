@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_popup.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
@@ -144,7 +145,9 @@ class UpgradeSheet extends ConsumerWidget {
     final String name = featureTitle(l, decision.feature);
     final bool counted = decision.window == QuotaWindow.items;
     final String body = counted && decision.limit != null
-        ? l.upgradeLimitBody(name, decision.limit!, planName(l, tier))
+        ? (AppEnv.storeFreeMode
+            ? l.storeLimitBody(name, decision.limit!)
+            : l.upgradeLimitBody(name, decision.limit!, planName(l, tier)))
         : l.upgradeLockedBody(name, planName(l, tier));
 
     return Container(
@@ -186,6 +189,8 @@ class UpgradeSheet extends ConsumerWidget {
                 textAlign: TextAlign.center,
                 style: t.bodyMedium?.copyWith(color: c.textMuted)),
             const SizedBox(height: DsSpacing.xl),
+            // The store app does not sell: no button to plans.
+            if (!AppEnv.storeFreeMode)
             DsButton(
               label: l.upgradeSeePlans,
               icon: Icons.workspace_premium_outlined,

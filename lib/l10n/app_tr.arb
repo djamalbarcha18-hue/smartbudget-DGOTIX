@@ -1694,5 +1694,8 @@
   "daretImportWho": "Sen hangisisin?",
   "daretImportAdd": "Günlerime ekle",
   "daretImportSkip": "Şimdi değil",
-  "daretImportDone": "Eklendi. Sıran: {date}"
+  "daretImportDone": "Eklendi. Sıran: {date}",
+  "storePlanTitle": "Pro özellikleri",
+  "storePlanBody": "Bazı özellikler Pro planının parçasıdır. Hesabında Pro varsa, onunla giriş yaptığında burada çalışır.",
+  "storeLimitBody": "{feature}: ücretsiz plan {count} izin verir. Pro hesabın burada sınırı yoktur; mevcut olanlar kalır."
 }

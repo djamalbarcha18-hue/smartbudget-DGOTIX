@@ -1694,5 +1694,8 @@
   "daretImportWho": "Cili jeni ju?",
   "daretImportAdd": "Shtoje te grupet e mia",
   "daretImportSkip": "Jo tani",
-  "daretImportDone": "U shtua. Radha juaj: {date}"
+  "daretImportDone": "U shtua. Radha juaj: {date}",
+  "storePlanTitle": "Funksionet Pro",
+  "storePlanBody": "Disa funksione janë pjesë e planit Pro. Nëse llogaria juaj ka Pro, funksionojnë këtu sapo të hyni me të.",
+  "storeLimitBody": "{feature}: plani falas lejon {count}. Një llogari Pro këtu nuk ka kufi; ajo që keni tashmë mbetet."
 }

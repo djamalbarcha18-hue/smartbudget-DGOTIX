@@ -1694,5 +1694,8 @@
   "daretImportWho": "Wewe ni yupi?",
   "daretImportAdd": "Ongeza kwenye michezo yangu",
   "daretImportSkip": "Si sasa",
-  "daretImportDone": "Imeongezwa. Zamu yako: {date}"
+  "daretImportDone": "Imeongezwa. Zamu yako: {date}",
+  "storePlanTitle": "Vipengele vya Pro",
+  "storePlanBody": "Baadhi ya vipengele ni sehemu ya mpango wa Pro. Ikiwa akaunti yako ina Pro, vinafanya kazi hapa mara tu unapoingia nayo.",
+  "storeLimitBody": "{feature}: mpango wa bure unaruhusu {count}. Akaunti ya Pro haina kikomo hapa; ulichonacho kinabaki."
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -164,7 +165,7 @@ class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
       // A quota wall is upgrade-only (never "use your own key").
       final SnackBarAction? action = e.code == ReceiptScanError.quotaExceeded
           ? SnackBarAction(
-              label: l.aiUpgrade, onPressed: () => router.go('/plans'))
+              label: upgradeLabel(l, ai: true), onPressed: () => router.go('/plans'))
           : null;
       messenger.showSnackBar(
         SnackBar(content: Text(_messageFor(e.code, l)), action: action),

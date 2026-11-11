@@ -1694,5 +1694,8 @@
   "daretImportWho": "Wie ben jij?",
   "daretImportAdd": "Toevoegen aan mijn spaarkringen",
   "daretImportSkip": "Niet nu",
-  "daretImportDone": "Toegevoegd. Jouw beurt: {date}"
+  "daretImportDone": "Toegevoegd. Jouw beurt: {date}",
+  "storePlanTitle": "Pro-functies",
+  "storePlanBody": "Sommige functies horen bij het Pro-abonnement. Heeft je account Pro, dan werken ze hier zodra je ermee inlogt.",
+  "storeLimitBody": "{feature}: het gratis abonnement staat {count} toe. Een Pro-account heeft hier geen limiet; wat je al hebt, blijft."
 }

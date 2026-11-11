@@ -1694,5 +1694,8 @@
   "daretImportWho": "あなたはどれですか?",
   "daretImportAdd": "自分の講に追加",
   "daretImportSkip": "今はしない",
-  "daretImportDone": "追加しました。あなたの順番:{date}"
+  "daretImportDone": "追加しました。あなたの順番:{date}",
+  "storePlanTitle": "Pro機能",
+  "storePlanBody": "一部の機能はProプランに含まれます。アカウントにProがある場合は、そのアカウントでログインするとここで使えます。",
+  "storeLimitBody": "{feature}:無料プランでは{count}件までです。Proアカウントならここでは上限がありません。今ある内容はそのまま残ります。"
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/features/billing/presentation/upgrade_popup.dart';
@@ -88,10 +89,12 @@ class NavSidebar extends StatelessWidget {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(DsSpacing.md),
-          child: _UpgradeCard(l: l),
-        ),
+        // The store app does not sell: no upgrade card.
+        if (!AppEnv.storeFreeMode)
+          Padding(
+            padding: const EdgeInsets.all(DsSpacing.md),
+            child: _UpgradeCard(l: l),
+          ),
       ],
     );
     if (floating) {
@@ -409,7 +412,7 @@ class _UpgradeCard extends StatelessWidget {
             )
           else
             DsButton(
-              label: l.upgradeCta,
+              label: upgradeLabel(l),
               expand: true,
               onPressed: () => UpgradePopup.show(context),
             ),

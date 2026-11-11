@@ -111,3 +111,30 @@ supabase functions deploy delete-account
 - Play Billing (in-app subscriptions) to sell Pro inside the Android app.
 - iOS / App Store: add the iOS platform, build on macOS (or a cloud Mac such
   as Codemagic), Apple developer account, App Privacy labels.
+
+
+## Paid plans and the store app (decided with the owner)
+
+Google Play only lets an app sell digital subscriptions through Google's own
+billing, and outside the US/EEA programs it forbids leading users to another
+way to pay. So the store app **never sells, prices or links to a payment**; the
+website sells, and the store app reads the account's plan from the server, so
+a subscription bought on the website works there once the same account signs
+in.
+
+- While the app is in beta (`BETA_ALL_ACCESS` unset or true) the store app is
+  open like the web app.
+- When the beta ends, build **both** workflows with
+  `--dart-define=BETA_ALL_ACCESS=false` (deploy-web.yml already has it;
+  **add it to android.yml**). The store build then (`AppEnv.storeFreeMode`):
+  applies the free plan's limits, takes the plan from the server, shows a
+  plain note ("Some features are part of the Pro plan…") instead of plans,
+  prices, coupons, trial, manage-subscription or an upgrade card, and the
+  locked/limit sheets say what Pro lifts without a button to plans.
+- Do **not** put prices, a payment link, "subscribe on our website" or
+  "write to us to upgrade" anywhere in the store app or in the Play listing.
+  The website, e-mail, social media and ads may say all of it.
+- A support link (social account, e-mail) is fine on the Support page, worded
+  as help, never next to a locked feature.
+- `test/store_free_mode_test.dart` checks this and runs in CI with the store
+  build settings.

@@ -1150,7 +1150,7 @@ class _SyncSection extends ConsumerWidget {
             alignment: AlignmentDirectional.centerStart,
             child: TextButton(
               onPressed: () => UpgradePopup.show(context),
-              child: Text(l.upgradeCta),
+              child: Text(upgradeLabel(l)),
             ),
           ),
         ],

@@ -1694,5 +1694,8 @@
   "daretImportWho": "Wanne ne kai?",
   "daretImportAdd": "Ƙara zuwa adashina",
   "daretImportSkip": "Ba yanzu ba",
-  "daretImportDone": "An ƙara. Lokacinka: {date}"
+  "daretImportDone": "An ƙara. Lokacinka: {date}",
+  "storePlanTitle": "Siffofin Pro",
+  "storePlanBody": "Wasu siffofi suna cikin tsarin Pro. Idan asusunka yana da Pro, suna aiki a nan da zarar ka shiga da shi.",
+  "storeLimitBody": "{feature}: tsarin kyauta yana ba da {count}. Asusun Pro ba shi da iyaka a nan; abin da kake da shi yana nan."
 }

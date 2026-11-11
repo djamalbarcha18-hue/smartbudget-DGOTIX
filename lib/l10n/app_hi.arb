@@ -1694,5 +1694,8 @@
   "daretImportWho": "आप कौन हैं?",
   "daretImportAdd": "मेरी कमेटियों में जोड़ें",
   "daretImportSkip": "अभी नहीं",
-  "daretImportDone": "जोड़ दी गई। आपकी बारी: {date}"
+  "daretImportDone": "जोड़ दी गई। आपकी बारी: {date}",
+  "storePlanTitle": "Pro सुविधाएँ",
+  "storePlanBody": "कुछ सुविधाएँ Pro प्लान का हिस्सा हैं। अगर आपके खाते में Pro है, तो उससे साइन इन करते ही वे यहाँ काम करती हैं।",
+  "storeLimitBody": "{feature}: मुफ़्त प्लान {count} की अनुमति देता है। Pro खाते पर यहाँ कोई सीमा नहीं; जो आपके पास है वह रहता है।"
 }

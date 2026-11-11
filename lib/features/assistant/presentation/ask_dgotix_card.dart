@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -245,7 +246,7 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
               const SizedBox(height: DsSpacing.sm),
               Align(
                 alignment: AlignmentDirectional.centerStart,
-                child: _UpgradeButton(label: l.aiUpgrade),
+                child: _UpgradeButton(label: upgradeLabel(l, ai: true)),
               ),
             ],
           ],
@@ -379,7 +380,7 @@ class _QuotaNudge extends StatelessWidget {
             ),
             if (canUpgrade) ...<Widget>[
               const SizedBox(width: DsSpacing.sm),
-              _UpgradeButton(label: l.aiUpgrade),
+              _UpgradeButton(label: upgradeLabel(l, ai: true)),
             ],
           ],
         ),

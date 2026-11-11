@@ -24,6 +24,8 @@ abstract final class UpgradePopup {
   /// Opens the pop-up — or, where nothing is on sale (the open beta), the
   /// plans page, as before.
   static Future<void> show(BuildContext context) {
+    // The store app does not sell: a plain note, no prices and no link.
+    if (AppEnv.storeFreeMode) return StorePlanNotice.show(context);
     final ProviderContainer c =
         ProviderScope.containerOf(context, listen: false);
     final bool payTest = c.read(paymentTestModeProvider).valueOrNull ?? false;
@@ -327,4 +329,31 @@ String _money(double? v) {
   return v == v.roundToDouble()
       ? '\$${v.toInt()}'
       : '\$${v.toStringAsFixed(2)}';
+}
+
+/// What the store app says where a plan's features are locked: that they are
+/// part of Pro and work once the account that has Pro is signed in. No
+/// prices, no button to pay, no link anywhere (Google Play's payment policy).
+class StorePlanNotice extends StatelessWidget {
+  const StorePlanNotice({super.key});
+
+  static Future<void> show(BuildContext context) => showDialog<void>(
+      context: context, builder: (_) => const StorePlanNotice());
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    return AlertDialog(
+      icon: Icon(Icons.workspace_premium_outlined,
+          color: context.dsColors.brand),
+      title: Text(l.storePlanTitle, textAlign: TextAlign.center),
+      content: Text(l.storePlanBody, textAlign: TextAlign.center),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l.upgradeNotNow),
+        ),
+      ],
+    );
+  }
 }

@@ -1694,5 +1694,8 @@
   "daretImportWho": "¿Cuál eres tú?",
   "daretImportAdd": "Añadirla a mis tandas",
   "daretImportSkip": "Ahora no",
-  "daretImportDone": "Añadida. Tu turno: {date}"
+  "daretImportDone": "Añadida. Tu turno: {date}",
+  "storePlanTitle": "Funciones Pro",
+  "storePlanBody": "Algunas funciones forman parte del plan Pro. Si tu cuenta tiene Pro, funcionan aquí en cuanto inicies sesión con ella.",
+  "storeLimitBody": "{feature}: el plan gratuito permite {count}. Una cuenta Pro no tiene límite aquí; lo que ya tienes se conserva."
 }
