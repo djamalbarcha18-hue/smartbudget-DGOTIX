@@ -126,6 +126,39 @@ class SupportPage extends StatelessWidget {
                         ],
                       ),
                     ),
+                    if (AppConfig.hasSupportWhatsApp) ...<Widget>[
+                      const SizedBox(height: DsSpacing.sm),
+                      Container(
+                        padding: const EdgeInsets.all(DsSpacing.md),
+                        decoration: BoxDecoration(
+                          color: c.surfaceMuted,
+                          borderRadius: DsRadius.brMd,
+                          border: Border.all(color: c.border),
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            Icon(Icons.chat_outlined,
+                                size: 18, color: c.textMuted),
+                            const SizedBox(width: DsSpacing.md),
+                            Expanded(
+                              child: Text(l.supportWhatsApp,
+                                  style:
+                                      Theme.of(context).textTheme.titleSmall),
+                            ),
+                            IconButton(
+                              key: const ValueKey<String>('support-whatsapp'),
+                              tooltip: l.supportWhatsApp,
+                              onPressed: () => launchUrl(
+                                  Uri.parse(
+                                      'https://wa.me/${AppConfig.supportWhatsApp.trim()}'),
+                                  mode: LaunchMode.externalApplication),
+                              icon: Icon(Icons.send_outlined,
+                                  size: 16, color: c.brand),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),

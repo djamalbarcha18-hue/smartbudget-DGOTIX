@@ -641,7 +641,7 @@
   "legalLastUpdated": "Zuletzt aktualisiert: {date}",
   "pageSupport": "Hilfe & Support",
   "supportContact": "Kontakt",
-  "supportContactHint": "Wir antworten meist innerhalb eines Werktags.",
+  "supportContactHint": "Ein Problem oder eine Frage? Schreib uns.",
   "supportEmailLabel": "E-Mail-Support",
   "supportCopyEmail": "E-Mail-Adresse kopieren",
   "supportWriteEmail": "E-Mail schreiben",
@@ -1697,5 +1697,6 @@
   "daretImportDone": "Hinzugefügt. Deine Runde: {date}",
   "storePlanTitle": "Pro-Funktionen",
   "storePlanBody": "Einige Funktionen gehören zum Pro-Tarif. Hat dein Konto Pro, funktionieren sie hier, sobald du dich damit anmeldest.",
-  "storeLimitBody": "{feature}: Der kostenlose Tarif erlaubt {count}. Ein Pro-Konto hat hier keine Grenze; was du schon hast, bleibt."
+  "storeLimitBody": "{feature}: Der kostenlose Tarif erlaubt {count}. Ein Pro-Konto hat hier keine Grenze; was du schon hast, bleibt.",
+  "supportWhatsApp": "WhatsApp"
 }

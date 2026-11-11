@@ -641,7 +641,7 @@
   "legalLastUpdated": "Ultimo aggiornamento: {date}",
   "pageSupport": "Aiuto e supporto",
   "supportContact": "Contattaci",
-  "supportContactHint": "Di solito rispondiamo entro un giorno lavorativo.",
+  "supportContactHint": "Hai un problema o una domanda? Scrivici.",
   "supportEmailLabel": "Supporto via email",
   "supportCopyEmail": "Copia email",
   "supportWriteEmail": "Scrivici",
@@ -1697,5 +1697,6 @@
   "daretImportDone": "Aggiunto. Il tuo turno: {date}",
   "storePlanTitle": "Funzioni Pro",
   "storePlanBody": "Alcune funzioni fanno parte del piano Pro. Se il tuo account ha Pro, funzionano qui appena accedi con esso.",
-  "storeLimitBody": "{feature}: il piano gratuito ne consente {count}. Un account Pro qui non ha limiti; ciò che hai già resta."
+  "storeLimitBody": "{feature}: il piano gratuito ne consente {count}. Un account Pro qui non ha limiti; ciò che hai già resta.",
+  "supportWhatsApp": "WhatsApp"
 }

@@ -641,7 +641,7 @@
   "legalLastUpdated": "最終更新日：{date}",
   "pageSupport": "ヘルプとサポート",
   "supportContact": "お問い合わせ",
-  "supportContactHint": "通常 1 営業日以内に返信します。",
+  "supportContactHint": "問題やご質問がありましたら、ご連絡ください。",
   "supportEmailLabel": "サポートのメール",
   "supportCopyEmail": "メールアドレスをコピー",
   "supportWriteEmail": "メールを送る",
@@ -1697,5 +1697,6 @@
   "daretImportDone": "追加しました。あなたの順番:{date}",
   "storePlanTitle": "Pro機能",
   "storePlanBody": "一部の機能はProプランに含まれます。アカウントにProがある場合は、そのアカウントでログインするとここで使えます。",
-  "storeLimitBody": "{feature}:無料プランでは{count}件までです。Proアカウントならここでは上限がありません。今ある内容はそのまま残ります。"
+  "storeLimitBody": "{feature}:無料プランでは{count}件までです。Proアカウントならここでは上限がありません。今ある内容はそのまま残ります。",
+  "supportWhatsApp": "WhatsApp"
 }

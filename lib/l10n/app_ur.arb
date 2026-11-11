@@ -641,7 +641,7 @@
   "legalLastUpdated": "آخری اپ ڈیٹ: {date}",
   "pageSupport": "مدد اور سپورٹ",
   "supportContact": "ہم سے رابطہ کریں",
-  "supportContactHint": "ہم عام طور پر ایک کاروباری دن میں جواب دیتے ہیں۔",
+  "supportContactHint": "کوئی مسئلہ یا سوال ہو تو براہِ کرم ہمیں لکھیں۔",
   "supportEmailLabel": "ای میل سپورٹ",
   "supportCopyEmail": "ای میل کاپی کریں",
   "supportWriteEmail": "ہمیں ای میل کریں",
@@ -1697,5 +1697,6 @@
   "daretImportDone": "شامل ہو گئی۔ آپ کی باری: {date}",
   "storePlanTitle": "Pro فیچرز",
   "storePlanBody": "کچھ فیچرز Pro پلان کا حصہ ہیں۔ اگر آپ کے اکاؤنٹ میں Pro ہے تو اس سے سائن ان کرتے ہی یہاں کام کرتے ہیں۔",
-  "storeLimitBody": "{feature}: مفت پلان {count} کی اجازت دیتا ہے۔ Pro اکاؤنٹ پر یہاں کوئی حد نہیں؛ جو آپ کے پاس ہے وہ رہتا ہے۔"
+  "storeLimitBody": "{feature}: مفت پلان {count} کی اجازت دیتا ہے۔ Pro اکاؤنٹ پر یہاں کوئی حد نہیں؛ جو آپ کے پاس ہے وہ رہتا ہے۔",
+  "supportWhatsApp": "واٹس ایپ"
 }

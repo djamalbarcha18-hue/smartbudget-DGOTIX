@@ -641,7 +641,7 @@
   "legalLastUpdated": "Terakhir diperbarui: {date}",
   "pageSupport": "Bantuan & Dukungan",
   "supportContact": "Hubungi kami",
-  "supportContactHint": "Kami biasanya membalas dalam satu hari kerja.",
+  "supportContactHint": "Ada masalah atau pertanyaan? Silakan hubungi kami.",
   "supportEmailLabel": "Dukungan email",
   "supportCopyEmail": "Salin email",
   "supportWriteEmail": "Kirim email",
@@ -1697,5 +1697,6 @@
   "daretImportDone": "Ditambahkan. Giliranmu: {date}",
   "storePlanTitle": "Fitur Pro",
   "storePlanBody": "Beberapa fitur termasuk paket Pro. Jika akunmu punya Pro, fitur itu langsung berfungsi di sini setelah kamu masuk dengan akun itu.",
-  "storeLimitBody": "{feature}: paket gratis membolehkan {count}. Akun Pro tidak dibatasi di sini; yang sudah ada tetap ada."
+  "storeLimitBody": "{feature}: paket gratis membolehkan {count}. Akun Pro tidak dibatasi di sini; yang sudah ada tetap ada.",
+  "supportWhatsApp": "WhatsApp"
 }

@@ -641,7 +641,7 @@
   "legalLastUpdated": "Përditësuar së fundmi: {date}",
   "pageSupport": "Ndihmë dhe mbështetje",
   "supportContact": "Na kontakto",
-  "supportContactHint": "Zakonisht përgjigjemi brenda një dite pune.",
+  "supportContactHint": "Keni një problem apo pyetje? Na shkruani.",
   "supportEmailLabel": "Mbështetje me email",
   "supportCopyEmail": "Kopjo email-in",
   "supportWriteEmail": "Na shkruaj",
@@ -1697,5 +1697,6 @@
   "daretImportDone": "U shtua. Radha juaj: {date}",
   "storePlanTitle": "Funksionet Pro",
   "storePlanBody": "Disa funksione janë pjesë e planit Pro. Nëse llogaria juaj ka Pro, funksionojnë këtu sapo të hyni me të.",
-  "storeLimitBody": "{feature}: plani falas lejon {count}. Një llogari Pro këtu nuk ka kufi; ajo që keni tashmë mbetet."
+  "storeLimitBody": "{feature}: plani falas lejon {count}. Një llogari Pro këtu nuk ka kufi; ajo që keni tashmë mbetet.",
+  "supportWhatsApp": "WhatsApp"
 }

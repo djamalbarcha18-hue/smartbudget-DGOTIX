@@ -641,7 +641,7 @@
   "legalLastUpdated": "An sabunta a ƙarshe: {date}",
   "pageSupport": "Taimako",
   "supportContact": "Tuntuɓe mu",
-  "supportContactHint": "Yawanci muna amsawa cikin ranar aiki ɗaya.",
+  "supportContactHint": "Kana da matsala ko tambaya? Da fatan za ka rubuta mana.",
   "supportEmailLabel": "Taimako ta imel",
   "supportCopyEmail": "Kwafi imel",
   "supportWriteEmail": "Aiko mana imel",
@@ -1697,5 +1697,6 @@
   "daretImportDone": "An ƙara. Lokacinka: {date}",
   "storePlanTitle": "Siffofin Pro",
   "storePlanBody": "Wasu siffofi suna cikin tsarin Pro. Idan asusunka yana da Pro, suna aiki a nan da zarar ka shiga da shi.",
-  "storeLimitBody": "{feature}: tsarin kyauta yana ba da {count}. Asusun Pro ba shi da iyaka a nan; abin da kake da shi yana nan."
+  "storeLimitBody": "{feature}: tsarin kyauta yana ba da {count}. Asusun Pro ba shi da iyaka a nan; abin da kake da shi yana nan.",
+  "supportWhatsApp": "WhatsApp"
 }

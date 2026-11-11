@@ -641,7 +641,7 @@
   "legalLastUpdated": "آخرین به‌روزرسانی: {date}",
   "pageSupport": "راهنما و پشتیبانی",
   "supportContact": "تماس با ما",
-  "supportContactHint": "معمولاً ظرف یک روز کاری پاسخ می‌دهیم.",
+  "supportContactHint": "مشکل یا پرسشی دارید؟ لطفاً به ما پیام دهید.",
   "supportEmailLabel": "ایمیل پشتیبانی",
   "supportCopyEmail": "کپی ایمیل",
   "supportWriteEmail": "برای ما ایمیل بفرستید",
@@ -1697,5 +1697,6 @@
   "daretImportDone": "افزوده شد. نوبت شما: {date}",
   "storePlanTitle": "امکانات Pro",
   "storePlanBody": "برخی امکانات بخشی از طرح Pro هستند. اگر حساب شما Pro دارد، با ورود به آن همین‌جا کار می‌کنند.",
-  "storeLimitBody": "{feature}: طرح رایگان {count} مورد را مجاز می‌داند. حساب Pro اینجا محدودیتی ندارد؛ آنچه دارید می‌ماند."
+  "storeLimitBody": "{feature}: طرح رایگان {count} مورد را مجاز می‌داند. حساب Pro اینجا محدودیتی ندارد؛ آنچه دارید می‌ماند.",
+  "supportWhatsApp": "واتس‌اپ"
 }
