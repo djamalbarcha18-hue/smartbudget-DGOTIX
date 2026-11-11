@@ -96,3 +96,22 @@ table (e.g. `commodity_history(code, ts, price_usd, source)`), have the Edge
 Function upsert each fetch, and expose `?category=…&history=1`. The
 `CommodityQuote` model already carries the `change24h/7d/30d/YTD` and
 `high52w/low52w` fields for when that source exists.
+
+## Parallel rates the owner enters (Algeria)
+
+A country's parallel ("street") rate has no official feed, and the community
+sites that publish one come and go (squarealgerie.com, used before, stopped
+answering). Algeria's Square Port-Saïd rates are therefore typed in by the
+owner and kept on our own server (`supabase/parallel_rates.sql`):
+
+- Run `parallel_rates.sql` once in the Supabase SQL editor (it is also part of
+  `setup_all.sql`), then make your account an admin, once:
+  `insert into app_admins (user_id) select id from auth.users where email = '<your email>' on conflict do nothing;`
+- In the app, Settings shows "Parallel rates (admin)" to admin accounts only.
+  Type the day's buy/sell per currency and save. Empty both fields of a
+  currency to remove it.
+- Every user sees the figures with the time they were last set; with nothing
+  entered the country reads "unavailable" and the user's own manual entry
+  still works. Devices re-read the server every 30 minutes.
+- To give another country owner-entered rates, set its `parallelSourceId` to
+  `'owner'` in `market_config.dart`.

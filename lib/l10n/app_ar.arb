@@ -1872,5 +1872,12 @@
   "shareCardAmbassadorLabel": "أصدقاء انضموا عبر رابطي · سفير DGOTIX",
   "shareMomentGoal": "حقّقت هدفًا! شارك الخبر السعيد مع أصدقائك.",
   "shareMomentAmbassador": "أصبحت الآن سفير DGOTIX! شارك بطاقتك.",
-  "menuHint": "اضغط على الشعار لفتح القائمة"
+  "menuHint": "اضغط على الشعار لفتح القائمة",
+  "ownerRatesTitle": "أسعار السوق الموازية (إدارة)",
+  "ownerRatesOpen": "إدخال أسعار اليوم",
+  "ownerRatesHint": "اكتب أسعار السكوار لليوم. يراها كل المستخدمين مع وقت حفظك. اترك خانتَي العملة فارغتين لحذفها.",
+  "ownerRatesSaved": "تم حفظ الأسعار",
+  "ownerRatesFailed": "تعذّر الحفظ. تحقق من الاتصال وحاول مرة أخرى.",
+  "ownerRatesInvalid": "أدخل رقمًا أكبر من صفر",
+  "ownerRatesLastSet": "آخر إدخال: {when}"
 }

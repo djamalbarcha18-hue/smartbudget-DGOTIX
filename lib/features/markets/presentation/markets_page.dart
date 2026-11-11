@@ -349,9 +349,28 @@ class _CountrySection extends ConsumerWidget {
                 'open.er-api.com',
             updatedAt: fx.whenOrNull(data: (FxSnapshot s) => s.updatedAt),
           ),
+          // The parallel figures have their own source and their own age: a
+          // street rate set days ago must not pass for today's.
+          if (_latestParallel(parallel) case final FxQuote q?)
+            _SourceLine(
+              prefix: AppLocalizations.of(context).rateTypeParallel,
+              source: q.source,
+              updatedAt: q.updatedAt,
+            ),
         ],
       ),
     );
+  }
+
+  /// The most recently set parallel quote of the card, if any.
+  static FxQuote? _latestParallel(AsyncValue<List<FxQuote>> parallel) {
+    final List<FxQuote> qs =
+        parallel.whenOrNull(data: (List<FxQuote> q) => q) ?? const <FxQuote>[];
+    FxQuote? latest;
+    for (final FxQuote q in qs) {
+      if (latest == null || q.updatedAt.isAfter(latest.updatedAt)) latest = q;
+    }
+    return latest;
   }
 
   static bool _hasParallel(AsyncValue<List<FxQuote>> parallel,
@@ -758,8 +777,12 @@ class _ChangeStat extends StatelessWidget {
 }
 
 class _SourceLine extends StatelessWidget {
-  const _SourceLine({required this.source, required this.updatedAt});
+  const _SourceLine(
+      {required this.source, required this.updatedAt, this.prefix});
   final String source;
+
+  /// Which figures the line is about, when a card has more than one source.
+  final String? prefix;
   final DateTime? updatedAt;
 
   @override
@@ -769,6 +792,7 @@ class _SourceLine extends StatelessWidget {
     final String updated =
         updatedAt == null ? '—' : _fmtUpdated(updatedAt!);
     return Text(
+      '${prefix == null ? '' : '$prefix · '}'
       '${l.marketSource}: $source · ${l.marketUpdated}: $updated',
       style: Theme.of(context).textTheme.labelSmall?.copyWith(color: c.textFaint),
     );

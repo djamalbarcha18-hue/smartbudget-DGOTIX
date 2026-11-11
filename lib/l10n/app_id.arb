@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "teman bergabung lewat tautanku · Duta DGOTIX",
   "shareMomentGoal": "Kamu mencapai sebuah target! Bagikan kabar baik ini ke teman-temanmu.",
   "shareMomentAmbassador": "Kini kamu Duta DGOTIX! Bagikan kartumu.",
-  "menuHint": "Ketuk logo untuk membuka menu"
+  "menuHint": "Ketuk logo untuk membuka menu",
+  "ownerRatesTitle": "Parallel rates (admin)",
+  "ownerRatesOpen": "Enter today's rates",
+  "ownerRatesHint": "Type today's Square rates. Every user sees them with the time you saved. Leave both fields of a currency empty to remove it.",
+  "ownerRatesSaved": "Rates saved",
+  "ownerRatesFailed": "Could not save. Check your connection and try again.",
+  "ownerRatesInvalid": "Enter a number above zero",
+  "ownerRatesLastSet": "Last set: {when}"
 }

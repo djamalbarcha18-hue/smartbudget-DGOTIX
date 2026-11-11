@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "명의 친구가 내 링크로 가입 · DGOTIX 앰배서더",
   "shareMomentGoal": "목표를 달성했어요! 좋은 소식을 친구들과 나눠 보세요.",
   "shareMomentAmbassador": "이제 DGOTIX 앰배서더가 됐어요! 카드를 공유해 보세요.",
-  "menuHint": "로고를 눌러 메뉴를 여세요"
+  "menuHint": "로고를 눌러 메뉴를 여세요",
+  "ownerRatesTitle": "Parallel rates (admin)",
+  "ownerRatesOpen": "Enter today's rates",
+  "ownerRatesHint": "Type today's Square rates. Every user sees them with the time you saved. Leave both fields of a currency empty to remove it.",
+  "ownerRatesSaved": "Rates saved",
+  "ownerRatesFailed": "Could not save. Check your connection and try again.",
+  "ownerRatesInvalid": "Enter a number above zero",
+  "ownerRatesLastSet": "Last set: {when}"
 }

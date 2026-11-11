@@ -38,6 +38,11 @@ import 'package:smartbudget/features/dev/sample_data_controller.dart';
 import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
 import 'package:smartbudget/features/debts/application/debts_controller.dart';
 import 'package:smartbudget/features/goals/application/goals_controller.dart';
+import 'package:smartbudget/core/l10n/app_lang_context.dart';
+import 'package:smartbudget/features/markets/application/markets_controllers.dart';
+import 'package:smartbudget/features/markets/data/owner_parallel_repository.dart';
+import 'package:smartbudget/features/markets/domain/market_config.dart';
+import 'package:smartbudget/features/markets/presentation/owner_rates_page.dart';
 import 'package:smartbudget/features/portfolio/application/portfolio_controller.dart';
 import 'package:smartbudget/features/account/presentation/delete_account_section.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_section.dart';
@@ -305,6 +310,34 @@ class SettingsPage extends ConsumerWidget {
                   icon: Icons.science_outlined,
                   title: l.settingsDeveloper,
                   child: const _DeveloperSection(),
+                ),
+                const SizedBox(height: DsSpacing.lg),
+              ],
+
+              // The owner's own tool: typing the day's parallel rates. Shown
+              // to admin accounts only (the server refuses anyone else).
+              if (ref.watch(isAppAdminProvider).value ?? false) ...<Widget>[
+                _SettingsSection(
+                  icon: Icons.currency_exchange_rounded,
+                  title: l.ownerRatesTitle,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      for (final CountryMarket m in MarketConfig.countries.where(
+                          (CountryMarket m) =>
+                              m.parallelSourceId ==
+                              OwnerParallelRepository.sourceId))
+                        DsButton(
+                          label: '${l.ownerRatesOpen} · '
+                              '${appLangOf(context).isAr ? m.nameAr : m.nameEn}',
+                          icon: Icons.edit_outlined,
+                          variant: DsButtonVariant.secondary,
+                          onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                  builder: (_) => OwnerRatesPage(country: m))),
+                        ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: DsSpacing.lg),
               ],

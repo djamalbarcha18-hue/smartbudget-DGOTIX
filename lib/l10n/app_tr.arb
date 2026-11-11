@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "arkadaş bağlantımla katıldı · DGOTIX Elçisi",
   "shareMomentGoal": "Bir hedefe ulaştın! İyi haberi arkadaşlarınla paylaş.",
   "shareMomentAmbassador": "Artık bir DGOTIX Elçisisin! Kartını paylaş.",
-  "menuHint": "Menüyü açmak için logoya dokunun"
+  "menuHint": "Menüyü açmak için logoya dokunun",
+  "ownerRatesTitle": "Parallel rates (admin)",
+  "ownerRatesOpen": "Enter today's rates",
+  "ownerRatesHint": "Type today's Square rates. Every user sees them with the time you saved. Leave both fields of a currency empty to remove it.",
+  "ownerRatesSaved": "Rates saved",
+  "ownerRatesFailed": "Could not save. Check your connection and try again.",
+  "ownerRatesInvalid": "Enter a number above zero",
+  "ownerRatesLastSet": "Last set: {when}"
 }

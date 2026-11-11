@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "amis ont rejoint via mon lien · Ambassadeur DGOTIX",
   "shareMomentGoal": "Vous avez atteint un objectif ! Partagez la bonne nouvelle avec vos amis.",
   "shareMomentAmbassador": "Vous êtes maintenant ambassadeur DGOTIX ! Partagez votre carte.",
-  "menuHint": "Touchez le logo pour ouvrir le menu"
+  "menuHint": "Touchez le logo pour ouvrir le menu",
+  "ownerRatesTitle": "Taux parallèles (admin)",
+  "ownerRatesOpen": "Saisir les taux du jour",
+  "ownerRatesHint": "Saisissez les taux du Square du jour. Tous les utilisateurs les voient avec l'heure d'enregistrement. Laissez les deux champs d'une devise vides pour la retirer.",
+  "ownerRatesSaved": "Taux enregistrés",
+  "ownerRatesFailed": "Enregistrement impossible. Vérifiez la connexion et réessayez.",
+  "ownerRatesInvalid": "Saisissez un nombre supérieur à zéro",
+  "ownerRatesLastSet": "Dernière saisie : {when}"
 }

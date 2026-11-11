@@ -1978,5 +1978,13 @@
   "shareCardAmbassadorLabel": "friends joined through my link · DGOTIX Ambassador",
   "shareMomentGoal": "You reached a goal! Share the good news with your friends.",
   "shareMomentAmbassador": "You're now a DGOTIX Ambassador! Share your card.",
-  "menuHint": "Tap the logo to open the menu"
+  "menuHint": "Tap the logo to open the menu",
+  "ownerRatesTitle": "Parallel rates (admin)",
+  "ownerRatesOpen": "Enter today's rates",
+  "ownerRatesHint": "Type today's Square rates. Every user sees them with the time you saved. Leave both fields of a currency empty to remove it.",
+  "ownerRatesSaved": "Rates saved",
+  "ownerRatesFailed": "Could not save. Check your connection and try again.",
+  "ownerRatesInvalid": "Enter a number above zero",
+  "ownerRatesLastSet": "Last set: {when}",
+  "@ownerRatesLastSet": {"placeholders": {"when": {"type": "String"}}}
 }

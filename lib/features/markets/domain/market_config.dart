@@ -55,11 +55,11 @@ abstract final class MarketConfig {
       nameEn: 'Algeria',
       nameAr: 'الجزائر',
       base: 'DZD',
-      pairs: <String>['USD', 'EUR', 'GBP', 'SAR', 'AED'],
-      // Live Square Port-Saïd rates via a keyless, CORS-enabled community API
-      // (unofficial). Falls back to "unavailable" if the source is down; manual
+      pairs: <String>['EUR', 'USD', 'GBP', 'CAD', 'CHF', 'SAR', 'AED'],
+      // Square Port-Saïd rates as the app's owner enters them (kept on our
+      // server). Nothing entered reads "unavailable"; the user's own manual
       // entry always remains available.
-      parallelSourceId: 'square_dz',
+      parallelSourceId: 'owner',
     ),
     CountryMarket(
       country: 'ar',

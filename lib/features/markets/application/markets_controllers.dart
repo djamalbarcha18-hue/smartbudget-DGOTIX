@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/markets/data/backend_market_provider.dart';
 import 'package:smartbudget/features/markets/data/backend_parallel_repository.dart';
 import 'package:smartbudget/features/markets/data/coingecko_crypto_repository.dart';
@@ -10,9 +11,10 @@ import 'package:smartbudget/features/markets/data/dolarapi_ar_repository.dart';
 import 'package:smartbudget/features/markets/data/gold_api_metals_repository.dart';
 import 'package:smartbudget/features/markets/data/market_http.dart';
 import 'package:smartbudget/features/markets/data/open_erapi_fx_repository.dart';
+import 'package:smartbudget/features/markets/data/owner_parallel_repository.dart';
+import 'package:smartbudget/features/markets/data/owner_rates_service.dart';
 import 'package:smartbudget/features/markets/data/rate_cache.dart';
 import 'package:smartbudget/features/markets/data/split_market_provider.dart';
-import 'package:smartbudget/features/markets/data/square_dz_repository.dart';
 import 'package:smartbudget/features/markets/data/unavailable_market_provider.dart';
 import 'package:smartbudget/features/markets/domain/commodity_config.dart';
 import 'package:smartbudget/features/markets/domain/commodity_models.dart';
@@ -25,6 +27,17 @@ import 'package:smartbudget/features/markets/domain/market_repository.dart';
 // ---- Infrastructure ----
 final marketHttpProvider = Provider<MarketHttp>((ref) => const MarketHttp());
 final rateCacheProvider = Provider<RateCache>((ref) => const RateCache());
+
+/// The owner-entered parallel rates on the server.
+final ownerRatesServiceProvider =
+    Provider<OwnerRatesService>((ref) => const OwnerRatesService());
+
+/// May this account edit the owner-entered rates? Re-asked when the signed-in
+/// account changes.
+final isAppAdminProvider = FutureProvider<bool>((ref) {
+  ref.watch(authControllerProvider.select((s) => s.user?.id));
+  return ref.watch(ownerRatesServiceProvider).isAdmin();
+});
 
 // ---- Repositories (swap for backend-backed impls later; interface stays) ----
 final fxRatesRepositoryProvider = Provider<FxRatesRepository>((ref) =>
@@ -43,8 +56,10 @@ final parallelRepositoriesProvider =
   final RateCache cache = ref.watch(rateCacheProvider);
   return <String, ParallelMarketRepository>{
     'dolarapi_ar': DolarApiArRepository(http: http, cache: cache),
-    // Algeria — Square Port-Saïd via a keyless, CORS-enabled community API.
-    'square_dz': SquareDzRepository(http: http, cache: cache),
+    // Rates the owner types in (Settings, admins only), kept on our server:
+    // Algeria's Square Port-Saïd.
+    OwnerParallelRepository.sourceId: OwnerParallelRepository(
+        fetch: ref.watch(ownerRatesServiceProvider).fetch, cache: cache),
     // Owner-configured proxy (dormant until PARALLEL_API_URL is set); serves
     // any country whose parallelSourceId is 'backend'.
     'backend': BackendParallelRepository(http: http, cache: cache),

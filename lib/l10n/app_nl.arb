@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "vrienden deden mee via mijn link · DGOTIX-ambassadeur",
   "shareMomentGoal": "Je hebt een doel bereikt! Deel het goede nieuws met je vrienden.",
   "shareMomentAmbassador": "Je bent nu DGOTIX-ambassadeur! Deel je kaart.",
-  "menuHint": "Tik op het logo om het menu te openen"
+  "menuHint": "Tik op het logo om het menu te openen",
+  "ownerRatesTitle": "Parallel rates (admin)",
+  "ownerRatesOpen": "Enter today's rates",
+  "ownerRatesHint": "Type today's Square rates. Every user sees them with the time you saved. Leave both fields of a currency empty to remove it.",
+  "ownerRatesSaved": "Rates saved",
+  "ownerRatesFailed": "Could not save. Check your connection and try again.",
+  "ownerRatesInvalid": "Enter a number above zero",
+  "ownerRatesLastSet": "Last set: {when}"
 }
