@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "amis ont rejoint via mon lien · Ambassadeur DGOTIX",
   "shareMomentGoal": "Vous avez atteint un objectif ! Partagez la bonne nouvelle avec vos amis.",
   "shareMomentAmbassador": "Vous êtes maintenant ambassadeur DGOTIX ! Partagez votre carte.",
-  "menuHint": "Touchez le logo pour ouvrir le menu"
+  "menuHint": "Touchez le logo pour ouvrir le menu",
+  "onbFirstExpense": "Enregistrez votre première dépense",
+  "onbOrIncome": "ou ajoutez un revenu",
+  "onbCurrencyLine": "Votre devise : {code}",
+  "onbChange": "Modifier",
+  "onbStartSubtitle": "Commencez par une seule dépense. Cela prend quelques secondes.",
+  "onbFirstDoneTitle": "Bravo ! Votre première saisie est enregistrée",
+  "onbFirstDoneSubtitle": "Fixez maintenant un budget mensuel et l'appli vous dira combien il vous reste."
 }

@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "amigos entraram pelo meu link · Embaixador DGOTIX",
   "shareMomentGoal": "Atingiu uma meta! Partilhe a boa notícia com os seus amigos.",
   "shareMomentAmbassador": "Agora é embaixador DGOTIX! Partilhe o seu cartão.",
-  "menuHint": "Toque no logótipo para abrir o menu"
+  "menuHint": "Toque no logótipo para abrir o menu",
+  "onbFirstExpense": "Registe a sua primeira despesa",
+  "onbOrIncome": "ou adicione um rendimento",
+  "onbCurrencyLine": "A sua moeda: {code}",
+  "onbChange": "Alterar",
+  "onbStartSubtitle": "Comece com uma só despesa. Demora uns segundos.",
+  "onbFirstDoneTitle": "Muito bem! O seu primeiro registo está guardado",
+  "onbFirstDoneSubtitle": "Agora defina um orçamento mensal e a app diz-lhe quanto resta."
 }

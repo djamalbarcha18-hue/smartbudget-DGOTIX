@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "marafiki wamejiunga kupitia kiungo changu · Balozi wa DGOTIX",
   "shareMomentGoal": "Umefikia lengo! Shiriki habari njema na marafiki zako.",
   "shareMomentAmbassador": "Sasa wewe ni Balozi wa DGOTIX! Shiriki kadi yako.",
-  "menuHint": "Gusa nembo kufungua menyu"
+  "menuHint": "Gusa nembo kufungua menyu",
+  "onbFirstExpense": "Rekodi matumizi yako ya kwanza",
+  "onbOrIncome": "au ongeza mapato",
+  "onbCurrencyLine": "Sarafu yako: {code}",
+  "onbChange": "Badilisha",
+  "onbStartSubtitle": "Anza na matumizi moja. Inachukua sekunde chache.",
+  "onbFirstDoneTitle": "Hongera! Rekodi yako ya kwanza imehifadhiwa",
+  "onbFirstDoneSubtitle": "Sasa weka bajeti ya mwezi, na programu itakuambia kilichobaki."
 }

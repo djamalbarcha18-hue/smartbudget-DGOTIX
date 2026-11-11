@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "prijatelja se pridružilo preko mog linka · DGOTIX ambasador",
   "shareMomentGoal": "Postigli ste cilj! Podijelite dobre vijesti s prijateljima.",
   "shareMomentAmbassador": "Sada ste DGOTIX ambasador! Podijelite svoju karticu.",
-  "menuHint": "Dodirnite logo da otvorite meni"
+  "menuHint": "Dodirnite logo da otvorite meni",
+  "onbFirstExpense": "Zabilježite prvi trošak",
+  "onbOrIncome": "ili dodajte prihod",
+  "onbCurrencyLine": "Vaša valuta: {code}",
+  "onbChange": "Promijeni",
+  "onbStartSubtitle": "Počnite s jednim troškom. Traje nekoliko sekundi.",
+  "onbFirstDoneTitle": "Bravo! Vaš prvi unos je sačuvan",
+  "onbFirstDoneSubtitle": "Sada postavite mjesečni budžet i aplikacija će vam reći koliko je ostalo."
 }

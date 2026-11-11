@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/design_system/components/currency_flag.dart';
+import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/onboarding/application/onboarding_controller.dart';
 import 'package:smartbudget/features/onboarding/domain/onboarding.dart';
-import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
+import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// First-run welcome card for the dashboard: a short checklist that ticks
@@ -20,17 +23,8 @@ class WelcomeCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final OnboardingFlags? flags = ref.watch(onboardingFlagsProvider);
     final List<OnboardingStep>? steps = ref.watch(onboardingStepsProvider);
-    final int? txCount = ref.watch(transactionsProvider).valueOrNull?.length;
-    if (flags == null ||
-        steps == null ||
-        txCount == null ||
-        !shouldShowWelcome(
-            flags: flags,
-            steps: steps,
-            transactionCount: txCount,
-            now: AppClock.now())) {
+    if (steps == null || !ref.watch(welcomeVisibleProvider)) {
       return const SizedBox.shrink();
     }
 
@@ -39,6 +33,11 @@ class WelcomeCard extends ConsumerWidget {
     final TextTheme t = Theme.of(context).textTheme;
     final int done = steps.where((OnboardingStep s) => s.done).length;
     final bool allDone = done == steps.length;
+    // The one thing to do now. The card leads with it as a button; the chips
+    // below only show where the user stands.
+    final OnboardingStep? next = nextOnboardingStep(steps);
+    final bool started = done > 0;
+    final String base = ref.watch(baseCurrencyProvider);
     final OnboardingController ctl = ref.read(onboardingFlagsProvider.notifier);
 
     return Padding(
@@ -62,11 +61,23 @@ class WelcomeCard extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(allDone ? l.onbDoneTitle : l.onbTitle,
+                      Text(
+                          allDone
+                              ? l.onbDoneTitle
+                              : (started ? l.onbFirstDoneTitle : l.onbTitle),
                           style: t.titleMedium
                               ?.copyWith(fontWeight: FontWeight.w700)),
                       const SizedBox(height: 2),
-                      Text(allDone ? l.onbDoneSubtitle : l.onbSubtitle,
+                      Text(
+                          allDone
+                              ? l.onbDoneSubtitle
+                              : switch (next?.id) {
+                                  OnboardingStepId.transaction =>
+                                    l.onbStartSubtitle,
+                                  OnboardingStepId.budget =>
+                                    l.onbFirstDoneSubtitle,
+                                  _ => l.onbSubtitle,
+                                },
                           style: t.bodySmall?.copyWith(color: c.textMuted)),
                     ],
                   ),
@@ -98,10 +109,64 @@ class WelcomeCard extends ConsumerWidget {
                     style: t.labelSmall?.copyWith(color: c.textMuted)),
               ],
             ),
-            if (!allDone) ...<Widget>[
+            if (next != null) ...<Widget>[
               const SizedBox(height: DsSpacing.md),
-              // Steps as compact chips on one line (wrapping on phones), so
-              // the checklist stays a slim strip above the figures.
+              DsButton(
+                key: const ValueKey<String>('onb-next'),
+                expand: true,
+                label: next.id == OnboardingStepId.transaction
+                    ? l.onbFirstExpense
+                    : _label(l, next.id),
+                icon: next.id == OnboardingStepId.transaction
+                    ? Icons.north_east_rounded
+                    : Icons.arrow_forward_rounded,
+                onPressed: () => _open(context, next),
+              ),
+              if (next.id == OnboardingStepId.transaction) ...<Widget>[
+                const SizedBox(height: DsSpacing.xs),
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: DsSpacing.sm,
+                  children: <Widget>[
+                    TextButton(
+                      key: const ValueKey<String>('onb-income'),
+                      onPressed: () => TransactionEditorSheet.show(context,
+                          type: TransactionType.income),
+                      child: Text(l.onbOrIncome),
+                    ),
+                    // The currency was picked from the device's country: said
+                    // here, with a way to change it, instead of sending a new
+                    // user through the whole settings page first.
+                    InkWell(
+                      key: const ValueKey<String>('onb-currency'),
+                      borderRadius: DsRadius.brPill,
+                      onTap: () => context.go('/settings'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 6),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            CurrencyFlag.code(base, width: 18),
+                            const SizedBox(width: 6),
+                            Text(l.onbCurrencyLine(base),
+                                style:
+                                    t.bodySmall?.copyWith(color: c.textMuted)),
+                            const SizedBox(width: 6),
+                            Text(l.onbChange,
+                                style: t.bodySmall?.copyWith(
+                                    color: c.brand,
+                                    fontWeight: FontWeight.w600)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              const SizedBox(height: DsSpacing.sm),
+              // Where the user stands: three steps, slim, under the button.
               Wrap(
                 spacing: DsSpacing.sm,
                 runSpacing: DsSpacing.sm,
@@ -111,23 +176,43 @@ class WelcomeCard extends ConsumerWidget {
                       index: i + 1,
                       step: steps[i],
                       label: _label(l, steps[i].id),
-                      // Opening settings/guide ticks itself off (visit marker).
-                      onTap: () => context.go(steps[i].route),
+                      onTap: () => _open(context, steps[i]),
                     ),
                 ],
               ),
             ],
+            // The guide is always a tap away, without being a step to tick.
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: TextButton.icon(
+                key: const ValueKey<String>('onb-guide'),
+                onPressed: () => context.go('/guide'),
+                icon: const Icon(Icons.menu_book_outlined, size: 16),
+                label: Text(l.guideTitle),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
+  /// A step's own place. The first entry opens right here, over the
+  /// dashboard: no page to find first.
+  void _open(BuildContext context, OnboardingStep step) {
+    if (step.id == OnboardingStepId.transaction && !step.done) {
+      TransactionEditorSheet.show(context, type: TransactionType.expense);
+    } else {
+      context.go(step.route);
+    }
+  }
+
   String _label(AppLocalizations l, OnboardingStepId id) => switch (id) {
-        OnboardingStepId.settings => l.onbStepSettings,
         OnboardingStepId.transaction => l.onbStepTransaction,
         OnboardingStepId.budget => l.onbStepBudget,
         OnboardingStepId.goal => l.onbStepGoal,
+        // No longer steps of the checklist (kept for the visit markers).
+        OnboardingStepId.settings => l.onbStepSettings,
         OnboardingStepId.guide => l.onbStepGuide,
       };
 }

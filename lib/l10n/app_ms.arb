@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "rakan menyertai melalui pautan saya · Duta DGOTIX",
   "shareMomentGoal": "Anda mencapai satu matlamat! Kongsikan berita baik ini dengan rakan anda.",
   "shareMomentAmbassador": "Kini anda Duta DGOTIX! Kongsikan kad anda.",
-  "menuHint": "Ketik logo untuk membuka menu"
+  "menuHint": "Ketik logo untuk membuka menu",
+  "onbFirstExpense": "Rekod perbelanjaan pertama anda",
+  "onbOrIncome": "atau tambah pendapatan",
+  "onbCurrencyLine": "Mata wang anda: {code}",
+  "onbChange": "Tukar",
+  "onbStartSubtitle": "Mulakan dengan satu perbelanjaan. Hanya beberapa saat.",
+  "onbFirstDoneTitle": "Syabas! Rekod pertama anda disimpan",
+  "onbFirstDoneSubtitle": "Sekarang tetapkan bajet bulanan, dan aplikasi akan memberitahu baki anda."
 }

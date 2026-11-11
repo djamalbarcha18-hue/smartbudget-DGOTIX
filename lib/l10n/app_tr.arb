@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "arkadaş bağlantımla katıldı · DGOTIX Elçisi",
   "shareMomentGoal": "Bir hedefe ulaştın! İyi haberi arkadaşlarınla paylaş.",
   "shareMomentAmbassador": "Artık bir DGOTIX Elçisisin! Kartını paylaş.",
-  "menuHint": "Menüyü açmak için logoya dokunun"
+  "menuHint": "Menüyü açmak için logoya dokunun",
+  "onbFirstExpense": "İlk harcamanı kaydet",
+  "onbOrIncome": "veya gelir ekle",
+  "onbCurrencyLine": "Para birimin: {code}",
+  "onbChange": "Değiştir",
+  "onbStartSubtitle": "Tek bir harcamayla başla. Birkaç saniye sürer.",
+  "onbFirstDoneTitle": "Harika! İlk kaydın kaydedildi",
+  "onbFirstDoneSubtitle": "Şimdi aylık bir bütçe belirle, uygulama ne kadar kaldığını söylesin."
 }

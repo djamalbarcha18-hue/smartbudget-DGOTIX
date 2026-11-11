@@ -1872,5 +1872,12 @@
   "shareCardAmbassadorLabel": "أصدقاء انضموا عبر رابطي · سفير DGOTIX",
   "shareMomentGoal": "حقّقت هدفًا! شارك الخبر السعيد مع أصدقائك.",
   "shareMomentAmbassador": "أصبحت الآن سفير DGOTIX! شارك بطاقتك.",
-  "menuHint": "اضغط على الشعار لفتح القائمة"
+  "menuHint": "اضغط على الشعار لفتح القائمة",
+  "onbFirstExpense": "سجّل أول مصروف",
+  "onbOrIncome": "أو أضف دخلًا",
+  "onbCurrencyLine": "عملتك: {code}",
+  "onbChange": "تغيير",
+  "onbStartSubtitle": "ابدأ بمصروف واحد. يأخذ ثوانيَ فقط.",
+  "onbFirstDoneTitle": "أحسنت! سجّلت أول معاملة",
+  "onbFirstDoneSubtitle": "الآن حدّد ميزانية شهرية، وسيخبرك التطبيق كم بقي لك."
 }

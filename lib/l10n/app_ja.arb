@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "人の友達が私のリンクから参加 · DGOTIXアンバサダー",
   "shareMomentGoal": "目標を達成しました!嬉しい知らせを友達にシェアしましょう。",
   "shareMomentAmbassador": "あなたはDGOTIXアンバサダーになりました!カードをシェアしましょう。",
-  "menuHint": "ロゴをタップしてメニューを開く"
+  "menuHint": "ロゴをタップしてメニューを開く",
+  "onbFirstExpense": "最初の支出を記録する",
+  "onbOrIncome": "または収入を追加",
+  "onbCurrencyLine": "通貨:{code}",
+  "onbChange": "変更",
+  "onbStartSubtitle": "まずは支出を1件。数秒で終わります。",
+  "onbFirstDoneTitle": "お見事!最初の記録を保存しました",
+  "onbFirstDoneSubtitle": "次は月の予算を決めましょう。残りの金額をアプリがお知らせします。"
 }

@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "abokai sun shiga ta mahaɗata · Jakadan DGOTIX",
   "shareMomentGoal": "Ka cimma buri! Raba albishirin da abokanka.",
   "shareMomentAmbassador": "Yanzu kai Jakadan DGOTIX ne! Raba katinka.",
-  "menuHint": "Taɓa tambarin don buɗe menu"
+  "menuHint": "Taɓa tambarin don buɗe menu",
+  "onbFirstExpense": "Rubuta kashe kuɗinka na farko",
+  "onbOrIncome": "ko ƙara kuɗin shiga",
+  "onbCurrencyLine": "Kuɗinka: {code}",
+  "onbChange": "Canza",
+  "onbStartSubtitle": "Fara da kashe kuɗi ɗaya. Daƙiƙa kaɗan ne kawai.",
+  "onbFirstDoneTitle": "Madalla! An adana rubutunka na farko",
+  "onbFirstDoneSubtitle": "Yanzu saita kasafin wata, manhajar za ta gaya maka abin da ya rage."
 }

@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "دوست میرے لنک سے شامل ہوئے · DGOTIX سفیر",
   "shareMomentGoal": "آپ نے ایک ہدف حاصل کر لیا! یہ خوشخبری دوستوں کے ساتھ شیئر کریں۔",
   "shareMomentAmbassador": "اب آپ DGOTIX سفیر ہیں! اپنا کارڈ شیئر کریں۔",
-  "menuHint": "مینو کھولنے کے لیے لوگو پر ٹیپ کریں"
+  "menuHint": "مینو کھولنے کے لیے لوگو پر ٹیپ کریں",
+  "onbFirstExpense": "اپنا پہلا خرچ درج کریں",
+  "onbOrIncome": "یا آمدنی شامل کریں",
+  "onbCurrencyLine": "آپ کی کرنسی: {code}",
+  "onbChange": "تبدیل کریں",
+  "onbStartSubtitle": "ایک خرچ سے شروع کریں۔ صرف چند سیکنڈ لگتے ہیں۔",
+  "onbFirstDoneTitle": "شاباش! آپ کا پہلا اندراج محفوظ ہو گیا",
+  "onbFirstDoneSubtitle": "اب ماہانہ بجٹ مقرر کریں، ایپ بتائے گی کہ کتنا باقی ہے۔"
 }

@@ -24,15 +24,12 @@ class OnboardingController extends Notifier<OnboardingFlags?> {
     _load();
     // The first time this device settles its data, the card starts its week;
     // someone who already has records here is not new and never sees it.
-    ref.listen<AsyncValue<List<Transaction>>>(transactionsProvider,
-        (AsyncValue<List<Transaction>>? _, AsyncValue<List<Transaction>> next) {
-      final List<Transaction>? txns = next.valueOrNull;
-      final OnboardingFlags? f = state;
-      if (txns == null || f == null || f.firstSeenMs != null) return;
-      _update((OnboardingFlags x) => x.copyWith(
-          firstSeenMs: AppClock.now().millisecondsSinceEpoch,
-          dismissed: txns.length >= kEstablishedTransactions ? true : null));
-    }, fireImmediately: true);
+    ref.listen<AsyncValue<List<Transaction>>>(
+        transactionsProvider,
+        (AsyncValue<List<Transaction>>? _,
+                AsyncValue<List<Transaction>> next) =>
+            _startWeek(next.valueOrNull),
+        fireImmediately: true);
     return null;
   }
 
@@ -49,6 +46,17 @@ class OnboardingController extends Notifier<OnboardingFlags?> {
       // Corrupt/unavailable storage ⇒ start fresh.
     }
     state = flags;
+    // The records may have settled before the flags were read.
+    _startWeek(ref.read(transactionsProvider).valueOrNull);
+  }
+
+  /// Starts the card's week once both the flags and the records are known.
+  void _startWeek(List<Transaction>? txns) {
+    final OnboardingFlags? f = stateOrNull;
+    if (txns == null || f == null || f.firstSeenMs != null) return;
+    _update((OnboardingFlags x) => x.copyWith(
+        firstSeenMs: AppClock.now().millisecondsSinceEpoch,
+        dismissed: txns.length >= kEstablishedTransactions ? true : null));
   }
 
   void dismiss() => _update(
@@ -92,10 +100,23 @@ final onboardingStepsProvider = Provider<List<OnboardingStep>?>((ref) {
     return null;
   }
   return buildOnboardingSteps(
-    visitedSettings: flags.visitedSettings,
-    visitedGuide: flags.visitedGuide,
     hasTransaction: txCount > 0,
     hasBudget: budgetCount > 0,
     hasGoal: goalCount > 0,
   );
+});
+
+/// Whether the welcome card is on the dashboard right now. The dashboard asks
+/// too: while the card is up for someone with nothing recorded, the card
+/// carries the "add" buttons and the header keeps quiet.
+final welcomeVisibleProvider = Provider<bool>((ref) {
+  final OnboardingFlags? flags = ref.watch(onboardingFlagsProvider);
+  final List<OnboardingStep>? steps = ref.watch(onboardingStepsProvider);
+  final int? txCount = ref.watch(transactionsProvider).valueOrNull?.length;
+  if (flags == null || steps == null || txCount == null) return false;
+  return shouldShowWelcome(
+      flags: flags,
+      steps: steps,
+      transactionCount: txCount,
+      now: AppClock.now());
 });

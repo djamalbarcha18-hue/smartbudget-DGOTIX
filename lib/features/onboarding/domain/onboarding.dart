@@ -18,19 +18,19 @@ class OnboardingStep {
   final bool done;
 }
 
-/// The checklist in display order. Pure, so it is trivially testable.
+/// The checklist in display order: the three things that make the app useful,
+/// the first expense first. Pure, so it is trivially testable.
+///
+/// Choosing a language and currency and reading the guide used to be steps
+/// too. The currency is now picked from the device's country and confirmed on
+/// the card itself, and the guide is a link under it, so a new user's first
+/// step is the one that matters.
 List<OnboardingStep> buildOnboardingSteps({
-  required bool visitedSettings,
-  required bool visitedGuide,
   required bool hasTransaction,
   required bool hasBudget,
   required bool hasGoal,
 }) =>
     <OnboardingStep>[
-      OnboardingStep(
-          id: OnboardingStepId.settings,
-          route: '/settings',
-          done: visitedSettings),
       OnboardingStep(
           id: OnboardingStepId.transaction,
           route: '/transactions',
@@ -38,9 +38,15 @@ List<OnboardingStep> buildOnboardingSteps({
       OnboardingStep(
           id: OnboardingStepId.budget, route: '/budget', done: hasBudget),
       OnboardingStep(id: OnboardingStepId.goal, route: '/goals', done: hasGoal),
-      OnboardingStep(
-          id: OnboardingStepId.guide, route: '/guide', done: visitedGuide),
     ];
+
+/// The step to do next, or null when all are done.
+OnboardingStep? nextOnboardingStep(List<OnboardingStep> steps) {
+  for (final OnboardingStep s in steps) {
+    if (!s.done) return s;
+  }
+  return null;
+}
 
 /// Persisted onboarding flags (the rest is derived from real data).
 class OnboardingFlags {
@@ -104,10 +110,10 @@ const Duration kWelcomeWindow = Duration(days: 7);
 const int kEstablishedTransactions = 5;
 
 /// Whether the dashboard shows the welcome checklist. It is for a NEW user:
-/// not once dismissed, not after the first week, not once the three steps
-/// that need data (a transaction, a budget, a goal) are done, and not for
-/// someone who already has plenty of records, such as an existing user
-/// signing in on another device.
+/// not once dismissed, not after the first week, not once the three steps (a
+/// transaction, a budget, a goal) are done, and not for someone who already
+/// has plenty of records, such as an existing user signing in on another
+/// device.
 bool shouldShowWelcome({
   required OnboardingFlags flags,
   required List<OnboardingStep> steps,
@@ -123,15 +129,7 @@ bool shouldShowWelcome({
     return false;
   }
   if (transactionCount >= kEstablishedTransactions) return false;
-  final bool dataStepsDone = steps
-      .where((OnboardingStep s) =>
-          s.id == OnboardingStepId.transaction ||
-          s.id == OnboardingStepId.budget ||
-          s.id == OnboardingStepId.goal)
-      .every((OnboardingStep s) => s.done);
-  final bool allDone = steps.every((OnboardingStep s) => s.done);
-  // Setting up is finished: leave the dashboard to the figures. (Everything
-  // ticked, the guide too, shows the short "all done" card once.)
-  if (dataStepsDone && !allDone) return false;
+  // Setting up is finished: leave the dashboard to the figures.
+  if (steps.every((OnboardingStep s) => s.done)) return false;
   return true;
 }

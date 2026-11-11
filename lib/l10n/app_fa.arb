@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "دوست با پیوند من پیوستند · سفیر DGOTIX",
   "shareMomentGoal": "به یک هدف رسیدید! خبر خوب را با دوستانتان در میان بگذارید.",
   "shareMomentAmbassador": "اکنون سفیر DGOTIX هستید! کارت خود را به اشتراک بگذارید.",
-  "menuHint": "برای باز کردن منو روی لوگو بزنید"
+  "menuHint": "برای باز کردن منو روی لوگو بزنید",
+  "onbFirstExpense": "اولین هزینه‌تان را ثبت کنید",
+  "onbOrIncome": "یا درآمد اضافه کنید",
+  "onbCurrencyLine": "واحد پول شما: {code}",
+  "onbChange": "تغییر",
+  "onbStartSubtitle": "با یک هزینه شروع کنید. فقط چند ثانیه طول می‌کشد.",
+  "onbFirstDoneTitle": "آفرین! اولین مورد شما ذخیره شد",
+  "onbFirstDoneSubtitle": "حالا بودجهٔ ماهانه تعیین کنید تا برنامه بگوید چقدر باقی مانده است."
 }

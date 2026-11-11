@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "명의 친구가 내 링크로 가입 · DGOTIX 앰배서더",
   "shareMomentGoal": "목표를 달성했어요! 좋은 소식을 친구들과 나눠 보세요.",
   "shareMomentAmbassador": "이제 DGOTIX 앰배서더가 됐어요! 카드를 공유해 보세요.",
-  "menuHint": "로고를 눌러 메뉴를 여세요"
+  "menuHint": "로고를 눌러 메뉴를 여세요",
+  "onbFirstExpense": "첫 지출 기록하기",
+  "onbOrIncome": "또는 수입 추가",
+  "onbCurrencyLine": "내 통화: {code}",
+  "onbChange": "변경",
+  "onbStartSubtitle": "지출 한 건으로 시작하세요. 몇 초면 됩니다.",
+  "onbFirstDoneTitle": "잘했어요! 첫 기록이 저장됐어요",
+  "onbFirstDoneSubtitle": "이제 월 예산을 정하면 앱이 얼마가 남았는지 알려 줘요."
 }

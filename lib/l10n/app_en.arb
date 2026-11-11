@@ -1978,5 +1978,13 @@
   "shareCardAmbassadorLabel": "friends joined through my link · DGOTIX Ambassador",
   "shareMomentGoal": "You reached a goal! Share the good news with your friends.",
   "shareMomentAmbassador": "You're now a DGOTIX Ambassador! Share your card.",
-  "menuHint": "Tap the logo to open the menu"
+  "menuHint": "Tap the logo to open the menu",
+  "onbFirstExpense": "Record your first expense",
+  "onbOrIncome": "or add income",
+  "onbCurrencyLine": "Your currency: {code}",
+  "@onbCurrencyLine": {"placeholders": {"code": {"type": "String"}}},
+  "onbChange": "Change",
+  "onbStartSubtitle": "Start with one expense. It takes a few seconds.",
+  "onbFirstDoneTitle": "Well done! Your first entry is saved",
+  "onbFirstDoneSubtitle": "Next, set a monthly budget and the app will tell you how much is left."
 }

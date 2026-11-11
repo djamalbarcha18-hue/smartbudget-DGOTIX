@@ -1673,5 +1673,12 @@
   "shareCardAmbassadorLabel": "दोस्त मेरे लिंक से जुड़े · DGOTIX एंबेसडर",
   "shareMomentGoal": "आपने एक लक्ष्य पूरा किया! यह खुशखबरी दोस्तों के साथ साझा करें।",
   "shareMomentAmbassador": "अब आप DGOTIX एंबेसडर हैं! अपना कार्ड साझा करें।",
-  "menuHint": "मेन्यू खोलने के लिए लोगो पर टैप करें"
+  "menuHint": "मेन्यू खोलने के लिए लोगो पर टैप करें",
+  "onbFirstExpense": "अपना पहला खर्च दर्ज करें",
+  "onbOrIncome": "या आय जोड़ें",
+  "onbCurrencyLine": "आपकी मुद्रा: {code}",
+  "onbChange": "बदलें",
+  "onbStartSubtitle": "एक खर्च से शुरू करें। बस कुछ सेकंड लगते हैं।",
+  "onbFirstDoneTitle": "बहुत बढ़िया! आपकी पहली प्रविष्टि सहेज ली गई",
+  "onbFirstDoneSubtitle": "अब मासिक बजट तय करें, ऐप बताएगा कि कितना बचा है।"
 }

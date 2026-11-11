@@ -4,28 +4,22 @@ import 'package:smartbudget/features/onboarding/domain/onboarding.dart';
 
 void main() {
   welcomeTests();
-  test('a brand-new user has every step open, in order', () {
+  test('a brand-new user has three steps, the first entry first', () {
     final List<OnboardingStep> steps = buildOnboardingSteps(
-      visitedSettings: false,
-      visitedGuide: false,
       hasTransaction: false,
       hasBudget: false,
       hasGoal: false,
     );
     expect(steps.map((OnboardingStep s) => s.id).toList(), <OnboardingStepId>[
-      OnboardingStepId.settings,
       OnboardingStepId.transaction,
       OnboardingStepId.budget,
       OnboardingStepId.goal,
-      OnboardingStepId.guide,
     ]);
     expect(steps.every((OnboardingStep s) => !s.done), isTrue);
   });
 
-  test('steps tick off from real data and visits', () {
+  test('steps tick off from real data', () {
     final List<OnboardingStep> steps = buildOnboardingSteps(
-      visitedSettings: true,
-      visitedGuide: false,
       hasTransaction: true,
       hasBudget: false,
       hasGoal: true,
@@ -33,17 +27,25 @@ void main() {
     final Map<OnboardingStepId, bool> done = <OnboardingStepId, bool>{
       for (final OnboardingStep s in steps) s.id: s.done,
     };
-    expect(done[OnboardingStepId.settings], isTrue);
     expect(done[OnboardingStepId.transaction], isTrue);
     expect(done[OnboardingStepId.budget], isFalse);
     expect(done[OnboardingStepId.goal], isTrue);
-    expect(done[OnboardingStepId.guide], isFalse);
+  });
+
+  test('the next step is the first one left, in order', () {
+    OnboardingStepId? next({bool tx = false, bool b = false, bool g = false}) =>
+        nextOnboardingStep(buildOnboardingSteps(
+                hasTransaction: tx, hasBudget: b, hasGoal: g))
+            ?.id;
+    expect(next(), OnboardingStepId.transaction);
+    expect(next(tx: true), OnboardingStepId.budget);
+    expect(next(tx: true, g: true), OnboardingStepId.budget);
+    expect(next(tx: true, b: true), OnboardingStepId.goal);
+    expect(next(tx: true, b: true, g: true), isNull);
   });
 
   test('every step links to an app route', () {
     for (final OnboardingStep s in buildOnboardingSteps(
-      visitedSettings: false,
-      visitedGuide: false,
       hasTransaction: false,
       hasBudget: false,
       hasGoal: false,
@@ -69,15 +71,11 @@ void welcomeTests() {
   final DateTime now = DateTime(2026, 11, 6);
   int ms(DateTime d) => d.millisecondsSinceEpoch;
   List<OnboardingStep> steps({
-    bool settings = false,
     bool tx = false,
     bool budget = false,
     bool goal = false,
-    bool guide = false,
   }) =>
       buildOnboardingSteps(
-        visitedSettings: settings,
-        visitedGuide: guide,
         hasTransaction: tx,
         hasBudget: budget,
         hasGoal: goal,
@@ -119,11 +117,11 @@ void welcomeTests() {
           isTrue);
     });
 
-    test('the screenshot case: 4 of 5 ticked, only the guide left: hidden', () {
+    test('the three steps done: it leaves the dashboard to the figures', () {
       expect(
           shouldShowWelcome(
               flags: OnboardingFlags(firstSeenMs: ms(now)),
-              steps: steps(settings: true, tx: true, budget: true, goal: true),
+              steps: steps(tx: true, budget: true, goal: true),
               transactionCount: 3,
               now: now),
           isFalse);
@@ -135,21 +133,6 @@ void welcomeTests() {
               flags: OnboardingFlags(firstSeenMs: ms(now)),
               steps: steps(tx: true),
               transactionCount: 1,
-              now: now),
-          isTrue);
-    });
-
-    test('everything ticked, guide too: the short all-done card shows', () {
-      expect(
-          shouldShowWelcome(
-              flags: OnboardingFlags(firstSeenMs: ms(now)),
-              steps: steps(
-                  settings: true,
-                  tx: true,
-                  budget: true,
-                  goal: true,
-                  guide: true),
-              transactionCount: 3,
               now: now),
           isTrue);
     });
@@ -171,7 +154,7 @@ void welcomeTests() {
               flags: OnboardingFlags(
                   firstSeenMs: ms(now.subtract(const Duration(days: 30))),
                   reopened: true),
-              steps: steps(settings: true, tx: true, budget: true, goal: true),
+              steps: steps(tx: true, budget: true, goal: true),
               transactionCount: 50,
               now: now),
           isTrue);

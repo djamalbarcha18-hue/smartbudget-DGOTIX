@@ -32,6 +32,7 @@ import 'package:smartbudget/features/dashboard/presentation/income_expense_card.
 import 'package:smartbudget/features/dashboard/presentation/global_markets_section.dart';
 import 'package:smartbudget/features/onboarding/presentation/welcome_card.dart';
 import 'package:smartbudget/features/recurring/domain/recurrence_engine.dart';
+import 'package:smartbudget/features/onboarding/application/onboarding_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
@@ -149,7 +150,13 @@ class DashboardPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _Header(hello: hello, name: name, scope: scope),
+          // Nothing recorded and the welcome card is up: the card carries
+          // the one button that matters, so the header keeps to the greeting.
+          _Header(
+              hello: hello,
+              name: name,
+              scope: scope,
+              quiet: nothingYet && ref.watch(welcomeVisibleProvider)),
           const SizedBox(height: DsSpacing.xl),
           const WelcomeCard(),
           const BackupReminderCard(),
@@ -215,7 +222,10 @@ class DashboardPage extends ConsumerWidget {
             DgotixInsightsSection(),
             SizedBox(height: gap),
           ],
-          const GlobalMarketsSection(),
+          // Gold and bitcoin prices are no help to someone who has not
+          // recorded a thing yet; they come with the first entry (and are
+          // always in the menu).
+          if (!nothingYet) const GlobalMarketsSection(),
         ],
       ),
     );
@@ -369,10 +379,17 @@ KpiTone _toneOf(KpiSentiment s) => switch (s) {
     };
 
 class _Header extends ConsumerWidget {
-  const _Header({required this.hello, required this.name, required this.scope});
+  const _Header(
+      {required this.hello,
+      required this.name,
+      required this.scope,
+      this.quiet = false});
   final String hello;
   final String? name;
   final DashboardScope scope;
+
+  /// No period switch and no "add" buttons: the welcome card has them.
+  final bool quiet;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -388,7 +405,9 @@ class _Header extends ConsumerWidget {
             MonthNames.full(lang: appLangOf(context))[month - 1], year)
         : l.dashSummaryYear(year);
 
-    final List<Widget> actions = <Widget>[
+    final List<Widget> actions = quiet
+        ? const <Widget>[]
+        : <Widget>[
       _ScopeToggle(scope: scope),
       DsButton(
         label: l.quickTitle,
@@ -465,6 +484,7 @@ class _Header extends ConsumerWidget {
       ],
     );
 
+    if (actions.isEmpty) return titleBlock;
     if (isMobile) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
