@@ -175,7 +175,7 @@ The catalog is the source of truth; this is the intended shape:
 | Wallets | 2 (incl. General), base currency only | unlimited, any currency |
 | Category budgets (per month) | 5 | unlimited |
 | Goals / debts / darets | 1 / 2 / 1 | unlimited |
-| Members in one daret (building it; joining a shared one is free at any size) | 4 | unlimited |
+| Members in one daret (building it; joining a shared one is free at any size) | 12 | unlimited |
 | Season plans (still ahead or running) | 1 | unlimited |
 | Recurring rules | 5 | unlimited |
 | Reports | monthly: this month and the previous one | every period, any year |

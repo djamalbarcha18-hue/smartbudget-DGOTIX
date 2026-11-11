@@ -93,7 +93,8 @@ class _DaretEditorSheetState extends ConsumerState<DaretEditorSheet> {
   void _addMember() {
     final String n = _member.text.trim();
     if (n.isEmpty) return;
-    // Small circles are free; a larger one asks for Pro (and adds nothing).
+    // The usual circles are free; a very large one asks for Pro (and adds
+    // nothing).
     if (!PlanLimits.allowAdd(context, Feature.daretMembers,
         (ProviderContainer _) => _members.length)) {
       return;

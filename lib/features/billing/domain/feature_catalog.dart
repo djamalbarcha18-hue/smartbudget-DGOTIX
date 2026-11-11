@@ -244,13 +244,14 @@ abstract final class FeatureCatalog {
       minTier: Plan.free,
       quotas: _freeItems1,
     ),
-    // A circle of up to four (a couple, a few friends) is free; the larger
-    // circles an organizer runs are on Pro. A daret that arrives by a
+    // A circle of up to twelve is free: that covers the usual ones (a monthly
+    // circle that goes round in a year), so a new user can enter their real
+    // daret and share it. Larger circles are on Pro. A daret that arrives by a
     // member's link is not counted here: joining one is free at any size.
     Feature.daretMembers: FeatureRule(
       feature: Feature.daretMembers,
       minTier: Plan.free,
-      quotas: _freeItems4,
+      quotas: _freeItems12,
     ),
     Feature.seasons: FeatureRule(
       feature: Feature.seasons,
@@ -297,12 +298,12 @@ abstract final class FeatureCatalog {
     Plan.free: Quota(2, QuotaWindow.items),
     Plan.pro: _unlimitedItems,
   };
-  static const Map<Plan, Quota> _freeItems4 = <Plan, Quota>{
-    Plan.free: Quota(4, QuotaWindow.items),
-    Plan.pro: _unlimitedItems,
-  };
   static const Map<Plan, Quota> _freeItems5 = <Plan, Quota>{
     Plan.free: Quota(5, QuotaWindow.items),
+    Plan.pro: _unlimitedItems,
+  };
+  static const Map<Plan, Quota> _freeItems12 = <Plan, Quota>{
+    Plan.free: Quota(12, QuotaWindow.items),
     Plan.pro: _unlimitedItems,
   };
   static const Quota _unlimitedItems = Quota(-1, QuotaWindow.items);

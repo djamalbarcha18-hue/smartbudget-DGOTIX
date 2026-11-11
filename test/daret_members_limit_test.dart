@@ -14,7 +14,7 @@ import 'package:smartbudget/features/daret/presentation/daret_editor_sheet.dart'
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 Future<void> _open(WidgetTester tester, Plan plan) async {
-  tester.view.physicalSize = const Size(1000, 2400);
+  tester.view.physicalSize = const Size(1000, 5000);
   tester.view.devicePixelRatio = 2;
   addTearDown(tester.view.reset);
   SharedPreferences.setMockInitialValues(<String, Object>{});
@@ -47,13 +47,13 @@ Future<void> _add(WidgetTester tester, String name) async {
 void main() {
   setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
 
-  test('the rule: four members free, any number on Pro', () {
+  test('the rule: twelve members free, any number on Pro', () {
     expect(
-        FeatureGate.evaluate(Feature.daretMembers, plan: Plan.free, used: 3)
+        FeatureGate.evaluate(Feature.daretMembers, plan: Plan.free, used: 11)
             .allowed,
         isTrue);
     final GateDecision full =
-        FeatureGate.evaluate(Feature.daretMembers, plan: Plan.free, used: 4);
+        FeatureGate.evaluate(Feature.daretMembers, plan: Plan.free, used: 12);
     expect(full.allowed, isFalse);
     expect(full.reason, GateReason.quotaReached);
     expect(full.suggestedTier, Plan.pro);
@@ -63,22 +63,27 @@ void main() {
         isTrue);
   });
 
-  testWidgets('free: the fourth member goes in, the fifth asks for Pro',
+  testWidgets('free: the twelfth member goes in, the thirteenth asks for Pro',
       (WidgetTester tester) async {
     await _open(tester, Plan.free);
     // The sheet starts with "Me" as the first member.
-    await _add(tester, 'Sara');
-    await _add(tester, 'Leila');
-    await _add(tester, 'Omar');
-    expect(find.text('Omar'), findsOneWidget);
+    for (int i = 2; i <= 12; i++) {
+      await _add(tester, 'Member $i');
+    }
+    expect(find.text('Member 12'), findsOneWidget);
 
-    await _add(tester, 'Youssef');
+    await _add(tester, 'Thirteenth');
     // Not added: the name is still only in the field, and Pro is offered.
-    expect(find.text('Youssef'), findsOneWidget);
+    expect(
+        tester
+            .widget<TextField>(find.widgetWithText(TextField, "Member's name"))
+            .controller!
+            .text,
+        'Thirteenth');
     expect(find.textContaining('Pro'), findsWidgets);
   });
 
-  testWidgets('Pro: a fifth member and more go in',
+  testWidgets('Pro: a thirteenth member and more go in',
       (WidgetTester tester) async {
     await _open(tester, Plan.pro);
     for (final String n in <String>[
