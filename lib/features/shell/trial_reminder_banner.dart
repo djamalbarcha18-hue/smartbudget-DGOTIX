@@ -35,7 +35,7 @@ class TrialReminderBanner extends ConsumerWidget {
     final String text = r.kind == TrialReminderKind.endsToday
         ? l.trialEndsToday
         : l.trialEndingSoon(r.daysLeft);
-    final bool opensPlans = !AppEnv.storeFreeMode;
+    const bool opensPlans = !AppEnv.storeFreeMode;
     return Stack(
       children: <Widget>[
         child,

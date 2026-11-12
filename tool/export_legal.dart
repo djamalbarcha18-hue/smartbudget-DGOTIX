@@ -18,7 +18,7 @@ String _esc(String s) => s
 /// Turns the support email in [s] into a mailto link (after escaping).
 String _body(String s) {
   final String e = _esc(s);
-  const String mail = AppConfig.supportEmail;
+  final String mail = AppConfig.supportEmail;
   return mail.isEmpty
       ? e
       : e.replaceAll(mail, '<a href="mailto:$mail">$mail</a>');
