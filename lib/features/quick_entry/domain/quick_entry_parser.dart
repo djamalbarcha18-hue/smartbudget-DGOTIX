@@ -1,4 +1,5 @@
 import 'package:smartbudget/core/money/currency.dart';
+import 'package:smartbudget/features/quick_entry/domain/spoken_numbers.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
 
@@ -76,7 +77,8 @@ abstract final class QuickEntryParser {
     List<Wallet> wallets = const <Wallet>[],
     String? defaultWalletId,
   }) {
-    String text = _latinDigits(input).trim();
+    // An amount said as words («قهوة مئتين») becomes digits first.
+    String text = SpokenNumbers.toDigits(_latinDigits(input).trim());
     if (text.isEmpty) return null;
 
     // Explicit sign.
