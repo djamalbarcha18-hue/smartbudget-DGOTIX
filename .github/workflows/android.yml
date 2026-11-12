@@ -90,9 +90,10 @@ jobs:
           # store app itself never sells or links to a payment
           # (AppEnv.storeFreeMode, docs/PLAY_STORE.md).
           DEFINES="$DEFINES --dart-define=BETA_ALL_ACCESS=false"
-          # «Continue with Google» on sign-in and sign-up (docs/GOOGLE_SIGN_IN.md:
-          # needs Google turned on in Supabase first).
-          DEFINES="$DEFINES --dart-define=GOOGLE_SIGN_IN=true"
+          # No «Continue with Google» in the app for now: the website signs in
+          # with Google's own button, which needs no Supabase address at
+          # Google; the app's version (Google's native sign-in) comes with the
+          # Play Store build (docs/GOOGLE_SIGN_IN.md). E-mail sign-in stays.
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
             DEFINES="$DEFINES --dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
             # Commodity prices (industrial metals, steel & iron, energy,

@@ -52,6 +52,10 @@ class RecordingAuth implements AuthRepository {
       {required String email, required String code, required String newPassword}) async {}
   @override
   Future<void> signInWithGoogle() async {}
+
+  @override
+  Future<void> signInWithGoogleIdToken(
+          {required String idToken, required String nonce}) async {}
   @override
   Future<void> signOut() async {}
   @override

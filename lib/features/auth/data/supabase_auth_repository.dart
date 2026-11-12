@@ -102,6 +102,24 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> signInWithGoogleIdToken({
+    required String idToken,
+    required String nonce,
+  }) async {
+    try {
+      await _client.auth.signInWithIdToken(
+        provider: sb.OAuthProvider.google,
+        idToken: idToken,
+        nonce: nonce,
+      );
+    } on sb.AuthException catch (e) {
+      throw _failure(e);
+    } catch (e) {
+      throw AuthFailure(AuthFailureKind.unknown, e.toString());
+    }
+  }
+
+  @override
   Future<void> signOut() => _client.auth.signOut();
 
   @override

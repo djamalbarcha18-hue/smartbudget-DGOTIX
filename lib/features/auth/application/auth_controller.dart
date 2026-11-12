@@ -111,6 +111,10 @@ class AuthController extends Notifier<AuthState> {
   /// Opens Google's sign-in; the router follows once the session arrives.
   Future<void> signInWithGoogle() => _repo.signInWithGoogle();
 
+  Future<void> signInWithGoogleIdToken(
+          {required String idToken, required String nonce}) =>
+      _repo.signInWithGoogleIdToken(idToken: idToken, nonce: nonce);
+
   Future<void> signOut() => _repo.signOut();
 
   Future<void> sendPasswordReset({required String email, String? captchaToken}) =>

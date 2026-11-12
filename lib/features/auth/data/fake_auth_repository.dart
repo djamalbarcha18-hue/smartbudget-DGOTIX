@@ -80,6 +80,14 @@ class FakeAuthRepository implements AuthRepository {
         id: idFor(email), email: email, displayName: 'Google user'));
   }
 
+  /// Development stand-in: same as [signInWithGoogle].
+  @override
+  Future<void> signInWithGoogleIdToken({
+    required String idToken,
+    required String nonce,
+  }) =>
+      signInWithGoogle();
+
   @override
   Future<AuthUser?> signUp({
     required String email,

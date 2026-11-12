@@ -1,17 +1,26 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/auth/domain/auth_failure.dart';
+import 'package:smartbudget/features/auth/domain/google_nonce.dart';
 import 'package:smartbudget/features/auth/presentation/auth_helpers.dart';
+import 'package:smartbudget/features/auth/presentation/widgets/google_button_view.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// «or» and «Continue with Google», under the e-mail form of the sign-in and
 /// sign-up pages. Nothing at all while Google sign-in is off.
+///
+/// On the website with [AppEnv.googleWebClientId] set, it is Google's own
+/// button on this site: Google answers here with an ID token, which goes to
+/// Supabase. Elsewhere it opens the Supabase redirect.
 class GoogleSignInSection extends ConsumerStatefulWidget {
   const GoogleSignInSection({super.key});
 
@@ -22,6 +31,72 @@ class GoogleSignInSection extends ConsumerStatefulWidget {
 
 class _GoogleSignInSectionState extends ConsumerState<GoogleSignInSection> {
   bool _opening = false;
+
+  /// Google's own button (website) instead of the Supabase redirect.
+  static bool get _direct => kIsWeb && AppEnv.googleWebClientId.isNotEmpty;
+
+  /// One per visit of the page: Google writes its hash into the token.
+  final GoogleNonce _nonce = GoogleNonce.create();
+
+  Future<void> _withToken(String idToken) async {
+    if (_opening) return;
+    final AppLocalizations l = AppLocalizations.of(context);
+    setState(() => _opening = true);
+    try {
+      await ref
+          .read(authControllerProvider.notifier)
+          .signInWithGoogleIdToken(idToken: idToken, nonce: _nonce.raw);
+      // The router follows once the session arrives.
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(authFailureMessage(error, l))));
+    } finally {
+      if (mounted) setState(() => _opening = false);
+    }
+  }
+
+  void _buttonFailed() {
+    if (!mounted) return;
+    final AppLocalizations l = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(authFailureMessage(
+            const AuthFailure(AuthFailureKind.network), l))));
+  }
+
+  Widget _googleButton(BuildContext context) => LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints box) {
+          final int width = box.maxWidth.isFinite
+              ? box.maxWidth.clamp(200, 400).floor()
+              : 320;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              SizedBox(
+                height: 48,
+                child: GoogleButtonView(
+                  query: <String, String>{
+                    'client_id': AppEnv.googleWebClientId,
+                    'nonce': _nonce.hashed,
+                    'theme': Theme.of(context).brightness == Brightness.dark
+                        ? 'dark'
+                        : 'light',
+                    'lang': Localizations.localeOf(context).languageCode,
+                    'width': '$width',
+                  },
+                  onCredential: _withToken,
+                  onError: _buttonFailed,
+                ),
+              ),
+              if (_opening)
+                const Padding(
+                  padding: EdgeInsets.only(top: DsSpacing.sm),
+                  child: LinearProgressIndicator(minHeight: 2),
+                ),
+            ],
+          );
+        },
+      );
 
   Future<void> _go() async {
     if (_opening) return;
@@ -61,6 +136,9 @@ class _GoogleSignInSectionState extends ConsumerState<GoogleSignInSection> {
           ],
         ),
         const SizedBox(height: DsSpacing.lg),
+        if (_direct)
+          _googleButton(context)
+        else
         SizedBox(
           height: 50,
           child: OutlinedButton(

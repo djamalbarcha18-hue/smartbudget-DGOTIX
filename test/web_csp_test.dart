@@ -52,6 +52,28 @@ void main() {
         contains('postMessage(msg, location.origin)'));
   });
 
+  test('the Google sign-in page runs only its own script and Google\'s', () {
+    final String page = File('web/google_signin.html').readAsStringSync();
+    final RegExpMatch? p =
+        RegExp(r'Content-Security-Policy" content="([^"]*)"').firstMatch(page);
+    final Map<String, List<String>> d = <String, List<String>>{
+      for (final String x in (p?.group(1) ?? '').split(';'))
+        if (x.trim().isNotEmpty)
+          x.trim().split(RegExp(r'\s+')).first:
+              x.trim().split(RegExp(r'\s+')).skip(1).toList(),
+    };
+    expect(d['default-src'], <String>["'none'"]);
+    expect(d['script-src'],
+        <String>["'self'", 'https://accounts.google.com/gsi/client']);
+    expect(d['frame-src'], <String>['https://accounts.google.com/gsi/']);
+    expect(d['connect-src'], <String>['https://accounts.google.com/gsi/']);
+    // No inline script: the logic is in google_signin.js.
+    expect(RegExp(r'<script>').hasMatch(page), isFalse);
+    // The token goes only to a page of this same site.
+    expect(File('web/google_signin.js').readAsStringSync(),
+        contains('postMessage(msg, location.origin)'));
+  });
+
   test('no payment page or script of a payment provider is served', () {
     // Whop's checkout is its own hosted page: nothing of it runs on our site.
     expect(File('web/pay.html').existsSync(), isFalse);

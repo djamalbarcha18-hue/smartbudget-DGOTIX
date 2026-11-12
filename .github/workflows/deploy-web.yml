@@ -67,6 +67,9 @@ jobs:
           # «Continue with Google» on sign-in and sign-up (docs/GOOGLE_SIGN_IN.md:
           # needs Google turned on in Supabase first).
           DEFINES="$DEFINES --dart-define=GOOGLE_SIGN_IN=true"
+          # Google's own button on this site (public OAuth client id, not a
+          # secret): Google comes back here, not to the Supabase address.
+          DEFINES="$DEFINES --dart-define=GOOGLE_WEB_CLIENT_ID=688334531633-tdfockk2pe1a5vr4v7gu5577qcp2a2hm.apps.googleusercontent.com"
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
             DEFINES="$DEFINES --dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
             # Commodity prices (industrial metals, steel & iron, energy,

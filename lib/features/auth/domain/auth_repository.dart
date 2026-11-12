@@ -35,6 +35,16 @@ abstract interface class AuthRepository {
   /// gets an account then. Throws [AuthFailure] when the page can't open.
   Future<void> signInWithGoogle();
 
+  /// Signs in with the ID token Google's own button gave this site (web).
+  /// [nonce] is the raw value whose SHA-256 was given to Google; the server
+  /// checks the two match. A new Google user gets an account; one whose
+  /// confirmed address already has an account signs into it. Throws
+  /// [AuthFailure] on error.
+  Future<void> signInWithGoogleIdToken({
+    required String idToken,
+    required String nonce,
+  });
+
   Future<void> signOut();
 
   /// Emails a one-time recovery code to [email]. Throws [AuthFailure] on

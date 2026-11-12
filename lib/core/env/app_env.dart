@@ -92,6 +92,15 @@ abstract final class AppEnv {
   static const bool googleSignIn =
       bool.fromEnvironment('GOOGLE_SIGN_IN', defaultValue: false);
 
+  /// The Google OAuth client id of the website (public, not a secret). When
+  /// set, the website signs in with Google's own button on this site
+  /// (web/google_signin.html) and hands the result to Supabase: Google comes
+  /// back to this site, not to the Supabase address, and the consent screen
+  /// can show the app's name once Google verifies it (docs/GOOGLE_SIGN_IN.md).
+  /// Empty: the Supabase redirect is used.
+  static const String googleWebClientId =
+      String.fromEnvironment('GOOGLE_WEB_CLIENT_ID', defaultValue: '');
+
   /// Choosing an icon and colour for one's own categories (a Pro extra):
   /// hidden in every build until built with
   /// `--dart-define=CATEGORY_ICON_PICKER=true`. The built-in category badges
