@@ -19,6 +19,7 @@ import 'package:smartbudget/core/theme/theme_reveal.dart';
 import 'package:smartbudget/core/time/clock_sync_controller.dart';
 import 'package:smartbudget/design_system/theme/ds_theme.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_gate.dart';
+import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
 import 'package:smartbudget/features/privacy/presentation/money_privacy_host.dart';
 import 'package:smartbudget/features/reminders/application/reminder_controller.dart';
 import 'package:smartbudget/features/settings/presentation/language_picker.dart';
@@ -55,6 +56,8 @@ class SmartBudgetApp extends ConsumerWidget {
     ref.listen(baseValueBackfillProvider, (_, __) {});
     // Keeps this device and the account's cloud copy in step.
     ref.listen(syncControllerProvider, (_, __) {});
+    // Re-reads the plan from the server when the app comes back into view.
+    ref.listen(entitlementRefreshProvider, (_, __) {});
     // Attaches a waiting invite to the account that just signed in.
     ref.listen(referralRedeemProvider, (_, __) {});
     // Until the user picks a base currency, it follows the language (Turkish
