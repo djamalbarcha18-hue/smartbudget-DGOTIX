@@ -9,8 +9,9 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Near the end of the free PRO trial: a note at the top that says how long
 /// is left and that the data stays. It can be closed; each reminder shows
-/// once. On the website a tap opens the plans; the store app has no plans to
-/// open (it names no price and links to no payment), so there it is text only.
+/// once. On the website it also invites the user to upgrade (the button, or a
+/// tap, opens the plans); the store app has no plans to open (it names no price
+/// and links to no payment), so there it is text only.
 class TrialReminderBanner extends ConsumerWidget {
   const TrialReminderBanner({
     super.key,
@@ -70,6 +71,19 @@ class TrialReminderBanner extends ConsumerWidget {
                                     .bodySmall
                                     ?.copyWith(color: cs.onInverseSurface)),
                           ),
+                          // The invitation to subscribe is for the website only:
+                          // the store app names no payment and links to none.
+                          if (opensPlans)
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                foregroundColor: cs.inversePrimary,
+                                visualDensity: VisualDensity.compact,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8),
+                              ),
+                              onPressed: () => router.push('/plans'),
+                              child: Text(l.upgradeCta),
+                            ),
                           IconButton(
                             visualDensity: VisualDensity.compact,
                             tooltip: MaterialLocalizations.of(context)
