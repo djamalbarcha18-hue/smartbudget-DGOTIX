@@ -36,9 +36,8 @@ Deno.serve(async (req: Request) => {
   try {
     const userId = await requireUserId(req);
     const body = await readJsonBody(req, MAX_SMALL_BODY_BYTES);
-    // One paid plan, PRO; BASIC was merged into it.
-    const asked: Plan = normalizePlan(body?.plan);
-    const plan: Plan = asked === "basic" ? "pro" : asked;
+    // One paid plan: PRO.
+    const plan: Plan = normalizePlan(body?.plan);
     const period = body?.period === "yearly" ? "yearly" : "monthly";
     const provider = body?.provider === "paypal" ? "paypal" : "whop";
     if (plan === "free") {

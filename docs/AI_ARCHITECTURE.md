@@ -101,7 +101,6 @@ allowance from `supabase/functions/_shared/quota.ts`, which mirrors the app's
 | plan | DGOTIX AI answers | window |
 |------|-------------------|--------|
 | free | 5 | one-time (lifetime) |
-| basic | 25 | monthly (retired plan) |
 | pro | 80 | monthly (not carried over) |
 
 FREE's one-time allowance is counted in `ai_usage_lifetime`; paid plans are

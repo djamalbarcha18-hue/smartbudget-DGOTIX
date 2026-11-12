@@ -5,7 +5,7 @@
 // checkout. Coupons are server-only (not client-readable), so codes can't be
 // enumerated: this function is the only way to test one.
 //
-//   POST { code, plan?: "basic"|"pro", period?: "monthly"|"yearly" } ->
+//   POST { code, plan?: "pro", period?: "monthly"|"yearly" } ->
 //     { valid:true, kind, value, targetPlan, targetPeriod,
 //       basePriceUsd?, discountedPriceUsd?, trialDays? }
 //   | { valid:false, reason: "invalid"|"expired"|"not_applicable"
@@ -46,8 +46,8 @@ Deno.serve(async (req: Request) => {
     const body = await readJsonBody(req, MAX_SMALL_BODY_BYTES);
     const code = String(body?.code ?? "").trim().toUpperCase();
     // Probe mode when no paid plan is supplied (pre-checkout preview).
-    const probe = body?.plan !== "basic" && body?.plan !== "pro";
     const plan: Plan = normalizePlan(body?.plan);
+    const probe = plan === "free";
     const period: Period = body?.period === "yearly" ? "yearly" : "monthly";
     if (!code) return jsonResponse({ valid: false, reason: "invalid" }, 200, cors);
 

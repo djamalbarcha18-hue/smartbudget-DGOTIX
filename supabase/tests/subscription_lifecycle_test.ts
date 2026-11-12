@@ -26,12 +26,12 @@ const ev = () => "evt_" + (++seq);
 // so whopMem() sets what Whop holds after the change, then sends its event.
 {
   const u = await user();
-  await whop(whopMem("membership.activated", u, "mem_A", "plan_basic", "active"));
-  check("Whop Basic: the plan is Basic", await plan(u) === "basic", await plan(u));
+  await whop(whopMem("membership.activated", u, "mem_A", "plan_pro_year", "active"));
+  check("Whop yearly Pro: the plan is Pro", await plan(u) === "pro", await plan(u));
   await whop(whopMem("membership.activated", u, "mem_B", "plan_pro", "active"));
-  check("Whop Basic → Pro (second membership): Pro", await plan(u) === "pro", await plan(u));
-  await whop(whopMem("membership.deactivated", u, "mem_A", "plan_basic", "canceled"));
-  check("Whop: cancelling Basic while Pro runs keeps Pro", await plan(u) === "pro", await plan(u));
+  check("Whop second Pro membership: Pro", await plan(u) === "pro", await plan(u));
+  await whop(whopMem("membership.deactivated", u, "mem_A", "plan_pro_year", "canceled"));
+  check("Whop: cancelling one membership while another runs keeps Pro", await plan(u) === "pro", await plan(u));
   check("Whop: Manage then points at the Pro membership", (await summary(u)) === "pro,active,mem_B", await summary(u));
   await whop(whopMem("membership.deactivated", u, "mem_B", "plan_pro", "canceled"));
   check("Whop: cancelling Pro (the last one) gives Free", await plan(u) === "free", await plan(u));
@@ -39,20 +39,20 @@ const ev = () => "evt_" + (++seq);
 }
 {
   const u = await user();
-  await whop(whopMem("membership.activated", u, "mem_C", "plan_basic", "active"));
+  await whop(whopMem("membership.activated", u, "mem_C", "plan_pro_year", "active"));
   await whop(whopMem("membership.updated", u, "mem_C", "plan_pro", "active"));
-  check("Whop Basic → Pro (same membership, plan changed): Pro", await plan(u) === "pro", await plan(u));
-  await whop(whopMem("membership.updated", u, "mem_C", "plan_basic", "active"));
-  check("Whop Pro → Basic (same membership): Basic", await plan(u) === "basic", await plan(u));
+  check("Whop yearly → monthly (same membership, price changed): Pro", await plan(u) === "pro", await plan(u));
+  await whop(whopMem("membership.updated", u, "mem_C", "plan_pro_year", "active"));
+  check("Whop monthly → yearly (same membership): Pro", await plan(u) === "pro", await plan(u));
 }
 {
   const u = await user();
   await whop(whopMem("membership.activated", u, "mem_D", "plan_pro", "active"));
   await whop(whopMem("membership.updated", u, "mem_D", "plan_pro", "canceling"));
-  await whop(whopMem("membership.activated", u, "mem_E", "plan_basic", "active"));
-  check("Whop Pro → Basic (new membership, Pro set to end): Pro until it ends", await plan(u) === "pro", await plan(u));
+  await whop(whopMem("membership.activated", u, "mem_E", "plan_pro_year", "active"));
+  check("Whop new membership while the old one is set to end: Pro", await plan(u) === "pro", await plan(u));
   await whop(whopMem("membership.deactivated", u, "mem_D", "plan_pro", "expired"));
-  check("Whop Pro → Basic: Basic once Pro has ended", await plan(u) === "basic", await plan(u));
+  check("Whop: still Pro on the new membership once the old one has ended", await plan(u) === "pro", await plan(u));
 }
 {
   const u = await user();
@@ -100,11 +100,11 @@ const ev = () => "evt_" + (++seq);
 // ================================ PayPal ================================
 {
   const u = await user();
-  await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.ACTIVATED", u, "I-A", "P-BASIC", "ACTIVE", T(1)));
+  await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.ACTIVATED", u, "I-A", "P-PRO-YEAR", "ACTIVE", T(1)));
   await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.ACTIVATED", u, "I-B", "P-PRO", "ACTIVE", T(2)));
-  check("PayPal Basic → Pro (second subscription): Pro", await plan(u) === "pro", await plan(u));
-  await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.CANCELLED", u, "I-A", "P-BASIC", "CANCELLED", T(3)));
-  check("PayPal: cancelling Basic while Pro runs keeps Pro", await plan(u) === "pro", await plan(u));
+  check("PayPal second Pro subscription: Pro", await plan(u) === "pro", await plan(u));
+  await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.CANCELLED", u, "I-A", "P-PRO-YEAR", "CANCELLED", T(3)));
+  check("PayPal: cancelling one subscription while another runs keeps Pro", await plan(u) === "pro", await plan(u));
   await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.CANCELLED", u, "I-B", "P-PRO", "CANCELLED", T(4)));
   check("PayPal: cancelling Pro gives Free", await plan(u) === "free", await plan(u));
   const revive = await paypal({ id: ev(), event_type: "PAYMENT.SALE.COMPLETED", create_time: T(5), resource: { id: "S-x", billing_agreement_id: "I-B", amount: { total: "14.99" } } });
@@ -113,10 +113,10 @@ const ev = () => "evt_" + (++seq);
 {
   const u = await user();
   await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.ACTIVATED", u, "I-C", "P-PRO", "ACTIVE", T(1)));
-  await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.UPDATED", u, "I-C", "P-BASIC", "ACTIVE", T(2)));
-  check("PayPal Pro → Basic (plan revised): Basic", await plan(u) === "basic", await plan(u));
+  await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.UPDATED", u, "I-C", "P-PRO-YEAR", "ACTIVE", T(2)));
+  check("PayPal monthly → yearly (plan revised): Pro", await plan(u) === "pro", await plan(u));
   await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.UPDATED", u, "I-C", "P-PRO", "ACTIVE", T(3)));
-  check("PayPal Basic → Pro (plan revised): Pro", await plan(u) === "pro", await plan(u));
+  check("PayPal yearly → monthly (plan revised): Pro", await plan(u) === "pro", await plan(u));
   const renew = await paypal({ id: ev(), event_type: "PAYMENT.SALE.COMPLETED", create_time: T(4), resource: { id: "S-1", billing_agreement_id: "I-C", amount: { total: "14.99" } } });
   check("PayPal renewal payment: still Pro", renew.status === 200 && await plan(u) === "pro", await plan(u));
 
@@ -150,17 +150,17 @@ const ev = () => "evt_" + (++seq);
 {
   const u = await user();
   await whop(whopMem("membership.activated", u, "mem_X", "plan_pro", "active"));
-  await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.ACTIVATED", u, "I-OLD", "P-BASIC", "ACTIVE", T(1, 9)));
-  await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.CANCELLED", u, "I-OLD", "P-BASIC", "CANCELLED", T(2)));
+  await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.ACTIVATED", u, "I-OLD", "P-PRO-YEAR", "ACTIVE", T(1, 9)));
+  await paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.CANCELLED", u, "I-OLD", "P-PRO-YEAR", "CANCELLED", T(2)));
   check("Across providers: an old PayPal cancellation keeps the Whop Pro", await plan(u) === "pro", await plan(u));
 }
 {
   // Many events for one user at once: the plan always reflects all of them.
   const u = await user();
   await Promise.all([
-    whop(whopMem("membership.activated", u, "mem_P1", "plan_basic", "active")),
+    whop(whopMem("membership.activated", u, "mem_P1", "plan_pro_year", "active")),
     whop(whopMem("membership.activated", u, "mem_P2", "plan_pro", "active")),
-    paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.ACTIVATED", u, "I-P3", "P-BASIC", "ACTIVE", T(1))),
+    paypal(paypalSub(ev(), "BILLING.SUBSCRIPTION.ACTIVATED", u, "I-P3", "P-PRO-YEAR", "ACTIVE", T(1))),
   ]);
   check("Parallel webhooks for one user: the best plan wins", await plan(u) === "pro", await plan(u));
 }
@@ -186,14 +186,9 @@ const ev = () => "evt_" + (++seq);
   check("Expiry: a late renewal inside the grace keeps Pro", await refresh(w) === "unchanged" && await plan(w) === "pro", await plan(w));
 
   const x = await user();
-  await whop(whopMem("membership.activated", x, "mem_EX4", "plan_basic", "active", { current_period_end: at(-10 * day) }));
+  await whop(whopMem("membership.activated", x, "mem_EX4", "plan_pro_year", "active", { current_period_end: at(-10 * day) }));
   await whop(whopMem("membership.activated", x, "mem_EX5", "plan_pro", "active", { current_period_end: at(10 * day) }));
-  check("Expiry: an old Basic ending doesn't touch a running Pro", await refresh(x) === "unchanged" && await plan(x) === "pro", await plan(x));
-
-  const y = await user();
-  await whop(whopMem("membership.activated", y, "mem_EX6", "plan_pro", "active", { current_period_end: at(-10 * day) }));
-  await whop(whopMem("membership.activated", y, "mem_EX7", "plan_basic", "active", { current_period_end: at(10 * day) }));
-  check("Expiry: Pro over, Basic running → Basic", await refresh(y) === "downgraded" && await plan(y) === "basic", await plan(y));
+  check("Expiry: an older membership ending doesn't touch a running Pro", await refresh(x) === "unchanged" && await plan(x) === "pro", await plan(x));
 
   const z = await user();
   await sql(`insert into ai_entitlements (user_id, plan) values ('${z}', 'pro')`);

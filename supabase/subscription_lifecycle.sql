@@ -9,7 +9,7 @@
 --   1. updates that one subscription (ignoring events older than the last one
 --      applied to it, and never moving it to another user);
 --   2. sets the user's plan to the best plan among their active subscriptions,
---      so cancelling an old Basic subscription can't take away a running Pro;
+--      so cancelling an older subscription can't take away a running Pro;
 --   3. refreshes the per-user summary in `subscriptions` that the app and the
 --      Manage button read.
 -- A full refund or chargeback takes away that subscription's access until a
@@ -54,6 +54,15 @@ from subscriptions
 where provider_subscription_id is not null
 on conflict (provider, provider_subscription_id) do nothing;
 
+-- One paid plan, PRO. The retired Basic plan was merged into it: whatever was
+-- recorded on it becomes PRO (the app already showed those accounts as PRO).
+update billing_prices        set plan = 'pro' where plan = 'basic';
+update billing_subscriptions set plan = 'pro' where plan = 'basic';
+update subscriptions         set plan = 'pro' where plan = 'basic';
+update ai_entitlements       set plan = 'pro' where plan = 'basic';
+update ai_entitlements       set trial_plan = 'pro' where trial_plan = 'basic';
+update coupons               set target_plan = 'pro' where target_plan = 'basic';
+
 -- Applies one verified provider event to one subscription. [p_user] is null
 -- when the event names only the subscription (a refund, a payment); [p_plan],
 -- [p_period], [p_period_end] and [p_cancel_at_period_end] are null when the
@@ -88,7 +97,11 @@ begin
   if st not in ('active', 'trialing', 'past_due', 'paused', 'canceled', 'refunded', 'pending') then
     raise exception 'unknown subscription status %', p_status;
   end if;
-  if p_plan is not null and p_plan not in ('free', 'basic', 'pro') then
+  -- A value from the retired plan (a webhook function not yet redeployed).
+  if p_plan = 'basic' then
+    p_plan := 'pro';
+  end if;
+  if p_plan is not null and p_plan not in ('free', 'pro') then
     raise exception 'unknown plan %', p_plan;
   end if;
 
@@ -146,8 +159,7 @@ begin
 
   -- The plan in force: the best plan among the active subscriptions.
   select plan into best from billing_subscriptions
-    where user_id = uid and status in ('active', 'trialing') and plan in ('basic', 'pro')
-    order by case plan when 'pro' then 2 else 1 end desc
+    where user_id = uid and status in ('active', 'trialing') and plan = 'pro'
     limit 1;
   insert into ai_entitlements as e (user_id, plan, updated_at)
     values (uid, coalesce(best, 'free'), now())
@@ -159,9 +171,7 @@ begin
     where user_id = uid
     order by
       (status in ('active', 'trialing')) desc,
-      case when status in ('active', 'trialing') and plan = 'pro' then 2
-           when status in ('active', 'trialing') and plan = 'basic' then 1
-           else 0 end desc,
+      (status in ('active', 'trialing') and plan = 'pro') desc,
       (status in ('past_due', 'paused')) desc,
       current_period_end desc nulls last,
       provider_event_at desc nulls last

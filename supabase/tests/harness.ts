@@ -178,11 +178,10 @@ export const paypalSub = (
 });
 
 export const PRICES = [
-  { price_id: "plan_basic", provider: "whop", plan: "basic", period: "monthly", active: true },
   { price_id: "plan_pro", provider: "whop", plan: "pro", period: "monthly", active: true },
   { price_id: "plan_pro_year", provider: "whop", plan: "pro", period: "yearly", active: true },
   { price_id: "plan_pro_founding", provider: "whop", plan: "pro", period: "yearly", active: true, offer: "founding" },
-  { price_id: "plan_old", provider: "whop", plan: "basic", period: "monthly", active: false },
-  { price_id: "P-BASIC", provider: "paypal", plan: "basic", period: "monthly", active: true },
+  { price_id: "plan_old", provider: "whop", plan: "pro", period: "monthly", active: false },
   { price_id: "P-PRO", provider: "paypal", plan: "pro", period: "monthly", active: true },
+  { price_id: "P-PRO-YEAR", provider: "paypal", plan: "pro", period: "yearly", active: true },
 ];

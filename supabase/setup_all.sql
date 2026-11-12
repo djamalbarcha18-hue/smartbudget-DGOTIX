@@ -131,7 +131,7 @@ create table if not exists profiles (
   locale        text not null default 'ar',
   theme         text not null default 'dark',
   base_currency text not null default 'USD' references currencies(code),
-  plan          text not null default 'free',   -- free | basic | pro | ultimate
+  plan          text not null default 'free',   -- free | pro
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now()
 );
@@ -397,7 +397,7 @@ create policy "own backup - delete"
 create table if not exists billing_prices (
   price_id   text primary key,          -- provider price id (e.g. Whop 'plan_...')
   provider   text not null default 'whop',
-  plan       text not null,             -- 'basic' | 'pro'
+  plan       text not null,             -- 'pro'
   period     text not null,             -- 'monthly' | 'yearly'
   active     boolean not null default true,
   updated_at timestamptz not null default now()
@@ -450,12 +450,8 @@ create policy subscriptions_own on subscriptions
 -- Whop uses plan ids (plan_...); PayPal uses billing PLAN ids (P-...). The
 -- provider column keeps both sets side by side, so the app can offer either.
 -- insert into billing_prices (price_id, provider, plan, period) values
---   ('plan_basic_monthly', 'whop',  'basic', 'monthly'),
---   ('plan_basic_yearly',  'whop',  'basic', 'yearly'),
 --   ('plan_pro_monthly',   'whop',  'pro',   'monthly'),
 --   ('plan_pro_yearly',    'whop',  'pro',   'yearly'),
---   ('P-BASIC-MONTHLY',   'paypal', 'basic', 'monthly'),
---   ('P-BASIC-YEARLY',    'paypal', 'basic', 'yearly'),
 --   ('P-PRO-MONTHLY',     'paypal', 'pro',   'monthly'),
 --   ('P-PRO-YEARLY',      'paypal', 'pro',   'yearly')
 -- on conflict (price_id) do nothing;
@@ -478,7 +474,7 @@ create table if not exists coupons (
   code            text primary key,          -- stored UPPER-CASE; compared case-insensitively
   kind            text not null,             -- 'percent' | 'fixed' | 'trial_extension'
   value           numeric not null,          -- percent (0-100) | USD off | trial days
-  target_plan     text,                      -- 'basic' | 'pro' | null (any)
+  target_plan     text,                      -- 'pro' | null (any)
   target_period   text,                      -- 'monthly' | 'yearly' | null (any)
   valid_from      timestamptz,               -- null = no lower bound
   valid_until     timestamptz,               -- null = no upper bound
@@ -876,7 +872,7 @@ end $$;
 --   1. updates that one subscription (ignoring events older than the last one
 --      applied to it, and never moving it to another user);
 --   2. sets the user's plan to the best plan among their active subscriptions,
---      so cancelling an old Basic subscription can't take away a running Pro;
+--      so cancelling an older subscription can't take away a running Pro;
 --   3. refreshes the per-user summary in `subscriptions` that the app and the
 --      Manage button read.
 -- A full refund or chargeback takes away that subscription's access until a
@@ -921,6 +917,15 @@ from subscriptions
 where provider_subscription_id is not null
 on conflict (provider, provider_subscription_id) do nothing;
 
+-- One paid plan, PRO. The retired Basic plan was merged into it: whatever was
+-- recorded on it becomes PRO (the app already showed those accounts as PRO).
+update billing_prices        set plan = 'pro' where plan = 'basic';
+update billing_subscriptions set plan = 'pro' where plan = 'basic';
+update subscriptions         set plan = 'pro' where plan = 'basic';
+update ai_entitlements       set plan = 'pro' where plan = 'basic';
+update ai_entitlements       set trial_plan = 'pro' where trial_plan = 'basic';
+update coupons               set target_plan = 'pro' where target_plan = 'basic';
+
 -- Applies one verified provider event to one subscription. [p_user] is null
 -- when the event names only the subscription (a refund, a payment); [p_plan],
 -- [p_period], [p_period_end] and [p_cancel_at_period_end] are null when the
@@ -955,7 +960,11 @@ begin
   if st not in ('active', 'trialing', 'past_due', 'paused', 'canceled', 'refunded', 'pending') then
     raise exception 'unknown subscription status %', p_status;
   end if;
-  if p_plan is not null and p_plan not in ('free', 'basic', 'pro') then
+  -- A value from the retired plan (a webhook function not yet redeployed).
+  if p_plan = 'basic' then
+    p_plan := 'pro';
+  end if;
+  if p_plan is not null and p_plan not in ('free', 'pro') then
     raise exception 'unknown plan %', p_plan;
   end if;
 
@@ -1013,8 +1022,7 @@ begin
 
   -- The plan in force: the best plan among the active subscriptions.
   select plan into best from billing_subscriptions
-    where user_id = uid and status in ('active', 'trialing') and plan in ('basic', 'pro')
-    order by case plan when 'pro' then 2 else 1 end desc
+    where user_id = uid and status in ('active', 'trialing') and plan = 'pro'
     limit 1;
   insert into ai_entitlements as e (user_id, plan, updated_at)
     values (uid, coalesce(best, 'free'), now())
@@ -1026,9 +1034,7 @@ begin
     where user_id = uid
     order by
       (status in ('active', 'trialing')) desc,
-      case when status in ('active', 'trialing') and plan = 'pro' then 2
-           when status in ('active', 'trialing') and plan = 'basic' then 1
-           else 0 end desc,
+      (status in ('active', 'trialing') and plan = 'pro') desc,
       (status in ('past_due', 'paused')) desc,
       current_period_end desc nulls last,
       provider_event_at desc nulls last
@@ -1112,10 +1118,9 @@ begin
   select plan into best from billing_subscriptions
     where user_id = p_user
       and status in ('active', 'trialing')
-      and plan in ('basic', 'pro')
+      and plan = 'pro'
       and (current_period_end is null
            or current_period_end + public.entitlement_grace() > now())
-    order by case plan when 'pro' then 2 else 1 end desc
     limit 1;
   best := coalesce(best, 'free');
 
@@ -1133,9 +1138,7 @@ begin
       where user_id = p_user and plan <> 'free';
   end if;
 
-  return case when best = 'free'
-              or (cur = 'pro' and best = 'basic') then 'downgraded'
-              else 'upgraded' end;
+  return case when best = 'free' then 'downgraded' else 'upgraded' end;
 end $$;
 
 -- Refreshes every paid user whose subscriptions no longer give that plan.

@@ -43,10 +43,9 @@ begin
   select plan into best from billing_subscriptions
     where user_id = p_user
       and status in ('active', 'trialing')
-      and plan in ('basic', 'pro')
+      and plan = 'pro'
       and (current_period_end is null
            or current_period_end + public.entitlement_grace() > now())
-    order by case plan when 'pro' then 2 else 1 end desc
     limit 1;
   best := coalesce(best, 'free');
 
@@ -64,9 +63,7 @@ begin
       where user_id = p_user and plan <> 'free';
   end if;
 
-  return case when best = 'free'
-              or (cur = 'pro' and best = 'basic') then 'downgraded'
-              else 'upgraded' end;
+  return case when best = 'free' then 'downgraded' else 'upgraded' end;
 end $$;
 
 -- Refreshes every paid user whose subscriptions no longer give that plan.

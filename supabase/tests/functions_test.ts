@@ -26,7 +26,7 @@ check("Whop: the same delivery twice is applied once", r.body.duplicate === true
 r = await whop(whopMem("membership.activated", U1, "mem_2", "plan_cheap_other", "active", { metadata: { user_id: U1, plan: "pro" } }));
 check("Whop: an unknown plan + metadata plan 'pro' grants nothing", r.body.ignored === "unknown_price" && calls() === n, JSON.stringify(r));
 r = await whop(whopMem("membership.activated", U1, "mem_3", "plan_old", "canceling"));
-check("Whop: a cancellation at period end keeps access until then", last().p_status === "active" && last().p_cancel_at_period_end === true && last().p_plan === "basic", JSON.stringify(last()));
+check("Whop: a cancellation at period end keeps access until then", last().p_status === "active" && last().p_cancel_at_period_end === true && last().p_plan === "pro", JSON.stringify(last()));
 r = await whop(whopMem("membership.deactivated", U1, "mem_3", "plan_old", "expired"));
 check("Whop: an expired membership is cancelled", last().p_status === "canceled", JSON.stringify(last()));
 whopMemberships["mem_1"].status = "canceled";
@@ -94,8 +94,8 @@ check("Checkout: allowed after a cancelled subscription", r.status === 200 && !!
 r = await checkout("c5");
 check("Checkout: allowed with no subscription", r.status === 200 && !!r.body.url, JSON.stringify(r));
 const asked = whopCheckouts[whopCheckouts.length - 1];
-const oldBasic = await handlers["create-checkout"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-c6" }, body: JSON.stringify({ plan: "basic", period: "monthly" }) }));
-check("Checkout: the retired Basic plan opens Pro", oldBasic.status === 200 && whopCheckouts[whopCheckouts.length - 1]?.metadata?.plan === "pro", String(oldBasic.status) + JSON.stringify(whopCheckouts[whopCheckouts.length - 1]));
+const oldName = await handlers["create-checkout"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-c6" }, body: JSON.stringify({ plan: "basic", period: "monthly" }) }));
+check("Checkout: a plan name from the retired plan opens Pro", oldName.status === 200 && whopCheckouts[whopCheckouts.length - 1]?.metadata?.plan === "pro", String(oldName.status) + JSON.stringify(whopCheckouts[whopCheckouts.length - 1]));
 check(
   "Checkout: Whop's hosted checkout for our plan, carrying the user id",
   String(r.body.url).startsWith("https://whop.com/checkout/plan_pro") && asked?.plan_id === "plan_pro" && asked?.metadata?.user_id === "c5" && asked?.metadata?.plan === "pro",

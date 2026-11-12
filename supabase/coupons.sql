@@ -14,7 +14,7 @@ create table if not exists coupons (
   code            text primary key,          -- stored UPPER-CASE; compared case-insensitively
   kind            text not null,             -- 'percent' | 'fixed' | 'trial_extension'
   value           numeric not null,          -- percent (0-100) | USD off | trial days
-  target_plan     text,                      -- 'basic' | 'pro' | null (any)
+  target_plan     text,                      -- 'pro' | null (any)
   target_period   text,                      -- 'monthly' | 'yearly' | null (any)
   valid_from      timestamptz,               -- null = no lower bound
   valid_until     timestamptz,               -- null = no upper bound

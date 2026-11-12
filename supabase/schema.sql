@@ -119,7 +119,7 @@ create table if not exists profiles (
   locale        text not null default 'ar',
   theme         text not null default 'dark',
   base_currency text not null default 'USD' references currencies(code),
-  plan          text not null default 'free',   -- free | basic | pro | ultimate
+  plan          text not null default 'free',   -- free | pro
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now()
 );

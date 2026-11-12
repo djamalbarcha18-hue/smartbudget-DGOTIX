@@ -4,7 +4,7 @@
 // KEEP IN SYNC: when a quota changes there, change it here (and vice-versa).
 // The server is the real enforcer; the client numbers are the UX mirror.
 
-export type Plan = "free" | "basic" | "pro";
+export type Plan = "free" | "pro";
 export type QuotaWindow = "lifetime" | "monthly";
 
 export interface Allowance {
@@ -15,7 +15,6 @@ export interface Allowance {
 /** DGOTIX AI answers per period (docs/PRICING.md §2). */
 export const AI_QUOTA: Record<Plan, Allowance> = {
   free: { limit: 5, window: "lifetime" },
-  basic: { limit: 25, window: "monthly" },
   // 80 a month (owner's AI policy, docs/AI_ARCHITECTURE.md): unused requests
   // are not carried over.
   pro: { limit: 80, window: "monthly" },
@@ -24,7 +23,6 @@ export const AI_QUOTA: Record<Plan, Allowance> = {
 /** Cloud receipt OCR scans per period (docs/PRICING.md §3). */
 export const OCR_QUOTA: Record<Plan, Allowance> = {
   free: { limit: 3, window: "monthly" },
-  basic: { limit: 15, window: "monthly" },
   pro: { limit: 50, window: "monthly" },
 };
 
@@ -36,7 +34,6 @@ export const OCR_QUOTA: Record<Plan, Allowance> = {
  */
 export const AI_MONTHLY_COST_CEILING_USD: Record<Plan, number> = {
   free: 0.25,
-  basic: 1.0,
   // 80 requests of at most 5,000 tokens cost about $0.30 even on the pricier
   // model; this is the safety net above that.
   pro: 0.75,
@@ -64,16 +61,19 @@ export const PLAN_PRICE_USD: Record<
   { monthly: number; yearly: number | null }
 > = {
   free: { monthly: 0, yearly: null },
-  // BASIC is no longer sold (merged into PRO).
-  basic: { monthly: 9.99, yearly: 59.99 },
   pro: { monthly: 9.99, yearly: 59.99 },
 };
 
-const RANK: Record<Plan, number> = { free: 0, basic: 1, pro: 2 };
+const RANK: Record<Plan, number> = { free: 0, pro: 1 };
 
-/** Coerce an unknown/invalid stored plan to the safe FREE default. */
+/**
+ * Coerce an unknown/invalid stored plan to the safe FREE default. A value
+ * left from the retired plan ("basic", merged into PRO) reads as PRO, so a
+ * database not yet migrated (supabase/subscription_lifecycle.sql) costs
+ * nobody their plan.
+ */
 export function normalizePlan(p: unknown): Plan {
-  return p === "basic" || p === "pro" ? p : "free";
+  return p === "pro" || p === "basic" ? "pro" : "free";
 }
 
 /**

@@ -18,7 +18,7 @@
 create table if not exists billing_prices (
   price_id   text primary key,          -- provider price id (e.g. Whop 'plan_...')
   provider   text not null default 'whop',
-  plan       text not null,             -- 'basic' | 'pro'
+  plan       text not null,             -- 'pro'
   period     text not null,             -- 'monthly' | 'yearly'
   active     boolean not null default true,
   updated_at timestamptz not null default now()
@@ -71,12 +71,8 @@ create policy subscriptions_own on subscriptions
 -- Whop uses plan ids (plan_...); PayPal uses billing PLAN ids (P-...). The
 -- provider column keeps both sets side by side, so the app can offer either.
 -- insert into billing_prices (price_id, provider, plan, period) values
---   ('plan_basic_monthly', 'whop',  'basic', 'monthly'),
---   ('plan_basic_yearly',  'whop',  'basic', 'yearly'),
 --   ('plan_pro_monthly',   'whop',  'pro',   'monthly'),
 --   ('plan_pro_yearly',    'whop',  'pro',   'yearly'),
---   ('P-BASIC-MONTHLY',   'paypal', 'basic', 'monthly'),
---   ('P-BASIC-YEARLY',    'paypal', 'basic', 'yearly'),
 --   ('P-PRO-MONTHLY',     'paypal', 'pro',   'monthly'),
 --   ('P-PRO-YEARLY',      'paypal', 'pro',   'yearly')
 -- on conflict (price_id) do nothing;
