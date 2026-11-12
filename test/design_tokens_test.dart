@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:smartbudget/core/config/app_config.dart';
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/features/legal/domain/legal_content.dart';
 import 'package:smartbudget/core/l10n/app_lang.dart';
@@ -58,7 +59,16 @@ void main() {
             isTrue,
             reason: 'configured support email must be a real address');
       }
+      for (final String e in AppConfig.supportEmails) {
+        expect(RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(e), isTrue);
+      }
     });
+
+    test('the website shows both support inboxes, the domain one first', () {
+      expect(AppConfig.supportEmails,
+          <String>['support@dgotix.com', 'supportdgotix@gmail.com']);
+      expect(AppConfig.supportEmail, 'support@dgotix.com');
+    }, skip: AppEnv.storeBuild);
 
     test('legal pages never show a placeholder contact', () {
       for (final LegalDoc doc in LegalDoc.values) {

@@ -136,5 +136,8 @@ in.
   The website, e-mail, social media and ads may say all of it.
 - A support link (social account, e-mail) is fine on the Support page, worded
   as help, never next to a locked feature.
+  The store app shows `supportdgotix@gmail.com` only (`AppConfig.supportEmails`);
+  the website shows it and `support@dgotix.com`. It is never offered as a way
+  to upgrade.
 - `test/store_free_mode_test.dart` checks this and runs in CI with the store
   build settings.

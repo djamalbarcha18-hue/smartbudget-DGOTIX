@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_glass.dart';
@@ -42,6 +43,12 @@ Widget _app(Widget home, {List<Override> overrides = const <Override>[]}) =>
 
 void main() {
   setUpAll(() => GoogleFonts.config.allowRuntimeFetching = false);
+
+  test('the store app names only its own support inbox (problems and questions)',
+      () {
+    expect(AppConfig.supportEmails, <String>['supportdgotix@gmail.com']);
+    expect(AppConfig.supportEmail, 'supportdgotix@gmail.com');
+  }, skip: !AppEnv.storeBuild);
 
   const bool on = AppEnv.storeFreeMode;
 

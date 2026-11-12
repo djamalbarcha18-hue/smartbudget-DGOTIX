@@ -1,3 +1,5 @@
+import 'package:smartbudget/core/env/app_env.dart';
+
 /// Single source of truth for app-level, non-financial configuration.
 ///
 /// Support email, legal/support links, and brand-lockup ordering all live here
@@ -13,11 +15,26 @@ abstract final class AppConfig {
   /// Copyright year shown in the footer.
   static const int copyrightYear = 2026;
 
-  /// Support inbox users can write to. Leave EMPTY until a real inbox exists:
-  /// while empty the app never shows an address (the Help page and the legal
-  /// pages point to Help & Support instead). Set it here, in this ONE spot, and
-  /// every screen picks it up.
-  static const String supportEmail = 'support@dgotix.com';
+  /// The website's support inbox (on the domain).
+  static const String webSupportEmail = 'support@dgotix.com';
+
+  /// The support inbox of the store app (Google Play): problems and questions
+  /// only. Never shown next to a locked feature or a price, and never offered
+  /// as a way to upgrade (docs/PLAY_STORE.md).
+  static const String storeSupportEmail = 'supportdgotix@gmail.com';
+
+  /// The support inboxes users can write to, first the main one: the store app
+  /// shows its own; the website shows both. Empty strings are dropped: with
+  /// none, the app never shows an address (the Help page and the legal pages
+  /// point to Help & Support instead).
+  static List<String> get supportEmails => <String>[
+        if (!AppEnv.storeBuild) webSupportEmail,
+        storeSupportEmail,
+      ].where((String e) => e.trim().isNotEmpty).toList();
+
+  /// The main support inbox (what the legal pages name), or empty.
+  static String get supportEmail =>
+      supportEmails.isEmpty ? '' : supportEmails.first;
 
   /// The WhatsApp number for support, digits only with the country code
   /// (e.g. '213555123456'), or empty: the WhatsApp line is then not shown.

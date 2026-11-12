@@ -68,6 +68,10 @@ class SupportPage extends StatelessWidget {
                         ),
                       )
                     else
+                    for (final String email in AppConfig.supportEmails)
+                    ...<Widget>[
+                    if (email != AppConfig.supportEmails.first)
+                      const SizedBox(height: DsSpacing.sm),
                     Container(
                       padding: const EdgeInsets.all(DsSpacing.md),
                       decoration: BoxDecoration(
@@ -90,7 +94,7 @@ class SupportPage extends StatelessWidget {
                                         .labelSmall
                                         ?.copyWith(color: c.textMuted)),
                                 const SizedBox(height: 2),
-                                Text(AppConfig.supportEmail,
+                                Text(email,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleSmall),
@@ -101,7 +105,7 @@ class SupportPage extends StatelessWidget {
                             tooltip: l.supportWriteEmail,
                             onPressed: () => launchUrl(Uri(
                               scheme: 'mailto',
-                              path: AppConfig.supportEmail,
+                              path: email,
                               query: 'subject='
                                   '${Uri.encodeComponent(l.supportEmailSubject)}',
                             )),
@@ -111,8 +115,8 @@ class SupportPage extends StatelessWidget {
                           IconButton(
                             tooltip: l.supportCopyEmail,
                             onPressed: () async {
-                              await Clipboard.setData(const ClipboardData(
-                                  text: AppConfig.supportEmail));
+                              await Clipboard.setData(
+                                  ClipboardData(text: email));
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -126,6 +130,7 @@ class SupportPage extends StatelessWidget {
                         ],
                       ),
                     ),
+                    ],
                     if (AppConfig.hasSupportWhatsApp) ...<Widget>[
                       const SizedBox(height: DsSpacing.sm),
                       Container(
