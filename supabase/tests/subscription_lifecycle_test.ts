@@ -165,4 +165,43 @@ const ev = () => "evt_" + (++seq);
   check("Parallel webhooks for one user: the best plan wins", await plan(u) === "pro", await plan(u));
 }
 
+{
+  // Expiry by the clock (supabase/entitlement_expiry.sql): no webhook needed.
+  const day = 86_400_000;
+  const at = (ms: number) => new Date(Date.now() + ms).toISOString();
+  const refresh = async (u: string) => await sql(`select public.refresh_entitlement('${u}')`);
+
+  const u = await user();
+  await whop(whopMem("membership.activated", u, "mem_EX1", "plan_pro", "active", { current_period_end: at(10 * day) }));
+  check("Expiry: a running period keeps Pro", await plan(u) === "pro" && await refresh(u) === "unchanged", await plan(u));
+
+  const v = await user();
+  await whop(whopMem("membership.activated", v, "mem_EX2", "plan_pro", "active", { current_period_end: at(-10 * day) }));
+  check("Expiry: the webhook alone still says Pro", await plan(v) === "pro", await plan(v));
+  check("Expiry: refresh drops a period that ended long ago", await refresh(v) === "downgraded" && await plan(v) === "free", await plan(v));
+  check("Expiry: the summary no longer claims Pro", (await summary(v)).startsWith("free,"), await summary(v));
+
+  const w = await user();
+  await whop(whopMem("membership.activated", w, "mem_EX3", "plan_pro", "active", { current_period_end: at(-1 * day) }));
+  check("Expiry: a late renewal inside the grace keeps Pro", await refresh(w) === "unchanged" && await plan(w) === "pro", await plan(w));
+
+  const x = await user();
+  await whop(whopMem("membership.activated", x, "mem_EX4", "plan_basic", "active", { current_period_end: at(-10 * day) }));
+  await whop(whopMem("membership.activated", x, "mem_EX5", "plan_pro", "active", { current_period_end: at(10 * day) }));
+  check("Expiry: an old Basic ending doesn't touch a running Pro", await refresh(x) === "unchanged" && await plan(x) === "pro", await plan(x));
+
+  const y = await user();
+  await whop(whopMem("membership.activated", y, "mem_EX6", "plan_pro", "active", { current_period_end: at(-10 * day) }));
+  await whop(whopMem("membership.activated", y, "mem_EX7", "plan_basic", "active", { current_period_end: at(10 * day) }));
+  check("Expiry: Pro over, Basic running → Basic", await refresh(y) === "downgraded" && await plan(y) === "basic", await plan(y));
+
+  const z = await user();
+  await sql(`insert into ai_entitlements (user_id, plan) values ('${z}', 'pro')`);
+  check("Expiry: a plan set by hand (no subscription) is never touched", await refresh(z) === "unchanged" && await plan(z) === "pro", await plan(z));
+
+  const swept = Number(await sql(`select public.expire_entitlements()`));
+  check("Expiry: the sweep leaves the expired user on Free", swept >= 0 && await plan(v) === "free", await plan(v));
+
+}
+
 finish();

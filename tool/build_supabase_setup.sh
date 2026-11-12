@@ -6,7 +6,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../supabase"
 files=(schema.sql cloud_backup.sql billing.sql coupons.sql ai_gateway.sql
        ai_reports.sql receipt_scanner.sql security_hardening.sql
-       subscription_lifecycle.sql abuse_limits.sql sync.sql app_stats.sql
+       subscription_lifecycle.sql entitlement_expiry.sql abuse_limits.sql sync.sql app_stats.sql
        launch_offers.sql referrals.sql error_reports.sql)
 {
   echo "-- ============================================================================"
