@@ -1,8 +1,9 @@
 # Continue with Google (hidden)
 
-**Status: built, hidden.** The «Continue with Google» button on the sign-in
-and sign-up pages appears only in builds made with
-`--dart-define=GOOGLE_SIGN_IN=true`. Nothing else changes while it is off.
+**Status: on.** The «Continue with Google» button on the sign-in and sign-up
+pages appears in builds made with `--dart-define=GOOGLE_SIGN_IN=true`, which
+deploy-web.yml and android.yml now pass. Steps 1–3 below must be done in
+Google Cloud and Supabase, or the button opens an error page.
 
 How it works: the button opens Google's own page (in the browser on Android,
 in the same tab on the web). Google sends the user back to the app, and
@@ -30,8 +31,8 @@ the Supabase dashboard only, never in the app, the repository or a chat.
 3. Supabase > Authentication > **URL Configuration** > Redirect URLs, add:
    - `https://smartbudget.dgotix.com/`
    - `com.dgotix.smartbudget://login-callback` (the Android app)
-4. Build with the flag: add `--dart-define=GOOGLE_SIGN_IN=true` to `DEFINES`
-   in `.github/workflows/deploy-web.yml` and `.github/workflows/android.yml`.
+4. Build with the flag: `--dart-define=GOOGLE_SIGN_IN=true` in `DEFINES` in
+   `.github/workflows/deploy-web.yml` and `.github/workflows/android.yml` (done).
 
 ## Files
 

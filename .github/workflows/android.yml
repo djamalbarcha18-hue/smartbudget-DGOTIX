@@ -90,6 +90,9 @@ jobs:
           # store app itself never sells or links to a payment
           # (AppEnv.storeFreeMode, docs/PLAY_STORE.md).
           DEFINES="$DEFINES --dart-define=BETA_ALL_ACCESS=false"
+          # «Continue with Google» on sign-in and sign-up (docs/GOOGLE_SIGN_IN.md:
+          # needs Google turned on in Supabase first).
+          DEFINES="$DEFINES --dart-define=GOOGLE_SIGN_IN=true"
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
             DEFINES="$DEFINES --dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
             # Commodity prices (industrial metals, steel & iron, energy,
