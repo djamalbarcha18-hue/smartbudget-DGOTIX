@@ -53,6 +53,7 @@ const Set<String> _publicRoutes = <String>{'/privacy', '/terms'};
 /// Builds the router with an auth guard driven by [authControllerProvider].
 ///
 /// - unknown        → splash ('/')
+/// - an address with no page → splash ('/'), never «Page Not Found»
 /// - unauthenticated → redirected to '/login'
 /// - authenticated   → redirected away from auth routes to '/dashboard'
 GoRouter buildRouter(Ref ref) {
@@ -64,6 +65,11 @@ GoRouter buildRouter(Ref ref) {
   return GoRouter(
     initialLocation: '/',
     refreshListenable: refresh,
+    // An address the app has no page for goes to the start, which sends the
+    // user on (dashboard or sign-in) instead of showing «Page Not Found». It
+    // happens when a sign-in provider comes back with its own data after the
+    // «#» this app uses for its pages (e.g. Google, through Supabase).
+    onException: (_, __, GoRouter router) => router.go('/'),
     redirect: (BuildContext context, GoRouterState state) {
       final AuthStatus status = ref.read(authControllerProvider).status;
       final String loc = state.matchedLocation;
