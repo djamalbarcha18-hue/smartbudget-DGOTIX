@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,12 +21,32 @@ import 'package:smartbudget/features/billing/domain/plan.dart';
 ///
 /// The cache belongs to the account it was saved for: another account
 /// signing in on the same device starts on FREE until the server answers.
+///
+/// The cache also has an age: it carries the time of the last answer, and a
+/// paid plan the server has not confirmed for [offlineGrace] stops applying
+/// until it does. So a subscription that ended can't stay unlocked on a
+/// device that is kept offline.
 final entitlementProvider =
     NotifierProvider<EntitlementController, Entitlement>(
         EntitlementController.new);
 
 class EntitlementController extends Notifier<Entitlement> {
   static const String _key = 'sb_entitlement';
+
+  /// How long a cached plan stands in for the server's answer.
+  static const Duration offlineGrace = Duration(days: 7);
+
+  /// A saved time this far ahead of now means the clock was moved back.
+  static const Duration _clockSlack = Duration(days: 1);
+
+  /// When the plan in [state] was last confirmed (null: never, or FREE).
+  DateTime? _checkedAt;
+
+  /// Whether an answer from [checkedAt] is too old (or from the future) to
+  /// stand in for the server at [now].
+  static bool isStale(DateTime checkedAt, DateTime now) =>
+      now.difference(checkedAt) > offlineGrace ||
+      checkedAt.difference(now) > _clockSlack;
 
   /// Set once a plan was pushed in, so the cache read at start can't
   /// replace it.
@@ -35,6 +56,7 @@ class EntitlementController extends Notifier<Entitlement> {
   Entitlement build() {
     final String? account = ref.watch(currentAccountIdProvider);
     _pushed = false;
+    _checkedAt = null;
     _load(account);
     return Entitlement.free;
   }
@@ -51,7 +73,15 @@ class EntitlementController extends Notifier<Entitlement> {
       if (json['account'] != account) return;
       // A plan pushed meanwhile (the server's answer) is newer than this.
       if (_pushed) return;
+      final DateTime now = AppClock.now();
+      final DateTime? checkedAt =
+          DateTime.tryParse('${json['checkedAt'] ?? ''}');
+      // Too old to trust: FREE until the server answers again.
+      if (checkedAt != null && isStale(checkedAt, now)) return;
       state = Entitlement.fromJson(json);
+      _checkedAt = checkedAt ?? now;
+      // A cache saved before it carried its time starts counting now.
+      if (checkedAt == null) _persist();
     } catch (_) {
       // Corrupt cache ⇒ stay on the safe FREE default.
     }
@@ -60,13 +90,25 @@ class EntitlementController extends Notifier<Entitlement> {
   /// Push the authoritative entitlement from the server/billing layer.
   void hydrate(Entitlement e) {
     _pushed = true;
+    _checkedAt = AppClock.now();
     state = e;
     _persist();
+  }
+
+  /// Back to FREE when the plan held here was last confirmed too long ago
+  /// (the app stayed open, or kept coming back, without the server). The
+  /// saved copy is left alone: the next answer replaces it.
+  void dropIfStale() {
+    final DateTime? at = _checkedAt;
+    if (at == null || !isStale(at, AppClock.now())) return;
+    _checkedAt = null;
+    state = Entitlement.free;
   }
 
   /// Reset to FREE (e.g. on sign-out). Does not touch the user's data.
   void clear() {
     _pushed = true;
+    _checkedAt = null;
     state = Entitlement.free;
     _persistClear();
   }
@@ -79,6 +121,8 @@ class EntitlementController extends Notifier<Entitlement> {
           jsonEncode(<String, dynamic>{
             ...state.toJson(),
             'account': ref.read(currentAccountIdProvider),
+            if (_checkedAt != null)
+              'checkedAt': _checkedAt!.toUtc().toIso8601String(),
           }));
     } catch (_) {
       // Non-fatal.
@@ -118,6 +162,45 @@ final remoteEntitlementProvider = FutureProvider<Entitlement?>((ref) async {
   }
   return e;
 });
+
+/// Asks the server for the plan again whenever the app comes back into view
+/// (a subscription bought, ended or cancelled elsewhere shows up without
+/// signing in again), at most once per [EntitlementRefresher.minGap]. The
+/// first answer of a session comes from [remoteEntitlementProvider] itself.
+/// Its value counts the refreshes asked for.
+final entitlementRefreshProvider =
+    NotifierProvider<EntitlementRefresher, int>(EntitlementRefresher.new);
+
+class EntitlementRefresher extends Notifier<int> {
+  static const Duration minGap = Duration(minutes: 10);
+
+  DateTime? _last;
+
+  @override
+  int build() {
+    if (!AppEnv.hasSupabase) return 0;
+    // Back in view (onShow) is enough: on the web, "resumed" also needs the
+    // window to have focus, which a returning user may not give it yet.
+    final AppLifecycleListener life =
+        AppLifecycleListener(onShow: refresh, onResume: refresh);
+    ref.onDispose(life.dispose);
+    return 0;
+  }
+
+  /// Asks again unless it was asked less than [minGap] ago ([force] skips
+  /// that wait).
+  void refresh({bool force = false}) {
+    final DateTime now = DateTime.now();
+    final DateTime? last = _last;
+    if (!force && last != null && now.difference(last).abs() < minGap) return;
+    _last = now;
+    // No answer may come (offline): an old cached plan must not outlive
+    // its grace meanwhile.
+    ref.read(entitlementProvider.notifier).dropIfStale();
+    ref.invalidate(remoteEntitlementProvider);
+    state = state + 1;
+  }
+}
 
 /// The plan actually in force right now (paid plan or an active trial). Prefers
 /// the server value once it resolves, falling back to the persisted local cache
