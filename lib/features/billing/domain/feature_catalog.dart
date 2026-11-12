@@ -159,7 +159,7 @@ abstract final class FeatureCatalog {
       feature: Feature.dgotixAi,
       minTier: Plan.free,
       quotas: <Plan, Quota>{
-        Plan.free: Quota(5, QuotaWindow.lifetime),
+        Plan.free: Quota(2, QuotaWindow.lifetime),
         Plan.pro: Quota(80, QuotaWindow.monthly),
       },
     ),
@@ -167,7 +167,7 @@ abstract final class FeatureCatalog {
       feature: Feature.cloudOcr,
       minTier: Plan.free,
       quotas: <Plan, Quota>{
-        Plan.free: Quota(3, QuotaWindow.monthly),
+        Plan.free: Quota(2, QuotaWindow.monthly),
         Plan.pro: Quota(50, QuotaWindow.monthly),
       },
     ),

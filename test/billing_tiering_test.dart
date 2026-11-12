@@ -37,15 +37,15 @@ void main() {
   });
 
   group('FeatureCatalog quotas (locked)', () {
-    test('DGOTIX AI: 5 lifetime / 80 a month', () {
-      expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.free)!.limit, 5);
+    test('DGOTIX AI: 2 lifetime / 80 a month', () {
+      expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.free)!.limit, 2);
       expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.free)!.window,
           QuotaWindow.lifetime);
       expect(FeatureCatalog.quotaFor(Feature.dgotixAi, Plan.pro)!.limit, 80);
     });
 
-    test('Cloud OCR: 3 / 50 a month', () {
-      expect(FeatureCatalog.quotaFor(Feature.cloudOcr, Plan.free)!.limit, 3);
+    test('Cloud OCR: 2 / 50 a month', () {
+      expect(FeatureCatalog.quotaFor(Feature.cloudOcr, Plan.free)!.limit, 2);
       expect(FeatureCatalog.quotaFor(Feature.cloudOcr, Plan.pro)!.limit, 50);
     });
 

@@ -60,8 +60,8 @@ Deno.test("a PRO trial gets 25 answers and 10 scans; a purchase gets the plan's"
   // The beta also shows "pro" in force, but it is not a trial.
   expect(onTrial("pro", "free", true), false, "beta");
 
-  expect(aiAllowance("pro", "free", false), { limit: 25, window: "monthly" }, "trial ai");
-  expect(ocrAllowance("pro", "free", false), { limit: 10, window: "monthly" }, "trial ocr");
+  expect(aiAllowance("pro", "free", false), { limit: 5, window: "monthly" }, "trial ai");
+  expect(ocrAllowance("pro", "free", false), { limit: 5, window: "monthly" }, "trial ocr");
   expect(aiAllowance("pro", "pro", false), AI_QUOTA.pro, "bought ai");
   expect(ocrAllowance("pro", "pro", false), OCR_QUOTA.pro, "bought ocr");
   expect(aiAllowance("free", "free", false), AI_QUOTA.free, "free ai");

@@ -77,10 +77,10 @@ below is the count of **successful** assistant answers per period.
 
 | | FREE | PRO |
 |---|---|---|
-| DGOTIX AI answers | **5 total** (one-time) | **80 / month** |
+| DGOTIX AI answers | **2 total** (one-time) | **80 / month** |
 | Reset | never (lifetime intro) | monthly (calendar) |
 
-- FREE's 5 is a **lifetime** allowance to feel the value, not a monthly refill.
+- FREE's 2 is a **lifetime** allowance to feel the value, not a monthly refill.
 - Quotas are **request budgets bounded by token governance** (§4), not raw
   request counts alone — a single abusive request cannot drain the month.
 - **DGOTIX is the only AI provider.** Users never bring their own key: every
@@ -102,12 +102,12 @@ and is metered **server-side**:
 
 | | FREE | PRO |
 |---|---|---|
-| Cloud OCR scans | **3 / month** | **50 / month** |
+| Cloud OCR scans | **2 / month** | **50 / month** |
 | On-device OCR | ∞ | ∞ |
 
 Same policy as AI: exceeding cloud OCR → **Upgrade** CTA. On a phone the
 receipt is still read on the device, and the review offers the upgrade; on the
-web (no on-device reader) the scan answers with the Upgrade message. FREE's 3
+web (no on-device reader) the scan answers with the Upgrade message. FREE's 2
 scans refill each calendar month (UTC).
 
 The `receipt-scan` function serves every scan with DGOTIX's **server** Gemini
@@ -192,8 +192,8 @@ The catalog is the source of truth; this is the intended shape:
 | Silver, platinum, palladium (holdings and prices) | — (no reward opens it) | ✅ |
 | Metal price alerts, value history, recording a sale | — | ✅ |
 | Projects and investment portfolio | — | ✅ |
-| Cloud receipt OCR | 3 / mo | 50 / mo |
-| DGOTIX AI assistant | 5 lifetime | 80 / mo |
+| Cloud receipt OCR | 2 / mo | 50 / mo |
+| DGOTIX AI assistant | 2 lifetime | 80 / mo |
 | Priority support | — | ✅ |
 
 - **Counted features** (`QuotaWindow.items`) are checked where something new
@@ -248,9 +248,9 @@ the account falls back to FREE with no loss of the user's own data.
 
 - **What the trial includes (decision 2026-11-08):** every PRO feature that
   costs nothing is open for the 14 days; the two that cost money per call get a
-  small fixed allowance: **25 assistant answers and 10 cloud scans**
+  small fixed allowance (owner's decision 2026-11-12): **5 assistant answers and 5 cloud scans**
   (`TRIAL_AI_QUOTA`, `TRIAL_OCR_QUOTA`, counted in the calendar month, so a trial
-  that crosses a month can use them twice at worst, about $1) and a smaller
+  that crosses a month can use them twice at worst, about $0.40) and a smaller
   monthly cost guard. A new account is held to the new-account caps first
   (10 answers / 5 scans). When the trial ends the account is FREE again and
   keeps all its data, unless the user subscribes. The beta is not a trial.

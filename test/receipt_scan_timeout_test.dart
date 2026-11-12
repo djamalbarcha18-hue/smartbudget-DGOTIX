@@ -123,9 +123,9 @@ void main() {
     });
   });
 
-  test('FREE: 3 cloud scans a month', () {
+  test('FREE: 2 cloud scans a month', () {
     final Quota q = FeatureCatalog.quotaFor(Feature.cloudOcr, Plan.free)!;
-    expect(q.limit, 3);
+    expect(q.limit, 2);
     expect(q.window, QuotaWindow.monthly);
   });
 

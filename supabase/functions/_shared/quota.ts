@@ -14,7 +14,7 @@ export interface Allowance {
 
 /** DGOTIX AI answers per period (docs/PRICING.md §2). */
 export const AI_QUOTA: Record<Plan, Allowance> = {
-  free: { limit: 5, window: "lifetime" },
+  free: { limit: 2, window: "lifetime" },
   // 80 a month (owner's AI policy, docs/AI_ARCHITECTURE.md): unused requests
   // are not carried over.
   pro: { limit: 80, window: "monthly" },
@@ -22,7 +22,7 @@ export const AI_QUOTA: Record<Plan, Allowance> = {
 
 /** Cloud receipt OCR scans per period (docs/PRICING.md §3). */
 export const OCR_QUOTA: Record<Plan, Allowance> = {
-  free: { limit: 3, window: "monthly" },
+  free: { limit: 2, window: "monthly" },
   pro: { limit: 50, window: "monthly" },
 };
 
@@ -46,8 +46,8 @@ export const AI_MONTHLY_COST_CEILING_USD: Record<Plan, number> = {
  * (counted in the calendar month, so a trial that crosses a month can use
  * them twice at worst: about $1 in total). docs/PRICING.md §7.
  */
-export const TRIAL_AI_QUOTA: Allowance = { limit: 25, window: "monthly" };
-export const TRIAL_OCR_QUOTA: Allowance = { limit: 10, window: "monthly" };
+export const TRIAL_AI_QUOTA: Allowance = { limit: 5, window: "monthly" };
+export const TRIAL_OCR_QUOTA: Allowance = { limit: 5, window: "monthly" };
 export const TRIAL_AI_COST_CEILING_USD = 0.3;
 
 /**

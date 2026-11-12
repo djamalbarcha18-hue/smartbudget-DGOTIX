@@ -87,13 +87,13 @@ void main() {
     });
 
     test('the AI allowance is untouched, with or without rewards', () {
-      final GateDecision plain = _gate(Feature.dgotixAi, used: 4);
+      final GateDecision plain = _gate(Feature.dgotixAi, used: 1);
       final GateDecision earned =
-          _gate(Feature.dgotixAi, used: 4, rewards: _all);
+          _gate(Feature.dgotixAi, used: 1, rewards: _all);
       expect(earned.limit, plain.limit);
       expect(earned.remaining, plain.remaining);
-      // The free lifetime allowance is five: the sixth is refused either way.
-      expect(_gate(Feature.dgotixAi, used: 5, rewards: _all).allowed, isFalse);
+      // The free lifetime allowance is two: the third is refused either way.
+      expect(_gate(Feature.dgotixAi, used: 2, rewards: _all).allowed, isFalse);
     });
   });
 

@@ -122,13 +122,13 @@ Deno.env.delete("FOUNDING_OFFER_ENDS_AT");
 r = await whop(whopMem("membership.activated", U1, "mem_f", "plan_pro_founding", "active"));
 check("Founding: a founding membership is PRO yearly", last().p_plan === "pro" && last().p_period === "yearly", JSON.stringify(last()));
 
-// ---- Usage limits (BETA off: FREE = 3 scans a month, 5 lifetime AI answers) ----
+// ---- Usage limits (BETA off: FREE = 2 scans a month, 2 lifetime AI answers) ----
 const scan = () => handlers["receipt-scan"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-u7" }, body: JSON.stringify({ imageBase64: "AAAA", mimeType: "image/jpeg", v: 2 }) }));
 model.reply = JSON.stringify({ r: true, inv: "", dt: "2026-10-01", cur: "USD", sym: "$", sup: "S", cus: "", cat: "x", it: [], sub: "", dis: "", tax: "", tot: "9.50", paid: "", due: "" });
 model.calls = 0;
 const codes = await Promise.all(Array.from({ length: 10 }, () => scan().then((x) => x.status)));
 const used = db.tables.ocr_usage_monthly?.find((x: any) => x.user_id === "u7")?.scans;
-check("OCR: 10 parallel scans on a 3-scan monthly allowance: 3 served", codes.filter((c) => c === 200).length === 3 && model.calls === 3 && used === 3, codes.join(",") + " calls=" + model.calls + " used=" + used);
+check("OCR: 10 parallel scans on a 2-scan monthly allowance: 2 served", codes.filter((c) => c === 200).length === 2 && model.calls === 2 && used === 2, codes.join(",") + " calls=" + model.calls + " used=" + used);
 const nextMonth = db.tables.ocr_usage_monthly.find((x: any) => x.user_id === "u7");
 const thisMonth = nextMonth.month;
 nextMonth.month = "2000-01";
@@ -154,7 +154,7 @@ check("OCR: a stuck model answers 'timeout' and gives the scan back", stuck.stat
 const ask = (u: string) => handlers["ai-gateway"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-" + u }, body: JSON.stringify({ prompt: "hi" }) }));
 model.calls = 0;
 const ai = await Promise.all(Array.from({ length: 12 }, () => ask("u8").then((x) => x.status)));
-check("AI: 12 parallel questions on a 5-answer allowance: 5 answered", ai.filter((c) => c === 200).length === 5 && model.calls === 5, ai.join(",") + " calls=" + model.calls);
+check("AI: 12 parallel questions on a 2-answer allowance: 2 answered", ai.filter((c) => c === 200).length === 2 && model.calls === 2, ai.join(",") + " calls=" + model.calls);
 
 // A busy model (503) falls back to the next one; a retired model (404) no
 // longer ends the fallback.
@@ -173,7 +173,7 @@ const askBody = (u: string, body: unknown) => handlers["ai-gateway"](new Request
 model.lastBody = null;
 const okAnswer = await askBody("u20", { prompt: "how do I save?", context: "income: 4368" });
 const okJson = await okAnswer.json();
-check("AI: the answer carries the server's own balance", okAnswer.status === 200 && okJson.quota?.limit === 5 && okJson.quota?.used === 1 && okJson.quota?.remaining === 4 && okJson.quota?.window === "lifetime" && okJson.quota?.resetsAt === null, JSON.stringify(okJson.quota));
+check("AI: the answer carries the server's own balance", okAnswer.status === 200 && okJson.quota?.limit === 2 && okJson.quota?.used === 1 && okJson.quota?.remaining === 1 && okJson.quota?.window === "lifetime" && okJson.quota?.resetsAt === null, JSON.stringify(okJson.quota));
 check("AI: the model may write at most 1,000 tokens", model.lastBody?.generationConfig?.maxOutputTokens === 1000, JSON.stringify(model.lastBody?.generationConfig));
 
 const hugeContext = Array.from({ length: 1500 }, (_, i) => "line " + i + ": " + i * 1234567).join("\n");
@@ -186,12 +186,12 @@ const stat = await askBody("u22", { task: "status" });
 const statJson = await stat.json();
 const calls1 = model.calls;
 const usedBefore = db.tables.ai_usage_monthly?.find((x: any) => x.user_id === "u22")?.requests ?? 0;
-check("AI: a status call reports the allowance and counts nothing", stat.status === 200 && statJson.quota?.remaining === 5 && model.calls === calls1 && usedBefore === 0, JSON.stringify(statJson));
+check("AI: a status call reports the allowance and counts nothing", stat.status === 200 && statJson.quota?.remaining === 2 && model.calls === calls1 && usedBefore === 0, JSON.stringify(statJson));
 
-for (let k = 0; k < 5; k++) await askBody("u23", { prompt: "q" + k });
+for (let k = 0; k < 2; k++) await askBody("u23", { prompt: "q" + k });
 const spent = await askBody("u23", { prompt: "one more" });
 const spentJson = await spent.json();
-check("AI: when the allowance is spent the refusal says how much is left (none)", spent.status === 429 && spentJson.error === "quota_exceeded" && spentJson.quota?.remaining === 0 && spentJson.quota?.used === 5, spent.status + " " + JSON.stringify(spentJson));
+check("AI: when the allowance is spent the refusal says how much is left (none)", spent.status === 429 && spentJson.error === "quota_exceeded" && spentJson.quota?.remaining === 0 && spentJson.quota?.used === 2, spent.status + " " + JSON.stringify(spentJson));
 
 // ---- Live payment test: only the owner's own account is told it may try a real purchase ----
 const cfg = (u: string) => handlers["billing-config"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-" + u }, body: "{}" }));
