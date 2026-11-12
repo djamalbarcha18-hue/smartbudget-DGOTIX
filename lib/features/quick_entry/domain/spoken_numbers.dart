@@ -1,7 +1,9 @@
 /// Amounts said as words, turned into digits before the quick entry parser
 /// reads them: a speech engine may write «قهوة مئتين» or «courses deux mille
-/// cinq cents» rather than «قهوة 200». Arabic (standard and spoken: «ميتين»,
-/// «خمسمية», «تلطاش», «ألف ونص»), French and English. Entirely on the device.
+/// cinq cents» rather than «قهوة 200». Arabic, standard and the main spoken
+/// varieties — Maghrebi («ميتين», «تلطاش», «جوج»), Egyptian («تلات تلاف»,
+/// «خمستاشر»), Levantine («تنين», «خمسطعش»), Gulf and Iraqi («ثنعش») — with
+/// «ونص» and «وربع»; French and English. Entirely on the device.
 ///
 /// Careful by design, so typed text isn't misread:
 /// - Text that already has a digit is left alone («قهوة واحدة 200»).
@@ -100,6 +102,7 @@ abstract final class SpokenNumbers {
     final int? d = _duals[w];
     if (d != null) return _Part(_Kind.dual, d, w);
     if (_halves.contains(w)) return _Part(_Kind.half, 0, w);
+    if (_quarters.contains(w)) return _Part(_Kind.quarter, 0, w);
     // «a hundred», «a thousand».
     if (w == 'a' &&
         (_hundreds.contains(next) || _scales.containsKey(next))) {
@@ -116,7 +119,7 @@ abstract final class SpokenNumbers {
   static int _value(List<_Part> run) {
     int total = 0;
     int current = 0;
-    int last = 0; // the last hundred or scale, for «ونص» (and a half)
+    int last = 0; // the last hundred or scale, for «ونص» / «وربع»
     int? lastAdded; // for French «quatre-vingt»
     for (final _Part p in run) {
       switch (p.kind) {
@@ -148,6 +151,12 @@ abstract final class SpokenNumbers {
           } else if (last == 100) {
             current += 50;
           }
+        case _Kind.quarter:
+          if (last >= 1000) {
+            total += last ~/ 4;
+          } else if (last == 100) {
+            current += 25;
+          }
       }
     }
     return total + current;
@@ -176,8 +185,11 @@ abstract final class SpokenNumbers {
   static final Map<String, int> _numbers = _table(<int, List<String>>{
     // Arabic, standard and spoken.
     1: <String>['واحد', 'واحدة'],
-    2: <String>['اثنين', 'اثنان', 'إثنين', 'اثنتين', 'اتنين', 'زوز'],
-    3: <String>['ثلاثة', 'ثلاث', 'تلاتة', 'تلاثة'],
+    2: <String>[
+      'اثنين', 'اثنان', 'إثنين', 'اثنتين', 'اتنين', 'زوز', 'جوج', 'تنين',
+      'ثنين',
+    ],
+    3: <String>['ثلاثة', 'ثلاث', 'تلاتة', 'تلاثة', 'تلات', 'تلت'],
     4: <String>['أربعة', 'أربع', 'ربعة'],
     5: <String>['خمسة', 'خمس'],
     6: <String>['ستة', 'ست'],
@@ -185,15 +197,23 @@ abstract final class SpokenNumbers {
     8: <String>['ثمانية', 'ثمان', 'ثماني', 'تمانية', 'ثمنية', 'تمنية'],
     9: <String>['تسعة', 'تسع'],
     10: <String>['عشرة', 'عشر'],
-    11: <String>['حداش', 'حداعش', 'احداش'],
-    12: <String>['طناش', 'اطناش', 'اثناعش'],
-    13: <String>['تلطاش', 'ثلطاش'],
-    14: <String>['ربعطاش', 'اربعطاش'],
-    15: <String>['خمسطاش'],
-    16: <String>['سطاش'],
-    17: <String>['سبعطاش'],
-    18: <String>['تمنطاش', 'ثمنطاش'],
-    19: <String>['تسعطاش'],
+    // Teens: Maghrebi (…طاش), Egyptian (…تاشر), Levantine, Gulf and Iraqi
+    // (…طعش / …عش).
+    11: <String>[
+      'حداش', 'حداعش', 'احداش', 'حضاش', 'حداشر', 'احداشر', 'حدعش', 'احدعش',
+      'احدعشر',
+    ],
+    12: <String>[
+      'طناش', 'اطناش', 'اثناعش', 'اتناشر', 'اطناشر', 'تنعش', 'ثنعش', 'اثنعش',
+      'اثنعشر',
+    ],
+    13: <String>['تلطاش', 'ثلطاش', 'تلتاشر', 'تلاتاشر', 'تلتعش', 'ثلطعش'],
+    14: <String>['ربعطاش', 'اربعطاش', 'اربعتاشر', 'اربعطعش', 'اربطعش'],
+    15: <String>['خمسطاش', 'خمستاشر', 'خمسطعش'],
+    16: <String>['سطاش', 'ستاشر', 'سطعش', 'ستطعش'],
+    17: <String>['سبعطاش', 'سبعتاشر', 'سبعطعش'],
+    18: <String>['تمنطاش', 'ثمنطاش', 'تمنتاشر', 'تمنطعش', 'ثمنطعش'],
+    19: <String>['تسعطاش', 'تسعتاشر', 'تسعطعش'],
     20: <String>['عشرين', 'عشرون'],
     30: <String>['ثلاثين', 'ثلاثون', 'تلاتين', 'تلاثين'],
     40: <String>['أربعين', 'أربعون', 'ربعين'],
@@ -203,7 +223,9 @@ abstract final class SpokenNumbers {
     80: <String>['ثمانين', 'ثمانون', 'تمانين'],
     90: <String>['تسعين', 'تسعون'],
     200: <String>['مئتين', 'مئتان', 'مائتين', 'مائتان', 'ميتين', 'متين'],
-    300: <String>['ثلاثمائة', 'ثلاثمئة', 'ثلاثمية', 'تلتمية', 'تلاتمية'],
+    300: <String>[
+      'ثلاثمائة', 'ثلاثمئة', 'ثلاثمية', 'تلتمية', 'تلاتمية', 'ثلثمية',
+    ],
     400: <String>['أربعمائة', 'أربعمئة', 'ربعمية', 'اربعمية'],
     500: <String>['خمسمائة', 'خمسمئة', 'خمسمية'],
     600: <String>['ستمائة', 'ستمئة', 'ستمية'],
@@ -241,13 +263,14 @@ abstract final class SpokenNumbers {
     }));
 
   static final Set<String> _hundreds = _set(<String>[
-    'مائة', 'مئة', 'مية', 'ميه', 'مايه', 'hundred', 'hundreds', 'cent',
+    'مائة', 'مئة', 'مية', 'ميه', 'مايه', 'ميت', 'hundred', 'hundreds', 'cent',
     'cents',
   ]);
 
   static final Map<String, int> _scales = _table(<int, List<String>>{
     1000: <String>[
-      'ألف', 'آلاف', 'ألاف', 'thousand', 'thousands', 'mille', 'milles',
+      'ألف', 'آلاف', 'ألاف', 'تلاف', 'تالاف', 'thousand', 'thousands',
+      'mille', 'milles',
     ],
     1000000: <String>['مليون', 'ملايين', 'million', 'millions'],
     1000000000: <String>[
@@ -261,9 +284,11 @@ abstract final class SpokenNumbers {
   });
 
   static final Set<String> _halves = _set(<String>['نص', 'نصف']);
+
+  static final Set<String> _quarters = _set(<String>['ربع']);
 }
 
-enum _Kind { number, hundred, scale, dual, half }
+enum _Kind { number, hundred, scale, dual, half, quarter }
 
 class _Part {
   const _Part(this.kind, this.value, this.word);

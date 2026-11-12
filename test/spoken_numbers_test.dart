@@ -33,6 +33,32 @@ void main() {
     });
   });
 
+  group('other Arabic varieties', () {
+    final Map<String, String> cases = <String, String>{
+      // Egyptian
+      'عيش خمستاشر': 'عيش 15',
+      'إيجار تلات تلاف': 'إيجار 3000',
+      'ميت جنيه': '100 جنيه',
+      'ألف وربع': '1250',
+      'تلتمية وخمسين': '350',
+      // Levantine
+      'خبز تنين وعشرين': 'خبز 22',
+      'قهوة خمسطعش': 'قهوة 15',
+      'أجار ألف وتلتمية': 'أجار 1300',
+      // Gulf and Iraqi
+      'بنزين ثنعش': 'بنزين 12',
+      'غداء ثمنطعش': 'غداء 18',
+      'إيجار ثلاثة آلاف وخمسمية': 'إيجار 3500',
+      // Moroccan
+      'حليب جوج': 'حليب 2',
+      'كراء جوج آلاف': 'كراء 2000',
+      'مية وربع': '125',
+    };
+    cases.forEach((String said, String written) {
+      test('«$said» → «$written»', () => expect(d(said), written));
+    });
+  });
+
   group('French', () {
     final Map<String, String> cases = <String, String>{
       'courses deux mille cinq cents': 'courses 2500',
