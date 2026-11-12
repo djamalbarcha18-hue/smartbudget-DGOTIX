@@ -28,6 +28,7 @@ import 'package:smartbudget/features/shell/save_problem_banner.dart';
 import 'package:smartbudget/features/sync/application/sync_controller.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/shell/trial_reminder_banner.dart';
 import 'package:smartbudget/features/shell/update_banner.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -121,9 +122,11 @@ class SmartBudgetApp extends ConsumerWidget {
                         child: SaveProblemBanner(
                             child: ReferralCelebration(
                                 router: router,
-                                child: UpdateBanner(
-                                    child:
-                                        child ?? const SizedBox.shrink())))))),
+                                child: TrialReminderBanner(
+                                    router: router,
+                                    child: UpdateBanner(
+                                        child: child ??
+                                            const SizedBox.shrink()))))))),
           ),
         ),
       ),

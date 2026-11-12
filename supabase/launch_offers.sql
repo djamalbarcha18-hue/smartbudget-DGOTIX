@@ -28,7 +28,9 @@ alter table ai_entitlements add column if not exists trial_ocr_base int;
 alter table billing_prices add column if not exists offer text;
 
 -- Starts the caller's PRO trial and returns when it ends. Refuses (errors
--- 'trial_used' / 'already_paid') when the account had one already or pays.
+-- 'email_not_confirmed' / 'trial_used' / 'already_paid') when the account's
+-- email isn't confirmed yet, had a trial already, or pays. Confirming the email
+-- first keeps throwaway sign-ups from collecting trials.
 create or replace function public.start_pro_trial() returns timestamptz
 language plpgsql security definer set search_path = public as $$
 declare
@@ -38,6 +40,10 @@ declare
 begin
   if uid is null then
     raise exception 'not_signed_in' using errcode = '28000';
+  end if;
+  if not exists (select 1 from auth.users
+                 where id = uid and email_confirmed_at is not null) then
+    raise exception 'email_not_confirmed' using errcode = 'P0001';
   end if;
   insert into ai_entitlements (user_id) values (uid) on conflict (user_id) do nothing;
   select * into ent from ai_entitlements where user_id = uid for update;

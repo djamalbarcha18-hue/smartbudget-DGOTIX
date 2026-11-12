@@ -255,7 +255,12 @@ the account falls back to FREE with no loss of the user's own data.
   changing (at worst about $0.20 a trial), plus a smaller monthly cost guard. A new account is held to the new-account caps first
   (10 answers / 5 scans). When the trial ends the account is FREE again and
   keeps all its data, unless the user subscribes. The beta is not a trial.
-- **14-day PRO trial, no card, once per account.** The Plans screen offers it
+- **14-day PRO trial, no card, once per account, email confirmed first**
+  (`start_pro_trial()` refuses with `email_not_confirmed` until the account's
+  email is confirmed). Three days before the end, and on the last day, a note
+  at the top of the app says how long is left and that the data stays
+  (`trial_reminder.dart`, `TrialReminderBanner`); it can be closed, shows once,
+  and names no price and links nowhere in the store app. The Plans screen offers it
   to a signed-in FREE account that never had one; `start_pro_trial()` sets
   `trial_plan` / `trial_expires_at` and stamps `trial_used_at` so it can't be
   started twice (a paying account can't start one). Shown only while plans are

@@ -5,7 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 /// supabase/launch_offers.sql; shown in the offer text).
 const int kProTrialDays = 14;
 
-enum TrialError { used, paid, network }
+enum TrialError { used, paid, emailNotConfirmed, network }
 
 /// The answer to starting a trial: when it ends, or why it didn't start.
 class TrialStart {
@@ -40,6 +40,9 @@ class TrialService {
 
   /// The server's refusal, from its message.
   static TrialError errorFrom(String message) {
+    if (message.contains('email_not_confirmed')) {
+      return TrialError.emailNotConfirmed;
+    }
     if (message.contains('trial_used')) return TrialError.used;
     if (message.contains('already_paid')) return TrialError.paid;
     return TrialError.network;

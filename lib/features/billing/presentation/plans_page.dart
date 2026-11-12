@@ -290,6 +290,7 @@ class _TrialCardState extends ConsumerState<_TrialCard> {
       content: Text(switch (r.error) {
         null => l.trialActive(_ltr(_fmtDate(r.endsAt) ?? '')),
         TrialError.used || TrialError.paid => l.trialUsed,
+        TrialError.emailNotConfirmed => l.trialConfirmEmail,
         TrialError.network => l.trialFailed,
       }),
     ));

@@ -6,9 +6,12 @@
 \set QUIET on
 \pset tuples_only on
 -- Two accounts with data, seeded as the database owner.
+insert into auth.users (id, email, email_confirmed_at) values
+  ('aaaaaaaa-0000-0000-0000-000000000001', 'a@test', now()),
+  ('bbbbbbbb-0000-0000-0000-000000000002', 'b@test', now());
+-- C signed up but never confirmed the email.
 insert into auth.users (id, email) values
-  ('aaaaaaaa-0000-0000-0000-000000000001', 'a@test'),
-  ('bbbbbbbb-0000-0000-0000-000000000002', 'b@test');
+  ('cccccccc-0000-0000-0000-000000000003', 'c@test');
 insert into transactions (user_id, txn_date, type, amount_minor, currency) values
   ('bbbbbbbb-0000-0000-0000-000000000002', '2026-10-01', 'expense', 5000, 'USD');
 insert into user_backups (user_id, data) values
@@ -126,7 +129,10 @@ select pg_temp.attempt('A trial is PRO for 14 days', $q$select 1 from ai_entitle
 set role authenticated;
 select set_config('request.jwt.claim.sub', 'bbbbbbbb-0000-0000-0000-000000000002', false);
 select pg_temp.attempt('B (paying) starts a trial', 'select start_pro_trial()', 'denied');
+select set_config('request.jwt.claim.sub', 'cccccccc-0000-0000-0000-000000000003', false);
+select pg_temp.attempt('C (email not confirmed) starts a trial', 'select start_pro_trial()', 'denied');
 reset role;
+select pg_temp.attempt('C got no trial', $q$select 1 from ai_entitlements where user_id = 'cccccccc-0000-0000-0000-000000000003' and trial_used_at is not null$q$, 'rows=0');
 
 select outcome || '  ' || test from results;
 select count(*) filter (where outcome = 'PASS') || ' passed, ' || count(*) filter (where outcome <> 'PASS') || ' failed' from results;

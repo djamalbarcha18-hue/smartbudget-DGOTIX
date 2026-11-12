@@ -119,6 +119,8 @@ void main() {
 
   group('free trial', () {
     test('the server refusal is told apart', () {
+      expect(TrialService.errorFrom('email_not_confirmed'),
+          TrialError.emailNotConfirmed);
       expect(TrialService.errorFrom('trial_used'), TrialError.used);
       expect(TrialService.errorFrom('already_paid'), TrialError.paid);
       expect(TrialService.errorFrom('timeout'), TrialError.network);
