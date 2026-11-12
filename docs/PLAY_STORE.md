@@ -125,8 +125,8 @@ in.
 - While the app is in beta (`BETA_ALL_ACCESS` unset or true) the store app is
   open like the web app.
 - When the beta ends, build **both** workflows with
-  `--dart-define=BETA_ALL_ACCESS=false` (deploy-web.yml already has it;
-  **add it to android.yml**). The store build then (`AppEnv.storeFreeMode`):
+  `--dart-define=BETA_ALL_ACCESS=false` (deploy-web.yml and android.yml
+  both have it now). The store build then (`AppEnv.storeFreeMode`):
   applies the free plan's limits, takes the plan from the server, shows a
   plain note ("Some features are part of the Pro plan…") instead of plans,
   prices, coupons, trial, manage-subscription or an upgrade card, and the
