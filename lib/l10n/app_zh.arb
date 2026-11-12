@@ -641,7 +641,7 @@
   "legalLastUpdated": "最后更新：{date}",
   "pageSupport": "帮助与支持",
   "supportContact": "联系我们",
-  "supportContactHint": "我们通常在一个工作日内回复。",
+  "supportContactHint": "遇到问题或有疑问?请联系我们。",
   "supportEmailLabel": "客服邮箱",
   "supportCopyEmail": "复制邮箱",
   "supportWriteEmail": "给我们发邮件",
@@ -1694,5 +1694,9 @@
   "daretImportWho": "你是哪一位?",
   "daretImportAdd": "添加到我的互助会",
   "daretImportSkip": "暂不",
-  "daretImportDone": "已添加。你的轮次:{date}"
+  "daretImportDone": "已添加。你的轮次:{date}",
+  "storePlanTitle": "Pro 功能",
+  "storePlanBody": "部分功能属于 Pro 方案。如果你的账号有 Pro,用它登录后即可在这里使用。",
+  "storeLimitBody": "{feature}:免费方案允许 {count} 个。Pro 账号在这里没有上限;你已有的内容会保留。",
+  "supportWhatsApp": "WhatsApp"
 }

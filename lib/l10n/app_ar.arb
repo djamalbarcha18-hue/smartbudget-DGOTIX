@@ -743,7 +743,7 @@
   "@legalLastUpdated": { "placeholders": { "date": { "type": "String" } } },
   "pageSupport": "المساعدة والدعم",
   "supportContact": "تواصل معنا",
-  "supportContactHint": "نردّ عادةً خلال يوم عمل واحد.",
+  "supportContactHint": "لأي مشكلة أو استفسار، يُرجى مراسلتنا.",
   "supportEmailLabel": "الدعم عبر البريد",
   "supportCopyEmail": "نسخ البريد",
   "supportWriteEmail": "راسلنا",
@@ -1893,5 +1893,9 @@
   "daretImportWho": "من أنت في القائمة؟",
   "daretImportAdd": "أضفها إلى جمعياتي",
   "daretImportSkip": "ليس الآن",
-  "daretImportDone": "أُضيفت. دورك: {date}"
+  "daretImportDone": "أُضيفت. دورك: {date}",
+  "storePlanTitle": "ميزات Pro",
+  "storePlanBody": "بعض الميزات ضمن خطة Pro. إن كان حسابك مشتركًا في Pro فتعمل هنا فور تسجيل الدخول به.",
+  "storeLimitBody": "{feature}: تسمح الخطة المجانية بـ {count}. حساب Pro بلا حدّ هنا، وما لديك الآن يبقى كما هو.",
+  "supportWhatsApp": "واتساب"
 }

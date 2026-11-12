@@ -641,7 +641,7 @@
   "legalLastUpdated": "Laas bygewerk: {date}",
   "pageSupport": "Hulp en ondersteuning",
   "supportContact": "Kontak ons",
-  "supportContactHint": "Ons antwoord gewoonlik binne een werksdag.",
+  "supportContactHint": "Het jy 'n probleem of vraag? Skryf asseblief vir ons.",
   "supportEmailLabel": "E-pos-ondersteuning",
   "supportCopyEmail": "Kopieer e-pos",
   "supportWriteEmail": "Stuur vir ons 'n e-pos",
@@ -1694,5 +1694,9 @@
   "daretImportWho": "Watter een is jy?",
   "daretImportAdd": "Voeg by my stokvels",
   "daretImportSkip": "Nie nou nie",
-  "daretImportDone": "Bygevoeg. Jou beurt: {date}"
+  "daretImportDone": "Bygevoeg. Jou beurt: {date}",
+  "storePlanTitle": "Pro-kenmerke",
+  "storePlanBody": "Sommige kenmerke is deel van die Pro-plan. As jou rekening Pro het, werk dit hier sodra jy daarmee inteken.",
+  "storeLimitBody": "{feature}: die gratis plan laat {count} toe. 'n Pro-rekening het hier geen limiet nie; wat jy reeds het, bly.",
+  "supportWhatsApp": "WhatsApp"
 }

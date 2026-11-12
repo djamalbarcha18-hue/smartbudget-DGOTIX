@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart' as intl;
 
@@ -162,7 +163,7 @@ class _InvoiceReviewSheetState extends State<InvoiceReviewSheet> {
                                     Navigator.of(context).pop();
                                     widget.onUpgrade!();
                                   },
-                                  child: Text(l.aiUpgrade),
+                                  child: Text(upgradeLabel(l, ai: true)),
                                 ),
                         )
                       else if (widget.offline)

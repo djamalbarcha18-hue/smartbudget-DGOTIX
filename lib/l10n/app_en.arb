@@ -744,7 +744,7 @@
   "@legalLastUpdated": { "placeholders": { "date": { "type": "String" } } },
   "pageSupport": "Help & Support",
   "supportContact": "Contact us",
-  "supportContactHint": "We usually reply within one business day.",
+  "supportContactHint": "Have a problem or a question? Please write to us.",
   "supportEmailLabel": "Email support",
   "supportCopyEmail": "Copy email",
   "supportWriteEmail": "Email us",
@@ -2002,5 +2002,10 @@
   "daretImportAdd": "Add it to my darets",
   "daretImportSkip": "Not now",
   "daretImportDone": "Added. Your turn: {date}",
-  "@daretImportDone": {"placeholders": {"date": {"type": "String"}}}
+  "@daretImportDone": {"placeholders": {"date": {"type": "String"}}},
+  "storePlanTitle": "Pro features",
+  "storePlanBody": "Some features are part of the Pro plan. If your account has Pro, it works here as soon as you sign in with it.",
+  "storeLimitBody": "{feature}: the free plan allows {count}. A Pro account has no limit here; what you already have stays.",
+  "@storeLimitBody": {"placeholders": {"feature": {"type": "String"}, "count": {"type": "int"}}},
+  "supportWhatsApp": "WhatsApp"
 }

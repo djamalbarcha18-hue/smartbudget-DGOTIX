@@ -641,7 +641,7 @@
   "legalLastUpdated": "최종 업데이트: {date}",
   "pageSupport": "도움말과 지원",
   "supportContact": "문의하기",
-  "supportContactHint": "보통 영업일 기준 하루 안에 답변해요.",
+  "supportContactHint": "문제나 궁금한 점이 있으면 연락해 주세요.",
   "supportEmailLabel": "지원 이메일",
   "supportCopyEmail": "이메일 복사",
   "supportWriteEmail": "이메일 보내기",
@@ -1694,5 +1694,9 @@
   "daretImportWho": "누구세요?",
   "daretImportAdd": "내 계에 추가",
   "daretImportSkip": "나중에",
-  "daretImportDone": "추가했어요. 내 차례: {date}"
+  "daretImportDone": "추가했어요. 내 차례: {date}",
+  "storePlanTitle": "Pro 기능",
+  "storePlanBody": "일부 기능은 Pro 플랜에 포함돼요. 계정에 Pro가 있다면 그 계정으로 로그인하는 즉시 여기서 쓸 수 있어요.",
+  "storeLimitBody": "{feature}: 무료 플랜은 {count}개까지예요. Pro 계정은 여기서 제한이 없고, 지금 있는 내용은 그대로 남아요.",
+  "supportWhatsApp": "WhatsApp"
 }

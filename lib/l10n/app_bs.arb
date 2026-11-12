@@ -641,7 +641,7 @@
   "legalLastUpdated": "Posljednja izmjena: {date}",
   "pageSupport": "Pomoć i podrška",
   "supportContact": "Kontaktiraj nas",
-  "supportContactHint": "Obično odgovaramo u roku od jednog radnog dana.",
+  "supportContactHint": "Imate problem ili pitanje? Pišite nam.",
   "supportEmailLabel": "Podrška putem e-maila",
   "supportCopyEmail": "Kopiraj e-mail",
   "supportWriteEmail": "Piši nam",
@@ -1694,5 +1694,9 @@
   "daretImportWho": "Koji ste vi?",
   "daretImportAdd": "Dodaj u moje grupe",
   "daretImportSkip": "Ne sada",
-  "daretImportDone": "Dodano. Vaš red: {date}"
+  "daretImportDone": "Dodano. Vaš red: {date}",
+  "storePlanTitle": "Pro funkcije",
+  "storePlanBody": "Neke funkcije su dio Pro plana. Ako vaš račun ima Pro, radi ovdje čim se prijavite njime.",
+  "storeLimitBody": "{feature}: besplatni plan dopušta {count}. Pro račun ovdje nema ograničenja; ono što već imate ostaje.",
+  "supportWhatsApp": "WhatsApp"
 }

@@ -641,7 +641,7 @@
   "legalLastUpdated": "Последнее обновление: {date}",
   "pageSupport": "Помощь и поддержка",
   "supportContact": "Свяжитесь с нами",
-  "supportContactHint": "Обычно мы отвечаем в течение одного рабочего дня.",
+  "supportContactHint": "Есть проблема или вопрос? Напишите нам.",
   "supportEmailLabel": "Поддержка по e-mail",
   "supportCopyEmail": "Копировать e-mail",
   "supportWriteEmail": "Написать нам",
@@ -1694,5 +1694,9 @@
   "daretImportWho": "Кто из них вы?",
   "daretImportAdd": "Добавить в мои кассы",
   "daretImportSkip": "Не сейчас",
-  "daretImportDone": "Добавлено. Ваша очередь: {date}"
+  "daretImportDone": "Добавлено. Ваша очередь: {date}",
+  "storePlanTitle": "Функции Pro",
+  "storePlanBody": "Некоторые функции входят в тариф Pro. Если у вашего аккаунта есть Pro, они работают здесь, как только вы в него войдёте.",
+  "storeLimitBody": "{feature}: бесплатный тариф допускает {count}. У аккаунта Pro здесь нет ограничений; то, что уже есть, сохраняется.",
+  "supportWhatsApp": "WhatsApp"
 }

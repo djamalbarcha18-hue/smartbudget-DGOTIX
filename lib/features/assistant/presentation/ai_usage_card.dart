@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/features/billing/presentation/upgrade_popup.dart';
@@ -70,7 +71,7 @@ class AiUsageCard extends ConsumerWidget {
             if (!d.allowed) ...<Widget>[
               const SizedBox(height: DsSpacing.md),
               DsButton(
-                label: l.upgradeCta,
+                label: upgradeLabel(l),
                 icon: Icons.workspace_premium_outlined,
                 onPressed: () => UpgradePopup.show(context),
               ),

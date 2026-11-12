@@ -641,7 +641,7 @@
   "legalLastUpdated": "Dernière mise à jour : {date}",
   "pageSupport": "Aide et assistance",
   "supportContact": "Nous contacter",
-  "supportContactHint": "Nous répondons généralement sous un jour ouvré.",
+  "supportContactHint": "Un problème ou une question ? Écrivez-nous.",
   "supportEmailLabel": "Assistance par e-mail",
   "supportCopyEmail": "Copier l'e-mail",
   "supportWriteEmail": "Nous écrire",
@@ -1694,5 +1694,9 @@
   "daretImportWho": "Lequel êtes-vous ?",
   "daretImportAdd": "L'ajouter à mes tontines",
   "daretImportSkip": "Plus tard",
-  "daretImportDone": "Ajoutée. Votre tour : {date}"
+  "daretImportDone": "Ajoutée. Votre tour : {date}",
+  "storePlanTitle": "Fonctions Pro",
+  "storePlanBody": "Certaines fonctions font partie de l'offre Pro. Si votre compte a Pro, elles fonctionnent ici dès que vous vous connectez avec lui.",
+  "storeLimitBody": "{feature} : l'offre gratuite en permet {count}. Un compte Pro n'a pas de limite ici ; ce que vous avez déjà reste.",
+  "supportWhatsApp": "WhatsApp"
 }

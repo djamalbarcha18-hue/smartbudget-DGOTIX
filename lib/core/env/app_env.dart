@@ -71,11 +71,20 @@ abstract final class AppEnv {
   ///   --dart-define=BETA_ALL_ACCESS=false
   /// (the server mirror is the BETA_ALL_ACCESS Edge Function secret).
   ///
-  /// Always on in a store build: Google Play and the App Store only allow
-  /// their own billing for digital subscriptions, so the store app never
-  /// offers the web checkout.
+  /// Follows the same switch in a store build: while the app is in beta the
+  /// store app is open too. When the beta ends (build with
+  /// `BETA_ALL_ACCESS=false`) the store app applies the free plan's limits and
+  /// reads the account's plan from the server, so a subscription bought on the
+  /// website works there, but it never offers or links to a payment (see
+  /// [storeFreeMode]).
   static const bool betaAllAccess =
-      storeBuild || bool.fromEnvironment('BETA_ALL_ACCESS', defaultValue: true);
+      bool.fromEnvironment('BETA_ALL_ACCESS', defaultValue: true);
+
+  /// A store build after the beta: plan limits apply, the account's plan comes
+  /// from the server, and nothing in the app sells, prices or links to a
+  /// payment. Google Play and the App Store only allow their own billing for
+  /// digital subscriptions inside the app.
+  static const bool storeFreeMode = storeBuild && !betaAllAccess;
 
   /// «Continue with Google» on the sign-in and sign-up pages: hidden in every
   /// build until the owner sets up Google in Supabase (docs/GOOGLE_SIGN_IN.md)

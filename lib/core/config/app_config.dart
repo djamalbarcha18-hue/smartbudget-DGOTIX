@@ -19,6 +19,13 @@ abstract final class AppConfig {
   /// every screen picks it up.
   static const String supportEmail = 'support@dgotix.com';
 
+  /// The WhatsApp number for support, digits only with the country code
+  /// (e.g. '213555123456'), or empty: the WhatsApp line is then not shown.
+  /// Support only: never next to a locked feature or a price.
+  static const String supportWhatsApp = '';
+
+  static bool get hasSupportWhatsApp => supportWhatsApp.trim().isNotEmpty;
+
   /// True once a real support inbox has been configured above.
   static bool get hasSupportEmail => supportEmail.trim().isNotEmpty;
 

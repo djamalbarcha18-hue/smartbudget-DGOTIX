@@ -42,3 +42,11 @@ jobs:
 
       - name: Run tests
         run: flutter test --reporter expanded
+
+      # The Google Play build after the beta sells nothing and links to no
+      # payment; these checks only run with those build settings.
+      - name: Store build after the beta (no selling, plan from the account)
+        run: >
+          flutter test --reporter expanded
+          --dart-define=STORE_BUILD=true --dart-define=BETA_ALL_ACCESS=false
+          test/store_free_mode_test.dart

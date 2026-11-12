@@ -641,7 +641,7 @@
   "legalLastUpdated": "Son güncelleme: {date}",
   "pageSupport": "Yardım ve destek",
   "supportContact": "Bize ulaş",
-  "supportContactHint": "Genellikle bir iş günü içinde yanıt veririz.",
+  "supportContactHint": "Bir sorun ya da sorunuz mu var? Lütfen bize yazın.",
   "supportEmailLabel": "E-posta desteği",
   "supportCopyEmail": "E-postayı kopyala",
   "supportWriteEmail": "Bize e-posta gönder",
@@ -1694,5 +1694,9 @@
   "daretImportWho": "Sen hangisisin?",
   "daretImportAdd": "Günlerime ekle",
   "daretImportSkip": "Şimdi değil",
-  "daretImportDone": "Eklendi. Sıran: {date}"
+  "daretImportDone": "Eklendi. Sıran: {date}",
+  "storePlanTitle": "Pro özellikleri",
+  "storePlanBody": "Bazı özellikler Pro planının parçasıdır. Hesabında Pro varsa, onunla giriş yaptığında burada çalışır.",
+  "storeLimitBody": "{feature}: ücretsiz plan {count} izin verir. Pro hesabın burada sınırı yoktur; mevcut olanlar kalır.",
+  "supportWhatsApp": "WhatsApp"
 }
