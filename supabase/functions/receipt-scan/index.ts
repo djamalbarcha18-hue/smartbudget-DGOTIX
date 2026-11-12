@@ -30,7 +30,12 @@ import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { mergeReadings, type Reading } from "../_shared/invoice_merge.ts";
 import { HttpError, requireAccount, serviceClient } from "../_shared/auth.ts";
 import { readJsonBody } from "../_shared/body.ts";
-import { rateLimited, releaseUsage, reserveUsage } from "../_shared/usage.ts";
+import {
+  rateLimited,
+  releaseUsage,
+  reserveUsage,
+  trialUsageBase,
+} from "../_shared/usage.ts";
 import {
   type Allowance,
   allowanceFor,
@@ -38,6 +43,7 @@ import {
   effectivePlan,
   normalizePlan,
   ocrAllowance,
+  onTrial,
   type Plan,
   trustOf,
 } from "../_shared/quota.ts";
@@ -236,7 +242,15 @@ Deno.serve(async (req: Request) => {
     // (beta gives everyone PRO): see supabase/abuse_limits.sql.
     const trust = trustOf(paidPlan, account);
     // A trial gets a small fixed allowance (the rest of PRO is open to it).
-    const allow = allowanceFor(ocrAllowance(plan, paidPlan), "ocr", trust);
+    // A trial's scans are counted from the trial's start.
+    const trialBase = onTrial(plan, paidPlan)
+      ? await trialUsageBase(db, userId, "ocr")
+      : null;
+    const allow = allowanceFor(
+      ocrAllowance(plan, paidPlan, undefined, trialBase),
+      "ocr",
+      trust,
+    );
     if (await ocrQuotaExceeded(db, userId, month, allow)) {
       return jsonResponse({ error: "quota_exceeded" }, 429, cors);
     }

@@ -69,6 +69,29 @@ function pool(trust: Trust): "paid" | "unpaid" | "new" {
 
 const RESULTS = new Set(["ok", "quota", "daily", "global", "pool"]);
 
+/**
+ * The account's all-time usage of [kind] when its trial began, as recorded by
+ * start_pro_trial() (supabase/launch_offers.sql), or null when it wasn't
+ * recorded (a database without those columns, a trial started before them):
+ * the trial's allowance is then counted in the calendar month.
+ */
+export async function trialUsageBase(
+  db: SupabaseClient,
+  userId: string,
+  kind: UsageKind,
+): Promise<number | null> {
+  const column = kind === "ai" ? "trial_ai_base" : "trial_ocr_base";
+  try {
+    const { data, error } = await db.from("ai_entitlements")
+      .select(column).eq("user_id", userId).maybeSingle();
+    if (error) return null;
+    const v = (data as Record<string, unknown> | null)?.[column];
+    return typeof v === "number" && Number.isInteger(v) && v >= 0 ? v : null;
+  } catch (_) {
+    return null;
+  }
+}
+
 export async function reserveUsage(
   db: SupabaseClient,
   userId: string,

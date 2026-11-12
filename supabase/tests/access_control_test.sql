@@ -121,6 +121,7 @@ select pg_temp.attempt('A reads the totals', 'select * from app_stats_daily', 'd
 select pg_temp.attempt('A changes a total', $q$update app_stats_daily set count = 999999$q$, 'denied');
 reset role;
 select pg_temp.attempt('the totals hold two trips and nothing else', $q$select 1 from app_stats_daily where event = 'trip_created' and count = 2 and not exists (select 1 from app_stats_daily where event <> 'trip_created')$q$, 'rows=1');
+select pg_temp.attempt('A trial records the usage it starts from', $q$select 1 from ai_entitlements where user_id = 'aaaaaaaa-0000-0000-0000-000000000001' and trial_ai_base is not null and trial_ocr_base is not null$q$, 'rows=1');
 select pg_temp.attempt('A trial is PRO for 14 days', $q$select 1 from ai_entitlements where user_id = 'aaaaaaaa-0000-0000-0000-000000000001' and trial_plan = 'pro' and trial_used_at is not null and trial_expires_at between now() + interval '13 days 23 hours' and now() + interval '14 days 1 hour'$q$, 'rows=1');
 set role authenticated;
 select set_config('request.jwt.claim.sub', 'bbbbbbbb-0000-0000-0000-000000000002', false);

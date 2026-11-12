@@ -17,6 +17,14 @@
 -- can't be started twice.
 alter table ai_entitlements add column if not exists trial_used_at timestamptz;
 
+-- What the account had used, all time, when its trial began. The trial's own
+-- allowance (5 assistant answers, 5 cloud scans) is counted from there, so it
+-- is 5 for the trial's 14 days whatever was used before it and whichever
+-- months it spans (supabase/functions/_shared/quota.ts, trialAllowance).
+-- Written by start_pro_trial() only; null on a trial started before this.
+alter table ai_entitlements add column if not exists trial_ai_base int;
+alter table ai_entitlements add column if not exists trial_ocr_base int;
+
 alter table billing_prices add column if not exists offer text;
 
 -- Starts the caller's PRO trial and returns when it ends. Refuses (errors
@@ -41,6 +49,10 @@ begin
   end if;
   update ai_entitlements
     set trial_plan = 'pro', trial_expires_at = ends, trial_used_at = now(),
+        trial_ai_base = coalesce(
+          (select requests from ai_usage_lifetime where user_id = uid), 0),
+        trial_ocr_base = coalesce(
+          (select scans from ocr_usage_lifetime where user_id = uid), 0),
         updated_at = now()
     where user_id = uid;
   return ends;

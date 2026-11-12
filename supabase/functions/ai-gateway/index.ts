@@ -13,7 +13,12 @@
 import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
 import { HttpError, requireAccount, serviceClient } from "../_shared/auth.ts";
 import { capText, readJsonBody } from "../_shared/body.ts";
-import { rateLimited, releaseUsage, reserveUsage } from "../_shared/usage.ts";
+import {
+  rateLimited,
+  releaseUsage,
+  reserveUsage,
+  trialUsageBase,
+} from "../_shared/usage.ts";
 import { fitInput, MAX_INPUT_TOKENS, type Turn } from "../_shared/ai/budget.ts";
 import {
   candidates,
@@ -36,6 +41,7 @@ import {
   DAILY_LIMIT,
   effectivePlan,
   normalizePlan,
+  onTrial,
   quotaInfo,
   trustOf,
 } from "../_shared/quota.ts";
@@ -107,7 +113,15 @@ Deno.serve(async (req: Request) => {
     // (beta gives everyone PRO): see supabase/abuse_limits.sql.
     const trust = trustOf(paidPlan, account);
     // A trial gets a small fixed allowance (the rest of PRO is open to it).
-    const allow = allowanceFor(aiAllowance(plan, paidPlan), "ai", trust);
+    // (5 for the trial, counted from its start.)
+    const trialBase = onTrial(plan, paidPlan)
+      ? await trialUsageBase(db, userId, "ai")
+      : null;
+    const allow = allowanceFor(
+      aiAllowance(plan, paidPlan, undefined, trialBase),
+      "ai",
+      trust,
+    );
     const costCeiling = aiCostCeiling(plan, paidPlan);
 
     // Monthly cost is always the secondary guard; the request count is checked

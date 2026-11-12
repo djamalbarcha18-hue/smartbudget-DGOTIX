@@ -249,9 +249,10 @@ the account falls back to FREE with no loss of the user's own data.
 - **What the trial includes (decision 2026-11-08):** every PRO feature that
   costs nothing is open for the 14 days; the two that cost money per call get a
   small fixed allowance (owner's decision 2026-11-12): **5 assistant answers and 5 cloud scans**
-  (`TRIAL_AI_QUOTA`, `TRIAL_OCR_QUOTA`, counted in the calendar month, so a trial
-  that crosses a month can use them twice at worst, about $0.40) and a smaller
-  monthly cost guard. A new account is held to the new-account caps first
+  (`TRIAL_AI_QUOTA`, `TRIAL_OCR_QUOTA`) for the whole trial, counted from the
+  moment it starts: `start_pro_trial()` records what the account had used
+  until then, so the 5 and 5 don't depend on earlier use or on the month
+  changing (at worst about $0.20 a trial), plus a smaller monthly cost guard. A new account is held to the new-account caps first
   (10 answers / 5 scans). When the trial ends the account is FREE again and
   keeps all its data, unless the user subscribes. The beta is not a trial.
 - **14-day PRO trial, no card, once per account.** The Plans screen offers it

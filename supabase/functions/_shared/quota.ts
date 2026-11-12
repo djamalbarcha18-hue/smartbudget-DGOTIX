@@ -10,6 +10,12 @@ export type QuotaWindow = "lifetime" | "monthly";
 export interface Allowance {
   readonly limit: number;
   readonly window: QuotaWindow;
+  /**
+   * What the account had already used when this allowance began (a trial's
+   * own allowance is counted from the trial's start). [limit] includes it:
+   * the allowance itself is `limit - offset`.
+   */
+  readonly offset?: number;
 }
 
 /** DGOTIX AI answers per period (docs/PRICING.md §2). */
@@ -42,9 +48,15 @@ export const AI_MONTHLY_COST_CEILING_USD: Record<Plan, number> = {
 /**
  * The costly part of a PRO trial is a small, fixed allowance (owner's decision,
  * 2026-11-08): the rest of PRO is open for the trial, but the assistant and
- * cloud scans cost money per call, so a trial gets 25 answers and 10 scans
- * (counted in the calendar month, so a trial that crosses a month can use
- * them twice at worst: about $1 in total). docs/PRICING.md §7.
+ * cloud scans cost money per call, so a trial gets a small allowance of each.
+ * docs/PRICING.md §7.
+ *
+ * The allowance belongs to the trial (owner's decision, 2026-11-12): 5 and 5
+ * for its 14 days, counted from the moment it starts, whatever was used before
+ * and whichever months it spans. start_pro_trial() records the account's
+ * usage so far (supabase/launch_offers.sql) and [trialAllowance] counts from
+ * there. A trial started before that was recorded falls back to counting in
+ * the calendar month.
  */
 export const TRIAL_AI_QUOTA: Allowance = { limit: 5, window: "monthly" };
 export const TRIAL_OCR_QUOTA: Allowance = { limit: 5, window: "monthly" };
@@ -122,22 +134,44 @@ export function onTrial(
   return !beta && RANK[plan] > RANK[paidPlan];
 }
 
-/** AI answers allowed: the plan's, or the small trial allowance on a trial. */
+/**
+ * A trial's allowance counted from the trial's start: [base] is the account's
+ * all-time usage when the trial began (null when it wasn't recorded: the
+ * allowance is then counted in the calendar month, as before).
+ */
+export function trialAllowance(quota: Allowance, base: number | null): Allowance {
+  if (base === null || !Number.isInteger(base) || base < 0) return quota;
+  return { limit: base + quota.limit, window: "lifetime", offset: base };
+}
+
+/**
+ * AI answers allowed: the plan's, or the small trial allowance on a trial
+ * ([trialBase]: see [trialAllowance]).
+ */
 export function aiAllowance(
   plan: Plan,
   paidPlan: Plan,
   beta: boolean = betaAllAccess(),
+  trialBase: number | null = null,
 ): Allowance {
-  return onTrial(plan, paidPlan, beta) ? TRIAL_AI_QUOTA : AI_QUOTA[plan];
+  return onTrial(plan, paidPlan, beta)
+    ? trialAllowance(TRIAL_AI_QUOTA, trialBase)
+    : AI_QUOTA[plan];
 }
 
-/** Cloud scans allowed: the plan's, or the small trial allowance on a trial. */
+/**
+ * Cloud scans allowed: the plan's, or the small trial allowance on a trial
+ * ([trialBase]: see [trialAllowance]).
+ */
 export function ocrAllowance(
   plan: Plan,
   paidPlan: Plan,
   beta: boolean = betaAllAccess(),
+  trialBase: number | null = null,
 ): Allowance {
-  return onTrial(plan, paidPlan, beta) ? TRIAL_OCR_QUOTA : OCR_QUOTA[plan];
+  return onTrial(plan, paidPlan, beta)
+    ? trialAllowance(TRIAL_OCR_QUOTA, trialBase)
+    : OCR_QUOTA[plan];
 }
 
 /** The monthly AI cost guard: the plan's, or a smaller one on a trial. */
@@ -201,9 +235,12 @@ export function allowanceFor(
   kind: UsageKind,
   trust: Trust,
 ): Allowance {
-  return trust === "new"
-    ? { limit: Math.min(base.limit, NEW_ACCOUNT_QUOTA[kind]), window: base.window }
-    : base;
+  if (trust !== "new") return base;
+  const off = base.offset ?? 0;
+  const limit = off + Math.min(base.limit - off, NEW_ACCOUNT_QUOTA[kind]);
+  return base.offset === undefined
+    ? { limit, window: base.window }
+    : { limit, window: base.window, offset: off };
 }
 
 /** What the app shows the user about their allowance (computed on the server). */
@@ -221,11 +258,15 @@ export function quotaInfo(
   used: number,
   now: Date = new Date(),
 ): QuotaInfo {
-  const u = Math.max(0, Math.min(used, allow.limit));
+  // An allowance that began later (a trial) is shown on its own: 5, not the
+  // account's all-time count.
+  const off = allow.offset ?? 0;
+  const limit = allow.limit - off;
+  const u = Math.max(0, Math.min(used - off, limit));
   return {
-    limit: allow.limit,
+    limit,
     used: u,
-    remaining: allow.limit - u,
+    remaining: limit - u,
     window: allow.window,
     resetsAt: allow.window === "monthly"
       ? new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1)).toISOString()

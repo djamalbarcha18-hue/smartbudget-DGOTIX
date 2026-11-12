@@ -62,6 +62,21 @@ Deno.test("a PRO trial gets 25 answers and 10 scans; a purchase gets the plan's"
 
   expect(aiAllowance("pro", "free", false), { limit: 5, window: "monthly" }, "trial ai");
   expect(ocrAllowance("pro", "free", false), { limit: 5, window: "monthly" }, "trial ocr");
+  // Counted from the trial's start: 5 more than what was used before it.
+  expect(aiAllowance("pro", "free", false, 2), { limit: 7, window: "lifetime", offset: 2 }, "trial ai from its start");
+  expect(ocrAllowance("pro", "free", false, 0), { limit: 5, window: "lifetime", offset: 0 }, "trial ocr from its start");
+  expect(aiAllowance("pro", "pro", false, 2), AI_QUOTA.pro, "a subscriber is not on the trial allowance");
+  expect(aiAllowance("free", "free", false, 2), AI_QUOTA.free, "no trial, no trial allowance");
+  expect(aiAllowance("pro", "free", false, -1), { limit: 5, window: "monthly" }, "a bad base is ignored");
+  const t = aiAllowance("pro", "free", false, 40);
+  expect(quotaInfo(t, 40).remaining, 5, "nothing of the trial used yet");
+  expect(quotaInfo(t, 40).limit, 5, "shown as 5, not the all-time count");
+  expect(quotaInfo(t, 43).used, 3, "three of the trial used");
+  expect(quotaInfo(t, 45).remaining, 0, "trial allowance spent");
+  expect(quotaInfo(t, 99).remaining, 0, "never negative");
+  expect(quotaInfo(t, 41).resetsAt, null, "does not refill");
+  expect(allowanceFor(t, "ai", "new"), t, "a new account keeps the trial's 5");
+  expect(allowanceFor(ocrAllowance("pro", "free", false, 3), "ocr", "new"), { limit: 8, window: "lifetime", offset: 3 }, "new account trial ocr");
   expect(aiAllowance("pro", "pro", false), AI_QUOTA.pro, "bought ai");
   expect(ocrAllowance("pro", "pro", false), OCR_QUOTA.pro, "bought ocr");
   expect(aiAllowance("free", "free", false), AI_QUOTA.free, "free ai");
