@@ -75,7 +75,7 @@ void main() {
         (WidgetTester tester) async {
       final BuildContext c = await pump(tester, width);
       final TextTheme t = Theme.of(c).textTheme;
-      expect(MediaQuery.textScalerOf(c), TextScaler.noScaling);
+      expect(MediaQuery.textScalerOf(c).scale(10), 10);
       expect(t.bodyMedium!.fontSize, 13.5);
       expect(t.bodySmall!.fontSize, 12);
       expect(t.titleMedium!.fontSize, 15);
