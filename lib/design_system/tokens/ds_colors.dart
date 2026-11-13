@@ -114,21 +114,21 @@ class DsColors extends ThemeExtension<DsColors> {
   /// Beige (Pro): a warm, soft light theme that is easier on the eyes
   /// (paper-like background, warm text, slightly quieter accents).
   static const DsColors beige = DsColors(
-    brand: Color(0xFF2B68CC),
-    brandStrong: Color(0xFF255FBF),
-    income: Color(0xFF2A7A52),
-    expense: Color(0xFFB5475A), // soft pomegranate
-    saving: Color(0xFF3B6FD0),
+    brand: Color(0xFF9A6B2F),
+    brandStrong: Color(0xFF855A24),
+    income: Color(0xFF1F7A4D),
+    expense: Color(0xFFBA3B4C), // soft pomegranate
+    saving: Color(0xFF2F5FB3),
     net: Color(0xFF2B8A9E),
     warning: Color(0xFFB7791F),
-    bgPage: Color(0xFFF6F3EE),
-    bgElevated: Color(0xFFFBF9F5),
-    surface: Color(0xFFFFFDF9),
-    surfaceMuted: Color(0xFFF0ECE4),
-    border: Color(0x1F3D3427), // warm brown @ ~12%
-    borderStrong: Color(0x333D3427),
-    textPrimary: Color(0xFF2A2723),
-    textMuted: Color(0xFF5F5A52),
+    bgPage: Color(0xFFF2EADC),
+    bgElevated: Color(0xFFF8F1E4),
+    surface: Color(0xFFFFFBF2),
+    surfaceMuted: Color(0xFFEADFCB),
+    border: Color(0x385A4628), // warm brown @ ~22%
+    borderStrong: Color(0x4D5A4628),
+    textPrimary: Color(0xFF2A2118),
+    textMuted: Color(0xFF5A4D3C),
     textFaint: Color(0xFF948D82),
     onBrand: Color(0xFFFFFFFF),
     shadow: Color(0x14322A1F),
@@ -137,21 +137,21 @@ class DsColors extends ThemeExtension<DsColors> {
   /// Sage (Pro): a very light grey-green, restful in daylight; the same
   /// quiet accents as beige, a cool teal-blue for the brand.
   static const DsColors sage = DsColors(
-    brand: Color(0xFF2E6E9E),
-    brandStrong: Color(0xFF255C86),
-    income: Color(0xFF2A7A52),
-    expense: Color(0xFFB5475A), // soft pomegranate
-    saving: Color(0xFF3A6EA5),
+    brand: Color(0xFF23806B),
+    brandStrong: Color(0xFF1B6957),
+    income: Color(0xFF1F7A4D),
+    expense: Color(0xFFBE4057), // soft pomegranate
+    saving: Color(0xFF2F6AA8),
     net: Color(0xFF2B7F80),
     warning: Color(0xFFA8741A),
-    bgPage: Color(0xFFF1F4F0),
-    bgElevated: Color(0xFFF8FAF7),
-    surface: Color(0xFFFCFDFB),
-    surfaceMuted: Color(0xFFE9EEE8),
-    border: Color(0x1F2F3D33), // green-grey @ ~12%
-    borderStrong: Color(0x332F3D33),
-    textPrimary: Color(0xFF1F2A24),
-    textMuted: Color(0xFF4F5D55),
+    bgPage: Color(0xFFE7EFE6),
+    bgElevated: Color(0xFFF1F7F0),
+    surface: Color(0xFFF9FCF8),
+    surfaceMuted: Color(0xFFDCE8DA),
+    border: Color(0x381E4632), // green @ ~22%
+    borderStrong: Color(0x4D1E4632),
+    textPrimary: Color(0xFF16231B),
+    textMuted: Color(0xFF41544A),
     textFaint: Color(0xFF85928A),
     onBrand: Color(0xFFFFFFFF),
     shadow: Color(0x14223028),
