@@ -92,6 +92,88 @@ void main() {
     });
   });
 
+  group('Hindi', () {
+    final Map<String, String> cases = <String, String>{
+      'चाय पचास': 'चाय 50',
+      'किराया पाँच हज़ार': 'किराया 5000',
+      'किराया पांच हजार': 'किराया 5000',
+      'सब्ज़ी डेढ़ सौ': 'सब्ज़ी 150',
+      'ढाई हज़ार': '2500',
+      'साढ़े तीन सौ': '350',
+      'सवा लाख': '125000',
+      'पौने दो सौ': '175',
+      'तनख्वाह पच्चीस हज़ार': 'तनख्वाह 25000',
+      'दो लाख पचास हज़ार': '250000',
+      'एक सौ बीस': '120',
+    };
+    cases.forEach((String said, String written) {
+      test('«$said» → «$written»', () => expect(d(said), written));
+    });
+  });
+
+  group('Urdu', () {
+    final Map<String, String> cases = <String, String>{
+      'چائے پچاس': 'چائے 50',
+      'کرایہ پانچ ہزار': 'کرایہ 5000',
+      'ڈیڑھ سو': '150',
+      'ڈھائی ہزار': '2500',
+      'ساڑھے تین سو': '350',
+      'تنخواہ پچیس ہزار': 'تنخواہ 25000',
+      'دو لاکھ': '200000',
+      'سوا لاکھ': '125000',
+    };
+    cases.forEach((String said, String written) {
+      test('«$said» → «$written»', () => expect(d(said), written));
+    });
+  });
+
+  group('Persian', () {
+    final Map<String, String> cases = <String, String>{
+      'قهوه پنجاه هزار': 'قهوه 50000',
+      'اجاره دو میلیون': 'اجاره 2000000',
+      'سیصد و پنجاه': '350',
+      'بیست و پنج هزار': '25000',
+      'صد هزار': '100000',
+      'نه': 'نه',
+    };
+    cases.forEach((String said, String written) {
+      test('«$said» → «$written»', () => expect(d(said), written));
+    });
+  });
+
+  group('Turkish', () {
+    final Map<String, String> cases = <String, String>{
+      'kahve elli': 'kahve 50',
+      'kira iki bin beş yüz': 'kira 2500',
+      'maaş otuz bin': 'maaş 30000',
+      'on beş': '15',
+      'yüz yirmi': '120',
+      'kahve on': 'kahve on',
+      'bin': 'bin',
+    };
+    cases.forEach((String said, String written) {
+      test('«$said» → «$written»', () => expect(d(said), written));
+    });
+  });
+
+  group('Indonesian and Malay', () {
+    final Map<String, String> cases = <String, String>{
+      'kopi dua puluh lima ribu': 'kopi 25000',
+      'sewa satu juta': 'sewa 1000000',
+      'makan seratus lima puluh ribu': 'makan 150000',
+      'dua belas ribu': '12000',
+      'seribu': '1000',
+      'tiga ratus dua puluh': '320',
+      'gaji lima juta': 'gaji 5000000',
+      'lapan ribu': '8000',
+      'Ahmad bin Ali': 'Ahmad bin Ali',
+      'sebelas': '11',
+    };
+    cases.forEach((String said, String written) {
+      test('«$said» → «$written»', () => expect(d(said), written));
+    });
+  });
+
   group('typed text is left alone', () {
     test('a digit already there', () {
       expect(d('قهوة واحدة 200'), 'قهوة واحدة 200');
@@ -130,6 +212,13 @@ void main() {
           'خبز خمسين، حليب مية وعشرين',
           today: today);
       expect(all.map((QuickEntry e) => e.amount), <double>[50, 120]);
+    });
+    test('Hindi, Urdu, Persian, Turkish, Indonesian', () {
+      expect(p('किराया पांच हजार').amount, 5000);
+      expect(p('ڈھائی ہزار').amount, 2500);
+      expect(p('اجاره دو میلیون').amount, 2000000);
+      expect(p('kira iki bin beş yüz').amount, 2500);
+      expect(p('kopi dua puluh lima ribu').amount, 25000);
     });
     test('digits still win', () {
       expect(p('قهوة واحدة 200').amount, 200);
