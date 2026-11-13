@@ -58,6 +58,52 @@ abstract final class DsTypography {
     );
   }
 
+  /// How much text and icons grow on a phone (see [DsReadable]): icons and
+  /// the few fixed-size labels by this factor; the text styles to the sizes
+  /// in [compact].
+  static const double compactScale = 1.15;
+
+  /// The sizes read on a phone, in logical pixels: body text 15.5–16.5,
+  /// secondary text 14 and up, card titles 19–21, page titles 23. The big
+  /// figures keep their size: they are clear already and wider ones would
+  /// break their cards.
+  static const Map<String, double> compactSizes = <String, double>{
+    'displaySmall': 34,
+    'headlineMedium': 26,
+    'headlineSmall': 23,
+    'titleLarge': 21,
+    'titleMedium': 19,
+    'titleSmall': 14.5,
+    'bodyLarge': 16.5,
+    'bodyMedium': 15.5,
+    'bodySmall': 14,
+    'labelLarge': 14.5,
+    'labelMedium': 13,
+    'labelSmall': 12.5,
+  };
+
+  /// [t] for a phone. The sizes are stored divided by [compactScale]: the
+  /// phone's text scaler multiplies them back (and scales icons with them),
+  /// so what is drawn is exactly [compactSizes].
+  static TextTheme compact(TextTheme t) {
+    TextStyle? s(TextStyle? style, String name) =>
+        style?.copyWith(fontSize: compactSizes[name]! / compactScale);
+    return t.copyWith(
+      displaySmall: s(t.displaySmall, 'displaySmall'),
+      headlineMedium: s(t.headlineMedium, 'headlineMedium'),
+      headlineSmall: s(t.headlineSmall, 'headlineSmall'),
+      titleLarge: s(t.titleLarge, 'titleLarge'),
+      titleMedium: s(t.titleMedium, 'titleMedium'),
+      titleSmall: s(t.titleSmall, 'titleSmall'),
+      bodyLarge: s(t.bodyLarge, 'bodyLarge'),
+      bodyMedium: s(t.bodyMedium, 'bodyMedium'),
+      bodySmall: s(t.bodySmall, 'bodySmall'),
+      labelLarge: s(t.labelLarge, 'labelLarge'),
+      labelMedium: s(t.labelMedium, 'labelMedium'),
+      labelSmall: s(t.labelSmall, 'labelSmall'),
+    );
+  }
+
   /// Tabular figures for financial numbers (aligned digits in tables/KPIs).
   static TextStyle mono(TextStyle base) =>
       base.copyWith(fontFeatures: const [FontFeature.tabularFigures()]);

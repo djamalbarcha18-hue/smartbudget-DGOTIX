@@ -7,6 +7,8 @@ import 'package:smartbudget/core/localization/fallback_localizations.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/design_system/components/donut_chart.dart';
+import 'package:smartbudget/design_system/theme/ds_readable.dart';
+import 'package:smartbudget/design_system/tokens/ds_typography.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_glass.dart';
 import 'package:smartbudget/features/dashboard/application/dashboard_controller.dart';
@@ -35,6 +37,7 @@ void main() {
       {Locale locale = const Locale('en'),
       bool dark = false,
       double width = 400,
+      bool readable = false,
       List<CategoryTotal>? income,
       List<CategoryTotal>? expense}) async {
     tester.view.physicalSize = Size(width * 3, 2400);
@@ -53,6 +56,9 @@ void main() {
       container: c,
       child: MaterialApp(
         locale: locale,
+        builder: readable
+            ? (BuildContext _, Widget? child) => DsReadable(child: child!)
+            : null,
         localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
           ...AppLocalizations.localizationsDelegates,
           ...fallbackLocalizationsDelegates,
@@ -113,6 +119,25 @@ void main() {
       expect(i.color, isNotNull);
     }
   });
+
+  for (final double w in <double>[360, 390]) {
+    for (final String code in <String>['en', 'ar', 'de']) {
+      testWidgets('phone $w wide, $code: larger text and icons, no overflow',
+          (WidgetTester tester) async {
+        await pump(tester, width: w, readable: true, locale: Locale(code));
+        // (An overflow would have failed the pump.)
+        final Finder list = find.byType(ListView).hitTestable();
+        final Finder icon =
+            find.descendant(of: list, matching: find.byType(Icon)).first;
+        expect(tester.getSize(icon).width,
+            closeTo(16 * DsTypography.compactScale, 0.01));
+        // The expenses page too.
+        await tester.tap(find.text(l.legendExpenses).first);
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+      });
+    }
+  }
 
   testWidgets('Arabic: the swipe follows the reading direction',
       (WidgetTester tester) async {

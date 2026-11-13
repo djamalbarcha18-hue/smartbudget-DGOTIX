@@ -17,6 +17,7 @@ import 'package:smartbudget/core/settings/number_style_controller.dart';
 import 'package:smartbudget/core/theme/theme_controller.dart';
 import 'package:smartbudget/core/theme/theme_reveal.dart';
 import 'package:smartbudget/core/time/clock_sync_controller.dart';
+import 'package:smartbudget/design_system/theme/ds_readable.dart';
 import 'package:smartbudget/design_system/theme/ds_theme.dart';
 import 'package:smartbudget/features/app_lock/presentation/app_lock_gate.dart';
 import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
@@ -114,7 +115,9 @@ class SmartBudgetApp extends ConsumerWidget {
       builder: (BuildContext context, Widget? child) =>
           AnnotatedRegion<SystemUiOverlayStyle>(
         value: _systemBars(Theme.of(context).brightness),
-        child: ThemeRevealHost(
+        // Larger text and icons on a phone (tablets and desktops unchanged).
+        child: DsReadable(
+            child: ThemeRevealHost(
           child: LanguageSwitchCurtain(
             child: AppLockGate(
                 child: MoneyPrivacyHost(
@@ -128,7 +131,7 @@ class SmartBudgetApp extends ConsumerWidget {
                                         child: child ??
                                             const SizedBox.shrink()))))))),
           ),
-        ),
+        )),
       ),
     );
   }
