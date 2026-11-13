@@ -329,10 +329,12 @@ class _BreakdownPageState extends ConsumerState<_BreakdownPage>
     final int total = totals.fold<int>(
         0, (int s, CategoryTotal t) => s + t.amount.minorUnits);
     final bool folded = totals.length > _topN;
+    final Map<String, CustomCategoryLook> looks =
+        ref.watch(categoryStylesProvider);
     final List<Color> familyColors = chartColorsFor(
         <String>[for (final CategoryTotal t in totals.take(_topN)) t.category],
         _income ? TransactionType.income : TransactionType.expense,
-        ref.watch(categoryStylesProvider),
+        looks,
         c,
         Theme.of(context).brightness);
     Color colorOf(int i) => i < _topN ? familyColors[i] : c.textFaint;
@@ -423,6 +425,9 @@ class _BreakdownPageState extends ConsumerState<_BreakdownPage>
                     itemCount: shown,
                     itemBuilder: (BuildContext context, int i) => _CategoryRow(
                       label: Catalog.label(totals[i].category, lang: lang),
+                      icon: resolveCategoryStyle(
+                              totals[i].category, widget.type, looks)
+                          .icon,
                       color: colorOf(i),
                       share:
                           total == 0 ? 0 : totals[i].amount.minorUnits / total,
@@ -458,10 +463,11 @@ class _BreakdownPageState extends ConsumerState<_BreakdownPage>
   }
 }
 
-/// A category: its colour, its name and its share.
+/// A category: its icon in the colour of its slice, its name and its share.
 class _CategoryRow extends StatelessWidget {
   const _CategoryRow({
     required this.label,
+    required this.icon,
     required this.color,
     required this.share,
     required this.selected,
@@ -469,6 +475,7 @@ class _CategoryRow extends StatelessWidget {
   });
 
   final String label;
+  final IconData icon;
   final Color color;
   final double share;
   final bool selected;
@@ -491,12 +498,9 @@ class _CategoryRow extends StatelessWidget {
         ),
         child: Row(
           children: <Widget>[
-            Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                  color: color, borderRadius: BorderRadius.circular(3)),
-            ),
+            // The category's own icon, in its slice's colour: it is the key
+            // to the donut and says what the category is.
+            Icon(icon, size: 16, color: color),
             const SizedBox(width: DsSpacing.sm),
             Expanded(
               child: Text(label,

@@ -96,6 +96,24 @@ void main() {
     expect(donut(tester).centerBottom, l.legendIncome);
   });
 
+  testWidgets('each category in the list shows its icon',
+      (WidgetTester tester) async {
+    await pump(tester);
+    final Finder list = find.byType(ListView).hitTestable();
+    final int rows = tester
+        .widgetList(find.descendant(of: list, matching: find.byType(InkWell)))
+        .length;
+    expect(rows, greaterThan(0));
+    final Iterable<Icon> icons = tester.widgetList<Icon>(
+        find.descendant(of: list, matching: find.byType(Icon)));
+    // One icon a row, in a colour (its slice's), never an empty one.
+    expect(icons.length, rows);
+    for (final Icon i in icons) {
+      expect(i.icon, isNotNull);
+      expect(i.color, isNotNull);
+    }
+  });
+
   testWidgets('Arabic: the swipe follows the reading direction',
       (WidgetTester tester) async {
     await pump(tester, locale: const Locale('ar'));
