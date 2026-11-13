@@ -114,10 +114,10 @@ class DsColors extends ThemeExtension<DsColors> {
   /// Beige (Pro): a warm, soft light theme that is easier on the eyes
   /// (paper-like background, warm text, slightly quieter accents).
   static const DsColors beige = DsColors(
-    brand: Color(0xFF9A6B2F),
-    brandStrong: Color(0xFF855A24),
-    income: Color(0xFF1F7A4D),
-    expense: Color(0xFFBA3B4C), // soft pomegranate
+    brand: Color(0xFF855A24),
+    brandStrong: Color(0xFF704A1B),
+    income: Color(0xFF1B7347),
+    expense: Color(0xFFB23648), // soft pomegranate
     saving: Color(0xFF2F5FB3),
     net: Color(0xFF2B8A9E),
     warning: Color(0xFFB7791F),
@@ -137,10 +137,10 @@ class DsColors extends ThemeExtension<DsColors> {
   /// Sage (Pro): a very light grey-green, restful in daylight; the same
   /// quiet accents as beige, a cool teal-blue for the brand.
   static const DsColors sage = DsColors(
-    brand: Color(0xFF23806B),
-    brandStrong: Color(0xFF1B6957),
-    income: Color(0xFF1F7A4D),
-    expense: Color(0xFFBE4057), // soft pomegranate
+    brand: Color(0xFF1F7561),
+    brandStrong: Color(0xFF18604F),
+    income: Color(0xFF1B7347),
+    expense: Color(0xFFB53A51), // soft pomegranate
     saving: Color(0xFF2F6AA8),
     net: Color(0xFF2B7F80),
     warning: Color(0xFFA8741A),

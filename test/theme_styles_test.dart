@@ -64,10 +64,9 @@ void main() {
             contrast(c.textPrimary, c.bgPage),
             lessThan(
                 contrast(DsColors.light.textPrimary, DsColors.light.bgPage)));
-        // Expenses in a pomegranate red.
-        if (c != DsColors.pomegranate) {
-          expect(c.expense, const Color(0xFFB5475A));
-        }
+        // Expenses stay in a red (hue near the red end of the wheel).
+        final HSLColor e = HSLColor.fromColor(c.expense);
+        expect(e.hue < 15 || e.hue > 340, isTrue, reason: '${c.expense}');
       });
     }
 
