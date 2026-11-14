@@ -1601,6 +1601,7 @@
   "errorGoHome": "Nazad na početnu",
   "trialTitle": "Isprobajte Pro besplatno {days} dana",
   "trialBody": "Bez kartice. Kada istekne, vraćate se na besplatni plan sa svim svojim podacima.",
+  "trialLimits": "Uključuje {ai} odgovora DGOTIX AI i {scans} skeniranja računa u oblaku.",
   "trialStart": "Započni besplatnu probu",
   "trialStarting": "Pokretanje…",
   "trialActive": "Isprobavate Pro do {date}",

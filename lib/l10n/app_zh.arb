@@ -1601,6 +1601,7 @@
   "errorGoHome": "返回首页",
   "trialTitle": "免费试用 Pro {days} 天",
   "trialBody": "无需银行卡。结束后你将回到免费版，所有数据都会保留。",
+  "trialLimits": "包含 {ai} 次 DGOTIX AI 回答和 {scans} 次云端收据扫描。",
   "trialStart": "开始免费试用",
   "trialStarting": "正在开始…",
   "trialActive": "你正在试用 Pro，至 {date}",

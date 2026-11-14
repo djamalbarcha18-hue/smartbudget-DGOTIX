@@ -1800,6 +1800,7 @@
   "errorGoHome": "رجوع إلى الرئيسية",
   "trialTitle": "جرّب Pro مجانًا {days} يومًا",
   "trialBody": "بلا بطاقة. عند انتهائها تعود إلى الباقة المجانية مع كل بياناتك.",
+  "trialLimits": "تشمل {ai} إجابات من DGOTIX AI و{scans} عمليات مسح سحابي للفواتير.",
   "trialStart": "ابدأ التجربة المجانية",
   "trialStarting": "جارٍ البدء…",
   "trialActive": "أنت تجرّب Pro حتى {date}",

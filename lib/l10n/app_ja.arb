@@ -1601,6 +1601,7 @@
   "errorGoHome": "ホームに戻る",
   "trialTitle": "Proを{days}日間無料でお試し",
   "trialBody": "カード不要。終了後はすべてのデータを保ったまま無料プランに戻ります。",
+  "trialLimits": "DGOTIX AI の回答 {ai} 回とクラウドレシートスキャン {scans} 回が含まれます。",
   "trialStart": "無料トライアルを開始",
   "trialStarting": "開始しています…",
   "trialActive": "{date}までProをお試し中です",

@@ -1601,6 +1601,7 @@
   "errorGoHome": "Ana sayfaya dön",
   "trialTitle": "Pro'yu {days} gün ücretsiz deneyin",
   "trialBody": "Kart gerekmez. Bitince tüm verilerinizle Ücretsiz plana dönersiniz.",
+  "trialLimits": "{ai} DGOTIX AI yanıtı ve {scans} bulut fiş taraması dahildir.",
   "trialStart": "Ücretsiz denemeyi başlat",
   "trialStarting": "Başlatılıyor…",
   "trialActive": "{date} tarihine kadar Pro'yu deniyorsunuz",

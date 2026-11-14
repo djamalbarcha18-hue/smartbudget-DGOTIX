@@ -1601,6 +1601,7 @@
   "errorGoHome": "Terug naar start",
   "trialTitle": "Probeer Pro {days} dagen gratis",
   "trialBody": "Geen kaart nodig. Daarna ben je terug op Gratis, met al je gegevens.",
+  "trialLimits": "Inclusief {ai} antwoorden van DGOTIX AI en {scans} cloudscans van bonnen.",
   "trialStart": "Gratis proef starten",
   "trialStarting": "Bezig met starten…",
   "trialActive": "Je probeert Pro tot {date}",

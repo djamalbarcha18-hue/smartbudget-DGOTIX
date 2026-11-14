@@ -1601,6 +1601,7 @@
   "errorGoHome": "Zurück zur Startseite",
   "trialTitle": "Pro {days} Tage kostenlos testen",
   "trialBody": "Keine Karte nötig. Danach bist du wieder im kostenlosen Tarif, mit allen Daten.",
+  "trialLimits": "Enthalten: {ai} DGOTIX-AI-Antworten und {scans} Cloud-Belegscans.",
   "trialStart": "Kostenlos testen",
   "trialStarting": "Wird gestartet…",
   "trialActive": "Du testest Pro bis {date}",

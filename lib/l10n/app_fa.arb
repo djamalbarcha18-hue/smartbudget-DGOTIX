@@ -1601,6 +1601,7 @@
   "errorGoHome": "بازگشت به خانه",
   "trialTitle": "Pro را {days} روز رایگان امتحان کنید",
   "trialBody": "بدون کارت. پس از پایان، با همهٔ داده‌هایتان به طرح رایگان برمی‌گردید.",
+  "trialLimits": "شامل {ai} پاسخ DGOTIX AI و {scans} اسکن ابری رسید است.",
   "trialStart": "شروع دورهٔ آزمایشی رایگان",
   "trialStarting": "در حال شروع…",
   "trialActive": "شما تا {date} در حال امتحان Pro هستید",

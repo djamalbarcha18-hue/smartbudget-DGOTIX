@@ -332,7 +332,10 @@ class _TrialCardState extends ConsumerState<_TrialCard> {
                       style:
                           t.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                   const SizedBox(height: 2),
-                  Text(running ? l.trialActiveBody : l.trialBody,
+                  Text(
+                      running
+                          ? l.trialActiveBody
+                          : '${l.trialBody} ${l.trialLimits(kProTrialAi, kProTrialScans)}',
                       style: t.labelSmall?.copyWith(color: c.textMuted)),
                 ],
               ),

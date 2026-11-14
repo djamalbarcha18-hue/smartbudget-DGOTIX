@@ -1601,6 +1601,7 @@
   "errorGoHome": "Retour à l'accueil",
   "trialTitle": "Essayez Pro gratuitement pendant {days} jours",
   "trialBody": "Sans carte. À la fin, vous revenez à la formule Gratuite, avec toutes vos données.",
+  "trialLimits": "Inclut {ai} réponses DGOTIX AI et {scans} scans de tickets dans le cloud.",
   "trialStart": "Commencer l'essai gratuit",
   "trialStarting": "Démarrage…",
   "trialActive": "Vous essayez Pro jusqu'au {date}",

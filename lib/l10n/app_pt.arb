@@ -1601,6 +1601,7 @@
   "errorGoHome": "Voltar ao início",
   "trialTitle": "Experimente o Pro grátis por {days} dias",
   "trialBody": "Sem cartão. Ao terminar, você volta ao plano Grátis, com todos os seus dados.",
+  "trialLimits": "Inclui {ai} respostas da DGOTIX AI e {scans} leituras de recibo na nuvem.",
   "trialStart": "Começar teste grátis",
   "trialStarting": "Iniciando…",
   "trialActive": "Você está testando o Pro até {date}",

@@ -1601,6 +1601,7 @@
   "errorGoHome": "Kembali ke laman utama",
   "trialTitle": "Cuba Pro percuma selama {days} hari",
   "trialBody": "Tanpa kad. Apabila tamat, anda kembali ke pelan Percuma dengan semua data anda.",
+  "trialLimits": "Termasuk {ai} jawapan DGOTIX AI dan {scans} imbasan resit awan.",
   "trialStart": "Mula percubaan percuma",
   "trialStarting": "Memulakan…",
   "trialActive": "Anda mencuba Pro sehingga {date}",

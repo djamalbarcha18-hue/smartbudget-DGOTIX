@@ -1601,6 +1601,7 @@
   "errorGoHome": "Koma gida",
   "trialTitle": "Gwada Pro kyauta na kwanaki {days}",
   "trialBody": "Ba a buƙatar kati. Idan ya ƙare, za ka koma tsarin Kyauta tare da duk bayananka.",
+  "trialLimits": "Ya haɗa da amsoshin DGOTIX AI {ai} da karatun rasit a intanet {scans}.",
   "trialStart": "Fara gwaji kyauta",
   "trialStarting": "Ana farawa…",
   "trialActive": "Kana gwada Pro har zuwa {date}",

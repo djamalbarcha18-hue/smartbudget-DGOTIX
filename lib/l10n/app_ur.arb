@@ -1601,6 +1601,7 @@
   "errorGoHome": "ہوم پر واپس",
   "trialTitle": "Pro کو {days} دن مفت آزمائیں",
   "trialBody": "کارڈ کی ضرورت نہیں۔ ختم ہونے پر آپ اپنے تمام ڈیٹا کے ساتھ مفت پلان پر واپس آ جائیں گے۔",
+  "trialLimits": "اس میں {ai} DGOTIX AI جوابات اور {scans} کلاؤڈ رسید اسکین شامل ہیں۔",
   "trialStart": "مفت آزمائش شروع کریں",
   "trialStarting": "شروع ہو رہا ہے…",
   "trialActive": "آپ {date} تک Pro آزما رہے ہیں",

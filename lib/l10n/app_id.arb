@@ -1601,6 +1601,7 @@
   "errorGoHome": "Kembali ke beranda",
   "trialTitle": "Coba Pro gratis selama {days} hari",
   "trialBody": "Tanpa kartu. Setelah selesai, Anda kembali ke paket Gratis dengan semua data Anda.",
+  "trialLimits": "Termasuk {ai} jawaban DGOTIX AI dan {scans} pemindaian struk cloud.",
   "trialStart": "Mulai uji coba gratis",
   "trialStarting": "Memulai…",
   "trialActive": "Anda mencoba Pro hingga {date}",

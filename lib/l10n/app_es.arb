@@ -1601,6 +1601,7 @@
   "errorGoHome": "Volver al inicio",
   "trialTitle": "Prueba Pro gratis durante {days} días",
   "trialBody": "Sin tarjeta. Al terminar vuelves al plan Gratis, con todos tus datos.",
+  "trialLimits": "Incluye {ai} respuestas de DGOTIX AI y {scans} escaneos de tickets en la nube.",
   "trialStart": "Empezar prueba gratis",
   "trialStarting": "Iniciando…",
   "trialActive": "Estás probando Pro hasta el {date}",

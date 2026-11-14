@@ -5,6 +5,12 @@ import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 /// supabase/launch_offers.sql; shown in the offer text).
 const int kProTrialDays = 14;
 
+/// What the trial includes (the server's TRIAL_AI_QUOTA / TRIAL_OCR_QUOTA in
+/// supabase/functions/_shared/quota.ts; test/trial_limits_test.dart keeps the
+/// two in step).
+const int kProTrialAi = 5;
+const int kProTrialScans = 5;
+
 enum TrialError { used, paid, emailNotConfirmed, network }
 
 /// The answer to starting a trial: when it ends, or why it didn't start.

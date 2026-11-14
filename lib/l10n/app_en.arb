@@ -1890,6 +1890,13 @@
   "trialTitle": "Try Pro free for {days} days",
   "@trialTitle": {"placeholders": {"days": {"type": "int"}}},
   "trialBody": "No card needed. When it ends you're back on Free, with all your data.",
+  "trialLimits": "Includes {ai} DGOTIX AI answers and {scans} cloud receipt scans.",
+  "@trialLimits": {
+    "placeholders": {
+      "ai": {"type": "int"},
+      "scans": {"type": "int"}
+    }
+  },
   "trialStart": "Start free trial",
   "trialStarting": "Starting…",
   "trialActive": "You're trying Pro until {date}",
