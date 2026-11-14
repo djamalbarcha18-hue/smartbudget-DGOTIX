@@ -303,6 +303,21 @@ class _CurrencyDropdown extends StatelessWidget {
         isExpanded: true,
         underline: const SizedBox.shrink(),
         dropdownColor: c.bgElevated,
+        // The chosen currency shows flag and code only (fits a phone without
+        // "…"); the open list also shows the symbol.
+        selectedItemBuilder: (BuildContext context) => <Widget>[
+          for (final Currency cur in currencies)
+            Row(
+              children: <Widget>[
+                CurrencyFlag(cur, width: 22),
+                const SizedBox(width: DsSpacing.sm),
+                Flexible(
+                  child: Text(cur.code,
+                      maxLines: 1, overflow: TextOverflow.ellipsis),
+                ),
+              ],
+            ),
+        ],
         items: <DropdownMenuItem<String>>[
           for (final Currency cur in currencies)
             DropdownMenuItem<String>(
