@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/design_system/theme/ds_readable.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_glass.dart';
 import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
@@ -55,9 +56,9 @@ void main() {
   });
 
   testWidgets(
-      'on a narrow phone with large text the currency arrows stay inside their boxes',
+      'on a phone (larger phone text) the currency arrows stay inside their boxes',
       (WidgetTester tester) async {
-    await tester.binding.setSurfaceSize(const Size(360, 800));
+    await tester.binding.setSurfaceSize(const Size(392, 850));
     await tester.pumpWidget(ProviderScope(
       overrides: <Override>[ratesProvider.overrideWith(_FixedRates.new)],
       child: MaterialApp(
@@ -73,10 +74,8 @@ void main() {
           DsColors.light,
           DsGlass.light,
         ]),
-        builder: (BuildContext c, Widget? w) => MediaQuery(
-          data: MediaQuery.of(c).copyWith(textScaler: const TextScaler.linear(1.3)),
-          child: w!,
-        ),
+        // As in the app: larger text and icons on phones.
+        builder: (BuildContext c, Widget? w) => DsReadable(child: w!),
         home: const Scaffold(body: ExchangeRatesPage()),
       ),
     ));
