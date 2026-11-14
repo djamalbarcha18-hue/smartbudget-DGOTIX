@@ -1,4 +1,3 @@
-import 'package:smartbudget/core/env/app_env.dart';
 
 /// Single source of truth for app-level, non-financial configuration.
 ///

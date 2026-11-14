@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:smartbudget/core/config/app_config.dart';
-import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/features/legal/domain/legal_content.dart';
 import 'package:smartbudget/core/l10n/app_lang.dart';
