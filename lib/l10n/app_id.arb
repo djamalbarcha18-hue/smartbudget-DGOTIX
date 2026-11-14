@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "Sembunyikan saat menambah transaksi",
   "privacyHideWhileEnteringHint": "Saat Anda menambah atau mengubah pemasukan atau pengeluaran, total di belakangnya disembunyikan, lalu muncul kembali.",
   "invoiceCloudQuotaUsed": "Pemindaian cloud bulan ini sudah habis, jadi struk ini dibaca di ponsel Anda: periksa angkanya. Tingkatkan paket untuk lebih banyak pemindaian cloud.",
+  "invoiceCloudQuotaUsedStore": "Pemindaian cloud bulan ini sudah habis, jadi struk ini dibaca di ponsel Anda: periksa angkanya.",
   "navTrips": "Perjalanan saya",
   "navGroupAdvanced": "Fitur lanjutan",
   "tripsSubtitle": "Rencanakan perjalanan, lalu tandai pengeluarannya untuk melihat biaya sebenarnya.",

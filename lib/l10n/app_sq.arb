@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "Fshihi ndërsa shton një transaksion",
   "privacyHideWhileEnteringHint": "Ndërsa shton ose ndryshon një të ardhur ose shpenzim, totalet pas tij fshihen, pastaj kthehen.",
   "invoiceCloudQuotaUsed": "Skanimet në cloud të këtij muaji mbaruan, ndaj kjo faturë u lexua në telefonin tënd: kontrollo shifrat. Përmirëso për më shumë skanime në cloud.",
+  "invoiceCloudQuotaUsedStore": "Skanimet në cloud të këtij muaji mbaruan, ndaj kjo faturë u lexua në telefonin tënd: kontrollo shifrat.",
   "navTrips": "Udhëtimet e mia",
   "navGroupAdvanced": "Funksione të avancuara",
   "tripsSubtitle": "Planifiko një udhëtim, pastaj lidh shpenzimet e tij për të parë sa kushtoi realisht.",

@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "Ocultarlos al añadir un movimiento",
   "privacyHideWhileEnteringHint": "Mientras añades o editas un ingreso o gasto, los totales de detrás se ocultan y luego vuelven.",
   "invoiceCloudQuotaUsed": "Los escaneos en la nube de este mes se han agotado, así que este ticket se leyó en tu teléfono: revisa las cifras. Mejora tu plan para más escaneos.",
+  "invoiceCloudQuotaUsedStore": "Los escaneos en la nube de este mes se han agotado, así que este ticket se leyó en tu teléfono: revisa las cifras.",
   "navTrips": "Mis viajes",
   "navGroupAdvanced": "Funciones avanzadas",
   "tripsSubtitle": "Planifica un viaje y etiqueta sus gastos para ver cuánto costó de verdad.",

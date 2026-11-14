@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "İşlem eklerken gizle",
   "privacyHideWhileEnteringHint": "Bir gelir veya gider eklerken ya da düzenlerken arkadaki toplamlar gizlenir, sonra geri gelir.",
   "invoiceCloudQuotaUsed": "Bu ayın bulut taramaları bitti, bu yüzden fiş telefonunda okundu: tutarları kontrol et. Daha fazla bulut taraması için planını yükselt.",
+  "invoiceCloudQuotaUsedStore": "Bu ayın bulut taramaları bitti, bu yüzden fiş telefonunda okundu: tutarları kontrol et.",
   "navTrips": "Seyahatlerim",
   "navGroupAdvanced": "Gelişmiş özellikler",
   "tripsSubtitle": "Bir seyahat planlayın, harcamalarını ona bağlayın ve gerçekte ne kadara mal olduğunu görün.",

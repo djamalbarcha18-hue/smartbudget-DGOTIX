@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "Ocultar ao adicionar uma transação",
   "privacyHideWhileEnteringHint": "Enquanto você adiciona ou edita uma receita ou despesa, os totais por trás ficam ocultos e depois voltam.",
   "invoiceCloudQuotaUsed": "As leituras na nuvem deste mês acabaram, então este recibo foi lido no seu celular: confira os números. Faça upgrade para ter mais leituras na nuvem.",
+  "invoiceCloudQuotaUsedStore": "As leituras na nuvem deste mês acabaram, então este recibo foi lido no seu celular: confira os números.",
   "navTrips": "Minhas viagens",
   "navGroupAdvanced": "Recursos avançados",
   "tripsSubtitle": "Planeje uma viagem e marque as despesas dela para ver quanto ela realmente custou.",

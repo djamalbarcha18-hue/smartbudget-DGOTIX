@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "Verbergen tijdens het toevoegen van een transactie",
   "privacyHideWhileEnteringHint": "Terwijl je een inkomen of uitgave toevoegt of bewerkt, zijn de totalen erachter verborgen; daarna komen ze terug.",
   "invoiceCloudQuotaUsed": "De cloudscans van deze maand zijn op, dus deze bon is op je telefoon gelezen: controleer de cijfers. Upgrade voor meer cloudscans.",
+  "invoiceCloudQuotaUsedStore": "De cloudscans van deze maand zijn op, dus deze bon is op je telefoon gelezen: controleer de cijfers.",
   "navTrips": "Mijn reizen",
   "navGroupAdvanced": "Geavanceerde functies",
   "tripsSubtitle": "Plan een reis en koppel de uitgaven eraan om te zien wat hij echt kostte.",

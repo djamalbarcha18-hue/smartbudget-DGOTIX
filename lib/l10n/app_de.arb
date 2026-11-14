@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "Beim Hinzufügen einer Buchung ausblenden",
   "privacyHideWhileEnteringHint": "Während du eine Einnahme oder Ausgabe hinzufügst oder bearbeitest, werden die Summen dahinter ausgeblendet und kommen danach zurück.",
   "invoiceCloudQuotaUsed": "Die Cloud-Scans dieses Monats sind aufgebraucht, daher wurde dieser Beleg auf deinem Handy gelesen: Prüfe die Zahlen. Upgrade für mehr Cloud-Scans.",
+  "invoiceCloudQuotaUsedStore": "Die Cloud-Scans dieses Monats sind aufgebraucht, daher wurde dieser Beleg auf deinem Handy gelesen: Prüfe die Zahlen.",
   "navTrips": "Meine Reisen",
   "navGroupAdvanced": "Erweiterte Funktionen",
   "tripsSubtitle": "Plane eine Reise und ordne ihr die Ausgaben zu, um zu sehen, was sie wirklich gekostet hat.",

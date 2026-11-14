@@ -1447,6 +1447,7 @@
   "privacyHideWhileEntering": "Hide them while adding a transaction",
   "privacyHideWhileEnteringHint": "While you add or edit an income or expense, the totals behind it are hidden, then come back.",
   "invoiceCloudQuotaUsed": "This month's cloud scans are used up, so this receipt was read on your phone: check the figures. Upgrade for more cloud scans.",
+  "invoiceCloudQuotaUsedStore": "This month's cloud scans are used up, so this receipt was read on your phone: check the figures.",
   "navTrips": "My trips",
   "navGroupAdvanced": "Advanced features",
   "tripsSubtitle": "Plan a trip, then tag its expenses to see what it really cost.",

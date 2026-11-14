@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "取引の追加中は隠す",
   "privacyHideWhileEnteringHint": "収入や支出を追加・編集している間、背後の合計は隠れ、終わると戻ります。",
   "invoiceCloudQuotaUsed": "今月のクラウドスキャンを使い切ったため、このレシートはスマホ上で読み取りました：数字を確認してください。アップグレードするとクラウドスキャンが増えます。",
+  "invoiceCloudQuotaUsedStore": "今月のクラウドスキャンを使い切ったため、このレシートはスマホ上で読み取りました：数字を確認してください。",
   "navTrips": "旅行",
   "navGroupAdvanced": "高度な機能",
   "tripsSubtitle": "旅行を計画し、その支出にタグを付けて、実際にいくらかかったかを確認しましょう。",

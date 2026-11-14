@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "Sakrij ih dok dodaješ transakciju",
   "privacyHideWhileEnteringHint": "Dok dodaješ ili uređuješ prihod ili trošak, zbirovi iza su skriveni, pa se vraćaju.",
   "invoiceCloudQuotaUsed": "Skeniranja u oblaku za ovaj mjesec su potrošena, pa je račun pročitan na tvom telefonu: provjeri brojeve. Nadogradi za više skeniranja u oblaku.",
+  "invoiceCloudQuotaUsedStore": "Skeniranja u oblaku za ovaj mjesec su potrošena, pa je račun pročitan na tvom telefonu: provjeri brojeve.",
   "navTrips": "Moja putovanja",
   "navGroupAdvanced": "Napredne funkcije",
   "tripsSubtitle": "Isplaniraj putovanje, pa mu pridruži troškove da vidiš koliko je stvarno koštalo.",

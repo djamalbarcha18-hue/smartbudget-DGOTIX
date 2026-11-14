@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "거래를 추가하는 동안 숨기기",
   "privacyHideWhileEnteringHint": "수입이나 지출을 추가하거나 수정하는 동안 뒤에 있는 합계가 숨겨지고, 끝나면 다시 나타나요.",
   "invoiceCloudQuotaUsed": "이번 달 클라우드 스캔을 다 써서 이 영수증은 휴대폰에서 읽었어요: 숫자를 확인하세요. 업그레이드하면 클라우드 스캔이 늘어나요.",
+  "invoiceCloudQuotaUsedStore": "이번 달 클라우드 스캔을 다 써서 이 영수증은 휴대폰에서 읽었어요: 숫자를 확인하세요.",
   "navTrips": "내 여행",
   "navGroupAdvanced": "고급 기능",
   "tripsSubtitle": "여행을 계획하고 지출에 태그를 달아서 실제로 얼마가 들었는지 확인하세요.",

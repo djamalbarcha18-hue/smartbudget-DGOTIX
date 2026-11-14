@@ -154,7 +154,9 @@ class _InvoiceReviewSheetState extends State<InvoiceReviewSheet> {
                       _timingLine(c, l, t),
                       if (widget.cloudQuotaReached)
                         _Notice(
-                          text: l.invoiceCloudQuotaUsed,
+                          text: AppEnv.storeFreeMode
+                              ? l.invoiceCloudQuotaUsedStore
+                              : l.invoiceCloudQuotaUsed,
                           icon: Icons.workspace_premium_outlined,
                           color: c.brand,
                           action: widget.onUpgrade == null || AppEnv.storeFreeMode

@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "Vifiche unapoongeza muamala",
   "privacyHideWhileEnteringHint": "Unapoongeza au kuhariri mapato au matumizi, jumla zilizo nyuma yake zinafichwa, kisha zinarudi.",
   "invoiceCloudQuotaUsed": "Uchanganuzi wa mtandaoni wa mwezi huu umekwisha, kwa hiyo risiti hii imesomwa kwenye simu yako: kagua tarakimu. Pandisha kifurushi upate uchanganuzi zaidi wa mtandaoni.",
+  "invoiceCloudQuotaUsedStore": "Uchanganuzi wa mtandaoni wa mwezi huu umekwisha, kwa hiyo risiti hii imesomwa kwenye simu yako: kagua tarakimu.",
   "navTrips": "Safari zangu",
   "navGroupAdvanced": "Vipengele vya juu",
   "tripsSubtitle": "Panga safari, kisha weka alama kwenye matumizi yake uone iligharimu kiasi gani kweli.",

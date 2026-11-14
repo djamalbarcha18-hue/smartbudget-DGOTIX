@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "Nascondili mentre aggiungi una transazione",
   "privacyHideWhileEnteringHint": "Mentre aggiungi o modifichi un'entrata o una spesa, i totali dietro restano nascosti, poi ricompaiono.",
   "invoiceCloudQuotaUsed": "Le scansioni cloud di questo mese sono esaurite, quindi lo scontrino è stato letto sul telefono: controlla le cifre. Passa a un piano superiore per più scansioni cloud.",
+  "invoiceCloudQuotaUsedStore": "Le scansioni cloud di questo mese sono esaurite, quindi lo scontrino è stato letto sul telefono: controlla le cifre.",
   "navTrips": "I miei viaggi",
   "navGroupAdvanced": "Funzioni avanzate",
   "tripsSubtitle": "Pianifica un viaggio, poi collega le sue spese per vedere quanto è costato davvero.",

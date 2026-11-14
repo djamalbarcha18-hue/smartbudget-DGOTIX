@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "Versteek hulle terwyl jy 'n transaksie byvoeg",
   "privacyHideWhileEnteringHint": "Terwyl jy inkomste of 'n uitgawe byvoeg of wysig, word die totale daaragter versteek, en kom dan terug.",
   "invoiceCloudQuotaUsed": "Hierdie maand se wolkskanderings is opgebruik, dus is hierdie strokie op jou foon gelees: kontroleer die syfers. Gradeer op vir meer wolkskanderings.",
+  "invoiceCloudQuotaUsedStore": "Hierdie maand se wolkskanderings is opgebruik, dus is hierdie strokie op jou foon gelees: kontroleer die syfers.",
   "navTrips": "My reise",
   "navGroupAdvanced": "Gevorderde funksies",
   "tripsSubtitle": "Beplan 'n reis, en merk dan sy uitgawes om te sien wat dit werklik gekos het.",

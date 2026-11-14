@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "添加交易时隐藏",
   "privacyHideWhileEnteringHint": "在你添加或编辑收入或支出时，背后的总额会被隐藏，之后再显示。",
   "invoiceCloudQuotaUsed": "本月的云端扫描次数已用完，所以这张收据是在你的手机上读取的：请核对数字。升级可获得更多云端扫描。",
+  "invoiceCloudQuotaUsedStore": "本月的云端扫描次数已用完，所以这张收据是在你的手机上读取的：请核对数字。",
   "navTrips": "我的旅行",
   "navGroupAdvanced": "高级功能",
   "tripsSubtitle": "规划一次旅行，然后给它的支出打上标签，看看实际花了多少。",

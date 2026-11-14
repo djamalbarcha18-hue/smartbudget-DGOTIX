@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "Ɓoye su lokacin ƙara ma'amala",
   "privacyHideWhileEnteringHint": "Yayin da kake ƙara ko gyara kuɗin shiga ko kashe kuɗi, ana ɓoye jimillar da ke bayansa, sannan su dawo.",
   "invoiceCloudQuotaUsed": "Karatun intanet na wannan wata ya ƙare, don haka an karanta wannan rasit a wayarka: duba lambobin. Ɗaukaka tsari don ƙarin karatun intanet.",
+  "invoiceCloudQuotaUsedStore": "Karatun intanet na wannan wata ya ƙare, don haka an karanta wannan rasit a wayarka: duba lambobin.",
   "navTrips": "Tafiye-tafiyena",
   "navGroupAdvanced": "Fasaloli na gaba",
   "tripsSubtitle": "Tsara tafiya, sannan ka yi wa kashe-kashenta alama don ganin nawa ta ci da gaske.",

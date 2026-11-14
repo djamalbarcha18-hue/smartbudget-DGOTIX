@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "Les masquer pendant l'ajout d'une opération",
   "privacyHideWhileEnteringHint": "Pendant que vous ajoutez ou modifiez un revenu ou une dépense, les totaux derrière sont masqués, puis réapparaissent.",
   "invoiceCloudQuotaUsed": "Les scans dans le cloud de ce mois sont épuisés : ce ticket a été lu sur votre téléphone, vérifiez les montants. Passez à une formule supérieure pour plus de scans.",
+  "invoiceCloudQuotaUsedStore": "Les scans dans le cloud de ce mois sont épuisés : ce ticket a été lu sur votre téléphone, vérifiez les montants.",
   "navTrips": "Mes voyages",
   "navGroupAdvanced": "Fonctions avancées",
   "tripsSubtitle": "Préparez un voyage, puis rattachez-y ses dépenses pour voir ce qu’il a vraiment coûté.",

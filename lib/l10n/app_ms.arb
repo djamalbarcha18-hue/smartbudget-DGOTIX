@@ -1231,6 +1231,7 @@
   "privacyHideWhileEntering": "Sembunyikan semasa menambah transaksi",
   "privacyHideWhileEnteringHint": "Semasa anda menambah atau mengedit pendapatan atau perbelanjaan, jumlah di belakangnya disembunyikan, kemudian kembali.",
   "invoiceCloudQuotaUsed": "Imbasan awan bulan ini sudah habis, jadi resit ini dibaca pada telefon anda: semak angkanya. Naik taraf untuk lebih banyak imbasan awan.",
+  "invoiceCloudQuotaUsedStore": "Imbasan awan bulan ini sudah habis, jadi resit ini dibaca pada telefon anda: semak angkanya.",
   "navTrips": "Perjalanan saya",
   "navGroupAdvanced": "Ciri lanjutan",
   "tripsSubtitle": "Rancang perjalanan, kemudian tandakan perbelanjaannya untuk melihat kos sebenar.",
