@@ -3,6 +3,7 @@ import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
@@ -156,7 +157,7 @@ class _InvoiceReviewSheetState extends State<InvoiceReviewSheet> {
                           text: l.invoiceCloudQuotaUsed,
                           icon: Icons.workspace_premium_outlined,
                           color: c.brand,
-                          action: widget.onUpgrade == null
+                          action: widget.onUpgrade == null || AppEnv.storeFreeMode
                               ? null
                               : TextButton(
                                   onPressed: () {

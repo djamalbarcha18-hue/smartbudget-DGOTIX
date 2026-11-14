@@ -18,18 +18,18 @@ abstract final class AppConfig {
   /// The website's support inbox (on the domain).
   static const String webSupportEmail = 'support@dgotix.com';
 
-  /// The support inbox of the store app (Google Play): problems and questions
-  /// only. Never shown next to a locked feature or a price, and never offered
-  /// as a way to upgrade (docs/PLAY_STORE.md).
-  static const String storeSupportEmail = 'supportdgotix@gmail.com';
+  /// The general contact inbox (questions, partnerships). In the store app it
+  /// is never shown next to a locked feature or a price, and never offered as
+  /// a way to upgrade (docs/PLAY_STORE.md).
+  static const String contactEmail = 'contactdgotix@gmail.com';
 
-  /// The support inboxes users can write to, first the main one: the store app
-  /// shows its own; the website shows both. Empty strings are dropped: with
-  /// none, the app never shows an address (the Help page and the legal pages
-  /// point to Help & Support instead).
+  /// The inboxes users can write to, first the main one: the same in the app,
+  /// the store app and the website. Empty strings are dropped: with none, the
+  /// app never shows an address (the Help page and the legal pages point to
+  /// Help & Support instead).
   static List<String> get supportEmails => <String>[
-        if (!AppEnv.storeBuild) webSupportEmail,
-        storeSupportEmail,
+        webSupportEmail,
+        contactEmail,
       ].where((String e) => e.trim().isNotEmpty).toList();
 
   /// The main support inbox (what the legal pages name), or empty.

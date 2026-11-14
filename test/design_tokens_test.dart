@@ -64,11 +64,11 @@ void main() {
       }
     });
 
-    test('the website shows both support inboxes, the domain one first', () {
+    test('support and contact inboxes, the support one first', () {
       expect(AppConfig.supportEmails,
-          <String>['support@dgotix.com', 'supportdgotix@gmail.com']);
+          <String>['support@dgotix.com', 'contactdgotix@gmail.com']);
       expect(AppConfig.supportEmail, 'support@dgotix.com');
-    }, skip: AppEnv.storeBuild);
+    });
 
     test('legal pages never show a placeholder contact', () {
       for (final LegalDoc doc in LegalDoc.values) {
