@@ -252,9 +252,9 @@ class SyncController extends Notifier<SyncStatus> {
     final SyncScope scope =
         _full ? const SyncScope.full() : SyncScope.free(AppClock.now());
     Records all = await _records(backup);
-    final Records records = scope.filter(all);
     final Entries ledger =
         scope.pruneLedger(_ledger(prefs.getString(ledgerKey)), all);
+    final Records records = scope.local(all, ledger);
     if (!ref.read(baseCurrencyProvider.notifier).isChosen &&
         ledger['settings']?['baseCurrency'] == null) {
       records['settings']?.remove('baseCurrency');
@@ -296,8 +296,8 @@ class SyncController extends Notifier<SyncStatus> {
       final RemoteCopy copy = await remote.pull();
       if (_disposed || _account != account) return;
       final Entries cloudAll = SyncMerge.fromCloud(copy.doc);
-      final Entries cloud = scope.cloudIn(cloudAll);
-      final Entries held = scope.cloudHeld(cloudAll);
+      final Entries cloud = scope.cloudIn(cloudAll, local);
+      final Entries held = scope.cloudHeld(cloudAll, local);
       Entries merged = SyncMerge.merge(local, cloud, now: now);
       // What the device holds afterwards: everything it had (so nothing
       // outside the scope is touched) with the merge applied on top.

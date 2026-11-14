@@ -19,14 +19,14 @@ class Device {
   Map<String, dynamic>? sync(Map<String, dynamic>? cloud, int now) {
     final Entries pruned = scope.pruneLedger(ledger, records);
     final Entries local =
-        SyncMerge.detect(pruned, scope.filter(records), now);
+        SyncMerge.detect(pruned, scope.local(records, pruned), now);
     final Entries cloudAll = SyncMerge.fromCloud(cloud);
     final Entries merged =
-        SyncMerge.merge(local, scope.cloudIn(cloudAll), now: now);
+        SyncMerge.merge(local, scope.cloudIn(cloudAll, local), now: now);
     records = scope.compose(records, merged);
     ledger = SyncMerge.rebase(merged, records);
     return SyncMerge.toCloud(
-        scope.withHeld(ledger, scope.cloudHeld(cloudAll)));
+        scope.withHeld(ledger, scope.cloudHeld(cloudAll, local)));
   }
 
   Map<String, Map<String, dynamic>> col(String c) =>
@@ -136,6 +136,84 @@ void main() {
     b.sync(cloud, t + 2);
     expect(b.col('transactions').keys, <String>['old']);
     expect(b.col('goals').keys, <String>['g']);
+  });
+
+  // ---- Regressions: edits to older records were undone by the next sync ----
+
+  test('moving a transaction to an older month is not undone', () {
+    final Device a = Device(free), b = Device(free);
+    a.put('transactions', 'x', <String, dynamic>{'date': ago(0), 'amount': 70});
+    Map<String, dynamic>? cloud = a.sync(null, t);
+    cloud = b.sync(cloud, t + 1);
+    // The user moves it six months back (outside the free window).
+    a.put('transactions', 'x', <String, dynamic>{'date': ago(6), 'amount': 70});
+    cloud = a.sync(cloud, t + 2);
+    cloud = a.sync(cloud, t + 3); // the next automatic round
+    expect(a.col('transactions')['x']!['date'], ago(6));
+    // The move reaches the other device too.
+    cloud = b.sync(cloud, t + 4);
+    expect(b.col('transactions')['x']!['date'], ago(6));
+  });
+
+  test('editing a transaction that aged out of the window is not undone', () {
+    final Device a = Device(free), b = Device(free);
+    a.put('transactions', 'x', <String, dynamic>{'date': ago(2, 28), 'amount': 70});
+    Map<String, dynamic>? cloud = a.sync(null, t);
+    cloud = b.sync(cloud, t + 1);
+    final SyncScope later = SyncScope.free(DateTime(2027, 3, 15));
+    a.scope = later;
+    b.scope = later;
+    cloud = a.sync(cloud, t + 2);
+    a.put('transactions', 'x', <String, dynamic>{'date': ago(2, 28), 'amount': 999});
+    cloud = a.sync(cloud, t + 3);
+    cloud = a.sync(cloud, t + 4);
+    expect(a.col('transactions')['x']!['amount'], 999);
+    b.sync(cloud, t + 5);
+    expect(b.col('transactions')['x']!['amount'], 999);
+  });
+
+  test('deleting a transaction that aged out reaches the other device', () {
+    final Device a = Device(free), b = Device(free);
+    a.put('transactions', 'x', <String, dynamic>{'date': ago(2, 28)});
+    Map<String, dynamic>? cloud = a.sync(null, t);
+    cloud = b.sync(cloud, t + 1);
+    final SyncScope later = SyncScope.free(DateTime(2027, 3, 15));
+    a.scope = later;
+    b.scope = later;
+    cloud = a.sync(cloud, t + 2);
+    cloud = b.sync(cloud, t + 3);
+    a.remove('transactions', 'x');
+    cloud = a.sync(cloud, t + 4);
+    cloud = a.sync(cloud, t + 5);
+    expect(a.col('transactions'), isEmpty);
+    b.sync(cloud, t + 6);
+    expect(b.col('transactions'), isEmpty);
+  });
+
+  test('editing an old budget is not undone', () {
+    final Device a = Device(free);
+    a.put('budgets', 'b', <String, dynamic>{
+      'year': 2026, 'month': 11, 'category': 'food', 'amount': 100});
+    Map<String, dynamic>? cloud = a.sync(null, t);
+    a.scope = SyncScope.free(DateTime(2027, 5, 1));
+    cloud = a.sync(cloud, t + 1);
+    a.put('budgets', 'b', <String, dynamic>{
+      'year': 2026, 'month': 11, 'category': 'food', 'amount': 250});
+    cloud = a.sync(cloud, t + 2);
+    a.sync(cloud, t + 3);
+    expect(a.col('budgets')['b']!['amount'], 250);
+  });
+
+  test("an old cloud record never overwrites the device's own copy", () {
+    final Device pro = Device(full), freeDev = Device(free);
+    pro.put('transactions', 'x', <String, dynamic>{'date': ago(8), 'amount': 1});
+    final Map<String, dynamic>? cloud = pro.sync(null, t);
+    // The free device holds its own, different copy of x (e.g. a restore).
+    freeDev.put('transactions', 'x', <String, dynamic>{'date': ago(8), 'amount': 2});
+    final Map<String, dynamic>? after = freeDev.sync(cloud, t + 1);
+    expect(freeDev.col('transactions')['x']!['amount'], 2);
+    // And the cloud keeps the PRO copy untouched.
+    expect(SyncMerge.fromCloud(after)['transactions']!['x']!.data!['amount'], 1);
   });
 
   test('full scope behaves exactly as before', () {

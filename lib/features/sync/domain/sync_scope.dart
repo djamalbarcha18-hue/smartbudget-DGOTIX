@@ -9,6 +9,11 @@
 /// neither uploaded nor deleted: it stays on the device it was entered on, and
 /// whatever the cloud already holds of it is carried along untouched. PRO
 /// then syncs it all.
+///
+/// The other rule: the cloud never overwrites a record this device holds
+/// unless that record is in the round. A record synced once stays in the
+/// round (see [SyncScope.local]), so its edits and deletions keep reaching
+/// the other devices after it leaves the window.
 library;
 
 import 'package:smartbudget/features/sync/domain/sync_merge.dart';
@@ -79,48 +84,89 @@ class SyncScope {
     };
   }
 
-  /// [ledger] without the entries of records that are still on the device but
-  /// left the scope (aged out). Without this they would be read as deleted and
-  /// the deletion would reach the other devices.
-  Entries pruneLedger(Entries ledger, Records all) {
-    if (isFull) return ledger;
-    final Records inScope = filter(all);
-    return <String, Map<String, SyncEntry>>{
-      for (final MapEntry<String, Map<String, SyncEntry>> c in ledger.entries)
+  /// What this device syncs: the records inside the window, plus every record
+  /// the [ledger] already knows (it was synced before). A known record keeps
+  /// syncing after it ages out of the window or is moved out of it, so an
+  /// edit to it is uploaded and a deletion of it reaches the other devices.
+  /// Before, such a record dropped out of the round and the next download
+  /// wrote the older cloud copy back over the edit.
+  Records local(Records all, Entries ledger) {
+    if (isFull) return all;
+    return <String, Map<String, Map<String, dynamic>>>{
+      for (final MapEntry<String, Map<String, Map<String, dynamic>>> c
+          in all.entries)
         if (allowsCollection(c.key))
-          c.key: <String, SyncEntry>{
-            for (final MapEntry<String, SyncEntry> e in c.value.entries)
-              if (!_leftScope(c.key, e.key, all, inScope)) e.key: e.value,
+          c.key: <String, Map<String, dynamic>>{
+            for (final MapEntry<String, Map<String, dynamic>> r
+                in c.value.entries)
+              if (includes(c.key, r.value) ||
+                  ledger[c.key]?.containsKey(r.key) == true)
+                r.key: r.value,
           },
     };
   }
 
-  static bool _leftScope(
-          String c, String id, Records all, Records inScope) =>
-      all[c]?.containsKey(id) == true && inScope[c]?.containsKey(id) != true;
-
-  /// The cloud entries the scope covers.
-  Entries cloudIn(Entries cloud) {
-    if (isFull) return cloud;
+  /// [ledger] for this scope: the collections it syncs, every entry kept.
+  ///
+  /// Entries of known records stay even once they are older than the window
+  /// ([local] keeps those records in the round), so nothing is read as
+  /// deleted while it is still on the device. A collection the scope doesn't
+  /// sync is dropped: its records are not in the round and would otherwise
+  /// all look deleted.
+  Entries pruneLedger(Entries ledger, Records all) {
+    if (isFull) return ledger;
     return <String, Map<String, SyncEntry>>{
-      for (final MapEntry<String, Map<String, SyncEntry>> c in cloud.entries)
+      for (final MapEntry<String, Map<String, SyncEntry>> c in ledger.entries)
         if (allowsCollection(c.key)) c.key: c.value,
     };
   }
 
-  /// The cloud entries the scope does not cover: sent back as they were.
-  Entries cloudHeld(Entries cloud) {
-    if (isFull) return const <String, Map<String, SyncEntry>>{};
+  /// Whether the cloud entry [e] of record [id] takes part in the merge:
+  /// a deletion, a record inside the window, or one this device syncs.
+  bool _cloudCovered(String c, String id, SyncEntry e, Entries local) =>
+      allowsCollection(c) &&
+      (e.deleted ||
+          includes(c, e.data!) ||
+          local[c]?.containsKey(id) == true);
+
+  /// The cloud entries the round merges (see [_cloudCovered]).
+  Entries cloudIn(Entries cloud, Entries local) {
+    if (isFull) return cloud;
     return <String, Map<String, SyncEntry>>{
       for (final MapEntry<String, Map<String, SyncEntry>> c in cloud.entries)
-        if (!allowsCollection(c.key)) c.key: c.value,
+        if (allowsCollection(c.key))
+          c.key: <String, SyncEntry>{
+            for (final MapEntry<String, SyncEntry> e in c.value.entries)
+              if (_cloudCovered(c.key, e.key, e.value, local))
+                e.key: e.value,
+          },
     };
   }
 
+  /// The cloud entries the round leaves alone: sent back as they were. An
+  /// old record this device doesn't sync is never written over the copy the
+  /// device holds.
+  Entries cloudHeld(Entries cloud, Entries local) {
+    if (isFull) return const <String, Map<String, SyncEntry>>{};
+    final Entries out = <String, Map<String, SyncEntry>>{};
+    for (final MapEntry<String, Map<String, SyncEntry>> c in cloud.entries) {
+      final Map<String, SyncEntry> kept = <String, SyncEntry>{
+        for (final MapEntry<String, SyncEntry> e in c.value.entries)
+          if (!_cloudCovered(c.key, e.key, e.value, local)) e.key: e.value,
+      };
+      if (kept.isNotEmpty) out[c.key] = kept;
+    }
+    return out;
+  }
+
   /// [merged] plus the [held] cloud entries, for the document to upload.
+  /// Merged per record: a held entry never replaces a merged one.
   Entries withHeld(Entries merged, Entries held) {
     if (held.isEmpty) return merged;
-    return <String, Map<String, SyncEntry>>{...merged, ...held};
+    return <String, Map<String, SyncEntry>>{
+      for (final String c in <String>{...held.keys, ...merged.keys})
+        c: <String, SyncEntry>{...?held[c], ...?merged[c]},
+    };
   }
 
   /// What the device should hold after a round: everything it had, minus what
