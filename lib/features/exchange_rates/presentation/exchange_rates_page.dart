@@ -294,6 +294,9 @@ class _CurrencyDropdown extends StatelessWidget {
       ),
       child: DropdownButton<String>(
         value: value,
+        // Fill the box (the text may be large on a phone): the arrow stays
+        // inside it and a long label is cut with an ellipsis.
+        isExpanded: true,
         underline: const SizedBox.shrink(),
         dropdownColor: c.bgElevated,
         items: <DropdownMenuItem<String>>[
@@ -301,11 +304,13 @@ class _CurrencyDropdown extends StatelessWidget {
             DropdownMenuItem<String>(
               value: cur.code,
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   CurrencyFlag(cur, width: 22),
                   const SizedBox(width: DsSpacing.sm),
-                  Text('${cur.code} · ${cur.symbol}'),
+                  Expanded(
+                    child: Text('${cur.code} · ${cur.symbol}',
+                        maxLines: 1, overflow: TextOverflow.ellipsis),
+                  ),
                 ],
               ),
             ),

@@ -53,4 +53,45 @@ void main() {
     expect(find.textContaining('11,250.00'), findsOneWidget);
     await tester.binding.setSurfaceSize(null);
   });
+
+  testWidgets(
+      'on a narrow phone with large text the currency arrows stay inside their boxes',
+      (WidgetTester tester) async {
+    await tester.binding.setSurfaceSize(const Size(360, 800));
+    await tester.pumpWidget(ProviderScope(
+      overrides: <Override>[ratesProvider.overrideWith(_FixedRates.new)],
+      child: MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: ThemeData(extensions: const <ThemeExtension<dynamic>>[
+          DsColors.light,
+          DsGlass.light,
+        ]),
+        builder: (BuildContext c, Widget? w) => MediaQuery(
+          data: MediaQuery.of(c).copyWith(textScaler: const TextScaler.linear(1.3)),
+          child: w!,
+        ),
+        home: const Scaffold(body: ExchangeRatesPage()),
+      ),
+    ));
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+    final Finder dropdowns = find.byType(DropdownButton<String>);
+    expect(dropdowns, findsNWidgets(2));
+    for (int i = 0; i < 2; i++) {
+      final Finder box = find
+          .ancestor(of: dropdowns.at(i), matching: find.byType(Container))
+          .first;
+      final Rect b = tester.getRect(box);
+      final Rect d = tester.getRect(dropdowns.at(i));
+      expect(d.right, lessThanOrEqualTo(b.right + 0.5), reason: 'dropdown $i');
+    }
+    await tester.binding.setSurfaceSize(null);
+  });
 }
