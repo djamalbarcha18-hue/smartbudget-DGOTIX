@@ -89,7 +89,10 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
                   ),
                 ),
                 const SizedBox(width: DsSpacing.md),
-                Column(
+                // Flexible: on a narrow phone the button's label wraps
+                // instead of pushing the card past the screen.
+                Flexible(
+                  child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Row(
@@ -107,6 +110,7 @@ class _ExchangeRatesPageState extends ConsumerState<ExchangeRatesPage> {
                       label: Text(l.baseCurrencyChangeInSettings),
                     ),
                   ],
+                ),
                 ),
               ],
             ),
@@ -361,21 +365,29 @@ class _RateRow extends StatelessWidget {
             child: Text(currency.code,
                 style: Theme.of(context).textTheme.titleSmall),
           ),
+          // Name above its source tag: on a narrow phone both stay inside the
+          // row (the tag shrinks if it has to).
           Expanded(
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Flexible(
-                  child: Text(lang.isAr ? currency.nameAr : currency.nameEn,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      overflow: TextOverflow.ellipsis),
-                ),
+                Text(lang.isAr ? currency.nameAr : currency.nameEn,
+                    style: Theme.of(context).textTheme.bodySmall,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
                 if (tag != _RateTag.none) ...<Widget>[
-                  const SizedBox(width: DsSpacing.sm),
-                  _RateTagChip(tag: tag),
+                  const SizedBox(height: 2),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: AlignmentDirectional.centerStart,
+                    child: _RateTagChip(tag: tag),
+                  ),
                 ],
               ],
             ),
           ),
+          const SizedBox(width: DsSpacing.sm),
           Text(MoneyFormatter.style.apply(rate.toString()),
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     color: c.textPrimary,
