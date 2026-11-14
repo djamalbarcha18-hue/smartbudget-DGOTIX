@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
+import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/transactions/domain/entry_date.dart';
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/design_system/brand/brand_assets.dart';
 import 'package:smartbudget/design_system/brand/dgotix_brand_lockup.dart';
@@ -405,6 +407,16 @@ class _Header extends ConsumerWidget {
             MonthNames.full(lang: appLangOf(context))[month - 1], year)
         : l.dashSummaryYear(year);
 
+    // A new entry lands in the period the summary shows, not today's month.
+    DateTime entryDate() {
+      final DateTime now = AppClock.now();
+      final int y = ref.read(selectedYearProvider);
+      final int m = scope == DashboardScope.month
+          ? ref.read(selectedMonthProvider).clamp(1, 12)
+          : now.month;
+      return entryDateForMonth(now, y, m);
+    }
+
     final List<Widget> actions = quiet
         ? const <Widget>[]
         : <Widget>[
@@ -420,13 +432,13 @@ class _Header extends ConsumerWidget {
         icon: Icons.south_west_rounded,
         variant: DsButtonVariant.secondary,
         onPressed: () => TransactionEditorSheet.show(context,
-            type: TransactionType.income),
+            type: TransactionType.income, initialDate: entryDate()),
       ),
       DsButton(
         label: l.addExpense,
         icon: Icons.north_east_rounded,
         onPressed: () => TransactionEditorSheet.show(context,
-            type: TransactionType.expense),
+            type: TransactionType.expense, initialDate: entryDate()),
       ),
     ];
 

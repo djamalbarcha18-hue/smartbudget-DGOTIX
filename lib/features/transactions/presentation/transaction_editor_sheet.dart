@@ -69,6 +69,7 @@ class TransactionEditorSheet extends ConsumerStatefulWidget {
     this.existing,
     this.prefill,
     this.initialRepeat,
+    this.initialDate,
   });
 
   final TransactionType type;
@@ -81,6 +82,10 @@ class TransactionEditorSheet extends ConsumerStatefulWidget {
   /// Ignored when [existing] is set. All fields stay editable.
   final TransactionDraft? prefill;
 
+  /// Date for a NEW transaction when [prefill] has none, e.g. a day in the
+  /// month the dashboard is showing. Null = now.
+  final DateTime? initialDate;
+
   /// Opens the editor as a modal bottom sheet.
   static Future<void> show(
     BuildContext context, {
@@ -88,6 +93,7 @@ class TransactionEditorSheet extends ConsumerStatefulWidget {
     Transaction? existing,
     TransactionDraft? prefill,
     RecurrenceFrequency? initialRepeat,
+    DateTime? initialDate,
   }) {
     // Figures on the screen behind stay hidden while the entry is open.
     return PrivacyController.whileEntering(
@@ -101,6 +107,7 @@ class TransactionEditorSheet extends ConsumerStatefulWidget {
           existing: existing,
           prefill: prefill,
           initialRepeat: initialRepeat,
+          initialDate: initialDate,
         ),
       ),
     );
@@ -179,7 +186,7 @@ class _TransactionEditorSheetState
     _description =
         TextEditingController(text: e?.description ?? p?.description ?? '');
     _notes = TextEditingController(text: e?.notes ?? p?.notes ?? '');
-    _date = e?.date ?? p?.date ?? AppClock.now();
+    _date = e?.date ?? p?.date ?? widget.initialDate ?? AppClock.now();
     _category = e?.category ?? p?.category;
     _paymentMethod = e?.paymentMethod;
     _repeat = e == null ? widget.initialRepeat : null;

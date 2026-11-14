@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
@@ -48,9 +49,21 @@ class SupabaseSyncRemote implements SyncRemote {
   }
 
   static bool _noVersionColumn(sb.PostgrestException e) =>
-      e.code == '42703' ||
-      e.code == 'PGRST204' ||
-      e.message.contains('version');
+      isMissingVersionColumn(e.code, e.message);
+
+  /// True only when the error says the `version` column itself is missing
+  /// (an old database without the sync.sql migration). Postgres reports an
+  /// unknown column as 42703 and PostgREST as PGRST204; both name the column.
+  ///
+  /// Any other error must be rethrown: falling back to the unversioned path
+  /// skips the optimistic-concurrency check, and an unconditional upload can
+  /// overwrite what another device just saved.
+  @visibleForTesting
+  static bool isMissingVersionColumn(String? code, String message) {
+    if (code != '42703' && code != 'PGRST204') return false;
+    return RegExp(r'''(^|[^a-z_])version([^a-z_]|$)''')
+        .hasMatch(message.toLowerCase());
+  }
 
   @override
   Future<RemoteCopy> pull() async {
