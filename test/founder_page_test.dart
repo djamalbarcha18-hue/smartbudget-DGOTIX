@@ -47,7 +47,7 @@ void main() {
   });
 
   test('initials for the avatar', () {
-    expect(FounderPage.initialsOf('Boulahdid Djamal Eddine'), 'BE');
+    expect(FounderPage.initialsOf('Boulahdid Djamal Eddine'), 'BD');
     expect(FounderPage.initialsOf('  Djamal '), 'D');
     expect(FounderPage.initialsOf(''), '');
   });
@@ -63,6 +63,7 @@ void main() {
 
     expect(find.text('Founder'), findsOneWidget);
     expect(find.text('Boulahdid Djamal Eddine'), findsOneWidget);
+    expect(find.text('BD'), findsOneWidget);
     expect(find.text('Founder of DGoTix'), findsOneWidget);
     expect(find.text('Digital Product Development & Innovation'),
         findsOneWidget);

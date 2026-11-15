@@ -23,7 +23,8 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 class FounderPage extends StatelessWidget {
   const FounderPage({super.key});
 
-  /// The founder's initials for the avatar (first and last name).
+  /// The founder's initials for the avatar: the first letters of the first
+  /// two names (family name, then given name).
   static String initialsOf(String name) {
     final List<String> parts = name
         .trim()
@@ -32,7 +33,7 @@ class FounderPage extends StatelessWidget {
         .toList();
     if (parts.isEmpty) return '';
     if (parts.length == 1) return parts.first[0].toUpperCase();
-    return (parts.first[0] + parts.last[0]).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
   }
 
   @override
