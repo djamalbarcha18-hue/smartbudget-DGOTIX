@@ -334,6 +334,8 @@ void main() {
     expect(tool('tax-amount'), '190');
     expect(tool('tax-total'), '1,190');
     expect(tool('tax-net'), '840.34');
+    await tester.ensureVisible(find.byKey(const Key('calc-mode-split')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('calc-mode-split')));
     await tester.pumpAndSettle();
     expect(tool('split-each'), '500');
