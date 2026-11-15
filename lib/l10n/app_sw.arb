@@ -1809,5 +1809,7 @@
   "calcUse": "Tumia nambari hii",
   "calcAddExpense": "Ongeza kama matumizi",
   "calcAddIncome": "Ongeza kama mapato",
-  "featCalculatorPro": "Zana za biashara za kikokotoo"
+  "featCalculatorPro": "Zana za biashara za kikokotoo",
+  "calcRateDown": "Punguza kiwango",
+  "calcRateUp": "Ongeza kiwango"
 }

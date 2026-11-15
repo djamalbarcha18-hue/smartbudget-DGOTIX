@@ -1809,5 +1809,7 @@
   "calcUse": "이 숫자 사용",
   "calcAddExpense": "지출로 기록",
   "calcAddIncome": "수입으로 기록",
-  "featCalculatorPro": "계산기 비즈니스 도구"
+  "featCalculatorPro": "계산기 비즈니스 도구",
+  "calcRateDown": "비율 낮추기",
+  "calcRateUp": "비율 높이기"
 }

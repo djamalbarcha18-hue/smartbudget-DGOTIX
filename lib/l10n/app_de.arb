@@ -1809,5 +1809,7 @@
   "calcUse": "Diese Zahl verwenden",
   "calcAddExpense": "Als Ausgabe erfassen",
   "calcAddIncome": "Als Einnahme erfassen",
-  "featCalculatorPro": "Geschäftswerkzeuge des Rechners"
+  "featCalculatorPro": "Geschäftswerkzeuge des Rechners",
+  "calcRateDown": "Satz senken",
+  "calcRateUp": "Satz erhöhen"
 }

@@ -1809,5 +1809,7 @@
   "calcUse": "یہ عدد استعمال کریں",
   "calcAddExpense": "خرچ کے طور پر درج کریں",
   "calcAddIncome": "آمدن کے طور پر درج کریں",
-  "featCalculatorPro": "کیلکولیٹر کے کاروباری ٹولز"
+  "featCalculatorPro": "کیلکولیٹر کے کاروباری ٹولز",
+  "calcRateDown": "شرح کم کریں",
+  "calcRateUp": "شرح بڑھائیں"
 }

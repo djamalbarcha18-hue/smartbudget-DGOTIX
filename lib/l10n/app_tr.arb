@@ -1809,5 +1809,7 @@
   "calcUse": "Bu sayıyı kullan",
   "calcAddExpense": "Gider olarak ekle",
   "calcAddIncome": "Gelir olarak ekle",
-  "featCalculatorPro": "Hesap makinesi iş araçları"
+  "featCalculatorPro": "Hesap makinesi iş araçları",
+  "calcRateDown": "Oranı düşür",
+  "calcRateUp": "Oranı artır"
 }

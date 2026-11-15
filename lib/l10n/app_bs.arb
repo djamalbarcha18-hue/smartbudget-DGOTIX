@@ -1809,5 +1809,7 @@
   "calcUse": "Koristi ovaj broj",
   "calcAddExpense": "Dodaj kao trošak",
   "calcAddIncome": "Dodaj kao prihod",
-  "featCalculatorPro": "Poslovni alati kalkulatora"
+  "featCalculatorPro": "Poslovni alati kalkulatora",
+  "calcRateDown": "Smanji stopu",
+  "calcRateUp": "Povećaj stopu"
 }

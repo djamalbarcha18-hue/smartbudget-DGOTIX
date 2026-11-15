@@ -1809,5 +1809,7 @@
   "calcUse": "Pakai angka ini",
   "calcAddExpense": "Catat sebagai pengeluaran",
   "calcAddIncome": "Catat sebagai pemasukan",
-  "featCalculatorPro": "Alat bisnis kalkulator"
+  "featCalculatorPro": "Alat bisnis kalkulator",
+  "calcRateDown": "Turunkan tarif",
+  "calcRateUp": "Naikkan tarif"
 }

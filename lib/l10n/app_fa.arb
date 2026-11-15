@@ -1809,5 +1809,7 @@
   "calcUse": "استفاده از این عدد",
   "calcAddExpense": "ثبت به‌عنوان هزینه",
   "calcAddIncome": "ثبت به‌عنوان درآمد",
-  "featCalculatorPro": "ابزارهای کسب‌وکار ماشین‌حساب"
+  "featCalculatorPro": "ابزارهای کسب‌وکار ماشین‌حساب",
+  "calcRateDown": "کاهش نرخ",
+  "calcRateUp": "افزایش نرخ"
 }

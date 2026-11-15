@@ -1809,5 +1809,7 @@
   "calcUse": "Использовать это число",
   "calcAddExpense": "Записать как расход",
   "calcAddIncome": "Записать как доход",
-  "featCalculatorPro": "Бизнес-инструменты калькулятора"
+  "featCalculatorPro": "Бизнес-инструменты калькулятора",
+  "calcRateDown": "Уменьшить ставку",
+  "calcRateUp": "Увеличить ставку"
 }

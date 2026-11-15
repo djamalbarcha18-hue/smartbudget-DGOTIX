@@ -2008,5 +2008,7 @@
   "calcUse": "استعمل هذا الرقم",
   "calcAddExpense": "سجّله مصروفاً",
   "calcAddIncome": "سجّله دخلاً",
-  "featCalculatorPro": "أدوات الآلة الحاسبة للأعمال"
+  "featCalculatorPro": "أدوات الآلة الحاسبة للأعمال",
+  "calcRateDown": "إنقاص النسبة",
+  "calcRateUp": "زيادة النسبة"
 }

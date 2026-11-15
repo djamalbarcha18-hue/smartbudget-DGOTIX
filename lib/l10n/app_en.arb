@@ -2130,5 +2130,7 @@
   "calcUse": "Use this number",
   "calcAddExpense": "Add as expense",
   "calcAddIncome": "Add as income",
-  "featCalculatorPro": "Calculator business tools"
+  "featCalculatorPro": "Calculator business tools",
+  "calcRateDown": "Lower the rate",
+  "calcRateUp": "Raise the rate"
 }

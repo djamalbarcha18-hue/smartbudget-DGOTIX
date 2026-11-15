@@ -293,24 +293,24 @@ class _CalculatorToolsState extends ConsumerState<CalculatorTools> {
             Row(
               children: <Widget>[
                 Expanded(child: Text(l.calcPeople)),
-                IconButton(
+                IconButton.filledTonal(
                   key: const Key('calc-people-minus'),
                   tooltip: l.calcSubtract,
                   onPressed: _people > 2
                       ? () => setState(() => _people--)
                       : null,
-                  icon: const Icon(Icons.remove_circle_outline),
+                  icon: const Icon(Icons.remove_rounded),
                 ),
                 Text('$_people',
                     key: const Key('calc-people'),
                     style: Theme.of(context).textTheme.titleMedium),
-                IconButton(
+                IconButton.filledTonal(
                   key: const Key('calc-people-plus'),
                   tooltip: l.calcAdd,
                   onPressed: _people < 50
                       ? () => setState(() => _people++)
                       : null,
-                  icon: const Icon(Icons.add_circle_outline),
+                  icon: const Icon(Icons.add_rounded),
                 ),
               ],
             ),
@@ -428,45 +428,88 @@ class _RateField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
-    return Row(
-      children: <Widget>[
-        SizedBox(
-          width: 96,
-          child: TextField(
-            controller: controller,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
-              LengthLimitingTextInputFormatter(6),
-            ],
-            textDirection: TextDirection.ltr,
-            decoration: InputDecoration(
-              labelText: label,
-              suffixText: '%',
-              isDense: true,
-              border: const OutlineInputBorder(borderRadius: DsRadius.brMd),
+    final AppLocalizations l = AppLocalizations.of(context);
+    // One point down or up (19% → 18% / 20%), never below 0 or past 999.
+    void step(int by) {
+      final double now =
+          double.tryParse(controller.text.replaceAll(',', '.').trim()) ?? 0;
+      final double next = (now + by).clamp(0, 999).toDouble();
+      final String text = next == next.roundToDouble()
+          ? next.toInt().toString()
+          : next.toStringAsFixed(2).replaceFirst(RegExp(r'0+$'), '');
+      controller.text = text;
+      onChanged(text);
+    }
+
+    Widget stepButton(IconData icon, String tip, int by, String id) => Tooltip(
+          message: tip,
+          child: Material(
+            color: c.brand.withValues(alpha: 0.16),
+            shape: RoundedRectangleBorder(
+              borderRadius: DsRadius.brMd,
+              side: BorderSide(color: c.brand.withValues(alpha: 0.55)),
             ),
-            onChanged: onChanged,
+            child: InkWell(
+              key: Key('calc-rate-$id'),
+              borderRadius: DsRadius.brMd,
+              onTap: () => step(by),
+              child: SizedBox(
+                width: 40,
+                height: 40,
+                child: Icon(icon, size: 22, color: c.brand),
+              ),
+            ),
           ),
+        );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            stepButton(Icons.remove_rounded, l.calcRateDown, -1, 'down'),
+            const SizedBox(width: DsSpacing.sm),
+            Expanded(child: _field()),
+            const SizedBox(width: DsSpacing.sm),
+            stepButton(Icons.add_rounded, l.calcRateUp, 1, 'up'),
+          ],
         ),
-        const SizedBox(width: DsSpacing.sm),
-        Expanded(
-          child: Wrap(
-            spacing: DsSpacing.xs,
-            children: <Widget>[
-              for (final String p in presets)
-                ActionChip(
-                  label: Text('$p%'),
-                  side: BorderSide(color: c.border),
-                  onPressed: () {
-                    controller.text = p;
-                    onChanged(p);
-                  },
-                ),
-            ],
-          ),
+        const SizedBox(height: DsSpacing.sm),
+        Wrap(
+          spacing: DsSpacing.xs,
+          runSpacing: DsSpacing.xs,
+          children: <Widget>[
+            for (final String p in presets)
+              ActionChip(
+                label: Text('$p%'),
+                side: BorderSide(color: c.border),
+                onPressed: () {
+                  controller.text = p;
+                  onChanged(p);
+                },
+              ),
+          ],
         ),
       ],
     );
   }
+
+  Widget _field() => TextField(
+        key: const Key('calc-rate-field'),
+        controller: controller,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
+          LengthLimitingTextInputFormatter(6),
+        ],
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.ltr,
+        decoration: InputDecoration(
+          labelText: label,
+          suffixText: '%',
+          isDense: true,
+          border: const OutlineInputBorder(borderRadius: DsRadius.brMd),
+        ),
+        onChanged: onChanged,
+      );
 }

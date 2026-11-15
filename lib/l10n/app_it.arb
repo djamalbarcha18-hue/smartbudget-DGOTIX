@@ -1809,5 +1809,7 @@
   "calcUse": "Usa questo numero",
   "calcAddExpense": "Aggiungi come spesa",
   "calcAddIncome": "Aggiungi come entrata",
-  "featCalculatorPro": "Strumenti business della calcolatrice"
+  "featCalculatorPro": "Strumenti business della calcolatrice",
+  "calcRateDown": "Abbassa l'aliquota",
+  "calcRateUp": "Alza l'aliquota"
 }

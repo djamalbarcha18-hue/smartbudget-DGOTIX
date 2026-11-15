@@ -1809,5 +1809,7 @@
   "calcUse": "使用此数字",
   "calcAddExpense": "记为支出",
   "calcAddIncome": "记为收入",
-  "featCalculatorPro": "计算器商务工具"
+  "featCalculatorPro": "计算器商务工具",
+  "calcRateDown": "降低比率",
+  "calcRateUp": "提高比率"
 }

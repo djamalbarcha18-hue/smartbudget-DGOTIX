@@ -1809,5 +1809,7 @@
   "calcUse": "Përdor këtë numër",
   "calcAddExpense": "Shto si shpenzim",
   "calcAddIncome": "Shto si të ardhur",
-  "featCalculatorPro": "Mjetet e biznesit të makinës llogaritëse"
+  "featCalculatorPro": "Mjetet e biznesit të makinës llogaritëse",
+  "calcRateDown": "Ul normën",
+  "calcRateUp": "Rrit normën"
 }

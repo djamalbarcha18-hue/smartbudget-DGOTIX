@@ -1809,5 +1809,7 @@
   "calcUse": "Dit getal gebruiken",
   "calcAddExpense": "Als uitgave toevoegen",
   "calcAddIncome": "Als inkomen toevoegen",
-  "featCalculatorPro": "Zakelijke tools van de rekenmachine"
+  "featCalculatorPro": "Zakelijke tools van de rekenmachine",
+  "calcRateDown": "Tarief verlagen",
+  "calcRateUp": "Tarief verhogen"
 }

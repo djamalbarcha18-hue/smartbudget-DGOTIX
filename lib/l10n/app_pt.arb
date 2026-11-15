@@ -1809,5 +1809,7 @@
   "calcUse": "Usar este número",
   "calcAddExpense": "Adicionar como despesa",
   "calcAddIncome": "Adicionar como receita",
-  "featCalculatorPro": "Ferramentas de negócio da calculadora"
+  "featCalculatorPro": "Ferramentas de negócio da calculadora",
+  "calcRateDown": "Baixar a taxa",
+  "calcRateUp": "Subir a taxa"
 }

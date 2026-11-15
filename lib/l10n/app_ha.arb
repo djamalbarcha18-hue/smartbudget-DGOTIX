@@ -1809,5 +1809,7 @@
   "calcUse": "Yi amfani da wannan lamba",
   "calcAddExpense": "Ƙara a matsayin kashewa",
   "calcAddIncome": "Ƙara a matsayin samu",
-  "featCalculatorPro": "Kayan kasuwanci na na'urar lissafi"
+  "featCalculatorPro": "Kayan kasuwanci na na'urar lissafi",
+  "calcRateDown": "Rage kashi",
+  "calcRateUp": "Ƙara kashi"
 }

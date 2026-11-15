@@ -1809,5 +1809,7 @@
   "calcUse": "この数を使う",
   "calcAddExpense": "支出として記録",
   "calcAddIncome": "収入として記録",
-  "featCalculatorPro": "電卓のビジネスツール"
+  "featCalculatorPro": "電卓のビジネスツール",
+  "calcRateDown": "率を下げる",
+  "calcRateUp": "率を上げる"
 }

@@ -334,6 +334,14 @@ void main() {
     expect(tool('tax-amount'), '190');
     expect(tool('tax-total'), '1,190');
     expect(tool('tax-net'), '840.34');
+    // The rate goes up one point with +, down with −.
+    await tester.ensureVisible(find.byKey(const Key('calc-rate-up')));
+    await tester.tap(find.byKey(const Key('calc-rate-up')));
+    await tester.pumpAndSettle();
+    expect(tool('tax-total'), '1,200');
+    await tester.tap(find.byKey(const Key('calc-rate-down')));
+    await tester.pumpAndSettle();
+    expect(tool('tax-total'), '1,190');
     // The arrow beside a figure puts it on the calculator.
     await tester.ensureVisible(find.byKey(const Key('calc-use-tax-total')));
     await tester.tap(find.byKey(const Key('calc-use-tax-total')));

@@ -1809,5 +1809,7 @@
   "calcUse": "यह संख्या लें",
   "calcAddExpense": "ख़र्च के रूप में जोड़ें",
   "calcAddIncome": "आय के रूप में जोड़ें",
-  "featCalculatorPro": "कैलकुलेटर के व्यापारिक टूल"
+  "featCalculatorPro": "कैलकुलेटर के व्यापारिक टूल",
+  "calcRateDown": "दर घटाएँ",
+  "calcRateUp": "दर बढ़ाएँ"
 }

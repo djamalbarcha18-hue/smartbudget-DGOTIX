@@ -1809,5 +1809,7 @@
   "calcUse": "Guna nombor ini",
   "calcAddExpense": "Tambah sebagai perbelanjaan",
   "calcAddIncome": "Tambah sebagai pendapatan",
-  "featCalculatorPro": "Alat perniagaan kalkulator"
+  "featCalculatorPro": "Alat perniagaan kalkulator",
+  "calcRateDown": "Kurangkan kadar",
+  "calcRateUp": "Naikkan kadar"
 }

@@ -1809,5 +1809,7 @@
   "calcUse": "Gebruik hierdie getal",
   "calcAddExpense": "Voeg by as uitgawe",
   "calcAddIncome": "Voeg by as inkomste",
-  "featCalculatorPro": "Sakegereedskap van die sakrekenaar"
+  "featCalculatorPro": "Sakegereedskap van die sakrekenaar",
+  "calcRateDown": "Verlaag die koers",
+  "calcRateUp": "Verhoog die koers"
 }

@@ -1809,5 +1809,7 @@
   "calcUse": "Usar este número",
   "calcAddExpense": "Añadir como gasto",
   "calcAddIncome": "Añadir como ingreso",
-  "featCalculatorPro": "Herramientas de negocio de la calculadora"
+  "featCalculatorPro": "Herramientas de negocio de la calculadora",
+  "calcRateDown": "Bajar la tasa",
+  "calcRateUp": "Subir la tasa"
 }
