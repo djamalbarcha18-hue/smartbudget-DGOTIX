@@ -82,7 +82,7 @@ void main() {
               id: 'gbp',
               name: 'gbp',
               type: WalletType.bank,
-              opening: Money(10000, 'GBP'),
+              opening: const Money(10000, 'GBP'),
               createdAt: DateTime(2025)),
         ]),
         zakatDate: today,
