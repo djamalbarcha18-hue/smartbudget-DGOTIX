@@ -1771,5 +1771,18 @@
   "zkLaterEntries": "Rekod bertarikh selepas hari ini tidak dikira.",
   "aiConsentTitle": "Sebelum menggunakan DGOTIX AI",
   "aiConsentBody": "Untuk menjawab, DGOTIX AI menghantar apa yang anda minta — soalan anda, foto resit atau ringkasan angka anda (jumlah mengikut kategori dan bulan, tidak sekali-kali kata laluan atau butiran bank) — melalui pelayan kami kepada perkhidmatan Gemini Google, yang memprosesnya mengikut terma Google. Tiada apa dihantar sebelum anda bersetuju, dan bahagian lain aplikasi boleh digunakan tanpanya.",
-  "aiConsentAgree": "Setuju dan teruskan"
+  "aiConsentAgree": "Setuju dan teruskan",
+  "navCalculator": "Kalkulator",
+  "calcClear": "Kosongkan semua",
+  "calcBackspace": "Padam digit terakhir",
+  "calcPercent": "Peratus",
+  "calcToggleSign": "Tukar tanda",
+  "calcDecimal": "Titik perpuluhan",
+  "calcEquals": "Sama dengan",
+  "calcAdd": "Tambah",
+  "calcSubtract": "Tolak",
+  "calcMultiply": "Darab",
+  "calcDivide": "Bahagi",
+  "calcDivideByZero": "Tidak boleh bahagi dengan sifar",
+  "calcTooLarge": "Nombor terlalu besar"
 }

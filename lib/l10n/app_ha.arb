@@ -1771,5 +1771,18 @@
   "zkLaterEntries": "Ba a ƙirga abubuwan da kwananansu ya wuce yau ba.",
   "aiConsentTitle": "Kafin amfani da DGOTIX AI",
   "aiConsentBody": "Don amsawa, DGOTIX AI na aika abin da ka nema — tambayarka, hoton rasit, ko taƙaitaccen lissafinka (jimla bisa rukuni da wata, ba kalmar sirri ko bayanan banki ba) — ta sabar mu zuwa sabis ɗin Gemini na Google, wanda ke sarrafa shi bisa sharuɗɗan Google. Ba a aika komai kafin ka yarda, kuma sauran manhajar na aiki ba tare da shi ba.",
-  "aiConsentAgree": "Na yarda, ci gaba"
+  "aiConsentAgree": "Na yarda, ci gaba",
+  "navCalculator": "Na'urar lissafi",
+  "calcClear": "Share duka",
+  "calcBackspace": "Goge lamba ta ƙarshe",
+  "calcPercent": "Kashi cikin ɗari",
+  "calcToggleSign": "Canza alama",
+  "calcDecimal": "Digo na goma",
+  "calcEquals": "Daidai da",
+  "calcAdd": "Ƙari",
+  "calcSubtract": "Ragi",
+  "calcMultiply": "Ninka",
+  "calcDivide": "Raba",
+  "calcDivideByZero": "Ba za a iya raba da sifili ba",
+  "calcTooLarge": "Lamba ta yi girma sosai"
 }

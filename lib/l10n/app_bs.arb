@@ -1771,5 +1771,18 @@
   "zkLaterEntries": "Unosi s datumom nakon danas se ne računaju.",
   "aiConsentTitle": "Prije korištenja DGOTIX AI",
   "aiConsentBody": "Da bi odgovorio, DGOTIX AI šalje ono što tražite — vaše pitanje, fotografiju računa ili sažetak vaših brojki (zbirovi po kategoriji i mjesecu, nikad lozinku ni bankovne podatke) — preko našeg servera Googleovoj usluzi Gemini, koja ih obrađuje prema Googleovim uslovima. Ništa se ne šalje prije vašeg pristanka, a ostatak aplikacije radi i bez toga.",
-  "aiConsentAgree": "Pristajem i nastavljam"
+  "aiConsentAgree": "Pristajem i nastavljam",
+  "navCalculator": "Kalkulator",
+  "calcClear": "Obriši sve",
+  "calcBackspace": "Obriši zadnju cifru",
+  "calcPercent": "Postotak",
+  "calcToggleSign": "Promijeni predznak",
+  "calcDecimal": "Decimalni zarez",
+  "calcEquals": "Jednako",
+  "calcAdd": "Plus",
+  "calcSubtract": "Minus",
+  "calcMultiply": "Puta",
+  "calcDivide": "Podijeljeno sa",
+  "calcDivideByZero": "Nije moguće dijeliti nulom",
+  "calcTooLarge": "Broj je prevelik"
 }

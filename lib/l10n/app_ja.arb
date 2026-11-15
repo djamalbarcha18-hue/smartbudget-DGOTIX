@@ -1771,5 +1771,18 @@
   "zkLaterEntries": "今日より後の日付の記録は計上しません。",
   "aiConsentTitle": "DGOTIX AI を使う前に",
   "aiConsentBody": "回答のため、DGOTIX AI はご依頼の内容（質問、レシートの写真、または数値の要約＝カテゴリ別・月別の合計。パスワードや銀行情報は含みません）を当社サーバー経由で Google の Gemini サービスに送信し、Google の規約に従って処理されます。同意するまで何も送信されず、それ以外の機能はこれなしでも使えます。",
-  "aiConsentAgree": "同意して続ける"
+  "aiConsentAgree": "同意して続ける",
+  "navCalculator": "電卓",
+  "calcClear": "すべてクリア",
+  "calcBackspace": "最後の数字を削除",
+  "calcPercent": "パーセント",
+  "calcToggleSign": "符号を反転",
+  "calcDecimal": "小数点",
+  "calcEquals": "イコール",
+  "calcAdd": "足す",
+  "calcSubtract": "引く",
+  "calcMultiply": "掛ける",
+  "calcDivide": "割る",
+  "calcDivideByZero": "ゼロでは割れません",
+  "calcTooLarge": "数が大きすぎます"
 }

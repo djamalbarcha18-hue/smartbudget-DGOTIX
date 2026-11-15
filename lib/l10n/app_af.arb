@@ -1771,5 +1771,18 @@
   "zkLaterEntries": "Inskrywings met 'n datum ná vandag tel nie.",
   "aiConsentTitle": "Voordat jy DGOTIX AI gebruik",
   "aiConsentBody": "Om te antwoord, stuur DGOTIX AI wat jy vra — jou vraag, 'n foto van 'n strokie of 'n opsomming van jou syfers (totale per kategorie en maand, nooit jou wagwoord of bankbesonderhede nie) — via ons bediener na Google se Gemini-diens, wat dit volgens Google se bepalings verwerk. Niks word gestuur voordat jy instem nie, en die res van die app werk sonder dit.",
-  "aiConsentAgree": "Stem in en gaan voort"
+  "aiConsentAgree": "Stem in en gaan voort",
+  "navCalculator": "Sakrekenaar",
+  "calcClear": "Vee alles uit",
+  "calcBackspace": "Vee laaste syfer uit",
+  "calcPercent": "Persent",
+  "calcToggleSign": "Verander teken",
+  "calcDecimal": "Desimale komma",
+  "calcEquals": "Is gelyk aan",
+  "calcAdd": "Plus",
+  "calcSubtract": "Minus",
+  "calcMultiply": "Maal",
+  "calcDivide": "Gedeel deur",
+  "calcDivideByZero": "Kan nie deur nul deel nie",
+  "calcTooLarge": "Getal te groot"
 }

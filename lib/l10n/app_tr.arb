@@ -1771,5 +1771,18 @@
   "zkLaterEntries": "Bugünden sonraki tarihli kayıtlar sayılmaz.",
   "aiConsentTitle": "DGOTIX AI'ı kullanmadan önce",
   "aiConsentBody": "Yanıt vermek için DGOTIX AI istediğinizi — sorunuzu, bir fiş fotoğrafını veya rakamlarınızın özetini (kategori ve aya göre toplamlar; şifreniz veya banka bilgileriniz asla) — sunucumuz üzerinden Google'ın Gemini hizmetine gönderir; Google bunu kendi koşullarına göre işler. Onay vermeden hiçbir şey gönderilmez ve uygulamanın geri kalanını onsuz da kullanabilirsiniz.",
-  "aiConsentAgree": "Kabul et ve devam et"
+  "aiConsentAgree": "Kabul et ve devam et",
+  "navCalculator": "Hesap makinesi",
+  "calcClear": "Tümünü temizle",
+  "calcBackspace": "Son rakamı sil",
+  "calcPercent": "Yüzde",
+  "calcToggleSign": "İşareti değiştir",
+  "calcDecimal": "Ondalık ayırıcı",
+  "calcEquals": "Eşittir",
+  "calcAdd": "Artı",
+  "calcSubtract": "Eksi",
+  "calcMultiply": "Çarpı",
+  "calcDivide": "Bölü",
+  "calcDivideByZero": "Sıfıra bölünemez",
+  "calcTooLarge": "Sayı çok büyük"
 }

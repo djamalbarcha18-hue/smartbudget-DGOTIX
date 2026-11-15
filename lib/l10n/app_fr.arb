@@ -1771,5 +1771,18 @@
   "zkLaterEntries": "Les opérations datées après aujourd'hui ne sont pas comptées.",
   "aiConsentTitle": "Avant d'utiliser DGOTIX AI",
   "aiConsentBody": "Pour répondre, DGOTIX AI envoie ce que vous demandez — votre question, une photo de ticket ou un résumé de vos chiffres (totaux par catégorie et par mois, jamais votre mot de passe ni vos coordonnées bancaires) — via notre serveur au service Gemini de Google, qui le traite selon les conditions de Google. Rien n'est envoyé avant votre accord, et le reste de l'application fonctionne sans.",
-  "aiConsentAgree": "J'accepte et je continue"
+  "aiConsentAgree": "J'accepte et je continue",
+  "navCalculator": "Calculatrice",
+  "calcClear": "Tout effacer",
+  "calcBackspace": "Effacer le dernier chiffre",
+  "calcPercent": "Pourcentage",
+  "calcToggleSign": "Changer le signe",
+  "calcDecimal": "Virgule",
+  "calcEquals": "Égal",
+  "calcAdd": "Plus",
+  "calcSubtract": "Moins",
+  "calcMultiply": "Multiplié par",
+  "calcDivide": "Divisé par",
+  "calcDivideByZero": "Division par zéro impossible",
+  "calcTooLarge": "Nombre trop grand"
 }

@@ -1970,5 +1970,18 @@
   "zkLaterEntries": "المعاملات المؤرخة بعد اليوم لا تُحتسب.",
   "aiConsentTitle": "قبل استخدام DGOTIX AI",
   "aiConsentBody": "للإجابة يرسل DGOTIX AI ما تطلبه — سؤالك، أو صورة فاتورة، أو ملخّص أرقامك (مجاميع حسب التصنيف والشهر، دون كلمة المرور أو بياناتك البنكية) — عبر خادمنا إلى خدمة Gemini من Google، التي تعالجه وفق شروط Google. لا يُرسل شيء قبل موافقتك، ويمكنك استخدام بقية التطبيق دونه.",
-  "aiConsentAgree": "أوافق وأتابع"
+  "aiConsentAgree": "أوافق وأتابع",
+  "navCalculator": "الآلة الحاسبة",
+  "calcClear": "مسح الكل",
+  "calcBackspace": "حذف آخر رقم",
+  "calcPercent": "نسبة مئوية",
+  "calcToggleSign": "تغيير الإشارة",
+  "calcDecimal": "فاصلة عشرية",
+  "calcEquals": "يساوي",
+  "calcAdd": "زائد",
+  "calcSubtract": "ناقص",
+  "calcMultiply": "ضرب",
+  "calcDivide": "قسمة",
+  "calcDivideByZero": "لا يمكن القسمة على صفر",
+  "calcTooLarge": "العدد كبير جداً"
 }

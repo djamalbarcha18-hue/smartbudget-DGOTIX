@@ -1771,5 +1771,18 @@
   "zkLaterEntries": "Rekodi zenye tarehe baada ya leo hazihesabiwi.",
   "aiConsentTitle": "Kabla ya kutumia DGOTIX AI",
   "aiConsentBody": "Ili kujibu, DGOTIX AI hutuma unachoomba — swali lako, picha ya risiti, au muhtasari wa takwimu zako (jumla kwa aina na mwezi, kamwe si nenosiri wala taarifa za benki) — kupitia seva yetu kwa huduma ya Gemini ya Google, inayoshughulikia kwa masharti ya Google. Hakuna kinachotumwa kabla hujakubali, na sehemu nyingine za programu zinafanya kazi bila hiyo.",
-  "aiConsentAgree": "Kubali na uendelee"
+  "aiConsentAgree": "Kubali na uendelee",
+  "navCalculator": "Kikokotoo",
+  "calcClear": "Futa yote",
+  "calcBackspace": "Futa tarakimu ya mwisho",
+  "calcPercent": "Asilimia",
+  "calcToggleSign": "Badilisha alama",
+  "calcDecimal": "Nukta ya desimali",
+  "calcEquals": "Sawa na",
+  "calcAdd": "Jumlisha",
+  "calcSubtract": "Toa",
+  "calcMultiply": "Zidisha",
+  "calcDivide": "Gawanya",
+  "calcDivideByZero": "Haiwezekani kugawanya kwa sifuri",
+  "calcTooLarge": "Nambari ni kubwa mno"
 }

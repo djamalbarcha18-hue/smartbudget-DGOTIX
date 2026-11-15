@@ -1771,5 +1771,18 @@
   "zkLaterEntries": "오늘 이후 날짜의 기록은 계산하지 않습니다.",
   "aiConsentTitle": "DGOTIX AI 사용 전에",
   "aiConsentBody": "답변을 위해 DGOTIX AI는 요청하신 내용(질문, 영수증 사진, 또는 카테고리·월별 합계 같은 수치 요약 — 비밀번호나 은행 정보는 절대 포함하지 않음)을 저희 서버를 거쳐 Google의 Gemini 서비스로 보내며, Google 약관에 따라 처리됩니다. 동의하기 전에는 아무것도 전송되지 않으며, 앱의 나머지 기능은 이것 없이도 쓸 수 있습니다.",
-  "aiConsentAgree": "동의하고 계속"
+  "aiConsentAgree": "동의하고 계속",
+  "navCalculator": "계산기",
+  "calcClear": "모두 지우기",
+  "calcBackspace": "마지막 숫자 지우기",
+  "calcPercent": "퍼센트",
+  "calcToggleSign": "부호 바꾸기",
+  "calcDecimal": "소수점",
+  "calcEquals": "같음",
+  "calcAdd": "더하기",
+  "calcSubtract": "빼기",
+  "calcMultiply": "곱하기",
+  "calcDivide": "나누기",
+  "calcDivideByZero": "0으로 나눌 수 없습니다",
+  "calcTooLarge": "숫자가 너무 큽니다"
 }

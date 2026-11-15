@@ -1771,5 +1771,18 @@
   "zkLaterEntries": "日期在今天之后的记录不计入。",
   "aiConsentTitle": "使用 DGOTIX AI 之前",
   "aiConsentBody": "为了回答，DGOTIX AI 会通过我们的服务器把您请求的内容——您的问题、收据照片或您的数字摘要（按类别和月份的合计，绝不包括密码或银行信息）——发送到 Google 的 Gemini 服务，由其按 Google 的条款处理。在您同意之前不会发送任何内容，不使用它也能继续使用应用的其他功能。",
-  "aiConsentAgree": "同意并继续"
+  "aiConsentAgree": "同意并继续",
+  "navCalculator": "计算器",
+  "calcClear": "全部清除",
+  "calcBackspace": "删除最后一位",
+  "calcPercent": "百分比",
+  "calcToggleSign": "正负号",
+  "calcDecimal": "小数点",
+  "calcEquals": "等于",
+  "calcAdd": "加",
+  "calcSubtract": "减",
+  "calcMultiply": "乘",
+  "calcDivide": "除以",
+  "calcDivideByZero": "不能除以零",
+  "calcTooLarge": "数字太大"
 }

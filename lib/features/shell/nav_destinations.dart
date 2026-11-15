@@ -27,6 +27,7 @@ enum AppSection {
   zakat,
   exchangeRates,
   markets,
+  calculator,
   aiAssistant,
   plans,
   guide,
@@ -78,6 +79,7 @@ class NavDestination {
         AppSection.reports => l.navReports,
         AppSection.zakat => l.navZakat,
         AppSection.exchangeRates => l.navExchangeRates,
+        AppSection.calculator => l.navCalculator,
         AppSection.markets => l.navMarkets,
         AppSection.aiAssistant => l.navAiAssistant,
         AppSection.plans => l.plansTitle,
@@ -237,6 +239,14 @@ abstract final class AppNav {
       icon: Icons.travel_explore_outlined,
       group: NavGroup.markets,
     ),
+    // A pocket calculator for everyday sums (Tools).
+    NavDestination(
+      section: AppSection.calculator,
+      route: '/calculator',
+      icon: Icons.calculate_outlined,
+      // Ordered with the last block; shown in the menu under Tools.
+      group: NavGroup.markets,
+    ),
     // Account & help.
     NavDestination(
       section: AppSection.settings,
@@ -294,6 +304,7 @@ abstract final class AppMenu {
       AppSection.recurring,
       AppSection.debts,
       AppSection.challenges,
+      AppSection.calculator,
     ],
     NavFold.occasions: <AppSection>[
       AppSection.seasons,

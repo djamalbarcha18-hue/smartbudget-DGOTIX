@@ -1771,5 +1771,18 @@
   "zkLaterEntries": "Regjistrimet me datë pas sot nuk llogariten.",
   "aiConsentTitle": "Para se të përdorni DGOTIX AI",
   "aiConsentBody": "Për t'u përgjigjur, DGOTIX AI dërgon atë që kërkoni — pyetjen tuaj, foton e një fature ose një përmbledhje të shifrave tuaja (shuma sipas kategorisë dhe muajit, kurrë fjalëkalimin apo të dhënat bankare) — përmes serverit tonë te shërbimi Gemini i Google, që e përpunon sipas kushteve të Google. Asgjë nuk dërgohet pa pëlqimin tuaj, dhe pjesa tjetër e aplikacionit punon edhe pa të.",
-  "aiConsentAgree": "Pranoj dhe vazhdoj"
+  "aiConsentAgree": "Pranoj dhe vazhdoj",
+  "navCalculator": "Makinë llogaritëse",
+  "calcClear": "Pastro gjithçka",
+  "calcBackspace": "Fshi shifrën e fundit",
+  "calcPercent": "Përqindje",
+  "calcToggleSign": "Ndrysho shenjën",
+  "calcDecimal": "Presje dhjetore",
+  "calcEquals": "Baraz",
+  "calcAdd": "Plus",
+  "calcSubtract": "Minus",
+  "calcMultiply": "Herë",
+  "calcDivide": "Pjesëtuar me",
+  "calcDivideByZero": "Nuk mund të pjesëtohet me zero",
+  "calcTooLarge": "Numër shumë i madh"
 }

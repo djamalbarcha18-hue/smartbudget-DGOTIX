@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/features/calculator/presentation/calculator_page.dart'
+    deferred as calculator;
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/auth/presentation/forgot_password_page.dart';
 import 'package:smartbudget/features/auth/presentation/login_page.dart';
@@ -213,6 +215,12 @@ GoRouter buildRouter(Ref ref) {
                 const NoTransitionPage<void>(child: ExchangeRatesPage()),
           ),
           GoRoute(
+            path: '/calculator',
+            // Loaded only when opened (a separate part of the web app).
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const NoTransitionPage<void>(child: _DeferredCalculator()),
+          ),
+          GoRoute(
             path: '/zakat',
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const NoTransitionPage<void>(child: ZakatScreen()),
@@ -295,6 +303,7 @@ const Set<AppSection> _implementedSections = <AppSection>{
   AppSection.financialHealth,
   AppSection.exchangeRates,
   AppSection.markets,
+  AppSection.calculator,
   AppSection.zakat,
   AppSection.reports,
   AppSection.aiAssistant,
@@ -331,4 +340,25 @@ String? safeReturnPath(String? path) {
   if (u == null || u.hasScheme || u.hasAuthority) return null;
   if (u.path == '/' || _authRoutes.contains(u.path)) return null;
   return path;
+}
+
+/// The calculator's code is fetched the first time it is opened.
+class _DeferredCalculator extends StatefulWidget {
+  const _DeferredCalculator();
+
+  @override
+  State<_DeferredCalculator> createState() => _DeferredCalculatorState();
+}
+
+class _DeferredCalculatorState extends State<_DeferredCalculator> {
+  late final Future<void> _load = calculator.loadLibrary();
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<void>(
+        future: _load,
+        builder: (BuildContext context, AsyncSnapshot<void> snap) =>
+            snap.connectionState == ConnectionState.done && !snap.hasError
+                ? calculator.CalculatorPage()
+                : const SizedBox.shrink(),
+      );
 }
