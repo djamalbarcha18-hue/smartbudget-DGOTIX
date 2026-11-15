@@ -45,7 +45,9 @@ class ZakatScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Wait for the saved base currency, so the screen doesn't flash the
-    // earlier calculator before the market is known.
+    // earlier calculator before the market is known (watching the currency
+    // is what starts its loading).
+    ref.watch(baseCurrencyProvider);
     if (!ref.watch(baseCurrencyLoadedProvider)) {
       return const ZakatPatternBackground(child: SizedBox.expand());
     }
