@@ -5,6 +5,7 @@ import 'package:smartbudget/core/l10n/app_lang_context.dart';
 import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
+import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_date_picker.dart';
 import 'package:smartbudget/design_system/components/ds_text_field.dart';
@@ -43,6 +44,11 @@ class ZakatScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Wait for the saved base currency, so the screen doesn't flash the
+    // earlier calculator before the market is known.
+    if (!ref.watch(baseCurrencyLoadedProvider)) {
+      return const ZakatPatternBackground(child: SizedBox.expand());
+    }
     final ZakatProfile? profile = ref.watch(zakatMarketProvider);
     return ZakatPatternBackground(
       child: profile == null ? const ZakatPage() : const ZakatEnginePage(),
