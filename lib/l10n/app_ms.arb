@@ -1784,5 +1784,6 @@
   "calcMultiply": "Darab",
   "calcDivide": "Bahagi",
   "calcDivideByZero": "Tidak boleh bahagi dengan sifar",
-  "calcTooLarge": "Nombor terlalu besar"
+  "calcTooLarge": "Nombor terlalu besar",
+  "calcCurrent": "Pengiraan semasa"
 }

@@ -1784,5 +1784,6 @@
   "calcMultiply": "Puta",
   "calcDivide": "Podijeljeno sa",
   "calcDivideByZero": "Nije moguće dijeliti nulom",
-  "calcTooLarge": "Broj je prevelik"
+  "calcTooLarge": "Broj je prevelik",
+  "calcCurrent": "Trenutni račun"
 }

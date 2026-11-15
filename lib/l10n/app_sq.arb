@@ -1784,5 +1784,6 @@
   "calcMultiply": "Herë",
   "calcDivide": "Pjesëtuar me",
   "calcDivideByZero": "Nuk mund të pjesëtohet me zero",
-  "calcTooLarge": "Numër shumë i madh"
+  "calcTooLarge": "Numër shumë i madh",
+  "calcCurrent": "Llogaritja aktuale"
 }

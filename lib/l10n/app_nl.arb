@@ -1784,5 +1784,6 @@
   "calcMultiply": "Keer",
   "calcDivide": "Gedeeld door",
   "calcDivideByZero": "Delen door nul kan niet",
-  "calcTooLarge": "Getal te groot"
+  "calcTooLarge": "Getal te groot",
+  "calcCurrent": "Huidige berekening"
 }

@@ -240,15 +240,38 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('in Arabic the page reads right to left, the keypad stays 7 8 9',
+  testWidgets('the sum and its result show together: 1,250 + 850 = 2,100',
+      (WidgetTester tester) async {
+    await pump(tester);
+    String line() =>
+        tester.widget<Text>(find.byKey(const Key('calc-line'))).data!;
+    for (final String k in <String>['d1', 'd2', 'd5', 'd0']) {
+      await tap(tester, k);
+    }
+    await tap(tester, 'op-add');
+    for (final String k in <String>['d8', 'd5', 'd0']) {
+      await tap(tester, k);
+    }
+    expect(line(), '1,250 + 850');
+    expect(display(tester), '2,100'); // the answer so far
+    await tap(tester, 'equals');
+    expect(line(), '1,250 + 850');
+    expect(display(tester), '2,100');
+  });
+
+  testWidgets('in Arabic the keypad reads right to left, numbers stay LTR',
       (WidgetTester tester) async {
     await pump(tester, locale: 'ar');
     final AppLocalizations l =
         await AppLocalizations.delegate.load(const Locale('ar'));
     expect(find.text(l.navCalculator), findsOneWidget);
+    expect(find.text(l.calcCurrent), findsOneWidget);
     final double x7 = tester.getCenter(find.byKey(const Key('calc-d7'))).dx;
     final double x9 = tester.getCenter(find.byKey(const Key('calc-d9'))).dx;
-    expect(x7, lessThan(x9));
+    expect(x7, greaterThan(x9));
+    await tap(tester, 'd1');
+    await tap(tester, 'd2');
+    expect(display(tester), '12');
     expect(tester.takeException(), isNull);
   });
 }

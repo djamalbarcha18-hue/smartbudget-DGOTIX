@@ -1784,5 +1784,6 @@
   "calcMultiply": "गुणा",
   "calcDivide": "भाग",
   "calcDivideByZero": "शून्य से भाग नहीं हो सकता",
-  "calcTooLarge": "संख्या बहुत बड़ी है"
+  "calcTooLarge": "संख्या बहुत बड़ी है",
+  "calcCurrent": "मौजूदा गणना"
 }

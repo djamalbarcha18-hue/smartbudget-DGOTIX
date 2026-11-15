@@ -1784,5 +1784,6 @@
   "calcMultiply": "ضرب",
   "calcDivide": "تقسیم",
   "calcDivideByZero": "صفر سے تقسیم ممکن نہیں",
-  "calcTooLarge": "عدد بہت بڑا ہے"
+  "calcTooLarge": "عدد بہت بڑا ہے",
+  "calcCurrent": "موجودہ حساب"
 }

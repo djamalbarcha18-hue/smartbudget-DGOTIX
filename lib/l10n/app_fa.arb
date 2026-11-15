@@ -1784,5 +1784,6 @@
   "calcMultiply": "ضرب در",
   "calcDivide": "تقسیم بر",
   "calcDivideByZero": "تقسیم بر صفر ممکن نیست",
-  "calcTooLarge": "عدد بیش از حد بزرگ است"
+  "calcTooLarge": "عدد بیش از حد بزرگ است",
+  "calcCurrent": "محاسبهٔ فعلی"
 }

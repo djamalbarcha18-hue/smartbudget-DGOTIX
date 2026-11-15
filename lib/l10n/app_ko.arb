@@ -1784,5 +1784,6 @@
   "calcMultiply": "곱하기",
   "calcDivide": "나누기",
   "calcDivideByZero": "0으로 나눌 수 없습니다",
-  "calcTooLarge": "숫자가 너무 큽니다"
+  "calcTooLarge": "숫자가 너무 큽니다",
+  "calcCurrent": "현재 계산"
 }

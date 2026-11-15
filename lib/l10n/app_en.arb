@@ -2105,5 +2105,6 @@
   "calcMultiply": "Times",
   "calcDivide": "Divided by",
   "calcDivideByZero": "Can't divide by zero",
-  "calcTooLarge": "Number too large"
+  "calcTooLarge": "Number too large",
+  "calcCurrent": "Current calculation"
 }

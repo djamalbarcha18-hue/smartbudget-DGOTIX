@@ -1784,5 +1784,6 @@
   "calcMultiply": "掛ける",
   "calcDivide": "割る",
   "calcDivideByZero": "ゼロでは割れません",
-  "calcTooLarge": "数が大きすぎます"
+  "calcTooLarge": "数が大きすぎます",
+  "calcCurrent": "現在の計算"
 }

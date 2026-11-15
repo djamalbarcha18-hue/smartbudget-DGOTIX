@@ -1784,5 +1784,6 @@
   "calcMultiply": "乘",
   "calcDivide": "除以",
   "calcDivideByZero": "不能除以零",
-  "calcTooLarge": "数字太大"
+  "calcTooLarge": "数字太大",
+  "calcCurrent": "当前计算"
 }

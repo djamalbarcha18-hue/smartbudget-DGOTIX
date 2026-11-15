@@ -1784,5 +1784,6 @@
   "calcMultiply": "Умножить на",
   "calcDivide": "Разделить на",
   "calcDivideByZero": "Делить на ноль нельзя",
-  "calcTooLarge": "Слишком большое число"
+  "calcTooLarge": "Слишком большое число",
+  "calcCurrent": "Текущий расчёт"
 }

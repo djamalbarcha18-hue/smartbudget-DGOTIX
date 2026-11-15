@@ -81,13 +81,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
 
-    // Keys are laid out left to right in every language, like any
-    // calculator; labels and announcements follow the app's language.
+    // The keypad follows the language: in Arabic, Urdu and Persian it reads
+    // right to left (7 on the right, the operators on the left). Numbers
+    // themselves are always written left to right.
     final List<_Key> keys = <_Key>[
-      _Key.fn('AC', l.calcClear, Calculator.clear, id: 'clear'),
+      _Key.accent('AC', l.calcClear, Calculator.clear, id: 'clear'),
       _Key.icon(Icons.backspace_outlined, l.calcBackspace, Calculator.backspace,
           id: 'backspace'),
-      _Key.fn('%', l.calcPercent, Calculator.percent, id: 'percent'),
+      _Key.accent('%', l.calcPercent, Calculator.percent, id: 'percent'),
       _Key.op('÷', l.calcDivide, CalcOp.divide),
       _Key.digit(7), _Key.digit(8), _Key.digit(9),
       _Key.op('×', l.calcMultiply, CalcOp.multiply),
@@ -95,7 +96,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
       _Key.op('−', l.calcSubtract, CalcOp.subtract),
       _Key.digit(1), _Key.digit(2), _Key.digit(3),
       _Key.op('+', l.calcAdd, CalcOp.add),
-      _Key.fn('+/−', l.calcToggleSign, Calculator.toggleSign, id: 'sign'),
+      _Key.fn('±', l.calcToggleSign, Calculator.toggleSign, id: 'sign'),
       _Key.digit(0),
       _Key.decimal(l.calcDecimal),
       _Key.equals(l.calcEquals),
@@ -121,28 +122,27 @@ class _CalculatorPageState extends State<CalculatorPage> {
                         style: Theme.of(context).textTheme.headlineSmall),
                     const SizedBox(height: DsSpacing.lg),
                     GlassCard(
-                      child: Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: _Display(state: _state),
-                      ),
-                    ),
-                    const SizedBox(height: DsSpacing.lg),
-                    Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: GridView.count(
-                        crossAxisCount: 4,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        mainAxisSpacing: DsSpacing.md,
-                        crossAxisSpacing: DsSpacing.md,
-                        childAspectRatio: 1.1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          for (final _Key k in keys)
-                            _KeyButton(
-                              keyDef: k,
-                              colors: c,
-                              onPressed: () => _press(k.action),
-                            ),
+                          _Display(state: _state),
+                          const Divider(height: DsSpacing.xl),
+                          GridView.count(
+                            crossAxisCount: 4,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            mainAxisSpacing: DsSpacing.md,
+                            crossAxisSpacing: DsSpacing.md,
+                            childAspectRatio: 1.25,
+                            children: <Widget>[
+                              for (final _Key k in keys)
+                                _KeyButton(
+                                  keyDef: k,
+                                  colors: c,
+                                  onPressed: () => _press(k.action),
+                                ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -157,7 +157,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 }
 
-/// The expression line and the number, the only part rebuilt on each key.
+/// The sum being worked out ("1,250 + 850") and its result under it, the
+/// only part rebuilt on each key.
 class _Display extends ConsumerWidget {
   const _Display({required this.state});
   final ValueNotifier<CalcState> state;
@@ -177,36 +178,66 @@ class _Display extends ConsumerWidget {
     final TextTheme t = Theme.of(context).textTheme;
     String fmt(String plain) =>
         CalcFormat.format(plain, group: style.group, decimal: style.decimal);
+    String num(CalcNumber n) => fmt(n.plain());
 
     return ValueListenableBuilder<CalcState>(
       valueListenable: state,
       builder: (BuildContext context, CalcState s, Widget? _) {
+        // The sum: while an operation is pending, or the one that gave the
+        // result shown.
+        String sum = '';
+        if (s.error == null) {
+          if (s.pending != null && s.accumulator != null) {
+            final String right = s.entry == null ? '' : ' ${fmt(s.entry!)}';
+            sum = '${num(s.accumulator!)} ${_opSign(s.pending!)}$right';
+          } else if (s.result && s.lastLeft != null && s.lastOp != null &&
+              s.lastOperand != null) {
+            sum = '${num(s.lastLeft!)} ${_opSign(s.lastOp!)} '
+                '${num(s.lastOperand!)}';
+          }
+        }
+        // Under it: the error, the result, the answer so far, or the number
+        // being typed.
+        final CalcNumber? preview = Calculator.preview(s);
         final String main = switch (s.error) {
           CalcError.divideByZero => l.calcDivideByZero,
           CalcError.tooLarge => l.calcTooLarge,
-          null => fmt(Calculator.display(s)),
+          null => s.pending != null && !s.result
+              ? (preview == null ? '' : num(preview))
+              : fmt(Calculator.display(s)),
         };
-        final String line = s.pending != null && s.accumulator != null
-            ? '${fmt(s.accumulator!.plain())} ${_opSign(s.pending!)}'
-            : '';
+        final bool settled = s.result || s.error != null;
+
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            SizedBox(
-              height: 22,
-              child: Text(line,
-                  key: const Key('calc-line'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: t.titleSmall?.copyWith(color: c.textMuted)),
+            Text(l.calcCurrent,
+                style: t.labelMedium?.copyWith(color: c.textMuted)),
+            const SizedBox(height: DsSpacing.sm),
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: SizedBox(
+                height: 44,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(sum,
+                      key: const Key('calc-line'),
+                      maxLines: 1,
+                      style: t.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: settled ? c.textMuted : c.textPrimary)),
+                ),
+              ),
             ),
             const SizedBox(height: DsSpacing.xs),
             SizedBox(
               height: 56,
-              width: double.infinity,
               child: FittedBox(
                 fit: BoxFit.scaleDown,
-                alignment: AlignmentDirectional.centerEnd,
+                alignment: s.error == null
+                    ? Alignment.centerLeft
+                    : AlignmentDirectional.centerStart,
                 child: Semantics(
                   liveRegion: true,
                   child: Text(
@@ -217,8 +248,12 @@ class _Display extends ConsumerWidget {
                         ? TextDirection.ltr
                         : Directionality.of(context),
                     style: t.displaySmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: s.error == null ? c.textPrimary : c.expense,
+                      fontWeight: FontWeight.w700,
+                      color: s.error != null
+                          ? c.expense
+                          : (settled || s.pending == null
+                              ? c.textPrimary
+                              : c.textMuted),
                     ),
                   ),
                 ),
@@ -246,6 +281,10 @@ class _Key {
   factory _Key.fn(String label, String semantic,
           CalcState Function(CalcState) action, {required String id}) =>
       _Key._(label, semantic, action, _KeyKind.fn, id);
+
+  factory _Key.accent(String label, String semantic,
+          CalcState Function(CalcState) action, {required String id}) =>
+      _Key._(label, semantic, action, _KeyKind.op, id);
 
   factory _Key.icon(IconData icon, String semantic,
           CalcState Function(CalcState) action, {required String id}) =>
@@ -284,10 +323,10 @@ class _KeyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final DsColors c = colors;
     final (Color bg, Color fg) = switch (keyDef.kind) {
-      _KeyKind.equals => (c.brand, Colors.white),
-      _KeyKind.op => (c.brand.withValues(alpha: 0.14), c.brand),
-      _KeyKind.fn => (c.surfaceMuted, c.textPrimary),
-      _KeyKind.digit => (c.surface, c.textPrimary),
+      // Operators, %, AC and = in the brand blue; digits and the quiet keys
+      // in the card's grey.
+      _KeyKind.equals || _KeyKind.op => (c.brand, Colors.white),
+      _KeyKind.fn || _KeyKind.digit => (c.surfaceMuted, c.textPrimary),
     };
     final TextStyle? style = Theme.of(context).textTheme.headlineSmall?.copyWith(
         color: fg,
@@ -309,9 +348,10 @@ class _KeyButton extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: DsRadius.brLg,
-              border: keyDef.kind == _KeyKind.digit
-                  ? Border.all(color: c.border.withValues(alpha: 0.6))
-                  : null,
+              border: keyDef.kind == _KeyKind.equals ||
+                      keyDef.kind == _KeyKind.op
+                  ? null
+                  : Border.all(color: c.border.withValues(alpha: 0.35)),
             ),
             child: keyDef.icon != null
                 ? Icon(keyDef.icon, color: fg, size: 24)

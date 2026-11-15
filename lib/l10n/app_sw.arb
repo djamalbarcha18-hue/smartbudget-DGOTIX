@@ -1784,5 +1784,6 @@
   "calcMultiply": "Zidisha",
   "calcDivide": "Gawanya",
   "calcDivideByZero": "Haiwezekani kugawanya kwa sifuri",
-  "calcTooLarge": "Nambari ni kubwa mno"
+  "calcTooLarge": "Nambari ni kubwa mno",
+  "calcCurrent": "Hesabu ya sasa"
 }

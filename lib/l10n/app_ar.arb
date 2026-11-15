@@ -1983,5 +1983,6 @@
   "calcMultiply": "ضرب",
   "calcDivide": "قسمة",
   "calcDivideByZero": "لا يمكن القسمة على صفر",
-  "calcTooLarge": "العدد كبير جداً"
+  "calcTooLarge": "العدد كبير جداً",
+  "calcCurrent": "الحساب الحالي"
 }

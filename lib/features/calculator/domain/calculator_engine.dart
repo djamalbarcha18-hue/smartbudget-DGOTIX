@@ -95,6 +95,7 @@ class CalcState {
     this.error,
     this.lastOp,
     this.lastOperand,
+    this.lastLeft,
   });
 
   /// The left-hand value of the pending operation, or the last result.
@@ -111,6 +112,10 @@ class CalcState {
   /// Repeating '=' repeats the last operation.
   final CalcOp? lastOp;
   final CalcNumber? lastOperand;
+
+  /// The left-hand value of the operation that gave the result shown, so the
+  /// screen can show the whole sum ("1,250 + 850").
+  final CalcNumber? lastLeft;
 
   static const CalcState initial = CalcState();
 }
@@ -199,7 +204,11 @@ abstract final class Calculator {
     final _Outcome o = _apply(left, op, right);
     if (o.error != null) return CalcState(error: o.error);
     return CalcState(
-        accumulator: o.value, result: true, lastOp: op, lastOperand: right);
+        accumulator: o.value,
+        result: true,
+        lastOp: op,
+        lastOperand: right,
+        lastLeft: left);
   }
 
   static CalcState percent(CalcState s) {
@@ -253,6 +262,17 @@ abstract final class Calculator {
   }
 
   static CalcState clear(CalcState s) => CalcState.initial;
+
+  /// What '=' would give now, shown under the sum while typing; null when
+  /// there is nothing to work out yet, or it can't be (÷ 0, too large).
+  static CalcNumber? preview(CalcState s) {
+    if (s.error != null || s.result || s.pending == null) return null;
+    final CalcNumber? left = s.accumulator;
+    final CalcNumber? right =
+        s.entry == null ? null : CalcNumber.parse(s.entry!);
+    if (left == null || right == null) return null;
+    return _apply(left, s.pending!, right).value;
+  }
 
   static _Outcome _apply(CalcNumber a, CalcOp op, CalcNumber b) {
     final CalcNumber? v = switch (op) {

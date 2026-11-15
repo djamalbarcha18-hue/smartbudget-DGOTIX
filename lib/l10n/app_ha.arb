@@ -1784,5 +1784,6 @@
   "calcMultiply": "Ninka",
   "calcDivide": "Raba",
   "calcDivideByZero": "Ba za a iya raba da sifili ba",
-  "calcTooLarge": "Lamba ta yi girma sosai"
+  "calcTooLarge": "Lamba ta yi girma sosai",
+  "calcCurrent": "Lissafin yanzu"
 }

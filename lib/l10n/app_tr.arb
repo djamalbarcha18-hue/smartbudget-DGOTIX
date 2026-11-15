@@ -1784,5 +1784,6 @@
   "calcMultiply": "Çarpı",
   "calcDivide": "Bölü",
   "calcDivideByZero": "Sıfıra bölünemez",
-  "calcTooLarge": "Sayı çok büyük"
+  "calcTooLarge": "Sayı çok büyük",
+  "calcCurrent": "Geçerli işlem"
 }

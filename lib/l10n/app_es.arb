@@ -1784,5 +1784,6 @@
   "calcMultiply": "Por",
   "calcDivide": "Entre",
   "calcDivideByZero": "No se puede dividir entre cero",
-  "calcTooLarge": "Número demasiado grande"
+  "calcTooLarge": "Número demasiado grande",
+  "calcCurrent": "Cálculo actual"
 }

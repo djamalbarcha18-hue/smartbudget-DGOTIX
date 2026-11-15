@@ -1784,5 +1784,6 @@
   "calcMultiply": "Kali",
   "calcDivide": "Bagi",
   "calcDivideByZero": "Tidak bisa dibagi nol",
-  "calcTooLarge": "Angka terlalu besar"
+  "calcTooLarge": "Angka terlalu besar",
+  "calcCurrent": "Perhitungan saat ini"
 }

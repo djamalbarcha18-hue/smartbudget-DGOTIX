@@ -1784,5 +1784,6 @@
   "calcMultiply": "Mal",
   "calcDivide": "Geteilt durch",
   "calcDivideByZero": "Division durch null nicht möglich",
-  "calcTooLarge": "Zahl zu groß"
+  "calcTooLarge": "Zahl zu groß",
+  "calcCurrent": "Aktuelle Rechnung"
 }
