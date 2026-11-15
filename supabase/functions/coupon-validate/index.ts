@@ -162,7 +162,9 @@ async function tooManyChecks(
     .select("id", { count: "exact", head: true })
     .eq("user_id", userId)
     .gte("attempted_at", new Date(now - HOUR_MS).toISOString());
-  if (error) return false;
+  // Closed on failure: guessing codes must not become unlimited because the
+  // attempts table can't be read.
+  if (error) return true;
   if ((count ?? 0) >= COUPON_CHECKS_PER_HOUR) return true;
   await db.from("coupon_attempts").insert({ user_id: userId });
   // Older checks no longer count: drop them.

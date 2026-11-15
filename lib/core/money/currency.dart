@@ -142,6 +142,18 @@ abstract final class Currencies {
     Currency(code: 'TWD', symbol: 'NT\$', nameEn: 'New Taiwan Dollar', nameAr: 'الدولار التايواني', country: 'twd'),
   ];
 
-  static Currency byCode(String code) =>
-      all.firstWhere((Currency c) => c.code == code, orElse: () => usd);
+  /// The currency with [code]. A code the app doesn't list (a currency
+  /// removed from the list, or a typo in an imported file) keeps its own
+  /// code and is shown as such, instead of silently becoming US dollars.
+  /// Its decimals are unknown, so 2 (the most common) is assumed.
+  static Currency byCode(String code) {
+    for (final Currency c in all) {
+      if (c.code == code) return c;
+    }
+    if (code.isEmpty) return usd;
+    return Currency(
+        code: code, symbol: code, nameEn: code, nameAr: code, country: 'xx');
+  }
+
+  static bool isKnown(String code) => all.any((Currency c) => c.code == code);
 }

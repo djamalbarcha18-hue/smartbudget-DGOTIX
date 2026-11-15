@@ -7,6 +7,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+import 'package:smartbudget/features/ai/application/ai_consent.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
@@ -101,6 +102,12 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
         ? AppLocalizations.of(context)
         : lookupAppLocalizations(const Locale('en'));
 
+    // The commentary is written by DGOTIX AI: asked once before anything is
+    // sent. Declined: the report is made without it.
+    final bool withInsight =
+        _withInsight && await AiConsent.ensure(context, ref);
+    if (!mounted) return;
+
     setState(() => _busy = true);
     try {
       final ReportFigures f = ref.read(reportFiguresProvider);
@@ -113,7 +120,7 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
       // already written for these same figures comes back from the device
       // without a request being made at all.
       String? insight;
-      if (_withInsight) {
+      if (withInsight) {
         insight = await ref.read(reportInsightServiceProvider).write(
               figures: f,
               periodLabel: periodText,

@@ -263,6 +263,25 @@ async function bumpUsage(
   // tokens and cost.
   counted = false,
 ): Promise<void> {
+  // Added in place by the database (maintenance.sql), so requests at the
+  // same time can't overwrite each other's counts.
+  try {
+    const { error } = await db.rpc("add_ai_usage", {
+      p_user: userId,
+      p_month: month,
+      p_requests: counted ? 0 : 1,
+      p_input_tokens: inTok,
+      p_output_tokens: outTok,
+      p_cost: cost,
+    });
+    if (!error) return;
+    // Any error but "no such function yet" (the SQL not run): don't count
+    // twice by falling back.
+    if (error.code !== "PGRST202") return;
+  } catch (_) {
+    return;
+  }
+  // Older database without add_ai_usage: read and write back, as before.
   const nowIso = new Date().toISOString();
   try {
     const { data: cur } = await db.from("ai_usage_monthly")

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartbudget/features/ai/application/ai_consent.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -91,6 +92,11 @@ class _ReceiptScanButtonState extends ConsumerState<ReceiptScanButton> {
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     final NavigatorState navigator = Navigator.of(context);
     final GoRouter router = GoRouter.of(context);
+    // A cloud scan sends the photo to DGOTIX AI: asked once beforehand.
+    if (ref.read(receiptScanEnabledProvider) &&
+        (!await AiConsent.ensure(context, ref) || !mounted)) {
+      return;
+    }
 
     setState(() => _busy = true);
     try {

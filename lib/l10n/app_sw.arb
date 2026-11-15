@@ -1768,5 +1768,8 @@
   "zkIssueStartBelow": "Mali yako ilikuwa chini ya nisabu hauli ilipoanza.",
   "zkIssueDropped": "Mali yako ilishuka chini ya nisabu tarehe {date}: hauli inaanza upya kuanzia hapo.",
   "zkLegacyMetals": "Kiasi cha dhahabu kilichoandikwa kwenye skrini ya awali kimeachwa, kwa sababu dhahabu yako imesajiliwa.",
-  "zkLaterEntries": "Rekodi zenye tarehe baada ya leo hazihesabiwi."
+  "zkLaterEntries": "Rekodi zenye tarehe baada ya leo hazihesabiwi.",
+  "aiConsentTitle": "Kabla ya kutumia DGOTIX AI",
+  "aiConsentBody": "Ili kujibu, DGOTIX AI hutuma unachoomba — swali lako, picha ya risiti, au muhtasari wa takwimu zako (jumla kwa aina na mwezi, kamwe si nenosiri wala taarifa za benki) — kupitia seva yetu kwa huduma ya Gemini ya Google, inayoshughulikia kwa masharti ya Google. Hakuna kinachotumwa kabla hujakubali, na sehemu nyingine za programu zinafanya kazi bila hiyo.",
+  "aiConsentAgree": "Kubali na uendelee"
 }

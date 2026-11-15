@@ -1768,5 +1768,8 @@
   "zkIssueStartBelow": "Harta Anda di bawah nisab saat haul dimulai.",
   "zkIssueDropped": "Harta Anda turun di bawah nisab pada {date}: haul dimulai lagi dari hari itu.",
   "zkLegacyMetals": "Jumlah emas dari layar sebelumnya tidak dihitung, karena emas Anda sudah tercatat.",
-  "zkLaterEntries": "Catatan bertanggal setelah hari ini tidak dihitung."
+  "zkLaterEntries": "Catatan bertanggal setelah hari ini tidak dihitung.",
+  "aiConsentTitle": "Sebelum memakai DGOTIX AI",
+  "aiConsentBody": "Untuk menjawab, DGOTIX AI mengirim apa yang Anda minta — pertanyaan, foto struk, atau ringkasan angka Anda (total per kategori dan bulan, tidak pernah kata sandi atau data bank) — melalui server kami ke layanan Gemini milik Google, yang memprosesnya sesuai ketentuan Google. Tidak ada yang dikirim sebelum Anda setuju, dan bagian lain aplikasi tetap bisa dipakai tanpanya.",
+  "aiConsentAgree": "Setuju dan lanjutkan"
 }

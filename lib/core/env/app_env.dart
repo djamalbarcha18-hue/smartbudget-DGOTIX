@@ -162,6 +162,13 @@ abstract final class AppEnv {
   static bool get payTestRequested =>
       kIsWeb && !storeBuild && Uri.base.queryParameters['paytest'] == '1';
 
+  /// The «Have a coupon?» box. Off until checkout applies the discount and
+  /// records the redemption (create-checkout ignores coupons today, so the
+  /// price shown would not be the price charged). Turn on with
+  /// --dart-define=COUPONS=true once that is in place and tested.
+  static const bool coupons =
+      bool.fromEnvironment('COUPONS', defaultValue: false);
+
   /// The settings' developer tools (sample data, plan preview): in debug
   /// builds, or on the web app opened with `?dev=1` — never shown to users
   /// otherwise, and never in the store app.

@@ -76,11 +76,21 @@ GoRouter buildRouter(Ref ref) {
       if (_publicRoutes.contains(loc)) return null;
       final bool onAuth = _authRoutes.contains(loc);
       final bool onSplash = loc == '/';
+      // The page asked for (a link from an e-mail or a notification) is kept
+      // through the splash and sign-in as ?from=, and opened afterwards.
+      final String? from = safeReturnPath(state.uri.queryParameters['from']);
+      String keeping(String to) {
+        final String? keep = (onAuth || onSplash)
+            ? from
+            : safeReturnPath(state.uri.toString());
+        return keep == null ? to : '$to?from=${Uri.encodeComponent(keep)}';
+      }
 
       return switch (status) {
-        AuthStatus.unknown => onSplash ? null : '/',
-        AuthStatus.unauthenticated => onAuth ? null : '/login',
-        AuthStatus.authenticated => (onAuth || onSplash) ? '/dashboard' : null,
+        AuthStatus.unknown => onSplash ? null : keeping('/'),
+        AuthStatus.unauthenticated => onAuth ? null : keeping('/login'),
+        AuthStatus.authenticated =>
+          (onAuth || onSplash) ? (from ?? '/dashboard') : null,
       };
     },
     routes: <RouteBase>[
@@ -308,4 +318,17 @@ Iterable<GoRoute> _placeholderRoutes() {
           },
         ),
       );
+}
+
+/// [path] when it is a page of this app to return to after signing in: an
+/// in-app path (never another site), and not the splash or a sign-in page.
+String? safeReturnPath(String? path) {
+  if (path == null || path.isEmpty) return null;
+  if (!path.startsWith('/') || path.startsWith('//') || path.contains('\\')) {
+    return null;
+  }
+  final Uri? u = Uri.tryParse(path);
+  if (u == null || u.hasScheme || u.hasAuthority) return null;
+  if (u.path == '/' || _authRoutes.contains(u.path)) return null;
+  return path;
 }

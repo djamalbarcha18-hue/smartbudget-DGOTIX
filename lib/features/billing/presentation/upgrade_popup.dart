@@ -230,7 +230,9 @@ class _PopupCardState extends ConsumerState<_PopupCard> {
                           style: t.bodySmall?.copyWith(color: c.expense)),
                     ],
                     const SizedBox(height: DsSpacing.xs),
-                    if (_coupon)
+                    if (!AppEnv.coupons)
+                      const SizedBox.shrink()
+                    else if (_coupon)
                       const CouponBox()
                     else
                       Center(

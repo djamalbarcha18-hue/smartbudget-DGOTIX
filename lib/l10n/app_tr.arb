@@ -1768,5 +1768,8 @@
   "zkIssueStartBelow": "Havl başladığında malınız nisabın altındaydı.",
   "zkIssueDropped": "Malınız {date} tarihinde nisabın altına düştü: havl o günden yeniden başlar.",
   "zkLegacyMetals": "Önceki ekranda girilen altın tutarı dışarıda bırakıldı, çünkü altınınız kayıtlı.",
-  "zkLaterEntries": "Bugünden sonraki tarihli kayıtlar sayılmaz."
+  "zkLaterEntries": "Bugünden sonraki tarihli kayıtlar sayılmaz.",
+  "aiConsentTitle": "DGOTIX AI'ı kullanmadan önce",
+  "aiConsentBody": "Yanıt vermek için DGOTIX AI istediğinizi — sorunuzu, bir fiş fotoğrafını veya rakamlarınızın özetini (kategori ve aya göre toplamlar; şifreniz veya banka bilgileriniz asla) — sunucumuz üzerinden Google'ın Gemini hizmetine gönderir; Google bunu kendi koşullarına göre işler. Onay vermeden hiçbir şey gönderilmez ve uygulamanın geri kalanını onsuz da kullanabilirsiniz.",
+  "aiConsentAgree": "Kabul et ve devam et"
 }

@@ -141,6 +141,19 @@ export function createClient(..._args: unknown[]): any {
       if (fn === "apply_subscription_event") return await applySubscriptionEvent(a);
       if (g.__pg && PG_FUNCTIONS.has(fn)) return await onPostgres(fn, a);
       if (fn === "reserve_usage") return { data: reserve(a), error: null };
+      if (fn === "add_ai_usage") {
+        const m = t("ai_usage_monthly");
+        let row = m.find((r) => r.user_id === a.p_user && r.month === a.p_month);
+        if (!row) { row = { user_id: a.p_user, month: a.p_month, requests: 0, input_tokens: 0, output_tokens: 0, est_cost_usd: 0 }; m.push(row); }
+        row.requests += a.p_requests; row.input_tokens += a.p_input_tokens; row.output_tokens += a.p_output_tokens; row.est_cost_usd += a.p_cost;
+        if (a.p_requests > 0) {
+          const l = t("ai_usage_lifetime");
+          let life = l.find((r) => r.user_id === a.p_user);
+          if (!life) { life = { user_id: a.p_user, requests: 0 }; l.push(life); }
+          life.requests += a.p_requests;
+        }
+        return { data: null, error: null };
+      }
       if (fn === "release_usage") {
         const k = a.p_kind === "ai" ? "requests" : "scans";
         for (const r of [...t(`${a.p_kind}_usage_monthly`).filter((r) => r.user_id === a.p_user && r.month === a.p_month), ...t(`${a.p_kind}_usage_lifetime`).filter((r) => r.user_id === a.p_user)]) r[k] = Math.max(0, (r[k] ?? 0) - 1);

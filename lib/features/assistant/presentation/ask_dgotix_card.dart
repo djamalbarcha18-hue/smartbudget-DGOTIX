@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:smartbudget/features/ai/application/ai_consent.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -103,6 +104,8 @@ class _AskDgotixCardState extends ConsumerState<AskDgotixCard> {
       setState(() => _error = l.askAiOffline);
       return;
     }
+    // Asked once: what is sent to DGOTIX AI, and where.
+    if (!await AiConsent.ensure(context, ref) || !mounted) return;
     _ctrl.clear();
     chat.add(ChatMessage(fromUser: true, text: q));
     // Memory: the recent turns before this question, trimmed and alternating.

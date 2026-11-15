@@ -109,7 +109,7 @@ class PlansPage extends ConsumerWidget {
                   card,
                   const SizedBox(height: DsSpacing.md),
                 ],
-              if (!AppEnv.betaAllAccess) ...<Widget>[
+              if (!AppEnv.betaAllAccess && AppEnv.coupons) ...<Widget>[
                 const SizedBox(height: DsSpacing.md),
                 const CouponBox(),
               ],

@@ -1768,5 +1768,8 @@
   "zkIssueStartBelow": "Dein Vermögen lag zu Beginn des Hawl unter dem Nisab.",
   "zkIssueDropped": "Dein Vermögen fiel am {date} unter den Nisab: Der Hawl beginnt dann neu.",
   "zkLegacyMetals": "Der im früheren Bildschirm eingegebene Goldbetrag entfällt, da dein Gold erfasst ist.",
-  "zkLaterEntries": "Einträge mit Datum nach heute werden nicht gezählt."
+  "zkLaterEntries": "Einträge mit Datum nach heute werden nicht gezählt.",
+  "aiConsentTitle": "Bevor du DGOTIX AI nutzt",
+  "aiConsentBody": "Für die Antwort sendet DGOTIX AI, was du anfragst — deine Frage, ein Belegfoto oder eine Zusammenfassung deiner Zahlen (Summen nach Kategorie und Monat, nie dein Passwort oder deine Bankdaten) — über unseren Server an Googles Gemini-Dienst, der es nach Googles Bedingungen verarbeitet. Nichts wird gesendet, bevor du zustimmst, und der Rest der App funktioniert auch ohne.",
+  "aiConsentAgree": "Zustimmen und weiter"
 }

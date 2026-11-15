@@ -8,7 +8,7 @@ files=(schema.sql cloud_backup.sql billing.sql coupons.sql ai_gateway.sql
        ai_reports.sql receipt_scanner.sql security_hardening.sql
        subscription_lifecycle.sql entitlement_expiry.sql abuse_limits.sql sync.sql
        backup_snapshots.sql app_stats.sql
-       launch_offers.sql referrals.sql error_reports.sql
+       launch_offers.sql referrals.sql error_reports.sql maintenance.sql
        search_path_hardening.sql)
 {
   echo "-- ============================================================================"

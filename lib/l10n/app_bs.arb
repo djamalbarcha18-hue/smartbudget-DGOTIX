@@ -1768,5 +1768,8 @@
   "zkIssueStartBelow": "Vaš imetak je bio ispod nisaba na početku hawla.",
   "zkIssueDropped": "Vaš imetak je pao ispod nisaba {date}: hawl počinje iznova od tada.",
   "zkLegacyMetals": "Iznos zlata upisan na ranijem ekranu se izostavlja, jer je vaše zlato upisano.",
-  "zkLaterEntries": "Unosi s datumom nakon danas se ne računaju."
+  "zkLaterEntries": "Unosi s datumom nakon danas se ne računaju.",
+  "aiConsentTitle": "Prije korištenja DGOTIX AI",
+  "aiConsentBody": "Da bi odgovorio, DGOTIX AI šalje ono što tražite — vaše pitanje, fotografiju računa ili sažetak vaših brojki (zbirovi po kategoriji i mjesecu, nikad lozinku ni bankovne podatke) — preko našeg servera Googleovoj usluzi Gemini, koja ih obrađuje prema Googleovim uslovima. Ništa se ne šalje prije vašeg pristanka, a ostatak aplikacije radi i bez toga.",
+  "aiConsentAgree": "Pristajem i nastavljam"
 }

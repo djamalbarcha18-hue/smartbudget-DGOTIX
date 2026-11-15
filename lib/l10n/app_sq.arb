@@ -1768,5 +1768,8 @@
   "zkIssueStartBelow": "Pasuria juaj ishte nën nisab kur nisi havli.",
   "zkIssueDropped": "Pasuria juaj ra nën nisab më {date}: havli rinis që andej.",
   "zkLegacyMetals": "Shuma e arit e shkruar në ekranin e mëparshëm lihet jashtë, sepse ari juaj është regjistruar.",
-  "zkLaterEntries": "Regjistrimet me datë pas sot nuk llogariten."
+  "zkLaterEntries": "Regjistrimet me datë pas sot nuk llogariten.",
+  "aiConsentTitle": "Para se të përdorni DGOTIX AI",
+  "aiConsentBody": "Për t'u përgjigjur, DGOTIX AI dërgon atë që kërkoni — pyetjen tuaj, foton e një fature ose një përmbledhje të shifrave tuaja (shuma sipas kategorisë dhe muajit, kurrë fjalëkalimin apo të dhënat bankare) — përmes serverit tonë te shërbimi Gemini i Google, që e përpunon sipas kushteve të Google. Asgjë nuk dërgohet pa pëlqimin tuaj, dhe pjesa tjetër e aplikacionit punon edhe pa të.",
+  "aiConsentAgree": "Pranoj dhe vazhdoj"
 }

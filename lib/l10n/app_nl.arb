@@ -1768,5 +1768,8 @@
   "zkIssueStartBelow": "Je vermogen lag onder de nisab bij de start van de hawl.",
   "zkIssueDropped": "Je vermogen zakte op {date} onder de nisab: de hawl begint dan opnieuw.",
   "zkLegacyMetals": "Het goudbedrag uit het vorige scherm telt niet mee, want je goud is geregistreerd.",
-  "zkLaterEntries": "Boekingen met een datum na vandaag tellen niet."
+  "zkLaterEntries": "Boekingen met een datum na vandaag tellen niet.",
+  "aiConsentTitle": "Voordat je DGOTIX AI gebruikt",
+  "aiConsentBody": "Om te antwoorden stuurt DGOTIX AI wat je vraagt — je vraag, een foto van een bon of een samenvatting van je cijfers (totalen per categorie en maand, nooit je wachtwoord of bankgegevens) — via onze server naar de Gemini-dienst van Google, die het verwerkt volgens de voorwaarden van Google. Er wordt niets verstuurd voordat je akkoord gaat, en de rest van de app werkt ook zonder.",
+  "aiConsentAgree": "Akkoord en verder"
 }

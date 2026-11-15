@@ -1768,5 +1768,8 @@
   "zkIssueStartBelow": "Tus bienes estaban por debajo del nisab al empezar el hawl.",
   "zkIssueDropped": "Tus bienes bajaron del nisab el {date}: el hawl empieza de nuevo desde entonces.",
   "zkLegacyMetals": "Se excluye el oro escrito en la pantalla anterior, porque tu oro está registrado.",
-  "zkLaterEntries": "Los movimientos con fecha posterior a hoy no se cuentan."
+  "zkLaterEntries": "Los movimientos con fecha posterior a hoy no se cuentan.",
+  "aiConsentTitle": "Antes de usar DGOTIX AI",
+  "aiConsentBody": "Para responder, DGOTIX AI envía lo que pides — tu pregunta, la foto de un recibo o un resumen de tus cifras (totales por categoría y mes, nunca tu contraseña ni tus datos bancarios) — a través de nuestro servidor al servicio Gemini de Google, que lo procesa según las condiciones de Google. No se envía nada hasta que aceptes, y puedes usar el resto de la app sin ello.",
+  "aiConsentAgree": "Aceptar y continuar"
 }

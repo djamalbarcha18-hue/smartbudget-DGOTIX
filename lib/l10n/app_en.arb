@@ -2089,5 +2089,8 @@
   "zkIssueDropped": "Your wealth fell below nisab on {date}: the hawl starts again from then.",
   "@zkIssueDropped": { "placeholders": { "date": { "type": "String" } } },
   "zkLegacyMetals": "The gold amount typed in the earlier screen is left out, since your gold is registered.",
-  "zkLaterEntries": "Entries dated after today are not counted."
+  "zkLaterEntries": "Entries dated after today are not counted.",
+  "aiConsentTitle": "Before using DGOTIX AI",
+  "aiConsentBody": "To answer, DGOTIX AI sends what you ask — your question, a receipt photo, or a summary of your figures (totals by category and month, never your password or bank details) — through our server to Google's Gemini service, which processes it under Google's terms. Nothing is sent until you agree, and you can keep using the rest of the app without it.",
+  "aiConsentAgree": "Agree and continue"
 }

@@ -1768,5 +1768,8 @@
   "zkIssueStartBelow": "ハウル開始時に財産がニサーブ未満でした。",
   "zkIssueDropped": "{date} に財産がニサーブを下回りました。その日からハウルが再開します。",
   "zkLegacyMetals": "前の画面で入力した金額の金は、金が登録済みのため除外しました。",
-  "zkLaterEntries": "今日より後の日付の記録は計上しません。"
+  "zkLaterEntries": "今日より後の日付の記録は計上しません。",
+  "aiConsentTitle": "DGOTIX AI を使う前に",
+  "aiConsentBody": "回答のため、DGOTIX AI はご依頼の内容（質問、レシートの写真、または数値の要約＝カテゴリ別・月別の合計。パスワードや銀行情報は含みません）を当社サーバー経由で Google の Gemini サービスに送信し、Google の規約に従って処理されます。同意するまで何も送信されず、それ以外の機能はこれなしでも使えます。",
+  "aiConsentAgree": "同意して続ける"
 }

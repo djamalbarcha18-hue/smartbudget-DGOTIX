@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -211,6 +213,13 @@ final effectivePlanProvider = Provider<Plan>((ref) {
   final Entitlement e =
       ref.watch(remoteEntitlementProvider).valueOrNull ??
           ref.watch(entitlementProvider);
+  // A web tab can stay open for days: check again every hour, so a trial
+  // or plan that ends meanwhile isn't shown as still active. (Phones re-check
+  // on every return to the app.)
+  if (kIsWeb) {
+    final Timer t = Timer(const Duration(hours: 1), ref.invalidateSelf);
+    ref.onDispose(t.cancel);
+  }
   return e.effectivePlanAt(AppClock.now());
 });
 

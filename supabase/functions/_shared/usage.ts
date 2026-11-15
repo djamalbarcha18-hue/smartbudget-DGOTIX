@@ -170,8 +170,13 @@ export async function rateLimited(
       p_window_s: windowS,
       p_max: max,
     });
-    return !error && data === false;
+    // A database that doesn't have the function yet: no limit to apply.
+    if (error?.code === "PGRST202") return false;
+    // Any other failure: closed (refuse for now), so an outage or an attack
+    // that breaks the check doesn't lift the limit.
+    if (error) return true;
+    return data === false;
   } catch (_) {
-    return false;
+    return true;
   }
 }
