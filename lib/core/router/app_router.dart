@@ -41,7 +41,7 @@ import 'package:smartbudget/features/statement_import/presentation/statement_imp
 import 'package:smartbudget/features/support/presentation/support_page.dart';
 import 'package:smartbudget/features/transactions/presentation/transactions_page.dart';
 import 'package:smartbudget/features/wallets/presentation/wallets_page.dart';
-import 'package:smartbudget/features/zakat/presentation/zakat_page.dart';
+import 'package:smartbudget/features/zakat/presentation/zakat_engine_page.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Public auth routes (no shell, no guard-away).
@@ -205,7 +205,7 @@ GoRouter buildRouter(Ref ref) {
           GoRoute(
             path: '/zakat',
             pageBuilder: (BuildContext context, GoRouterState state) =>
-                const NoTransitionPage<void>(child: ZakatPage()),
+                const NoTransitionPage<void>(child: ZakatScreen()),
           ),
           GoRoute(
             path: '/reports',

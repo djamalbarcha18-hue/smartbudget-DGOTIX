@@ -90,7 +90,9 @@ class ZakatSettings {
     bool clearHawlStart = false,
     int? hawlAdjustDays,
     int? goldPerPureGramMinor,
+    bool clearGoldPrice = false,
     int? silverPerPureGramMinor,
+    bool clearSilverPrice = false,
     String? priceCurrency,
     DateTime? pricesAsOf,
     Set<String>? goalsHeldOutside,
@@ -104,9 +106,12 @@ class ZakatSettings {
         school: school ?? this.school,
         hawlStart: clearHawlStart ? null : (hawlStart ?? this.hawlStart),
         hawlAdjustDays: hawlAdjustDays ?? this.hawlAdjustDays,
-        goldPerPureGramMinor: goldPerPureGramMinor ?? this.goldPerPureGramMinor,
-        silverPerPureGramMinor:
-            silverPerPureGramMinor ?? this.silverPerPureGramMinor,
+        goldPerPureGramMinor: clearGoldPrice
+            ? null
+            : (goldPerPureGramMinor ?? this.goldPerPureGramMinor),
+        silverPerPureGramMinor: clearSilverPrice
+            ? null
+            : (silverPerPureGramMinor ?? this.silverPerPureGramMinor),
         priceCurrency: priceCurrency ?? this.priceCurrency,
         pricesAsOf: pricesAsOf ?? this.pricesAsOf,
         goalsHeldOutside: goalsHeldOutside ?? this.goalsHeldOutside,
