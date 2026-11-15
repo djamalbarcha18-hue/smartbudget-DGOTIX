@@ -35,19 +35,21 @@ final ZakatProfile algeriaZakatProfile = ZakatProfile(
       announcedOn: DateTime(2026, 6, 18),
     ),
   ],
-  // Not approved yet: every choice below is pending the owner's decision and
-  // a scholar's review (see the H-6 report). Results under these rules are
-  // shown as provisional.
+  // Maliki, the school followed in Algeria, with the Ministry's official
+  // nisab: approved by the owner on 15 Nov 2026. Retained shares and debt
+  // deduction aren't settled by the school: they keep the reviewed choices
+  // below. Shown to the user as the method followed, not as a fatwa.
   defaultRules: const ZakatRules(
-    version: 'dz-2026.11-draft',
-    approved: false,
-    nisabBasis: NisabBasis.gold,
-    acquiredWealth: AcquiredWealthPolicy.joinToHawl,
-    nisabContinuity: NisabContinuity.startAndEnd,
+    version: 'dz-2026.11-maliki',
+    approved: true,
+    school: ZakatSchool.maliki,
+    nisabBasis: NisabBasis.official,
+    acquiredWealth: AcquiredWealthPolicy.minimumBalance,
+    nisabContinuity: NisabContinuity.throughout,
     wornJewelry: WornJewelryPolicy.exempt,
     retainedShares: RetainedSharesPolicy.zakatablePartElseFullValue,
     debtDeduction: DebtDeductionPolicy.dueByZakatDate,
-    receivables: ReceivablesPolicy.yearly,
+    receivables: ReceivablesPolicy.onReceipt,
     rounding: RoundingPolicy.halfUp,
   ),
 );

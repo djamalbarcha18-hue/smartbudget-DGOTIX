@@ -14,8 +14,17 @@ int dzd(int whole) => whole * 100;
 // Ends in July 2026, after the 1447 nisab was announced (18 June 2026).
 final DateTime hawlStart = DateTime(2025, 8, 1);
 final ZakatHawl hawl = ZakatHawl.from(hawlStart);
-final ZakatRules draft = algeriaZakatProfile.defaultRules;
-final ZakatRules approved = draft.copyWith(approved: true);
+final ZakatRules maliki = algeriaZakatProfile.defaultRules;
+
+/// A neutral baseline for the arithmetic tests (each policy is set where a
+/// test is about it): money joins the hawl, start and end count, receivables
+/// are added yearly.
+final ZakatRules approved = maliki.copyWith(
+    school: ZakatSchool.custom,
+    acquiredWealth: AcquiredWealthPolicy.joinToHawl,
+    nisabContinuity: NisabContinuity.startAndEnd,
+    receivables: ReceivablesPolicy.yearly);
+final ZakatRules draft = approved.copyWith(approved: false);
 
 /// Pure gold at 36,000 DZD/g (the 18k price 27,000 scaled to 24k).
 final MetalPriceQuote gold =
@@ -593,10 +602,60 @@ void main() {
       expect(back.toJson(), r.toJson());
     });
 
-    test('the Algeria defaults are a draft until approved', () {
-      expect(algeriaZakatProfile.defaultRules.approved, isFalse);
+    test('Algeria follows the Maliki school with the official nisab', () {
+      expect(maliki.approved, isTrue);
+      expect(maliki.school, ZakatSchool.maliki);
+      expect(maliki.nisabBasis, NisabBasis.official);
+      expect(maliki.acquiredWealth, AcquiredWealthPolicy.minimumBalance);
+      expect(maliki.nisabContinuity, NisabContinuity.throughout);
+      expect(maliki.wornJewelry, WornJewelryPolicy.exempt);
+      expect(maliki.receivables, ReceivablesPolicy.onReceipt);
       expect(algeriaZakatProfile.currency, 'DZD');
-      expect(algeriaZakatProfile.defaultRules.rateBasisPoints, 250);
+      expect(maliki.rateBasisPoints, 250);
+    });
+
+    test('the school presets match what each school settles', () {
+      expect(ZakatSchools.apply(ZakatSchool.maliki, approved).toJson(),
+          maliki.toJson());
+      final ZakatRules h = ZakatSchools.apply(ZakatSchool.hanafi, maliki);
+      expect(h.school, ZakatSchool.hanafi);
+      expect(h.acquiredWealth, AcquiredWealthPolicy.joinToHawl);
+      expect(h.nisabContinuity, NisabContinuity.startAndEnd);
+      expect(h.wornJewelry, WornJewelryPolicy.zakatable);
+      expect(h.receivables, ReceivablesPolicy.yearly);
+      // What no school settles is kept.
+      expect(h.debtDeduction, maliki.debtDeduction);
+      expect(h.nisabBasis, maliki.nisabBasis);
+    });
+
+    test('a full Maliki case, end to end', () {
+      // 3,000,000 DZD all year, a 1,000,000 salary days before the end,
+      // worn jewellery, a loan to a friend not yet repaid.
+      final ZakatOutcome o = ZakatEngine.compute(caseOf(
+        rules: maliki,
+        goldPrice: gold,
+        cash: <ZakatCash>[wallet('general', dzd(4000000))],
+        history: <BalancePoint>[
+          BalancePoint(hawlStart, dzd(3000000)),
+          BalancePoint(hawl.end.subtract(const Duration(days: 3)), dzd(4000000)),
+        ],
+        metals: const <ZakatMetal>[
+          ZakatMetal(
+              key: 'metal:bracelet',
+              metal: ZakatMetalKind.gold,
+              grossMilligrams: 50000,
+              purity: 18,
+              use: MetalUse.adornment),
+        ],
+        receivables: const <ZakatReceivable>[
+          ZakatReceivable(key: 'debt:friend', currency: 'DZD', amountMinor: 5000000),
+        ],
+      ));
+      expect(o.status, ZakatStatus.final_);
+      expect(o.nisab!.amountMinor, dzd(2295000));
+      expect(o.baseMinor, dzd(3000000));
+      expect(o.dueMinor, dzd(75000));
+      expect(o.rules.school, ZakatSchool.maliki);
     });
   });
 }

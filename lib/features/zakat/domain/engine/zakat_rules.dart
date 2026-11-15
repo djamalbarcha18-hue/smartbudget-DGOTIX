@@ -7,6 +7,17 @@
 /// rules later never changes an earlier result.
 library;
 
+/// The school of fiqh a set of rules follows. A preset fills every choice
+/// the school settles; the user may later pick another school (the result
+/// then says which one it follows). Results are never a binding fatwa.
+enum ZakatSchool {
+  maliki,
+  hanafi,
+
+  /// Choices made one by one rather than from a school.
+  custom,
+}
+
 /// Which nisab the wealth is measured against.
 enum NisabBasis {
   /// 85 g of pure (24 karat) gold at the gold price of the zakat date.
@@ -93,6 +104,7 @@ class ZakatRules {
   const ZakatRules({
     required this.version,
     required this.approved,
+    this.school = ZakatSchool.custom,
     required this.nisabBasis,
     required this.acquiredWealth,
     required this.nisabContinuity,
@@ -111,6 +123,9 @@ class ZakatRules {
   /// under unapproved rules are never shown as final.
   final bool approved;
 
+  /// The school these rules follow (custom when mixed).
+  final ZakatSchool school;
+
   final NisabBasis nisabBasis;
   final AcquiredWealthPolicy acquiredWealth;
   final NisabContinuity nisabContinuity;
@@ -126,6 +141,7 @@ class ZakatRules {
   ZakatRules copyWith({
     String? version,
     bool? approved,
+    ZakatSchool? school,
     NisabBasis? nisabBasis,
     AcquiredWealthPolicy? acquiredWealth,
     NisabContinuity? nisabContinuity,
@@ -138,6 +154,7 @@ class ZakatRules {
       ZakatRules(
         version: version ?? this.version,
         approved: approved ?? this.approved,
+        school: school ?? this.school,
         nisabBasis: nisabBasis ?? this.nisabBasis,
         acquiredWealth: acquiredWealth ?? this.acquiredWealth,
         nisabContinuity: nisabContinuity ?? this.nisabContinuity,
@@ -152,6 +169,7 @@ class ZakatRules {
   Map<String, dynamic> toJson() => <String, dynamic>{
         'version': version,
         'approved': approved,
+        'school': school.name,
         'nisabBasis': nisabBasis.name,
         'acquiredWealth': acquiredWealth.name,
         'nisabContinuity': nisabContinuity.name,
@@ -175,6 +193,7 @@ class ZakatRules {
       ZakatRules(
         version: (j['version'] as String?) ?? fallback.version,
         approved: (j['approved'] as bool?) ?? false,
+        school: _pick(ZakatSchool.values, j['school'], ZakatSchool.custom),
         nisabBasis:
             _pick(NisabBasis.values, j['nisabBasis'], fallback.nisabBasis),
         acquiredWealth: _pick(AcquiredWealthPolicy.values, j['acquiredWealth'],
@@ -193,4 +212,32 @@ class ZakatRules {
         rateBasisPoints:
             (j['rateBasisPoints'] as num?)?.toInt() ?? fallback.rateBasisPoints,
       );
+}
+
+/// The choices each school settles, on top of [base] (which keeps the ones
+/// no school decides: retained shares, debt deduction, rounding).
+abstract final class ZakatSchools {
+  static ZakatRules apply(ZakatSchool school, ZakatRules base) =>
+      switch (school) {
+        // Money acquired during the hawl starts its own hawl; the wealth
+        // must stay at nisab throughout; worn jewellery is exempt; a
+        // receivable is zakatable (for one year) once received.
+        ZakatSchool.maliki => base.copyWith(
+            school: ZakatSchool.maliki,
+            acquiredWealth: AcquiredWealthPolicy.minimumBalance,
+            nisabContinuity: NisabContinuity.throughout,
+            wornJewelry: WornJewelryPolicy.exempt,
+            receivables: ReceivablesPolicy.onReceipt,
+          ),
+        // Acquired money joins the hawl; only its start and end count; worn
+        // jewellery is zakatable; receivables are added yearly.
+        ZakatSchool.hanafi => base.copyWith(
+            school: ZakatSchool.hanafi,
+            acquiredWealth: AcquiredWealthPolicy.joinToHawl,
+            nisabContinuity: NisabContinuity.startAndEnd,
+            wornJewelry: WornJewelryPolicy.zakatable,
+            receivables: ReceivablesPolicy.yearly,
+          ),
+        ZakatSchool.custom => base.copyWith(school: ZakatSchool.custom),
+      };
 }
