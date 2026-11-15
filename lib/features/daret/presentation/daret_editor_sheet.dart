@@ -332,13 +332,13 @@ class _DaretEditorSheetState extends ConsumerState<DaretEditorSheet> {
                         onPressed: () => setState(() => _me = i),
                       ),
                       IconButton(
-                        tooltip: MaterialLocalizations.of(context).reorderItemUp,
+                        tooltip: WidgetsLocalizations.of(context).reorderItemUp,
                         visualDensity: VisualDensity.compact,
                         icon: const Icon(Icons.arrow_upward_rounded, size: 18),
                         onPressed: i == 0 ? null : () => _move(i, -1),
                       ),
                       IconButton(
-                        tooltip: MaterialLocalizations.of(context).reorderItemDown,
+                        tooltip: WidgetsLocalizations.of(context).reorderItemDown,
                         visualDensity: VisualDensity.compact,
                         icon:
                             const Icon(Icons.arrow_downward_rounded, size: 18),
