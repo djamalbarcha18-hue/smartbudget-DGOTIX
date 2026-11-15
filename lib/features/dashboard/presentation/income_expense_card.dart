@@ -337,7 +337,8 @@ class _BreakdownPageState extends ConsumerState<_BreakdownPage>
         looks,
         c,
         Theme.of(context).brightness);
-    Color colorOf(int i) => i < _topN ? familyColors[i] : c.textFaint;
+    final Color otherColor = chartOtherColor(Theme.of(context).brightness);
+    Color colorOf(int i) => i < _topN ? familyColors[i] : otherColor;
     int sliceOf(int i) => i < _topN ? i : _topN;
 
     // The donut: top six and "Other", as before.
@@ -356,7 +357,7 @@ class _BreakdownPageState extends ConsumerState<_BreakdownPage>
               .sublist(_topN)
               .fold<int>(0, (int s, CategoryTotal t) => s + t.amount.minorUnits)
               .toDouble(),
-          color: c.textFaint,
+          color: otherColor,
           valueLabel: _compact(
               Money(
                   totals.sublist(_topN).fold<int>(

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -191,25 +193,90 @@ CategoryStyle resolveCategoryStyle(String category, TransactionType type,
               : CategoryFamily.commitments));
 }
 
-/// Colours for the slices of a category chart, in order: each category takes
-/// its family colour, so the chart and the badges speak one language. When
-/// several categories share a family, later ones are shifted lighter or
-/// darker so neighbouring slices stay apart.
+/// Colours for the slices of a category chart, in order. The first category
+/// of a family keeps its family colour, so the chart and the badges speak
+/// one language. A second category of the same family (or a colour too close
+/// to one already on the ring) takes a calm extra colour instead: the one
+/// furthest from every colour already used and from "Other". Shades of one
+/// hue (three blues side by side) were hard to tell apart.
 List<Color> chartColorsFor(List<String> categories, TransactionType type,
     Map<String, CustomCategoryLook> looks, DsColors c, Brightness b) {
-  final Map<CategoryFamily, int> seen = <CategoryFamily, int>{};
-  return <Color>[
-    for (final String cat in categories)
-      () {
-        final CategoryFamily f = resolveCategoryStyle(cat, type, looks).family;
-        final int n = seen[f] = (seen[f] ?? -1) + 1;
-        final Color base = familyColor(f, c, b);
-        if (n == 0) return base;
-        final HSLColor h = HSLColor.fromColor(base);
-        // 2nd lighter, 3rd darker, 4th lighter still...
-        final double step = 0.12 * ((n + 1) ~/ 2) * (n.isOdd ? 1 : -1);
-        return h.withLightness((h.lightness + step).clamp(0.2, 0.85)).toColor();
-      }(),
+  final bool dark = b == Brightness.dark;
+  final List<Color> extras = dark ? _chartExtrasDark : _chartExtrasLight;
+  final Color other = chartOtherColor(b);
+  final Set<CategoryFamily> seen = <CategoryFamily>{};
+  final List<Color> used = <Color>[];
+  double distance(Color x) => <double>[
+        for (final Color u in used) _colorDistance(x, u),
+        _colorDistance(x, other),
+      ].reduce(math.min);
+  for (final String cat in categories) {
+    final CategoryFamily f = resolveCategoryStyle(cat, type, looks).family;
+    final Color base = familyColor(f, c, b);
+    Color pick;
+    if (!seen.contains(f) &&
+        used.every((Color u) => _colorDistance(base, u) >= 20)) {
+      pick = base;
+    } else {
+      final List<Color> free =
+          extras.where((Color e) => !used.contains(e)).toList();
+      pick = free.isEmpty
+          ? base
+          : free.reduce((Color a, Color e) => distance(e) > distance(a) ? e : a);
+    }
+    seen.add(f);
+    used.add(pick);
+  }
+  return used;
+}
+
+/// The "Other" slice: a warm, quiet grey, clearly apart from the slate of
+/// the commitments family (which it used to match).
+Color chartOtherColor(Brightness b) =>
+    b == Brightness.dark ? const Color(0xFF57534E) : const Color(0xFFB8B2A7);
+
+/// Calm extra colours for a chart: teal, coral, olive, sky, brown, indigo,
+/// gold. Deeper on light themes, softer on dark ones.
+const List<Color> _chartExtrasLight = <Color>[
+  Color(0xFF0E9384),
+  Color(0xFFD1493F),
+  Color(0xFF7A8B1F),
+  Color(0xFF1E88B8),
+  Color(0xFF9A5B2E),
+  Color(0xFF5B4FCF),
+  Color(0xFFC08A0B),
+];
+const List<Color> _chartExtrasDark = <Color>[
+  Color(0xFF4FB8A8),
+  Color(0xFFF08A80),
+  Color(0xFFB5C25A),
+  Color(0xFF6CC0E5),
+  Color(0xFFC99470),
+  Color(0xFF9C94F0),
+  Color(0xFFE3B341),
+];
+
+/// How different two colours look to the eye (CIE76 distance in Lab).
+/// Around 20 and above, two slices are easy to tell apart.
+double _colorDistance(Color a, Color b) {
+  final List<double> x = _lab(a), y = _lab(b);
+  final double d0 = x[0] - y[0], d1 = x[1] - y[1], d2 = x[2] - y[2];
+  return math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+}
+
+List<double> _lab(Color c) {
+  double lin(double u) =>
+      u <= 0.04045 ? u / 12.92 : math.pow((u + 0.055) / 1.055, 2.4).toDouble();
+  final double r = lin(c.r), g = lin(c.g), bl = lin(c.b);
+  final double x = (0.4124 * r + 0.3576 * g + 0.1805 * bl) / 0.95047;
+  final double y = 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+  final double z = (0.0193 * r + 0.1192 * g + 0.9505 * bl) / 1.08883;
+  double f(double t) =>
+      t > 0.008856 ? math.pow(t, 1 / 3).toDouble() : 7.787 * t + 16 / 116;
+  return <double>[
+    116 * f(y) - 16,
+    500 * (f(x) - f(y)),
+    200 * (f(y) - f(z)),
   ];
 }
 
