@@ -158,7 +158,7 @@ class _ZakatEnginePageState extends ConsumerState<ZakatEnginePage> {
     final ZakatOutcome? o = ref.watch(zakatOutcomeProvider);
     final ZakatSettings s = ref.watch(zakatSettingsProvider);
     if (a == null || o == null) return const SizedBox.shrink();
-    final _Labels names = _Labels.of(ref, l);
+    final _Labels names = _Labels.read(ref, l);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(DsSpacing.pageGutter),
@@ -219,7 +219,7 @@ class _Labels {
   final AppLocalizations l;
   final Map<String, String> _byKey;
 
-  static _Labels of(WidgetRef ref, AppLocalizations l) {
+  static _Labels read(WidgetRef ref, AppLocalizations l) {
     final Map<String, String> m = <String, String>{};
     for (final Wallet w in ref.watch(walletsProvider)) {
       m['wallet:${w.id}'] = walletName(l, w);
@@ -279,16 +279,15 @@ class _MethodChip extends StatelessWidget {
 }
 
 class _Notice extends StatelessWidget {
-  const _Notice({required this.text, this.action, this.onAction, this.color});
+  const _Notice({required this.text, this.action, this.onAction});
   final String text;
   final String? action;
   final VoidCallback? onAction;
-  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     final DsColors c = context.dsColors;
-    final Color tint = color ?? c.saving;
+    final Color tint = c.saving;
     return Container(
       padding: const EdgeInsets.all(DsSpacing.md),
       decoration: BoxDecoration(
