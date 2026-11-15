@@ -8,7 +8,14 @@ import 'package:smartbudget/core/storage/record_lists.dart';
 import 'package:smartbudget/features/app_lock/data/device_auth.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
 
-enum AccountDeletionResult { deleted, activeSubscription, failed }
+enum AccountDeletionResult {
+  deleted,
+  activeSubscription,
+
+  /// The last sign-in is too old: sign in again, then delete.
+  reauthRequired,
+  failed,
+}
 
 final accountDeletionProvider =
     Provider<AccountDeletion>((ref) => AccountDeletion(ref));
@@ -27,6 +34,9 @@ class AccountDeletion {
       final String? error = await _deleteOnServer();
       if (error == 'active_subscription') {
         return AccountDeletionResult.activeSubscription;
+      }
+      if (error == 'reauth_required') {
+        return AccountDeletionResult.reauthRequired;
       }
       if (error != null) return AccountDeletionResult.failed;
     }

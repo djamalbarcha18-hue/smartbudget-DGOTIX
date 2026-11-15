@@ -9,7 +9,7 @@ import { check, db, finish, load, model, outbound, paypal, paypalSub, PRICES, wh
 
 // A short model deadline, so the "stuck model" scenario below runs quickly.
 Deno.env.set("OCR_TIMEOUT_MS", "300");
-const handlers = await load("whop-webhook", "paypal-webhook", "create-checkout", "receipt-scan", "ai-gateway", "billing-config");
+const handlers = await load("whop-webhook", "paypal-webhook", "create-checkout", "receipt-scan", "ai-gateway", "billing-config", "delete-account");
 db.tables.billing_prices = PRICES;
 const U1 = "11111111-1111-4111-8111-111111111111";
 const calls = () => db.calls.length;
@@ -213,5 +213,33 @@ Deno.env.set("WHOP_API_URL", savedWhop);
 Deno.env.delete("PAY_TEST_USER_IDS");
 const sandboxOwner = await (await cfg("owner1")).json();
 check("Pay test: in sandbox the list changes nothing", sandboxOwner.sandbox === true && sandboxOwner.liveTest === undefined, JSON.stringify(sandboxOwner));
+
+// ---- Account deletion: a recent sign-in, and no subscription still billing ----
+{
+  const b64 = (o: any) => btoa(JSON.stringify(o)).replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
+  const jwt = (sub: string, signedInAgoMs: number | null) =>
+    [b64({ alg: "HS256" }), b64({ sub, ...(signedInAgoMs == null ? {} : { amr: [{ method: "password", timestamp: Math.floor((Date.now() - signedInAgoMs) / 1000) }] }) }), "sig"].join(".");
+  const del = async (token: string) => {
+    const res = await handlers["delete-account"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer " + token } }));
+    return { status: res.status, body: await res.json() };
+  };
+  const D = (n: number) => `dddddddd-0000-4000-8000-00000000000${n}`;
+  db.tables.subscriptions = (db.tables.subscriptions ?? []).filter((s: any) => !String(s.user_id).startsWith("dddddddd"));
+  db.tables.billing_subscriptions = (db.tables.billing_subscriptions ?? []).filter((s: any) => !String(s.user_id).startsWith("dddddddd"));
+
+  let d = await del(jwt(D(1), 60 * 60 * 1000));
+  check("Delete: a sign-in an hour old must sign in again", d.status === 401 && d.body.error === "reauth_required", JSON.stringify(d));
+  d = await del(jwt(D(1), 60 * 1000));
+  check("Delete: a fresh sign-in deletes the account", d.status === 200 && d.body.deleted === true, JSON.stringify(d));
+
+  db.tables.billing_subscriptions.push({ provider: "whop", provider_subscription_id: "del_1", user_id: D(2), plan: "pro", status: "active", cancel_at_period_end: false });
+  d = await del(jwt(D(2), 60 * 1000));
+  check("Delete: a subscription that will bill again blocks it", d.status === 409 && d.body.error === "active_subscription", JSON.stringify(d));
+
+  db.tables.billing_subscriptions.push({ provider: "whop", provider_subscription_id: "del_2", user_id: D(3), plan: "pro", status: "active", cancel_at_period_end: true });
+  db.tables.subscriptions.push({ user_id: D(3), plan: "pro", status: "active", cancel_at_period_end: true });
+  d = await del(jwt(D(3), 60 * 1000));
+  check("Delete: a cancelled subscription running to its end doesn't block it", d.status === 200 && d.body.deleted === true, JSON.stringify(d));
+}
 
 finish();

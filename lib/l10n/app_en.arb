@@ -733,6 +733,8 @@
   "deleteAccountWord": "DELETE",
   "deleteAccountActiveSub": "You have an active paid subscription. Cancel it first (Plans), then delete your account.",
   "deleteAccountFailed": "Couldn't delete the account right now. Check your connection and try again.",
+  "deleteAccountReauth": "For your security, sign in again, then delete your account.",
+  "@deleteAccountReauth": {"description": "Shown when the server asks for a recent sign-in before deleting the account."},
   "aboutAppName": "App",
   "aboutVersion": "Version",
   "aboutBackend": "Data source",

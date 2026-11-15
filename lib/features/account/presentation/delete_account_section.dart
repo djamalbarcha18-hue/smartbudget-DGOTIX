@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/backup/application/backup_export.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -51,9 +52,24 @@ class DeleteAccountSection extends ConsumerWidget {
     if (ok != true) return;
     final AccountDeletionResult r =
         await ref.read(accountDeletionProvider).deleteAccount();
+    if (r == AccountDeletionResult.reauthRequired) {
+      // Signing out leads to the sign-in screen; the data stays on the device.
+      // The notifier is read now: the snackbar outlives this widget.
+      final AuthController auth = ref.read(authControllerProvider.notifier);
+      messenger.showSnackBar(SnackBar(
+        content: Text(l.deleteAccountReauth),
+        duration: const Duration(seconds: 8),
+        action: SnackBarAction(
+          label: l.authSignOut,
+          onPressed: () => auth.signOut(),
+        ),
+      ));
+      return;
+    }
     final String? msg = switch (r) {
       AccountDeletionResult.deleted => null,
       AccountDeletionResult.activeSubscription => l.deleteAccountActiveSub,
+      AccountDeletionResult.reauthRequired => null,
       AccountDeletionResult.failed => l.deleteAccountFailed,
     };
     if (msg != null) messenger.showSnackBar(SnackBar(content: Text(msg)));

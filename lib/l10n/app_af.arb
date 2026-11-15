@@ -632,6 +632,7 @@
   "deleteAccountWord": "SKRAP",
   "deleteAccountActiveSub": "Jy het 'n aktiewe betaalde intekening. Kanselleer dit eers (Planne), en skrap dan jou rekening.",
   "deleteAccountFailed": "Kon nie die rekening nou skrap nie. Kontroleer jou verbinding en probeer weer.",
+  "deleteAccountReauth": "Meld vir jou veiligheid weer aan en vee dan jou rekening uit.",
   "aboutAppName": "App",
   "aboutVersion": "Weergawe",
   "aboutBackend": "Databron",

@@ -117,7 +117,11 @@ async function onPostgres(fn: string, a: any): Promise<any> {
  * auth.users; otherwise an old, confirmed account (ids starting "new": made
  * just now). */
 async function getUser(tok: string): Promise<any> {
-  const id = tok.replace("user-", "");
+  // A JWT-shaped token (tests of claims such as amr): the user is its `sub`.
+  const parts = tok.split(".");
+  const id = parts.length === 3
+    ? JSON.parse(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/"))).sub
+    : tok.replace("user-", "");
   if (g.__pg && /^[0-9a-f-]{36}$/.test(id)) {
     const row = await g.__pg(`select json_build_object('created_at', created_at, 'email_confirmed_at', email_confirmed_at) from auth.users where id = '${id}'`);
     if (!row) return { data: { user: null }, error: { message: "no such user" } };

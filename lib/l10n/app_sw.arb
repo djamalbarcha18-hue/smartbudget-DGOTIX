@@ -632,6 +632,7 @@
   "deleteAccountWord": "FUTA",
   "deleteAccountActiveSub": "Una usajili wa kulipia unaoendelea. Ughairi kwanza (Vifurushi), kisha ufute akaunti yako.",
   "deleteAccountFailed": "Imeshindwa kufuta akaunti sasa hivi. Angalia muunganisho wako na ujaribu tena.",
+  "deleteAccountReauth": "Kwa usalama wako, ingia tena, kisha ufute akaunti yako.",
   "aboutAppName": "Programu",
   "aboutVersion": "Toleo",
   "aboutBackend": "Chanzo cha data",

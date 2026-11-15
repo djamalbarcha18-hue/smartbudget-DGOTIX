@@ -632,6 +632,7 @@
   "deleteAccountWord": "EXCLUIR",
   "deleteAccountActiveSub": "Você tem uma assinatura paga ativa. Cancele-a primeiro (Planos) e depois exclua sua conta.",
   "deleteAccountFailed": "Não foi possível excluir a conta agora. Verifique sua conexão e tente de novo.",
+  "deleteAccountReauth": "Por segurança, entre novamente e depois exclua sua conta.",
   "aboutAppName": "App",
   "aboutVersion": "Versão",
   "aboutBackend": "Fonte de dados",

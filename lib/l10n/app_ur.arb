@@ -632,6 +632,7 @@
   "deleteAccountWord": "حذف",
   "deleteAccountActiveSub": "آپ کی ایک فعال ادا شدہ سبسکرپشن ہے۔ پہلے اسے منسوخ کریں (پلانز)، پھر اکاؤنٹ حذف کریں۔",
   "deleteAccountFailed": "ابھی اکاؤنٹ حذف نہیں ہو سکا۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔",
+  "deleteAccountReauth": "آپ کی حفاظت کے لیے دوبارہ سائن ان کریں، پھر اپنا اکاؤنٹ حذف کریں۔",
   "aboutAppName": "ایپ",
   "aboutVersion": "ورژن",
   "aboutBackend": "ڈیٹا کا ذریعہ",

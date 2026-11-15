@@ -632,6 +632,7 @@
   "deleteAccountWord": "ELIMINAR",
   "deleteAccountActiveSub": "Tienes una suscripción de pago activa. Cancélala primero (Planes) y luego elimina tu cuenta.",
   "deleteAccountFailed": "No se pudo eliminar la cuenta ahora. Revisa tu conexión e inténtalo de nuevo.",
+  "deleteAccountReauth": "Por tu seguridad, vuelve a iniciar sesión y luego elimina tu cuenta.",
   "aboutAppName": "App",
   "aboutVersion": "Versión",
   "aboutBackend": "Origen de los datos",

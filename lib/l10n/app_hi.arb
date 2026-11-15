@@ -632,6 +632,7 @@
   "deleteAccountWord": "हटाएँ",
   "deleteAccountActiveSub": "आपकी सक्रिय भुगतान वाली सदस्यता है। पहले उसे रद्द करें (प्लान), फिर खाता हटाएँ।",
   "deleteAccountFailed": "अभी खाता नहीं हटाया जा सका। कनेक्शन जाँचें और फिर कोशिश करें।",
+  "deleteAccountReauth": "आपकी सुरक्षा के लिए, फिर से साइन इन करें, फिर अपना खाता हटाएँ।",
   "aboutAppName": "ऐप",
   "aboutVersion": "संस्करण",
   "aboutBackend": "डेटा स्रोत",

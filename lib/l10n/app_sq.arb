@@ -632,6 +632,7 @@
   "deleteAccountWord": "FSHI",
   "deleteAccountActiveSub": "Ke një abonim me pagesë aktiv. Anuloje më parë (Paketat), pastaj fshi llogarinë.",
   "deleteAccountFailed": "Llogaria nuk mund të fshihej tani. Kontrollo lidhjen dhe provo përsëri.",
+  "deleteAccountReauth": "Për sigurinë tënde, hyr sërish, pastaj fshi llogarinë.",
   "aboutAppName": "Aplikacioni",
   "aboutVersion": "Versioni",
   "aboutBackend": "Burimi i të dhënave",

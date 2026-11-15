@@ -632,6 +632,7 @@
   "deleteAccountWord": "삭제",
   "deleteAccountActiveSub": "활성화된 유료 구독이 있어요. 먼저 구독을 해지한 뒤(플랜) 계정을 삭제하세요.",
   "deleteAccountFailed": "지금은 계정을 삭제할 수 없었어요. 연결을 확인하고 다시 시도하세요.",
+  "deleteAccountReauth": "보안을 위해 다시 로그인한 다음 계정을 삭제하세요.",
   "aboutAppName": "앱",
   "aboutVersion": "버전",
   "aboutBackend": "데이터 출처",

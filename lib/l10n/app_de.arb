@@ -632,6 +632,7 @@
   "deleteAccountWord": "LÖSCHEN",
   "deleteAccountActiveSub": "Du hast ein aktives bezahltes Abo. Kündige es zuerst (Tarife) und lösche dann dein Konto.",
   "deleteAccountFailed": "Das Konto konnte gerade nicht gelöscht werden. Prüfe deine Verbindung und versuch es erneut.",
+  "deleteAccountReauth": "Melde dich zu deiner Sicherheit erneut an und lösche dann dein Konto.",
   "aboutAppName": "App",
   "aboutVersion": "Version",
   "aboutBackend": "Datenquelle",

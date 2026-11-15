@@ -632,6 +632,7 @@
   "deleteAccountWord": "削除",
   "deleteAccountActiveSub": "有効な有料サブスクリプションがあります。先に解約してから（プラン）、アカウントを削除してください。",
   "deleteAccountFailed": "今はアカウントを削除できませんでした。接続を確認してもう一度お試しください。",
+  "deleteAccountReauth": "安全のため、もう一度サインインしてからアカウントを削除してください。",
   "aboutAppName": "アプリ",
   "aboutVersion": "バージョン",
   "aboutBackend": "データの提供元",

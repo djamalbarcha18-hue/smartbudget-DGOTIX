@@ -732,6 +732,7 @@
   "deleteAccountWord": "حذف",
   "deleteAccountActiveSub": "لديك اشتراك مدفوع جارٍ. ألغِه أولًا من «الباقات»، ثم احذف حسابك.",
   "deleteAccountFailed": "تعذّر حذف الحساب الآن. تحقّق من الاتصال وحاول مجددًا.",
+  "deleteAccountReauth": "لحماية حسابك، سجّل الدخول من جديد ثم احذف حسابك.",
   "aboutAppName": "التطبيق",
   "aboutVersion": "الإصدار",
   "aboutBackend": "مصدر البيانات",

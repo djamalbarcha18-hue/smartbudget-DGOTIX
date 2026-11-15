@@ -632,6 +632,7 @@
   "deleteAccountWord": "SUPPRIMER",
   "deleteAccountActiveSub": "Vous avez un abonnement payant actif. Résiliez-le d'abord (Formules), puis supprimez votre compte.",
   "deleteAccountFailed": "Impossible de supprimer le compte pour le moment. Vérifiez votre connexion et réessayez.",
+  "deleteAccountReauth": "Pour votre sécurité, reconnectez-vous, puis supprimez votre compte.",
   "aboutAppName": "Application",
   "aboutVersion": "Version",
   "aboutBackend": "Source des données",

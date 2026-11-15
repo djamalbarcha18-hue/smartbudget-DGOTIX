@@ -632,6 +632,7 @@
   "deleteAccountWord": "OBRIŠI",
   "deleteAccountActiveSub": "Imaš aktivnu plaćenu pretplatu. Prvo je otkaži (Paketi), pa obriši račun.",
   "deleteAccountFailed": "Račun trenutno nije moguće obrisati. Provjeri vezu i pokušaj ponovo.",
+  "deleteAccountReauth": "Radi vaše sigurnosti, ponovo se prijavite, pa izbrišite račun.",
   "aboutAppName": "Aplikacija",
   "aboutVersion": "Verzija",
   "aboutBackend": "Izvor podataka",

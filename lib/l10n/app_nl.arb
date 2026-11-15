@@ -632,6 +632,7 @@
   "deleteAccountWord": "VERWIJDEREN",
   "deleteAccountActiveSub": "Je hebt een actief betaald abonnement. Zeg het eerst op (Abonnementen) en verwijder daarna je account.",
   "deleteAccountFailed": "Het account kon nu niet worden verwijderd. Controleer je verbinding en probeer het opnieuw.",
+  "deleteAccountReauth": "Log voor je veiligheid opnieuw in en verwijder daarna je account.",
   "aboutAppName": "App",
   "aboutVersion": "Versie",
   "aboutBackend": "Gegevensbron",

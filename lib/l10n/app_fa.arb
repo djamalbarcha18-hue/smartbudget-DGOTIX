@@ -632,6 +632,7 @@
   "deleteAccountWord": "حذف",
   "deleteAccountActiveSub": "اشتراک پولی فعال دارید. ابتدا آن را لغو کنید (طرح‌ها)، سپس حساب را حذف کنید.",
   "deleteAccountFailed": "اکنون حذف حساب ممکن نشد. اتصال را بررسی کنید و دوباره تلاش کنید.",
+  "deleteAccountReauth": "برای امنیت شما، دوباره وارد شوید و سپس حساب خود را حذف کنید.",
   "aboutAppName": "برنامه",
   "aboutVersion": "نسخه",
   "aboutBackend": "منبع داده",

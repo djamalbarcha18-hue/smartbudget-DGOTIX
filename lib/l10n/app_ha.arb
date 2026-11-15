@@ -632,6 +632,7 @@
   "deleteAccountWord": "SHARE",
   "deleteAccountActiveSub": "Kana da biyan kuɗi mai aiki. Soke shi tukuna (Tsare-tsare), sannan ka share asusunka.",
   "deleteAccountFailed": "Ba a iya share asusun yanzu ba. Duba haɗin intanet ɗinka ka sake gwadawa.",
+  "deleteAccountReauth": "Don tsaronka, sake shiga, sannan ka goge asusunka.",
   "aboutAppName": "Manhaja",
   "aboutVersion": "Siga",
   "aboutBackend": "Tushen bayanai",

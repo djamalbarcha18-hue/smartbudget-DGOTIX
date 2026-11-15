@@ -632,6 +632,7 @@
   "deleteAccountWord": "KALDIR",
   "deleteAccountActiveSub": "Aktif bir ücretli aboneliğin var. Önce iptal et (Planlar), sonra hesabını sil.",
   "deleteAccountFailed": "Hesap şu anda silinemedi. Bağlantını kontrol edip tekrar dene.",
+  "deleteAccountReauth": "Güvenliğin için tekrar giriş yap, ardından hesabını sil.",
   "aboutAppName": "Uygulama",
   "aboutVersion": "Sürüm",
   "aboutBackend": "Veri kaynağı",

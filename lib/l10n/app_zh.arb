@@ -632,6 +632,7 @@
   "deleteAccountWord": "删除",
   "deleteAccountActiveSub": "你有一个有效的付费订阅。请先取消订阅（方案），再删除账户。",
   "deleteAccountFailed": "暂时无法删除账户。请检查网络后重试。",
+  "deleteAccountReauth": "为了你的安全，请重新登录，然后再删除账户。",
   "aboutAppName": "应用",
   "aboutVersion": "版本",
   "aboutBackend": "数据来源",

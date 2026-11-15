@@ -632,6 +632,7 @@
   "deleteAccountWord": "HAPUS",
   "deleteAccountActiveSub": "Anda punya langganan berbayar aktif. Batalkan dulu (Paket), lalu hapus akun Anda.",
   "deleteAccountFailed": "Tidak dapat menghapus akun sekarang. Periksa koneksi dan coba lagi.",
+  "deleteAccountReauth": "Demi keamanan, masuk lagi, lalu hapus akun Anda.",
   "aboutAppName": "Aplikasi",
   "aboutVersion": "Versi",
   "aboutBackend": "Sumber data",

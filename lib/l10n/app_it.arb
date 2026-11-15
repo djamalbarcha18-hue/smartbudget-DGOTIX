@@ -632,6 +632,7 @@
   "deleteAccountWord": "ELIMINA",
   "deleteAccountActiveSub": "Hai un abbonamento a pagamento attivo. Annullalo prima (Piani), poi elimina l'account.",
   "deleteAccountFailed": "Non è stato possibile eliminare l'account ora. Controlla la connessione e riprova.",
+  "deleteAccountReauth": "Per sicurezza, accedi di nuovo, poi elimina il tuo account.",
   "aboutAppName": "App",
   "aboutVersion": "Versione",
   "aboutBackend": "Fonte dei dati",

@@ -632,6 +632,7 @@
   "deleteAccountWord": "PADAM",
   "deleteAccountActiveSub": "Anda mempunyai langganan berbayar yang aktif. Batalkannya dahulu (Pelan), kemudian padam akaun anda.",
   "deleteAccountFailed": "Tidak dapat memadam akaun sekarang. Semak sambungan anda dan cuba lagi.",
+  "deleteAccountReauth": "Demi keselamatan anda, log masuk semula, kemudian padam akaun anda.",
   "aboutAppName": "Aplikasi",
   "aboutVersion": "Versi",
   "aboutBackend": "Sumber data",
