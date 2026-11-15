@@ -800,7 +800,7 @@ class _HawlCard extends StatelessWidget {
               adjust(l.zkDaySame, 0),
               adjust(l.zkDayLater, 1),
             ]),
-            Row(
+            Wrap(
               children: <Widget>[
                 TextButton(
                   onPressed: () => _pick(context),

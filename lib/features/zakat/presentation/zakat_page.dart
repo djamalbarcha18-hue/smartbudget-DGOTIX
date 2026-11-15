@@ -369,7 +369,10 @@ class _HawlCard extends ConsumerWidget {
             children: <Widget>[
               Icon(Icons.hourglass_bottom_rounded, size: 18, color: c.brand),
               const SizedBox(width: DsSpacing.sm),
-              Text(l.zakatHawl, style: Theme.of(context).textTheme.titleMedium),
+              Expanded(
+                child: Text(l.zakatHawl,
+                    style: Theme.of(context).textTheme.titleMedium),
+              ),
             ],
           ),
           const SizedBox(height: DsSpacing.xs),
