@@ -304,7 +304,7 @@ void main() {
     expect(display(tester), '2,100');
   });
 
-  testWidgets('in Arabic the keypad reads right to left, numbers stay LTR',
+  testWidgets('in Arabic the page is RTL, the keypad keeps the operators on the right',
       (WidgetTester tester) async {
     await pump(tester, locale: 'ar');
     final AppLocalizations l =
@@ -313,7 +313,10 @@ void main() {
     expect(find.text(l.calcCurrent), findsOneWidget);
     final double x7 = tester.getCenter(find.byKey(const Key('calc-d7'))).dx;
     final double x9 = tester.getCenter(find.byKey(const Key('calc-d9'))).dx;
-    expect(x7, greaterThan(x9));
+    expect(x7, lessThan(x9));
+    final double xPlus =
+        tester.getCenter(find.byKey(const Key('calc-op-add'))).dx;
+    expect(xPlus, greaterThan(x9));
     await tap(tester, 'd1');
     await tap(tester, 'd2');
     expect(display(tester), '12');

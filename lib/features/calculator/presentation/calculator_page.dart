@@ -86,9 +86,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
     final AppLocalizations l = AppLocalizations.of(context);
     final DsColors c = context.dsColors;
 
-    // The keypad follows the language: in Arabic, Urdu and Persian it reads
-    // right to left (7 on the right, the operators on the left). Numbers
-    // themselves are always written left to right.
+    // The keypad is laid out like most calculators in every language (the
+    // operators on the right); labels and announcements follow the app's
+    // language.
     final List<_Key> keys = <_Key>[
       _Key.accent('AC', l.calcClear, Calculator.clear, id: 'clear'),
       _Key.icon(Icons.backspace_outlined, l.calcBackspace, Calculator.backspace,
@@ -132,7 +132,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
                         children: <Widget>[
                           _Display(state: _state),
                           const Divider(height: DsSpacing.xl),
-                          GridView.count(
+                          // Like most calculators, whatever the language: 7 8 9
+                          // from the left, the operators down the right.
+                          Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: GridView.count(
                             crossAxisCount: 4,
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
@@ -147,6 +151,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                                   onPressed: () => _press(k.action),
                                 ),
                             ],
+                          ),
                           ),
                         ],
                       ),
