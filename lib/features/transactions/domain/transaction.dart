@@ -25,6 +25,7 @@ class Transaction {
     this.tripId,
     this.splitId,
     this.baseAmount,
+    this.pastBase = const <String, int>{},
     required this.createdAt,
   });
 
@@ -53,6 +54,12 @@ class Transaction {
   /// shifting every time exchange rates move. Null when the amount is
   /// already in the base currency (or no rate was known).
   final Money? baseAmount;
+
+  /// Its values in earlier base currencies (code -> minor units), kept when
+  /// the base currency changes so [baseAmount] can be replaced without losing
+  /// them: switching back finds the value recorded on the day again, instead
+  /// of revaluing the past at today's rate.
+  final Map<String, int> pastBase;
   final DateTime createdAt;
 
   bool get isIncome => type == TransactionType.income;
@@ -61,8 +68,12 @@ class Transaction {
   /// carrying its recorded [baseAmount], or null when it has no value there.
   Transaction? inCurrency(String currency) {
     if (amount.currencyCode == currency) return this;
-    final Money? b = baseAmount;
-    if (b == null || b.currencyCode != currency) return null;
+    Money? b = baseAmount;
+    if (b == null || b.currencyCode != currency) {
+      final int? past = pastBase[currency];
+      if (past == null) return null;
+      b = Money(past, currency);
+    }
     return Transaction(
       id: id,
       date: date,
@@ -94,7 +105,10 @@ class Transaction {
     bool clearTrip = false,
     Money? baseAmount,
     bool clearBase = false,
+    Map<String, int>? pastBase,
   }) {
+    // Values in other currencies only hold for the amount they were taken of.
+    final bool sameAmount = amount == null || amount == this.amount;
     return Transaction(
       id: id,
       date: date ?? this.date,
@@ -108,7 +122,22 @@ class Transaction {
       tripId: clearTrip ? null : tripId ?? this.tripId,
       splitId: splitId,
       baseAmount: clearBase ? null : baseAmount ?? this.baseAmount,
+      pastBase: pastBase ?? (sameAmount ? this.pastBase : const <String, int>{}),
       createdAt: createdAt,
+    );
+  }
+
+  /// This transaction valued in a new base currency at [value], the value it
+  /// had in the previous one kept in [pastBase].
+  Transaction revaluedIn(Money value) {
+    final Money? old = baseAmount;
+    return copyWith(
+      baseAmount: value,
+      pastBase: <String, int>{
+        ...pastBase,
+        if (old != null && old.currencyCode != value.currencyCode)
+          old.currencyCode: old.minorUnits,
+      }..remove(value.currencyCode),
     );
   }
 
@@ -127,6 +156,7 @@ class Transaction {
         if (splitId != null) 'splitId': splitId,
         if (baseAmount != null) 'baseMinor': baseAmount!.minorUnits,
         if (baseAmount != null) 'baseCurrency': baseAmount!.currencyCode,
+        if (pastBase.isNotEmpty) 'pastBase': pastBase,
         'createdAt': createdAt.toIso8601String(),
       };
 
@@ -154,6 +184,14 @@ class Transaction {
           ? null
           : Money((json['baseMinor'] as num).toInt(),
               (json['baseCurrency'] as String?) ?? 'USD'),
+      pastBase: <String, int>{
+        for (final MapEntry<dynamic, dynamic> e
+            in ((json['pastBase'] as Map<dynamic, dynamic>?) ??
+                    const <dynamic, dynamic>{})
+                .entries)
+          if (e.key is String && e.value is num)
+            e.key as String: (e.value as num).toInt(),
+      },
       createdAt: DateTime.tryParse((json['createdAt'] as String?) ?? '') ??
           AppClock.now(),
     );

@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:smartbudget/features/budget/application/budget_controller.dart';
+import 'package:smartbudget/features/budget/domain/budget_target.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/storage/local_list_store.dart';
@@ -51,13 +53,23 @@ final walletsProvider = Provider<List<Wallet>>((ref) {
   final String currency = ref.watch(baseCurrencyProvider);
   final List<Wallet> stored =
       ref.watch(_storedWalletsProvider).valueOrNull ?? const <Wallet>[];
-  // General always uses the base currency (its stored opening balance only
-  // counts while that currency matches).
+  // General always uses the base currency. After the base currency changed,
+  // its stored opening balance is carried over at the app's rate (dropping
+  // it made "General" lose its balance); with no rate it starts at zero.
   final Wallet? stored0 =
       stored.where((Wallet w) => w.isGeneral).firstOrNull;
-  final Wallet general = stored0 != null && stored0.currency == currency
-      ? stored0
-      : Wallet.general(currency);
+  final Wallet general;
+  if (stored0 == null) {
+    general = Wallet.general(currency);
+  } else if (stored0.currency == currency) {
+    general = stored0;
+  } else {
+    final Money? opening =
+        WalletMath.convert(stored0.opening, currency, ref.watch(ratesProvider));
+    general = opening == null
+        ? Wallet.general(currency)
+        : Wallet.general(currency, opening: opening);
+  }
   return <Wallet>[
     general,
     ...stored.where((Wallet w) => !w.isGeneral),
@@ -246,13 +258,41 @@ final baseValueBackfillProvider = Provider<void>((ref) {
     if (t.inCurrency(base) != null) continue;
     if (!fx.trusts(cur) || !fx.trusts(base)) continue;
     final Money? v = WalletMath.baseValue(t.amount, base, rates);
-    if (v != null) fixes.add(t.copyWith(baseAmount: v));
+    // The value in the previous base currency is kept (Transaction.pastBase).
+    if (v != null) fixes.add(t.revaluedIn(v));
   }
   if (fixes.isEmpty) return;
   final TransactionActions actions = ref.read(transactionActionsProvider);
   Future<void>.microtask(() async {
     for (final Transaction t in fixes) {
       await actions.update(t);
+    }
+  });
+});
+
+/// Budgets set in an earlier base currency are converted to the current one
+/// once its rate can be trusted (same rule as [baseValueBackfillProvider]),
+/// so the monthly budget, the dashboard and the reports all count them again.
+final budgetCurrencyBackfillProvider = Provider<void>((ref) {
+  final String base = ref.watch(baseCurrencyProvider);
+  if (!ref.watch(baseCurrencyLoadedProvider)) return;
+  final FxStatus fx = ref.watch(fxStatusProvider);
+  final Map<String, double> rates = ref.watch(ratesProvider);
+  final List<BudgetTarget> budgets =
+      ref.watch(budgetsProvider).valueOrNull ?? const <BudgetTarget>[];
+  final List<(BudgetTarget, Money)> fixes = <(BudgetTarget, Money)>[];
+  for (final BudgetTarget b in budgets) {
+    final String cur = b.planned.currencyCode;
+    if (cur == base || !fx.trusts(cur) || !fx.trusts(base)) continue;
+    final Money? v = WalletMath.convert(b.planned, base, rates);
+    if (v != null) fixes.add((b, v));
+  }
+  if (fixes.isEmpty) return;
+  final BudgetActions actions = ref.read(budgetActionsProvider);
+  Future<void>.microtask(() async {
+    for (final (BudgetTarget b, Money v) in fixes) {
+      await actions.setPlanned(
+          year: b.year, month: b.month, category: b.category, amount: v.asDouble);
     }
   });
 });

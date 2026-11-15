@@ -16,7 +16,10 @@ name: Android build
 # Optional (online features), same as the web build:
 #   SUPABASE_URL, SUPABASE_ANON_KEY
 on:
-  push:
+  # Only after the tests pass on main: a red build is never published.
+  workflow_run:
+    workflows: ["Flutter CI"]
+    types: [completed]
     branches: ["main"]
   workflow_dispatch:
 
@@ -28,10 +31,14 @@ permissions:
 jobs:
   build-android:
     name: Build Android (Google Play)
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # The commit the tests passed on.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Set up Java
         uses: actions/setup-java@v4

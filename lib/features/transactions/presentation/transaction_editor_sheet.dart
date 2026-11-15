@@ -291,6 +291,10 @@ class _TransactionEditorSheetState
       category: _category ?? Catalog.categoriesFor(widget.type).last,
       amount: money,
       baseAmount: baseValue,
+      // Values in earlier base currencies stay while the amount is the same.
+      pastBase: old != null && old.amount == money
+          ? old.pastBase
+          : const <String, int>{},
       description: _description.text.trim(),
       paymentMethod: _paymentMethod,
       notes: _notes.text.trim().isEmpty ? null : _notes.text.trim(),

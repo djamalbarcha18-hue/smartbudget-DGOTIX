@@ -152,8 +152,9 @@ abstract final class WalletMath {
       id != null && known.contains(id) ? id : Wallet.generalId;
 
   /// Current balance of every wallet, in minor units of that wallet's own
-  /// currency. Amounts in another currency than the wallet's are left out
-  /// (never silently converted).
+  /// currency. A transaction in another currency counts by the value recorded
+  /// with it in the wallet's currency; without one it is left out (never
+  /// silently converted).
   static Map<String, int> balances({
     required List<Wallet> wallets,
     required List<Transaction> txns,
@@ -174,7 +175,12 @@ abstract final class WalletMath {
 
     for (final Transaction t in txns) {
       final String id = resolve(t.walletId, known);
-      add(id, t.isIncome ? t.amount : Money(-t.amount.minorUnits, t.amount.currencyCode));
+      // In another currency than the wallet's: its value recorded with it
+      // (e.g. after the base currency changed), never one guessed today.
+      final Wallet? w = byId[id];
+      final Money v =
+          (w == null ? null : t.inCurrency(w.currency)?.amount) ?? t.amount;
+      add(id, t.isIncome ? v : Money(-v.minorUnits, v.currencyCode));
     }
     for (final WalletMove m in moves) {
       final String to = resolve(m.toId, known);

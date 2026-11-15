@@ -242,21 +242,28 @@ class ReportFigures {
 
     int planned = 0;
     final Set<String> budgeted = <String>{};
+    // Spending counts against a budget only in the months that budget was
+    // set for (the same rule as the dashboard).
+    final Set<String> budgetedMonth = <String>{};
     for (final BudgetTarget b in budgets) {
       if (b.year != range.year) continue;
       if (!months.contains(b.month)) continue;
       if (b.planned.currencyCode != currency) continue;
       planned += b.planned.minorUnits;
       budgeted.add(b.category);
+      budgetedMonth.add('${b.month}|${b.category}');
     }
     if (planned == 0) return BudgetFigures.none(currency);
 
     int spent = 0;
     for (final Transaction t in inRange) {
       if (t.isIncome) continue;
-      if (t.amount.currencyCode != currency) continue;
-      if (!budgeted.contains(t.category)) continue;
-      spent += t.amount.minorUnits;
+      if (!budgetedMonth.contains('${t.date.month}|${t.category}')) continue;
+      // Foreign-currency spending counts by its recorded base value, as on
+      // the dashboard.
+      final Transaction? v = t.inCurrency(currency);
+      if (v == null) continue;
+      spent += v.amount.minorUnits;
     }
 
     return BudgetFigures(

@@ -212,6 +212,40 @@ void main() {
       expect(b.remaining.minorUnits, lessThan(0));
     });
 
+    test('foreign spending counts by its recorded value, as on the dashboard',
+        () {
+      final BudgetFigures b = ReportFigures.build(
+        range: _range(ReportPeriod.monthly, 2026, 1),
+        currency: _cur,
+        transactions: <Transaction>[
+          Transaction(
+            id: 'eur-food',
+            date: DateTime(2026, 1, 10),
+            type: TransactionType.expense,
+            category: 'طعام',
+            amount: const Money(1000, 'EUR'),
+            baseAmount: _m(1500),
+            createdAt: DateTime(2026, 1, 10),
+          ),
+        ],
+        budgets: <BudgetTarget>[_b(2026, 1, 'طعام', 10000)],
+      ).budget;
+      expect(b.spent, _m(1500));
+    });
+
+    test('in a quarter, spending only counts in the months with a budget', () {
+      final BudgetFigures b = ReportFigures.build(
+        range: _range(ReportPeriod.quarterly, 2026, 1),
+        currency: _cur,
+        transactions: <Transaction>[
+          _t(year: 2026, month: 1, major: 700, type: TransactionType.expense),
+          _t(year: 2026, month: 2, major: 900, type: TransactionType.expense),
+        ],
+        budgets: <BudgetTarget>[_b(2026, 1, 'طعام', 1000)],
+      ).budget;
+      expect(b.spent, _m(700));
+    });
+
     test('no budget at all is a clean absence, not a zero-divide', () {
       final BudgetFigures b = budgetFor(const <BudgetTarget>[]);
       expect(b.hasBudget, isFalse);

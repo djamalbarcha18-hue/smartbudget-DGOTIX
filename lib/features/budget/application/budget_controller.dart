@@ -25,9 +25,16 @@ final monthPlannedByCategoryProvider = Provider<Map<String, Money>>((ref) {
       ref.watch(budgetsProvider).valueOrNull ?? const <BudgetTarget>[];
   final int year = ref.watch(selectedYearProvider);
   final int month = ref.watch(selectedMonthProvider);
+  final String currency = ref.watch(baseCurrencyProvider);
   final Map<String, Money> out = <String, Money>{};
   for (final BudgetTarget b in all) {
-    if (b.year == year && b.month == month) out[b.category] = b.planned;
+    // A budget still in an earlier base currency waits for its conversion
+    // (budgetCurrencyBackfillProvider): its minor units would read wrong.
+    if (b.year == year &&
+        b.month == month &&
+        b.planned.currencyCode == currency) {
+      out[b.category] = b.planned;
+    }
   }
   return out;
 });

@@ -130,8 +130,8 @@ class ReportsPage extends ConsumerWidget {
                   underline: const SizedBox.shrink(),
                   dropdownColor: c.bgElevated,
                   items: <DropdownMenuItem<int>>[
-                    // Current year and the next nine (e.g. 2026–2035).
-                    for (int y = now.year; y <= now.year + 9; y++)
+                    // Back to the oldest year with data, and nine ahead.
+                    for (final int y in ref.watch(selectableYearsProvider))
                       DropdownMenuItem<int>(
                           value: y,
                           child: _Lockable(

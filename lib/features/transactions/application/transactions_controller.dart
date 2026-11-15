@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/widgets.dart' show AppLifecycleListener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -7,6 +10,7 @@ import 'package:smartbudget/features/transactions/data/fake_transaction_reposito
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/transactions/domain/transaction_repository.dart';
+import 'package:smartbudget/features/transactions/domain/period_years.dart';
 
 /// Binds the active [TransactionRepository], scoped to the signed-in user so
 /// data is isolated per account. P3 uses the local dev store; swap to Supabase
@@ -30,6 +34,42 @@ final selectedYearProvider =
 /// Currently viewed month 1..12 (for the Monthly Budget screen).
 final selectedMonthProvider =
     StateProvider<int>((ref) => AppClock.now().month);
+
+/// The years the period pickers offer (see [selectableYears]): back to the
+/// oldest transaction, so last year's data stays reachable after New Year.
+final selectableYearsProvider = Provider<List<int>>((ref) {
+  final List<Transaction> all =
+      ref.watch(transactionsProvider).valueOrNull ?? const <Transaction>[];
+  return selectableYears(AppClock.now().year,
+      all.map((Transaction t) => t.date.year), ref.watch(selectedYearProvider));
+});
+
+/// Keeps the screens on the current month when a new month starts while the
+/// app stays open (checked when it comes back into view and every minute).
+/// A month the user picked is left alone.
+final periodFollowerProvider = Provider<void>((ref) {
+  DateTime was = AppClock.now();
+  void check() {
+    final DateTime now = AppClock.now();
+    final ({int year, int month})? next = followCalendar(
+        (year: ref.read(selectedYearProvider),
+            month: ref.read(selectedMonthProvider)),
+        was,
+        now);
+    was = now;
+    if (next == null) return;
+    ref.read(selectedYearProvider.notifier).state = next.year;
+    ref.read(selectedMonthProvider.notifier).state = next.month;
+  }
+
+  final Timer timer = Timer.periodic(const Duration(minutes: 1), (_) => check());
+  final AppLifecycleListener life =
+      AppLifecycleListener(onShow: check, onResume: check);
+  ref.onDispose(() {
+    timer.cancel();
+    life.dispose();
+  });
+});
 
 /// Transactions filtered to the selected year AND month.
 final monthTransactionsProvider = Provider<List<Transaction>>((ref) {

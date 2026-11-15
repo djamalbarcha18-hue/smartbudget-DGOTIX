@@ -56,6 +56,10 @@ class SmartBudgetApp extends ConsumerWidget {
     ref.listen(clockSyncProvider, (_, __) {});
     // Gives older foreign-currency transactions their base-currency value.
     ref.listen(baseValueBackfillProvider, (_, __) {});
+    // Converts budgets set in an earlier base currency.
+    ref.listen(budgetCurrencyBackfillProvider, (_, __) {});
+    // Moves the screens to the new month when one starts while open.
+    ref.listen(periodFollowerProvider, (_, __) {});
     // Keeps this device and the account's cloud copy in step.
     ref.listen(syncControllerProvider, (_, __) {});
     // Re-reads the plan from the server when the app comes back into view.

@@ -104,6 +104,59 @@ void main() {
     expect(b['cash'], 10000);
   });
 
+  test('after a base-currency change, General keeps its transactions', () {
+    // Spent in USD while USD was the base; the base is now SAR and the
+    // transaction carries its SAR value.
+    final Transaction t = Transaction(
+      id: 'usd',
+      date: DateTime(2026, 9, 10),
+      type: TransactionType.expense,
+      category: 'الطعام',
+      amount: const Money(1000, 'USD'),
+      baseAmount: const Money(3750, 'SAR'),
+      createdAt: DateTime(2026, 9, 10),
+    );
+    final Map<String, int> b = WalletMath.balances(
+      wallets: <Wallet>[Wallet.general('SAR', opening: const Money(10000, 'SAR'))],
+      txns: <Transaction>[t],
+      moves: const <WalletMove>[],
+    );
+    expect(b['general'], 10000 - 3750);
+  });
+
+  group('values in earlier base currencies', () {
+    final Transaction t = Transaction(
+      id: 'eur',
+      date: DateTime(2026, 9, 10),
+      type: TransactionType.expense,
+      category: 'الطعام',
+      amount: const Money(1000, 'EUR'),
+      baseAmount: const Money(1080, 'USD'),
+      createdAt: DateTime(2026, 9, 10),
+    );
+
+    test('a new base value keeps the old one', () {
+      final Transaction r = t.revaluedIn(const Money(4100, 'SAR'));
+      expect(r.inCurrency('SAR')!.amount, const Money(4100, 'SAR'));
+      // Switching back finds the value recorded on the day, not today's.
+      expect(r.inCurrency('USD')!.amount, const Money(1080, 'USD'));
+    });
+
+    test('they survive a backup round-trip', () {
+      final Transaction r = Transaction.fromJson(
+          t.revaluedIn(const Money(4100, 'SAR')).toJson());
+      expect(r.inCurrency('USD')!.amount, const Money(1080, 'USD'));
+    });
+
+    test('changing the amount drops them', () {
+      final Transaction r = t
+          .revaluedIn(const Money(4100, 'SAR'))
+          .copyWith(amount: const Money(2000, 'EUR'), clearBase: true);
+      expect(r.inCurrency('USD'), isNull);
+      expect(r.inCurrency('SAR'), isNull);
+    });
+  });
+
   test('month flow per wallet', () {
     final Set<String> known = <String>{'general', 'cash', 'ccp'};
     final ({int income, int expense}) f = WalletMath.monthFlow(

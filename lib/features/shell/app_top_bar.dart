@@ -411,7 +411,7 @@ class _MonthChip extends ConsumerWidget {
 }
 
 /// Global year selector — shared with Dashboard / Reports / Monthly Budget via
-/// [selectedYearProvider]. Lists the current year and the next nine.
+/// [selectedYearProvider]. Lists the years with data and the next nine.
 class _YearChip extends ConsumerWidget {
   const _YearChip();
 
@@ -419,9 +419,8 @@ class _YearChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final DsColors c = context.dsColors;
     final int year = ref.watch(selectedYearProvider);
-    final int now = AppClock.now().year;
-    final List<int> years = List<int>.generate(10, (int i) => now + i);
-    final int value = years.contains(year) ? year : now;
+    final List<int> years = ref.watch(selectableYearsProvider);
+    final int value = year;
 
     return PopupMenuButton<int>(
       tooltip: '$value',
@@ -476,9 +475,9 @@ class _PeriodPicker extends ConsumerStatefulWidget {
 }
 
 class _PeriodPickerState extends ConsumerState<_PeriodPicker> {
-  // The same years as the year chip: this one and the next nine.
-  final int _first = AppClock.now().year;
-  late int _year = ref.read(selectedYearProvider).clamp(_first, _first + 9);
+  // The same years as the year chip.
+  late final List<int> _years = ref.read(selectableYearsProvider);
+  late int _year = ref.read(selectedYearProvider);
 
   @override
   Widget build(BuildContext context) {
@@ -498,7 +497,7 @@ class _PeriodPickerState extends ConsumerState<_PeriodPicker> {
               children: <Widget>[
                 IconButton(
                   onPressed:
-                      _year > _first ? () => setState(() => _year--) : null,
+                      _year > _years.first ? () => setState(() => _year--) : null,
                   icon: const Icon(Icons.chevron_left_rounded),
                 ),
                 SizedBox(
@@ -507,7 +506,7 @@ class _PeriodPickerState extends ConsumerState<_PeriodPicker> {
                       textAlign: TextAlign.center, style: t.titleLarge),
                 ),
                 IconButton(
-                  onPressed: _year < _first + 9
+                  onPressed: _year < _years.last
                       ? () => setState(() => _year++)
                       : null,
                   icon: const Icon(Icons.chevron_right_rounded),
