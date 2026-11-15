@@ -27,6 +27,7 @@ import 'package:smartbudget/features/app_lock/application/app_lock_controller.da
 import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/analytics/presentation/alert_presentation.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
+import 'package:smartbudget/features/auth/domain/auth_user.dart';
 import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/notifications/application/notifications_controller.dart';
@@ -34,6 +35,7 @@ import 'package:smartbudget/features/notifications/domain/notification_feed.dart
 import 'package:smartbudget/features/search/app_search.dart';
 import 'package:smartbudget/features/shell/brand_controls.dart';
 import 'package:smartbudget/features/shell/menu_hint.dart';
+import 'package:smartbudget/features/shell/user_avatar.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
@@ -1149,7 +1151,8 @@ class _ProfileChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final DsColors c = context.dsColors;
     final AppLocalizations l = AppLocalizations.of(context);
-    final String? name = ref.watch(authControllerProvider).user?.name;
+    final AuthUser? user = ref.watch(authControllerProvider).user;
+    final String? name = user?.name;
 
     return PopupMenuButton<String>(
       tooltip: name ?? '',
@@ -1177,11 +1180,7 @@ class _ProfileChip extends ConsumerWidget {
           ),
         ),
       ],
-      child: CircleAvatar(
-        radius: 17,
-        backgroundColor: c.brand.withValues(alpha: 0.18),
-        child: Icon(Icons.person_outline_rounded, size: 18, color: c.brand),
-      ),
+      child: UserAvatar(name: name, imageUrl: user?.avatarUrl),
     );
   }
 }

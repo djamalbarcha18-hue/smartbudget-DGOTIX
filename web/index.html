@@ -10,15 +10,16 @@
        Injected code could not send data anywhere else. A service missing
        here is blocked: add any new one the app calls. blob: lets the app
        read a photo the user picked (receipt scanner); it never leaves the
-       browser. Frames: only this site's own turnstile.html (the sign-in
+       browser. lh3.googleusercontent.com serves the Google account picture
+       shown in the top bar (read only, nothing is sent to it). Frames: only this site's own turnstile.html (the sign-in
        check). test/web_csp_test.dart checks this list. -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' 'wasm-unsafe-eval';
     style-src 'self' 'unsafe-inline';
     font-src 'self' data: https://fonts.gstatic.com;
-    img-src 'self' data: blob:;
-    connect-src 'self' blob: https://fconhnyognxcpvmwobus.supabase.co https://fonts.gstatic.com https://fonts.googleapis.com https://open.er-api.com https://dolarapi.com https://api.gold-api.com https://api.coingecko.com https://squarealgerie.com;
+    img-src 'self' data: blob: https://lh3.googleusercontent.com;
+    connect-src 'self' blob: https://fconhnyognxcpvmwobus.supabase.co https://fonts.gstatic.com https://fonts.googleapis.com https://open.er-api.com https://dolarapi.com https://api.gold-api.com https://api.coingecko.com https://squarealgerie.com https://lh3.googleusercontent.com;
     worker-src 'self' blob:;
     manifest-src 'self';
     frame-src 'self';

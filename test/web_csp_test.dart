@@ -85,6 +85,13 @@ void main() {
     expect(connect, contains('blob:'));
   });
 
+  test('the Google account picture can load, from Google\'s host only', () {
+    const String host = 'https://lh3.googleusercontent.com';
+    // The engine fetches the picture (connect-src) or shows it as an image.
+    expect(connect, contains(host));
+    expect(directives['img-src'], <String>["'self'", 'data:', 'blob:', host]);
+  });
+
   test('every outside source the app calls is allowed', () {
     final Set<String> called = <String>{};
     final RegExp url = RegExp(r'''['"](https://[a-z0-9.-]+\.[a-z]{2,})[/'"]''');

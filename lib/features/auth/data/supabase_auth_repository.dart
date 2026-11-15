@@ -186,6 +186,9 @@ class SupabaseAuthRepository implements AuthRepository {
       id: u.id,
       email: u.email!,
       displayName: name is String ? name : null,
+      // Set by Google sign-in; absent for email accounts.
+      avatarUrl: AuthUser.googleAvatarUrl(
+          u.userMetadata?['avatar_url'] ?? u.userMetadata?['picture']),
     );
   }
 
