@@ -927,20 +927,7 @@ class _BackupSectionState extends ConsumerState<_BackupSection> {
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
     try {
-      final String? raw = await pickTextFile();
-      if (raw == null) return; // user cancelled
-      final ImportResult res =
-          await ref.read(backupServiceProvider).importJson(raw);
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(res.isEmpty
-              ? l.importEmpty
-              : l.importDoneAll(
-                  res.transactionsAdded, res.budgetsAdded, res.plansAdded)),
-        ),
-      );
-    } catch (_) {
-      messenger.showSnackBar(SnackBar(content: Text(l.importFailed)));
+      await importBackupFile(ref, messenger, l);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
