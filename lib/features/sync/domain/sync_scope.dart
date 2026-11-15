@@ -121,23 +121,30 @@ class SyncScope {
     };
   }
 
-  /// Whether the cloud entry [e] of record [id] takes part in the merge:
-  /// a deletion, a record inside the window, or one this device syncs.
-  bool _cloudCovered(String c, String id, SyncEntry e, Entries local) =>
+  /// Whether the cloud entry [e] of record [id] takes part in the merge.
+  ///
+  /// Everything does (so a new device still receives the older history the
+  /// cloud holds) except an old record this device holds outside the round:
+  /// the cloud copy of it is not newer news, and writing it back over the
+  /// device's copy undid the user's edits.
+  bool _cloudCovered(
+          String c, String id, SyncEntry e, Entries local, Records all) =>
       allowsCollection(c) &&
       (e.deleted ||
           includes(c, e.data!) ||
-          local[c]?.containsKey(id) == true);
+          local[c]?.containsKey(id) == true ||
+          all[c]?.containsKey(id) != true);
 
-  /// The cloud entries the round merges (see [_cloudCovered]).
-  Entries cloudIn(Entries cloud, Entries local) {
+  /// The cloud entries the round merges (see [_cloudCovered]). [all] is
+  /// everything the device holds.
+  Entries cloudIn(Entries cloud, Entries local, Records all) {
     if (isFull) return cloud;
     return <String, Map<String, SyncEntry>>{
       for (final MapEntry<String, Map<String, SyncEntry>> c in cloud.entries)
         if (allowsCollection(c.key))
           c.key: <String, SyncEntry>{
             for (final MapEntry<String, SyncEntry> e in c.value.entries)
-              if (_cloudCovered(c.key, e.key, e.value, local))
+              if (_cloudCovered(c.key, e.key, e.value, local, all))
                 e.key: e.value,
           },
     };
@@ -146,13 +153,14 @@ class SyncScope {
   /// The cloud entries the round leaves alone: sent back as they were. An
   /// old record this device doesn't sync is never written over the copy the
   /// device holds.
-  Entries cloudHeld(Entries cloud, Entries local) {
+  Entries cloudHeld(Entries cloud, Entries local, Records all) {
     if (isFull) return const <String, Map<String, SyncEntry>>{};
     final Entries out = <String, Map<String, SyncEntry>>{};
     for (final MapEntry<String, Map<String, SyncEntry>> c in cloud.entries) {
       final Map<String, SyncEntry> kept = <String, SyncEntry>{
         for (final MapEntry<String, SyncEntry> e in c.value.entries)
-          if (!_cloudCovered(c.key, e.key, e.value, local)) e.key: e.value,
+          if (!_cloudCovered(c.key, e.key, e.value, local, all))
+            e.key: e.value,
       };
       if (kept.isNotEmpty) out[c.key] = kept;
     }

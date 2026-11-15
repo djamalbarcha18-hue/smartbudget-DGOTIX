@@ -22,11 +22,11 @@ class Device {
         SyncMerge.detect(pruned, scope.local(records, pruned), now);
     final Entries cloudAll = SyncMerge.fromCloud(cloud);
     final Entries merged =
-        SyncMerge.merge(local, scope.cloudIn(cloudAll, local), now: now);
+        SyncMerge.merge(local, scope.cloudIn(cloudAll, local, records), now: now);
     records = scope.compose(records, merged);
     ledger = SyncMerge.rebase(merged, records);
     return SyncMerge.toCloud(
-        scope.withHeld(ledger, scope.cloudHeld(cloudAll, local)));
+        scope.withHeld(ledger, scope.cloudHeld(cloudAll, local, records)));
   }
 
   Map<String, Map<String, dynamic>> col(String c) =>
@@ -214,6 +214,32 @@ void main() {
     expect(freeDev.col('transactions')['x']!['amount'], 2);
     // And the cloud keeps the PRO copy untouched.
     expect(SyncMerge.fromCloud(after)['transactions']!['x']!.data!['amount'], 1);
+  });
+
+  test('a new free device still receives the older history in the cloud', () {
+    final Device pro = Device(full), fresh = Device(free);
+    pro.put('transactions', 'old', <String, dynamic>{'date': ago(8)});
+    pro.put('transactions', 'new', <String, dynamic>{'date': ago(0)});
+    final Map<String, dynamic>? cloud = pro.sync(null, t);
+    fresh.sync(cloud, t + 1);
+    expect(fresh.col('transactions').keys.toSet(), <String>{'old', 'new'});
+  });
+
+  test('a downloaded old record can then be edited and deleted for good', () {
+    final Device pro = Device(full), fresh = Device(free);
+    pro.put('transactions', 'old', <String, dynamic>{'date': ago(8), 'amount': 5});
+    Map<String, dynamic>? cloud = pro.sync(null, t);
+    cloud = fresh.sync(cloud, t + 1);
+    fresh.put('transactions', 'old', <String, dynamic>{'date': ago(8), 'amount': 6});
+    cloud = fresh.sync(cloud, t + 2);
+    cloud = fresh.sync(cloud, t + 3);
+    expect(fresh.col('transactions')['old']!['amount'], 6);
+    fresh.remove('transactions', 'old');
+    cloud = fresh.sync(cloud, t + 4);
+    cloud = fresh.sync(cloud, t + 5);
+    expect(fresh.col('transactions'), isEmpty);
+    pro.sync(cloud, t + 6);
+    expect(pro.col('transactions'), isEmpty);
   });
 
   test('full scope behaves exactly as before', () {

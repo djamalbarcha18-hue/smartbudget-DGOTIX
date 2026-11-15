@@ -296,8 +296,8 @@ class SyncController extends Notifier<SyncStatus> {
       final RemoteCopy copy = await remote.pull();
       if (_disposed || _account != account) return;
       final Entries cloudAll = SyncMerge.fromCloud(copy.doc);
-      final Entries cloud = scope.cloudIn(cloudAll, local);
-      final Entries held = scope.cloudHeld(cloudAll, local);
+      final Entries cloud = scope.cloudIn(cloudAll, local, all);
+      final Entries held = scope.cloudHeld(cloudAll, local, all);
       Entries merged = SyncMerge.merge(local, cloud, now: now);
       // What the device holds afterwards: everything it had (so nothing
       // outside the scope is touched) with the merge applied on top.
