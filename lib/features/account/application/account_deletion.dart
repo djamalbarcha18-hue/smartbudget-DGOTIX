@@ -27,11 +27,18 @@ class AccountDeletion {
   AccountDeletion(this._ref);
   final Ref _ref;
 
+  /// The previous attempt for this account got no answer (connection lost).
+  /// The server may have deleted it all the same; a retry then finds the
+  /// account gone (invalid_token) and that counts as deleted (DB-11).
+  String? _unansweredFor;
+
   Future<AccountDeletionResult> deleteAccount() async {
     final String userId = _ref.read(authControllerProvider).user?.id ?? 'guest';
 
     if (AppEnv.hasSupabase && userId != 'guest') {
-      final String? error = await _deleteOnServer();
+      String? error = await _deleteOnServer();
+      if (error == 'invalid_token' && _unansweredFor == userId) error = null;
+      _unansweredFor = error == 'network' ? userId : null;
       if (error == 'active_subscription') {
         return AccountDeletionResult.activeSubscription;
       }

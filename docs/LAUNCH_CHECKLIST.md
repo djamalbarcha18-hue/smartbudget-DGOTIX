@@ -1,6 +1,6 @@
 # قائمة الإطلاق (SmartBudget)
 
-آخر فحص: 2026-11-06. مبنية على ما يُرى في الكود وGitHub. ما يحتاج لوحات
+آخر فحص: 2026-11-15. مبنية على ما يُرى في الكود وGitHub. ما يحتاج لوحات
 Supabase أو Play Console أو Whop أو PayPal مكتوب «تحقق أنت».
 
 ## الجاهز فعلًا
@@ -29,6 +29,12 @@ Supabase أو Play Console أو Whop أو PayPal مكتوب «تحقق أنت».
 - [ ] **نموذج «أمان البيانات» في Play:** يسبق ميزة الصوت (RECORD_AUDIO) والإشعارات. حدّثه، وتأكد أن صفحة الخصوصية على dgotix.com تذكر الصوت.
 - [ ] **رصد الأخطاء:** شغّل `supabase/error_reports.sql` ثم ابنِ بـ`ERROR_REPORTS=true` (التفاصيل في `ERROR_REPORTS.md`)، وراقب «Android vitals» في Play.
 - [ ] **اختبار استعادة النسخة الاحتياطية** (النسخ الليلي يعمل، والاستعادة لم تُجرَّب).
+
+## قاعدة البيانات بعد تحديثات 15 نوفمبر 2026 (تحقق أنت)
+- [ ] **شغّل `supabase/setup_all.sql` كاملًا** في محرر SQL على Supabase (آمن للتكرار، وينفّذ كل شيء في معاملة واحدة). يضيف: اللقطات اليومية للنسخ (`backup_snapshots.sql`)، وتثبيت `search_path` (`search_path_hardening.sql`)، وشواهد الحسابات المحذوفة (`account_tombstones.sql`)، والعدّادات الذرية والتنظيف اليومي (`maintenance.sql`).
+- [ ] بعدها نفّذ `select * from public.scheduled_jobs_health();`: يجب أن تكون `expire-entitlements` و`purge-old-rows` مجدولتين (`scheduled = true`). إن قال «pg_cron unavailable» ففعّل الإضافة pg_cron من Database → Extensions وأعد تشغيل الملف.
+- [ ] **سياسة الخصوصية:** أضف أن بصمة SHA-256 للبريد (لا البريد نفسه) تُحفظ سنتين بعد حذف الحساب لمنع تكرار التجربة المجانية (مصلحة مشروعة لمنع الاحتيال).
+- [ ] **الكوبونات** مخفية حتى يطبّقها `create-checkout` ويسجّل استخدامها؛ تُفتح بـ`--dart-define=COUPONS=true`.
 
 ## قرارات مفتوحة
 - [ ] موعد انتهاء عرض المؤسسين `FOUNDING_OFFER_ENDS_AT` (غير مضبوط).
