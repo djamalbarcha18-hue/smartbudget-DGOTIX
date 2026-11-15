@@ -224,7 +224,7 @@ abstract final class ExpenseTone {
   static const CategoryTone magenta =
       CategoryTone._(Color(0xFF9C2F8C), Color(0xFFD98BD0));
   static const CategoryTone wine =
-      CategoryTone._(Color(0xFF7E2A42), Color(0xFFC2506E));
+      CategoryTone._(Color(0xFF7E2A42), Color(0xFFCC5F7C));
   static const CategoryTone plum =
       CategoryTone._(Color(0xFF6E3B8E), Color(0xFFA98CE0));
 
