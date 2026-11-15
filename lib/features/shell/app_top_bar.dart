@@ -496,9 +496,16 @@ class _PeriodPickerState extends ConsumerState<_PeriodPicker> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 IconButton(
+                  tooltip: MaterialLocalizations.of(context).previousPageTooltip,
                   onPressed:
                       _year > _years.first ? () => setState(() => _year--) : null,
-                  icon: const Icon(Icons.chevron_left_rounded),
+                  // Backwards: left in left-to-right languages, right in
+                  // Arabic (drawn as chosen, never flipped again).
+                  icon: Icon(
+                      Directionality.of(context) == TextDirection.rtl
+                          ? Icons.chevron_right_rounded
+                          : Icons.chevron_left_rounded,
+                      textDirection: TextDirection.ltr),
                 ),
                 SizedBox(
                   width: 96,
@@ -506,10 +513,15 @@ class _PeriodPickerState extends ConsumerState<_PeriodPicker> {
                       textAlign: TextAlign.center, style: t.titleLarge),
                 ),
                 IconButton(
+                  tooltip: MaterialLocalizations.of(context).nextPageTooltip,
                   onPressed: _year < _years.last
                       ? () => setState(() => _year++)
                       : null,
-                  icon: const Icon(Icons.chevron_right_rounded),
+                  icon: Icon(
+                      Directionality.of(context) == TextDirection.rtl
+                          ? Icons.chevron_left_rounded
+                          : Icons.chevron_right_rounded,
+                      textDirection: TextDirection.ltr),
                 ),
               ],
             ),
@@ -1077,6 +1089,7 @@ class _AlertDetailDialog extends StatelessWidget {
                   const SizedBox(width: DsSpacing.md),
                   Expanded(child: Text(v.title, style: t.titleLarge)),
                   IconButton(
+                    tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                     onPressed: () => Navigator.of(context).pop(),
                     icon: Icon(Icons.close_rounded, color: c.textMuted),
                   ),

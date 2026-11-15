@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/design_system/components/forward_chevron.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -124,8 +125,7 @@ class MetalsHomeCard extends ConsumerWidget {
                       ),
                     ),
                   ),
-                Icon(Icons.chevron_right_rounded,
-                    color: ink.withValues(alpha: 0.6)),
+                ForwardChevron(color: ink.withValues(alpha: 0.6)),
               ],
             ),
             const SizedBox(height: DsSpacing.sm),

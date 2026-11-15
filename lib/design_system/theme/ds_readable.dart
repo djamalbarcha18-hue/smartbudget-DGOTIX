@@ -70,8 +70,18 @@ class _BoostedScaler extends TextScaler {
   final TextScaler inner;
   final double factor;
 
+  /// The phone boost stops at twice the base size (at 200% it would make
+  /// 230%, and cards with a fixed height overflow); a larger size the user
+  /// chose themselves is still honoured.
+  static const double maxScale = 2.0;
+
   @override
-  double scale(double fontSize) => inner.scale(fontSize * factor);
+  double scale(double fontSize) {
+    final double boosted = inner.scale(fontSize * factor);
+    final double own = inner.scale(fontSize);
+    final double cap = own > fontSize * maxScale ? own : fontSize * maxScale;
+    return boosted > cap ? cap : boosted;
+  }
 
   @override
   // ignore: deprecated_member_use

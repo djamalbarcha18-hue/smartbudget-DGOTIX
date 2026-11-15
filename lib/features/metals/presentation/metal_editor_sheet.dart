@@ -188,6 +188,7 @@ class _MetalEditorSheetState extends ConsumerState<MetalEditorSheet> {
                         ),
                       ),
                       IconButton(
+                        tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                         onPressed: () => Navigator.of(context).pop(),
                         icon: Icon(Icons.close_rounded, color: c.textMuted),
                       ),
@@ -397,6 +398,7 @@ class _MetalEditorSheetState extends ConsumerState<MetalEditorSheet> {
                             const SizedBox(height: 40)
                           else
                             IconButton(
+                              tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                               icon:
                                   Icon(Icons.close_rounded, color: c.textMuted),
                               onPressed: () => setState(() => _boughtOn = null),

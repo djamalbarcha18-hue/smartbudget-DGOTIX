@@ -143,6 +143,7 @@ class _MetalSaleSheetState extends ConsumerState<MetalSaleSheet> {
                             Text(l.metalsSellTitle(title), style: t.titleLarge),
                       ),
                       IconButton(
+                        tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                         onPressed: () => Navigator.of(context).pop(),
                         icon: Icon(Icons.close_rounded, color: c.textMuted),
                       ),

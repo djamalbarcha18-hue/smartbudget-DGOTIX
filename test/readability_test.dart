@@ -93,7 +93,6 @@ void main() {
       data: const MediaQueryData(
           size: Size(360, 800), textScaler: TextScaler.linear(1.3)),
       child: MaterialApp(
-        useInheritedMediaQuery: true,
         theme: DsTheme.dark(),
         builder: (BuildContext _, Widget? child) => DsReadable(child: child!),
         home: Builder(builder: (BuildContext context) {

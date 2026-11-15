@@ -487,6 +487,7 @@ class _WalletDetails extends ConsumerWidget {
                           ?.copyWith(fontWeight: FontWeight.w700)),
                 ),
                 IconButton(
+                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                   icon: Icon(Icons.close_rounded, color: c.textMuted),
                   onPressed: () => Navigator.of(context).pop(),
                 ),

@@ -128,6 +128,7 @@ class _GoalEditorSheetState extends ConsumerState<GoalEditorSheet> {
                         ),
                       ),
                       IconButton(
+                        tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                         onPressed: () => Navigator.of(context).pop(),
                         icon: Icon(Icons.close_rounded, color: c.textMuted),
                       ),

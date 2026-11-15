@@ -35,7 +35,7 @@ void main() {
       expect(c.code, 'XYZ');
       expect(c.symbol, 'XYZ');
       expect(Currencies.isKnown('XYZ'), isFalse);
-      expect(Money(1250, 'XYZ').currency.code, 'XYZ');
+      expect(const Money(1250, 'XYZ').currency.code, 'XYZ');
     });
 
     test('listed currencies are unchanged', () {

@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/design_system/components/forward_chevron.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/ds_section_header.dart';
@@ -462,8 +463,7 @@ class _PickPanel extends StatelessWidget {
                       const SizedBox(width: DsSpacing.md),
                       Expanded(
                           child: Text(rewardName(l, r), style: t.bodyMedium)),
-                      Icon(Icons.chevron_right_rounded,
-                          size: 20, color: c.textFaint),
+                      ForwardChevron(size: 20, color: c.textFaint),
                     ],
                   ),
                 ),

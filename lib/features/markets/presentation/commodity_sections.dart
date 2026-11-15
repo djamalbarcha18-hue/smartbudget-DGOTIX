@@ -44,7 +44,7 @@ class MarketCategoryTabs extends ConsumerWidget {
         children: <Widget>[
           for (final MarketCategory cat in MarketCategory.values)
             Padding(
-              padding: const EdgeInsets.only(right: DsSpacing.sm),
+              padding: const EdgeInsetsDirectional.only(end: DsSpacing.sm),
               child: Material(
                 color: cat == selected ? c.brand : c.surfaceMuted,
                 borderRadius: DsRadius.brPill,

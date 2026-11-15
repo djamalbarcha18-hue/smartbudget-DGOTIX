@@ -395,6 +395,7 @@ class HealthDetailsDialog extends ConsumerWidget {
                         icon: Icons.monitor_heart_outlined),
                   ),
                   IconButton(
+                    tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                     onPressed: () => Navigator.of(context).pop(),
                     icon: Icon(Icons.close_rounded, color: c.textMuted),
                   ),

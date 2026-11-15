@@ -302,6 +302,7 @@ class _LanguageSheetState extends ConsumerState<_LanguageSheet> {
                     suffixIcon: _query.text.isEmpty
                         ? null
                         : IconButton(
+                            tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                             icon: Icon(Icons.close_rounded,
                                 size: 18, color: c.textMuted),
                             onPressed: () => setState(() => _query.clear()),

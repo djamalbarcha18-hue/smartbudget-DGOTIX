@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:smartbudget/design_system/components/forward_chevron.dart';
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -297,7 +298,7 @@ class _ResourceRow extends StatelessWidget {
               child: Text(label,
                   style: Theme.of(context).textTheme.bodyMedium),
             ),
-            Icon(Icons.chevron_right_rounded, size: 18, color: c.textFaint),
+            ForwardChevron(size: 18, color: c.textFaint),
           ],
         ),
       ),

@@ -146,6 +146,7 @@ class _DebtEditorSheetState extends ConsumerState<DebtEditorSheet> {
                         ),
                       ),
                       IconButton(
+                        tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
                         onPressed: () => Navigator.of(context).pop(),
                         icon: Icon(Icons.close_rounded, color: c.textMuted),
                       ),
