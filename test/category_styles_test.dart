@@ -77,11 +77,11 @@ void chartColorTests() {
           const <String, CustomCategoryLook>{},
           c,
           Brightness.light);
-      expect(out[0], familyColor(CategoryFamily.food, c, Brightness.light));
-      // Same family (food): not the same colour as its neighbour.
-      expect(out[1], isNot(out[0]));
-      expect(out[2], familyColor(CategoryFamily.basics, c, Brightness.light));
-      expect(out[3], familyColor(CategoryFamily.mobility, c, Brightness.light));
+      // Each built-in category keeps its own colour, the same as its badge.
+      expect(out[0], ExpenseTone.orange.light);
+      expect(out[1], ExpenseTone.red.light);
+      expect(out[2], ExpenseTone.brown.light);
+      expect(out[3], ExpenseTone.wine.light);
       expect(out.toSet().length, 4);
     });
 
@@ -128,6 +128,19 @@ void chartColorTests() {
       }
     });
 
+    test('expense tones are warm; every built-in category has a tone', () {
+      for (final CategoryTone t in ExpenseTone.all) {
+        final double hue = HSLColor.fromColor(t.light).hue;
+        // Reds, oranges, ambers, browns, pinks and plums: no greens or blues.
+        expect(hue < 50 || hue > 270, isTrue, reason: '$hue');
+      }
+      for (final String cat in <String>['الطعام', 'السكن', 'الفواتير']) {
+        expect(categoryToneOf(cat, TransactionType.expense), isNotNull);
+      }
+      expect(categoryToneOf('راتب أساسي', TransactionType.income),
+          IncomeTone.green);
+    });
+
     test('income charts use the income colours', () {
       final List<Color> out = chartColorsFor(
           <String>['راتب أساسي'],
@@ -136,7 +149,7 @@ void chartColorTests() {
           c,
           Brightness.light);
       expect(
-          out.single, familyColor(CategoryFamily.income, c, Brightness.light));
+          out.single, IncomeTone.green.light);
     });
   });
 }

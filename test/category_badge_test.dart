@@ -61,6 +61,15 @@ void contrastTests() {
             Color.alphaBlend(fg.withValues(alpha: kBadgeTint), c.surface);
         expect(ratio(fg, bg), greaterThanOrEqualTo(3.0), reason: '$f $b');
       }
+      for (final CategoryTone t in <CategoryTone>[
+        ...ExpenseTone.all,
+        ...IncomeTone.all,
+      ]) {
+        final Color fg = t.of(b);
+        final Color bg =
+            Color.alphaBlend(fg.withValues(alpha: kBadgeTint), c.surface);
+        expect(ratio(fg, bg), greaterThanOrEqualTo(3.0), reason: '$fg $b');
+      }
     });
   });
 }
