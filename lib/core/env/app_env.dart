@@ -169,6 +169,12 @@ abstract final class AppEnv {
   static const bool coupons =
       bool.fromEnvironment('COUPONS', defaultValue: false);
 
+  /// The calculator's business tools (margin, bill split, recording the
+  /// result) require PRO only when this is on. Off for now, so they can be
+  /// tried by everyone; turn on with --dart-define=CALC_PRO_GATE=true.
+  static const bool calculatorProGate =
+      bool.fromEnvironment('CALC_PRO_GATE', defaultValue: false);
+
   /// The settings' developer tools (sample data, plan preview): in debug
   /// builds, or on the web app opened with `?dev=1` — never shown to users
   /// otherwise, and never in the store app.

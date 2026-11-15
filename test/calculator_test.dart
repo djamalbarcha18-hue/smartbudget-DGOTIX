@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartbudget/core/localization/fallback_localizations.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_glass.dart';
+import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/features/calculator/domain/calc_tools.dart';
 import 'package:smartbudget/features/calculator/domain/calculator_engine.dart';
 import 'package:smartbudget/features/calculator/presentation/calculator_page.dart';
 import 'package:smartbudget/features/shell/nav_destinations.dart';
@@ -176,6 +178,49 @@ void main() {
     expect(AppMenu.of(AppSection.calculator)?.icon, Icons.calculate_outlined);
   });
 
+  group('tools', () {
+    CalcNumber n(String v) => CalcNumber.parse(v)!;
+
+    test('tax added and taken out (19%)', () {
+      final (CalcNumber tax, CalcNumber total) = CalcTools.addTax(n('1000'), n('19'));
+      expect(tax, n('190'));
+      expect(total, n('1190'));
+      final (CalcNumber net, CalcNumber inside) =
+          CalcTools.extractTax(n('1190'), n('19'))!;
+      expect(net, n('1000'));
+      expect(inside, n('190'));
+    });
+
+    test('discount', () {
+      final (CalcNumber saved, CalcNumber after) =
+          CalcTools.discount(n('2500'), n('20'));
+      expect(saved, n('500'));
+      expect(after, n('2000'));
+    });
+
+    test('markup on cost and margin on price', () {
+      expect(CalcTools.markup(n('1000'), n('20')), (n('1200'), n('200')));
+      expect(CalcTools.marginPrice(n('1000'), n('20')), (n('1250'), n('250')));
+      expect(CalcTools.marginPrice(n('1000'), n('100')), isNull);
+    });
+
+    test('bill split', () {
+      expect(CalcTools.split(n('100'), 3)!.plain(decimals: 2), '33.33');
+      expect(CalcTools.split(n('100'), 0), isNull);
+    });
+
+    test('they work on the number shown, the answer so far included', () {
+      expect(run('250').current, n('250'));
+      expect(run('200+50').current, n('250'));
+      expect(run('200+50=').current, n('250'));
+      expect(run('5/0=').current, isNull);
+    });
+
+    test('open to everyone while the Pro lock is off', () {
+      expect(AppEnv.calculatorProGate, isFalse);
+    });
+  });
+
   Future<void> pump(WidgetTester tester,
       {String locale = 'en', bool dark = false}) async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
@@ -272,6 +317,26 @@ void main() {
     await tap(tester, 'd1');
     await tap(tester, 'd2');
     expect(display(tester), '12');
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('tax mode: 1,000 at 19% gives 1,190, and it can be used',
+      (WidgetTester tester) async {
+    await pump(tester);
+    for (final String k in <String>['d1', 'd0', 'd0', 'd0']) {
+      await tap(tester, k);
+    }
+    await tester.ensureVisible(find.byKey(const Key('calc-mode-tax')));
+    await tester.tap(find.byKey(const Key('calc-mode-tax')));
+    await tester.pumpAndSettle();
+    String tool(String id) =>
+        tester.widget<Text>(find.byKey(Key('calc-tool-$id'))).data!;
+    expect(tool('tax-amount'), '190');
+    expect(tool('tax-total'), '1,190');
+    expect(tool('tax-net'), '840.34');
+    await tester.tap(find.byKey(const Key('calc-mode-split')));
+    await tester.pumpAndSettle();
+    expect(tool('split-each'), '500');
     expect(tester.takeException(), isNull);
   });
 }

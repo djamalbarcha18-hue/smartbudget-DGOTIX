@@ -9,6 +9,7 @@ import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/calculator/domain/calculator_engine.dart';
+import 'package:smartbudget/features/calculator/presentation/calculator_tools.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// A light calculator for everyday sums: on the device, nothing stored, no
@@ -42,6 +43,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
   /// Enter, Backspace, Delete and Escape.
   KeyEventResult _onKey(FocusNode _, KeyEvent e) {
     if (e is! KeyDownEvent && e is! KeyRepeatEvent) {
+      return KeyEventResult.ignored;
+    }
+    // Typing in a field (a tool's rate) is that field's, not the keypad's.
+    if (FocusManager.instance.primaryFocus != _focus) {
       return KeyEventResult.ignored;
     }
     final LogicalKeyboardKey k = e.logicalKey;
@@ -145,6 +150,12 @@ class _CalculatorPageState extends State<CalculatorPage> {
                           ),
                         ],
                       ),
+                    ),
+                    const SizedBox(height: DsSpacing.lg),
+                    CalculatorTools(
+                      state: _state,
+                      onUse: (CalcNumber v) => _state.value =
+                          CalcState(accumulator: v, result: true),
                     ),
                   ],
                 ),

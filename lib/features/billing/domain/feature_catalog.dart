@@ -77,6 +77,11 @@ enum Feature {
   /// Priority support.
   prioritySupport,
 
+  /// The calculator's business tools: selling price from a cost (markup and
+  /// margin), splitting a bill, and recording the result as a transaction.
+  /// PRO once AppEnv.calculatorProGate is on; open to all until then.
+  calculatorPro,
+
   /// Smart salary split: suggests a per-category budget from the user's own
   /// recent spending (see features/salary_split).
   salarySplit,
@@ -273,6 +278,10 @@ abstract final class FeatureCatalog {
     ),
     Feature.salarySplit: FeatureRule(
       feature: Feature.salarySplit,
+      minTier: Plan.pro,
+    ),
+    Feature.calculatorPro: FeatureRule(
+      feature: Feature.calculatorPro,
       minTier: Plan.pro,
     ),
     Feature.proThemes: FeatureRule(

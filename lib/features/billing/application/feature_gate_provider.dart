@@ -26,6 +26,7 @@ int _usedFor(Ref ref, Feature f) {
     case Feature.portfolioFull:
     case Feature.prioritySupport:
     case Feature.salarySplit:
+    case Feature.calculatorPro:
     case Feature.smartAlerts:
     case Feature.tripPhotoCard:
     case Feature.proThemes:

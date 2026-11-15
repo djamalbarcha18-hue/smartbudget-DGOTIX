@@ -164,6 +164,7 @@ void main() {
         Feature.cloudSyncFull,
         Feature.healthDetails,
         Feature.salarySplit,
+        Feature.calculatorPro,
         Feature.reportTrends,
         Feature.smartAlerts,
         Feature.portfolioFull,

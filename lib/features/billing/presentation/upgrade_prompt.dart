@@ -41,6 +41,7 @@ String featureTitle(AppLocalizations l, Feature f) => switch (f) {
       Feature.healthDetails => l.featHealthDetails,
       Feature.prioritySupport => l.planFeatPriority,
       Feature.salarySplit => l.planFeatSalarySplit,
+      Feature.calculatorPro => l.featCalculatorPro,
       Feature.smartAlerts => l.featSmartAlerts,
       Feature.tripPhotoCard => l.featTripPhotoCard,
       Feature.proThemes => l.featProThemes,

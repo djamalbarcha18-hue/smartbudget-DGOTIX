@@ -53,6 +53,8 @@ class CalcNumber {
 
   CalcNumber get negated => CalcNumber._(-units);
 
+  CalcNumber get abs => CalcNumber._(units.abs());
+
   /// [this] per cent.
   CalcNumber get percent => CalcNumber._(_div(units, BigInt.from(100)));
 
