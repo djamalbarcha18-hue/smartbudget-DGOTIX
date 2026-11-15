@@ -204,14 +204,21 @@ List<Color> chartColorsFor(List<String> categories, TransactionType type,
   final bool dark = b == Brightness.dark;
   final List<Color> extras = dark ? _chartExtrasDark : _chartExtrasLight;
   final Color other = chartOtherColor(b);
+  final List<CategoryFamily> families = <CategoryFamily>[
+    for (final String cat in categories)
+      resolveCategoryStyle(cat, type, looks).family,
+  ];
   final Set<CategoryFamily> seen = <CategoryFamily>{};
   final List<Color> used = <Color>[];
+  // An extra colour also keeps away from the families still to come, so it
+  // doesn't take the look of a later slice (indigo before purple).
   double distance(Color x) => <double>[
         for (final Color u in used) _colorDistance(x, u),
+        for (final CategoryFamily f in families.toSet())
+          if (!seen.contains(f)) _colorDistance(x, familyColor(f, c, b)),
         _colorDistance(x, other),
       ].reduce(math.min);
-  for (final String cat in categories) {
-    final CategoryFamily f = resolveCategoryStyle(cat, type, looks).family;
+  for (final CategoryFamily f in families) {
     final Color base = familyColor(f, c, b);
     Color pick;
     if (!seen.contains(f) &&

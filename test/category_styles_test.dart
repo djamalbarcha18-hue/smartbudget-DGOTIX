@@ -98,6 +98,36 @@ void chartColorTests() {
           familyColor(CategoryFamily.lifestyle, c, Brightness.light));
     });
 
+    test('one family on the ring: distinct colours, none like Other', () {
+      for (final Brightness b in Brightness.values) {
+        // Housing, bills, internet and repairs are all "basics" (blue);
+        // instalments and insurance are "commitments" (slate).
+        final List<Color> out = chartColorsFor(
+            <String>[
+              'السكن',
+              'الفواتير',
+              'الاتصالات والإنترنت',
+              'الأقساط والقروض',
+              'التأمين',
+              'الصيانة والإصلاح',
+            ],
+            TransactionType.expense,
+            const <String, CustomCategoryLook>{},
+            c,
+            b);
+        expect(out.toSet().length, out.length);
+        expect(out, isNot(contains(chartOtherColor(b))));
+        for (final Color x in out) {
+          final HSLColor h = HSLColor.fromColor(x);
+          final HSLColor o = HSLColor.fromColor(chartOtherColor(b));
+          // Not a grey of the same lightness as Other.
+          expect(
+              (h.lightness - o.lightness).abs() > 0.08 || h.saturation > 0.25,
+              isTrue);
+        }
+      }
+    });
+
     test('income charts use the income colours', () {
       final List<Color> out = chartColorsFor(
           <String>['راتب أساسي'],
