@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/storage/record_lists.dart';
 import 'package:smartbudget/core/storage/stored_list.dart';
+import 'package:smartbudget/core/storage/read_health.dart';
 
 /// One step of the database's layout: brings version `i` to `i + 1`.
 typedef LocalDbStep = void Function(Database db, Transaction txn);
@@ -156,7 +157,10 @@ class LocalDbRecordLists implements RecordLists {
     _known[key] = <String, _Known>{
       for (final _Row r in rows) r.id: _Known(r.seq, _canon(r.data)),
     };
-    if (unreadable.isNotEmpty) await _setAside(db, key, unreadable);
+    if (unreadable.isNotEmpty) {
+      ReadHealth.lost(key);
+      await _setAside(db, key, unreadable);
+    }
     return out;
   }
 

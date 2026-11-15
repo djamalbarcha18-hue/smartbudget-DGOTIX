@@ -32,6 +32,8 @@ import 'package:smartbudget/features/transactions/application/transactions_contr
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 import 'package:smartbudget/features/billing/application/feature_gate_provider.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/core/storage/read_health.dart';
+import 'package:smartbudget/features/sync/domain/sync_guard.dart';
 
 enum SyncPhase { off, idle, syncing, offline, error }
 
@@ -252,14 +254,23 @@ class SyncController extends Notifier<SyncStatus> {
     final SyncScope scope =
         _full ? const SyncScope.full() : SyncScope.free(AppClock.now());
     Records all = await _records(backup);
-    final Entries ledger =
-        scope.pruneLedger(_ledger(prefs.getString(ledgerKey)), all);
+    final Entries? stored = _ledger(prefs.getString(ledgerKey));
+    final Entries ledger = scope.pruneLedger(
+        stored ?? <String, Map<String, SyncEntry>>{}, all);
     final Records records = scope.local(all, ledger);
     if (!ref.read(baseCurrencyProvider.notifier).isChosen &&
         ledger['settings']?['baseCurrency'] == null) {
       records['settings']?.remove('baseCurrency');
     }
     Entries local = SyncMerge.detect(ledger, records, now);
+    // A ledger that couldn't be read says nothing about when things changed:
+    // the device's records count as the oldest, so newer cloud edits win.
+    if (stored == null && _ledgerUnreadable(prefs.getString(ledgerKey))) {
+      local = SyncGuard.untimed(local);
+    }
+    // Only deletions the device can trust are sent to the other devices.
+    local = SyncGuard.withoutSuspectDeletions(ledger, local,
+        readLoss: ReadHealth.lostSomething);
     await prefs.setString(ledgerKey, jsonEncode(SyncMerge.ledgerToJson(local)));
 
     if (ref.read(isOfflineProvider)) {
@@ -303,6 +314,15 @@ class SyncController extends Notifier<SyncStatus> {
       // outside the scope is touched) with the merge applied on top.
       final Records target = scope.compose(all, merged);
       if (!SyncMerge.sameRecords(all, target)) {
+        // Something was saved on this device while the cloud copy was
+        // downloading: writing [target] now would erase it. Start over, so
+        // the new change is noticed and merged too.
+        final Records fresh = await _records(backup);
+        if (_disposed || _account != account) return;
+        if (!_sameData(fresh, all)) {
+          _again = true;
+          return;
+        }
         _quietUntil = AppClock.now().add(const Duration(seconds: 3));
         await backup.replaceAll(
           BackupData.fromJson(SyncMerge.backupFromRecords(target)),
@@ -348,12 +368,28 @@ class SyncController extends Notifier<SyncStatus> {
   static Future<Records> _records(BackupService backup) async =>
       SyncMerge.recordsFromBackup((await backup.snapshot()).toJson());
 
-  static Entries _ledger(String? raw) {
+  /// Whether [a] and [b] hold the same records, the settings aside (the round
+  /// may leave the suggested base currency out of its copy on purpose).
+  static bool _sameData(Records a, Records b) {
+    Records data(Records r) => <String, Map<String, Map<String, dynamic>>>{
+          for (final MapEntry<String, Map<String, Map<String, dynamic>>> c
+              in r.entries)
+            if (c.key != 'settings') c.key: c.value,
+        };
+    return SyncMerge.sameRecords(data(a), data(b));
+  }
+
+  /// The stored ledger; empty when there is none yet, null when the stored
+  /// text couldn't be read.
+  static Entries? _ledger(String? raw) {
     if (raw == null || raw.isEmpty) return <String, Map<String, SyncEntry>>{};
     try {
       return SyncMerge.ledgerFromJson(jsonDecode(raw) as Map<String, dynamic>);
     } catch (_) {
-      return <String, Map<String, SyncEntry>>{};
+      return null;
     }
   }
+
+  static bool _ledgerUnreadable(String? raw) =>
+      raw != null && raw.isNotEmpty && _ledger(raw) == null;
 }

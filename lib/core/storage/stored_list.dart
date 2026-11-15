@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smartbudget/core/storage/read_health.dart';
 
 /// Reads a list kept as JSON in SharedPreferences without ever losing it.
 ///
@@ -37,7 +38,10 @@ abstract final class StoredList {
         }
       }
     }
-    if (lost) keepAside(prefs, key, raw);
+    if (lost) {
+      keepAside(prefs, key, raw);
+      ReadHealth.lost(key);
+    }
     return out;
   }
 

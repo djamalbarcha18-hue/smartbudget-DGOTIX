@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:smartbudget/core/storage/read_health.dart';
 import 'package:smartbudget/core/storage/record_lists.dart';
 import 'package:smartbudget/core/storage/save_health.dart';
 
@@ -50,6 +51,7 @@ class LocalListStore<T> {
         _sort();
       }
     } catch (_) {
+      ReadHealth.lost(key); // sync must not read this as deletions
       // Corrupt/absent store — start empty.
     }
   }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:smartbudget/core/storage/read_health.dart';
 import 'package:smartbudget/core/storage/record_lists.dart';
 import 'package:smartbudget/core/storage/save_health.dart';
 
@@ -46,6 +47,7 @@ class FakeGoalRepository implements GoalRepository {
         _sort();
       }
     } catch (_) {
+      ReadHealth.lost(_key); // sync must not read this as deletions
       // Start empty.
     }
   }
