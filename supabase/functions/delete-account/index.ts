@@ -91,6 +91,12 @@ Deno.serve(async (req: Request) => {
     const paid = bills(sub) || (subs ?? []).some(bills);
     if (paid) return jsonResponse({ error: "active_subscription" }, 409, cors);
 
+    // Kept under a hash of the e-mail, so signing up again doesn't bring
+    // back the trial or the free lifetime allowances (account_tombstones.sql).
+    // Not installed yet or failing: the deletion goes on.
+    try {
+      await db.rpc("record_account_tombstone", { p_user: userId });
+    } catch (_) { /* non-fatal */ }
     const { error } = await db.auth.admin.deleteUser(userId);
     if (error) return jsonResponse({ error: "delete_failed" }, 500, cors);
     // Numbers only (no questions or answers), but they were this user's.

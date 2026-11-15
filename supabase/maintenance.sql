@@ -63,6 +63,7 @@ create index if not exists referrals_referrer_idx on referrals (referrer_id);
 --   error_reports_daily 180 days   (anonymous daily counts)
 --   *_usage_monthly      24 months (quota history)
 --   usage_pools          24 months
+--   account_tombstones   24 months (account_tombstones.sql)
 create or replace function public.purge_old_rows() returns jsonb
 language plpgsql
 security definer
@@ -70,7 +71,7 @@ set search_path = public, pg_temp
 as $$
 declare
   n_log int; n_coupon int; n_rate int; n_billing int; n_errors int;
-  n_ai int; n_ocr int; n_pools int;
+  n_ai int; n_ocr int; n_pools int; n_tomb int;
   oldest_month text := to_char(now() - interval '24 months', 'YYYY-MM');
 begin
   delete from ai_request_log where created_at < now() - interval '90 days';
@@ -89,11 +90,14 @@ begin
   get diagnostics n_ocr = row_count;
   delete from usage_pools where month < oldest_month;
   get diagnostics n_pools = row_count;
+  delete from account_tombstones where deleted_at < now() - interval '24 months';
+  get diagnostics n_tomb = row_count;
   return jsonb_build_object(
     'ai_request_log', n_log, 'coupon_attempts', n_coupon,
     'rate_limits', n_rate, 'billing_events', n_billing,
     'error_reports_daily', n_errors, 'ai_usage_monthly', n_ai,
-    'ocr_usage_monthly', n_ocr, 'usage_pools', n_pools);
+    'ocr_usage_monthly', n_ocr, 'usage_pools', n_pools,
+    'account_tombstones', n_tomb);
 end $$;
 
 revoke all on function public.purge_old_rows() from public, anon, authenticated;
