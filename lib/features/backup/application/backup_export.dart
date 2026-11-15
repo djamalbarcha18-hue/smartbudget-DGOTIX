@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/backup/application/backup_controller.dart';
 import 'package:smartbudget/features/backup/application/backup_status_controller.dart';
 import 'package:smartbudget/features/backup/data/file_io.dart';
+import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 String _stamp(DateTime n) {
   String two(int v) => v.toString().padLeft(2, '0');
@@ -20,4 +22,31 @@ Future<void> exportFullBackup(WidgetRef ref) async {
     mime: 'application/json;charset=utf-8',
   );
   await ref.read(backupStatusProvider.notifier).markBackedUp();
+}
+
+/// Asks for a backup file, imports it and says what was added. Shared by
+/// Settings and the welcome card (an account coming back with its file).
+/// Returns false when the user cancelled.
+Future<bool> importBackupFile(
+  WidgetRef ref,
+  ScaffoldMessengerState messenger,
+  AppLocalizations l,
+) async {
+  try {
+    final String? raw = await pickTextFile();
+    if (raw == null) return false; // user cancelled
+    final ImportResult res =
+        await ref.read(backupServiceProvider).importJson(raw);
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(res.isEmpty
+            ? l.importEmpty
+            : l.importDoneAll(
+                res.transactionsAdded, res.budgetsAdded, res.plansAdded)),
+      ),
+    );
+  } catch (_) {
+    messenger.showSnackBar(SnackBar(content: Text(l.importFailed)));
+  }
+  return true;
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/features/backup/application/backup_export.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
@@ -59,15 +60,39 @@ class DeleteAccountSection extends ConsumerWidget {
   }
 }
 
-class _ConfirmDialog extends StatefulWidget {
+class _ConfirmDialog extends ConsumerStatefulWidget {
   const _ConfirmDialog();
 
   @override
-  State<_ConfirmDialog> createState() => _ConfirmDialogState();
+  ConsumerState<_ConfirmDialog> createState() => _ConfirmDialogState();
 }
 
-class _ConfirmDialogState extends State<_ConfirmDialog> {
+class _ConfirmDialogState extends ConsumerState<_ConfirmDialog> {
   final TextEditingController _word = TextEditingController();
+
+  /// The copy saved from this dialog: null = not yet, true = saved,
+  /// false = it failed.
+  bool? _saved;
+  bool _saving = false;
+
+  /// The full backup file, offered before anything is deleted, on every plan:
+  /// the data is the user's. On a phone the save dialog lets them put it in
+  /// Google Drive; the welcome card restores it on a new account.
+  Future<void> _saveCopy() async {
+    setState(() => _saving = true);
+    bool ok;
+    try {
+      await exportFullBackup(ref);
+      ok = true;
+    } catch (_) {
+      ok = false;
+    }
+    if (!mounted) return;
+    setState(() {
+      _saving = false;
+      _saved = ok;
+    });
+  }
 
   @override
   void dispose() {
@@ -95,6 +120,23 @@ class _ConfirmDialogState extends State<_ConfirmDialog> {
           children: <Widget>[
             Text(l.deleteAccountBody,
                 style: t.bodyMedium?.copyWith(height: 1.5)),
+            const SizedBox(height: DsSpacing.md),
+            OutlinedButton.icon(
+              key: const ValueKey<String>('delete-save-copy'),
+              onPressed: _saving ? null : _saveCopy,
+              icon: Icon(
+                  _saved == true
+                      ? Icons.check_circle_outline_rounded
+                      : Icons.download_rounded,
+                  size: 18),
+              label: Text(l.backupNow),
+            ),
+            if (_saved != null) ...<Widget>[
+              const SizedBox(height: DsSpacing.xs),
+              Text(_saved! ? l.backupDone : l.backupFailed,
+                  style: t.bodySmall?.copyWith(
+                      color: _saved! ? c.textMuted : c.expense)),
+            ],
             const SizedBox(height: DsSpacing.lg),
             Text(l.lockEraseTypeHint(word),
                 style: t.labelMedium?.copyWith(color: c.textMuted)),

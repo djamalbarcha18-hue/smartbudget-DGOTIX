@@ -100,6 +100,16 @@ void main() {
     expect(find.text('3 of 4 done'), findsOneWidget);
   });
 
+  testWidgets('a new account is offered to restore a backup file',
+      (WidgetTester tester) async {
+    await _pump(tester);
+    expect(find.byKey(const ValueKey<String>('onb-restore')), findsOneWidget);
+    expect(find.text('Import backup'), findsOneWidget);
+    // Once something is recorded the account is in use: no restore prompt.
+    await _pump(tester, income: true);
+    expect(find.byKey(const ValueKey<String>('onb-restore')), findsNothing);
+  });
+
   testWidgets('not for this user: nothing is drawn',
       (WidgetTester tester) async {
     await _pump(tester, visible: false);

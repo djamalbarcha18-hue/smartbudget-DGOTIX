@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/features/backup/application/backup_export.dart';
 import 'package:smartbudget/design_system/components/currency_flag.dart';
+
 import 'package:smartbudget/design_system/components/ds_button.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
@@ -168,6 +170,18 @@ class WelcomeCard extends ConsumerWidget {
                       ),
                     ),
                   ],
+                ),
+                // Coming back with a backup file (e.g. saved before deleting
+                // an old account): everything returns in one step.
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: TextButton.icon(
+                    key: const ValueKey<String>('onb-restore'),
+                    onPressed: () => importBackupFile(
+                        ref, ScaffoldMessenger.of(context), l),
+                    icon: const Icon(Icons.restore_rounded, size: 16),
+                    label: Text(l.importJson),
+                  ),
                 ),
               ],
               const SizedBox(height: DsSpacing.sm),
