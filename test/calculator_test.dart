@@ -334,11 +334,16 @@ void main() {
     expect(tool('tax-amount'), '190');
     expect(tool('tax-total'), '1,190');
     expect(tool('tax-net'), '840.34');
+    // The arrow beside a figure puts it on the calculator.
+    await tester.ensureVisible(find.byKey(const Key('calc-use-tax-total')));
+    await tester.tap(find.byKey(const Key('calc-use-tax-total')));
+    await tester.pumpAndSettle();
+    expect(display(tester), '1,190');
     await tester.ensureVisible(find.byKey(const Key('calc-mode-split')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('calc-mode-split')));
     await tester.pumpAndSettle();
-    expect(tool('split-each'), '500');
+    expect(tool('split-each'), '595');
     expect(tester.takeException(), isNull);
   });
 }

@@ -377,10 +377,34 @@ class _ToolRow extends StatelessWidget {
               key: id == null ? null : Key('calc-tool-$id'),
               textDirection: TextDirection.ltr,
               style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-          IconButton(
-            tooltip: useLabel,
-            onPressed: onUse,
-            icon: Icon(Icons.input_rounded, size: 18, color: c.brand),
+          const SizedBox(width: DsSpacing.sm),
+          // Sends this figure up to the calculator, to go on from it: a
+          // clear brand-blue button, visible in every theme.
+          Tooltip(
+            message: useLabel,
+            child: Semantics(
+              button: true,
+              label: useLabel,
+              excludeSemantics: true,
+              child: Material(
+                color: c.brand.withValues(alpha: 0.16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: DsRadius.brMd,
+                  side: BorderSide(color: c.brand.withValues(alpha: 0.55)),
+                ),
+                child: InkWell(
+                  key: id == null ? null : Key('calc-use-$id'),
+                  borderRadius: DsRadius.brMd,
+                  onTap: onUse,
+                  child: SizedBox(
+                    width: 44,
+                    height: 40,
+                    child: Icon(Icons.arrow_upward_rounded,
+                        size: 22, color: c.brand),
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
