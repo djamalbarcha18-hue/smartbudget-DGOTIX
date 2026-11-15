@@ -337,7 +337,8 @@ class _BreakdownPageState extends ConsumerState<_BreakdownPage>
         looks,
         c,
         Theme.of(context).brightness);
-    final Color otherColor = chartOtherColor(Theme.of(context).brightness);
+    final Color otherColor = chartOtherColor(Theme.of(context).brightness,
+        type: widget.type);
     Color colorOf(int i) => i < _topN ? familyColors[i] : otherColor;
     int sliceOf(int i) => i < _topN ? i : _topN;
 

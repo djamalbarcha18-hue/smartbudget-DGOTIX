@@ -197,8 +197,9 @@ CategoryStyle resolveCategoryStyle(String category, TransactionType type,
 /// everywhere (its badge, the list, the chart), and the categories that
 /// often sit side by side on a chart (food, housing, bills, transport,
 /// restaurants...) have different ones. Expenses use warm tones only (reds,
-/// oranges, pinks, browns); income uses a wider, mostly cool set led by
-/// green. A category the user made takes the colour of its family.
+/// oranges, pinks, browns); income uses cool ones only (greens, teal, blues),
+/// so a glance tells spending from income. A category the user made takes
+/// the colour of its family.
 class CategoryTone {
   const CategoryTone._(this.light, this.dark);
 
@@ -233,36 +234,23 @@ abstract final class ExpenseTone {
   ];
 }
 
-/// Tones for income: green first (steady pay), then a varied set.
+/// Cool tones for income: greens, teal, sky and blues.
 abstract final class IncomeTone {
+  static const CategoryTone emerald =
+      CategoryTone._(Color(0xFF1E8A4C), Color(0xFF4CC77A));
   static const CategoryTone green =
-      CategoryTone._(Color(0xFF2F8F3E), Color(0xFF7CC47F));
-  static const CategoryTone blue =
-      CategoryTone._(Color(0xFF3B6FD4), Color(0xFF8AB4F8));
-  static const CategoryTone orange =
-      CategoryTone._(Color(0xFFC2631F), Color(0xFFF0A868));
-  static const CategoryTone purple =
-      CategoryTone._(Color(0xFF7352BE), Color(0xFFB7A1F0));
-  static const CategoryTone pink =
-      CategoryTone._(Color(0xFFBA3F78), Color(0xFFF09AC0));
-  static const CategoryTone slate =
-      CategoryTone._(Color(0xFF55657B), Color(0xFFA3B1C6));
+      CategoryTone._(Color(0xFF5E8F1E), Color(0xFFA8D46B));
   static const CategoryTone teal =
-      CategoryTone._(Color(0xFF0B8577), Color(0xFF4FB8A8));
-  static const CategoryTone coral =
-      CategoryTone._(Color(0xFFD1493F), Color(0xFFF08A80));
-  static const CategoryTone olive =
-      CategoryTone._(Color(0xFF6E7E1A), Color(0xFFB5C25A));
+      CategoryTone._(Color(0xFF0B8577), Color(0xFF4FC4B4));
   static const CategoryTone sky =
-      CategoryTone._(Color(0xFF1E88B8), Color(0xFF6CC0E5));
-  static const CategoryTone brown =
-      CategoryTone._(Color(0xFF9A5B2E), Color(0xFFC99470));
-  static const CategoryTone gold =
-      CategoryTone._(Color(0xFFA37508), Color(0xFFE3B341));
+      CategoryTone._(Color(0xFF0E7FA6), Color(0xFF5CC8EE));
+  static const CategoryTone blue =
+      CategoryTone._(Color(0xFF2F5FCC), Color(0xFF7FA8F5));
+  static const CategoryTone navy =
+      CategoryTone._(Color(0xFF33457F), Color(0xFFB3C3EC));
 
   static const List<CategoryTone> all = <CategoryTone>[
-    green, blue, orange, purple, pink, slate, //
-    teal, coral, olive, sky, brown, gold, //
+    emerald, green, teal, sky, blue, navy, //
   ];
 }
 
@@ -306,29 +294,29 @@ const Map<String, CategoryTone> _expenseTones = <String, CategoryTone>{
 };
 
 const Map<String, CategoryTone> _incomeTones = <String, CategoryTone>{
-  'راتب أساسي': IncomeTone.green,
-  'مكافآت وحوافز': IncomeTone.gold,
-  'مكافأة نهاية الخدمة': IncomeTone.teal,
-  'معاش تقاعدي': IncomeTone.slate,
+  'راتب أساسي': IncomeTone.emerald,
+  'مكافآت وحوافز': IncomeTone.green,
+  'مكافأة نهاية الخدمة': IncomeTone.emerald,
+  'معاش تقاعدي': IncomeTone.green,
   'عمل حر': IncomeTone.blue,
   'عمل بدوام جزئي': IncomeTone.sky,
-  'عمولات': IncomeTone.purple,
-  'أرباح تجارية': IncomeTone.orange,
-  'تجارة إلكترونية': IncomeTone.coral,
-  'دخل استثماري': IncomeTone.olive,
-  'أرباح أسهم وتوزيعات': IncomeTone.brown,
-  'أرباح العملات الرقمية': IncomeTone.orange,
+  'عمولات': IncomeTone.blue,
+  'أرباح تجارية': IncomeTone.sky,
+  'تجارة إلكترونية': IncomeTone.blue,
+  'دخل استثماري': IncomeTone.navy,
+  'أرباح أسهم وتوزيعات': IncomeTone.navy,
+  'أرباح العملات الرقمية': IncomeTone.sky,
   'إيجارات': IncomeTone.teal,
   'تأجير قصير الأمد': IncomeTone.teal,
-  'بيع أصول أو ممتلكات': IncomeTone.brown,
-  'محتوى رقمي وإبداعي': IncomeTone.pink,
-  'استرجاع نقدي ومكافآت': IncomeTone.gold,
-  'منحة أو إعانة': IncomeTone.pink,
-  'ميراث': IncomeTone.slate,
+  'بيع أصول أو ممتلكات': IncomeTone.navy,
+  'محتوى رقمي وإبداعي': IncomeTone.sky,
+  'استرجاع نقدي ومكافآت': IncomeTone.green,
+  'منحة أو إعانة': IncomeTone.teal,
+  'ميراث': IncomeTone.navy,
   'استرداد أو تعويض': IncomeTone.sky,
-  'هدايا': IncomeTone.pink,
-  'زكاة أو صدقة مستلمة': IncomeTone.coral,
-  'أخرى': IncomeTone.slate,
+  'هدايا': IncomeTone.teal,
+  'زكاة أو صدقة مستلمة': IncomeTone.green,
+  'أخرى': IncomeTone.navy,
 };
 
 /// The built-in tone of [category], or null for a category the user made.
@@ -354,7 +342,7 @@ List<Color> chartColorsFor(List<String> categories, TransactionType type,
   final List<Color> own = <Color>[
     for (final String cat in categories) categoryColor(cat, type, looks, c, b),
   ];
-  final Color other = chartOtherColor(b);
+  final Color other = chartOtherColor(b, type: type);
   final List<Color> used = <Color>[];
   for (int i = 0; i < own.length; i++) {
     // Keep clear of what is already on the ring and of the slices to come.
@@ -381,10 +369,17 @@ List<Color> chartColorsFor(List<String> categories, TransactionType type,
   return used;
 }
 
-/// The "Other" slice: a quiet dusty rose, warm but softer than any category
-/// colour, so it reads as "the rest" and is never taken for a category.
-Color chartOtherColor(Brightness b) =>
-    b == Brightness.dark ? const Color(0xFF6B5552) : const Color(0xFFC9A9A6);
+/// The "Other" slice: quieter than any category colour, so it reads as "the
+/// rest". Warm (a dusty rose) on the expense ring, cool (a blue-grey) on the
+/// income one.
+Color chartOtherColor(Brightness b,
+    {TransactionType type = TransactionType.expense}) {
+  final bool dark = b == Brightness.dark;
+  if (type == TransactionType.income) {
+    return dark ? const Color(0xFF4B5563) : const Color(0xFFA9B4BF);
+  }
+  return dark ? const Color(0xFF6B5552) : const Color(0xFFC9A9A6);
+}
 
 /// How different two colours look to the eye (CIE76 distance in Lab).
 /// Around 20 and above, two slices are easy to tell apart.
@@ -412,10 +407,9 @@ List<double> _lab(Color c) {
 
 /// The colour of a family, for categories the user made (deeper on light
 /// themes, softer on dark ones). Expense families take warm tones; income
-/// keeps green for steady pay, amber for passive income, blue for own work,
-/// pink for gifts and aid.
+/// families cool ones: green for steady pay, navy for passive income, blue
+/// for own work, teal for gifts and aid.
 Color familyColor(CategoryFamily f, DsColors c, Brightness b) {
-  final bool dark = b == Brightness.dark;
   switch (f) {
     case CategoryFamily.basics:
       return ExpenseTone.brown.of(b);
@@ -428,13 +422,13 @@ Color familyColor(CategoryFamily f, DsColors c, Brightness b) {
     case CategoryFamily.commitments:
       return ExpenseTone.wine.of(b);
     case CategoryFamily.income:
-      return dark ? const Color(0xFF10B981) : const Color(0xFF059669);
+      return IncomeTone.emerald.of(b);
     case CategoryFamily.incomePassive:
-      return dark ? const Color(0xFFF5C15C) : const Color(0xFFA8680C);
+      return IncomeTone.navy.of(b);
     case CategoryFamily.incomeWork:
-      return dark ? const Color(0xFF8AB4F8) : const Color(0xFF3B6FD4);
+      return IncomeTone.blue.of(b);
     case CategoryFamily.incomeGift:
-      return dark ? const Color(0xFFF09AC0) : const Color(0xFFBA3F78);
+      return IncomeTone.teal.of(b);
   }
 }
 

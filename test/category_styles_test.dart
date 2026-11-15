@@ -138,7 +138,12 @@ void chartColorTests() {
         expect(categoryToneOf(cat, TransactionType.expense), isNotNull);
       }
       expect(categoryToneOf('راتب أساسي', TransactionType.income),
-          IncomeTone.green);
+          IncomeTone.emerald);
+      for (final CategoryTone t in IncomeTone.all) {
+        final double hue = HSLColor.fromColor(t.light).hue;
+        // Greens, teal and blues only.
+        expect(hue > 80 && hue < 240, isTrue, reason: '$hue');
+      }
     });
 
     test('income charts use the income colours', () {
@@ -149,7 +154,7 @@ void chartColorTests() {
           c,
           Brightness.light);
       expect(
-          out.single, IncomeTone.green.light);
+          out.single, IncomeTone.emerald.light);
     });
   });
 }
