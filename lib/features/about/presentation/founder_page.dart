@@ -10,7 +10,7 @@ import 'package:smartbudget/design_system/tokens/ds_radius.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// The founder page: who is behind DGoTix, in a few lines.
+/// The founder page: who is behind DGOTIX, in a few lines.
 ///
 /// The role as founder and the digital-product focus lead; the engineering
 /// and production background is a small secondary section. Every line comes

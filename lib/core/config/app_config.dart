@@ -50,7 +50,7 @@ abstract final class AppConfig {
   /// public: no employer, no current job title, and no academic or software
   /// engineering title.
   static const String founderName = 'Boulahdid Djamal Eddine';
-  static const String founderRole = 'Founder of DGoTix';
+  static const String founderRole = 'Founder of DGOTIX';
   static const String founderFocus =
       'Digital Product Development & Innovation';
   static const List<String> founderBackground = <String>[

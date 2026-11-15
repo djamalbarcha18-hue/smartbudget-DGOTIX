@@ -28,7 +28,7 @@ void main() {
 
   test('what the page says is exactly what the founder made public', () {
     expect(AppConfig.founderName, 'Boulahdid Djamal Eddine');
-    expect(AppConfig.founderRole, 'Founder of DGoTix');
+    expect(AppConfig.founderRole, 'Founder of DGOTIX');
     expect(AppConfig.founderFocus, 'Digital Product Development & Innovation');
     expect(AppConfig.founderBackground,
         <String>['Mechanical Engineering', 'Industrial Production']);
@@ -64,7 +64,7 @@ void main() {
     expect(find.text('Founder'), findsOneWidget);
     expect(find.text('Boulahdid Djamal Eddine'), findsOneWidget);
     expect(find.text('BD'), findsOneWidget);
-    expect(find.text('Founder of DGoTix'), findsOneWidget);
+    expect(find.text('Founder of DGOTIX'), findsOneWidget);
     expect(find.text('Digital Product Development & Innovation'),
         findsOneWidget);
     expect(find.text('Professional Background'), findsOneWidget);
@@ -72,7 +72,7 @@ void main() {
     expect(find.text('Industrial Production'), findsOneWidget);
     expect(find.text('contactdgotix@gmail.com'), findsOneWidget);
 
-    final double role = tester.getTopLeft(find.text('Founder of DGoTix')).dy;
+    final double role = tester.getTopLeft(find.text('Founder of DGOTIX')).dy;
     final double background =
         tester.getTopLeft(find.text('Professional Background')).dy;
     expect(role, lessThan(background));
@@ -88,7 +88,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('المؤسس'), findsOneWidget);
-    expect(find.text('Founder of DGoTix'), findsOneWidget);
+    expect(find.text('Founder of DGOTIX'), findsOneWidget);
     expect(find.text('Professional Background'), findsOneWidget);
   });
 
