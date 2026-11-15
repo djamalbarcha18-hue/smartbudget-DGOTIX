@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:smartbudget/core/money/money.dart';
@@ -125,6 +127,32 @@ void main() {
 
     test('decoding an unrelated object throws FormatException', () {
       expect(() => BackupCodec.decodeJson('{"foo":"bar"}'),
+          throwsA(isA<FormatException>()));
+    });
+
+    test('one damaged record is skipped, the rest of the file is restored',
+        () {
+      final Map<String, dynamic> json = _sample().toJson();
+      final List<dynamic> txns = json['transactions'] as List<dynamic>;
+      final int good = txns.length;
+      txns.add(<String, dynamic>{'id': 'broken', 'date': 'not a date'});
+      final BackupData back = BackupCodec.decodeJson(jsonEncode(json));
+      expect(back.transactions.length, good);
+      expect(back.skipped, 1);
+      expect(back.goals.single.id, 'g1');
+    });
+
+    test('cloud sync stays strict: a damaged record is an error', () {
+      final Map<String, dynamic> json = _sample().toJson();
+      (json['transactions'] as List<dynamic>)
+          .add(<String, dynamic>{'id': 'broken', 'date': 'not a date'});
+      expect(() => BackupData.fromJson(json), throwsA(anything));
+    });
+
+    test('a file from a newer app version is refused whole', () {
+      final Map<String, dynamic> json = _sample().toJson();
+      json['schemaVersion'] = BackupData.schemaVersion + 1;
+      expect(() => BackupCodec.decodeJson(jsonEncode(json)),
           throwsA(isA<FormatException>()));
     });
 

@@ -254,6 +254,9 @@ class SyncController extends Notifier<SyncStatus> {
     final SyncScope scope =
         _full ? const SyncScope.full() : SyncScope.free(AppClock.now());
     Records all = await _records(backup);
+    // The account was switched while reading: [all] may be the other
+    // account's records. Nothing of it is written or sent.
+    if (_disposed || _account != account) return;
     final Entries? stored = _ledger(prefs.getString(ledgerKey));
     final Entries ledger = scope.pruneLedger(
         stored ?? <String, Map<String, SyncEntry>>{}, all);
@@ -330,6 +333,7 @@ class SyncController extends Notifier<SyncStatus> {
         );
         all = await _records(backup);
         _quietUntil = AppClock.now().add(const Duration(seconds: 2));
+        if (_disposed || _account != account) return;
       }
       merged = SyncMerge.rebase(merged, all);
       await prefs.setString(

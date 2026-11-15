@@ -26,7 +26,7 @@ create or replace function public.reserve_usage(
   p_lifetime boolean,
   p_global_limit int
 ) returns text
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   used  int;
   total bigint;
@@ -97,7 +97,7 @@ create or replace function public.release_usage(
   p_kind text,
   p_month text
 ) returns void
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   if p_kind = 'ai' then
     update ai_usage_monthly set requests = greatest(requests - 1, 0), updated_at = now()

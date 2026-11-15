@@ -25,7 +25,7 @@ revoke all on table app_stats_daily from anon, authenticated;
 -- Adds one to today's total (UTC) of an event the app knows; anything else
 -- is ignored.
 create or replace function count_event(event_name text) returns void
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   if event_name is null or event_name not in ('trip_created') then
     return;

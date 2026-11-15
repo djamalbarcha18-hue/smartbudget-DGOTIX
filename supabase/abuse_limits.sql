@@ -71,7 +71,7 @@ create or replace function public.reserve_usage(
   p_unpaid_limit int default null,
   p_new_limit int default null
 ) returns text
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   used  int;
   total bigint;
@@ -187,7 +187,7 @@ create or replace function public.release_usage(
   p_month text,
   p_pool text default null
 ) returns void
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   if p_kind = 'ai' then
     update ai_usage_monthly set requests = greatest(requests - 1, 0), updated_at = now()
@@ -220,7 +220,7 @@ create or replace function public.rate_limit_hit(
   p_window_s int,
   p_max int
 ) returns boolean
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   win timestamptz := to_timestamp(floor(extract(epoch from now()) / p_window_s) * p_window_s);
   n   int;
@@ -250,7 +250,7 @@ grant execute on function public.rate_limit_hit(uuid, text, int, int)
 -- ---- AI-answer reports: at most 20 per account per day ------------------------
 create index if not exists ai_reports_user_created_idx on ai_reports(user_id, created_at);
 create or replace function public.ai_reports_daily_cap()
-returns trigger language plpgsql security definer set search_path = public as $$
+returns trigger language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   if (select count(*) from ai_reports
       where user_id = new.user_id and created_at > now() - interval '1 day') >= 20 then
@@ -265,7 +265,7 @@ create trigger ai_reports_daily_cap before insert on ai_reports
 
 -- ---- Cloud backups of new accounts: at most 2 MB --------------------------------
 create or replace function public.user_backups_new_account_size()
-returns trigger language plpgsql security definer set search_path = public as $$
+returns trigger language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   if pg_column_size(new.data) > 2 * 1024 * 1024 and exists (
        select 1 from auth.users

@@ -92,7 +92,7 @@ $$;
 
 -- ---- Your code, made on first ask -------------------------------------------
 create or replace function public.my_referral_code() returns text
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   uid  uuid := auth.uid();
   existing text;
@@ -128,7 +128,7 @@ end $$;
 -- Called once, right after the first sign-in. Refuses silently (returns false)
 -- rather than raising, so a stale or mistyped code never blocks a sign-up.
 create or replace function public.claim_referral(p_code text) returns boolean
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   uid     uuid := auth.uid();
   owner   uuid;
@@ -161,7 +161,7 @@ end $$;
 -- reads the confirmation state from auth.users, which only Supabase Auth
 -- writes, and the reward is counted here on the server.
 create or replace function public.complete_referral() returns boolean
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   uid       uuid := auth.uid();
   confirmed timestamptz;
@@ -192,7 +192,7 @@ end $$;
 -- cannot be repeated and the count is read on the server, never from the app.
 -- Returns whether the pick was granted.
 create or replace function public.choose_reward(p_reward text) returns boolean
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   uid   uuid := auth.uid();
   done  int;
@@ -227,7 +227,7 @@ returns table (
   needed      int,
   last_joined timestamptz
 )
-language sql security definer set search_path = public as $$
+language sql security definer set search_path = public, pg_temp as $$
   select
     count(*)::int,
     count(*) filter (where activated_at is not null)::int,

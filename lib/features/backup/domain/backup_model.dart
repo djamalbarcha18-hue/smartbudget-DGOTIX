@@ -40,7 +40,12 @@ class BackupData {
     this.trips = const <Trip>[],
     this.metals = const <MetalHolding>[],
     this.metalSales = const <MetalSale>[],
+    this.skipped = 0,
   });
+
+  /// Records of a backup FILE that couldn't be read and were left out (see
+  /// [BackupData.fromJson] with `skipUnreadable`). Never written to a file.
+  final int skipped;
 
   /// Bump when the on-disk shape changes in a breaking way. Adding optional
   /// sections (goals, debts, projects, recurring) is not breaking: older files simply
@@ -94,7 +99,28 @@ class BackupData {
         },
       };
 
-  factory BackupData.fromJson(Map<String, dynamic> json) {
+  /// [skipUnreadable] is for a backup file the user imports: one damaged
+  /// record is left out (and counted in [skipped]) instead of failing the
+  /// whole restore. Cloud sync keeps the strict default: a record it dropped
+  /// silently would later look deleted and be removed from every device.
+  factory BackupData.fromJson(Map<String, dynamic> json,
+      {bool skipUnreadable = false}) {
+    int skipped = 0;
+    List<T> list<T>(Object? v, T Function(Map<String, dynamic>) from) {
+      if (!skipUnreadable) return _list<T>(v, from);
+      final List<T> out = <T>[];
+      if (v is! List) return out;
+      for (final Object? e in v) {
+        if (e is! Map<dynamic, dynamic>) continue;
+        try {
+          out.add(from(e.cast<String, dynamic>()));
+        } catch (_) {
+          skipped++;
+        }
+      }
+      return out;
+    }
+
     final Map<String, dynamic> cc =
         (json['customCategories'] as Map<dynamic, dynamic>?)
                 ?.cast<String, dynamic>() ??
@@ -104,24 +130,25 @@ class BackupData {
           DateTime.tryParse((json['exportedAt'] as String?) ?? '') ??
               AppClock.now(),
       baseCurrency: (json['baseCurrency'] as String?) ?? 'USD',
-      transactions: _list<Transaction>(
+      transactions: list<Transaction>(
           json['transactions'], Transaction.fromJson),
-      budgets: _list<BudgetTarget>(json['budgets'], BudgetTarget.fromJson),
+      budgets: list<BudgetTarget>(json['budgets'], BudgetTarget.fromJson),
       customIncome: _strings(cc['income']),
       customExpense: _strings(cc['expense']),
-      goals: _list<Goal>(json['goals'], Goal.fromJson),
-      debts: _list<Debt>(json['debts'], Debt.fromJson),
-      projects: _list<Project>(json['projects'], Project.fromJson),
+      goals: list<Goal>(json['goals'], Goal.fromJson),
+      debts: list<Debt>(json['debts'], Debt.fromJson),
+      projects: list<Project>(json['projects'], Project.fromJson),
       recurring:
-          _list<RecurringRule>(json['recurring'], RecurringRule.fromJson),
-      seasons: _list<SeasonPlan>(json['seasons'], SeasonPlan.fromJson),
-      darets: _list<Daret>(json['darets'], Daret.fromJson),
-      challenges: _list<Challenge>(json['challenges'], Challenge.fromJson),
-      wallets: _list<Wallet>(json['wallets'], Wallet.fromJson),
-      walletMoves: _list<WalletMove>(json['walletMoves'], WalletMove.fromJson),
-      trips: _list<Trip>(json['trips'], Trip.fromJson),
-      metals: _list<MetalHolding>(json['metals'], MetalHolding.fromJson),
-      metalSales: _list<MetalSale>(json['metalSales'], MetalSale.fromJson),
+          list<RecurringRule>(json['recurring'], RecurringRule.fromJson),
+      seasons: list<SeasonPlan>(json['seasons'], SeasonPlan.fromJson),
+      darets: list<Daret>(json['darets'], Daret.fromJson),
+      challenges: list<Challenge>(json['challenges'], Challenge.fromJson),
+      wallets: list<Wallet>(json['wallets'], Wallet.fromJson),
+      walletMoves: list<WalletMove>(json['walletMoves'], WalletMove.fromJson),
+      trips: list<Trip>(json['trips'], Trip.fromJson),
+      metals: list<MetalHolding>(json['metals'], MetalHolding.fromJson),
+      metalSales: list<MetalSale>(json['metalSales'], MetalSale.fromJson),
+      skipped: skipped,
     );
   }
 
@@ -167,7 +194,13 @@ abstract final class BackupCodec {
     if (!sections.any(obj.containsKey)) {
       throw const FormatException('Backup file is missing expected data.');
     }
-    return BackupData.fromJson(obj);
+    // A file written by a newer app version may hold things this version
+    // would misread: refuse it whole instead of restoring half of it.
+    final Object? version = obj['schemaVersion'];
+    if (version is num && version > BackupData.schemaVersion) {
+      throw const FormatException('Backup file is from a newer app version.');
+    }
+    return BackupData.fromJson(obj, skipUnreadable: true);
   }
 
   /// A spreadsheet-friendly export of transactions (RFC 4180 quoting).

@@ -82,7 +82,7 @@ create or replace function public.apply_subscription_event(
   p_event_at timestamptz,
   p_payment boolean default false
 ) returns text
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   cur  billing_subscriptions%rowtype;
   had  boolean;

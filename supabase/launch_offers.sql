@@ -32,7 +32,7 @@ alter table billing_prices add column if not exists offer text;
 -- email isn't confirmed yet, had a trial already, or pays. Confirming the email
 -- first keeps throwaway sign-ups from collecting trials.
 create or replace function public.start_pro_trial() returns timestamptz
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   uid uuid := auth.uid();
   ent ai_entitlements%rowtype;

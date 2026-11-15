@@ -29,7 +29,7 @@ revoke all on table error_reports_daily from anon, authenticated;
 -- Adds one to today's count of a signature; anything malformed is ignored.
 create or replace function report_error(sig text, app_version text, app_platform text)
 returns void
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   today date := (now() at time zone 'utc')::date;
 begin

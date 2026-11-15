@@ -28,7 +28,7 @@ returns interval language sql immutable as $$ select interval '2 days' $$;
 -- subscription are left alone (a plan set by hand is never touched).
 create or replace function public.refresh_entitlement(p_user uuid)
 returns text
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   best text;
   cur  text;
@@ -70,7 +70,7 @@ end $$;
 -- Returns how many users changed.
 create or replace function public.expire_entitlements()
 returns integer
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   u uuid;
   n integer := 0;

@@ -6,7 +6,13 @@ import 'package:smartbudget/core/time/app_clock.dart';
 
 /// The account's cloud copy as last downloaded.
 class RemoteCopy {
-  const RemoteCopy({this.doc, this.version, this.versioned = true});
+  const RemoteCopy(
+      {this.doc, this.version, this.versioned = true, this.owner});
+
+  /// The signed-in user this copy was downloaded for. An upload based on it
+  /// is refused when someone else is signed in by then (the account was
+  /// switched mid-round): one account's data never goes to another's row.
+  final String? owner;
 
   /// The stored document, or null when the account has none yet.
   final Map<String, dynamic>? doc;
@@ -76,6 +82,7 @@ class SupabaseSyncRemote implements SyncRemote {
       return RemoteCopy(
         doc: _map(row?['data']),
         version: row == null ? null : (row['version'] as num?)?.toInt() ?? 0,
+        owner: _uid,
       );
     } on sb.PostgrestException catch (e) {
       if (!_noVersionColumn(e)) rethrow;
@@ -84,7 +91,8 @@ class SupabaseSyncRemote implements SyncRemote {
           .select('data')
           .eq('user_id', _uid)
           .maybeSingle();
-      return RemoteCopy(doc: _map(row?['data']), versioned: false);
+      return RemoteCopy(
+          doc: _map(row?['data']), versioned: false, owner: _uid);
     }
   }
 
@@ -105,6 +113,9 @@ class SupabaseSyncRemote implements SyncRemote {
 
   @override
   Future<bool> push(Map<String, dynamic> doc, RemoteCopy base) async {
+    if (base.owner != null && base.owner != _uid) {
+      throw StateError('the account changed during sync');
+    }
     final Map<String, dynamic> row = <String, dynamic>{
       'data': doc,
       'schema_version': 2,
