@@ -12,8 +12,7 @@ import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/goals/domain/goal_calculator.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
-import 'package:smartbudget/features/zakat/application/zakat_controller.dart';
-import 'package:smartbudget/features/zakat/domain/zakat_calculator.dart';
+import 'package:smartbudget/features/zakat/application/zakat_history_controller.dart';
 
 /// Gathers already-computed figures from every feature and runs the pure
 /// [InsightEngine]. All the financial reasoning lives in the existing domain
@@ -52,8 +51,8 @@ final insightsProvider = Provider<List<Insight>>((ref) {
   }
   final DebtSummary debtSummary = ref.watch(debtSummaryProvider);
 
-  // Zakat (obligatory only once a nisab price has been entered).
-  final ZakatResult zakat = ref.watch(zakatResultProvider);
+  // Zakat: the country engine where it applies, else the older calculator.
+  final ZakatDue zakat = ref.watch(zakatDueProvider);
 
   return InsightEngine.generate(
     InsightInput(

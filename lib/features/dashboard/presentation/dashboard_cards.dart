@@ -32,7 +32,7 @@ import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/categories.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
-import 'package:smartbudget/features/zakat/application/zakat_controller.dart';
+import 'package:smartbudget/features/zakat/application/zakat_history_controller.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
 
@@ -669,7 +669,7 @@ class PlansCard extends ConsumerWidget {
     }
     final double goalPct = target > 0 ? saved / target : 0;
     final DebtSummary debts = ref.watch(debtSummaryProvider);
-    final zakat = ref.watch(zakatResultProvider);
+    final ZakatDue zakat = ref.watch(zakatDueProvider);
 
     return GlassCard(
       child: Column(

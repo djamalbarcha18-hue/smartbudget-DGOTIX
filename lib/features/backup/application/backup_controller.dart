@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/backup/domain/backup_model.dart';
 import 'package:smartbudget/features/budget/application/budget_controller.dart';
 import 'package:smartbudget/features/budget/domain/budget_target.dart';
@@ -22,6 +26,9 @@ import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
+import 'package:smartbudget/features/zakat/application/zakat_backup.dart';
+import 'package:smartbudget/features/zakat/application/zakat_engine_providers.dart';
+import 'package:smartbudget/features/zakat/application/zakat_history_controller.dart';
 
 /// Outcome of a restore, for user feedback.
 class ImportResult {
@@ -96,15 +103,55 @@ class BackupService {
     );
   }
 
-  Future<String> exportJson() async => BackupCodec.encodeJson(await snapshot());
+  /// The backup file: [snapshot] plus the zakat settings and history (kept
+  /// on the device only, so the file is their one copy elsewhere). Cloud
+  /// sync uses [snapshot] alone and is unchanged.
+  Future<String> exportJson() async {
+    final Map<String, dynamic> json = (await snapshot()).toJson();
+    try {
+      final Map<String, dynamic>? zakat = ZakatBackupIo.export(
+          await SharedPreferences.getInstance(),
+          _ref.read(currentAccountIdProvider),
+          _ref.read(baseCurrencyProvider));
+      if (zakat != null) json[ZakatBackupIo.section] = zakat;
+    } catch (_) {
+      // The rest of the backup doesn't depend on it.
+    }
+    return const JsonEncoder.withIndent('  ').convert(json);
+  }
 
   Future<String> exportTransactionsCsv() async =>
       BackupCodec.transactionsToCsv((await snapshot()).transactions);
 
   /// Restores from a JSON backup string. Non-destructive: existing rows are
   /// kept, only new ones are merged in. Throws [FormatException] on bad input.
-  Future<ImportResult> importJson(String raw) =>
-      importData(BackupCodec.decodeJson(raw));
+  Future<ImportResult> importJson(String raw) async {
+    final ImportResult result = await importData(BackupCodec.decodeJson(raw));
+    int zakatAdded = 0;
+    try {
+      final Object? file = jsonDecode(raw);
+      if (file is Map<String, dynamic>) {
+        zakatAdded = await ZakatBackupIo.import(
+            await SharedPreferences.getInstance(),
+            _ref.read(currentAccountIdProvider),
+            file);
+        _ref.invalidate(zakatSettingsProvider);
+        _ref.invalidate(zakatHistoryProvider);
+      }
+    } catch (_) {
+      // The rest is restored; the zakat part is optional.
+    }
+    if (zakatAdded == 0) return result;
+    return ImportResult(
+      othersAdded: result.othersAdded + zakatAdded,
+      transactionsAdded: result.transactionsAdded,
+      budgetsAdded: result.budgetsAdded,
+      goalsAdded: result.goalsAdded,
+      debtsAdded: result.debtsAdded,
+      projectsAdded: result.projectsAdded,
+      recurringAdded: result.recurringAdded,
+    );
+  }
 
   /// Makes the device hold exactly [data] (cloud sync applies a merged state
   /// with it). The base currency is set only when [setBaseCurrency].
