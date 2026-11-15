@@ -31,8 +31,7 @@ import 'package:smartbudget/features/transactions/domain/finance_calculator.dart
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 import 'package:smartbudget/features/wallets/domain/wallet.dart';
-import 'package:smartbudget/features/zakat/application/zakat_controller.dart';
-import 'package:smartbudget/features/zakat/domain/zakat_calculator.dart';
+import 'package:smartbudget/features/zakat/application/zakat_history_controller.dart';
 
 export 'package:smartbudget/features/assistant/domain/ai_conversation.dart'
     show ChatMessage;
@@ -216,7 +215,7 @@ final aiContextProvider = Provider<String>((ref) {
   ];
 
   final DebtSummary debts = ref.watch(debtSummaryProvider);
-  final ZakatResult zakat = ref.watch(zakatResultProvider);
+  final ZakatDue zakat = ref.watch(zakatDueProvider);
   final HealthReport health = ref.watch(healthReportProvider);
 
   return AiSnapshot.build(AiSnapshotInput(
