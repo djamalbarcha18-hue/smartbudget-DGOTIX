@@ -21,7 +21,7 @@ class LegalSection {
 /// have it reviewed for their jurisdiction before relying on it.
 abstract final class LegalContent {
   /// Bump when the wording changes materially (shown as "last updated").
-  static const String lastUpdated = '2026-11-04';
+  static const String lastUpdated = '2026-11-15';
 
   static String get _app => AppConfig.appName;
   static String get _brand => AppConfig.parentBrand;
@@ -604,9 +604,8 @@ abstract final class LegalContent {
               ' or other users at risk.',
         ),
         LegalSection(
-          'Brand and ownership',
-          'The $_app name, the $_brand brand, and the app\'s design and code '
-              'remain the property of their owner. Your data remains yours.',
+          'Intellectual property',
+          '$_brand, $_app and their names, logos and visual identities, together with those of any future $_brand product, are trademarks (™) of $_brand. The software, source code, technical architecture, original features and algorithms, designs, interfaces, icons, graphics, texts and documentation are owned by $_brand or used under the necessary licences. You may not copy, republish, distribute, commercially exploit or reproduce them, or use the trademarks in any way that suggests affiliation with or endorsement by $_brand, without prior written permission, except as applicable law allows. Your personal data, financial records and original content remain yours. Third-party libraries, services, fonts and APIs remain subject to their owners\' licences and rights. Using the app grants no licence to, or transfer of, any intellectual property rights except as expressly stated. To report a suspected infringement, contact us $_reachEn. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Changes and contact',
@@ -715,9 +714,8 @@ abstract final class LegalContent {
               'الآخرين للخطر.',
         ),
         LegalSection(
-          'العلامة والملكية',
-          'يبقى اسم $_app وعلامة $_brand وتصميم التطبيق وشيفرته ملكاً '
-              'لصاحبها. وتبقى بياناتك ملكاً لك.',
+          'الملكية الفكرية',
+          '$_brand و$_app وأسماؤهما وشعاراتهما وهوياتهما البصرية، وكذلك ما يخص أي منتج مستقبلي من $_brand، علامات تجارية (™) مملوكة لـ $_brand. والبرمجيات والشيفرة المصدرية والبنية التقنية والوظائف والخوارزميات الأصلية والتصاميم والواجهات والأيقونات والرسومات والنصوص والوثائق مملوكة لـ $_brand أو مستخدمة بموجب التراخيص اللازمة. ولا يجوز نسخها أو إعادة نشرها أو توزيعها أو استغلالها تجارياً أو إعادة إنتاجها، ولا استخدام العلامات التجارية بطريقة توحي بارتباط بـ $_brand أو تأييد منها، دون إذن كتابي مسبق، إلا في الحدود التي يسمح بها القانون المعمول به. وتبقى بياناتك الشخصية وسجلاتك المالية ومحتواك الأصلي ملكاً لك. وتخضع المكتبات البرمجية والخدمات والخطوط وواجهات API التابعة لجهات خارجية لتراخيص أصحابها وحقوقهم. ولا يمنحك استخدام التطبيق أي ترخيص أو نقل لحقوق الملكية الفكرية إلا ما نُصّ عليه صراحةً. وللإبلاغ عن انتهاك مشتبه به تواصل معنا $_reachAr. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'التغييرات والتواصل',
@@ -1038,10 +1036,8 @@ abstract final class LegalContent {
               'utilisateurs.',
         ),
         LegalSection(
-          'Marque et propriété',
-          'Le nom $_app, la marque $_brand, ainsi que le design et le code de'
-              ' l\'application restent la propriété de leur titulaire. Vos '
-              'données restent les vôtres.',
+          'Propriété intellectuelle',
+          '$_brand, $_app ainsi que leurs noms, logos et identités visuelles, de même que ceux de tout futur produit $_brand, sont des marques (™) de $_brand. Le logiciel, le code source, l\'architecture technique, les fonctionnalités et algorithmes originaux, les designs, interfaces, icônes, graphismes, textes et la documentation appartiennent à $_brand ou sont utilisés sous les licences nécessaires. Vous ne pouvez pas les copier, republier, distribuer, exploiter commercialement ou reproduire, ni utiliser les marques d\'une manière qui suggère une affiliation avec $_brand ou son approbation, sans autorisation écrite préalable, sauf dans la mesure permise par la loi applicable. Vos données personnelles, vos relevés financiers et votre contenu original restent les vôtres. Les bibliothèques, services, polices et API de tiers restent soumis aux licences et droits de leurs titulaires. L\'utilisation de l\'application n\'accorde aucune licence ni aucun transfert de droits de propriété intellectuelle, sauf mention expresse. Pour signaler une atteinte présumée, contactez-nous $_reachFr. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Modifications et contact',
@@ -1331,9 +1327,8 @@ abstract final class LegalContent {
               'membahayakan layanan atau pengguna lain.',
         ),
         LegalSection(
-          'Merek dan kepemilikan',
-          'Nama $_app, merek $_brand, serta desain dan kode aplikasi tetap '
-              'menjadi milik pemiliknya. Data Anda tetap milik Anda.',
+          'Kekayaan intelektual',
+          '$_brand, $_app beserta nama, logo, dan identitas visualnya, juga milik produk $_brand di masa mendatang, adalah merek dagang (™) milik $_brand. Perangkat lunak, kode sumber, arsitektur teknis, fitur dan algoritma orisinal, desain, antarmuka, ikon, grafis, teks, dan dokumentasi dimiliki oleh $_brand atau digunakan berdasarkan lisensi yang diperlukan. Anda tidak boleh menyalin, menerbitkan ulang, mendistribusikan, memanfaatkan secara komersial, atau memperbanyaknya, atau menggunakan merek dagang dengan cara yang menyiratkan afiliasi dengan atau dukungan dari $_brand, tanpa izin tertulis sebelumnya, kecuali sejauh diizinkan oleh hukum yang berlaku. Data pribadi, catatan keuangan, dan konten orisinal Anda tetap milik Anda. Pustaka, layanan, font, dan API pihak ketiga tunduk pada lisensi dan hak pemiliknya. Menggunakan aplikasi tidak memberikan lisensi atau pengalihan hak kekayaan intelektual apa pun kecuali dinyatakan secara tegas. Untuk melaporkan dugaan pelanggaran, hubungi kami $_reachId. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Perubahan dan kontak',
@@ -1627,10 +1622,8 @@ abstract final class LegalContent {
               'en riesgo el servicio o a otros usuarios.',
         ),
         LegalSection(
-          'Marca y propiedad',
-          'El nombre $_app, la marca $_brand y el diseño y el código de la '
-              'app siguen siendo propiedad de su titular. Tus datos siguen siendo'
-              ' tuyos.',
+          'Propiedad intelectual',
+          '$_brand, $_app y sus nombres, logotipos e identidades visuales, así como los de cualquier futuro producto de $_brand, son marcas (™) de $_brand. El software, el código fuente, la arquitectura técnica, las funciones y algoritmos originales, los diseños, interfaces, iconos, gráficos, textos y la documentación pertenecen a $_brand o se usan con las licencias necesarias. No puedes copiarlos, volver a publicarlos, distribuirlos, explotarlos comercialmente ni reproducirlos, ni usar las marcas de forma que sugiera una afiliación con $_brand o su respaldo, sin permiso previo por escrito, salvo en la medida en que lo permita la ley aplicable. Tus datos personales, registros financieros y contenido original siguen siendo tuyos. Las bibliotecas, servicios, fuentes y API de terceros están sujetos a las licencias y derechos de sus titulares. Usar la app no concede ninguna licencia ni transferencia de derechos de propiedad intelectual, salvo que se indique expresamente. Para informar de una posible infracción, contáctanos $_reachEs. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Cambios y contacto',
@@ -1919,9 +1912,8 @@ abstract final class LegalContent {
               'diğer kullanıcıları riske atan bir hesabı askıya alabiliriz.',
         ),
         LegalSection(
-          'Marka ve mülkiyet',
-          '$_app adı, $_brand markası ve uygulamanın tasarımı ile kodu '
-              'sahibinin mülkiyetinde kalır. Verilerin sana ait kalır.',
+          'Fikri mülkiyet',
+          '$_brand, $_app ve bunların adları, logoları ve görsel kimlikleri ile gelecekteki her $_brand ürününe ait olanlar, $_brand şirketinin ticari markalarıdır (™). Yazılım, kaynak kodu, teknik mimari, özgün özellikler ve algoritmalar, tasarımlar, arayüzler, simgeler, grafikler, metinler ve belgeler $_brand şirketine aittir veya gerekli lisanslar kapsamında kullanılır. Yürürlükteki hukukun izin verdiği durumlar dışında, önceden yazılı izin olmadan bunları kopyalayamaz, yeniden yayımlayamaz, dağıtamaz, ticari olarak kullanamaz veya çoğaltamazsınız; ticari markaları da $_brand ile bağlantı veya onun onayını ima edecek şekilde kullanamazsınız. Kişisel verileriniz, finansal kayıtlarınız ve özgün içeriğiniz size ait kalır. Üçüncü taraf kütüphaneler, hizmetler, yazı tipleri ve API\'ler sahiplerinin lisans ve haklarına tabidir. Uygulamayı kullanmak, açıkça belirtilmedikçe hiçbir fikri mülkiyet hakkı için lisans vermez veya devretmez. Şüpheli bir ihlali bildirmek için bize $_reachTr ulaşın. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Değişiklikler ve iletişim',
@@ -2222,9 +2214,8 @@ abstract final class LegalContent {
               'terma ini atau membahayakan perkhidmatan atau pengguna lain.',
         ),
         LegalSection(
-          'Jenama dan pemilikan',
-          'Nama $_app, jenama $_brand, serta reka bentuk dan kod aplikasi '
-              'kekal menjadi hak milik pemiliknya. Data anda kekal milik anda.',
+          'Harta intelek',
+          '$_brand, $_app serta nama, logo dan identiti visualnya, termasuk bagi mana-mana produk $_brand pada masa hadapan, ialah tanda dagangan (™) milik $_brand. Perisian, kod sumber, seni bina teknikal, ciri dan algoritma asli, reka bentuk, antara muka, ikon, grafik, teks dan dokumentasi dimiliki oleh $_brand atau digunakan di bawah lesen yang diperlukan. Anda tidak boleh menyalin, menerbitkan semula, mengedar, mengeksploitasi secara komersial atau mengeluarkan semula bahan tersebut, atau menggunakan tanda dagangan dengan cara yang membayangkan gabungan dengan atau sokongan daripada $_brand, tanpa kebenaran bertulis terlebih dahulu, kecuali sebagaimana dibenarkan oleh undang-undang yang terpakai. Data peribadi, rekod kewangan dan kandungan asli anda kekal milik anda. Pustaka, perkhidmatan, fon dan API pihak ketiga tertakluk kepada lesen dan hak pemiliknya. Penggunaan aplikasi tidak memberikan sebarang lesen atau pemindahan hak harta intelek kecuali dinyatakan dengan jelas. Untuk melaporkan sebarang pelanggaran yang disyaki, hubungi kami $_reachMs. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Perubahan dan hubungan',
@@ -2505,9 +2496,8 @@ abstract final class LegalContent {
               'یا سروس یا دوسرے صارفین کو خطرے میں ڈالے۔',
         ),
         LegalSection(
-          'برانڈ اور ملکیت',
-          '$_app کا نام، $_brand برانڈ، اور ایپ کا ڈیزائن اور کوڈ اپنے مالک '
-              'کی ملکیت رہتے ہیں۔ آپ کا ڈیٹا آپ کا رہتا ہے۔',
+          'دانشورانہ ملکیت',
+          '$_brand، $_app اور ان کے نام، لوگو اور بصری شناخت، نیز $_brand کی کسی بھی آئندہ پروڈکٹ کے، $_brand کے ٹریڈ مارکس (™) ہیں۔ سافٹ ویئر، سورس کوڈ، تکنیکی ڈھانچہ، اصل فیچرز اور الگورتھمز، ڈیزائن، انٹرفیس، آئیکنز، گرافکس، تحریریں اور دستاویزات $_brand کی ملکیت ہیں یا ضروری لائسنسوں کے تحت استعمال ہوتے ہیں۔ قابلِ اطلاق قانون کی اجازت کے سوا، پیشگی تحریری اجازت کے بغیر آپ انہیں نقل، دوبارہ شائع، تقسیم، تجارتی طور پر استعمال یا دوبارہ تیار نہیں کر سکتے، اور نہ ہی ٹریڈ مارکس کو اس طرح استعمال کر سکتے ہیں جس سے $_brand سے وابستگی یا اس کی تائید ظاہر ہو۔ آپ کا ذاتی ڈیٹا، مالی ریکارڈ اور اصل مواد آپ ہی کا رہتا ہے۔ تیسرے فریق کی لائبریریاں، سروسز، فونٹس اور APIs اپنے مالکان کے لائسنسوں اور حقوق کے تابع ہیں۔ ایپ کا استعمال کسی بھی دانشورانہ ملکیت کے حق کا لائسنس یا منتقلی نہیں دیتا، سوائے اس کے جو صراحتاً بیان ہو۔ کسی مشتبہ خلاف ورزی کی اطلاع کے لیے ہم سے $_reachUr رابطہ کریں۔ © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'تبدیلیاں اور رابطہ',
@@ -2808,9 +2798,8 @@ abstract final class LegalContent {
               'oder den Dienst oder andere Nutzer gefährdet.',
         ),
         LegalSection(
-          'Marke und Eigentum',
-          'Der Name $_app, die Marke $_brand sowie Design und Code der App '
-              'bleiben Eigentum ihres Inhabers. Deine Daten bleiben deine.',
+          'Geistiges Eigentum',
+          '$_brand, $_app sowie ihre Namen, Logos und visuellen Identitäten, ebenso die jedes künftigen $_brand-Produkts, sind Marken (™) von $_brand. Software, Quellcode, technische Architektur, eigene Funktionen und Algorithmen, Designs, Oberflächen, Symbole, Grafiken, Texte und Dokumentation gehören $_brand oder werden unter den erforderlichen Lizenzen genutzt. Ohne vorherige schriftliche Genehmigung dürfen Sie sie weder kopieren, erneut veröffentlichen, verbreiten, kommerziell verwerten noch vervielfältigen oder die Marken so verwenden, dass eine Verbindung zu $_brand oder eine Billigung durch $_brand nahegelegt wird, soweit das geltende Recht nichts anderes erlaubt. Ihre persönlichen Daten, Finanzaufzeichnungen und eigenen Inhalte bleiben Ihre. Bibliotheken, Dienste, Schriftarten und APIs Dritter unterliegen den Lizenzen und Rechten ihrer Inhaber. Die Nutzung der App gewährt keine Lizenz an und keine Übertragung von Rechten des geistigen Eigentums, sofern nicht ausdrücklich angegeben. Um eine vermutete Verletzung zu melden, kontaktieren Sie uns $_reachDe. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Änderungen und Kontakt',
@@ -3100,10 +3089,8 @@ abstract final class LegalContent {
               'coloque em risco o serviço ou outros usuários.',
         ),
         LegalSection(
-          'Marca e propriedade',
-          'O nome $_app, a marca $_brand e o design e o código do app '
-              'continuam sendo propriedade do seu titular. Seus dados continuam '
-              'sendo seus.',
+          'Propriedade intelectual',
+          '$_brand, $_app e os seus nomes, logotipos e identidades visuais, bem como os de qualquer futuro produto $_brand, são marcas (™) da $_brand. O software, o código-fonte, a arquitetura técnica, as funcionalidades e algoritmos originais, os designs, interfaces, ícones, gráficos, textos e a documentação pertencem à $_brand ou são usados sob as licenças necessárias. Você não pode copiá-los, republicá-los, distribuí-los, explorá-los comercialmente ou reproduzi-los, nem usar as marcas de forma que sugira afiliação com a $_brand ou endosso dela, sem permissão prévia por escrito, exceto na medida permitida pela lei aplicável. Seus dados pessoais, registros financeiros e conteúdo original continuam sendo seus. Bibliotecas, serviços, fontes e APIs de terceiros estão sujeitos às licenças e direitos dos seus titulares. Usar o app não concede nenhuma licença nem transferência de direitos de propriedade intelectual, salvo indicação expressa. Para denunciar uma suspeita de violação, fale conosco $_reachPt. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Alterações e contato',
@@ -3402,9 +3389,8 @@ abstract final class LegalContent {
               ' termini o mette a rischio il servizio o altri utenti.',
         ),
         LegalSection(
-          'Marchio e proprietà',
-          'Il nome $_app, il marchio $_brand, il design e il codice dell\'app '
-              'restano di proprietà del loro titolare. I tuoi dati restano tuoi.',
+          'Proprietà intellettuale',
+          '$_brand, $_app e i relativi nomi, loghi e identità visive, così come quelli di qualsiasi futuro prodotto $_brand, sono marchi (™) di $_brand. Il software, il codice sorgente, l\'architettura tecnica, le funzionalità e gli algoritmi originali, i design, le interfacce, le icone, la grafica, i testi e la documentazione appartengono a $_brand o sono utilizzati con le licenze necessarie. Non è consentito copiarli, ripubblicarli, distribuirli, sfruttarli commercialmente o riprodurli, né usare i marchi in modo da suggerire un\'affiliazione con $_brand o un suo avallo, senza previa autorizzazione scritta, salvo quanto consentito dalla legge applicabile. I tuoi dati personali, i registri finanziari e i contenuti originali restano tuoi. Librerie, servizi, font e API di terzi restano soggetti alle licenze e ai diritti dei rispettivi titolari. L\'uso dell\'app non concede alcuna licenza né trasferimento di diritti di proprietà intellettuale, salvo quanto espressamente indicato. Per segnalare una presunta violazione, contattaci $_reachIt. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Modifiche e contatti',
@@ -3705,9 +3691,8 @@ abstract final class LegalContent {
               'dienst of andere gebruikers in gevaar brengt.',
         ),
         LegalSection(
-          'Merk en eigendom',
-          'De naam $_app, het merk $_brand en het ontwerp en de code van de app '
-              'blijven eigendom van hun eigenaar. Je gegevens blijven van jou.',
+          'Intellectueel eigendom',
+          '$_brand, $_app en hun namen, logo\'s en visuele identiteiten, evenals die van elk toekomstig $_brand-product, zijn handelsmerken (™) van $_brand. De software, broncode, technische architectuur, originele functies en algoritmen, ontwerpen, interfaces, pictogrammen, afbeeldingen, teksten en documentatie zijn eigendom van $_brand of worden gebruikt onder de nodige licenties. U mag ze niet kopiëren, opnieuw publiceren, verspreiden, commercieel exploiteren of reproduceren, noch de handelsmerken gebruiken op een manier die een band met of goedkeuring door $_brand suggereert, zonder voorafgaande schriftelijke toestemming, behalve voor zover het toepasselijke recht dat toestaat. Uw persoonsgegevens, financiële gegevens en originele inhoud blijven van u. Bibliotheken, diensten, lettertypen en API\'s van derden blijven onderworpen aan de licenties en rechten van hun eigenaars. Het gebruik van de app verleent geen licentie op en geen overdracht van intellectuele-eigendomsrechten, tenzij uitdrukkelijk vermeld. Om een vermoedelijke inbreuk te melden, neem contact met ons op $_reachNl. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Wijzigingen en contact',
@@ -3986,9 +3971,8 @@ abstract final class LegalContent {
               'druge korisnike.',
         ),
         LegalSection(
-          'Brend i vlasništvo',
-          'Naziv $_app, brend $_brand te dizajn i kod aplikacije ostaju '
-              'vlasništvo njihovog vlasnika. Tvoji podaci ostaju tvoji.',
+          'Intelektualno vlasništvo',
+          '$_brand, $_app i njihovi nazivi, logotipi i vizuelni identiteti, kao i oni svakog budućeg $_brand proizvoda, žigovi su (™) kompanije $_brand. Softver, izvorni kod, tehnička arhitektura, originalne funkcije i algoritmi, dizajn, interfejsi, ikone, grafika, tekstovi i dokumentacija vlasništvo su kompanije $_brand ili se koriste uz potrebne licence. Bez prethodne pisane dozvole ne smijete ih kopirati, ponovo objavljivati, distribuirati, komercijalno iskorištavati niti reproducirati, niti koristiti žigove na način koji upućuje na povezanost sa $_brand ili njenu podršku, osim u mjeri u kojoj to dozvoljava važeći zakon. Vaši lični podaci, finansijska evidencija i originalni sadržaj ostaju vaši. Biblioteke, usluge, fontovi i API-ji trećih strana podliježu licencama i pravima njihovih vlasnika. Korištenje aplikacije ne daje nikakvu licencu niti prijenos prava intelektualnog vlasništva, osim ako je izričito navedeno. Da prijavite sumnju na povredu, kontaktirajte nas $_reachBs. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Izmjene i kontakt',
@@ -4279,10 +4263,8 @@ abstract final class LegalContent {
               'rrezikon shërbimin apo përdoruesit e tjerë.',
         ),
         LegalSection(
-          'Marka dhe pronësia',
-          'Emri $_app, marka $_brand, si dhe dizajni dhe kodi i aplikacionit '
-              'mbeten pronë e zotëruesit të tyre. Të dhënat e tua mbeten të '
-              'tuat.',
+          'Pronësia intelektuale',
+          '$_brand, $_app dhe emrat, logot dhe identitetet e tyre vizuale, si dhe ato të çdo produkti të ardhshëm të $_brand, janë marka tregtare (™) të $_brand. Softueri, kodi burimor, arkitektura teknike, veçoritë dhe algoritmet origjinale, dizajnet, ndërfaqet, ikonat, grafikat, tekstet dhe dokumentacioni janë pronë e $_brand ose përdoren me licencat e nevojshme. Pa leje paraprake me shkrim nuk lejohet t\'i kopjoni, ripublikoni, shpërndani, shfrytëzoni tregtarisht ose riprodhoni, as të përdorni markat në një mënyrë që sugjeron lidhje me $_brand ose miratim prej saj, përveçse kur e lejon ligji në fuqi. Të dhënat tuaja personale, regjistrat financiarë dhe përmbajtja juaj origjinale mbeten tuajat. Bibliotekat, shërbimet, shkronjat dhe API-të e palëve të treta u nënshtrohen licencave dhe të drejtave të pronarëve të tyre. Përdorimi i aplikacionit nuk jep asnjë licencë apo transferim të drejtash të pronësisë intelektuale, përveç kur shprehet qartë. Për të raportuar një shkelje të dyshuar, na kontaktoni $_reachSq. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Ndryshimet dhe kontakti',
@@ -4578,10 +4560,8 @@ abstract final class LegalContent {
               'условия или подвергает риску сервис или других пользователей.',
         ),
         LegalSection(
-          'Бренд и права',
-          'Название $_app, бренд $_brand, а также дизайн и код приложения '
-              'остаются собственностью их владельца. Ваши данные остаются '
-              'вашими.',
+          'Интеллектуальная собственность',
+          '$_brand, $_app и их названия, логотипы и фирменный стиль, а также всех будущих продуктов $_brand, являются товарными знаками (™) $_brand. Программное обеспечение, исходный код, техническая архитектура, оригинальные функции и алгоритмы, дизайн, интерфейсы, значки, графика, тексты и документация принадлежат $_brand или используются по необходимым лицензиям. Без предварительного письменного разрешения запрещается копировать, повторно публиковать, распространять, коммерчески использовать или воспроизводить их, а также использовать товарные знаки так, чтобы это намекало на связь с $_brand или её одобрение, кроме случаев, разрешённых применимым законодательством. Ваши личные данные, финансовые записи и собственный контент остаются вашими. Сторонние библиотеки, сервисы, шрифты и API подчиняются лицензиям и правам их владельцев. Использование приложения не предоставляет лицензии и не передаёт права интеллектуальной собственности, если прямо не указано иное. Чтобы сообщить о предполагаемом нарушении, свяжитесь с нами $_reachRu. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Изменения и контакты',
@@ -4865,10 +4845,8 @@ abstract final class LegalContent {
               'inayohatarisha huduma au watumiaji wengine.',
         ),
         LegalSection(
-          'Chapa na umiliki',
-          'Jina la $_app, chapa ya $_brand, pamoja na muundo na msimbo wa '
-              'programu vinabaki mali ya mmiliki wake. Data yako inabaki kuwa '
-              'yako.',
+          'Haki miliki',
+          '$_brand, $_app pamoja na majina, nembo na utambulisho wao wa kuona, pamoja na vile vya bidhaa yoyote ya baadaye ya $_brand, ni alama za biashara (™) za $_brand. Programu, msimbo chanzo, muundo wa kiufundi, vipengele na algoriti asilia, miundo, violesura, aikoni, michoro, maandishi na nyaraka ni mali ya $_brand au hutumiwa chini ya leseni zinazohitajika. Huruhusiwi kuvinakili, kuvichapisha upya, kuvisambaza, kuvitumia kibiashara au kuvizalisha upya, wala kutumia alama za biashara kwa namna inayoashiria uhusiano na $_brand au uidhinishaji wake, bila ruhusa ya maandishi ya awali, isipokuwa kwa kadiri sheria inayotumika inavyoruhusu. Data yako binafsi, kumbukumbu za kifedha na maudhui yako asilia yanabaki kuwa yako. Maktaba, huduma, fonti na API za wahusika wengine ziko chini ya leseni na haki za wamiliki wao. Kutumia programu hakukupi leseni wala uhamisho wa haki zozote za haki miliki isipokuwa kama imeelezwa wazi. Kuripoti ukiukaji unaoshukiwa, wasiliana nasi $_reachSw. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Mabadiliko na mawasiliano',
@@ -5148,9 +5126,8 @@ abstract final class LegalContent {
               'jefa sabis ko sauran masu amfani cikin haɗari.',
         ),
         LegalSection(
-          'Alama da mallaka',
-          'Sunan $_app, alamar $_brand, da ƙira da lambar manhajar suna zama '
-              'mallakar mai su. Bayananka suna zama naka.',
+          'Haƙƙin mallakar fasaha',
+          '$_brand, $_app da sunayensu, tambarinsu da kamanninsu, tare da na duk wani samfurin $_brand na nan gaba, alamomin kasuwanci ne (™) na $_brand. Manhajar, lambar tushe, tsarin fasaha, siffofi da algorithms na asali, zane-zane, fuskoki, gumaka, hotuna, rubuce-rubuce da takardu mallakar $_brand ne ko kuma ana amfani da su ƙarƙashin lasisin da ake buƙata. Ba a yarda ka kwafe su, sake wallafa su, rarraba su, yi kasuwanci da su ko sake samar da su ba, kuma ba a yarda ka yi amfani da alamomin kasuwanci ta hanyar da ke nuna alaƙa da $_brand ko amincewarta ba, ba tare da izinin rubutu a gaba ba, sai dai inda doka ta ba da dama. Bayananka na kanka, bayanan kuɗinka da abubuwan da ka ƙirƙira suna nan mallakarka. Laburare, ayyuka, haruffa da APIs na wasu kamfanoni suna ƙarƙashin lasisi da haƙƙoƙin masu su. Amfani da manhajar ba ya ba ka wani lasisi ko canja haƙƙin mallakar fasaha sai dai inda aka faɗa a sarari. Don ba da rahoton keta haƙƙi da ake zargi, tuntuɓe mu $_reachHa. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Canje-canje da tuntuɓa',
@@ -5438,9 +5415,8 @@ abstract final class LegalContent {
               ' of ander gebruikers in gevaar stel.',
         ),
         LegalSection(
-          'Handelsmerk en eiendom',
-          'Die naam $_app, die handelsmerk $_brand en die app se ontwerp en kode '
-              'bly die eiendom van hul eienaar. Jou data bly joune.',
+          'Intellektuele eiendom',
+          '$_brand, $_app en hul name, logo\'s en visuele identiteite, asook dié van enige toekomstige $_brand-produk, is handelsmerke (™) van $_brand. Die sagteware, bronkode, tegniese argitektuur, oorspronklike funksies en algoritmes, ontwerpe, koppelvlakke, ikone, grafika, tekste en dokumentasie behoort aan $_brand of word onder die nodige lisensies gebruik. Jy mag dit nie sonder vooraf skriftelike toestemming kopieer, herpubliseer, versprei, kommersieel benut of reproduseer nie, en ook nie die handelsmerke gebruik op \'n manier wat \'n verbintenis met of goedkeuring deur $_brand suggereer nie, behalwe soos die toepaslike reg toelaat. Jou persoonlike data, finansiële rekords en oorspronklike inhoud bly joune. Biblioteke, dienste, lettertipes en API\'s van derde partye bly onderhewig aan die lisensies en regte van hul eienaars. Die gebruik van die app verleen geen lisensie op, of oordrag van, enige intellektuele eiendomsregte nie, tensy uitdruklik vermeld. Om \'n vermoedelike skending te rapporteer, kontak ons $_reachAf. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'Veranderinge en kontak',
@@ -5705,9 +5681,8 @@ abstract final class LegalContent {
               'را به خطر بیندازد تعلیق کنیم.',
         ),
         LegalSection(
-          'نشان تجاری و مالکیت',
-          'نام $_app، نشان $_brand و طراحی و کد برنامه متعلق به مالک آن‌ها '
-              'می‌ماند. داده‌های شما مال شما می‌ماند.',
+          'مالکیت فکری',
+          '$_brand، $_app و نام‌ها، لوگوها و هویت‌های بصری آن‌ها، و نیز هر محصول آینده $_brand، علائم تجاری (™) $_brand هستند. نرم‌افزار، کد منبع، معماری فنی، ویژگی‌ها و الگوریتم‌های اصلی، طراحی‌ها، رابط‌ها، نمادها، گرافیک‌ها، متن‌ها و مستندات متعلق به $_brand هستند یا تحت مجوزهای لازم استفاده می‌شوند. بدون اجازه کتبی قبلی نمی‌توانید آن‌ها را کپی، بازنشر، توزیع، بهره‌برداری تجاری یا بازتولید کنید، یا از علائم تجاری به گونه‌ای استفاده کنید که وابستگی به $_brand یا تأیید آن را القا کند، مگر تا حدی که قانون حاکم اجازه دهد. داده‌های شخصی، سوابق مالی و محتوای اصلی شما متعلق به خودتان باقی می‌ماند. کتابخانه‌ها، سرویس‌ها، قلم‌ها و APIهای اشخاص ثالث تابع مجوزها و حقوق صاحبانشان هستند. استفاده از برنامه هیچ مجوز یا انتقال حقوق مالکیت فکری را اعطا نمی‌کند، مگر آنچه صراحتاً ذکر شده باشد. برای گزارش نقض احتمالی، با ما $_reachFa تماس بگیرید. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'تغییرات و تماس',
@@ -5974,9 +5949,8 @@ abstract final class LegalContent {
               'उपयोगकर्ताओं को ख़तरे में डाले।',
         ),
         LegalSection(
-          'ब्रांड और स्वामित्व',
-          '$_app नाम, $_brand ब्रांड और ऐप का डिज़ाइन और कोड उनके मालिक के रहते '
-              'हैं। आपका डेटा आपका रहता है।',
+          'बौद्धिक संपदा',
+          '$_brand, $_app और उनके नाम, लोगो और विज़ुअल पहचान, साथ ही $_brand के किसी भी भावी उत्पाद के, $_brand के ट्रेडमार्क (™) हैं। सॉफ़्टवेयर, सोर्स कोड, तकनीकी संरचना, मौलिक फ़ीचर और एल्गोरिदम, डिज़ाइन, इंटरफ़ेस, आइकन, ग्राफ़िक्स, टेक्स्ट और दस्तावेज़ $_brand के स्वामित्व में हैं या आवश्यक लाइसेंस के तहत उपयोग किए जाते हैं। पूर्व लिखित अनुमति के बिना आप इन्हें कॉपी, पुनः प्रकाशित, वितरित, व्यावसायिक रूप से उपयोग या पुनरुत्पादित नहीं कर सकते, न ही ट्रेडमार्क का ऐसा उपयोग कर सकते हैं जिससे $_brand से जुड़ाव या उसका समर्थन लगे, सिवाय उसके जिसकी लागू क़ानून अनुमति देता है। आपका निजी डेटा, वित्तीय रिकॉर्ड और मौलिक सामग्री आपकी ही रहती है। तृतीय-पक्ष लाइब्रेरी, सेवाएँ, फ़ॉन्ट और API अपने मालिकों के लाइसेंस और अधिकारों के अधीन हैं। ऐप का उपयोग किसी भी बौद्धिक संपदा अधिकार का लाइसेंस या हस्तांतरण नहीं देता, सिवाय जहाँ स्पष्ट रूप से कहा गया हो। किसी संदिग्ध उल्लंघन की सूचना देने के लिए हमसे $_reachHi संपर्क करें। © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           'बदलाव और संपर्क',
@@ -6210,9 +6184,8 @@ abstract final class LegalContent {
               '条款或危及服务或其他用户的账户，我们可能会暂停其使用。',
         ),
         LegalSection(
-          '品牌与所有权',
-          '$_app 名称、$_brand 品牌以及应用的设计和代码归'
-              '其所有者所有。你的数据仍然属于你。',
+          '知识产权',
+          '$_brand、$_app 及其名称、标志和视觉形象，以及 $_brand 未来任何产品的上述要素，均为 $_brand 的商标（™）。软件、源代码、技术架构、原创功能与算法、设计、界面、图标、图形、文字和文档归 $_brand 所有，或依必要许可使用。未经事先书面许可，你不得复制、重新发布、分发、商业利用或复制再现上述内容，也不得以暗示与 $_brand 有关联或获其认可的方式使用其商标，适用法律允许的情形除外。你的个人数据、财务记录和原创内容仍归你所有。第三方库、服务、字体和 API 受其所有者的许可和权利约束。使用本应用并不授予任何知识产权许可或转让，明确说明的除外。如需举报疑似侵权，请$_reachZh联系我们。 © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           '变更与联系',
@@ -6484,10 +6457,8 @@ abstract final class LegalContent {
               'りするアカウントは停止することがあります。',
         ),
         LegalSection(
-          'ブランドと所有権',
-          '$_app の名称、$_brand のブランド、アプリのデザ'
-              'インとコードは、その所有者に帰属します。あなたのデータはあな'
-              'たのものです。',
+          '知的財産',
+          '$_brand、$_app およびそれらの名称、ロゴ、ビジュアルアイデンティティ、ならびに今後の $_brand 製品のそれらは、$_brand の商標（™）です。ソフトウェア、ソースコード、技術構成、独自の機能とアルゴリズム、デザイン、インターフェース、アイコン、グラフィック、テキスト、ドキュメントは $_brand が所有するか、必要なライセンスに基づいて使用しています。適用法で認められる場合を除き、事前の書面による許可なく、これらを複製、再公開、配布、商業利用または再製すること、また $_brand との提携や $_brand による推奨を示唆する形で商標を使用することはできません。お客様の個人データ、財務記録、オリジナルのコンテンツは引き続きお客様のものです。第三者のライブラリ、サービス、フォント、API は、それぞれの権利者のライセンスと権利に従います。本アプリの利用は、明示されている場合を除き、知的財産権のライセンスや譲渡を一切与えるものではありません。侵害の疑いを報告するには、$_reachJaお問い合わせください。 © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           '変更とお問い合わせ',
@@ -6774,10 +6745,8 @@ abstract final class LegalContent {
               '하게 하는 계정은 정지될 수 있습니다.',
         ),
         LegalSection(
-          '브랜드와 소유권',
-          '$_app 이름, $_brand 브랜드, 앱의 디자인과'
-              ' 코드는 그 소유자에게 있습니다. 사용자의 데이터는 사'
-              '용자의 것입니다.',
+          '지식재산권',
+          '$_brand, $_app 및 그 이름, 로고, 시각적 아이덴티티와 향후 모든 $_brand 제품의 해당 요소는 $_brand의 상표(™)입니다. 소프트웨어, 소스 코드, 기술 구조, 고유한 기능과 알고리즘, 디자인, 인터페이스, 아이콘, 그래픽, 텍스트 및 문서는 $_brand가 소유하거나 필요한 라이선스에 따라 사용합니다. 관련 법률이 허용하는 경우를 제외하고, 사전 서면 허가 없이 이를 복제, 재게시, 배포, 상업적으로 이용하거나 재생산할 수 없으며, $_brand와의 제휴나 $_brand의 보증을 암시하는 방식으로 상표를 사용할 수 없습니다. 개인 데이터, 금융 기록 및 원본 콘텐츠는 계속 사용자의 소유입니다. 제3자 라이브러리, 서비스, 글꼴 및 API는 해당 소유자의 라이선스와 권리를 따릅니다. 앱을 사용한다고 해서 명시적으로 밝힌 경우를 제외하고 지식재산권에 대한 라이선스나 이전이 부여되지 않습니다. 침해가 의심되면 $_reachKo 문의해 주세요. © ${AppConfig.copyrightYear} $_brand – Digital Productivity Solutions. All Rights Reserved.',
         ),
         LegalSection(
           '변경과 문의',

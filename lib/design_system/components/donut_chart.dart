@@ -102,7 +102,11 @@ class _DonutChartState extends State<DonutChart>
   @override
   void didUpdateWidget(DonutChart old) {
     super.didUpdateWidget(old);
-    if (firstSeen &&
+    if (!firstSeen && old.selectedIndex != widget.selectedIndex) {
+      // A category was chosen from the list beside the ring: the ring is
+      // in view, so it draws now rather than staying an empty track.
+      seenNow();
+    } else if (firstSeen &&
         _figures(old.segments) != _figures(widget.segments)) {
       _redraw();
     }
@@ -188,6 +192,7 @@ class _DonutChartState extends State<DonutChart>
         onTapUp: (d) {
           final int? hit = _hitTest(d.localPosition);
           if (hit == null) return;
+          seenNow();
           final int? next = _sticky == hit ? null : hit;
           if (_controlled) {
             widget.onSelectionChanged!(next);

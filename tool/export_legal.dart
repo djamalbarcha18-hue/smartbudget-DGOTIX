@@ -178,7 +178,7 @@ String _refundPage() => '''<!doctype html>
   </header>
 
 ${_offered.map(_refundArticle).join('\n')}
-  <footer><span dir="ltr">© ${DateTime.now().year} DGOTIX</span></footer>
+  <footer><span dir="ltr">© ${DateTime.now().year} DGOTIX – Digital Productivity Solutions. All Rights Reserved.</span></footer>
 </div>
 </body>
 </html>
@@ -213,7 +213,7 @@ String _page(LegalDoc doc, String file) {
   </header>
 
 ${_offered.map((AppLang l) => _article(doc, l)).join('\n')}
-  <footer><span dir="ltr">© ${DateTime.now().year} DGOTIX</span></footer>
+  <footer><span dir="ltr">© ${DateTime.now().year} DGOTIX – Digital Productivity Solutions. All Rights Reserved.</span></footer>
 </div>
 </body>
 </html>

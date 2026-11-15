@@ -36,7 +36,35 @@ mixin DsFirstSight<T extends StatefulWidget> on State<T> {
   /// Calls [start] as soon as this widget is (partly) visible.
   void whenFirstSeen(VoidCallback start) {
     _onSight = start;
-    WidgetsBinding.instance.addPostFrameCallback((_) => _check());
+    _arm();
+  }
+
+  /// Runs the pending start now: the user is plainly looking at the widget
+  /// (they tapped it, or chose something it shows).
+  void seenNow() {
+    final VoidCallback? start = _onSight;
+    if (!mounted || start == null) return;
+    _onSight = null;
+    _seen = true;
+    _stopWatching();
+    start();
+  }
+
+  bool _armed = false;
+
+  /// Looks again after the next frame. A widget can come into view with no
+  /// scroll at all: a card above it shrinks or goes away once its data
+  /// arrives, or the page it sits on is rebuilt. Scroll listeners alone
+  /// miss that, and a chart stayed undrawn (an empty grey ring) until the
+  /// next scroll. This only runs when a frame is drawn anyway, so an idle
+  /// screen costs nothing.
+  void _arm() {
+    if (_armed) return;
+    _armed = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _armed = false;
+      _check();
+    });
   }
 
   /// Every scroll this widget sits in, nearest first (a page view inside
@@ -85,6 +113,7 @@ mixin DsFirstSight<T extends StatefulWidget> on State<T> {
         _watched.add(s.position..addListener(_check));
       }
     }
+    _arm();
   }
 
   void _stopWatching() {
