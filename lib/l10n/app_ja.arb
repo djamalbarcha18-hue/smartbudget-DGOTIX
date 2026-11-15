@@ -663,6 +663,7 @@
   "faqReceiptQ": "レシートスキャンの仕組みは？",
   "faqReceiptA": "レシートの写真を撮るか選ぶと、SmartBudget が店名、日付、金額、品目を読み取り、保存前に確認できる新しい支出を作成します。スキャンは端末上（Android）またはクラウドで安全に行われ、プランの上限内で利用できます。",
   "supportResources": "リソース",
+  "founderTitle": "創業者",
   "pageAssistant": "AI アシスタント",
   "assistantInsightsTitle": "スマート分析",
   "assistantSubtitle": "スマート分析は端末上で計算されます。DGOTIX AI に質問すると、家計の短い数値の要約（名前や内容は含みません）が回答のため AI 提供元に送られます。",

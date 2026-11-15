@@ -45,6 +45,23 @@ abstract final class AppConfig {
   /// True once a real support inbox has been configured above.
   static bool get hasSupportEmail => supportEmail.trim().isNotEmpty;
 
+  /// The founder page (hidden until launched, see `AppEnv.founderPage`). The
+  /// one place these lines are written. Only what the founder chose to make
+  /// public: no employer, no current job title, and no academic or software
+  /// engineering title.
+  static const String founderName = 'Boulahdid Djamal Eddine';
+  static const String founderRole = 'Founder of DGoTix';
+  static const String founderFocus =
+      'Digital Product Development & Innovation';
+  static const List<String> founderBackground = <String>[
+    'Mechanical Engineering',
+    'Industrial Production',
+  ];
+
+  /// Where the founder page says to write: the general contact inbox, not
+  /// the support one.
+  static const String founderEmail = contactEmail;
+
   /// Public address of the platform, used by "Share SmartBudget" and its QR
   /// code. Leave EMPTY to use the address the app is served from (so the QR
   /// follows the site automatically); set it once you have your own domain,

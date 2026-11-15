@@ -765,6 +765,7 @@
   "faqReceiptQ": "كيف يعمل ماسح الإيصالات؟",
   "faqReceiptA": "صوّر الإيصال أو اختر صورته: يقرأ SmartBudget اسم التاجر والتاريخ والمبلغ والمنتجات، ويملأ مصروفاً جديداً تراجعه قبل الحفظ. ويتم المسح على جهازك (Android) أو سحابياً بأمان، ضمن حدود باقتك.",
   "supportResources": "مصادر",
+  "founderTitle": "المؤسس",
 
   "pageAssistant": "مساعد AI",
   "assistantInsightsTitle": "رؤى ذكية",

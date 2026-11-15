@@ -663,6 +663,7 @@
   "faqReceiptQ": "Comment fonctionne le scanner de tickets ?",
   "faqReceiptA": "Prenez ou choisissez la photo d'un ticket : SmartBudget lit le commerçant, la date, le montant et les articles, et remplit une nouvelle dépense que vous vérifiez avant d'enregistrer. Le scan se fait sur votre appareil (Android) ou de façon sécurisée dans le cloud, dans les limites de votre formule.",
   "supportResources": "Ressources",
+  "founderTitle": "Fondateur",
   "pageAssistant": "Assistant IA",
   "assistantInsightsTitle": "Analyses intelligentes",
   "assistantSubtitle": "Les analyses intelligentes sont calculées sur votre appareil. Quand vous interrogez DGOTIX AI, un court résumé chiffré de vos finances (sans noms ni descriptions) est envoyé au fournisseur d'IA pour répondre.",

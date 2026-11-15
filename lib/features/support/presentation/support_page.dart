@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:smartbudget/design_system/components/forward_chevron.dart';
 import 'package:smartbudget/core/config/app_config.dart';
+import 'package:smartbudget/core/env/app_env.dart';
 import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_radius.dart';
@@ -197,6 +198,11 @@ class SupportPage extends StatelessWidget {
                         icon: Icons.description_outlined,
                         label: l.footerTerms,
                         route: '/legal/terms'),
+                    if (AppEnv.founderPage)
+                      _ResourceRow(
+                          icon: Icons.person_outline_rounded,
+                          label: l.founderTitle,
+                          route: '/about/founder'),
                   ],
                 ),
               ),

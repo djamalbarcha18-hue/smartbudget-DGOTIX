@@ -663,6 +663,7 @@
   "faqReceiptQ": "Come funziona la scansione degli scontrini?",
   "faqReceiptA": "Scatta o scegli una foto di uno scontrino: SmartBudget legge esercente, data, importo e articoli e compila una nuova spesa da controllare prima di salvare. La scansione avviene sul tuo dispositivo (Android) o in modo sicuro nel cloud, nei limiti del tuo piano.",
   "supportResources": "Risorse",
+  "founderTitle": "Fondatore",
   "pageAssistant": "Assistente IA",
   "assistantInsightsTitle": "Analisi intelligenti",
   "assistantSubtitle": "Le analisi intelligenti sono calcolate sul tuo dispositivo. Quando chiedi a DGOTIX AI, un breve riepilogo numerico delle tue finanze (senza nomi né descrizioni) viene inviato al fornitore di IA per rispondere.",

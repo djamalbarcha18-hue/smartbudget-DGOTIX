@@ -663,6 +663,7 @@
   "faqReceiptQ": "收据扫描是怎么工作的？",
   "faqReceiptA": "拍摄或选择一张收据照片：SmartBudget 会读取商家、日期、金额和商品，并填好一笔新支出，供你在保存前检查。扫描在你的设备上（安卓）或在云端安全地进行，受你方案的额度限制。",
   "supportResources": "资源",
+  "founderTitle": "创始人",
   "pageAssistant": "AI 助手",
   "assistantInsightsTitle": "智能洞察",
   "assistantSubtitle": "智能洞察在你的设备上计算。当你询问 DGOTIX AI 时，会把你财务的简短数字摘要（不含姓名或描述）发送给 AI 服务商来回答。",

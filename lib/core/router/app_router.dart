@@ -20,6 +20,7 @@ import 'package:smartbudget/features/financial_health/presentation/financial_hea
 import 'package:smartbudget/features/guide/presentation/guide_page.dart';
 import 'package:smartbudget/features/goals/presentation/goals_page.dart';
 import 'package:smartbudget/features/income/presentation/income_page.dart';
+import 'package:smartbudget/features/about/presentation/founder_page.dart';
 import 'package:smartbudget/features/legal/domain/legal_content.dart';
 import 'package:smartbudget/features/legal/presentation/legal_page.dart';
 import 'package:smartbudget/features/markets/presentation/markets_page.dart';
@@ -264,6 +265,12 @@ GoRouter buildRouter(Ref ref) {
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const NoTransitionPage<void>(child: SupportPage()),
           ),
+          if (AppEnv.founderPage)
+            GoRoute(
+              path: '/about/founder',
+              pageBuilder: (BuildContext context, GoRouterState state) =>
+                  const NoTransitionPage<void>(child: FounderPage()),
+            ),
           GoRoute(
             path: '/legal/privacy',
             pageBuilder: (BuildContext context, GoRouterState state) =>

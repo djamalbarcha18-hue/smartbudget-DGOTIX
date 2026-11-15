@@ -767,6 +767,7 @@
   "faqReceiptQ": "How does the receipt scanner work?",
   "faqReceiptA": "Take or pick a photo of a receipt: SmartBudget reads the merchant, date, amount and items, and fills in a new expense for you to review before saving. Scanning runs on your device (Android) or securely in the cloud, within your plan's limits.",
   "supportResources": "Resources",
+  "founderTitle": "Founder",
 
   "pageAssistant": "AI Assistant",
   "assistantInsightsTitle": "Smart insights",

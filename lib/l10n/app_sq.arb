@@ -663,6 +663,7 @@
   "faqReceiptQ": "Si funksionon skaneri i faturave?",
   "faqReceiptA": "Bëj ose zgjidh një foto të faturës: SmartBudget lexon tregtarin, datën, shumën dhe artikujt dhe plotëson një shpenzim të ri që e rishikon para se ta ruash. Skanimi kryhet në pajisjen tënde (Android) ose me siguri në cloud, brenda kufijve të paketës tënde.",
   "supportResources": "Burime",
+  "founderTitle": "Themeluesi",
   "pageAssistant": "Asistenti AI",
   "assistantInsightsTitle": "Vështrime të zgjuara",
   "assistantSubtitle": "Vështrimet e zgjuara llogariten në pajisjen tënde. Kur pyet DGOTIX AI, një përmbledhje e shkurtër numerike e financave të tua (pa emra apo përshkrime) i dërgohet ofruesit të AI për të dhënë përgjigje.",

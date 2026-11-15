@@ -663,6 +663,7 @@
   "faqReceiptQ": "Como funciona o leitor de recibos?",
   "faqReceiptA": "Tire ou escolha uma foto de um recibo: o SmartBudget lê o estabelecimento, a data, o valor e os itens e preenche uma nova despesa para você revisar antes de salvar. A leitura roda no seu aparelho (Android) ou com segurança na nuvem, dentro dos limites do seu plano.",
   "supportResources": "Recursos",
+  "founderTitle": "Fundador",
   "pageAssistant": "Assistente de IA",
   "assistantInsightsTitle": "Análises inteligentes",
   "assistantSubtitle": "As análises inteligentes são calculadas no seu aparelho. Quando você pergunta à DGOTIX AI, um breve resumo numérico das suas finanças (sem nomes nem descrições) é enviado ao provedor de IA para responder.",

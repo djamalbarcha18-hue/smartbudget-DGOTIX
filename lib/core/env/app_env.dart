@@ -169,6 +169,13 @@ abstract final class AppEnv {
   static const bool coupons =
       bool.fromEnvironment('COUPONS', defaultValue: false);
 
+  /// The founder page (Help & Support → Founder), built but not launched:
+  /// hidden in every build, debug included, until built with
+  /// `--dart-define=FOUNDER_PAGE=true`. Off, there is no link to it and no
+  /// address for it.
+  static const bool founderPage =
+      bool.fromEnvironment('FOUNDER_PAGE', defaultValue: false);
+
   /// The calculator's business tools (margin, bill split, recording the
   /// result) require PRO only when this is on. Off for now, so they can be
   /// tried by everyone; turn on with --dart-define=CALC_PRO_GATE=true.
