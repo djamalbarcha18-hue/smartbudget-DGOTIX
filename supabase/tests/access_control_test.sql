@@ -134,6 +134,23 @@ select pg_temp.attempt('C (email not confirmed) starts a trial', 'select start_p
 reset role;
 select pg_temp.attempt('C got no trial', $q$select 1 from ai_entitlements where user_id = 'cccccccc-0000-0000-0000-000000000003' and trial_used_at is not null$q$, 'rows=0');
 
+-- Daily snapshots of the cloud copy: B's backup changed above, so its earlier
+-- content was kept. Only B can read it, and nobody writes snapshots.
+select pg_temp.attempt('B''s earlier backup was kept', $q$select 1 from user_backup_snapshots where user_id = 'bbbbbbbb-0000-0000-0000-000000000002' and data = '{"secret":"B"}'$q$, 'rows=1');
+set role authenticated;
+select set_config('request.jwt.claim.sub', 'aaaaaaaa-0000-0000-0000-000000000001', false);
+select pg_temp.attempt('A reads B snapshots', 'select * from user_backup_snapshots where user_id <> auth.uid()', 'rows=0');
+select pg_temp.attempt('A writes a snapshot', $q$insert into user_backup_snapshots (user_id, day, data) values (auth.uid(), current_date - 1, '{}')$q$, 'denied');
+select pg_temp.attempt('A deletes snapshots', 'delete from user_backup_snapshots', 'denied');
+select set_config('request.jwt.claim.sub', 'bbbbbbbb-0000-0000-0000-000000000002', false);
+select pg_temp.attempt('B reads own snapshot', 'select * from user_backup_snapshots where user_id = auth.uid()', 'rows=1');
+select pg_temp.attempt('B edits own snapshot', $q$update user_backup_snapshots set data = '{}'$q$, 'denied');
+reset role;
+set role anon;
+select set_config('request.jwt.claim.sub', '', false);
+select pg_temp.attempt('anon reads snapshots', 'select * from user_backup_snapshots', 'rows=0');
+reset role;
+
 select outcome || '  ' || test from results;
 select count(*) filter (where outcome = 'PASS') || ' passed, ' || count(*) filter (where outcome <> 'PASS') || ' failed' from results;
 do $$
