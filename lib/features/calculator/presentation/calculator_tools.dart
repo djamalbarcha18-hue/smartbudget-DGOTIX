@@ -293,24 +293,27 @@ class _CalculatorToolsState extends ConsumerState<CalculatorTools> {
             Row(
               children: <Widget>[
                 Expanded(child: Text(l.calcPeople)),
-                IconButton.filledTonal(
-                  key: const Key('calc-people-minus'),
+                _StepButton(
+                  id: 'calc-people-minus',
+                  icon: Icons.remove_rounded,
                   tooltip: l.calcSubtract,
-                  onPressed: _people > 2
-                      ? () => setState(() => _people--)
-                      : null,
-                  icon: const Icon(Icons.remove_rounded),
+                  onTap: _people > 2 ? () => setState(() => _people--) : null,
                 ),
-                Text('$_people',
-                    key: const Key('calc-people'),
-                    style: Theme.of(context).textTheme.titleMedium),
-                IconButton.filledTonal(
-                  key: const Key('calc-people-plus'),
+                SizedBox(
+                  width: 48,
+                  child: Text('$_people',
+                      key: const Key('calc-people'),
+                      textAlign: TextAlign.center,
+                      textDirection: TextDirection.ltr,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: context.dsColors.textPrimary)),
+                ),
+                _StepButton(
+                  id: 'calc-people-plus',
+                  icon: Icons.add_rounded,
                   tooltip: l.calcAdd,
-                  onPressed: _people < 50
-                      ? () => setState(() => _people++)
-                      : null,
-                  icon: const Icon(Icons.add_rounded),
+                  onTap: _people < 50 ? () => setState(() => _people++) : null,
                 ),
               ],
             ),
@@ -441,26 +444,9 @@ class _RateField extends StatelessWidget {
       onChanged(text);
     }
 
-    Widget stepButton(IconData icon, String tip, int by, String id) => Tooltip(
-          message: tip,
-          child: Material(
-            color: c.brand.withValues(alpha: 0.16),
-            shape: RoundedRectangleBorder(
-              borderRadius: DsRadius.brMd,
-              side: BorderSide(color: c.brand.withValues(alpha: 0.55)),
-            ),
-            child: InkWell(
-              key: Key('calc-rate-$id'),
-              borderRadius: DsRadius.brMd,
-              onTap: () => step(by),
-              child: SizedBox(
-                width: 40,
-                height: 40,
-                child: Icon(icon, size: 22, color: c.brand),
-              ),
-            ),
-          ),
-        );
+    Widget stepButton(IconData icon, String tip, int by, String id) =>
+        _StepButton(
+            id: 'calc-rate-$id', icon: icon, tooltip: tip, onTap: () => step(by));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -512,4 +498,54 @@ class _RateField extends StatelessWidget {
         ),
         onChanged: onChanged,
       );
+}
+
+/// A − or + button: a fixed 40×40 blue square with a clear sign, the same in
+/// every theme; greyed when it can't go further.
+class _StepButton extends StatelessWidget {
+  const _StepButton({
+    required this.id,
+    required this.icon,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  final String id;
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final DsColors c = context.dsColors;
+    final bool on = onTap != null;
+    return Tooltip(
+      message: tooltip,
+      child: Semantics(
+        button: true,
+        enabled: on,
+        label: tooltip,
+        excludeSemantics: true,
+        child: Material(
+          color: c.brand.withValues(alpha: on ? 0.16 : 0.06),
+          shape: RoundedRectangleBorder(
+            borderRadius: DsRadius.brMd,
+            side: BorderSide(color: c.brand.withValues(alpha: on ? 0.55 : 0.2)),
+          ),
+          child: InkWell(
+            key: Key(id),
+            borderRadius: DsRadius.brMd,
+            onTap: onTap,
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: Icon(icon,
+                  size: 22,
+                  color: on ? c.brand : c.brand.withValues(alpha: 0.35)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

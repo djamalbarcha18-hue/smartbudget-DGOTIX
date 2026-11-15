@@ -352,6 +352,12 @@ void main() {
     await tester.tap(find.byKey(const Key('calc-mode-split')));
     await tester.pumpAndSettle();
     expect(tool('split-each'), '595');
+    expect(tester.widget<Text>(find.byKey(const Key('calc-people'))).data, '2');
+    await tester.ensureVisible(find.byKey(const Key('calc-people-plus')));
+    await tester.tap(find.byKey(const Key('calc-people-plus')));
+    await tester.pumpAndSettle();
+    expect(tester.widget<Text>(find.byKey(const Key('calc-people'))).data, '3');
+    expect(tool('split-each'), '396.67');
     expect(tester.takeException(), isNull);
   });
 }
