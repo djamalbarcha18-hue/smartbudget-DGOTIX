@@ -222,18 +222,34 @@ final sadaqahPlanProvider = Provider<SadaqahPlan?>((ref) {
   );
 });
 
-Timer? _pending;
+SadaqahPlan? _wanted;
+bool _applying = false;
 
-/// Applies a plan, once things settle: quick changes (several taps on a
-/// switch) schedule only the last one, and never slow the screen down.
+/// Applies a plan. Changes that come while one is being applied (several
+/// quick taps on a switch) are folded into the last one, so the screen never
+/// waits and the phone is scheduled once more at most.
 void applySadaqahPlan(SadaqahPlan plan) {
-  _pending?.cancel();
-  _pending = Timer(const Duration(milliseconds: 600), () {
-    final SadaqahNotifications n = SadaqahNotifications.instance;
-    (plan.times.isEmpty
+  _wanted = plan;
+  if (!_applying) unawaited(_drain());
+}
+
+Future<void> _drain() async {
+  _applying = true;
+  try {
+    while (_wanted != null) {
+      final SadaqahPlan plan = _wanted!;
+      _wanted = null;
+      final SadaqahNotifications n = SadaqahNotifications.instance;
+      try {
+        await (plan.times.isEmpty
             ? n.cancel()
             : n.schedule(plan.times,
-                title: plan.title, body: plan.body, channel: plan.channel))
-        .ignore();
-  });
+                title: plan.title, body: plan.body, channel: plan.channel));
+      } catch (_) {
+        // Non-fatal: planned again on the next change or launch.
+      }
+    }
+  } finally {
+    _applying = false;
+  }
 }
