@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartbudget/core/settings/islamic_features.dart';
 import 'package:smartbudget/features/billing/presentation/plan_labels.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -55,12 +56,16 @@ class NavSidebar extends StatelessWidget {
         ),
         Divider(height: 1, color: c.border),
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: DsSpacing.md,
-              vertical: DsSpacing.md,
+          // Rebuilt at once when "Show Islamic features" changes.
+          child: ValueListenableBuilder<bool>(
+            valueListenable: IslamicFeatures.enabled,
+            builder: (BuildContext context, bool _, Widget? __) => ListView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: DsSpacing.md,
+                vertical: DsSpacing.md,
+              ),
+              children: _buildMenu(context, l),
             ),
-            children: _buildMenu(context, l),
           ),
         ),
         Divider(height: 1, color: c.border),

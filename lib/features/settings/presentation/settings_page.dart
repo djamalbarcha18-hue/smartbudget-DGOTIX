@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/features/settings/presentation/islamic_features_section.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_popup.dart';
 import 'package:smartbudget/core/time/clock_sync_controller.dart';
 import 'package:smartbudget/core/config/app_config.dart';
@@ -180,6 +181,14 @@ class SettingsPage extends ConsumerWidget {
                 icon: Icons.visibility_off_outlined,
                 title: l.settingsPrivacy,
                 child: const PrivacySection(),
+              ),
+              const SizedBox(height: DsSpacing.lg),
+
+              // Show Islamic features (zakat, sadaqah, Ramadan and Eid).
+              _SettingsSection(
+                icon: Icons.nightlight_round,
+                title: l.islamicFeaturesSection,
+                child: const IslamicFeaturesSection(),
               ),
               const SizedBox(height: DsSpacing.lg),
 

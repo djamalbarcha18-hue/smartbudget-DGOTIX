@@ -38,6 +38,11 @@ void main() {
           for (final NavDestination d in AppNav.all)
             if (d.isNew) d.section,
         },
-        <AppSection>{AppSection.seasons, AppSection.zakat, AppSection.trips});
+        <AppSection>{
+          AppSection.seasons,
+          AppSection.zakat,
+          AppSection.sadaqah,
+          AppSection.trips,
+        });
   });
 }

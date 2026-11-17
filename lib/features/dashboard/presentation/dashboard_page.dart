@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
 import 'package:smartbudget/core/time/app_clock.dart';
+import 'package:smartbudget/features/sadaqah/presentation/sadaqah_promo_card.dart';
 import 'package:smartbudget/features/transactions/domain/entry_date.dart';
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/design_system/brand/brand_assets.dart';
@@ -161,6 +162,7 @@ class DashboardPage extends ConsumerWidget {
               quiet: nothingYet && ref.watch(welcomeVisibleProvider)),
           const SizedBox(height: DsSpacing.xl),
           const WelcomeCard(),
+          const SadaqahHomeCard(),
           const BackupReminderCard(),
           const InstallBanner(),
 

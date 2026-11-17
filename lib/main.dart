@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:smartbudget/core/settings/islamic_features.dart';
 import 'package:smartbudget/features/daret/application/daret_import.dart';
 import 'package:smartbudget/app.dart';
 import 'package:smartbudget/core/app_restart.dart';
@@ -112,6 +113,10 @@ Future<void> _start() async {
   // Where the user's lists are kept (the device database is behind
   // INDEXED_DB; docs/LOCAL_DATABASE.md). Before any of them is read.
   await chooseRecordLists();
+
+  // "Show Islamic features": read before the first frame so the menu never
+  // flickers.
+  await IslamicFeatures.load();
 
   // Read before the first frame so a locked app never shows its content.
   final LockConfig lock = await LockStore.load();

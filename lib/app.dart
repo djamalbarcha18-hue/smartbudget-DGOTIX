@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:smartbudget/features/sadaqah/application/sadaqah_controller.dart';
 import 'package:smartbudget/features/referrals/presentation/referral_celebration.dart';
 import 'package:smartbudget/core/config/app_config.dart';
 import 'package:smartbudget/core/env/app_env.dart';
@@ -82,6 +83,12 @@ class SmartBudgetApp extends ConsumerWidget {
     // (settings, language, or something recorded today).
     ref.listen(reminderPlanProvider, (_, ReminderPlan? next) {
       if (next != null) applyReminderPlan(next).ignore();
+    });
+    // The Sadaqah Planner's reminders (Android, only once the user turns
+    // them on): scheduled again when the planner, the language or the
+    // "Islamic features" choice changes.
+    ref.listen(sadaqahPlanProvider, (_, SadaqahPlan? next) {
+      if (next != null) applySadaqahPlan(next);
     });
     ref.listen(transactionsProvider, (_, AsyncValue<List<Transaction>> next) {
       if (next.valueOrNull?.isNotEmpty ?? false) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/settings/islamic_features.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/money/money_formatter.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
@@ -37,6 +38,9 @@ class SeasonsPage extends ConsumerWidget {
     final List<SeasonKind> suggestions = <SeasonKind>[
       for (final SeasonKind k in SeasonKind.values)
         if (k != SeasonKind.custom &&
+            // Ramadan and Eid only with the Islamic features.
+            (ref.watch(islamicFeaturesProvider) ||
+                !SeasonCalendar.isHijri(k)) &&
             !plans.any((SeasonPlan p) =>
                 p.kind == k &&
                 SeasonMath.status(p, now) != SeasonStatus.ended))

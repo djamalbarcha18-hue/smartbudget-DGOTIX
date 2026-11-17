@@ -29,6 +29,7 @@ import 'package:smartbudget/features/onboarding/presentation/onboarding_visit_ma
 import 'package:smartbudget/features/recurring/presentation/recurring_auto_poster.dart';
 import 'package:smartbudget/features/recurring/presentation/recurring_page.dart';
 import 'package:smartbudget/features/reports/presentation/reports_page.dart';
+import 'package:smartbudget/features/sadaqah/presentation/sadaqah_page.dart';
 import 'package:smartbudget/features/seasons/presentation/seasons_page.dart';
 import 'package:smartbudget/features/trips/presentation/trip_summary_page.dart';
 import 'package:smartbudget/features/trips/presentation/trips_page.dart';
@@ -226,6 +227,11 @@ GoRouter buildRouter(Ref ref) {
                 const NoTransitionPage<void>(child: ZakatScreen()),
           ),
           GoRoute(
+            path: '/sadaqah',
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const NoTransitionPage<void>(child: SadaqahPage()),
+          ),
+          GoRoute(
             path: '/reports',
             pageBuilder: (BuildContext context, GoRouterState state) =>
                 const NoTransitionPage<void>(child: ReportsPage()),
@@ -305,6 +311,7 @@ const Set<AppSection> _implementedSections = <AppSection>{
   AppSection.markets,
   AppSection.calculator,
   AppSection.zakat,
+  AppSection.sadaqah,
   AppSection.reports,
   AppSection.aiAssistant,
   AppSection.plans,

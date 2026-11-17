@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:smartbudget/core/env/app_env.dart';
+import 'package:smartbudget/core/settings/islamic_features.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
 /// Logical app sections. Order + grouping is a UX decision (not bound to the
@@ -25,6 +26,7 @@ enum AppSection {
   financialHealth,
   reports,
   zakat,
+  sadaqah,
   exchangeRates,
   markets,
   calculator,
@@ -48,6 +50,7 @@ class NavDestination {
     required this.icon,
     required this.group,
     this.isNew = false,
+    this.islamic = false,
   });
 
   final AppSection section;
@@ -58,6 +61,9 @@ class NavDestination {
   /// "New" in the menu until the user first opens it (kept for the Islamic
   /// features at launch, then for what each update adds).
   final bool isNew;
+
+  /// Hidden while "Show Islamic features" is off (Settings).
+  final bool islamic;
 
   String label(AppLocalizations l) => switch (section) {
         AppSection.dashboard => l.navDashboard,
@@ -78,6 +84,9 @@ class NavDestination {
         AppSection.financialHealth => l.navFinancialHealth,
         AppSection.reports => l.navReports,
         AppSection.zakat => l.navZakat,
+        // The same planner, named for what the user chose to see.
+        AppSection.sadaqah =>
+          IslamicFeatures.enabled.value ? l.navSadaqah : l.navGiving,
         AppSection.exchangeRates => l.navExchangeRates,
         AppSection.calculator => l.navCalculator,
         AppSection.markets => l.navMarkets,
@@ -95,7 +104,9 @@ abstract final class AppNav {
   /// launched in this build.
   static List<NavDestination> get destinations => <NavDestination>[
         for (final NavDestination d in all)
-          if (isLaunched(d) || AppEnv.smartTrip) d,
+          if ((isLaunched(d) || AppEnv.smartTrip) &&
+              (!d.islamic || IslamicFeatures.enabled.value))
+            d,
       ];
 
   /// In every build (SmartTrip is still in testing).
@@ -217,6 +228,16 @@ abstract final class AppNav {
       group: NavGroup.special,
       // Islamic features: shown as new until first opened.
       isNew: true,
+      islamic: true,
+    ),
+    NavDestination(
+      section: AppSection.sadaqah,
+      route: '/sadaqah',
+      icon: Icons.volunteer_activism_outlined,
+      group: NavGroup.special,
+      // Sadaqah Planner, or Giving Planner when the Islamic features are
+      // hidden: in the menu either way.
+      isNew: true,
     ),
     // Advanced features.
     NavDestination(
@@ -310,6 +331,7 @@ abstract final class AppMenu {
       AppSection.seasons,
       AppSection.daret,
       AppSection.zakat,
+      AppSection.sadaqah,
       AppSection.trips,
     ],
     NavFold.markets: <AppSection>[

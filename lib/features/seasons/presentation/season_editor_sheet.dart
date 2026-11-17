@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:smartbudget/core/settings/islamic_features.dart';
 import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/amount_input.dart';
 import 'package:smartbudget/core/money/money.dart';
@@ -66,7 +67,11 @@ class SeasonEditorSheet extends ConsumerStatefulWidget {
 
 class _SeasonEditorSheetState extends ConsumerState<SeasonEditorSheet> {
   late SeasonKind _kind =
-      widget.existing?.kind ?? widget.kind ?? SeasonKind.ramadan;
+      widget.existing?.kind ??
+          widget.kind ??
+          (IslamicFeatures.enabled.value
+              ? SeasonKind.ramadan
+              : SeasonKind.schoolStart);
   late final TextEditingController _budget = TextEditingController(
       text: widget.existing == null ? '' : _plain(widget.existing!.budget));
   late final TextEditingController _saved = TextEditingController(
@@ -225,6 +230,9 @@ class _SeasonEditorSheetState extends ConsumerState<SeasonEditorSheet> {
                   runSpacing: DsSpacing.sm,
                   children: <Widget>[
                     for (final SeasonKind k in SeasonKind.values)
+                      // Ramadan and Eid only with the Islamic features.
+                      if (IslamicFeatures.enabled.value ||
+                          !SeasonCalendar.isHijri(k))
                       ChoiceChip(
                         avatar: Icon(seasonIcon(k),
                             size: 16, color: seasonColor(k)),
