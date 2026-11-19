@@ -843,7 +843,10 @@ alter table subscriptions add column if not exists provider_event_at timestamptz
 
 -- ---- 3. Profile plan is server-only ----------------------------------------
 -- Rows are created by the signup trigger; the user may change only these.
-revoke insert, update on table profiles from anon, authenticated;
+-- Nor delete it: the row can't be created again from the client, and its
+-- removal belongs to account deletion, which cascades from auth.users as the
+-- owner (security audit F-01).
+revoke insert, update, delete on table profiles from anon, authenticated;
 grant update (display_name, locale, theme, base_currency, updated_at)
   on table profiles to authenticated;
 

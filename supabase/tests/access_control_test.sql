@@ -75,6 +75,10 @@ select pg_temp.attempt('A clears coupon attempts', 'delete from coupon_attempts'
 select pg_temp.attempt('A sets own profile plan', $q$update profiles set plan = 'pro' where id = auth.uid()$q$, 'denied');
 select pg_temp.attempt('A sets own display name', $q$update profiles set display_name = 'A' where id = auth.uid()$q$, 'rows=1');
 select pg_temp.attempt('A edits B profile', $q$update profiles set display_name = 'x' where id <> auth.uid()$q$, 'rows=0');
+-- The row can't be created again from the client, so it can't be deleted
+-- from it either (security audit F-01).
+select pg_temp.attempt('A deletes own profile', $q$delete from profiles where id = auth.uid()$q$, 'denied');
+select pg_temp.attempt('A deletes B profile', $q$delete from profiles where id <> auth.uid()$q$, 'denied');
 select pg_temp.attempt('A reserves usage directly', $q$select reserve_usage(auth.uid(), 'ai', '2026-10', 999, false, null)$q$, 'denied');
 select pg_temp.attempt('A gives back usage directly', $q$select release_usage(auth.uid(), 'ai', '2026-10')$q$, 'denied');
 select pg_temp.attempt('A files a report as B', $q$insert into ai_reports (user_id, reason, answer) values ('bbbbbbbb-0000-0000-0000-000000000002', 'other', 'x')$q$, 'denied');
