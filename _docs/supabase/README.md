@@ -1,10 +1,28 @@
+<details><summary>Directory Metadata (for smart change detection)</summary>
+
+```json
+{
+  "doc_type": "directory_index",
+  "directory_path": "_docs/supabase",
+  "directory_hash": "0176dd17cefbcaf120883f7e10e9fe43a3d1c6da4d614c2393e13d2f905f03dc",
+  "file_count": 3,
+  "file_hashes": {
+    "referrals.sql": "615f3fa717c5e8eb",
+    "security_hardening.sql": "1b25874b4949a8b0",
+    "setup_all.sql": "59bfe9010e1c940a"
+  }
+}
+```
+
+</details>
+
 [Documentation Home](../README.md) > [supabase](./README.md) > **supabase**
 
 ---
 
 # 📁 supabase
 
-> **Purpose:** Holds Supabase-related database artifacts, server-side functions, and tests that support subscription, billing, and integration behaviors for the application.
+> **Purpose:** Collection of SQL schema, security hardening, and referral logic tailored for deploying and running the SmartBudget database on a Supabase/PostgreSQL backend.
 > 
 
 ![Organization: Hierarchical](https://img.shields.io/badge/Organization-Hierarchical-blue)
@@ -14,6 +32,7 @@
 
 - [Overview](#overview)
 - [Subdirectories](#subdirectories)
+- [All Files](#all-files)
 - [Dependencies](#dependencies)
 - [Architecture Notes](#architecture-notes)
 
@@ -21,14 +40,14 @@
 
 ## Overview
 
-This directory groups Supabase-centric assets used by the project. At the top level there are a number of SQL and configuration files (for example: billing, subscription lifecycle, schema and various reports and maintenance SQL files) alongside a config.toml and templates subdirectory. These files collectively provide database schema, queries, and operational SQL scripts that are used by the project; their filenames indicate areas such as billing, backups, subscriptions, and maintenance, while detailed file-level responsibilities are located inside each file.
+This directory contains the primary SQL artifacts used to create, secure, and extend the SmartBudget database when deployed to Supabase/PostgreSQL. At the root there are three prominently documented SQL files: setup_all.sql performs a full, single-transaction setup of the database schema and reference data; security_hardening.sql applies security-hardening measures and runtime guards; and referrals.sql implements the referral system used by the application. Together these files provide the core database definition, operational safeguards, and a specific feature integration (referrals) needed for the application to run safely in a hosted Supabase environment.
 
-Two purpose-built subdirectories refine the structure: functions/ and tests/. The functions/ directory is intended to contain Supabase serverless functions, webhook/proxy handlers, and shared server-side utilities that implement server-side logic and integrations. The tests/ directory contains TypeScript test modules and helper utilities used to exercise payment, subscription, and related behaviors against the Supabase test harness; at its root are test modules (for example functions_test.ts) providing utilities and helpers for payment/subscription scenarios. Together, the root SQL/config artifacts, the serverless functions, and the test harness form a cohesive set for defining data structures, implementing server-side integrations, and validating payment/subscription behavior against Supabase.
+In addition to the root-level SQL files, the directory organizes supporting code into subdirectories. The tests/ subdirectory holds automated test artifacts and a test harness (SQL and TypeScript) used to validate Supabase-style schema behavior and helpers; these suites check access control, behavior invariants, and other database-level guarantees. The functions/ subdirectory is intended to collect Supabase Edge Function implementations and shared server-side utilities (currently empty at this top level), which link serverless behaviors—such as webhooks, billing helpers, or proxy logic—with the database constructs defined here. Together, root SQL files, tests, and functions form a workflow: setup and seed the schema, apply runtime guards, implement feature SQL (referrals), and validate with tests; serverless functions live alongside to provide HTTP/webhook integrations as needed.
 
 
 ### File Organization
 
-Top-level contains SQL and configuration artifacts (schema, billing, backup, reports, and operational scripts) and a templates subdirectory. Two focused subdirectories separate runtime server-side code (functions/) from test code and helpers (tests/). This separation keeps production logic and validation code distinct while colocating Supabase-specific artifacts.
+Root-level SQL files are organized by role: full setup (setup_all.sql), security hardening (security_hardening.sql), and a feature module (referrals.sql). Tests and serverless function code are grouped into dedicated subdirectories to separate runtime/CI artifacts from schema definition.
 
 ## 📂 Subdirectories
 
@@ -36,31 +55,41 @@ This directory contains the following subdirectories:
 
 ### [📁 tests](./tests/README.md)
 
-**Purpose:** Contains test modules and helper utilities for exercising payment and subscription-related behavior in the Supabase test harness and related SQL checks.
+**Purpose:** Holds automated test artifacts and test harness code for validating Supabase-style schema behavior and helper utilities used by the supabase test suites.
 
-![Files: 1](https://img.shields.io/badge/Files-1-blue)
+![Files: 3](https://img.shields.io/badge/Files-3-blue)
 
 ---
 
 ### [📁 functions](./functions/README.md)
 
-**Purpose:** Collection of Supabase serverless functions, helper modules, and webhook/proxy utilities used to implement server-side logic and integrations for the application.
+**Purpose:** Collect and host Supabase serverless Edge Function implementations and shared server-side utilities used for billing, payments, quota/allowance logic, and HTTP proxying within the project.
 
 ![Files: 0](https://img.shields.io/badge/Files-0-blue)
 
 ---
+## 📂 All Files
+
+| File | Type |
+| --- | --- |
+| [referrals.sql](./referrals.sql.md) | 🗄️ SQL |
+| [security_hardening.sql](./security_hardening.sql.md) | 🗄️ SQL |
+| [setup_all.sql](./setup_all.sql.md) | 🗄️ SQL |
+
 ## Dependencies
 
 ### Internal Dependencies
 
 | Dependency | Usage |
 | --- | --- |
-| `Supabase runtime and test harness` | This directory's tests and functions are intended to run against a Supabase environment and the project's Supabase test harness; tests exercise payment/subscription behaviors using that environment. |
+| [tests/](../tests/.md) | Provides automated validation and test harnesses that depend on the database objects created by the root SQL files. |
+| [functions/](../functions/.md) | Hosts serverless Edge Function implementations that integrate with the database schema defined here (used for billing, payments, proxying, etc.). |
 
 ## Architecture Notes
 
-- Separation of concerns: SQL and config live at the top level, server-side runtime code in functions/, and validation code in tests/ to keep responsibilities distinct.
-- Naming convention: SQL filenames reflect domain areas (billing, subscriptions, backups, reports), making it easier to locate operational scripts.
+- Database schema setup is centralized in a single-transaction script (setup_all.sql) to ensure consistent initial state.
+- Security hardening is applied post-creation via a dedicated script to separate functional schema from operational guards.
+- Feature-specific SQL (e.g., referrals.sql) is modularized so features can be reviewed, tested, and maintained independently of the full setup.
 
 ---
 
