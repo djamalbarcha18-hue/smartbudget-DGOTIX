@@ -1,0 +1,1653 @@
+{
+  "entries": {
+    "supabase/functions/_shared/ai/gateway.ts": {
+      "description": {
+        "classes": [
+          {
+            "base_classes": [],
+            "is_abstract": false,
+            "is_dataclass": false,
+            "is_enum": false,
+            "is_protocol": true,
+            "is_pydantic_model": false,
+            "line_end": 32,
+            "line_start": 24,
+            "name": "ModelDef",
+            "qualified_name": "ModelDef",
+            "response": {
+              "purpose": "Represents a single AI model definition used by the gateway, providing identifying information, declared capabilities, throughput characteristics, priority, and activation state. It encapsulates the essential metadata the gateway needs to consider when selecting or managing models.\n",
+              "responsibilities": [
+                "Hold the provider identity (ProviderId) and the model's unique identifier (id).",
+                "Declare the model's supported capabilities as an array of Capability values.",
+                "Expose throughput or rate information via inputPerM and outputPerM to indicate allowed or expected tokens/units per minute for input and output.",
+                "Indicate selection preference via the priority numeric value and whether the model is currently available via the active boolean."
+              ],
+              "role_in_module": "Serves as the canonical data structure for model metadata within the gateway module, enabling other components to evaluate, compare, and select models based on provider, capabilities, throughput, priority, and active status."
+            }
+          },
+          {
+            "base_classes": [],
+            "is_abstract": false,
+            "is_dataclass": false,
+            "is_enum": false,
+            "is_protocol": true,
+            "is_pydantic_model": false,
+            "line_end": 77,
+            "line_start": 70,
+            "name": "GatewayConfig",
+            "qualified_name": "GatewayConfig",
+            "response": {
+              "purpose": "GatewayConfig defines the configuration shape for selecting and controlling AI providers and models used by the gateway. It centralizes which providers and models are enabled, their priorities, pricing for model input, and the maximum number of fallback attempts allowed.\n",
+              "responsibilities": [
+                "Declare which external providers are enabled via providerEnabled mappings.",
+                "Specify provider selection order through providerPriority numeric rankings.",
+                "Track which individual models are enabled using modelEnabled mappings.",
+                "Provide per-model input pricing via modelPrice entries.",
+                "Control model selection preference with modelPriority and limit resilience behavior with maxFallbackAttempts."
+              ],
+              "role_in_module": "Within the module, GatewayConfig serves as the canonical configuration object that other gateway components read to decide which providers and models to use, how to rank them, and how to handle pricing and fallback logic. It acts as the single source of truth for runtime selection and failover behavior."
+            }
+          },
+          {
+            "base_classes": [],
+            "is_abstract": false,
+            "is_dataclass": false,
+            "is_enum": false,
+            "is_protocol": true,
+            "is_pydantic_model": false,
+            "line_end": 145,
+            "line_start": 145,
+            "name": "Classified",
+            "qualified_name": "Classified",
+            "response": {
+              "purpose": "The Classified interface defines a simple typed structure for representing a classification result that carries a code string. It provides a clear shape for objects used where a compact classification identifier is needed.\n",
+              "responsibilities": [
+                "Hold a classification identifier in the form of a string under the property 'code'.",
+                "Provide a type-safe contract so TypeScript code can rely on the presence and type of the classification code.",
+                "Serve as a predictable payload for functions or modules that consume or produce classification results.",
+                "Enable consistent serialization and validation of classification data across the module."
+              ],
+              "role_in_module": "Within the ai/gateway.ts file, Classified acts as a lightweight DTO (data-transfer object) used to pass classification codes between components. It helps ensure the rest of the module treats classification values in a consistent, typed way."
+            }
+          },
+          {
+            "base_classes": [],
+            "is_abstract": false,
+            "is_dataclass": false,
+            "is_enum": false,
+            "is_protocol": true,
+            "is_pydantic_model": false,
+            "line_end": 164,
+            "line_start": 164,
+            "name": "Breaker",
+            "qualified_name": "Breaker",
+            "response": {
+              "purpose": "Represents the shape of a simple circuit-breaker-like object by exposing a failures count. It provides a minimal contract for tracking how many failure occurrences have been recorded.\n",
+              "responsibilities": [
+                "Hold the current number of recorded failures as a numeric value.",
+                "Provide a consistent data shape that other parts of the code can rely on when inspecting failure state.",
+                "Serve as the basis for decision-making about error handling or rate-limiting logic elsewhere in the module."
+              ],
+              "role_in_module": "Within supabase/functions/_shared/ai/gateway.ts this interface defines the expected structure for breaker objects used by the gateway logic. It allows the module to reference and manipulate failure counts in a type-safe, predictable way."
+            }
+          },
+          {
+            "base_classes": [],
+            "is_abstract": false,
+            "is_dataclass": false,
+            "is_enum": false,
+            "is_protocol": true,
+            "is_pydantic_model": false,
+            "line_end": 184,
+            "line_start": 184,
+            "name": "GenResult",
+            "qualified_name": "GenResult",
+            "response": {
+              "purpose": "Represents the result of a text generation operation as a simple typed object. It provides a concise container for the generated text produced or returned by the AI gateway.\n",
+              "responsibilities": [
+                "Contain the generated textual output via the 'text' string property.",
+                "Serve as a typed contract for functions that produce or consume generated text.",
+                "Enable consistent transmission and handling of generated text within the module.",
+                "Provide a minimal, serializable shape for responses or intermediate results."
+              ],
+              "role_in_module": "Acts as the standard return/transfer shape for text generation results inside the AI gateway file, ensuring callers and implementers agree on the structure of generated text data."
+            }
+          },
+          {
+            "base_classes": [
+              "Error"
+            ],
+            "is_abstract": false,
+            "is_dataclass": false,
+            "is_enum": false,
+            "is_protocol": false,
+            "is_pydantic_model": false,
+            "line_end": 187,
+            "line_start": 185,
+            "name": "ProviderError",
+            "qualified_name": "ProviderError",
+            "response": {
+              "purpose": "ProviderError is a specialized Error subclass used to represent errors that originate from or are related to an external provider within the module. It provides a canonical error type that can be constructed and thrown when provider-specific failures occur.\n",
+              "responsibilities": [
+                "Provide a dedicated error type for provider-related failures by extending the built-in Error class.",
+                "Initialize and carry an error message and standard Error behavior via its constructor.",
+                "Be thrown by code that encounters provider issues so callers can catch and handle provider-specific errors distinctly.",
+                "Preserve stack and error semantics consistent with standard Error instances for debugging and logging."
+              ],
+              "role_in_module": "Within the gateway.ts file, ProviderError serves as the module's explicit representation of provider-side problems, enabling the rest of the code to detect, propagate, and handle those errors in a consistent way. It acts as the canonical error type for interactions that involve external providers."
+            }
+          }
+        ],
+        "extraction_quality": "structural",
+        "file_path": "supabase/functions/_shared/ai/gateway.ts",
+        "functions": [
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 63,
+            "line_start": 55,
+            "name": "requiredCaps",
+            "qualified_name": "requiredCaps",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Determine and return the list of capabilities required to perform a given task. The function maps a TaskType input to an array of Capability values representing the permissions or features needed for that task.\n",
+              "returns_summary": null
+            },
+            "signature": "def requiredCaps(task: TaskType) -> Capability[]:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 68,
+            "line_start": 66,
+            "name": "costSensitive",
+            "qualified_name": "costSensitive",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Determines whether the provided task should be treated as cost-sensitive. Given a TaskType value, it evaluates and returns true when the task requires cost-sensitive handling and false otherwise.\n",
+              "returns_summary": null
+            },
+            "signature": "def costSensitive(task: TaskType) -> boolean:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 107,
+            "line_start": 80,
+            "name": "loadConfig",
+            "qualified_name": "loadConfig",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Reads the owner configuration from the database and returns it as a GatewayConfig, using default values whenever expected tables or rows are missing.\n",
+              "returns_summary": null
+            },
+            "signature": "async def loadConfig(db: SupabaseClient) -> Promise<GatewayConfig>:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 118,
+            "line_start": 110,
+            "name": "effectiveModels",
+            "qualified_name": "effectiveModels",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Compute and return the list of effective models by taking the base model definitions and applying any configuration overlays or overrides specified in the provided gateway configuration.\n",
+              "returns_summary": null
+            },
+            "signature": "def effectiveModels(cfg: GatewayConfig) -> ModelDef[]:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 142,
+            "line_start": 121,
+            "name": "candidates",
+            "qualified_name": "candidates",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Returns an ordered list of model candidates for a given task. The list is filtered so that models are capable of the requested task, provided by enabled providers, and have the required API key present in the gateway configuration.\n",
+              "returns_summary": null
+            },
+            "signature": "def candidates(task: TaskType, cfg: GatewayConfig) -> ModelDef[]:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 161,
+            "line_start": 146,
+            "name": "classify",
+            "qualified_name": "classify",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Determines and returns a classification based on a numeric status code and an optional message. It interprets the provided status (and message if needed) to produce a Classified result used by the surrounding gateway logic.\n",
+              "returns_summary": null
+            },
+            "signature": "def classify(status: number, message=\"\") -> Classified:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 172,
+            "line_start": 169,
+            "name": "isOpen",
+            "qualified_name": "isOpen",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Determines whether the given provider identifier corresponds to an \"open\" provider. It takes a ProviderId and returns a boolean indicating if that provider should be treated as open.\n",
+              "returns_summary": null
+            },
+            "signature": "def isOpen(p: ProviderId) -> boolean:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 178,
+            "line_start": 173,
+            "name": "recordFailure",
+            "qualified_name": "recordFailure",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Record a failure occurrence for the specified AI provider so the system can track provider errors or adjust behavior based on recent failures. It logs or updates internal state tied to the given provider identifier to reflect that a failure happened.\n",
+              "returns_summary": null
+            },
+            "signature": "def recordFailure(p: ProviderId) -> void:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 181,
+            "line_start": 179,
+            "name": "recordSuccess",
+            "qualified_name": "recordSuccess",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Records a successful event or outcome associated with the specified AI provider. It updates internal state or metrics to reflect that the given ProviderId completed a successful operation.\n",
+              "returns_summary": null
+            },
+            "signature": "def recordSuccess(p: ProviderId) -> void:"
+          },
+          {
+            "class_name": "ProviderError",
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": true,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 186,
+            "line_start": 186,
+            "name": "constructor",
+            "qualified_name": "ProviderError.constructor",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Initializes a new ProviderError instance using an HTTP status code and a detail message, setting up the error's internal properties and message accordingly.\n",
+              "returns_summary": null
+            },
+            "signature": "def constructor(status: number, detail: string):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 263,
+            "line_start": 251,
+            "name": "generate",
+            "qualified_name": "generate",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Asynchronously invokes an AI generation endpoint using the specified provider and model, supplying a system prompt and user prompt, and returns the generation result. It supports aborting the request via an optional AbortSignal to stop the call and stop reading the response.\n",
+              "returns_summary": null
+            },
+            "signature": "async def generate(provider: ProviderId, model: string, system: string, prompt: string, /** Aborts the call (and reading its answer): the request's deadline. */\n  signal?:AbortSignal) -> Promise<GenResult>:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 279,
+            "line_start": 265,
+            "name": "post",
+            "qualified_name": "post",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Sends an HTTP POST request to the provided URL using the given headers and request body, optionally allowing cancellation via an AbortSignal. The function is asynchronous and resolves with the fetch Response object when the request completes.\n",
+              "returns_summary": null
+            },
+            "signature": "async def post(url: string, headers: HeadersInit, body: unknown, signal: AbortSignal = undefined) -> Promise<Response>:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 306,
+            "line_start": 281,
+            "name": "geminiGen",
+            "qualified_name": "geminiGen",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Asynchronously generate a response from a Gemini-style model using the provided system message and user prompt. It sends the system context and prompt to the specified model and returns the generation result, optionally supporting request abortion via an AbortSignal.\n",
+              "returns_summary": null
+            },
+            "signature": "async def geminiGen(model: string, sys: string, prompt: string, signal: AbortSignal = undefined) -> Promise<GenResult>:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 333,
+            "line_start": 308,
+            "name": "openaiGen",
+            "qualified_name": "openaiGen",
+            "response": {
+              "parameters_summary": "The model, sys, and prompt parameters are strings identifying the model to use, the system-level message, and the user prompt respectively; the optional signal is an AbortSignal that can be used to abort the in-flight request.",
+              "purpose": "Asynchronously performs a text generation request to an OpenAI-style model using the provided model identifier, system message, and prompt, and returns the generation result. It supports an optional AbortSignal to cancel the request.\n",
+              "returns_summary": null
+            },
+            "signature": "async def openaiGen(model: string, sys: string, prompt: string, signal: AbortSignal = undefined) -> Promise<GenResult>:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 355,
+            "line_start": 335,
+            "name": "anthropicGen",
+            "qualified_name": "anthropicGen",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Asynchronously sends a prompt (with an optional system message) to an Anthropic model and returns the generated result. It accepts the model identifier, a system-level instruction string, the user prompt, and an optional AbortSignal to cancel the request.\n",
+              "returns_summary": null
+            },
+            "signature": "async def anthropicGen(model: string, sys: string, prompt: string, signal: AbortSignal = undefined) -> Promise<GenResult>:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 364,
+            "line_start": 357,
+            "name": "providerMsg",
+            "qualified_name": "providerMsg",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Takes a raw provider message as input and produces a processed string representation suitable for downstream use. It likely normalizes, formats, or sanitizes the incoming raw text into a consistent string output.\n",
+              "returns_summary": null
+            },
+            "signature": "def providerMsg(raw: string) -> string:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 368,
+            "line_start": 366,
+            "name": "estCostUsd",
+            "qualified_name": "estCostUsd",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Estimates the monetary cost in US dollars for using a given AI model based on the number of input and output tokens. It calculates the cost by applying the pricing parameters contained in the provided ModelDef to the supplied inTok and outTok counts.\n",
+              "returns_summary": null
+            },
+            "signature": "def estCostUsd(m: ModelDef, inTok: number, outTok: number) -> number:"
+          }
+        ],
+        "language": "typescript",
+        "overview": {
+          "key_responsibilities": [
+            "Define shared types and interfaces used across the AI gateway such as ModelDef, GatewayConfig, Classified, Breaker, and GenResult.",
+            "Load owner-specific gateway configuration from the Supabase database with loadConfig and compute effective model overlays via effectiveModels.",
+            "Determine capable and enabled provider/model candidates for a given task (candidates) and classify requests into categories with classify.",
+            "Dispatch generation requests to provider-specific implementations (geminiGen, openaiGen, anthropicGen) and provide a generic generate/post entry point for sending requests and recording outcomes.",
+            "Estimate request costs (estCostUsd), check provider availability (isOpen), and record request successes or failures (recordSuccess, recordFailure)."
+          ],
+          "notable_patterns": [
+            "Extensive use of TypeScript interfaces to represent domain entities (ModelDef, GatewayConfig, Classified, Breaker, GenResult).",
+            "Asynchronous operations for IO-bound work such as loadConfig, generate, and provider-specific generation functions.",
+            "Provider-specific implementations exposed alongside a generic dispatch (geminiGen, openaiGen, anthropicGen and generate/post).",
+            "A custom ProviderError class to represent provider-related exceptions separate from generic errors."
+          ],
+          "summary": "This module implements a gateway layer that selects and invokes AI model providers for different task types. It defines types and interfaces for providers, models, configuration, classification results, and generation results, and it includes logic to load owner-specific configuration from a Supabase database, determine effective models and candidate providers for tasks, classify requests, estimate costs, and dispatch generation requests to provider-specific implementations (Google Gemini, OpenAI, Anthropic). The file also records success and failure metrics for requests and exposes utilities for checking provider availability and posting requests to provider endpoints.\n"
+        },
+        "schema_version": "2.0.0",
+        "tokens_input": 5574,
+        "tokens_output": 4121
+      },
+      "extraction_quality": "structural",
+      "generated_at": "2026-11-19T11:21:15Z",
+      "model": "gpt-5-mini",
+      "source_sha": "25e3433a93d28f9471d0bf99b1b9c07c931d457a"
+    },
+    "supabase/functions/_shared/paypal.ts": {
+      "description": {
+        "classes": [],
+        "extraction_quality": "structural",
+        "file_path": "supabase/functions/_shared/paypal.ts",
+        "functions": [
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 11,
+            "line_start": 7,
+            "name": "paypalApiBase",
+            "qualified_name": "paypalApiBase",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Provides the base PayPal API URL as a string. The function likely centralizes the PayPal API base endpoint used by other helpers in the shared PayPal module.\n",
+              "returns_summary": null
+            },
+            "signature": "def paypalApiBase() -> string:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 18,
+            "line_start": 13,
+            "name": "paypalConfigured",
+            "qualified_name": "paypalConfigured",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Checks whether PayPal has been configured for the application. It returns a boolean indicating if the necessary PayPal configuration or credentials are present and available for use.\n",
+              "returns_summary": null
+            },
+            "signature": "def paypalConfigured() -> boolean:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 32,
+            "line_start": 29,
+            "name": "tokenLifetimeS",
+            "qualified_name": "tokenLifetimeS",
+            "response": {
+              "parameters_summary": "expiresIn is an unknown value expected to represent PayPal's expires_in (typically a numeric value of seconds); the function will parse or coerce this value to determine the lifetime in seconds.",
+              "purpose": "Compute how many seconds a PayPal access token should be reused for by taking the token's expires_in value and subtracting one minute. If the input is invalid or results in a non-positive value, it returns 0.\n",
+              "returns_summary": null
+            },
+            "signature": "def tokenLifetimeS(expiresIn: unknown) -> number:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 56,
+            "line_start": 35,
+            "name": "paypalAccessToken",
+            "qualified_name": "paypalAccessToken",
+            "response": {
+              "parameters_summary": "now is an optional numeric timestamp (milliseconds since epoch) representing the current time used internally by the function; it defaults to Date.now().",
+              "purpose": "Fetches an OAuth2 access token using the client-credentials flow and returns it as a string. If the token cannot be obtained the function will throw an error.\n",
+              "returns_summary": "Returns a Promise that resolves to the access token string."
+            },
+            "signature": "async def paypalAccessToken(now: number = Date.now()) -> Promise<string>:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 73,
+            "line_start": 70,
+            "name": "plausiblePaypalSignature",
+            "qualified_name": "plausiblePaypalSignature",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Performs a lightweight, local validation of PayPal-specific HTTP signature headers by checking that the signing algorithm and the certificate URL come from PayPal's expected values. It acts as an early filter that rejects requests which clearly do not originate from PayPal so the system can avoid making an external verify call.\n",
+              "returns_summary": null
+            },
+            "signature": "def plausiblePaypalSignature(headers: Headers) -> boolean:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 107,
+            "line_start": 79,
+            "name": "createPaypalSubscription",
+            "qualified_name": "createPaypalSubscription",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Creates a PayPal subscription for a given billing plan and returns the approval URL the user must visit to approve the subscription. The function attaches the provided userId as custom_id so the user can be identified in PayPal webhooks and returns null if no approval URL is available.\n",
+              "returns_summary": null
+            },
+            "signature": "async def createPaypalSubscription(token: string, planId: string, userId: string, returnUrl: string = undefined, cancelUrl: string = undefined) -> Promise<string | null>:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 142,
+            "line_start": 113,
+            "name": "verifyPaypalWebhook",
+            "qualified_name": "verifyPaypalWebhook",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Sends PayPal's verify-webhook-signature request to validate that an incoming webhook event was genuinely sent by PayPal. It uses the provided transmission headers, the configured webhook ID, the parsed event payload, and an access token to perform the verification and returns whether the signature is valid.\n",
+              "returns_summary": null
+            },
+            "signature": "async def verifyPaypalWebhook(token: string, headers: Headers, webhookId: string, event: unknown) -> Promise<boolean>:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 148,
+            "line_start": 145,
+            "name": "paypalSale",
+            "qualified_name": "paypalSale",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Fetches details for a captured PayPal payment (a sale) identified by saleId using the provided authorization token. It returns the sale's associated subscription and amount information, or throws an error if the sale cannot be retrieved.\n",
+              "returns_summary": "Resolves to an object representing the captured payment (sale) containing at least the subscription reference and the amount charged; throws on failure."
+            },
+            "signature": "async def paypalSale(token: string, saleId: string) -> Promise<:"
+          }
+        ],
+        "language": "typescript",
+        "overview": {
+          "key_responsibilities": [
+            "Provide PayPal API base URL and a check that required PayPal configuration is present.",
+            "Calculate how long an acquired OAuth2 access token can be safely reused.",
+            "Acquire an OAuth2 client-credentials access token from PayPal for authenticated API calls.",
+            "Perform a local plausibility check of PayPal signature headers before attempting verification.",
+            "Create subscriptions (returning the approval redirect URL), verify webhook signatures via PayPal, and fetch details of captured payments (sales)."
+          ],
+          "notable_patterns": [
+            "uses async functions for all network interactions",
+            "centralizes PayPal API interactions and credential handling",
+            "separates lightweight local checks from remote verification calls",
+            "implements token lifetime calculation to avoid using expired tokens"
+          ],
+          "summary": "This module provides shared PayPal integration utilities used by server-side functions. It centralizes PayPal configuration and HTTP interactions: determining the API base URL, confirming configuration is present, computing token reuse lifetime, obtaining an OAuth2 client-credentials access token, and performing a lightweight local check of PayPal signature headers. The module also exposes higher-level operations for creating subscriptions (returning the approval URL for user redirection), verifying webhook signatures using PayPal's verify-webhook-signature API, and looking up a captured payment (sale) to extract the associated subscription and amount.\n\nAll network-facing operations that interact with PayPal\u2019s APIs are implemented as async functions. The file separates simple helpers (base URL, configuration check, token lifetime calculation, and a plausibility check for headers) from operations that perform remote calls (token fetch, subscription creation, webhook verification, and sale retrieval), so callers can compose these primitives as needed for webhooks and subscription flows.\n"
+        },
+        "schema_version": "2.0.0",
+        "tokens_input": 2379,
+        "tokens_output": 1586
+      },
+      "extraction_quality": "structural",
+      "generated_at": "2026-11-19T11:20:42Z",
+      "model": "gpt-5-mini",
+      "source_sha": "5ae9b3c92df4956034846086a531d52049d3c732"
+    },
+    "supabase/functions/_shared/paypal_test.ts": {
+      "description": {
+        "classes": [],
+        "extraction_quality": "structural",
+        "file_path": "supabase/functions/_shared/paypal_test.ts",
+        "functions": [
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 5,
+            "line_start": 3,
+            "name": "eq",
+            "qualified_name": "eq",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Compares two values to determine whether they are equal. It provides an equality check between the inputs a and b.\n",
+              "returns_summary": "Returns a boolean indicating whether the two provided values are considered equal (true if equal, false otherwise)."
+            },
+            "signature": "def eq(a: unknown, b: unknown):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 8,
+            "line_start": 7,
+            "name": "headers",
+            "qualified_name": "headers",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Builds and returns an HTTP headers object for use with PayPal-related requests using the provided signature algorithm and certificate. It packages the algorithm identifier and certificate value into appropriate header fields expected by the caller.\n",
+              "returns_summary": "Returns an object representing HTTP headers (a mapping of header names to header values) that include the supplied algorithm and certificate."
+            },
+            "signature": "def headers(algo: string, cert: string):"
+          }
+        ],
+        "language": "typescript",
+        "overview": {
+          "key_responsibilities": [
+            "Provide small module-level helper functions (eq and headers) used by the test suite.",
+            "Register and run a test that ensures plausiblePaypalSignature accepts PayPal's certificate hosts.",
+            "Register and run a test that ensures plausiblePaypalSignature refuses non-PayPal hosts before contacting PayPal.",
+            "Register and run a test that validates tokenLifetimeS behavior for reuse until near expiry and behavior when the lifetime is unknown."
+          ],
+          "notable_patterns": [
+            "Uses Deno.test for unit test registration",
+            "Imports functions from a local paypal.ts module for targeted test coverage",
+            "Contains small, focused helper functions used solely within tests"
+          ],
+          "summary": "This TypeScript module contains small, test-focused helpers and a set of unit tests for PayPal-related verification and token lifetime logic. It imports plausiblePaypalSignature and tokenLifetimeS from a local paypal.ts module and defines two module-level functions, eq and headers, which are used by the test registrations. The file registers three Deno.test cases that exercise plausiblePaypalSignature behavior for accepted and refused signatures and tokenLifetimeS behavior for reuse and expiry edge cases.\n\nThe file is organized around tests: two tests validate the acceptable PayPal certificate hostnames and refusal behavior for other hosts, and a third test validates token lifetime handling (when tokens are reused and when they are considered unknown). The module-level helper functions support these test cases without exposing additional exported functionality beyond what is imported from the local paypal.ts module.\n"
+        },
+        "schema_version": "2.0.0",
+        "tokens_input": 843,
+        "tokens_output": 873
+      },
+      "extraction_quality": "structural",
+      "generated_at": "2026-11-19T11:20:32Z",
+      "model": "gpt-5-mini",
+      "source_sha": "004bc4f96f1021a85052c9e3613f01b81dbaee95"
+    },
+    "supabase/functions/ai-gateway/index.ts": {
+      "description": {
+        "classes": [],
+        "extraction_quality": "structural",
+        "file_path": "supabase/functions/ai-gateway/index.ts",
+        "functions": [
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 72,
+            "line_start": 69,
+            "name": "monthKey",
+            "qualified_name": "monthKey",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Produces and returns a month-based key as a string. The function is intended to provide a concise identifier representing a month (for example for grouping, naming, or caching purposes).\n",
+              "returns_summary": null
+            },
+            "signature": "def monthKey() -> string:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 153,
+            "line_start": 153,
+            "name": "left",
+            "qualified_name": "left",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Computes how much is left given an amount that has already been used. The function accepts a numeric `used` value and determines the remaining quantity based on that input.\n",
+              "returns_summary": "Returns the remaining quantity (typically as a number) after accounting for the provided `used` amount."
+            },
+            "signature": "def left(used: number):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 255,
+            "line_start": 246,
+            "name": "sanitizeHistory",
+            "qualified_name": "sanitizeHistory",
+            "response": {
+              "parameters_summary": "raw is an unknown, possibly untrusted or loosely-typed payload (for example a deserialized JSON value); the function parses, sanitizes, and coerces that input into the expected Turn[] structure, handling missing or malformed fields as needed.",
+              "purpose": "Takes an arbitrary input value and normalizes or validates it into a canonical array of conversation turns. The function ensures the raw data is converted to and returned as an array of Turn objects suitable for downstream processing in the AI gateway.\n",
+              "returns_summary": null
+            },
+            "signature": "def sanitizeHistory(raw: unknown) -> Turn[]:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 269,
+            "line_start": 257,
+            "name": "buildPrompt",
+            "qualified_name": "buildPrompt",
+            "response": {
+              "parameters_summary": "context is a grounding string (system or contextual information), history is an array of Turn objects representing prior dialogue turns, and prompt is the current user input to be appended or integrated into the assembled prompt.",
+              "purpose": "Constructs the final textual prompt sent to the AI by combining a provided context, an array of prior conversation turns, and the current user prompt into one cohesive string. It formats and merges these pieces so the AI receives the conversation history plus any contextual grounding before the new prompt.\n",
+              "returns_summary": null
+            },
+            "signature": "def buildPrompt(context: string, history: Turn[], prompt: string) -> string:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 327,
+            "line_start": 271,
+            "name": "bumpUsage",
+            "qualified_name": "bumpUsage",
+            "response": {
+              "parameters_summary": "Most parameters are self-explanatory: db is the Supabase service client, userId and month identify the usage row, and inTok/outTok/cost are the amounts to add. The optional counted flag (default false) indicates whether the request portion has already been counted elsewhere and controls whether any additional request-count bookkeeping should be applied.",
+              "purpose": "Updates a user's monthly usage record in the provided Supabase service client by adding input/output token counts and cost. It increments stored counters for the specified user and month; the request itself is assumed to have been previously recorded by reserveUsage so only the additional tokens and cost are applied.\n",
+              "returns_summary": null
+            },
+            "signature": "async def bumpUsage(db: ReturnType<typeof serviceClient>, userId: string, month: string, inTok: number, outTok: number, cost: number, // The request itself was already counted by reserveUsage: add only the\n  // tokens and cost.\n  counted = false) -> Promise<void>:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 356,
+            "line_start": 329,
+            "name": "log",
+            "qualified_name": "log",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Asynchronously records an AI gateway invocation into a backing database. It stores metadata about the call such as the user who made the request, the task performed, the provider and model used (if any), whether a fallback was used, timing and token usage, cost, and any error code.\n",
+              "returns_summary": null
+            },
+            "signature": "async def log(db: ReturnType<typeof serviceClient>, userId: string, task: string, provider: string | null, model: string | null, fallbackUsed: boolean, latencyMs: number, inTok: number, outTok: number, cost: number, errorCode: string | null) -> Promise<void>:"
+          }
+        ],
+        "language": "typescript",
+        "overview": {
+          "key_responsibilities": [
+            "Create a month-based key string for usage or storage partitioning (monthKey).",
+            "Truncate or pad text values to a given length boundary (left).",
+            "Sanitize conversational turn history and construct a combined prompt while respecting token limits (sanitizeHistory and buildPrompt).",
+            "Record AI usage metrics and persist logging information via async service clients (bumpUsage and log).",
+            "Integrate input handling utilities such as reading JSON bodies and capping text to enforce size constraints (via readJsonBody and capText usage)."
+          ],
+          "notable_patterns": [
+            "Contains both synchronous helpers and asynchronous operations for persistence (async/await in bumpUsage and log).",
+            "Delegates cross-cutting concerns to shared modules (CORS, auth, body parsing, and AI budgeting).",
+            "Enforces input size and token budgets using dedicated budget utilities (fitInput, MAX_INPUT_TOKENS, Turn)."
+          ],
+          "summary": "This module implements utility routines used by an AI gateway function in a Supabase environment. It provides helpers for generating monthly keys, truncating strings, sanitizing and building conversational history prompts, enforcing input token budgets, and recording usage. Several functions interact with shared project utilities for CORS, authentication, request body handling, and AI budget management. Two functions, bumpUsage and log, are asynchronous and integrate with service clients or persistence to record consumption and diagnostics.\n"
+        },
+        "schema_version": "2.0.0",
+        "tokens_input": 1941,
+        "tokens_output": 1782
+      },
+      "extraction_quality": "structural",
+      "generated_at": "2026-11-19T11:20:44Z",
+      "model": "gpt-5-mini",
+      "source_sha": "2e8f471c8c616df22e60baaf03f53cfb3e88c9c1"
+    },
+    "supabase/functions/market-proxy/index.ts": {
+      "description": {
+        "classes": [],
+        "extraction_quality": "structural",
+        "file_path": "supabase/functions/market-proxy/index.ts",
+        "functions": [
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 108,
+            "line_start": 97,
+            "name": "unavailable",
+            "qualified_name": "unavailable",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Generate and return an array of Quote objects based on an input list of Spec entries, using an optional source string (defaulting to \"requires data source\"). The function maps the provided specs to one or more Quote results.\n",
+              "returns_summary": null
+            },
+            "signature": "def unavailable(specs: Spec[], source=\"requires data source\") -> Quote[]:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 144,
+            "line_start": 113,
+            "name": "metalPriceApi",
+            "qualified_name": "metalPriceApi",
+            "response": {
+              "parameters_summary": "_category selects or identifies the high-level category of the request (not otherwise used directly in the signature) and specs contains options and configuration describing which metal symbols, exchanges, timeframes, or formatting the adapter should support. The specs object drives how the internal symbols nested function and other adapter behavior operate.",
+              "purpose": "Handles a request for metal price data within the market-proxy function, using the provided category and specification options to build and return an adapter that exposes a symbols nested function. It prepares and configures the adapter logic needed to serve metal pricing information based on the given specs.\n",
+              "returns_summary": null
+            },
+            "signature": "async def metalPriceApi(_category, specs) -> Adapter:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 116,
+            "line_start": 116,
+            "name": "symbols",
+            "qualified_name": "symbols",
+            "response": {
+              "parameters_summary": "s is the single input to the function; its name is not descriptive, so it represents the query, context, or configuration used to determine which symbols or symbol-related data to process and return.",
+              "purpose": "Provides functionality related to market symbols within the market-proxy function module. It performs an operation (such as retrieving, formatting, or proxying) based on the supplied input to produce symbol-related output.\n",
+              "returns_summary": "Returns symbol-related data (for example a list or payload of market symbols or a proxied response containing symbol information) based on the provided input."
+            },
+            "signature": "def symbols(s):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 179,
+            "line_start": 149,
+            "name": "freeSources",
+            "qualified_name": "freeSources",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Provides a data adapter that yields free data sources: it prefers IMF monthly averages (keyless) for all covered series and, for energy prices, uses the EIA daily prices first when an EIA_API_KEY is present. If a source fails, its codes are passed to the next available source and any remaining series become unavailable.\n",
+              "returns_summary": null
+            },
+            "signature": "async def freeSources(category, specs) -> Adapter:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 201,
+            "line_start": 194,
+            "name": "cors",
+            "qualified_name": "cors",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Provides a preconfigured set of HTTP CORS headers for the market-proxy function so they can be applied to responses or requests. It centralizes the Cross-Origin Resource Sharing header values into a HeadersInit object for consistent use across the function.\n",
+              "returns_summary": null
+            },
+            "signature": "def cors() -> HeadersInit:"
+          }
+        ],
+        "language": "typescript",
+        "overview": {
+          "key_responsibilities": [
+            "Return a standardized unavailable response for requests that cannot be serviced (unavailable).",
+            "Proxy requests to an external metal price API (metalPriceApi) using an asynchronous handler suitable for network I/O.",
+            "Provide information about free data sources, including IMF monthly averages, via an asynchronous freeSources function.",
+            "Apply Cross-Origin Resource Sharing handling for requests using a cors helper function."
+          ],
+          "notable_patterns": [
+            "exports multiple module-level functions rather than classes",
+            "implements async handlers for I/O-bound operations (metalPriceApi, freeSources)",
+            "includes a dedicated CORS helper function to centralize cross-origin response behavior"
+          ],
+          "summary": "This TypeScript module implements a small set of HTTP helper and proxy endpoints intended to support market-related requests in a Supabase Edge Function. It exposes an unavailable responder, a proxy to a metal price API, an async provider of free data sources (notably IMF monthly averages), and a CORS helper; the metalPriceApi and freeSources functions are asynchronous to accommodate network calls or I/O. The file is organized as independent module-level functions so each exported operation can be used directly by the edge runtime or composed by other handlers.\n"
+        },
+        "schema_version": "2.0.0",
+        "tokens_input": 1392,
+        "tokens_output": 1242
+      },
+      "extraction_quality": "structural",
+      "generated_at": "2026-11-19T11:20:37Z",
+      "model": "gpt-5-mini",
+      "source_sha": "7a8a35ae1d49bdd07161c1092f8a54bb1f83ec9e"
+    },
+    "supabase/functions/parallel-proxy/index.ts": {
+      "description": {
+        "classes": [
+          {
+            "base_classes": [],
+            "is_abstract": false,
+            "is_dataclass": false,
+            "is_enum": false,
+            "is_protocol": true,
+            "is_pydantic_model": false,
+            "line_end": 28,
+            "line_start": 28,
+            "name": "Quote",
+            "qualified_name": "Quote",
+            "response": {
+              "purpose": "The Quote interface defines the TypeScript shape used to represent a quote entity within the parallel-proxy function. It serves as a compile-time contract that other parts of the module rely on when creating, reading, or manipulating quote data.\n",
+              "responsibilities": [
+                "Declare the expected structure for quote objects so TypeScript can enforce correct usage across the module.",
+                "Provide documentation and intent for developers interacting with quote-related data in the file.",
+                "Enable consistent typing when quote objects are passed between functions, returned from operations, or validated.",
+                "Serve as a stable contract that helps prevent accidental changes to the data shape during refactoring."
+              ],
+              "role_in_module": "As an interface in supabase/functions/parallel-proxy/index.ts, Quote centralizes the type definition for quote data used throughout the module, ensuring consistent handling and clearer code contracts for functions that produce or consume quote objects."
+            }
+          }
+        ],
+        "extraction_quality": "structural",
+        "file_path": "supabase/functions/parallel-proxy/index.ts",
+        "functions": [
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 51,
+            "line_start": 48,
+            "name": "num",
+            "qualified_name": "num",
+            "response": {
+              "parameters_summary": "v is an unknown input value that the function will inspect and try to coerce or parse into a numeric value; non-numeric or unconvertible inputs result in undefined.",
+              "purpose": "Attempts to interpret the input value as a numeric value and return it as a number, or yields undefined when the input cannot be converted to a valid number.\n",
+              "returns_summary": null
+            },
+            "signature": "def num(v: unknown) -> number | undefined:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 78,
+            "line_start": 71,
+            "name": "cors",
+            "qualified_name": "cors",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Generate and return a set of HTTP CORS headers to be used for handling cross-origin requests. The function centralizes common CORS header values so callers can apply consistent CORS policy when constructing responses.\n",
+              "returns_summary": null
+            },
+            "signature": "def cors() -> HeadersInit:"
+          }
+        ],
+        "language": "typescript",
+        "overview": {
+          "key_responsibilities": [
+            "Declare the Quote interface used to represent quote objects within the parallel-proxy codebase.",
+            "Provide a num function to convert or validate values as numbers for callers that need numeric semantics.",
+            "Provide a cors function to handle CORS-related behavior for HTTP interactions in the parallel-proxy function."
+          ],
+          "notable_patterns": [
+            "Defines a TypeScript interface (Quote) for structured data.",
+            "Contains module-level utility functions (num, cors) intended for reuse across the function implementation."
+          ],
+          "summary": "This TypeScript module defines a small set of types and utility functions used by the parallel-proxy function in the Supabase functions directory. It exposes a Quote interface that models a domain object named Quote, and two module-level helper functions: num, which provides numeric parsing or conversion behavior, and cors, which implements Cross-Origin Resource Sharing handling. The file centralizes simple utilities and a type definition that are intended to be imported and used by other parts of the parallel-proxy implementation.\n"
+        },
+        "schema_version": "2.0.0",
+        "tokens_input": 862,
+        "tokens_output": 909
+      },
+      "extraction_quality": "structural",
+      "generated_at": "2026-11-19T11:20:36Z",
+      "model": "gpt-5-mini",
+      "source_sha": "8d427180f3c3740a89d0ff6cd966fbe8831c0484"
+    },
+    "supabase/functions/paypal-webhook/index.ts": {
+      "description": {
+        "classes": [],
+        "extraction_quality": "structural",
+        "file_path": "supabase/functions/paypal-webhook/index.ts",
+        "functions": [
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 42,
+            "line_start": 37,
+            "name": "ok",
+            "qualified_name": "ok",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Constructs and returns an HTTP Response object representing a successful/OK payload. By default it uses a simple object { ok: true } but accepts any value to include in the response body.\n",
+              "returns_summary": null
+            },
+            "signature": "def ok(body: unknown = { ok: true }) -> Response:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 75,
+            "line_start": 75,
+            "name": "signed",
+            "qualified_name": "signed",
+            "response": {
+              "parameters_summary": "h is the single input to the function and represents the item to be checked for a signature (for example a header, token, or payload containing signature information).",
+              "purpose": "Checks whether the provided input is signed. The function evaluates the given value to determine if it carries a valid signature according to the function's signing/verification logic.\n",
+              "returns_summary": "Returns a boolean indicating whether the provided input is considered signed/validly signed."
+            },
+            "signature": "def signed(h):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 215,
+            "line_start": 130,
+            "name": "apply",
+            "qualified_name": "apply",
+            "response": {
+              "parameters_summary": "token is a string used to authenticate or validate the webhook event; resource is the JSON payload of the PayPal event; eventAt is an ISO timestamp string or null indicating when the event occurred (if known). The db parameter is a generic JSON handle representing database/context used for applying the event.",
+              "purpose": "Applies a single, verified PayPal webhook event that has been seen for the first time. It processes the provided event data and updates the system accordingly.\n",
+              "returns_summary": null
+            },
+            "signature": "async def apply(db: Json, token: string, type: string, resource: Json, eventAt: string | null) -> Promise<Response>:"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 220,
+            "line_start": 217,
+            "name": "result",
+            "qualified_name": "result",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Constructs and returns an HTTP Response representing the result of applying some operation described by the provided ApplyOutcome. This function maps the outcome into an appropriate Response object (status, headers, and body) to be sent back to the caller.\n",
+              "returns_summary": null
+            },
+            "signature": "def result(outcome: ApplyOutcome) -> Response:"
+          }
+        ],
+        "language": "typescript",
+        "overview": {
+          "key_responsibilities": [
+            "Produce standard success or signed response objects for webhook handling via ok and signed.",
+            "Verify and apply a single PayPal event in an idempotent fashion using apply, coordinating billing bookkeeping and plan conversion.",
+            "Read and limit incoming request bodies using readTextBody and MAX_WEBHOOK_BYTES before processing.",
+            "Use shared authentication and database client utilities (HttpError, serviceClient) to access and modify persistent state during event handling."
+          ],
+          "notable_patterns": [
+            "implements async handlers (apply is asynchronous)",
+            "delegates authentication and persistence to a shared service client",
+            "uses shared billing helpers for event deduplication (markEventOnce, unmarkEvent) and plan mapping (priceToPlan)",
+            "limits and reads request bodies with a MAX_WEBHOOK_BYTES guard"
+          ],
+          "summary": "This module implements a PayPal webhook endpoint and related helpers for verifying, processing, and responding to incoming PayPal events. It exposes four module-level functions: ok and signed for producing response payloads, apply for performing the domain-side application of a verified and first-seen event, and result for producing the final response after processing. The implementation relies on shared utilities for authentication (HttpError, serviceClient), billing event bookkeeping (markEventOnce, unmarkEvent, priceToPlan), and body handling (MAX_WEBHOOK_BYTES, readTextBody).\n"
+        },
+        "schema_version": "2.0.0",
+        "tokens_input": 1270,
+        "tokens_output": 1122
+      },
+      "extraction_quality": "structural",
+      "generated_at": "2026-11-19T11:20:36Z",
+      "model": "gpt-5-mini",
+      "source_sha": "effa9eaaa06557819fe3b4fc3f97dfc9dced5ef3"
+    },
+    "supabase/security_hardening.sql": {
+      "description": {
+        "classes": [],
+        "extraction_quality": "raw_source",
+        "file_path": "supabase/security_hardening.sql",
+        "functions": [],
+        "language": "SQL",
+        "overview": {
+          "key_responsibilities": [
+            "Provide atomic reservation and release of usage units for AI requests and OCR scans, enforcing per-user and optional platform-wide limits.",
+            "Serialize concurrent usage attempts for the same user and kind with advisory transaction locks to prevent race conditions on quota checks.",
+            "Restrict which roles can call the usage control functions by revoking public access and granting execute only to the service role.",
+            "Prevent clients from creating or altering the profile plan column by revoking broad table privileges and granting authenticated users a limited set of updatable columns.",
+            "Add a provider_event_at column to subscriptions to preserve webhook event ordering and add a check constraint limiting user backup blob size to 10 MB."
+          ],
+          "notable_patterns": [
+            "Defines PL/pgSQL functions with SECURITY DEFINER and explicit search_path",
+            "Uses pg_advisory_xact_lock for per-user serialization of quota operations",
+            "Employs UPSERT (INSERT ... ON CONFLICT DO UPDATE) to increment usage counters atomically",
+            "Modifies role privileges with explicit REVOKE/GRANT statements to enforce least privilege",
+            "Adds schema-level constraints and indexes (check constraint, indexes on month columns) to enforce limits and optimize aggregates"
+          ],
+          "summary": "This SQL file applies security-hardening measures and runtime guards for the SmartBudget database. It introduces atomic usage reservation and release functions (reserve_usage and release_usage) that serialize per-user usage checks with advisory locks, enforce per-user and platform-wide monthly and lifetime limits for AI requests and OCR scans, and update corresponding monthly and lifetime usage tables. The file also restricts direct client manipulation of profile data, ensures webhook ordering by adding a provider event timestamp column to subscriptions, and enforces a maximum size for cloud backup payloads via a table check constraint.\n\nIn addition to the procedural logic, the script adjusts privileges so only the Edge Functions (service_role) can execute the usage reservation/release functions, limits insert/update/delete rights on profiles for anonymous/authenticated roles while granting a specific subset of update columns to authenticated users, and creates supporting indexes for monthly usage aggregates. These changes are intended to be safe to re-run and to be applied after the other schema and function definitions are in place.\n"
+        },
+        "schema_version": "2.0.0",
+        "tokens_input": 1863,
+        "tokens_output": 535
+      },
+      "extraction_quality": "raw_source",
+      "generated_at": "2026-11-19T11:39:46Z",
+      "model": "gpt-5-mini",
+      "source_sha": "f599cdebfd5da7c37524e4b23bb9ddb141db7c5c"
+    },
+    "supabase/setup_all.sql": {
+      "description": {
+        "classes": [],
+        "extraction_quality": "raw_source",
+        "file_path": "supabase/setup_all.sql",
+        "functions": [],
+        "language": "SQL",
+        "overview": {
+          "key_responsibilities": [
+            "Create and configure database-level extensions and foundational objects required by the application (e.g., pgcrypto).",
+            "Define reference tables for currencies and exchange rates and seed the currencies table with a broad list of currency codes, names, symbols, and decimal precisions.",
+            "Create core domain tables used by the application such as profiles (1:1 with auth.users) with required constraints, defaults, and foreign keys.",
+            "Ensure idempotent application of schema and seed data using IF NOT EXISTS and ON CONFLICT clauses so the script can be run multiple times safely.",
+            "Wrap the full setup in a single transaction to apply all changes atomically (all or nothing)."
+          ],
+          "notable_patterns": [
+            "Uses idempotent SQL patterns: CREATE ... IF NOT EXISTS and INSERT ... ON CONFLICT DO UPDATE.",
+            "Seeds comprehensive reference data (currencies) inline within the setup script.",
+            "Wraps all operations in a single transaction (begin;) to ensure atomicity.",
+            "Enforces foreign-key relationships to auth.users and uses defaults and timestamps for auditability."
+          ],
+          "summary": "This SQL file is a consolidated, single-shot database setup for the SmartBudget application intended to run in the Supabase SQL editor. It begins a transaction and applies a sequence of schema and data changes (assembled from multiple component SQL files) to create foundational database objects: extensions, reference tables for currencies and exchange rates, domain tables such as user profiles and taxonomy tables, and seeded reference data for supported currencies. The script uses defensive, idempotent constructs (CREATE ... IF NOT EXISTS, ON CONFLICT ... DO UPDATE) to allow safe re-application and to ensure required reference rows exist before runtime operations like profile creation. The file also documents design decisions relevant to the schema (money stored as integer minor units, row-level security for user-owned tables) and includes indexes and defaults for operational correctness.\n"
+        },
+        "schema_version": "2.0.0",
+        "tokens_input": 2856,
+        "tokens_output": 473
+      },
+      "extraction_quality": "raw_source",
+      "generated_at": "2026-11-19T11:39:45Z",
+      "model": "gpt-5-mini",
+      "source_sha": "8610d934aa3cc2bc152df703760a2a563fe24912"
+    },
+    "supabase/tests/access_control_test.sql": {
+      "description": {
+        "classes": [],
+        "extraction_quality": "raw_source",
+        "file_path": "supabase/tests/access_control_test.sql",
+        "functions": [],
+        "language": "SQL",
+        "overview": {
+          "key_responsibilities": [
+            "Seed test users and representative data rows across auth, transactions, backups, subscriptions, entitlements, usage, billing, and related tables.",
+            "Create a temporary results table and define pg_temp.attempt to execute queries, trap exceptions, and record PASS/FAIL outcomes.",
+            "Simulate an authenticated client by setting the session role to authenticated and configuring the JWT subject claim.",
+            "Run a wide set of access-control checks that exercise reads, writes, updates, deletes, and function calls to validate row-level security and permission rules.",
+            "Collect and persist the outcome of each test attempt for post-run inspection."
+          ],
+          "notable_patterns": [
+            "Uses a PL/pgSQL helper (pg_temp.attempt) to centralize execution, exception handling, and result reporting for tests.",
+            "Simulates authenticated requests by setting role to authenticated and using set_config('request.jwt.claim.sub', ...).",
+            "Exercises security through queries that compare user_id to auth.uid() to validate row-level security enforcement.",
+            "Seeds initial test state as the database owner before running tests as a signed-in user."
+          ],
+          "summary": "This SQL file implements an automated suite of access-control tests that run against a Supabase-style schema. It seeds test accounts and sample rows for transactions, backups, subscriptions, entitlements, usage, and related billing and logging tables, then switches to an authenticated role with a configured JWT subject to simulate a signed-in user. A temporary results table and a PL/pgSQL helper function (pg_temp.attempt) are created to execute statements, capture whether each attempt succeeded or was denied, and record PASS/FAIL outcomes along with brief diagnostics.\n\nThe remainder of the file runs many individual test cases by invoking the helper, exercising reads, writes, updates, and deletes across user-scoped and global tables to verify row-level security and permission constraints. Tests include attempts to access or modify other users' data, create or change subscriptions and entitlements, reset usage counters, call resource-reservation functions, and inspect billing and coupon data; each attempt expects either a denied result or a specific number of affected rows and is recorded in the temporary results table.\n"
+        },
+        "schema_version": "2.0.0",
+        "tokens_input": 2686,
+        "tokens_output": 591
+      },
+      "extraction_quality": "raw_source",
+      "generated_at": "2026-11-19T11:39:46Z",
+      "model": "gpt-5-mini",
+      "source_sha": "faf711dafdcbac912e8c8d426351fdbf0b59a6b5"
+    },
+    "supabase/tests/functions_test.ts": {
+      "description": {
+        "classes": [],
+        "extraction_quality": "structural",
+        "file_path": "supabase/tests/functions_test.ts",
+        "functions": [
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 16,
+            "line_start": 16,
+            "name": "calls",
+            "qualified_name": "calls",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "A test function named calls that executes test logic related to the 'calls' behavior in the supabase/tests/functions_test.ts file. It organizes and runs the assertions or steps needed to verify functionality associated with calls.\n",
+              "returns_summary": null
+            },
+            "signature": "def calls():"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 17,
+            "line_start": 17,
+            "name": "last",
+            "qualified_name": "last",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "The extracted data only provides the function name and signature (function last() ) from a test file; no implementation or docstring is available, so the specific behavior is not specified. Based on the available information, it is a parameterless function named last defined in supabase/tests/functions_test.ts, likely intended for use within the test suite.\n",
+              "returns_summary": null
+            },
+            "signature": "def last():"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 91,
+            "line_start": 88,
+            "name": "checkout",
+            "qualified_name": "checkout",
+            "response": {
+              "parameters_summary": "u is a string that identifies the target of the checkout operation (for example, a user id, item id, or resource key); the function uses this identifier to locate and perform the checkout.",
+              "purpose": "Asynchronously performs a checkout operation for the entity identified by the provided string. The function carries out whatever steps are required to complete the checkout process for that identifier (for example, checking out a user, item, or resource).\n",
+              "returns_summary": "Returns a Promise that resolves when the checkout operation completes, containing the outcome or result of the operation."
+            },
+            "signature": "async def checkout(u: string):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 121,
+            "line_start": 118,
+            "name": "yearly",
+            "qualified_name": "yearly",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "An asynchronous test helper named yearly that accepts a single string argument 'u' and performs asynchronous operations related to yearly behavior in the supabase/tests/functions_test.ts file. It is intended to be used in the test suite to exercise or verify functionality that depends on the provided string input.\n",
+              "returns_summary": null
+            },
+            "signature": "async def yearly(u: string):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 122,
+            "line_start": 122,
+            "name": "lastPlan",
+            "qualified_name": "lastPlan",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Returns the most recent plan used by the test suite. This function retrieves the last (most recently created or recorded) plan for inspection or assertions within tests.\n",
+              "returns_summary": "The most recently recorded plan (the exact shape/type is not specified in the signature)."
+            },
+            "signature": "def lastPlan():"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 138,
+            "line_start": 138,
+            "name": "scan",
+            "qualified_name": "scan",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Runs a scan operation as part of the test suite in supabase/tests/functions_test.ts, exercising the code path that performs scanning behavior (e.g., iterating or inspecting items) and verifying its correctness.\n",
+              "returns_summary": null
+            },
+            "signature": "def scan():"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 144,
+            "line_start": 144,
+            "name": "nextMonth",
+            "qualified_name": "nextMonth",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "A function named nextMonth that, given an input value x, is intended to produce or compute the \u201cnext month\u201d based on that input. The exact behavior (e.g., whether x is a date, month index, or string) is not specified by the signature alone.\n",
+              "returns_summary": null
+            },
+            "signature": "def nextMonth(x: any):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 152,
+            "line_start": 152,
+            "name": "before",
+            "qualified_name": "before",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Defines a function named before that accepts a single argument. It is intended to perform some operation using that argument (likely a preparatory or precondition action), but the exact behavior is not specified in the extracted signature.\n",
+              "returns_summary": "The signature does not specify a return type or value, so the return behavior is not defined in the extracted data."
+            },
+            "signature": "def before(x: any):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 163,
+            "line_start": 163,
+            "name": "stuckUsed",
+            "qualified_name": "stuckUsed",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "stuckUsed is a function that takes a single argument and performs an operation identified by the name stuckUsed. The exact behavior is not specified by the extracted signature; it simply accepts a value of any type and uses it within the function's implementation.\n",
+              "returns_summary": null
+            },
+            "signature": "def stuckUsed(x: any):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 166,
+            "line_start": 166,
+            "name": "ask",
+            "qualified_name": "ask",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Defines a function named ask that accepts a single string argument. The specific behavior is not specified by the signature alone and depends on the implementation in supabase/tests/functions_test.ts.\n",
+              "returns_summary": "The signature does not specify a return type, so the function may return void or any other value depending on its implementation; the exact return value is not determined from the extracted information."
+            },
+            "signature": "def ask(u: string):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 196,
+            "line_start": 196,
+            "name": "askBody",
+            "qualified_name": "askBody",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "askBody is a helper function that takes a string identifier u and an arbitrary body value; it is intended to handle or work with the provided body in the context identified by u (for example, attaching or submitting a request body for the given URL or endpoint in tests).\n",
+              "returns_summary": "The signature does not specify a return type, so the function's return value is not indicated by the extracted data and may be void or any other type."
+            },
+            "signature": "def askBody(u: string, body: unknown):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 221,
+            "line_start": 221,
+            "name": "cfg",
+            "qualified_name": "cfg",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "cfg is a function that accepts a single string argument named u. The extracted signature does not specify its behavior or side effects, so the precise operation performed by the function is not available from the provided data.\n",
+              "returns_summary": null
+            },
+            "signature": "def cfg(u: string):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 243,
+            "line_start": 243,
+            "name": "b64",
+            "qualified_name": "b64",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "This function is declared as b64 and accepts a single argument; the signature alone does not specify what operation it performs (for example, encoding, decoding, transformation, etc.). The exact behavior must be determined from the implementation or surrounding tests.\n",
+              "returns_summary": "The return value is not specified by the signature and is therefore unknown from the extracted data."
+            },
+            "signature": "def b64(o: any):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 245,
+            "line_start": 244,
+            "name": "jwt",
+            "qualified_name": "jwt",
+            "response": {
+              "parameters_summary": "sub is the subject identifier to embed in the token. signedInAgoMs, if non-null, is the number of milliseconds in the past to treat as the token's signing time (used to adjust issued-at/related timestamps); null means no artificial past offset.",
+              "purpose": "Generate a JSON Web Token (JWT) for a given subject identifier. The function creates a token for the provided sub and can simulate a token that was signed some time in the past when given a non-null signedInAgoMs.\n",
+              "returns_summary": "Returns the generated JWT as a string representing the token for the given subject with any requested signing-time offset."
+            },
+            "signature": "def jwt(sub: string, signedInAgoMs: number | null):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": true,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 249,
+            "line_start": 246,
+            "name": "del",
+            "qualified_name": "del",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Asynchronously performs a delete operation within the test suite, using the provided token to authorize the request. It is intended for use in supabase/tests/functions_test.ts to invoke a deletion/cleanup step during testing.\n",
+              "returns_summary": null
+            },
+            "signature": "async def del(token: string):"
+          },
+          {
+            "class_name": null,
+            "is_abstract": false,
+            "is_async": false,
+            "is_classmethod": false,
+            "is_method": false,
+            "is_property": false,
+            "is_staticmethod": false,
+            "line_end": 250,
+            "line_start": 250,
+            "name": "D",
+            "qualified_name": "D",
+            "response": {
+              "parameters_summary": null,
+              "purpose": "Takes a single numeric argument n and performs the function's operation using that value. The specific operation is determined by the function implementation in supabase/tests/functions_test.ts.\n",
+              "returns_summary": "The signature does not specify a return type; the function may return a value or void depending on its implementation."
+            },
+            "signature": "def D(n: number):"
+          }
+        ],
+        "language": "typescript",
+        "overview": {
+          "key_responsibilities": [
+            "Provide utilities to inspect and retrieve simulated outbound calls and the most recent call state (calls, last).",
+            "Construct and encode request payloads and authentication tokens for tests (ask, askBody, b64, jwt).",
+            "Support date and subscription-related computations and manipulations for tests (scan, nextMonth, before, yearly, lastPlan, stuckUsed).",
+            "Drive payment checkout and deletion scenarios asynchronously against the test harness (checkout, del).",
+            "Configure and tear down environment-specific settings required by the tests via explicit environment variable modifications."
+          ],
+          "notable_patterns": [
+            "Uses asynchronous functions for operations that interact with external or simulated services (checkout, yearly, del).",
+            "Centralized test-harness imports provide mocks and fixtures for payment providers and database interactions.",
+            "Explicit environment variable manipulation to control test runtime configuration."
+          ],
+          "summary": "This TypeScript test module contains a collection of utility and test helper functions used for exercising payment and subscription-related behavior in the Supabase test harness. It imports a set of harness utilities and mocks (including check, db, finish, load, model, outbound, paypal, paypalHeaders, paypalSub, PRICES, whop, whopCheckouts, whopHeaders, whopMem, whopMemberships) and exposes helpers for invoking and inspecting simulated calls, building request payloads, encoding data, generating JWTs, scanning and manipulating dates, and performing basic create/delete operations against the test environment. Several functions are asynchronous, indicating integration with async test flows, and the module also explicitly sets and deletes various environment variables (for example OCR_TIMEOUT_MS, AI_TIMEOUT_MS, FOUNDING_OFFER_ENDS_AT, PAYPAL_API_URL, WHOP_API_URL, and PAY_TEST_USER_IDS) to configure the test runtime.\n\nThe module-level functions include straightforward utilities such as calls, last, lastPlan, scan, nextMonth, before, stuckUsed, ask, askBody, cfg, b64, jwt and D, together with async routines checkout, yearly and del. These functions collectively support constructing test requests, encoding and signing payloads, manipulating time-related test state, and driving checkout/subscription test scenarios against mocked PayPal and Whop endpoints configured by the harness imports and environment variable adjustments.\n"
+        },
+        "schema_version": "2.0.0",
+        "tokens_input": 3450,
+        "tokens_output": 5300
+      },
+      "extraction_quality": "structural",
+      "generated_at": "2026-11-19T11:21:15Z",
+      "model": "gpt-5-mini",
+      "source_sha": "743b076ab9586e97b4f9fa5e076a969aa686e3a3"
+    }
+  },
+  "schema_version": "1.0.0"
+}
