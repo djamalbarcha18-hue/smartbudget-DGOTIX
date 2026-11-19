@@ -1,67 +1,104 @@
-[Documentation Home](README.md)
+# 📚 smartbudget-DGOTIX Documentation
+
+Welcome to the complete documentation for this repository. This documentation is automatically generated and maintained by Woden Docbot.
+
+![Files Documented: 8](https://img.shields.io/badge/Files_Documented-8-blue) ![Coverage: 1%](https://img.shields.io/badge/Coverage-1%-orange) ![Last Updated: 2026-11-19](https://img.shields.io/badge/Last_Updated-2026--11--19-gray)
+
+## 🔗 Quick Links
+
+[📂 supabase](./supabase/README.md)
+
 
 ---
 
-# 📁 _docs
-
-> **Purpose:** Top-level repository root that organizes project configuration, app source, assets, tooling, and a Supabase directory containing database artifacts and server-side functions.
-> 
-
-![Organization: Hierarchical](https://img.shields.io/badge/Organization-Hierarchical-blue)
-
-## 📑 Table of Contents
+> A web-first, mobile-ready personal finance app built with Flutter offering income/expense tracking, budgets, goals, debts, financial-health scoring, zakat and multi-currency support in Arabic/English (RTL).
 
 
-- [Overview](#overview)
-- [Subdirectories](#subdirectories)
-- [Dependencies](#dependencies)
-- [Architecture Notes](#architecture-notes)
 
----
+## 📖 Overview
 
-## Overview
+smartbudget-DGOTIX is a web-first, mobile-ready personal finance application implemented with Flutter and Dart. The project implements core personal-finance features listed by the owners: income and expense tracking, budgets, savings goals, debt management, a financial-health score, zakat calculation, multi-currency handling, and Arabic/English bilingual support with RTL.
 
-This repository root serves as the central entry point for the project and groups configuration files, package manifests, localization settings, tooling directories, platform folders, and a dedicated supabase subdirectory. At the root there are repository-level files such as .gitignore, README.md, pubspec.yaml, pubspec.lock, analysis_options.yaml, dart_define.example.json, l10n.yaml and .metadata which together provide metadata, dependency manifests, static analysis configuration, example environment variables, and localization configuration for the project. These root files coordinate how the project is built, analyzed, localized, and packaged across platforms.
-
-The supabase/ subdirectory contains Supabase-related database artifacts, server-side functions, and tests that support subscription, billing, and integration behaviors for the application. It houses SQL and configuration files (billing, subscription lifecycle, schema, reports, maintenance SQL) along with a config.toml and templates subdirectory. In combination, the root-level configuration and the supabase/ database artifacts work together to support application behavior (code, assets, and platform packages) while ensuring server-side data and billing lifecycles are maintained via Supabase scripts and configuration located inside supabase/.
+The repository groups server-side database artifacts and integration logic under a supabase directory that contains SQL schema and operational scripts, a functions/ area for Supabase serverless functions and webhook/proxy handlers, and a tests/ area with TypeScript test modules exercising billing and subscription behaviors. The codebase also includes Android/Gradle/Kotlin build artifacts and web assets consistent with a Flutter multi-platform app.
 
 
-### File Organization
+### 🧩 Key Components
 
-Root-level manifests and configuration files live at the repository root to control builds, analysis, localization, and packaging. Platform and code folders (android, web, lib, test, etc.) are separated into subdirectories, and Supabase-related database artifacts and server-side functions are grouped under the supabase/ subdirectory to keep database logic and configuration isolated from application source code.
+| Component | Purpose | Technologies |
+| --- | --- | --- |
+| **supabase** | Holds Supabase-related database schema, billing and subscription SQL, serverless functions (functions/), and a TypeScript test harness (tests/) used to validate payment and subscription behaviors. | `SQL`, `TypeScript`, `JavaScript` |
 
-## 📂 Subdirectories
 
-This directory contains the following subdirectories:
 
-### [📁 supabase](./supabase/README.md)
+### 🏗️ Architecture
 
-**Purpose:** Holds Supabase-related database artifacts, server-side functions, and tests that support subscription, billing, and integration behaviors for the application.
+A Flutter (Dart) frontend targets web and mobile (Android) while a supabase directory provides DB schema, server-side functions and TypeScript tests for billing/subscription; build tooling includes Gradle and Kotlin artifacts.
 
-![Files: 0](https://img.shields.io/badge/Files-0-blue)
+### 💡 Use Cases
 
----
-## Dependencies
+- ✦ Track income and expenses
+- ✦ Manage budgets
+- ✦ Set and monitor financial goals
+- ✦ Manage debts
+- ✦ Handle multi-currency transactions
 
-### Internal Dependencies
 
-| Dependency | Usage |
-| --- | --- |
-| [supabase/](../supabase/.md) | Provides database artifacts, SQL, and server-side functions used by the application for subscription and billing behaviors. |
-| [pubspec.yaml](../pubspec/yaml.md) | Declares Flutter/Dart package dependencies for the project at the root level. |
 
-## Architecture Notes
+### 🔧 Technologies
 
-- Database logic and server-side scripts are isolated inside the supabase/ directory to separate data and lifecycle maintenance from application code.
-- Root-level manifests (pubspec.yaml, analysis_options.yaml, l10n.yaml) centralize build, dependency, analysis, and localization configuration for all platform folders and source code.
+
+**Languages:** ![JavaScript: ](https://img.shields.io/badge/JavaScript--blue) ![Python: ](https://img.shields.io/badge/Python--blue) ![TypeScript: ](https://img.shields.io/badge/TypeScript--blue)
+
+**Databases:** ![SQL: ](https://img.shields.io/badge/SQL--blue)
+![Android: ](https://img.shields.io/badge/Android--blue) ![Dart: ](https://img.shields.io/badge/Dart--blue) ![Flutter: ](https://img.shields.io/badge/Flutter--blue) ![Gradle: ](https://img.shields.io/badge/Gradle--blue) ![HTML: ](https://img.shields.io/badge/HTML--blue) ![Kotlin: ](https://img.shields.io/badge/Kotlin--blue) ![Shell: ](https://img.shields.io/badge/Shell--blue)
 
 ---
 
-## Navigation
+## 📑 Documentation Sections
 
-**↑ Parent Directory:** [Go up](../README.md)
-**🔗 Related:** [supabase](./supabase/README.md)
+### [supabase](./supabase/README.md)
+Holds Supabase-related database artifacts, server-side functions, and tests that support subscription, billing, and integration behaviors for the application.
+
+
+This directory groups Supabase-centric assets used by the project.
 
 ---
 
-*Generated by Woden Docbot*
+## 📊 Documentation Statistics
+
+- **Files Documented**: 8
+- **Directories**: 10
+- **Coverage**: 1%
+- **Eligible Source Files**: 799
+- **Last Updated**: 2026-11-19
+
+---
+
+## 🧭 How to Navigate
+
+> ℹ️ **INFO**
+> Each directory has its own README.md with detailed information about that section. Use the breadcrumb navigation at the top of each page to navigate back to parent directories.
+
+### Navigation Features
+
+- **Breadcrumbs** - At the top of each page, showing your current location
+- **Directory READMEs** - Each folder has a comprehensive overview
+- **File Documentation** - Click through to individual file documentation
+- **Search** - Use GitHub's search or your IDE's search functionality
+
+---
+
+## 🤖 About Woden DocBot
+
+This documentation is automatically generated and kept up-to-date by Woden DocBot, an AI-powered documentation assistant. DocBot analyzes code on every pull request and updates documentation to reflect changes.
+
+### Features
+
+- **Automatic Updates** - Documentation updates on every PR
+- **Comprehensive Coverage** - Files, functions, classes, and directories
+- **Smart Navigation** - Breadcrumbs, related files, and parent links
+- **AI-Powered** - Uses Azure GPT models for intelligent documentation generation
+
+---
+
+*Generated by Woden DocBot for smartbudget-DGOTIX*
