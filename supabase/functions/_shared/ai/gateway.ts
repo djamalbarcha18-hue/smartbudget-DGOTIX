@@ -253,22 +253,37 @@ export async function generate(
   model: string,
   system: string,
   prompt: string,
+  /** Aborts the call (and reading its answer): the request's deadline. */
+  signal?: AbortSignal,
 ): Promise<GenResult> {
   const sys = system && system.length > 0 ? system : SYSTEM;
-  if (provider === "google") return geminiGen(model, sys, prompt);
-  if (provider === "openai") return openaiGen(model, sys, prompt);
-  return anthropicGen(model, sys, prompt);
+  if (provider === "google") return geminiGen(model, sys, prompt, signal);
+  if (provider === "openai") return openaiGen(model, sys, prompt, signal);
+  return anthropicGen(model, sys, prompt, signal);
 }
 
-async function post(url: string, headers: HeadersInit, body: unknown): Promise<Response> {
+async function post(
+  url: string,
+  headers: HeadersInit,
+  body: unknown,
+  signal?: AbortSignal,
+): Promise<Response> {
   try {
-    return await fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
+    return await fetch(url, { method: "POST", headers, body: JSON.stringify(body), signal });
   } catch (e) {
+    // The request's deadline passed (security audit F-20): a timeout, not an
+    // outage, so the caller answers 504 and gives the reserved answer back.
+    if (signal?.aborted) throw new ProviderError(504, "timeout");
     throw new ProviderError(503, String(e));
   }
 }
 
-async function geminiGen(model: string, sys: string, prompt: string): Promise<GenResult> {
+async function geminiGen(
+  model: string,
+  sys: string,
+  prompt: string,
+  signal?: AbortSignal,
+): Promise<GenResult> {
   const key = Deno.env.get(PROVIDER_ENV.google) ?? "";
   const res = await post(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
@@ -279,6 +294,7 @@ async function geminiGen(model: string, sys: string, prompt: string): Promise<Ge
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: { temperature: 0.4, maxOutputTokens: MAX_OUTPUT_TOKENS },
     },
+    signal,
   );
   const raw = await res.text();
   if (res.status !== 200) throw new ProviderError(res.status, providerMsg(raw));
@@ -289,7 +305,12 @@ async function geminiGen(model: string, sys: string, prompt: string): Promise<Ge
   return { text: text.trim(), inputTokens: u.promptTokenCount ?? 0, outputTokens: u.candidatesTokenCount ?? 0 };
 }
 
-async function openaiGen(model: string, sys: string, prompt: string): Promise<GenResult> {
+async function openaiGen(
+  model: string,
+  sys: string,
+  prompt: string,
+  signal?: AbortSignal,
+): Promise<GenResult> {
   const key = Deno.env.get(PROVIDER_ENV.openai) ?? "";
   const res = await post(
     "https://api.openai.com/v1/chat/completions",
@@ -300,6 +321,7 @@ async function openaiGen(model: string, sys: string, prompt: string): Promise<Ge
       temperature: 0.4,
       max_tokens: MAX_OUTPUT_TOKENS,
     },
+    signal,
   );
   const raw = await res.text();
   if (res.status !== 200) throw new ProviderError(res.status, providerMsg(raw));
@@ -310,12 +332,18 @@ async function openaiGen(model: string, sys: string, prompt: string): Promise<Ge
   return { text: text.trim(), inputTokens: u.prompt_tokens ?? 0, outputTokens: u.completion_tokens ?? 0 };
 }
 
-async function anthropicGen(model: string, sys: string, prompt: string): Promise<GenResult> {
+async function anthropicGen(
+  model: string,
+  sys: string,
+  prompt: string,
+  signal?: AbortSignal,
+): Promise<GenResult> {
   const key = Deno.env.get(PROVIDER_ENV.anthropic) ?? "";
   const res = await post(
     "https://api.anthropic.com/v1/messages",
     { "Content-Type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
     { model, max_tokens: MAX_OUTPUT_TOKENS, system: sys, messages: [{ role: "user", content: prompt }] },
+    signal,
   );
   const raw = await res.text();
   if (res.status !== 200) throw new ProviderError(res.status, providerMsg(raw));

@@ -82,14 +82,16 @@ Deno.serve(async (req: Request) => {
 
   const url = new URL(req.url);
   const country = (url.searchParams.get("country") ?? "").toLowerCase();
-  if (!country || !(country in BASES)) {
+  // Own keys only: `"constructor" in BASES` is true for every object
+  // (security audit F-09).
+  if (!country || !Object.hasOwn(BASES, country)) {
     return new Response(JSON.stringify({ error: "unknown country" }), {
       status: 400,
       headers: cors(),
     });
   }
 
-  const adapter = ADAPTERS[country];
+  const adapter = Object.hasOwn(ADAPTERS, country) ? ADAPTERS[country] : undefined;
   let quotes: Quote[] = [];
   if (adapter) {
     try {

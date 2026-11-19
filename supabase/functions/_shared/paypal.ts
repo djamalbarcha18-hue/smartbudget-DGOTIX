@@ -17,10 +17,28 @@ export function paypalConfigured(): boolean {
   );
 }
 
+/**
+ * The last access token, kept until a minute before PayPal says it expires
+ * (expires_in, usually hours), per API URL and client id. Without it every
+ * call — including every webhook delivery, forged or not — asked PayPal for a
+ * new token (security audit F-06).
+ */
+let cachedToken: { key: string; token: string; until: number } | null = null;
+
+/** Seconds a token is reused for: PayPal's expires_in minus a minute, or 0. */
+export function tokenLifetimeS(expiresIn: unknown): number {
+  const s = Number(expiresIn);
+  return Number.isFinite(s) && s > 60 ? Math.floor(s - 60) : 0;
+}
+
 /** OAuth2 client-credentials access token, or throws. */
-export async function paypalAccessToken(): Promise<string> {
+export async function paypalAccessToken(now: number = Date.now()): Promise<string> {
   const id = (Deno.env.get("PAYPAL_CLIENT_ID") ?? "").trim();
   const secret = (Deno.env.get("PAYPAL_SECRET") ?? "").trim();
+  const key = `${paypalApiBase()} ${id}`;
+  if (cachedToken && cachedToken.key === key && now < cachedToken.until) {
+    return cachedToken.token;
+  }
   const res = await fetch(`${paypalApiBase()}/v1/oauth2/token`, {
     method: "POST",
     headers: {
@@ -31,7 +49,27 @@ export async function paypalAccessToken(): Promise<string> {
   });
   if (!res.ok) throw new Error("paypal_auth_failed");
   const j = await res.json();
-  return String(j.access_token);
+  const token = String(j.access_token);
+  const lifetime = tokenLifetimeS(j.expires_in);
+  cachedToken = lifetime > 0 ? { key, token, until: now + lifetime * 1000 } : null;
+  return token;
+}
+
+/** Where PayPal publishes the certificates it signs webhooks with (live and
+ * sandbox). Anything else cannot be a genuine PayPal delivery. */
+const PAYPAL_CERT_URL =
+  /^https:\/\/api(-m)?(\.sandbox)?\.paypal\.com\/v1\/notifications\/certs\/\S+$/;
+
+/**
+ * A free, local check of PayPal's signature headers before anything is asked
+ * of PayPal: the algorithm PayPal signs with and a certificate URL on
+ * PayPal's own API host. It proves nothing by itself (the headers are
+ * public), but a request that fails it is refused without spending a call to
+ * PayPal's verify API (security audit F-06). Verification stays with PayPal.
+ */
+export function plausiblePaypalSignature(headers: Headers): boolean {
+  return headers.get("paypal-auth-algo") === "SHA256withRSA" &&
+    PAYPAL_CERT_URL.test(headers.get("paypal-cert-url") ?? "");
 }
 
 /**
