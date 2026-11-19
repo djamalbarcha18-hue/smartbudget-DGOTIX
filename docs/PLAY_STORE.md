@@ -39,8 +39,11 @@ run's `smartbudget-android` artifact holds:
 - `app-release.aab`: upload this to Google Play;
 - `app-release.apk`: install directly on a phone to test.
 
-Without the secrets the files are signed with a debug key: fine for testing,
-refused by Google Play.
+Without the secrets no app bundle is built: the run's only artifact is
+`smartbudget-android-DEBUG-SIGNED`, with `app-release-DEBUG-SIGNED.apk` and
+`SmartBudget-phone-DEBUG-SIGNED.apk`, signed with a debug key — fine for
+testing, refused by Google Play, and named so they can't be mistaken for the
+store build. The run summary says so too.
 
 Each upload to Google Play needs a higher version code: bump `version` in
 `pubspec.yaml` (`1.0.0+1` → `1.0.1+2`) and `AppConfig.version`.

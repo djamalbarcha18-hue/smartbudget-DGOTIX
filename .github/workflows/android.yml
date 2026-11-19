@@ -58,6 +58,7 @@ jobs:
         run: flutter pub get --enforce-lockfile
 
       - name: Signing key
+        id: signing
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -65,9 +66,16 @@ jobs:
           KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           if [ -z "$KEYSTORE_BASE64" ]; then
-            echo "::warning::No ANDROID_KEYSTORE_BASE64 secret: signed with a debug key (installable for testing, not accepted by Google Play)."
+            # No release key: the APKs are debug-signed and named so, and no
+            # app bundle is made, so a test build can never pass for the store
+            # build (security audit F-14).
+            echo "::warning::No ANDROID_KEYSTORE_BASE64 secret: DEBUG-SIGNED test build only (no app bundle; not for Google Play)."
+            echo "### ⚠️ DEBUG-SIGNED test build" >> "$GITHUB_STEP_SUMMARY"
+            echo "No release signing key in this repository: the APKs are signed with a debug key, for testing only. No app bundle (.aab) was built." >> "$GITHUB_STEP_SUMMARY"
+            echo "signed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          echo "signed=true" >> "$GITHUB_OUTPUT"
           echo "$KEYSTORE_BASE64" | base64 -d > android/upload-keystore.jks
           {
             echo "storeFile=upload-keystore.jks"
@@ -78,6 +86,7 @@ jobs:
 
       - name: Build app bundle and APK
         env:
+          SIGNED: ${{ steps.signing.outputs.signed }}
           # The project's URL and publishable key are public by design (they
           # ship inside the app); repository secrets of the same name override
           # them. Never put the secret / service_role key here.
@@ -110,13 +119,22 @@ jobs:
           if [ -n "$TURNSTILE_SITE_KEY" ]; then
             DEFINES="$DEFINES --dart-define=TURNSTILE_SITE_KEY=$TURNSTILE_SITE_KEY"
           fi
-          flutter build appbundle --release $DEFINES
+          # The store bundle only with the release key.
+          if [ "$SIGNED" = "true" ]; then
+            flutter build appbundle --release $DEFINES
+          fi
           flutter build apk --release $DEFINES
           # A small APK for today's phones (64-bit ARM), to test on a phone.
           flutter build apk --release --split-per-abi --target-platform android-arm64 $DEFINES
-          cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk SmartBudget-phone.apk
+          if [ "$SIGNED" = "true" ]; then
+            cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk SmartBudget-phone.apk
+          else
+            cp build/app/outputs/flutter-apk/app-release.apk app-release-DEBUG-SIGNED.apk
+            cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk SmartBudget-phone-DEBUG-SIGNED.apk
+          fi
 
       - name: Upload
+        if: steps.signing.outputs.signed == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: smartbudget-android
@@ -126,10 +144,22 @@ jobs:
           if-no-files-found: error
 
       - name: Upload phone APK
+        if: steps.signing.outputs.signed == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: SmartBudget-phone-apk
           path: SmartBudget-phone.apk
+          if-no-files-found: error
+
+      # Without the release key: only the debug-signed test APKs, named so.
+      - name: Upload test APKs (DEBUG-SIGNED)
+        if: steps.signing.outputs.signed != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartbudget-android-DEBUG-SIGNED
+          path: |
+            app-release-DEBUG-SIGNED.apk
+            SmartBudget-phone-DEBUG-SIGNED.apk
           if-no-files-found: error
 
       - name: Remove signing files
