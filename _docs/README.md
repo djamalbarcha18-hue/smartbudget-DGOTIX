@@ -2,7 +2,7 @@
 
 Welcome to the complete documentation for this repository. This documentation is automatically generated and maintained by Woden Docbot.
 
-![Files Documented: 3](https://img.shields.io/badge/Files_Documented-3-blue) ![Coverage: 0%](https://img.shields.io/badge/Coverage-0%-orange) ![Last Updated: 2026-11-19](https://img.shields.io/badge/Last_Updated-2026--11--19-gray)
+![Files Documented: 8](https://img.shields.io/badge/Files_Documented-8-blue) ![Coverage: 1%](https://img.shields.io/badge/Coverage-1%-orange) ![Last Updated: 2026-11-19](https://img.shields.io/badge/Last_Updated-2026--11--19-gray)
 
 ## 🔗 Quick Links
 
@@ -11,53 +11,36 @@ Welcome to the complete documentation for this repository. This documentation is
 
 ---
 
-> A web-first (mobile-ready) personal finance app built with Flutter that tracks income, expenses, budgets, goals, debts, financial-health scoring, zakat and multi-currency with Arabic/English RTL support.
+> A web-first, mobile-ready personal finance app built with Flutter offering income/expense tracking, budgets, goals, debts, financial-health scoring, zakat and multi-currency support in Arabic/English (RTL).
 
 
 
 ## 📖 Overview
 
-smartbudget-DGOTIX is a Flutter-based personal finance application targeting web and mobile (Android) that implements income/expense tracking, budgets, savings goals, debts, financial-health scoring, zakat and multi-currency features with Arabic/English and RTL support. The repository contains both client-side app code (Dart/Flutter, Android/Gradle targets) and database provisioning assets.
+smartbudget-DGOTIX is a web-first, mobile-ready personal finance application implemented with Flutter and Dart. The project implements core personal-finance features listed by the owners: income and expense tracking, budgets, savings goals, debt management, a financial-health score, zakat calculation, multi-currency handling, and Arabic/English bilingual support with RTL.
 
-The supabase/ directory holds the database-focused artifacts: a consolidated setup_all.sql to create the schema and initial objects, security_hardening.sql to apply runtime guards and access controls, and a tests/ subtree with automated validation suites to verify the Supabase-style schema and policies. Together the app code and the supabase scripts form the application and its DB provisioning, hardening, and verification surface.
+The repository groups server-side database artifacts and integration logic under a supabase directory that contains SQL schema and operational scripts, a functions/ area for Supabase serverless functions and webhook/proxy handlers, and a tests/ area with TypeScript test modules exercising billing and subscription behaviors. The codebase also includes Android/Gradle/Kotlin build artifacts and web assets consistent with a Flutter multi-platform app.
 
 
 ### 🧩 Key Components
 
 | Component | Purpose | Technologies |
 | --- | --- | --- |
-| **supabase** | Contains SQL schema, consolidated setup scripts, and security hardening measures for provisioning and protecting the SmartBudget database in a Supabase-compatible environment. | `SQL`, `Shell`, `Python` |
-| **supabase/setup_all.sql** | Single-shot, consolidated database setup script intended to create the required schema and initial objects in the Supabase SQL editor. | `SQL` |
-| **supabase/security_hardening.sql** | Applies security-hardening measures and runtime guards for the SmartBudget database to restrict and protect runtime behavior. | `SQL` |
-| **supabase/tests/** | Automated validation suites and test harnesses that verify behavior of the Supabase-style schema and related access-control rules. | `Python`, `SQL` |
+| **supabase** | Holds Supabase-related database schema, billing and subscription SQL, serverless functions (functions/), and a TypeScript test harness (tests/) used to validate payment and subscription behaviors. | `SQL`, `TypeScript`, `JavaScript` |
 
 
-
-
-**Component Architecture:**
-
-```mermaid
-graph TD
-    C0[supabase]
-    C1[supabase/setup_all.sql]
-    C2[supabase/security_hardening.sql]
-    C3[supabase/tests/]
-    C0 --> C1
-    C1 --> C2
-    C2 --> C3
-```
 
 ### 🏗️ Architecture
 
-A Flutter (Dart) web-first/mobile app with an accompanying supabase/ directory that provisions, hardens, and tests the SQL database schema; Android/Gradle targets are present for mobile builds.
+A Flutter (Dart) frontend targets web and mobile (Android) while a supabase directory provides DB schema, server-side functions and TypeScript tests for billing/subscription; build tooling includes Gradle and Kotlin artifacts.
 
 ### 💡 Use Cases
 
 - ✦ Track income and expenses
-- ✦ Create and manage budgets
+- ✦ Manage budgets
 - ✦ Set and monitor financial goals
 - ✦ Manage debts
-- ✦ Handle multi-currency finances
+- ✦ Handle multi-currency transactions
 
 
 
@@ -74,21 +57,19 @@ A Flutter (Dart) web-first/mobile app with an accompanying supabase/ directory t
 ## 📑 Documentation Sections
 
 ### [supabase](./supabase/README.md)
-Contains SQL schema, consolidated setup scripts, and security hardening measures for provisioning and protecting the SmartBudget database when deploying to a Supabase-compatible environment.
+Holds Supabase-related database artifacts, server-side functions, and tests that support subscription, billing, and integration behaviors for the application.
 
 
-This directory holds the database-focused artifacts for the SmartBudget application intended to be run in a Supabase SQL environment.
-
-![Files: 2](https://img.shields.io/badge/Files-2-blue)
+This directory groups Supabase-centric assets used by the project.
 
 ---
 
 ## 📊 Documentation Statistics
 
-- **Files Documented**: 3
-- **Directories**: 3
-- **Coverage**: 0%
-- **Eligible Source Files**: 798
+- **Files Documented**: 8
+- **Directories**: 10
+- **Coverage**: 1%
+- **Eligible Source Files**: 799
 - **Last Updated**: 2026-11-19
 
 ---

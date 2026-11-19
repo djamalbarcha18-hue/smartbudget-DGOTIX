@@ -205,7 +205,9 @@ Deno.serve(async (req: Request) => {
 
   const url = new URL(req.url);
   const category = url.searchParams.get("category") ?? "";
-  const specs = CATALOG[category];
+  // Own keys only: "constructor", "__proto__" or "toString" are found on
+  // every object and would pass a plain lookup (security audit F-09).
+  const specs = Object.hasOwn(CATALOG, category) ? CATALOG[category] : undefined;
   if (!specs) {
     return new Response(JSON.stringify({ error: "unknown category" }), {
       status: 400,

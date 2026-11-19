@@ -1,0 +1,165 @@
+<!-- METADATA: {"source_path": "supabase/functions/parallel-proxy/index.ts", "source_sha": "8d427180f3c3740a89d0ff6cd966fbe8831c0484", "extraction_quality": "structural", "model": "gpt-5-mini", "generated_at": "2026-11-19T11:21:15Z", "doc_type": "file"} -->
+<details>
+<summary>Documentation Metadata (click to expand)</summary>
+
+```json
+{
+  "doc_type": "file_overview",
+  "file_path": "supabase/functions/parallel-proxy/index.ts",
+  "source_hash": "2b1f54f9d568e306dbb3da0d4ad236f945c07510915597ebe0a6b5fbdae3b920",
+  "last_updated": "2026-11-19T11:20:36.264566+00:00",
+  "git_sha": "8d427180f3c3740a89d0ff6cd966fbe8831c0484",
+  "tokens_used": 1771,
+  "complexity_score": 1,
+  "estimated_review_time_minutes": 6,
+  "external_dependencies": []
+}
+```
+
+</details>
+
+[Documentation Home](../../../README.md) > [supabase](../../README.md) > [functions](../README.md) > [parallel-proxy](./README.md) > **index**
+
+---
+
+# index.ts
+
+> **File:** `supabase/functions/parallel-proxy/index.ts`
+
+![Complexity: Low](https://img.shields.io/badge/Complexity-Low-green) ![Review Time: 6min](https://img.shields.io/badge/Review_Time-6min-blue)
+
+## 📑 Table of Contents
+
+
+- [Overview](#overview)
+- [Dependencies](#dependencies)
+- [Architecture Notes](#architecture-notes)
+- [Maintenance Notes](#maintenance-notes)
+- [Functions and Classes](#functions-and-classes)
+
+---
+
+## Overview
+
+This TypeScript module defines a small set of types and utility functions used by the parallel-proxy function in the Supabase functions directory. It exposes a Quote interface that models a domain object named Quote, and two module-level helper functions: num, which provides numeric parsing or conversion behavior, and cors, which implements Cross-Origin Resource Sharing handling. The file centralizes simple utilities and a type definition that are intended to be imported and used by other parts of the parallel-proxy implementation.
+
+## Dependencies
+
+No dependencies identified.
+
+## 📁 Directory
+
+This file is part of the **parallel-proxy** directory. View the [directory index](./README.md) to see all files in this module.
+
+## Architecture Notes
+
+- Defines a TypeScript interface (Quote) for structured data.
+- Contains module-level utility functions (num, cors) intended for reuse across the function implementation.
+
+## Maintenance Notes
+
+- Declare the Quote interface used to represent quote objects within the parallel-proxy codebase.
+- Provide a num function to convert or validate values as numbers for callers that need numeric semantics.
+- Provide a cors function to handle CORS-related behavior for HTTP interactions in the parallel-proxy function.
+
+
+---
+
+## Functions and Classes
+
+
+### Quote
+
+![Type: Abstract](https://img.shields.io/badge/Type-Abstract-purple)
+
+#### Description
+
+The Quote interface defines the TypeScript shape used to represent a quote entity within the parallel-proxy function.
+
+As an interface in supabase/functions/parallel-proxy/index.ts, Quote centralizes the type definition for quote data used throughout the module, ensuring consistent handling and clearer code contracts for functions that produce or consume quote objects.
+
+Responsibilities:
+- Declare the expected structure for quote objects so TypeScript can enforce correct usage across the module.
+- Provide documentation and intent for developers interacting with quote-related data in the file.
+- Enable consistent typing when quote objects are passed between functions, returned from operations, or validated.
+- Serve as a stable contract that helps prevent accidental changes to the data shape during refactoring.
+
+---
+
+
+
+### num
+
+![Type: Sync](https://img.shields.io/badge/Type-Sync-green)
+
+#### Signature
+
+```typescript
+def num(v: unknown) -> number | undefined:
+```
+
+#### Description
+
+Attempts to interpret the input value as a numeric value and return it as a number, or yields undefined when the input cannot be converted to a valid number.
+
+v is an unknown input value that the function will inspect and try to coerce or parse into a numeric value; non-numeric or unconvertible inputs result in undefined.
+
+#### Parameters
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `v` | `unknown` | ✅ | — |
+
+#### Returns
+
+**Type:** `number | undefined`
+
+—
+
+#### Complexity
+
+Not analyzed
+
+---
+
+
+
+### cors
+
+![Type: Sync](https://img.shields.io/badge/Type-Sync-green)
+
+#### Signature
+
+```typescript
+def cors() -> HeadersInit:
+```
+
+#### Description
+
+Generate and return a set of HTTP CORS headers to be used for handling cross-origin requests.
+
+The function centralizes common CORS header values so callers can apply consistent CORS policy when constructing responses.
+
+#### Returns
+
+**Type:** `HeadersInit`
+
+—
+
+#### Complexity
+
+Not analyzed
+
+---
+
+
+
+---
+
+## Navigation
+
+**↑ Parent Directory:** [Go up](./README.md)
+
+---
+
+*This documentation was automatically generated by AI ([Woden DocBot](https://github.com/marketplace/ai-document-creator)) and may contain errors. It is the responsibility of the user to validate the accuracy and completeness of this documentation.*
