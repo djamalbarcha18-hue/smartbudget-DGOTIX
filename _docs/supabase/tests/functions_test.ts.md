@@ -1,4 +1,4 @@
-<!-- METADATA: {"source_path": "supabase/tests/functions_test.ts", "source_sha": "743b076ab9586e97b4f9fa5e076a969aa686e3a3", "extraction_quality": "structural", "model": "gpt-5-mini", "generated_at": "2026-11-19T11:21:15Z", "doc_type": "file"} -->
+<!-- METADATA: {"source_path": "supabase/tests/functions_test.ts", "source_sha": "212a3f8dc674919a630684d4edb2f3e3c5306acf", "extraction_quality": "structural", "model": "gpt-5-mini", "generated_at": "2026-11-19T21:41:34Z", "doc_type": "file"} -->
 <details>
 <summary>Documentation Metadata (click to expand)</summary>
 
@@ -6,10 +6,10 @@
 {
   "doc_type": "file_overview",
   "file_path": "supabase/tests/functions_test.ts",
-  "source_hash": "8fcf7e26526456dc7634b4bde063610400b4cab0c44a2262bd968531ccb05e31",
-  "last_updated": "2026-11-19T11:21:15.018911+00:00",
-  "git_sha": "743b076ab9586e97b4f9fa5e076a969aa686e3a3",
-  "tokens_used": 8750,
+  "source_hash": "3e2c59abba6a8c547d248c068d6a9ec8c0d09963d75b85d7982f7986ba82f477",
+  "last_updated": "2026-11-19T21:41:08.603730+00:00",
+  "git_sha": "212a3f8dc674919a630684d4edb2f3e3c5306acf",
+  "tokens_used": 7800,
   "complexity_score": 5,
   "estimated_review_time_minutes": 14,
   "external_dependencies": []
@@ -41,9 +41,9 @@
 
 ## Overview
 
-This TypeScript test module contains a collection of utility and test helper functions used for exercising payment and subscription-related behavior in the Supabase test harness. It imports a set of harness utilities and mocks (including check, db, finish, load, model, outbound, paypal, paypalHeaders, paypalSub, PRICES, whop, whopCheckouts, whopHeaders, whopMem, whopMemberships) and exposes helpers for invoking and inspecting simulated calls, building request payloads, encoding data, generating JWTs, scanning and manipulating dates, and performing basic create/delete operations against the test environment. Several functions are asynchronous, indicating integration with async test flows, and the module also explicitly sets and deletes various environment variables (for example OCR_TIMEOUT_MS, AI_TIMEOUT_MS, FOUNDING_OFFER_ENDS_AT, PAYPAL_API_URL, WHOP_API_URL, and PAY_TEST_USER_IDS) to configure the test runtime.
+This TypeScript test module contains a collection of standalone helper functions and test utilities used by the supabase/functions test suite. It defines 16 module-level functions that perform tasks such as generating payloads or headers (ask, askBody, cfg, b64, jwt), manipulating test state (calls, last, lastPlan, scan, nextMonth, before, stuckUsed), and executing asynchronous test flows (checkout, yearly, del). The file also performs numerous environment variable manipulations at module load time to configure timeouts, API endpoints, promotional windows, and test user IDs for external services like PayPal and Whop, which are important for shaping the test environment for payment- and subscription-related scenarios.
 
-The module-level functions include straightforward utilities such as calls, last, lastPlan, scan, nextMonth, before, stuckUsed, ask, askBody, cfg, b64, jwt and D, together with async routines checkout, yearly and del. These functions collectively support constructing test requests, encoding and signing payloads, manipulating time-related test state, and driving checkout/subscription test scenarios against mocked PayPal and Whop endpoints configured by the harness imports and environment variable adjustments.
+The utilities are designed to be used directly by tests to create and examine test conditions, simulate checkout flows, and manage mock or integration interactions with outbound services. Several functions are asynchronous to accommodate remote or time-dependent operations, and the module-level environment setup indicates that tests relying on these utilities expect to run with specific external API URLs and feature flags configured dynamically during the test run.
 
 ## Dependencies
 
@@ -59,17 +59,16 @@ This file is part of the **tests** directory. View the [directory index](./READM
 
 ## Architecture Notes
 
-- Uses asynchronous functions for operations that interact with external or simulated services (checkout, yearly, del).
-- Centralized test-harness imports provide mocks and fixtures for payment providers and database interactions.
-- Explicit environment variable manipulation to control test runtime configuration.
+- Multiple async module-level functions indicating support for asynchronous test operations
+- Extensive runtime manipulation of environment variables to configure external service endpoints and test feature windows
+- Separation of small focused utilities for payload/header generation, state inspection, and control-flow helpers
 
 ## Maintenance Notes
 
-- Provide utilities to inspect and retrieve simulated outbound calls and the most recent call state (calls, last).
-- Construct and encode request payloads and authentication tokens for tests (ask, askBody, b64, jwt).
-- Support date and subscription-related computations and manipulations for tests (scan, nextMonth, before, yearly, lastPlan, stuckUsed).
-- Drive payment checkout and deletion scenarios asynchronously against the test harness (checkout, del).
-- Configure and tear down environment-specific settings required by the tests via explicit environment variable modifications.
+- Provide helper functions for constructing test input and authentication artifacts (ask, askBody, cfg, b64, jwt).
+- Expose utilities for inspecting and manipulating recorded test calls or state (calls, last, lastPlan, scan, nextMonth, before, stuckUsed).
+- Implement asynchronous test flows for payment and subscription scenarios (checkout, yearly, del).
+- Configure and modify process environment variables to control timeouts, API endpoints, promotional windows, and test user identifiers for external services (PayPal, Whop) at module load time.
 
 
 ---
@@ -108,9 +107,9 @@ def calls():
 
 #### Description
 
-A test function named calls that executes test logic related to the 'calls' behavior in the supabase/tests/functions_test.ts file.
+A test routine defined in the supabase/tests/functions_test.ts file intended to exercise or verify behavior related to function calls.
 
-It organizes and runs the assertions or steps needed to verify functionality associated with calls.
+It likely groups assertions or test cases that exercise calling Supabase functions or the code paths concerned with invoking those functions.
 
 #### Complexity
 
@@ -132,9 +131,9 @@ def last():
 
 #### Description
 
-The extracted data only provides the function name and signature (function last() ) from a test file; no implementation or docstring is available, so the specific behavior is not specified.
+A parameterless function named last, likely intended to obtain or test the last element of a collection or sequence (based on its name and location in a tests file).
 
-Based on the available information, it is a parameterless function named last defined in supabase/tests/functions_test.ts, likely intended for use within the test suite.
+Returns the last element of a collection or sequence (or possibly undefined/null if the collection is empty).
 
 #### Complexity
 
@@ -156,14 +155,14 @@ async def checkout(u: string):
 
 #### Description
 
-Asynchronously performs a checkout operation for the entity identified by the provided string.
+Asynchronously performs a checkout-related operation using the provided string identifier.
 
-The function carries out whatever steps are required to complete the checkout process for that identifier (for example, checking out a user, item, or resource).
+The function name implies it initiates or completes a checkout process for the supplied entity.
 
 
-u is a string that identifies the target of the checkout operation (for example, a user id, item id, or resource key); the function uses this identifier to locate and perform the checkout.
+u is a string that identifies the target of the checkout operation (for example, a user id, session id, or resource key); its exact semantics are determined by the surrounding test context.
 
-Returns a Promise that resolves when the checkout operation completes, containing the outcome or result of the operation.
+Returns a Promise that resolves when the asynchronous checkout operation completes; the specific resolved value is not specified by the signature.
 
 #### Parameters
 
@@ -191,9 +190,12 @@ async def yearly(u: string):
 
 #### Description
 
-An asynchronous test helper named yearly that accepts a single string argument 'u' and performs asynchronous operations related to yearly behavior in the supabase/tests/functions_test.ts file.
+An asynchronous helper/test function named yearly that performs some asynchronous operations tied to a provided string identifier.
 
-It is intended to be used in the test suite to exercise or verify functionality that depends on the provided string input.
+It is intended to run as part of the test suite in supabase/tests/functions_test.ts and likely exercises functionality scoped to a yearly context.
+
+
+Returns a Promise that resolves when the asynchronous work is complete (no specific return type is declared).
 
 #### Parameters
 
@@ -221,12 +223,12 @@ def lastPlan():
 
 #### Description
 
-Returns the most recent plan used by the test suite.
+A test helper that obtains the most recent 'plan' used or created within the test suite.
 
-This function retrieves the last (most recently created or recorded) plan for inspection or assertions within tests.
+It is intended to return the last plan entry so tests can inspect or assert against it.
 
 
-The most recently recorded plan (the exact shape/type is not specified in the signature).
+Returns the most recent plan (the last plan record or value) produced or available to the tests.
 
 #### Complexity
 
@@ -248,7 +250,9 @@ def scan():
 
 #### Description
 
-Runs a scan operation as part of the test suite in supabase/tests/functions_test.ts, exercising the code path that performs scanning behavior (e.g., iterating or inspecting items) and verifying its correctness.
+Performs a scan operation used in the test suite for supabase functions.
+
+The function likely executes or validates a scanning-related behavior within tests in supabase/tests/functions_test.ts.
 
 #### Complexity
 
@@ -270,9 +274,12 @@ def nextMonth(x: any):
 
 #### Description
 
-A function named nextMonth that, given an input value x, is intended to produce or compute the “next month” based on that input.
+Interprets the input x and produces the month that follows it (i.e., the "next month").
 
-The exact behavior (e.g., whether x is a date, month index, or string) is not specified by the signature alone.
+The exact interpretation of x is not specified here, but the function name indicates it advances a month based on the provided value.
+
+
+Returns a value representing the month after the one represented by x; the exact return type and format depend on how x is provided and processed.
 
 #### Parameters
 
@@ -300,12 +307,12 @@ def before(x: any):
 
 #### Description
 
-Defines a function named before that accepts a single argument.
+A function named before that accepts a single argument; the specific behavior is not described in the available signature.
 
-It is intended to perform some operation using that argument (likely a preparatory or precondition action), but the exact behavior is not specified in the extracted signature.
+It is declared in supabase/tests/functions_test.ts and likely used as a test helper given its filename and name, but its exact actions are not specified here.
 
 
-The signature does not specify a return type or value, so the return behavior is not defined in the extracted data.
+The return value is not specified by the provided signature and therefore is unknown from the extracted information.
 
 #### Parameters
 
@@ -333,9 +340,11 @@ def stuckUsed(x: any):
 
 #### Description
 
-stuckUsed is a function that takes a single argument and performs an operation identified by the name stuckUsed.
+A small test helper that accepts a value and ensures it is treated as used (typically to avoid unused-variable warnings) without performing any meaningful transformation.
 
-The exact behavior is not specified by the extracted signature; it simply accepts a value of any type and uses it within the function's implementation.
+x: any — the value to be marked/treated as used; its type is not important to the helper.
+
+Returns void (no meaningful return value).
 
 #### Parameters
 
@@ -363,12 +372,12 @@ def ask(u: string):
 
 #### Description
 
-Defines a function named ask that accepts a single string argument.
+ask is a function that takes a single string argument named u and performs an 'ask' operation using that string.
 
-The specific behavior is not specified by the signature alone and depends on the implementation in supabase/tests/functions_test.ts.
+Based on the signature alone, it is intended to initiate or handle some action or query related to the provided string.
 
 
-The signature does not specify a return type, so the function may return void or any other value depending on its implementation; the exact return value is not determined from the extracted information.
+The signature does not indicate a return type or value, so the return behavior is not specified in the extracted information.
 
 #### Parameters
 
@@ -396,9 +405,9 @@ def askBody(u: string, body: unknown):
 
 #### Description
 
-askBody is a helper function that takes a string identifier u and an arbitrary body value; it is intended to handle or work with the provided body in the context identified by u (for example, attaching or submitting a request body for the given URL or endpoint in tests).
+Takes a URL string and an accompanying request body value and is intended to be used in tests to send or prepare a request body for the given URL.
 
-The signature does not specify a return type, so the function's return value is not indicated by the extracted data and may be void or any other type.
+It pairs the target location (u) with the provided payload (body) for use inside test cases.
 
 #### Parameters
 
@@ -429,7 +438,7 @@ def cfg(u: string):
 
 cfg is a function that accepts a single string argument named u.
 
-The extracted signature does not specify its behavior or side effects, so the precise operation performed by the function is not available from the provided data.
+The extracted signature does not specify its behavior, so its specific action (e.g., configuring, parsing, or validating based on the string) is not determined from the provided data.
 
 #### Parameters
 
@@ -457,12 +466,14 @@ def b64(o: any):
 
 #### Description
 
-This function is declared as b64 and accepts a single argument; the signature alone does not specify what operation it performs (for example, encoding, decoding, transformation, etc.).
+Converts the given input value into a base64-encoded representation.
 
-The exact behavior must be determined from the implementation or surrounding tests.
+The function accepts any JavaScript value and produces a base64 string form of that value.
 
 
-The return value is not specified by the signature and is therefore unknown from the extracted data.
+o: the value to be encoded; accepts any type (primitive, object, buffer, etc.) and will be transformed to a form suitable for base64 encoding.
+
+A base64-encoded string representing the provided input.
 
 #### Parameters
 
@@ -490,14 +501,12 @@ def jwt(sub: string, signedInAgoMs: number | null):
 
 #### Description
 
-Generate a JSON Web Token (JWT) for a given subject identifier.
+Creates a JSON Web Token (JWT) for the given subject identifier.
 
-The function creates a token for the provided sub and can simulate a token that was signed some time in the past when given a non-null signedInAgoMs.
+The optional signedInAgoMs parameter allows the token's timing (e.g., issued-at) to reflect that the subject signed in a specified number of milliseconds in the past.
 
 
-sub is the subject identifier to embed in the token. signedInAgoMs, if non-null, is the number of milliseconds in the past to treat as the token's signing time (used to adjust issued-at/related timestamps); null means no artificial past offset.
-
-Returns the generated JWT as a string representing the token for the given subject with any requested signing-time offset.
+Returns the JWT as a string representing an authentication token for the provided subject, with timing claims adjusted according to signedInAgoMs if given.
 
 #### Parameters
 
@@ -526,9 +535,9 @@ async def del(token: string):
 
 #### Description
 
-Asynchronously performs a delete operation within the test suite, using the provided token to authorize the request.
+Asynchronously performs a delete operation using the provided token.
 
-It is intended for use in supabase/tests/functions_test.ts to invoke a deletion/cleanup step during testing.
+The function is intended to carry out a deletion-related action (e.g., an API call) that requires the given token.
 
 #### Parameters
 
@@ -556,12 +565,12 @@ def D(n: number):
 
 #### Description
 
-Takes a single numeric argument n and performs the function's operation using that value.
+D is a function that takes a single numeric argument n.
 
-The specific operation is determined by the function implementation in supabase/tests/functions_test.ts.
+The specific behavior or side effects of the function are not specified in the provided signature.
 
 
-The signature does not specify a return type; the function may return a value or void depending on its implementation.
+The signature does not indicate what the function returns, so the return value is not specified.
 
 #### Parameters
 
