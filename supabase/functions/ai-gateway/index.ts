@@ -57,6 +57,15 @@ const MAX_BODY_BYTES = 64 * 1024;
 const MAX_PROMPT_CHARS = 2000;
 const MAX_CONTEXT_CHARS = 24000;
 
+/** The longest one question waits for the models, every fallback included
+ * (secret AI_TIMEOUT_MS; security audit F-20). Without it a stuck provider
+ * held the request open until the platform killed it, sometimes before the
+ * reserved answer was given back. */
+const AI_TIMEOUT_MS = (() => {
+  const n = Number(Deno.env.get("AI_TIMEOUT_MS") ?? "");
+  return Number.isFinite(n) && n > 0 ? n : 60_000;
+})();
+
 function monthKey(): string {
   const d = new Date();
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
@@ -183,11 +192,13 @@ Deno.serve(async (req: Request) => {
     const maxTries = 1 + Math.max(0, Math.min(5, cfg.maxFallbackAttempts));
     const tried = pool.slice(0, maxTries);
     let lastCode = "unknown";
+    // One deadline for the whole question, whichever models it goes through.
+    const deadline = AbortSignal.timeout(AI_TIMEOUT_MS);
     for (let i = 0; i < tried.length; i++) {
       const m = tried[i];
       const started = Date.now();
       try {
-        const out = await generate(m.provider as ProviderId, m.id, "", buildPrompt(context, history, prompt));
+        const out = await generate(m.provider as ProviderId, m.id, "", buildPrompt(context, history, prompt), deadline);
         recordSuccess(m.provider as ProviderId);
         const cost = estCostUsd(m, out.inputTokens, out.outputTokens);
         giveBack = null;
@@ -211,11 +222,16 @@ Deno.serve(async (req: Request) => {
         await log(db, userId, task, m.provider, m.id, i > 0, Date.now() - started,
           0, 0, 0, c.code);
         recordFailure(m.provider as ProviderId);
+        // Out of time: no fallback could answer within it either.
+        if (deadline.aborted) break;
         // Permanent errors: do not fail over (would fail the same way).
         if (!c.retryable) break;
       }
     }
     await giveBack?.();
+    if (deadline.aborted) {
+      return jsonResponse({ error: "timeout" }, 504, cors);
+    }
     return jsonResponse({ error: "ai_unavailable", code: lastCode }, 503, cors);
   } catch (e) {
     await giveBack?.();

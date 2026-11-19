@@ -5,11 +5,12 @@
 //   deno run -A --import-map supabase/tests/import_map.json supabase/tests/functions_test.ts
 // Exits non-zero when a scenario fails.
 // deno-lint-ignore-file no-explicit-any
-import { check, db, finish, load, model, outbound, paypal, paypalSub, PRICES, whop, whopCheckouts, whopHeaders, whopMem, whopMemberships } from "./harness.ts";
+import { check, db, finish, load, model, outbound, paypal, paypalHeaders, paypalSub, PRICES, whop, whopCheckouts, whopHeaders, whopMem, whopMemberships } from "./harness.ts";
 
 // A short model deadline, so the "stuck model" scenario below runs quickly.
 Deno.env.set("OCR_TIMEOUT_MS", "300");
-const handlers = await load("whop-webhook", "paypal-webhook", "create-checkout", "receipt-scan", "ai-gateway", "billing-config", "delete-account");
+Deno.env.set("AI_TIMEOUT_MS", "300");
+const handlers = await load("whop-webhook", "paypal-webhook", "create-checkout", "receipt-scan", "ai-gateway", "billing-config", "delete-account", "market-proxy", "parallel-proxy");
 db.tables.billing_prices = PRICES;
 const U1 = "11111111-1111-4111-8111-111111111111";
 const calls = () => db.calls.length;
@@ -66,6 +67,17 @@ n = calls();
 const outboundBefore = outbound.length;
 r = await paypal(paypalSub("p3", "BILLING.SUBSCRIPTION.ACTIVATED", U1, "I-1", "P-PRO", "ACTIVE", "2026-10-03T10:00:00Z"), {});
 check("PayPal: no signature headers is refused without calling PayPal", r.status === 401 && outbound.length === outboundBefore && calls() === n, JSON.stringify(r));
+// Forged headers (all present, but a certificate URL or algorithm PayPal
+// never uses) are refused before any call to PayPal (security audit F-06).
+for (const [label, h] of [
+  ["a foreign certificate URL", { ...paypalHeaders, "paypal-cert-url": "https://evil.example/v1/notifications/certs/CERT" }],
+  ["a look-alike certificate host", { ...paypalHeaders, "paypal-cert-url": "https://api.paypal.com.evil.example/v1/notifications/certs/CERT" }],
+  ["another signing algorithm", { ...paypalHeaders, "paypal-auth-algo": "HS256" }],
+] as const) {
+  const before = outbound.length;
+  r = await paypal(paypalSub("p3", "BILLING.SUBSCRIPTION.ACTIVATED", U1, "I-1", "P-PRO", "ACTIVE", "2026-10-03T10:00:00Z"), h);
+  check(`PayPal: ${label} is refused without calling PayPal`, r.status === 401 && outbound.length === before && calls() === n, JSON.stringify(r));
+}
 const huge = JSON.stringify({ type: "membership.activated", pad: "x".repeat(300 * 1024) });
 r = await whop(huge, await whopHeaders("{}"));
 check("Whop: an oversized delivery is refused", r.status === 413 && calls() === n, JSON.stringify(r));
@@ -168,6 +180,18 @@ fb = await ask("u10");
 check("AI: a retired model (404) falls back too", fb.status === 200 && model.asked.length === 2, fb.status + " " + model.asked.join(","));
 model.fail = {};
 
+// A stuck model: the question stops at the deadline (504 "timeout", no
+// endless fallback) and its reserved answer is given back (security audit
+// F-20): the free allowance of 2 is still whole afterwards.
+model.asked = [];
+model.hang = true;
+const hung = await ask("u30");
+model.hang = false;
+const hungJson = await hung.json();
+check("AI: a stuck model answers 'timeout' at the deadline without trying every fallback", hung.status === 504 && hungJson.error === "timeout" && model.asked.length === 1, hung.status + " " + JSON.stringify(hungJson) + " asked=" + model.asked.join(","));
+const after = [(await ask("u30")).status, (await ask("u30")).status, (await ask("u30")).status];
+check("AI: the stuck question's answer was given back (2 more answered, then the allowance is spent)", after.join(",") === "200,200,429", after.join(","));
+
 // ---- Request size and what the app is told (AI policy: 4,000 in, 1,000 out) ----
 const askBody = (u: string, body: unknown) => handlers["ai-gateway"](new Request("http://x/", { method: "POST", headers: { Authorization: "Bearer user-" + u }, body: JSON.stringify(body) }));
 model.lastBody = null;
@@ -240,6 +264,24 @@ check("Pay test: in sandbox the list changes nothing", sandboxOwner.sandbox === 
   db.tables.subscriptions.push({ user_id: D(3), plan: "pro", status: "active", cancel_at_period_end: true });
   d = await del(jwt(D(3), 60 * 1000));
   check("Delete: a cancelled subscription running to its end doesn't block it", d.status === 200 && d.body.deleted === true, JSON.stringify(d));
+}
+
+// ---- Public proxies: only their own catalogue keys (security audit F-09) ----
+// "constructor", "__proto__", "toString" exist on every object; a plain
+// lookup let them through to a 500. They must get the same 400 as any
+// unknown value, without any outside call.
+for (const key of ["constructor", "__proto__", "toString", "hasOwnProperty", "nope"]) {
+  const before = outbound.length;
+  const m = await handlers["market-proxy"](new Request("http://x/?category=" + encodeURIComponent(key)));
+  check(`Market proxy: category "${key}" is refused`, m.status === 400 && outbound.length === before, String(m.status));
+  const p = await handlers["parallel-proxy"](new Request("http://x/?country=" + encodeURIComponent(key)));
+  check(`Parallel proxy: country "${key}" is refused`, p.status === 400 && outbound.length === before, String(p.status));
+}
+{
+  // A real country with no source wired yet: 200 with no quotes, nothing made up.
+  const p = await handlers["parallel-proxy"](new Request("http://x/?country=dz"));
+  const body = await p.json();
+  check("Parallel proxy: a known country without a source answers with no quotes", p.status === 200 && Array.isArray(body.quotes) && body.quotes.length === 0, JSON.stringify(body));
 }
 
 finish();

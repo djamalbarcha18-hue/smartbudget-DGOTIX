@@ -21,6 +21,7 @@ import { markEventOnce, priceToPlan, unmarkEvent } from "../_shared/billing.ts";
 import {
   paypalAccessToken,
   paypalSale,
+  plausiblePaypalSignature,
   verifyPaypalWebhook,
 } from "../_shared/paypal.ts";
 import {
@@ -67,10 +68,12 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    // Cheap checks first: a request without PayPal's signature headers (or
-    // before the webhook is configured) never reaches PayPal's API.
+    // Cheap checks first: a request without PayPal's signature headers, with
+    // a signing algorithm or certificate URL PayPal doesn't use (or before
+    // the webhook is configured) never reaches PayPal's API.
     const webhookId = (Deno.env.get("PAYPAL_WEBHOOK_ID") ?? "").trim();
-    const signed = PAYPAL_SIGNATURE_HEADERS.every((h) => !!req.headers.get(h));
+    const signed = PAYPAL_SIGNATURE_HEADERS.every((h) => !!req.headers.get(h)) &&
+      plausiblePaypalSignature(req.headers);
     if (!webhookId || !signed) {
       return new Response(JSON.stringify({ error: "bad_signature" }), {
         status: 401,
