@@ -4,10 +4,12 @@
 {
   "doc_type": "directory_index",
   "directory_path": "_docs/supabase/tests",
-  "directory_hash": "b8a7f8ada13468f70a1556bc8158aa050cf8db0576170ac0c819eed37df90070",
-  "file_count": 1,
+  "directory_hash": "421851a6db84cf0957e377b4f51ae50bffd1f3ec106ff849794904f87be03e97",
+  "file_count": 3,
   "file_hashes": {
-    "functions_test.ts": "e839ed74cb0b104e"
+    "access_control_test.sql": "19e01c7d463d203a",
+    "fake_supabase.ts": "6d8d80e80b4807df",
+    "functions_test.ts": "c93e27698e1baf15"
   }
 }
 ```
@@ -20,10 +22,10 @@
 
 # 📁 tests
 
-> **Purpose:** Contains test modules and helper utilities for exercising payment and subscription-related behavior in the Supabase test harness and related SQL checks.
+> **Purpose:** Holds automated test artifacts and test harness code for validating Supabase-style schema behavior and helper utilities used by the supabase test suites.
 > 
 
-![Organization: Feature Based](https://img.shields.io/badge/Organization-Feature_Based-blue)
+![Organization: Flat](https://img.shields.io/badge/Organization-Flat-blue)
 
 ## 📑 Table of Contents
 
@@ -37,34 +39,41 @@
 
 ## Overview
 
-This directory collects test code and utilities used to exercise payment, subscription, and related behaviors against the Supabase test harness. At the root there are TypeScript test modules such as functions_test.ts which provide utility and test helper functions for payment and subscription scenarios. These root-level files are focused on test logic and reusable helpers that test suites can import.
+This directory contains a combination of SQL and TypeScript test files used to validate a Supabase-style database schema and supporting test harness code. At the root level there are SQL-based test suites (for example, access_control_test.sql) that implement automated checks directly against the database schema, alongside TypeScript modules (fake_supabase.ts and functions_test.ts) that provide a lightweight fake Supabase harness and helper/test utilities used by TypeScript-based test suites.
 
-In addition to the documented TypeScript test module, the directory also contains several other test artifacts (SQL test scripts, harness and stub files, import maps, and additional test suites) that together form a test surface for access control, maintenance, referrals, subscription lifecycles, error reporting, usage limits, and other behaviors. The TypeScript helpers coordinate with SQL-based tests and harness utilities so that suites can be executed against the Supabase test harness; the documented functions_test.ts is intended to be a central helper resource for these suites. Overall, this directory serves as the primary location for automated tests that validate subscription/payment behavior and related system contracts within the larger project test harness.
+The files work together: SQL files exercise database-level behavior and policies, while the TypeScript files provide repeatable test scaffolding and reusable helper functions that TypeScript test suites can import. This hybrid layout supports running database-centric tests (SQL) and higher-level behavior or integration tests (TS). The directory also contains additional test files and harness artifacts (listed separately but not documented here) to cover other areas like maintenance, referrals, usage limits, and import configuration, making this directory the central location for automated validation of the Supabase-related system components.
 
 
 ### File Organization
 
-Files are grouped by testing feature areas (payment/subscription helpers, SQL-based test scripts, harness and stubs). Helpers like functions_test.ts provide reusable utilities that other test suites import; SQL files exercise database-level behavior. The organization supports composing test suites from helper utilities and harness components.
+Top-level test artifacts are colocated in a single directory. SQL files implement database-level test suites; TypeScript files provide test harnesses and helper utilities. Files are grouped by test type (SQL vs TS) rather than by feature, enabling quick discovery of harnesses versus raw SQL tests.
 
 ## 📂 All Files
 
 | File | Type |
 | --- | --- |
+| [access_control_test.sql](./access_control_test.sql.md) | 🗄️ SQL |
+| [fake_supabase.ts](./fake_supabase.ts.md) | 📘 TypeScript |
 | [functions_test.ts](./functions_test.ts.md) | 📘 TypeScript |
 
 ## Dependencies
+
+### External Dependencies
+
+| Dependency | Usage |
+| --- | --- |
+| `Supabase-style database` | SQL tests (e.g., access_control_test.sql) are executed against a Supabase-like schema and rely on the database environment to validate access controls and policies. |
 
 ### Internal Dependencies
 
 | Dependency | Usage |
 | --- | --- |
-| [harness.ts](../harness/ts.md) | Provides the project test harness and environment orchestration which TypeScript test modules and SQL tests interact with. |
-| [supabase_stub.sql](../supabase_stub/sql.md) | Database-side test stubs referenced by SQL-based tests (used to set up DB state or simulate behavior). |
+| `supabase test harness code` | fake_supabase.ts provides an internal lightweight harness used by TypeScript tests in this directory. |
 
 ## Architecture Notes
 
-- Test helpers are centralized in TypeScript modules to promote reuse across multiple test suites.
-- The directory mixes TypeScript test suites and SQL-based tests; coordination between these layers is done via the test harness and shared helper modules.
+- Tests are split by execution domain: SQL files exercise database-level behavior directly, while TypeScript files provide higher-level harnesses and utilities for programmatic tests.
+- The directory favors colocating related tests and harness code to simplify discovery and reuse across multiple test suites.
 
 ---
 

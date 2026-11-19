@@ -93,10 +93,16 @@ Deno.serve(async (req: Request) => {
 
     // Kept under a hash of the e-mail, so signing up again doesn't bring
     // back the trial or the free lifetime allowances (account_tombstones.sql).
-    // Not installed yet or failing: the deletion goes on.
+    // supabase-js reports a failed call in `error` rather than throwing, so
+    // both are checked. If it can't be recorded the account is NOT deleted
+    // (the user can try again): deleting anyway would let anyone reset the
+    // trial and the free lifetime allowances by deleting and signing up again.
+    let tombstoned = false;
     try {
-      await db.rpc("record_account_tombstone", { p_user: userId });
-    } catch (_) { /* non-fatal */ }
+      const { error: tErr } = await db.rpc("record_account_tombstone", { p_user: userId });
+      tombstoned = !tErr;
+    } catch (_) { /* tombstoned stays false */ }
+    if (!tombstoned) return jsonResponse({ error: "try_again" }, 503, cors);
     const { error } = await db.auth.admin.deleteUser(userId);
     if (error) return jsonResponse({ error: "delete_failed" }, 500, cors);
     // Numbers only (no questions or answers), but they were this user's.

@@ -253,6 +253,10 @@ check("Pay test: in sandbox the list changes nothing", sandboxOwner.sandbox === 
 
   let d = await del(jwt(D(1), 60 * 60 * 1000));
   check("Delete: a sign-in an hour old must sign in again", d.status === 401 && d.body.error === "reauth_required", JSON.stringify(d));
+  db.failRpc = "record_account_tombstone";
+  d = await del(jwt(D(1), 60 * 1000));
+  db.failRpc = "";
+  check("Delete: no tombstone recorded, the account is kept (try again)", d.status === 503 && d.body.error === "try_again", JSON.stringify(d));
   d = await del(jwt(D(1), 60 * 1000));
   check("Delete: a fresh sign-in deletes the account", d.status === 200 && d.body.deleted === true, JSON.stringify(d));
 

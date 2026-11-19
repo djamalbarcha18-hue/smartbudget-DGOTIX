@@ -35,12 +35,19 @@ Future<void> _save(String filename, Uint8List bytes, String mime) async {
   }
 }
 
+/// The largest file accepted from the picker (a backup or a bank statement is
+/// far smaller): a bigger one is ignored, like a cancelled pick, before it is
+/// decoded or parsed.
+const int _maxPickedBytes = 20 * 1024 * 1024;
+
 /// Lets the user choose a file and returns its text (null when cancelled).
 Future<String?> pickTextFile() async {
   try {
     final PlatformFile? f = await FilePicker.pickFile();
     if (f == null) return null;
-    return utf8.decode(await f.readAsBytes(), allowMalformed: true);
+    final Uint8List bytes = await f.readAsBytes();
+    if (bytes.length > _maxPickedBytes) return null;
+    return utf8.decode(bytes, allowMalformed: true);
   } catch (_) {
     return null;
   }
@@ -52,7 +59,9 @@ Future<({String name, Uint8List bytes})?> pickDataFile() async {
   try {
     final PlatformFile? f = await FilePicker.pickFile();
     if (f == null) return null;
-    return (name: f.name, bytes: await f.readAsBytes());
+    final Uint8List bytes = await f.readAsBytes();
+    if (bytes.length > _maxPickedBytes) return null;
+    return (name: f.name, bytes: bytes);
   } catch (_) {
     return null;
   }

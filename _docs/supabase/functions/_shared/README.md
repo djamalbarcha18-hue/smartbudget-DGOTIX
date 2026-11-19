@@ -4,11 +4,12 @@
 {
   "doc_type": "directory_index",
   "directory_path": "_docs/supabase/functions/_shared",
-  "directory_hash": "2da439e46f189a42c4b4fdfd2d8a157b7da709aca76f4196bc369bddcae4de95",
-  "file_count": 2,
+  "directory_hash": "9cff420546325a4f75ee646db5672cefa2a3e502d6288206ec4d074a82fe6117",
+  "file_count": 3,
   "file_hashes": {
     "paypal.ts": "8d4dffdd8f5abf68",
-    "paypal_test.ts": "91f69f7178d85224"
+    "paypal_test.ts": "91f69f7178d85224",
+    "quota.ts": "625de32f633932e8"
   }
 }
 ```
@@ -21,7 +22,7 @@
 
 # 📁 _shared
 
-> **Purpose:** Host shared server-side helper modules and their tests used by Supabase serverless functions, including PayPal integration utilities and AI gateway support.
+> **Purpose:** Provide shared server-side utilities for payments (PayPal), quota/allowance logic, and other common runtime helpers consumed by serverless functions.
 > 
 
 ![Organization: Hierarchical](https://img.shields.io/badge/Organization-Hierarchical-blue)
@@ -39,14 +40,14 @@
 
 ## Overview
 
-The _shared directory contains reusable modules and test helpers that are consumed by server-side functions under supabase/functions. At the root level this directory includes PayPal-specific integration utilities (paypal.ts) and corresponding test-focused helpers and unit tests (paypal_test.ts). These files provide verification and token lifetime logic used by server-side payment-related functions, and the tests exercise that logic to ensure correctness.
+The _shared directory centralizes reusable server-side utilities that multiple serverless functions rely on. At the root level this includes PayPal-related integration utilities (paypal.ts) and its focused unit tests (paypal_test.ts), plus quota and allowance logic used to determine usage limits for AI answers and OCR scans (quota.ts). These root modules are intended to be referenced by individual function handlers to keep payment verification, token lifetime logic, and quota calculations consistent across the codebase.
 
-This directory also contains an ai/ subdirectory which hosts shared AI-related runtime code: a gateway module that selects and invokes AI model providers and coordinates AI task handling across serverless functions. Together, the root-level payment utilities and the ai gateway code form a set of common runtime building blocks that serverless functions import to avoid duplication. The root hosts module-level utilities and tests, while subdirectories group more specialized shared subsystems (for example the AI gateway) so developers can locate provider-selection and orchestration code separately from payment helpers.
+In addition to root-level modules, this directory contains a subdirectory (ai/) that hosts shared AI-related runtime code. The ai subdirectory provides a gateway module that selects and invokes AI model providers and coordinates AI task handling across serverless functions. Together, the root helpers and the ai gateway enable serverless functions to share billing-aware, quota-aware, and provider-agnostic behavior: payment verification and token logic ensure correct billing flows, quota.ts enforces usage limits, and ai/gateway.ts orchestrates model selection and invocation for AI tasks used by multiple functions.
 
 
 ### File Organization
 
-Root-level modules implement specific shared functionality (e.g., PayPal helpers and tests). Related subsystems are grouped into subdirectories (for example ai/) to separate distinct integration code (AI gateway) from payment utilities. Test files are colocated with the module they validate using *_test.ts naming to make it easy to find unit tests next to the implementation. Other shared modules (auth.ts, billing.ts, etc.) are present at the root but are documented elsewhere; they form a set of reusable concerns for serverless functions.
+Root-level files provide small, focused shared utilities (payments and quotas) and their tests. Feature-specific shared code (AI runtime/gateway) is placed in the ai/ subdirectory to separate cross-cutting concerns from domain-specific runtime logic.
 
 ## 📂 Subdirectories
 
@@ -65,25 +66,21 @@ This directory contains the following subdirectories:
 | --- | --- |
 | [paypal.ts](./paypal.ts.md) | 📘 TypeScript |
 | [paypal_test.ts](./paypal_test.ts.md) | 📘 TypeScript |
+| [quota.ts](./quota.ts.md) | 📘 TypeScript |
 
 ## Dependencies
-
-### External Dependencies
-
-| Dependency | Usage |
-| --- | --- |
-| `[]` | [] |
 
 ### Internal Dependencies
 
 | Dependency | Usage |
 | --- | --- |
-| [Other _shared modules (e.g., auth.ts, billing.ts, quota.ts)](../Other _shared modules (e/g/, auth/ts, billing/ts, quota/ts).md) | Provide complementary shared utilities and cross-cutting concerns that serverless functions and these modules may import; referenced internally by functions in the larger codebase. |
+| [ai/gateway (ai subdirectory)](../ai/gateway (ai subdirectory).md) | Gateway module used to select and invoke AI model providers; interacts with quota logic to enforce usage limits for AI tasks. |
+| `root shared modules` | Serverless functions import paypal.ts and quota.ts for payment and quota behavior. |
 
 ## Architecture Notes
 
-- Colocate tests next to implementation files using *_test.ts to keep behavior and validation close together.
-- Use subdirectories (like ai/) to separate larger shared subsystems from small utility modules at the root, enabling clearer responsibility boundaries.
+- Shared utilities are split between root-level common helpers (payments, quota) and a dedicated ai/ subdirectory for provider orchestration to keep domain-specific runtime code isolated.
+- Tests alongside implementation (e.g., paypal_test.ts) provide quick verification of critical behaviors such as payment verification and token lifetimes.
 
 ---
 

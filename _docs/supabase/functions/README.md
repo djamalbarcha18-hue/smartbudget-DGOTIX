@@ -4,10 +4,10 @@
 
 # 📁 functions
 
-> **Purpose:** Collection of Supabase serverless functions, helper modules, and webhook/proxy utilities used to implement server-side logic and integrations for the application.
+> **Purpose:** Collect and host Supabase serverless Edge Function implementations and shared server-side utilities used for billing, payments (PayPal), quota/allowance logic, and HTTP proxying within the project.
 > 
 
-![Organization: Hierarchical](https://img.shields.io/badge/Organization-Hierarchical-blue)
+![Organization: Feature Based](https://img.shields.io/badge/Organization-Feature_Based-blue)
 
 ## 📑 Table of Contents
 
@@ -21,14 +21,14 @@
 
 ## Overview
 
-The supabase/functions directory groups serverless functions, HTTP proxies, webhook handlers, and shared server-side utilities used by the application. At the repository root level for this directory there are several feature subdirectories that each implement a single function or a set of related utilities: a PayPal webhook handler, an AI gateway utilities module, market-related proxy endpoints, a parallel-proxy helper module, and a _shared folder containing reusable server-side helpers and unit tests (including PayPal-specific utilities and test helpers).
+This directory groups Supabase Edge Function implementations and shared server-side utilities that back server-side behaviors such as account deletion checks, payment webhook handling, proxy endpoints, and an AI gateway helper surface. At the root level the directory is organized into focused subdirectories each containing one or more TypeScript modules that implement a single function or a small set of helper types and routines. The documented root-level modules implement account deletion logic, market-related proxy endpoints, a parallel-proxy helper surface, a PayPal webhook handler, and utilities for an AI gateway.
 
-Each subdirectory contains the implementation files required for that function or helper collection. The _shared directory centralizes reusable modules (for example PayPal integration utilities) and their corresponding tests so they can be consumed by multiple functions. The ai-gateway, market-proxy, parallel-proxy, and paypal-webhook directories each contain the root TypeScript module that provides that function's runtime logic or helper routines. Together these components provide the server-side runtime pieces for payment webhook processing, proxying market requests, parallel proxy helper types/utilities, and AI gateway support, with shared modules extracted into _shared for reuse and testability. This organization supports isolation of each function implementation while enabling shared code and tests to live alongside them for easy maintenance and consumption.
+A dedicated _shared subdirectory centralizes reusable server-side utilities consumed across multiple functions: PayPal integration helpers (including a paypal.ts implementation and associated paypal_test.ts unit tests), quota/allowance logic for usage limits, and other runtime helpers. Together the function-specific modules depend on these shared utilities where appropriate; for example the PayPal webhook handler and billing-related functions reference PayPal utilities and quota logic to validate and process incoming events. This directory is a feature-aligned consolidation of serverless handlers and the common code they share, forming the serverless function layer for billing, payments, and auxiliary HTTP endpoints in the larger system.
 
 
 ### File Organization
 
-Functions are organized by feature/endpoint into subdirectories so each runtime entry point and its helpers live together. Reusable server-side utilities and tests are placed in the _shared subdirectory to avoid duplication and to be imported by the function modules. Each feature folder contains a single root module (index.ts) that acts as the function's entry point.
+Functions are grouped by feature or runtime role in separate subdirectories. Each subdirectory contains the implementation(s) relevant to that feature: a single Edge Function entrypoint or a small collection of helper types. Shared reusable utilities and tests live under the _shared subdirectory so multiple functions can import common logic (e.g., PayPal handling, quota/allowance helpers). Additional related function groups (billing-config, coupon-validate, create-checkout, manage-subscription, receipt-scan, whop-webhook) are present as their own subdirectories and are referenced in the repository for related billing/payment flows.
 
 ## 📂 Subdirectories
 
@@ -36,15 +36,23 @@ This directory contains the following subdirectories:
 
 ### [📁 _shared](./_shared/README.md)
 
-**Purpose:** Host shared server-side helper modules and their tests used by Supabase serverless functions, including PayPal integration utilities and AI gateway support.
+**Purpose:** Provide shared server-side utilities for payments (PayPal), quota/allowance logic, and other runtime helpers consumed by multiple serverless functions.
 
-![Files: 2](https://img.shields.io/badge/Files-2-blue)
+![Files: 3](https://img.shields.io/badge/Files-3-blue)
 
 ---
 
 ### [📁 ai-gateway](./ai-gateway/README.md)
 
 **Purpose:** Contains utility routines used by an AI gateway function running in a Supabase environment to support the function's internal logic and interactions.
+
+![Files: 1](https://img.shields.io/badge/Files-1-blue)
+
+---
+
+### [📁 delete-account](./delete-account/README.md)
+
+**Purpose:** Contains a Supabase Edge Function implementation that handles account deletion checks and billing-related considerations for user accounts.
 
 ![Files: 1](https://img.shields.io/badge/Files-1-blue)
 
@@ -75,24 +83,29 @@ This directory contains the following subdirectories:
 ---
 ## Dependencies
 
+### External Dependencies
+
+| Dependency | Usage |
+| --- | --- |
+| `PayPal API` | Used conceptually by the PayPal integration utilities to verify webhook signatures and process PayPal event payloads (implementation details live in _shared/paypal.ts and are exercised by paypal-webhook/index.ts). |
+
 ### Internal Dependencies
 
 | Dependency | Usage |
 | --- | --- |
-| `_shared` | Provides reusable server-side helpers and test helpers (e.g., PayPal utilities) consumed by multiple function modules in this directory. |
-| `ai-gateway` | Contains utility routines that the AI gateway function uses for internal logic; listed as a distinct feature module within the directory. |
+| `_shared utilities` | Centralized runtime helpers for PayPal integration, quota/allowance logic, and other functions; consumed by webhook handlers and other Edge Function modules. |
 
 ## Architecture Notes
 
-- Feature-based organization: each serverless function or endpoint lives in its own subdirectory with a single root module acting as the entry point.
-- Shared utilities and tests are centralized in _shared to enforce reuse and simplify testing across multiple functions.
+- Shared cross-function utilities are centralized under _shared to avoid duplication and ensure consistent payment and quota logic across all serverless handlers.
+- Each feature or function gets its own subdirectory with a single entrypoint (index.ts) to keep deployment units small and focused, simplifying testing and maintenance.
 
 ---
 
 ## Navigation
 
 **↑ Parent Directory:** [Go up](../README.md)
-**🔗 Related:** [_shared](./_shared/README.md) • [ai-gateway](./ai-gateway/README.md) • [market-proxy](./market-proxy/README.md) • [parallel-proxy](./parallel-proxy/README.md) • [paypal-webhook](./paypal-webhook/README.md)
+**🔗 Related:** [_shared](./_shared/README.md) • [ai-gateway](./ai-gateway/README.md) • [delete-account](./delete-account/README.md) • [market-proxy](./market-proxy/README.md) • [parallel-proxy](./parallel-proxy/README.md)
 
 ---
 

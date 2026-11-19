@@ -94,15 +94,16 @@ export function normalizePlan(p: unknown): Plan {
  */
 /**
  * Beta: every signed-in user gets PRO limits (mirrors AppEnv.betaAllAccess in
- * the app). ON by default while SmartBudget is in beta; set the Edge Function
- * secret BETA_ALL_ACCESS=false when paid plans go live.
+ * the app). OFF unless the Edge Function secret BETA_ALL_ACCESS is exactly
+ * "true": a missing, mistyped or unreadable secret keeps the paid plans' limits
+ * (fail closed), so a lost secret never opens PRO to every account.
  */
 export function betaAllAccess(): boolean {
   try {
-    return (Deno.env.get("BETA_ALL_ACCESS") ?? "true").trim().toLowerCase() !==
-      "false";
+    return (Deno.env.get("BETA_ALL_ACCESS") ?? "false").trim().toLowerCase() ===
+      "true";
   } catch {
-    return true;
+    return false;
   }
 }
 
