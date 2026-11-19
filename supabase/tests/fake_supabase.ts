@@ -141,6 +141,7 @@ export function createClient(..._args: unknown[]): any {
       if (fn === "apply_subscription_event") return await applySubscriptionEvent(a);
       if (g.__pg && PG_FUNCTIONS.has(fn)) return await onPostgres(fn, a);
       if (fn === "reserve_usage") return { data: reserve(a), error: null };
+      if (fn === "record_account_tombstone") return { data: null, error: null };
       if (fn === "add_ai_usage") {
         const m = t("ai_usage_monthly");
         let row = m.find((r) => r.user_id === a.p_user && r.month === a.p_month);

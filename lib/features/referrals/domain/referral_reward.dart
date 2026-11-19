@@ -11,7 +11,7 @@ library;
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 
 /// The rewards the server can grant. The names match
-/// `referral_rewards_for()` in supabase/referrals.sql; changing one means
+/// `referral_rewards()` in supabase/referrals.sql; changing one means
 /// changing both.
 enum ReferralReward {
   /// The smart salary split, otherwise a PRO feature.

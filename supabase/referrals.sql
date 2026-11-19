@@ -84,6 +84,10 @@ returns text[] language sql immutable as $$
   select array['salary_split', 'health_details', 'higher_limits'];
 $$;
 
+-- An earlier version's reward function, replaced by referral_rewards() and
+-- referral_picks_for(): dropped so an older database doesn't keep it callable.
+drop function if exists public.referral_rewards_for(int);
+
 -- One pick for every three activated friends, at most one per reward.
 create or replace function public.referral_picks_for(p_count int)
 returns int language sql immutable as $$

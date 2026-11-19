@@ -47,9 +47,20 @@ class TableReadException implements Exception {
 
 /// Reads an Excel workbook (.xlsx, the first sheet) or a CSV/TSV text file.
 abstract final class TableReader {
+  /// The largest file read (a bank statement is far smaller): a bigger one is
+  /// refused as unreadable instead of being held in memory.
+  static const int maxFileBytes = 20 * 1024 * 1024;
+
+  /// The most an .xlsx may unpack to, all its parts together, so a small
+  /// compressed file can't expand into gigabytes (a «zip bomb»).
+  static const int maxUnpackedBytes = 50 * 1024 * 1024;
+
   /// [lang] picks the old Windows code page a CSV without UTF-8 is most
   /// likely in («ar» → Arabic, «ru» → Cyrillic, else Western).
   static SheetTable read(Uint8List bytes, {String lang = 'en'}) {
+    if (bytes.length > maxFileBytes) {
+      throw const TableReadException(TableError.unreadable);
+    }
     if (bytes.length >= 4 &&
         bytes[0] == 0xD0 &&
         bytes[1] == 0xCF &&
@@ -218,11 +229,26 @@ abstract final class TableReader {
   /// come out as «yyyy-mm-dd».
   static SheetTable xlsx(Uint8List bytes) {
     final Archive zip = ZipDecoder().decodeBytes(bytes);
+    // The sizes the archive declares, checked before anything is unpacked.
+    int unpacked = 0;
+    for (final ArchiveFile f in zip.files) {
+      if (f.size < 0 || f.size > maxUnpackedBytes) {
+        throw const TableReadException(TableError.unreadable);
+      }
+      unpacked += f.size;
+      if (unpacked > maxUnpackedBytes) {
+        throw const TableReadException(TableError.unreadable);
+      }
+    }
     XmlDocument? doc(String name) {
       final ArchiveFile? f = zip.findFile(name);
-      return f == null
-          ? null
-          : XmlDocument.parse(utf8.decode(f.content, allowMalformed: true));
+      if (f == null) return null;
+      // A declared size can lie: the unpacked part is checked again.
+      final List<int> data = f.content;
+      if (data.length > maxUnpackedBytes) {
+        throw const TableReadException(TableError.unreadable);
+      }
+      return XmlDocument.parse(utf8.decode(data, allowMalformed: true));
     }
 
     final XmlDocument? workbook = doc('xl/workbook.xml');

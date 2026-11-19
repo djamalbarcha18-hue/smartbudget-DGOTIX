@@ -85,11 +85,16 @@ Future<JSAny?> _read(web.File file, {required bool asText}) async {
   return reader.result;
 }
 
+/// The largest file read from the picker (a backup or a bank statement is far
+/// smaller): a bigger one is ignored, like a cancelled pick, rather than read
+/// whole into memory.
+const int _maxPickedBytes = 20 * 1024 * 1024;
+
 /// Opens a file picker (.json) and returns the chosen file's text, or null if
 /// the user cancels.
 Future<String?> pickTextFile() async {
   final web.File? file = await _pickOne('.json,application/json');
-  if (file == null) return null;
+  if (file == null || file.size > _maxPickedBytes) return null;
   final Object? text = (await _read(file, asText: true))?.dartify();
   return text is String ? text : null;
 }
@@ -101,7 +106,7 @@ Future<({String name, Uint8List bytes})?> pickDataFile() async {
     '.csv,.xlsx,.xls,.tsv,.txt,text/csv,'
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   );
-  if (file == null) return null;
+  if (file == null || file.size > _maxPickedBytes) return null;
   final JSAny? result = await _read(file, asText: false);
   if (result == null) return null;
   return (

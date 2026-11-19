@@ -54,6 +54,21 @@ void main() {
               TableError.oldExcel)));
     });
 
+    test('a file too large, or an .xlsx that unpacks too large, is refused',
+        () {
+      final Matcher unreadable = throwsA(isA<TableReadException>().having(
+          (TableReadException e) => e.error, 'error', TableError.unreadable));
+      expect(() => TableReader.read(Uint8List(TableReader.maxFileBytes + 1)),
+          unreadable);
+      // A «zip bomb»: zeros compress to almost nothing but unpack past the cap.
+      final Archive bomb = Archive();
+      final List<int> zeros = Uint8List(TableReader.maxUnpackedBytes + 1);
+      bomb.addFile(ArchiveFile('xl/workbook.xml', zeros.length, zeros));
+      final Uint8List small = Uint8List.fromList(ZipEncoder().encode(bomb));
+      expect(small.length, lessThan(TableReader.maxFileBytes));
+      expect(() => TableReader.read(small), unreadable);
+    });
+
     test('an Excel workbook: text, numbers and dates', () {
       final SheetTable t = TableReader.read(_xlsx());
       expect(t.rows[0], <String>['Date', 'Description', 'Amount']);
