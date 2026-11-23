@@ -45,6 +45,7 @@ jobs:
             --driver=test_driver/integration_test.dart \
             --target=integration_test/marketing_screens_test.dart \
             -d web-server --browser-name=chrome \
+            --chrome-binary="${{ steps.chrome.outputs.chrome-path }}" \
             --browser-dimension=390,844@3 \
             --dart-define=INDEXED_DB=true
 
