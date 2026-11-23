@@ -1,0 +1,57 @@
+name: Marketing Screenshots
+
+# Takes the phone screenshots used in the «شلة الغربة» ad videos.
+# Runs only on the marketing-screenshots branch (or by hand). It runs the app
+# on the local demo backend: no Supabase, no real accounts, nothing deployed.
+on:
+  push:
+    branches: ["marketing-screenshots"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+          flutter-version: 3.47.5
+          cache: true
+
+      - name: Set up Chrome and ChromeDriver
+        id: chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          install-chromedriver: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Take screenshots
+        env:
+          CHROME_EXECUTABLE: ${{ steps.chrome.outputs.chrome-path }}
+        run: |
+          ${{ steps.chrome.outputs.chromedriver-path }} --port=4444 &
+          sleep 3
+          # 390×844 at 3× = 1170×2532, a real iPhone portrait screen.
+          flutter drive \
+            --driver=test_driver/integration_test.dart \
+            --target=integration_test/marketing_screens_test.dart \
+            -d web-server --browser-name=chrome \
+            --browser-dimension=390,844@3 \
+            --dart-define=INDEXED_DB=true
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: marketing-screenshots
+          path: screenshots/
+          if-no-files-found: warn
