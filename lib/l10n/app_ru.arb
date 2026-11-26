@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Использовать эту сумму для следующих продлений",
   "subDueNoMatch": "Похожих расходов около этой даты нет. Запишите через «Да, списано».",
   "subDuePick": "Какой это расход?",
-  "subDueBanner": "{count, plural, =1{Списание по подписке ждёт вашего ответа} few{{count} списания по подпискам ждут вашего ответа} many{{count} списаний по подпискам ждут вашего ответа} other{{count} списания по подпискам ждут вашего ответа}}"
+  "subDueBanner": "{count, plural, =1{Списание по подписке ждёт вашего ответа} few{{count} списания по подпискам ждут вашего ответа} many{{count} списаний по подпискам ждут вашего ответа} other{{count} списания по подпискам ждут вашего ответа}}",
+  "subSumMonthly": "В месяц",
+  "subSumYearly": "В год",
+  "subSumEstimated": "Оценка по сегодняшним курсам.",
+  "subSumMissing": "Не учтено (нет курса): {codes}.",
+  "subSumActive": "Активные",
+  "subSumSoon": "В течение 7 дней",
+  "subSumToCancel": "Отменить",
+  "subSumEnded": "Завершённые",
+  "subSortDate": "По дате",
+  "subSortKind": "По типу",
+  "subSortCard": "По карте",
+  "subSortName": "По названию",
+  "subKindDigital": "Цифровые",
+  "subKindMobile": "Телефон и интернет",
+  "subNoCard": "Без карты",
+  "subEndedTitle": "Завершённые и отменённые"
 }

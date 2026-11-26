@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Koristi ovaj iznos za sljedeće obnove",
   "subDueNoMatch": "Nema sličnog troška oko tog datuma. Upišite ga sa „Da, naplaćeno“.",
   "subDuePick": "Koji je to trošak?",
-  "subDueBanner": "{count, plural, =1{Jedna naplata pretplate čeka vaš odgovor} few{{count} naplate pretplata čekaju vaš odgovor} other{{count} naplata pretplata čeka vaš odgovor}}"
+  "subDueBanner": "{count, plural, =1{Jedna naplata pretplate čeka vaš odgovor} few{{count} naplate pretplata čekaju vaš odgovor} other{{count} naplata pretplata čeka vaš odgovor}}",
+  "subSumMonthly": "Mjesečno",
+  "subSumYearly": "Godišnje",
+  "subSumEstimated": "Procjena po današnjim kursevima.",
+  "subSumMissing": "Nije uračunato (nema kursa): {codes}.",
+  "subSumActive": "Aktivne",
+  "subSumSoon": "Za 7 dana",
+  "subSumToCancel": "Za otkazati",
+  "subSumEnded": "Završene",
+  "subSortDate": "Po datumu",
+  "subSortKind": "Po vrsti",
+  "subSortCard": "Po kartici",
+  "subSortName": "Po nazivu",
+  "subKindDigital": "Digitalne",
+  "subKindMobile": "Telefon i internet",
+  "subNoCard": "Bez kartice",
+  "subEndedTitle": "Završene i otkazane"
 }

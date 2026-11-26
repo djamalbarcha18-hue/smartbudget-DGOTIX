@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Përdore këtë shumë për rinovimet e ardhshme",
   "subDueNoMatch": "Asnjë shpenzim i ngjashëm rreth asaj date. Regjistroje me \"Po, u tërhoq\".",
   "subDuePick": "Cili shpenzim është?",
-  "subDueBanner": "{count, plural, =1{Një pagesë abonimi pret përgjigjen tënde} other{{count} pagesa abonimesh presin përgjigjen tënde}}"
+  "subDueBanner": "{count, plural, =1{Një pagesë abonimi pret përgjigjen tënde} other{{count} pagesa abonimesh presin përgjigjen tënde}}",
+  "subSumMonthly": "Në muaj",
+  "subSumYearly": "Në vit",
+  "subSumEstimated": "Vlerësim me kurset e sotme të këmbimit.",
+  "subSumMissing": "Pa llogaritur (pa kurs): {codes}.",
+  "subSumActive": "Aktive",
+  "subSumSoon": "Brenda 7 ditëve",
+  "subSumToCancel": "Për t'u anuluar",
+  "subSumEnded": "Përfunduar",
+  "subSortDate": "Sipas datës",
+  "subSortKind": "Sipas llojit",
+  "subSortCard": "Sipas kartës",
+  "subSortName": "Sipas emrit",
+  "subKindDigital": "Dixhitale",
+  "subKindMobile": "Telefon dhe internet",
+  "subNoCard": "Pa kartë",
+  "subEndedTitle": "Përfunduar dhe anuluar"
 }

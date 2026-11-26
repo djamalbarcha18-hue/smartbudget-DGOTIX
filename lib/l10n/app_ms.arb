@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Guna jumlah ini untuk pembaharuan seterusnya",
   "subDueNoMatch": "Tiada perbelanjaan serupa sekitar tarikh itu. Rekodkan dengan \"Ya, dicaj\".",
   "subDuePick": "Perbelanjaan yang mana?",
-  "subDueBanner": "{count, plural, =1{Satu caj langganan menunggu jawapan anda} other{{count} caj langganan menunggu jawapan anda}}"
+  "subDueBanner": "{count, plural, =1{Satu caj langganan menunggu jawapan anda} other{{count} caj langganan menunggu jawapan anda}}",
+  "subSumMonthly": "Sebulan",
+  "subSumYearly": "Setahun",
+  "subSumEstimated": "Anggaran pada kadar tukaran hari ini.",
+  "subSumMissing": "Tidak dikira (tiada kadar): {codes}.",
+  "subSumActive": "Aktif",
+  "subSumSoon": "Dalam 7 hari",
+  "subSumToCancel": "Untuk dibatalkan",
+  "subSumEnded": "Tamat",
+  "subSortDate": "Ikut tarikh",
+  "subSortKind": "Ikut jenis",
+  "subSortCard": "Ikut kad",
+  "subSortName": "Ikut nama",
+  "subKindDigital": "Digital",
+  "subKindMobile": "Telefon & internet",
+  "subNoCard": "Tiada kad",
+  "subEndedTitle": "Tamat dan dibatalkan"
 }

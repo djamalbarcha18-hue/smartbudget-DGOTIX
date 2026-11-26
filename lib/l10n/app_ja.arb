@@ -1933,5 +1933,21 @@
   "subDueForFuture": "次回以降の更新もこの金額にする",
   "subDueNoMatch": "その日付の前後に似た支出はありません。「はい、請求された」で記録してください。",
   "subDuePick": "どの支出ですか？",
-  "subDueBanner": "{count, plural, =1{サブスクの請求が 1 件、回答を待っています} other{サブスクの請求が {count} 件、回答を待っています}}"
+  "subDueBanner": "{count, plural, =1{サブスクの請求が 1 件、回答を待っています} other{サブスクの請求が {count} 件、回答を待っています}}",
+  "subSumMonthly": "月額",
+  "subSumYearly": "年額",
+  "subSumEstimated": "本日の為替レートでの概算です。",
+  "subSumMissing": "計上なし（レートなし）：{codes}。",
+  "subSumActive": "有効",
+  "subSumSoon": "7 日以内",
+  "subSumToCancel": "解約予定",
+  "subSumEnded": "終了",
+  "subSortDate": "日付順",
+  "subSortKind": "種類別",
+  "subSortCard": "カード別",
+  "subSortName": "名前順",
+  "subKindDigital": "デジタル",
+  "subKindMobile": "電話・ネット",
+  "subNoCard": "カードなし",
+  "subEndedTitle": "終了・解約済み"
 }

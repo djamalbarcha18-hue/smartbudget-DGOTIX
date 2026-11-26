@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Pakai jumlah ini untuk perpanjangan berikutnya",
   "subDueNoMatch": "Tidak ada pengeluaran serupa di sekitar tanggal itu. Catat dengan \"Ya, ditagih\".",
   "subDuePick": "Pengeluaran yang mana?",
-  "subDueBanner": "{count, plural, =1{Satu tagihan langganan menunggu jawaban Anda} other{{count} tagihan langganan menunggu jawaban Anda}}"
+  "subDueBanner": "{count, plural, =1{Satu tagihan langganan menunggu jawaban Anda} other{{count} tagihan langganan menunggu jawaban Anda}}",
+  "subSumMonthly": "Per bulan",
+  "subSumYearly": "Per tahun",
+  "subSumEstimated": "Perkiraan dengan kurs hari ini.",
+  "subSumMissing": "Tidak dihitung (tanpa kurs): {codes}.",
+  "subSumActive": "Aktif",
+  "subSumSoon": "Dalam 7 hari",
+  "subSumToCancel": "Akan dibatalkan",
+  "subSumEnded": "Berakhir",
+  "subSortDate": "Menurut tanggal",
+  "subSortKind": "Menurut jenis",
+  "subSortCard": "Menurut kartu",
+  "subSortName": "Menurut nama",
+  "subKindDigital": "Digital",
+  "subKindMobile": "Telepon & internet",
+  "subNoCard": "Tanpa kartu",
+  "subEndedTitle": "Berakhir dan dibatalkan"
 }

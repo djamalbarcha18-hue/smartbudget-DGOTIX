@@ -2132,5 +2132,21 @@
   "subDueForFuture": "اعتمد هذا المبلغ للتجديدات القادمة",
   "subDueNoMatch": "لا مصروف مشابه حول هذا التاريخ. سجّله بـ«نعم، خُصم».",
   "subDuePick": "أي مصروف هو؟",
-  "subDueBanner": "{count, plural, =1{خصم اشتراك ينتظر إجابتك} =2{خصما اشتراكين ينتظران إجابتك} few{{count} خصومات اشتراكات تنتظر إجابتك} other{{count} خصمًا للاشتراكات ينتظر إجابتك}}"
+  "subDueBanner": "{count, plural, =1{خصم اشتراك ينتظر إجابتك} =2{خصما اشتراكين ينتظران إجابتك} few{{count} خصومات اشتراكات تنتظر إجابتك} other{{count} خصمًا للاشتراكات ينتظر إجابتك}}",
+  "subSumMonthly": "شهريًا",
+  "subSumYearly": "سنويًا",
+  "subSumEstimated": "تقديري بأسعار الصرف اليوم.",
+  "subSumMissing": "غير محسوب (لا سعر صرف): {codes}.",
+  "subSumActive": "نشطة",
+  "subSumSoon": "خلال 7 أيام",
+  "subSumToCancel": "للإلغاء",
+  "subSumEnded": "منتهية",
+  "subSortDate": "حسب الموعد",
+  "subSortKind": "حسب النوع",
+  "subSortCard": "حسب البطاقة",
+  "subSortName": "حسب الاسم",
+  "subKindDigital": "رقمية",
+  "subKindMobile": "الهاتف والإنترنت",
+  "subNoCard": "بلا بطاقة",
+  "subEndedTitle": "المنتهية والملغاة"
 }

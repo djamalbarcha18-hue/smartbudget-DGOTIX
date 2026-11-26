@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Bu tutarı sonraki yenilemelerde kullan",
   "subDueNoMatch": "O tarih civarında benzer bir harcama yok. \"Evet, çekildi\" ile kaydet.",
   "subDuePick": "Hangi harcama?",
-  "subDueBanner": "{count, plural, =1{Bir abonelik ödemesi yanıtını bekliyor} other{{count} abonelik ödemesi yanıtını bekliyor}}"
+  "subDueBanner": "{count, plural, =1{Bir abonelik ödemesi yanıtını bekliyor} other{{count} abonelik ödemesi yanıtını bekliyor}}",
+  "subSumMonthly": "Aylık",
+  "subSumYearly": "Yıllık",
+  "subSumEstimated": "Bugünkü döviz kurlarıyla tahmini.",
+  "subSumMissing": "Sayılmadı (kur yok): {codes}.",
+  "subSumActive": "Aktif",
+  "subSumSoon": "7 gün içinde",
+  "subSumToCancel": "İptal edilecek",
+  "subSumEnded": "Sona eren",
+  "subSortDate": "Tarihe göre",
+  "subSortKind": "Türe göre",
+  "subSortCard": "Karta göre",
+  "subSortName": "Ada göre",
+  "subKindDigital": "Dijital",
+  "subKindMobile": "Telefon ve internet",
+  "subNoCard": "Kartsız",
+  "subEndedTitle": "Sona eren ve iptal edilen"
 }

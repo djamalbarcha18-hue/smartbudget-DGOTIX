@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Gebruik hierdie bedrag vir die volgende hernuwings",
   "subDueNoMatch": "Geen soortgelyke uitgawe rondom daardie datum nie. Teken dit aan met \"Ja, gedebiteer\".",
   "subDuePick": "Watter uitgawe is dit?",
-  "subDueBanner": "{count, plural, =1{'n Intekeningdebiet wag op jou antwoord} other{{count} intekeningdebiete wag op jou antwoord}}"
+  "subDueBanner": "{count, plural, =1{'n Intekeningdebiet wag op jou antwoord} other{{count} intekeningdebiete wag op jou antwoord}}",
+  "subSumMonthly": "Per maand",
+  "subSumYearly": "Per jaar",
+  "subSumEstimated": "Geskat teen vandag se wisselkoerse.",
+  "subSumMissing": "Nie getel nie (geen koers): {codes}.",
+  "subSumActive": "Aktief",
+  "subSumSoon": "Binne 7 dae",
+  "subSumToCancel": "Om te kanselleer",
+  "subSumEnded": "Geëindig",
+  "subSortDate": "Volgens datum",
+  "subSortKind": "Volgens soort",
+  "subSortCard": "Volgens kaart",
+  "subSortName": "Volgens naam",
+  "subKindDigital": "Digitaal",
+  "subKindMobile": "Foon en internet",
+  "subNoCard": "Geen kaart",
+  "subEndedTitle": "Geëindig en gekanselleer"
 }

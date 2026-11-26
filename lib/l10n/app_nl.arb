@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Dit bedrag gebruiken voor de volgende verlengingen",
   "subDueNoMatch": "Geen vergelijkbare uitgave rond die datum. Boek het met 'Ja, afgeschreven'.",
   "subDuePick": "Welke uitgave is het?",
-  "subDueBanner": "{count, plural, =1{Een abonnementsafschrijving wacht op je antwoord} other{{count} abonnementsafschrijvingen wachten op je antwoord}}"
+  "subDueBanner": "{count, plural, =1{Een abonnementsafschrijving wacht op je antwoord} other{{count} abonnementsafschrijvingen wachten op je antwoord}}",
+  "subSumMonthly": "Per maand",
+  "subSumYearly": "Per jaar",
+  "subSumEstimated": "Geschat tegen de wisselkoersen van vandaag.",
+  "subSumMissing": "Niet meegeteld (geen koers): {codes}.",
+  "subSumActive": "Actief",
+  "subSumSoon": "Binnen 7 dagen",
+  "subSumToCancel": "Op te zeggen",
+  "subSumEnded": "Beëindigd",
+  "subSortDate": "Op datum",
+  "subSortKind": "Op soort",
+  "subSortCard": "Op kaart",
+  "subSortName": "Op naam",
+  "subKindDigital": "Digitaal",
+  "subKindMobile": "Telefoon & internet",
+  "subNoCard": "Geen kaart",
+  "subEndedTitle": "Beëindigd en opgezegd"
 }

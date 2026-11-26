@@ -1933,5 +1933,21 @@
   "subDueForFuture": "اگلی تجدیدوں کے لیے یہی رقم رکھیں",
   "subDueNoMatch": "اس تاریخ کے آس پاس ملتا جلتا خرچ نہیں۔ «ہاں، کٹے» سے درج کریں۔",
   "subDuePick": "کون سا خرچ ہے؟",
-  "subDueBanner": "{count, plural, =1{ایک سبسکرپشن کٹوتی آپ کے جواب کی منتظر ہے} other{{count} سبسکرپشن کٹوتیاں آپ کے جواب کی منتظر ہیں}}"
+  "subDueBanner": "{count, plural, =1{ایک سبسکرپشن کٹوتی آپ کے جواب کی منتظر ہے} other{{count} سبسکرپشن کٹوتیاں آپ کے جواب کی منتظر ہیں}}",
+  "subSumMonthly": "ماہانہ",
+  "subSumYearly": "سالانہ",
+  "subSumEstimated": "آج کی شرحِ مبادلہ پر اندازہ۔",
+  "subSumMissing": "شامل نہیں (شرح نہیں): {codes}۔",
+  "subSumActive": "فعال",
+  "subSumSoon": "7 دن کے اندر",
+  "subSumToCancel": "منسوخ کرنا ہے",
+  "subSumEnded": "ختم",
+  "subSortDate": "تاریخ کے لحاظ سے",
+  "subSortKind": "قسم کے لحاظ سے",
+  "subSortCard": "کارڈ کے لحاظ سے",
+  "subSortName": "نام کے لحاظ سے",
+  "subKindDigital": "ڈیجیٹل",
+  "subKindMobile": "فون اور انٹرنیٹ",
+  "subNoCard": "کارڈ کے بغیر",
+  "subEndedTitle": "ختم اور منسوخ"
 }

@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Diesen Betrag für die nächsten Verlängerungen nutzen",
   "subDueNoMatch": "Keine ähnliche Ausgabe um dieses Datum. Erfasse sie mit „Ja, abgebucht“.",
   "subDuePick": "Welche Ausgabe ist es?",
-  "subDueBanner": "{count, plural, =1{Eine Abo-Abbuchung wartet auf deine Antwort} other{{count} Abo-Abbuchungen warten auf deine Antwort}}"
+  "subDueBanner": "{count, plural, =1{Eine Abo-Abbuchung wartet auf deine Antwort} other{{count} Abo-Abbuchungen warten auf deine Antwort}}",
+  "subSumMonthly": "Pro Monat",
+  "subSumYearly": "Pro Jahr",
+  "subSumEstimated": "Geschätzt zu heutigen Wechselkursen.",
+  "subSumMissing": "Nicht gezählt (kein Kurs): {codes}.",
+  "subSumActive": "Aktiv",
+  "subSumSoon": "In 7 Tagen",
+  "subSumToCancel": "Zu kündigen",
+  "subSumEnded": "Beendet",
+  "subSortDate": "Nach Datum",
+  "subSortKind": "Nach Art",
+  "subSortCard": "Nach Karte",
+  "subSortName": "Nach Name",
+  "subKindDigital": "Digital",
+  "subKindMobile": "Telefon & Internet",
+  "subNoCard": "Ohne Karte",
+  "subEndedTitle": "Beendet und gekündigt"
 }
