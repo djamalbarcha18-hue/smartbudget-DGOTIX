@@ -1933,5 +1933,21 @@
   "subDueForFuture": "अगले नवीनीकरणों के लिए यही राशि रखें",
   "subDueNoMatch": "उस तारीख के आसपास कोई मिलता-जुलता खर्च नहीं। \"हाँ, कटे\" से दर्ज करें।",
   "subDuePick": "कौन-सा खर्च है?",
-  "subDueBanner": "{count, plural, =1{एक सदस्यता कटौती आपके जवाब का इंतज़ार कर रही है} other{{count} सदस्यता कटौतियाँ आपके जवाब का इंतज़ार कर रही हैं}}"
+  "subDueBanner": "{count, plural, =1{एक सदस्यता कटौती आपके जवाब का इंतज़ार कर रही है} other{{count} सदस्यता कटौतियाँ आपके जवाब का इंतज़ार कर रही हैं}}",
+  "subSumMonthly": "प्रति माह",
+  "subSumYearly": "प्रति वर्ष",
+  "subSumEstimated": "आज की विनिमय दरों पर अनुमान।",
+  "subSumMissing": "शामिल नहीं (दर नहीं): {codes}।",
+  "subSumActive": "सक्रिय",
+  "subSumSoon": "7 दिनों में",
+  "subSumToCancel": "रद्द करनी हैं",
+  "subSumEnded": "समाप्त",
+  "subSortDate": "तारीख़ से",
+  "subSortKind": "प्रकार से",
+  "subSortCard": "कार्ड से",
+  "subSortName": "नाम से",
+  "subKindDigital": "डिजिटल",
+  "subKindMobile": "फ़ोन और इंटरनेट",
+  "subNoCard": "कार्ड नहीं",
+  "subEndedTitle": "समाप्त और रद्द"
 }

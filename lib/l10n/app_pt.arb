@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Usar este valor nas próximas renovações",
   "subDueNoMatch": "Nenhuma despesa parecida perto dessa data. Registre com \"Sim, cobrado\".",
   "subDuePick": "Qual despesa é?",
-  "subDueBanner": "{count, plural, =1{Uma cobrança de assinatura aguarda sua resposta} other{{count} cobranças de assinaturas aguardam sua resposta}}"
+  "subDueBanner": "{count, plural, =1{Uma cobrança de assinatura aguarda sua resposta} other{{count} cobranças de assinaturas aguardam sua resposta}}",
+  "subSumMonthly": "Por mês",
+  "subSumYearly": "Por ano",
+  "subSumEstimated": "Estimado às taxas de câmbio de hoje.",
+  "subSumMissing": "Não contado (sem taxa): {codes}.",
+  "subSumActive": "Ativas",
+  "subSumSoon": "Em 7 dias",
+  "subSumToCancel": "A cancelar",
+  "subSumEnded": "Encerradas",
+  "subSortDate": "Por data",
+  "subSortKind": "Por tipo",
+  "subSortCard": "Por cartão",
+  "subSortName": "Por nome",
+  "subKindDigital": "Digitais",
+  "subKindMobile": "Telefone e internet",
+  "subNoCard": "Sem cartão",
+  "subEndedTitle": "Encerradas e canceladas"
 }

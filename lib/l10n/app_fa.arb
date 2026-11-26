@@ -1933,5 +1933,21 @@
   "subDueForFuture": "این مبلغ را برای تمدیدهای بعدی استفاده کن",
   "subDueNoMatch": "هزینهٔ مشابهی نزدیک آن تاریخ نیست. با «بله، برداشت شد» ثبتش کنید.",
   "subDuePick": "کدام هزینه است؟",
-  "subDueBanner": "{count, plural, =1{یک برداشت اشتراک منتظر پاسخ شماست} other{{count} برداشت اشتراک منتظر پاسخ شماست}}"
+  "subDueBanner": "{count, plural, =1{یک برداشت اشتراک منتظر پاسخ شماست} other{{count} برداشت اشتراک منتظر پاسخ شماست}}",
+  "subSumMonthly": "ماهانه",
+  "subSumYearly": "سالانه",
+  "subSumEstimated": "برآورد با نرخ ارز امروز.",
+  "subSumMissing": "حساب نشده (بدون نرخ): {codes}.",
+  "subSumActive": "فعال",
+  "subSumSoon": "تا ۷ روز",
+  "subSumToCancel": "برای لغو",
+  "subSumEnded": "پایان‌یافته",
+  "subSortDate": "بر اساس تاریخ",
+  "subSortKind": "بر اساس نوع",
+  "subSortCard": "بر اساس کارت",
+  "subSortName": "بر اساس نام",
+  "subKindDigital": "دیجیتال",
+  "subKindMobile": "تلفن و اینترنت",
+  "subNoCard": "بدون کارت",
+  "subEndedTitle": "پایان‌یافته و لغوشده"
 }

@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Yi amfani da wannan adadin don sabuntawa masu zuwa",
   "subDueNoMatch": "Babu kashe-kashe mai kama da shi kusa da wannan rana. Rubuta shi da \"Eh, an cire\".",
   "subDuePick": "Wane kashe-kashe ne?",
-  "subDueBanner": "{count, plural, =1{Cirewar biyan kuɗi 1 tana jiran amsarka} other{Cirewar biyan kuɗi {count} suna jiran amsarka}}"
+  "subDueBanner": "{count, plural, =1{Cirewar biyan kuɗi 1 tana jiran amsarka} other{Cirewar biyan kuɗi {count} suna jiran amsarka}}",
+  "subSumMonthly": "A wata",
+  "subSumYearly": "A shekara",
+  "subSumEstimated": "Ƙiyasi bisa farashin canji na yau.",
+  "subSumMissing": "Ba a ƙidaya ba (babu farashi): {codes}.",
+  "subSumActive": "Masu aiki",
+  "subSumSoon": "Cikin kwanaki 7",
+  "subSumToCancel": "Za a soke",
+  "subSumEnded": "Sun ƙare",
+  "subSortDate": "Bisa rana",
+  "subSortKind": "Bisa iri",
+  "subSortCard": "Bisa kati",
+  "subSortName": "Bisa suna",
+  "subKindDigital": "Na intanet",
+  "subKindMobile": "Waya da intanet",
+  "subNoCard": "Babu kati",
+  "subEndedTitle": "Sun ƙare kuma an soke"
 }

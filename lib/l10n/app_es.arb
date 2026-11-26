@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Usar este importe en las próximas renovaciones",
   "subDueNoMatch": "No hay un gasto parecido cerca de esa fecha. Regístralo con «Sí, se cobró».",
   "subDuePick": "¿Qué gasto es?",
-  "subDueBanner": "{count, plural, =1{Un cobro de suscripción espera tu respuesta} other{{count} cobros de suscripciones esperan tu respuesta}}"
+  "subDueBanner": "{count, plural, =1{Un cobro de suscripción espera tu respuesta} other{{count} cobros de suscripciones esperan tu respuesta}}",
+  "subSumMonthly": "Al mes",
+  "subSumYearly": "Al año",
+  "subSumEstimated": "Estimado con los tipos de cambio de hoy.",
+  "subSumMissing": "No contado (sin tipo): {codes}.",
+  "subSumActive": "Activas",
+  "subSumSoon": "En 7 días",
+  "subSumToCancel": "Por cancelar",
+  "subSumEnded": "Terminadas",
+  "subSortDate": "Por fecha",
+  "subSortKind": "Por tipo",
+  "subSortCard": "Por tarjeta",
+  "subSortName": "Por nombre",
+  "subKindDigital": "Digitales",
+  "subKindMobile": "Teléfono e internet",
+  "subNoCard": "Sin tarjeta",
+  "subEndedTitle": "Terminadas y canceladas"
 }

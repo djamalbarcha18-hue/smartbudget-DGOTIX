@@ -21,15 +21,29 @@ import 'package:smartbudget/features/subscriptions/domain/subscription_schedule.
 import 'package:smartbudget/features/subscriptions/presentation/subscription_due.dart';
 import 'package:smartbudget/features/subscriptions/presentation/subscription_editor_sheet.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
+import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/settings/base_currency_controller.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_summary.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
 
-/// The subscriptions tab: each subscription with its amount, cycle, next
-/// charge and card, soonest charge first.
-class SubscriptionsTab extends ConsumerWidget {
+/// How the list is ordered or grouped.
+enum SubscriptionOrder { date, kind, card, name }
+
+/// The subscriptions tab: what they cost, the charges to confirm, then each
+/// subscription (soonest charge first by default), the ended ones last.
+class SubscriptionsTab extends ConsumerStatefulWidget {
   const SubscriptionsTab({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SubscriptionsTab> createState() => _SubscriptionsTabState();
+}
+
+class _SubscriptionsTabState extends ConsumerState<SubscriptionsTab> {
+  SubscriptionOrder _order = SubscriptionOrder.date;
+
+  @override
+  Widget build(BuildContext context) {
     final AppLocalizations l = AppLocalizations.of(context);
     final TextTheme t = Theme.of(context).textTheme;
     final DsColors c = context.dsColors;
@@ -41,6 +55,19 @@ class SubscriptionsTab extends ConsumerWidget {
     }
     final List<SubscriptionItem> items = ref.watch(subscriptionItemsProvider);
     final List<DueCharge> due = ref.watch(subscriptionDueProvider);
+    final List<SubscriptionItem> running = <SubscriptionItem>[
+      for (final SubscriptionItem i in items)
+        if (!i.sub.isOver) i,
+    ];
+    final List<SubscriptionItem> over = <SubscriptionItem>[
+      for (final SubscriptionItem i in items)
+        if (i.sub.isOver) i,
+    ];
+    final SubscriptionSummary? summary = items.isEmpty
+        ? null
+        : SubscriptionSummary.of(items, AppClock.now(),
+            base: ref.watch(baseCurrencyProvider),
+            ratesVsUsd: ref.watch(ratesProvider));
     return ListView(
       padding: const EdgeInsets.all(DsSpacing.pageGutter),
       children: <Widget>[
@@ -59,6 +86,10 @@ class SubscriptionsTab extends ConsumerWidget {
           const _ReminderReach(),
         ],
         const SizedBox(height: DsSpacing.lg),
+        if (summary != null) ...<Widget>[
+          SubscriptionSummaryCard(summary: summary),
+          const SizedBox(height: DsSpacing.lg),
+        ],
         // "Was it charged?" first: an answer is waited for.
         for (final DueCharge d in due) ...<Widget>[
           SubscriptionDueCard(
@@ -74,12 +105,190 @@ class SubscriptionsTab extends ConsumerWidget {
               icon: Icons.notifications_active_outlined,
             ),
           )
-        else
-          for (final SubscriptionItem i in items) ...<Widget>[
+        else ...<Widget>[
+          if (running.length > 1) ...<Widget>[
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: <Widget>[
+                  for (final SubscriptionOrder o in SubscriptionOrder.values)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(
+                          end: DsSpacing.xs),
+                      child: ChoiceChip(
+                        label: Text(_orderLabel(l, o)),
+                        selected: _order == o,
+                        onSelected: (_) => setState(() => _order = o),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: DsSpacing.md),
+          ],
+          ..._list(l, t, c, summary, running),
+          if (over.isNotEmpty)
+            Theme(
+              data: Theme.of(context)
+                  .copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                childrenPadding: EdgeInsets.zero,
+                title: Text('${l.subEndedTitle} (${over.length})',
+                    style: t.titleSmall?.copyWith(color: c.textMuted)),
+                children: <Widget>[
+                  for (final SubscriptionItem i in over) ...<Widget>[
+                    SubscriptionCard(item: i),
+                    const SizedBox(height: DsSpacing.md),
+                  ],
+                ],
+              ),
+            ),
+        ],
+      ],
+    );
+  }
+
+  static String _orderLabel(AppLocalizations l, SubscriptionOrder o) =>
+      switch (o) {
+        SubscriptionOrder.date => l.subSortDate,
+        SubscriptionOrder.kind => l.subSortKind,
+        SubscriptionOrder.card => l.subSortCard,
+        SubscriptionOrder.name => l.subSortName,
+      };
+
+  /// The running subscriptions in the chosen order, with a header per group
+  /// (type, or card with its monthly cost).
+  List<Widget> _list(AppLocalizations l, TextTheme t, DsColors c,
+      SubscriptionSummary? summary, List<SubscriptionItem> running) {
+    List<Widget> cards(Iterable<SubscriptionItem> xs) => <Widget>[
+          for (final SubscriptionItem i in xs) ...<Widget>[
             SubscriptionCard(item: i),
             const SizedBox(height: DsSpacing.md),
           ],
-      ],
+        ];
+    Widget header(String text) => Padding(
+          padding: const EdgeInsets.only(bottom: DsSpacing.sm),
+          child: Text(text, style: t.titleSmall?.copyWith(color: c.textMuted)),
+        );
+    switch (_order) {
+      case SubscriptionOrder.date:
+        return cards(running);
+      case SubscriptionOrder.name:
+        return cards(running.toList()
+          ..sort((SubscriptionItem a, SubscriptionItem b) => a.sub.provider
+              .toLowerCase()
+              .compareTo(b.sub.provider.toLowerCase())));
+      case SubscriptionOrder.kind:
+        return <Widget>[
+          for (final SubscriptionKind k in SubscriptionKind.values)
+            if (running.any((SubscriptionItem i) => i.sub.kind == k)) ...<Widget>[
+              header(k == SubscriptionKind.digital
+                  ? l.subKindDigital
+                  : l.subKindMobile),
+              ...cards(running.where((SubscriptionItem i) => i.sub.kind == k)),
+            ],
+        ];
+      case SubscriptionOrder.card:
+        final List<({String? card, int monthly, int count})> groups =
+            summary?.byCard ?? const <({String? card, int monthly, int count})>[];
+        final Set<String?> shown = <String?>{};
+        return <Widget>[
+          for (final ({String? card, int monthly, int count}) g in groups)
+            if (shown.add(g.card)) ...<Widget>[
+              header('${g.card ?? l.subNoCard} · '
+                  '${MoneyFormatter.format(Money(g.monthly, summary!.base))} / ${l.subSumMonthly}'),
+              ...cards(
+                  running.where((SubscriptionItem i) => i.sub.cardName == g.card)),
+            ],
+          // Those not in the totals (cancelled to the end of the period, no
+          // rate): still listed.
+          for (final String? card in <String?>{
+            for (final SubscriptionItem i in running) i.sub.cardName,
+          })
+            if (!shown.contains(card)) ...<Widget>[
+              header(card ?? l.subNoCard),
+              ...cards(
+                  running.where((SubscriptionItem i) => i.sub.cardName == card)),
+            ],
+        ];
+    }
+  }
+}
+
+/// What the subscriptions cost a month and a year, and where they stand.
+class SubscriptionSummaryCard extends StatelessWidget {
+  const SubscriptionSummaryCard({super.key, required this.summary});
+  final SubscriptionSummary summary;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final TextTheme t = Theme.of(context).textTheme;
+    final DsColors c = context.dsColors;
+    final SubscriptionSummary s = summary;
+    Widget total(String label, int minor) => Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(label, style: t.labelMedium?.copyWith(color: c.textMuted)),
+              const SizedBox(height: 2),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: AlignmentDirectional.centerStart,
+                child: Text(MoneyFormatter.format(Money(minor, s.base)),
+                    style: t.titleLarge),
+              ),
+            ],
+          ),
+        );
+    Widget stat(String label, int n, {Color? tone}) => Expanded(
+          child: Column(
+            children: <Widget>[
+              Text('$n', style: t.titleMedium?.copyWith(color: tone)),
+              Text(label,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  style: t.labelSmall?.copyWith(color: c.textMuted)),
+            ],
+          ),
+        );
+    return GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              total(l.subSumMonthly, s.monthly),
+              const SizedBox(width: DsSpacing.md),
+              total(l.subSumYearly, s.yearly),
+            ],
+          ),
+          if (s.estimated || s.missingRates.isNotEmpty) ...<Widget>[
+            const SizedBox(height: DsSpacing.xs),
+            Text(
+              <String>[
+                if (s.estimated) l.subSumEstimated,
+                if (s.missingRates.isNotEmpty)
+                  l.subSumMissing(s.missingRates.join(', ')),
+              ].join(' '),
+              style: t.bodySmall?.copyWith(color: c.textMuted),
+            ),
+          ],
+          const SizedBox(height: DsSpacing.md),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              stat(l.subSumActive, s.active),
+              stat(l.subSumSoon, s.renewingSoon,
+                  tone: s.renewingSoon > 0 ? c.warning : null),
+              stat(l.subSumToCancel, s.toCancel,
+                  tone: s.toCancel > 0 ? c.expense : null),
+              stat(l.subSumEnded, s.ended),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

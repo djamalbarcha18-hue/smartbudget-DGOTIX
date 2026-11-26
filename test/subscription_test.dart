@@ -15,6 +15,7 @@ import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_cancel.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_payments.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_schedule.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_summary.dart';
 import 'package:smartbudget/features/sync/domain/sync_merge.dart';
 import 'package:smartbudget/features/sync/domain/sync_scope.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -634,6 +635,107 @@ void main() {
       expect(SubscriptionPayments.linkedIds(<Subscription>[netflix()]),
           <String>{'rec-sub-nf-20261215'});
       expect(SubscriptionPayments.key(DateTime(2027, 1, 5)), '2027-01-05');
+    });
+  });
+
+  group('Summary', () {
+    final DateTime now = DateTime(2026, 11, 26);
+    RecurringRule ruleOf(String id, int minor, String cur,
+            RecurrenceFrequency f, DateTime next) =>
+        SubscriptionSchedule.ruleFor(
+          id: id,
+          provider: id,
+          amount: Money(minor, cur),
+          frequency: f,
+          nextCharge: next,
+          createdAt: now,
+        );
+    Subscription subOf(String id,
+            {String? card,
+            SubscriptionStatus status = SubscriptionStatus.active}) =>
+        Subscription(
+          id: id,
+          ruleId: id,
+          kind: SubscriptionKind.digital,
+          provider: id,
+          cardName: card,
+          status: status,
+          createdAt: now,
+          updatedAt: now,
+        );
+
+    test('a monthly figure for every cycle', () {
+      int m(RecurrenceFrequency f, int minor) => SubscriptionSummary.monthlyOf(
+          ruleOf('x', minor, 'DZD', f, DateTime(2026, 12, 1)));
+      expect(m(RecurrenceFrequency.monthly, 1500), 1500);
+      expect(m(RecurrenceFrequency.weekly, 1200), 5200);
+      expect(m(RecurrenceFrequency.quarterly, 3000), 1000);
+      expect(m(RecurrenceFrequency.halfYearly, 6000), 1000);
+      expect(m(RecurrenceFrequency.yearly, 12000), 1000);
+    });
+
+    test('totals in the base currency, by card, and the counts', () {
+      // 1 USD = 135 DZD in this table.
+      const Map<String, double> rates = <String, double>{
+        'USD': 1,
+        'DZD': 135,
+      };
+      final SubscriptionSummary s = SubscriptionSummary.of(
+        <({Subscription sub, RecurringRule? rule})>[
+          (
+            sub: subOf('nf', card: 'Edahabia'),
+            rule: ruleOf('nf', 1000, 'USD', RecurrenceFrequency.monthly,
+                DateTime(2026, 11, 30)),
+          ),
+          (
+            sub: subOf('dj', card: 'CIB'),
+            rule: ruleOf('dj', 200000, 'DZD', RecurrenceFrequency.monthly,
+                DateTime(2026, 12, 20)),
+          ),
+          (
+            sub: subOf('yt', card: 'Edahabia'),
+            rule: ruleOf('yt', 120000, 'DZD', RecurrenceFrequency.yearly,
+                DateTime(2027, 5, 1)),
+          ),
+          (
+            sub: subOf('asked', status: SubscriptionStatus.cancelRequested),
+            rule: ruleOf('asked', 50000, 'DZD', RecurrenceFrequency.monthly,
+                DateTime(2026, 12, 2)),
+          ),
+          (
+            sub: subOf('until', status: SubscriptionStatus.activeUntilEnd),
+            rule: ruleOf('until', 99900, 'DZD', RecurrenceFrequency.monthly,
+                DateTime(2026, 12, 2)),
+          ),
+          (
+            sub: subOf('gone', status: SubscriptionStatus.ended),
+            rule: ruleOf('gone', 99900, 'DZD', RecurrenceFrequency.monthly,
+                DateTime(2026, 12, 2)),
+          ),
+          (
+            sub: subOf('eur', card: 'Visa'),
+            rule: ruleOf('eur', 500, 'EUR', RecurrenceFrequency.monthly,
+                DateTime(2026, 12, 2)),
+          ),
+        ],
+        now,
+        base: 'DZD',
+        ratesVsUsd: rates,
+      );
+      // 135000 (Netflix) + 200000 + 10000 (yearly) + 50000 (asked, still
+      // charged); not the one ended at the paid date, not the ended one,
+      // not EUR (no rate).
+      expect(s.monthly, 395000);
+      expect(s.yearly, 395000 * 12);
+      expect(s.estimated, isTrue);
+      expect(s.missingRates, <String>['EUR']);
+      expect(s.active, 5); // nf, dj, yt, asked, eur
+      expect(s.renewingSoon, 3); // nf (30 Nov), asked and eur (2 Dec)
+      expect(s.toCancel, 1);
+      expect(s.ended, 1);
+      expect(s.byCard.first, (card: 'CIB', monthly: 200000, count: 1));
+      expect(s.byCard[1], (card: 'Edahabia', monthly: 145000, count: 2));
+      expect(s.byCard.last, (card: null, monthly: 50000, count: 1));
     });
   });
 

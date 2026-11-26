@@ -1933,5 +1933,21 @@
   "subDueForFuture": "以后的续订都使用这个金额",
   "subDueNoMatch": "该日期附近没有类似的支出。请用“是，已扣款”记录。",
   "subDuePick": "是哪一笔支出？",
-  "subDueBanner": "{count, plural, =1{有 1 笔订阅扣款等待你确认} other{有 {count} 笔订阅扣款等待你确认}}"
+  "subDueBanner": "{count, plural, =1{有 1 笔订阅扣款等待你确认} other{有 {count} 笔订阅扣款等待你确认}}",
+  "subSumMonthly": "每月",
+  "subSumYearly": "每年",
+  "subSumEstimated": "按今日汇率估算。",
+  "subSumMissing": "未计入（无汇率）：{codes}。",
+  "subSumActive": "生效中",
+  "subSumSoon": "7 天内",
+  "subSumToCancel": "待取消",
+  "subSumEnded": "已结束",
+  "subSortDate": "按日期",
+  "subSortKind": "按类型",
+  "subSortCard": "按卡片",
+  "subSortName": "按名称",
+  "subKindDigital": "数字服务",
+  "subKindMobile": "电话与网络",
+  "subNoCard": "无卡片",
+  "subEndedTitle": "已结束和已取消"
 }

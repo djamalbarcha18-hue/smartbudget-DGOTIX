@@ -2267,5 +2267,22 @@
   "subDueNoMatch": "No similar expense around that date. Record it with \"Yes, charged\".",
   "subDuePick": "Which expense is it?",
   "subDueBanner": "{count, plural, =1{A subscription charge is waiting for your answer} other{{count} subscription charges are waiting for your answer}}",
-  "@subDueBanner": {"placeholders": {"count": {"type": "int"}}}
+  "@subDueBanner": {"placeholders": {"count": {"type": "int"}}},
+  "subSumMonthly": "Per month",
+  "subSumYearly": "Per year",
+  "subSumEstimated": "Estimated at today's exchange rates.",
+  "subSumMissing": "Not counted (no rate): {codes}.",
+  "@subSumMissing": {"placeholders": {"codes": {"type": "String"}}},
+  "subSumActive": "Active",
+  "subSumSoon": "Within 7 days",
+  "subSumToCancel": "To cancel",
+  "subSumEnded": "Ended",
+  "subSortDate": "By date",
+  "subSortKind": "By type",
+  "subSortCard": "By card",
+  "subSortName": "By name",
+  "subKindDigital": "Digital",
+  "subKindMobile": "Phone & internet",
+  "subNoCard": "No card",
+  "subEndedTitle": "Ended and cancelled"
 }

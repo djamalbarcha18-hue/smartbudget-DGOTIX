@@ -1933,5 +1933,21 @@
   "subDueForFuture": "다음 갱신부터 이 금액 사용",
   "subDueNoMatch": "그 날짜 전후로 비슷한 지출이 없어요. '네, 결제됨'으로 기록하세요.",
   "subDuePick": "어떤 지출인가요?",
-  "subDueBanner": "{count, plural, =1{구독 결제 1건이 답변을 기다려요} other{구독 결제 {count}건이 답변을 기다려요}}"
+  "subDueBanner": "{count, plural, =1{구독 결제 1건이 답변을 기다려요} other{구독 결제 {count}건이 답변을 기다려요}}",
+  "subSumMonthly": "월",
+  "subSumYearly": "연",
+  "subSumEstimated": "오늘 환율 기준 추정치예요.",
+  "subSumMissing": "미포함(환율 없음): {codes}.",
+  "subSumActive": "사용 중",
+  "subSumSoon": "7일 이내",
+  "subSumToCancel": "해지 예정",
+  "subSumEnded": "종료",
+  "subSortDate": "날짜순",
+  "subSortKind": "유형별",
+  "subSortCard": "카드별",
+  "subSortName": "이름순",
+  "subKindDigital": "디지털",
+  "subKindMobile": "전화·인터넷",
+  "subNoCard": "카드 없음",
+  "subEndedTitle": "종료 및 해지됨"
 }

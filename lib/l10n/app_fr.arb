@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Utiliser ce montant pour les prochains renouvellements",
   "subDueNoMatch": "Aucune dépense semblable autour de cette date. Notez-la avec « Oui, prélevé ».",
   "subDuePick": "Quelle dépense est-ce ?",
-  "subDueBanner": "{count, plural, =1{Un prélèvement d'abonnement attend votre réponse} other{{count} prélèvements d'abonnements attendent votre réponse}}"
+  "subDueBanner": "{count, plural, =1{Un prélèvement d'abonnement attend votre réponse} other{{count} prélèvements d'abonnements attendent votre réponse}}",
+  "subSumMonthly": "Par mois",
+  "subSumYearly": "Par an",
+  "subSumEstimated": "Estimé aux taux de change du jour.",
+  "subSumMissing": "Non compté (pas de taux) : {codes}.",
+  "subSumActive": "Actifs",
+  "subSumSoon": "Sous 7 jours",
+  "subSumToCancel": "À résilier",
+  "subSumEnded": "Terminés",
+  "subSortDate": "Par date",
+  "subSortKind": "Par type",
+  "subSortCard": "Par carte",
+  "subSortName": "Par nom",
+  "subKindDigital": "Numériques",
+  "subKindMobile": "Téléphone et internet",
+  "subNoCard": "Sans carte",
+  "subEndedTitle": "Terminés et résiliés"
 }

@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Usa questo importo per i prossimi rinnovi",
   "subDueNoMatch": "Nessuna spesa simile intorno a quella data. Registrala con «Sì, addebitato».",
   "subDuePick": "Quale spesa è?",
-  "subDueBanner": "{count, plural, =1{Un addebito di abbonamento attende la tua risposta} other{{count} addebiti di abbonamenti attendono la tua risposta}}"
+  "subDueBanner": "{count, plural, =1{Un addebito di abbonamento attende la tua risposta} other{{count} addebiti di abbonamenti attendono la tua risposta}}",
+  "subSumMonthly": "Al mese",
+  "subSumYearly": "All'anno",
+  "subSumEstimated": "Stimato ai cambi di oggi.",
+  "subSumMissing": "Non conteggiati (nessun cambio): {codes}.",
+  "subSumActive": "Attivi",
+  "subSumSoon": "Entro 7 giorni",
+  "subSumToCancel": "Da disdire",
+  "subSumEnded": "Terminati",
+  "subSortDate": "Per data",
+  "subSortKind": "Per tipo",
+  "subSortCard": "Per carta",
+  "subSortName": "Per nome",
+  "subKindDigital": "Digitali",
+  "subKindMobile": "Telefono e internet",
+  "subNoCard": "Senza carta",
+  "subEndedTitle": "Terminati e disdetti"
 }

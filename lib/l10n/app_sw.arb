@@ -1933,5 +1933,21 @@
   "subDueForFuture": "Tumia kiasi hiki kwa usasishaji ujao",
   "subDueNoMatch": "Hakuna matumizi yanayofanana karibu na tarehe hiyo. Yarekodi kwa \"Ndiyo, imekatwa\".",
   "subDuePick": "Ni matumizi gani?",
-  "subDueBanner": "{count, plural, =1{Makato 1 ya usajili yanasubiri jibu lako} other{Makato {count} ya usajili yanasubiri jibu lako}}"
+  "subDueBanner": "{count, plural, =1{Makato 1 ya usajili yanasubiri jibu lako} other{Makato {count} ya usajili yanasubiri jibu lako}}",
+  "subSumMonthly": "Kwa mwezi",
+  "subSumYearly": "Kwa mwaka",
+  "subSumEstimated": "Makadirio kwa viwango vya leo vya ubadilishaji.",
+  "subSumMissing": "Havijahesabiwa (hakuna kiwango): {codes}.",
+  "subSumActive": "Hai",
+  "subSumSoon": "Ndani ya siku 7",
+  "subSumToCancel": "Ya kusitisha",
+  "subSumEnded": "Vimeisha",
+  "subSortDate": "Kwa tarehe",
+  "subSortKind": "Kwa aina",
+  "subSortCard": "Kwa kadi",
+  "subSortName": "Kwa jina",
+  "subKindDigital": "Kidijitali",
+  "subKindMobile": "Simu na intaneti",
+  "subNoCard": "Bila kadi",
+  "subEndedTitle": "Vilivyoisha na kusitishwa"
 }
