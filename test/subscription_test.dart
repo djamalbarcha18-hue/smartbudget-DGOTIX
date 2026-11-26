@@ -301,6 +301,7 @@ void main() {
           clearKept: true,
           reminderDays: days,
           reminderMinutes: minutes,
+          clearReminderMinutes: minutes == null,
           autoRenew: autoRenew,
         );
     final DateTime now = DateTime(2026, 11, 26, 9);
@@ -357,7 +358,10 @@ void main() {
     test('the free trial: two days and one day before it ends', () {
       final List<SubscriptionAlert> a = SubscriptionAlerts.plan(
           <({Subscription sub, RecurringRule? rule})>[
-            (sub: netflix(), rule: monthlyOn(DateTime(2026, 12, 15))),
+            (
+              sub: netflix().copyWith(clearKept: true),
+              rule: monthlyOn(DateTime(2026, 12, 15)),
+            ),
           ],
           now);
       expect(a.take(2).map((SubscriptionAlert x) => x.at), <DateTime>[
