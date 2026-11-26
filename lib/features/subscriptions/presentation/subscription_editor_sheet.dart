@@ -325,7 +325,10 @@ class _SubscriptionEditorSheetState
           border: Border.all(color: c.border),
         ),
         padding: const EdgeInsets.all(DsSpacing.xl),
-        child: SafeArea(
+        // The switch rows paint their ink on a Material, not on this box.
+        child: Material(
+          type: MaterialType.transparency,
+          child: SafeArea(
           top: false,
           child: SingleChildScrollView(
             child: Form(
@@ -633,6 +636,7 @@ class _SubscriptionEditorSheetState
               ),
             ),
           ),
+        ),
         ),
       ),
     );

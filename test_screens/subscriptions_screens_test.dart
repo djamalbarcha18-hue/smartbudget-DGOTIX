@@ -1,3 +1,4 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member
 // Screenshots of the subscription screens, for review before "publish".
 // Not part of the normal test run: the Screenshots workflow runs
 // `flutter test test_screens --update-goldens` and uploads the PNGs.
@@ -18,6 +19,7 @@ import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/design_system/theme/ds_theme.dart';
 import 'package:smartbudget/features/billing/application/entitlement_controller.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
+import 'package:smartbudget/features/recurring/application/recurring_controller.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/recurring/presentation/recurring_page.dart';
 import 'package:smartbudget/features/subscriptions/application/subscriptions_controller.dart';
@@ -166,11 +168,13 @@ void main() {
       final ProviderContainer c = await tester.runAsync(_withSamples) ??
           (throw StateError('no samples'));
       addTearDown(c.dispose);
-      await tester.pumpWidget(_app(c, locale, const SizedBox()));
-      await tester.pumpAndSettle();
-      final SubscriptionItem item = c
-          .read(subscriptionItemsProvider)
-          .firstWhere((SubscriptionItem i) => i.sub.provider == 'Spotify');
+      final SubscriptionItem item = (await tester.runAsync(() async {
+        final Subscription sub = (await c.read(subscriptionsProvider.future))
+            .firstWhere((Subscription s) => s.provider == 'Spotify');
+        final RecurringRule rule = (await c.read(recurringRulesProvider.future))
+            .firstWhere((RecurringRule r) => r.id == sub.ruleId);
+        return (sub: sub, rule: rule);
+      }))!;
       await tester.pumpWidget(_app(
           c,
           locale,
