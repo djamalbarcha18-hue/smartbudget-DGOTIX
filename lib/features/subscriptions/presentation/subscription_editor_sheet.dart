@@ -88,8 +88,9 @@ class _SubscriptionEditorSheetState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _billedVia = s?.billedVia ?? BilledVia.direct;
-    _manage = TextEditingController(text: s?.manageUrl ?? '');
+    _billedVia = widget.existing?.sub.billedVia ?? BilledVia.direct;
+    _manage =
+        TextEditingController(text: widget.existing?.sub.manageUrl ?? '');
     if (widget.startCancel && widget.existing != null) {
       WidgetsBinding.instance
           .addPostFrameCallback((_) => mounted ? _startCancel() : null);
