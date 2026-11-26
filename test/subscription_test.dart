@@ -449,7 +449,10 @@ void main() {
   group('Cancelling', () {
     final DateTime now = DateTime(2026, 11, 26, 12);
     Subscription live() => netflix().copyWith(
-        status: SubscriptionStatus.active, clearTrial: true, clearKept: true);
+        status: SubscriptionStatus.active,
+        clearTrial: true,
+        clearKept: true,
+        clearCancellation: true);
 
     test('the stores open their subscriptions page', () {
       expect(

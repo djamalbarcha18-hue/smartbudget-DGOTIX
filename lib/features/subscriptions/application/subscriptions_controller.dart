@@ -85,12 +85,12 @@ class SubscriptionActions {
     required RecurrenceFrequency frequency,
     required DateTime nextCharge,
   }) async {
-    // The loaded list (the repository's own may not be loaded yet, and adding
-    // to it then would duplicate the rule).
-    final List<RecurringRule> all =
-        await _ref.read(recurringRulesProvider.future);
+    // Loaded first (adding to a list not read yet would duplicate the rule),
+    // then the repository's own list: the provider's may lag a change just
+    // made.
+    await _ref.read(recurringRulesProvider.future);
     final RecurringRule? old =
-        all.where((RecurringRule r) => r.id == s.ruleId).firstOrNull;
+        _rules.current.where((RecurringRule r) => r.id == s.ruleId).firstOrNull;
     final RecurringRule rule = SubscriptionSchedule.ruleFor(
       id: s.ruleId,
       provider: s.provider,

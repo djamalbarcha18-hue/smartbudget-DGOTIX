@@ -179,9 +179,11 @@ void main() {
         amount: const Money(1500, 'USD'),
         frequency: RecurrenceFrequency.monthly,
         nextCharge: DateTime(_today().year, _today().month, _today().day + 3));
-    Future<RecurringRule> rule() async =>
-        (await c.read(recurringRulesProvider.future))
-            .singleWhere((RecurringRule r) => r.id == 'sub-x');
+    // The repository's list: the provider's may lag a change just made.
+    Future<RecurringRule> rule() async => c
+        .read(recurringRepositoryProvider)
+        .current
+        .singleWhere((RecurringRule r) => r.id == 'sub-x');
 
     final Subscription asked = await a.cancel(
         (sub: s, rule: await rule()), CancelOutcome.requested);
@@ -207,7 +209,7 @@ void main() {
         (sub: until, rule: await rule()), CancelOutcome.reactivated);
     expect(back.status, SubscriptionStatus.active);
     expect((await rule()).active, isTrue);
-    expect((await c.read(subscriptionsProvider.future)).single.status,
+    expect((await c.read(subscriptionStoreProvider).all()).single.status,
         SubscriptionStatus.active);
   });
 
@@ -227,7 +229,7 @@ void main() {
         frequency: RecurrenceFrequency.monthly,
         nextCharge: DateTime(2030, 1, 15));
     await a.keepUntil(s, DateTime(2030, 1, 15, 10));
-    expect((await c.read(subscriptionsProvider.future)).single.keptUntil,
+    expect((await c.read(subscriptionStoreProvider).all()).single.keptUntil,
         DateTime(2030, 1, 15));
   });
 }
