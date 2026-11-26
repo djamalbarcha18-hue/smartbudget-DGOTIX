@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/features/backup/domain/backup_model.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
+import 'package:smartbudget/features/subscriptions/domain/card_suggestions.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
 import 'package:smartbudget/features/sync/domain/sync_merge.dart';
 import 'package:smartbudget/features/sync/domain/sync_scope.dart';
@@ -172,6 +173,47 @@ void main() {
     test('copyWith can clear the card name', () {
       expect(netflix().copyWith(clearCard: true).cardName, isNull);
       expect(netflix().copyWith(cardName: 'CIB').cardName, 'CIB');
+    });
+  });
+
+  group('Card suggestions', () {
+    test('Algeria: its own cards first, then the global ones, no repeats', () {
+      final List<String> dz = CardSuggestions.forCountry('dz');
+      expect(dz.take(5), <String>[
+        'الذهبية (Edahabia)',
+        'CIB',
+        'RedotPay',
+        'PayPal',
+        'Payoneer',
+      ]);
+      expect(dz, contains('Visa'));
+      expect(dz.where((String n) => n == 'PayPal').length, 1);
+      expect(dz.where((String n) => n == 'RedotPay').length, 1);
+    });
+
+    test('other countries get theirs, unknown ones the global list', () {
+      expect(CardSuggestions.forCountry('SA').first, 'mada');
+      expect(CardSuggestions.forCountry('EG').first, 'Meeza');
+      expect(CardSuggestions.forCountry('XX'), CardSuggestions.global);
+      expect(CardSuggestions.forCountry(null), CardSuggestions.global);
+    });
+
+    test('every suggestion is a safe card name', () {
+      for (final List<String> l in <List<String>>[
+        CardSuggestions.global,
+        ...CardSuggestions.byCountry.values,
+      ]) {
+        for (final String n in l) {
+          expect(CardName.clean(n), n, reason: n);
+        }
+      }
+    });
+
+    test('autocomplete narrows by what was typed', () {
+      expect(CardSuggestions.matching('DZ', 'pay'),
+          <String>['RedotPay', 'PayPal', 'Payoneer', 'Google Pay', 'Apple Pay']);
+      expect(CardSuggestions.matching('DZ', ''),
+          CardSuggestions.forCountry('DZ'));
     });
   });
 
