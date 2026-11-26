@@ -1890,5 +1890,11 @@
   "subDateFromToday": "Scegli oggi o una data successiva.",
   "subDeleteTitle": "Eliminare questo abbonamento?",
   "subDeleteBody": "I promemoria si fermano. Le spese già registrate restano.",
-  "subRemindersOff": "Promemoria disattivati"
+  "subRemindersOff": "Promemoria disattivati",
+  "subNotifRenew": "{count, plural, =0{Addebitato oggi: {amount}.} =1{Domani verranno addebitati {amount}. Controlla o disdici prima.} other{Si rinnova tra {count} giorni per {amount}. Ti serve ancora?}}",
+  "subNotifTrial": "{count, plural, =0{La prova gratuita finisce oggi; poi vengono addebitati {amount} automaticamente.} =1{La prova gratuita finisce domani, poi vengono addebitati {amount} automaticamente. Continuare?} other{La prova gratuita finisce tra {count} giorni, poi vengono addebitati {amount} automaticamente. Continuare?}}",
+  "subNotifPlanEnds": "{count, plural, =0{Il tuo piano scade oggi.} =1{Il tuo piano scade domani.} other{Il tuo piano scade tra {count} giorni.}}",
+  "subNotifChannelRenew": "Rinnovi degli abbonamenti",
+  "subNotifChannelTrial": "Fine delle prove gratuite",
+  "subWebNote": "Sul web i prossimi addebiti compaiono qui e nella dashboard. I promemoria sul telefono arrivano con l'app Android."
 }

@@ -1890,5 +1890,11 @@
   "subDateFromToday": "오늘 또는 이후 날짜를 고르세요.",
   "subDeleteTitle": "이 구독을 삭제할까요?",
   "subDeleteBody": "알림이 멈춰요. 이미 기록된 지출은 남아요.",
-  "subRemindersOff": "알림 꺼짐"
+  "subRemindersOff": "알림 꺼짐",
+  "subNotifRenew": "{count, plural, =0{오늘 결제됨: {amount}.} =1{내일 {amount}이(가) 결제돼요. 그 전에 확인하거나 해지하세요.} other{{count}일 후 {amount}에 갱신돼요. 아직 필요하세요?}}",
+  "subNotifTrial": "{count, plural, =0{무료 체험이 오늘 끝나고 {amount}이(가) 자동 결제돼요.} =1{무료 체험이 내일 끝나고 {amount}이(가) 자동 결제돼요. 계속할까요?} other{무료 체험이 {count}일 후 끝나고 {amount}이(가) 자동 결제돼요. 계속할까요?}}",
+  "subNotifPlanEnds": "{count, plural, =0{요금제가 오늘 끝나요.} =1{요금제가 내일 끝나요.} other{요금제가 {count}일 후 끝나요.}}",
+  "subNotifChannelRenew": "구독 갱신",
+  "subNotifChannelTrial": "무료 체험 종료",
+  "subWebNote": "웹에서는 다가오는 결제가 여기와 대시보드에 표시돼요. 휴대폰 알림은 Android 앱에서 받을 수 있어요."
 }

@@ -1890,5 +1890,11 @@
   "subDateFromToday": "Choisissez aujourd'hui ou une date ultérieure.",
   "subDeleteTitle": "Supprimer cet abonnement ?",
   "subDeleteBody": "Ses rappels s'arrêtent. Les dépenses déjà enregistrées sont conservées.",
-  "subRemindersOff": "Rappels désactivés"
+  "subRemindersOff": "Rappels désactivés",
+  "subNotifRenew": "{count, plural, =0{Prélevé aujourd'hui : {amount}.} =1{{amount} sera prélevé demain. Vérifiez ou résiliez avant.} other{Renouvellement dans {count} jours pour {amount}. Toujours utile ?}}",
+  "subNotifTrial": "{count, plural, =0{Votre essai gratuit se termine aujourd'hui ; {amount} est ensuite prélevé automatiquement.} =1{Votre essai gratuit se termine demain, puis {amount} est prélevé automatiquement. Continuer ?} other{Votre essai gratuit se termine dans {count} jours, puis {amount} est prélevé automatiquement. Continuer ?}}",
+  "subNotifPlanEnds": "{count, plural, =0{Votre forfait se termine aujourd'hui.} =1{Votre forfait se termine demain.} other{Votre forfait se termine dans {count} jours.}}",
+  "subNotifChannelRenew": "Renouvellements d'abonnements",
+  "subNotifChannelTrial": "Fins d'essai gratuit",
+  "subWebNote": "Sur le web, les prochains prélèvements s'affichent ici et sur le tableau de bord. Les rappels sur téléphone viennent avec l'application Android."
 }

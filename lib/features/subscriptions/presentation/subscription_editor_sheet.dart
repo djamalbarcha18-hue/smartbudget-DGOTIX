@@ -17,7 +17,9 @@ import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
+import 'package:smartbudget/features/reminders/data/reminder_notifications.dart';
 import 'package:smartbudget/features/subscriptions/application/subscriptions_controller.dart';
+import 'package:smartbudget/features/subscriptions/data/subscription_notifications.dart';
 import 'package:smartbudget/features/subscriptions/domain/card_suggestions.dart';
 import 'package:smartbudget/features/subscriptions/domain/service_catalog.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
@@ -211,6 +213,11 @@ class _SubscriptionEditorSheetState
           frequency: _frequency,
           nextCharge: date,
         );
+    // The phone asks once (Android 13+); refused, the list says how to turn
+    // them on.
+    if (_remindersOn && SubscriptionNotifications.supported) {
+      await ReminderNotifications.instance.requestPermission();
+    }
     if (mounted) Navigator.of(context).pop();
   }
 

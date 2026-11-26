@@ -1890,5 +1890,11 @@
   "subDateFromToday": "Wähle heute oder ein späteres Datum.",
   "subDeleteTitle": "Dieses Abo löschen?",
   "subDeleteBody": "Die Erinnerungen enden. Bereits erfasste Ausgaben bleiben erhalten.",
-  "subRemindersOff": "Erinnerungen aus"
+  "subRemindersOff": "Erinnerungen aus",
+  "subNotifRenew": "{count, plural, =0{Heute abgebucht: {amount}.} =1{Morgen werden {amount} abgebucht. Prüfe oder kündige vorher.} other{Verlängert sich in {count} Tagen für {amount}. Noch nötig?}}",
+  "subNotifTrial": "{count, plural, =0{Deine Testphase endet heute; dann werden {amount} automatisch abgebucht.} =1{Deine Testphase endet morgen, dann werden {amount} automatisch abgebucht. Behalten?} other{Deine Testphase endet in {count} Tagen, dann werden {amount} automatisch abgebucht. Behalten?}}",
+  "subNotifPlanEnds": "{count, plural, =0{Dein Tarif endet heute.} =1{Dein Tarif endet morgen.} other{Dein Tarif endet in {count} Tagen.}}",
+  "subNotifChannelRenew": "Abo-Verlängerungen",
+  "subNotifChannelTrial": "Ende von Testphasen",
+  "subWebNote": "Im Web siehst du kommende Abbuchungen hier und im Dashboard. Erinnerungen aufs Handy kommen mit der Android-App."
 }

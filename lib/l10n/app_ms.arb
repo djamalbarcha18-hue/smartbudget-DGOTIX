@@ -1890,5 +1890,11 @@
   "subDateFromToday": "Pilih hari ini atau tarikh selepasnya.",
   "subDeleteTitle": "Padam langganan ini?",
   "subDeleteBody": "Peringatannya berhenti. Perbelanjaan yang sudah direkod kekal.",
-  "subRemindersOff": "Peringatan dimatikan"
+  "subRemindersOff": "Peringatan dimatikan",
+  "subNotifRenew": "{count, plural, =0{Dicaj hari ini: {amount}.} =1{{amount} akan dicaj esok. Semak atau batalkan sebelum itu.} other{Diperbaharui dalam {count} hari untuk {amount}. Masih perlu?}}",
+  "subNotifTrial": "{count, plural, =0{Percubaan percuma anda tamat hari ini; kemudian {amount} dicaj secara automatik.} =1{Percubaan percuma anda tamat esok, kemudian {amount} dicaj secara automatik. Teruskan?} other{Percubaan percuma anda tamat dalam {count} hari, kemudian {amount} dicaj secara automatik. Teruskan?}}",
+  "subNotifPlanEnds": "{count, plural, =0{Pelan anda tamat hari ini.} =1{Pelan anda tamat esok.} other{Pelan anda tamat dalam {count} hari.}}",
+  "subNotifChannelRenew": "Pembaharuan langganan",
+  "subNotifChannelTrial": "Tamat percubaan percuma",
+  "subWebNote": "Di web, caj akan datang dipaparkan di sini dan di papan pemuka. Peringatan telefon datang dengan aplikasi Android."
 }

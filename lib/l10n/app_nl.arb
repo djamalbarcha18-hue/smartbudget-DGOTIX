@@ -1890,5 +1890,11 @@
   "subDateFromToday": "Kies vandaag of een latere datum.",
   "subDeleteTitle": "Dit abonnement verwijderen?",
   "subDeleteBody": "De herinneringen stoppen. Al geboekte uitgaven blijven bewaard.",
-  "subRemindersOff": "Herinneringen uit"
+  "subRemindersOff": "Herinneringen uit",
+  "subNotifRenew": "{count, plural, =0{Vandaag afgeschreven: {amount}.} =1{Morgen wordt {amount} afgeschreven. Bekijk of zeg op vóór die tijd.} other{Wordt over {count} dagen verlengd voor {amount}. Nog nodig?}}",
+  "subNotifTrial": "{count, plural, =0{Je gratis proefperiode eindigt vandaag; daarna wordt {amount} automatisch afgeschreven.} =1{Je gratis proefperiode eindigt morgen, daarna wordt {amount} automatisch afgeschreven. Houden?} other{Je gratis proefperiode eindigt over {count} dagen, daarna wordt {amount} automatisch afgeschreven. Houden?}}",
+  "subNotifPlanEnds": "{count, plural, =0{Je bundel loopt vandaag af.} =1{Je bundel loopt morgen af.} other{Je bundel loopt over {count} dagen af.}}",
+  "subNotifChannelRenew": "Verlengingen van abonnementen",
+  "subNotifChannelTrial": "Einde van proefperiodes",
+  "subWebNote": "Op het web zie je komende afschrijvingen hier en op het dashboard. Herinneringen op je telefoon komen met de Android-app."
 }

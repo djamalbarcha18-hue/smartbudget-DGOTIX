@@ -1890,5 +1890,11 @@
   "subDateFromToday": "Kies vandag of 'n latere datum.",
   "subDeleteTitle": "Vee hierdie intekening uit?",
   "subDeleteBody": "Sy herinneringe stop. Uitgawes wat reeds aangeteken is, bly.",
-  "subRemindersOff": "Herinneringe af"
+  "subRemindersOff": "Herinneringe af",
+  "subNotifRenew": "{count, plural, =0{Vandag gedebiteer: {amount}.} =1{{amount} word môre gedebiteer. Hersien of kanselleer voor dan.} other{Hernu oor {count} dae vir {amount}. Het jy dit nog nodig?}}",
+  "subNotifTrial": "{count, plural, =0{Jou gratis proeftydperk eindig vandag; dan word {amount} outomaties gedebiteer.} =1{Jou gratis proeftydperk eindig môre, dan word {amount} outomaties gedebiteer. Hou aan?} other{Jou gratis proeftydperk eindig oor {count} dae, dan word {amount} outomaties gedebiteer. Hou aan?}}",
+  "subNotifPlanEnds": "{count, plural, =0{Jou pakket eindig vandag.} =1{Jou pakket eindig môre.} other{Jou pakket eindig oor {count} dae.}}",
+  "subNotifChannelRenew": "Hernuwings van intekeninge",
+  "subNotifChannelTrial": "Einde van gratis proeftydperke",
+  "subWebNote": "Op die web wys komende debiete hier en op die paneelbord. Foonherinneringe kom met die Android-toep."
 }

@@ -1890,5 +1890,11 @@
   "subDateFromToday": "今日以降の日付を選んでください。",
   "subDeleteTitle": "このサブスクを削除しますか？",
   "subDeleteBody": "リマインダーは止まります。記録済みの支出は残ります。",
-  "subRemindersOff": "リマインダーオフ"
+  "subRemindersOff": "リマインダーオフ",
+  "subNotifRenew": "{count, plural, =0{本日請求：{amount}。} =1{明日 {amount} が請求されます。それまでに確認または解約できます。} other{{count} 日後に {amount} で更新されます。まだ必要ですか？}}",
+  "subNotifTrial": "{count, plural, =0{無料トライアルは本日終了し、{amount} が自動で請求されます。} =1{無料トライアルは明日終了し、その後 {amount} が自動で請求されます。続けますか？} other{無料トライアルは {count} 日後に終了し、その後 {amount} が自動で請求されます。続けますか？}}",
+  "subNotifPlanEnds": "{count, plural, =0{プランは本日終了します。} =1{プランは明日終了します。} other{プランは {count} 日後に終了します。}}",
+  "subNotifChannelRenew": "サブスクの更新",
+  "subNotifChannelTrial": "無料トライアルの終了",
+  "subWebNote": "ウェブ版では、今後の請求はこことダッシュボードに表示されます。スマホへのリマインダーは Android アプリで届きます。"
 }

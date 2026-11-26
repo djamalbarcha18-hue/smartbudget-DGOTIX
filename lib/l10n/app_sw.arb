@@ -1890,5 +1890,11 @@
   "subDateFromToday": "Chagua leo au tarehe ya baadaye.",
   "subDeleteTitle": "Futa usajili huu?",
   "subDeleteBody": "Vikumbusho vyake vitakoma. Matumizi yaliyorekodiwa yatabaki.",
-  "subRemindersOff": "Vikumbusho vimezimwa"
+  "subRemindersOff": "Vikumbusho vimezimwa",
+  "subNotifRenew": "{count, plural, =0{Imekatwa leo: {amount}.} =1{{amount} itakatwa kesho. Ikague au isitishe kabla ya hapo.} other{Itasasishwa baada ya siku {count} kwa {amount}. Bado unauhitaji?}}",
+  "subNotifTrial": "{count, plural, =0{Jaribio lako la bure linaisha leo; kisha {amount} inakatwa kiotomatiki.} =1{Jaribio lako la bure linaisha kesho, kisha {amount} inakatwa kiotomatiki. Uendelee?} other{Jaribio lako la bure linaisha baada ya siku {count}, kisha {amount} inakatwa kiotomatiki. Uendelee?}}",
+  "subNotifPlanEnds": "{count, plural, =0{Kifurushi chako kinaisha leo.} =1{Kifurushi chako kinaisha kesho.} other{Kifurushi chako kinaisha baada ya siku {count}.}}",
+  "subNotifChannelRenew": "Usasishaji wa usajili",
+  "subNotifChannelTrial": "Mwisho wa majaribio ya bure",
+  "subWebNote": "Kwenye wavuti, makato yajayo yanaonekana hapa na kwenye dashibodi. Vikumbusho vya simu vinakuja na programu ya Android."
 }

@@ -12,6 +12,8 @@ import 'package:smartbudget/design_system/components/glass_card.dart';
 import 'package:smartbudget/design_system/tokens/ds_colors.dart';
 import 'package:smartbudget/design_system/tokens/ds_spacing.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
+import 'package:smartbudget/features/reminders/data/reminder_notifications.dart';
+import 'package:smartbudget/features/subscriptions/data/subscription_notifications.dart';
 import 'package:smartbudget/features/subscriptions/application/subscriptions_controller.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_schedule.dart';
@@ -49,6 +51,10 @@ class SubscriptionsTab extends ConsumerWidget {
             onPressed: () => SubscriptionEditorSheet.show(context),
           ),
         ),
+        if (items.any((SubscriptionItem i) => i.sub.remindersOn)) ...<Widget>[
+          const SizedBox(height: DsSpacing.md),
+          const _ReminderReach(),
+        ],
         const SizedBox(height: DsSpacing.lg),
         if (items.isEmpty)
           Padding(
@@ -118,7 +124,7 @@ class SubscriptionCard extends StatelessWidget {
                 if (next != null) ...<Widget>[
                   const SizedBox(height: 2),
                   Text(
-                    s.isTrial
+                    s.trialEndsOn(next)
                         ? '${l.subTrialEnds}: ${dayText(locale, next)}'
                         : l.subNextOn(dayText(locale, next)),
                     style: t.bodySmall?.copyWith(color: c.textMuted),
@@ -131,7 +137,7 @@ class SubscriptionCard extends StatelessWidget {
                   children: <Widget>[
                     if (s.cardName != null)
                       _CardChip(name: s.cardName!),
-                    if (s.isTrial)
+                    if (next != null && s.trialEndsOn(next))
                       DsBadge(label: l.subTrial, tone: DsBadgeTone.warning),
                     if (!s.remindersOn)
                       DsBadge(label: l.subRemindersOff),
@@ -188,6 +194,79 @@ class _CardChip extends StatelessWidget {
                   ?.copyWith(color: c.textMuted)),
         ],
       ),
+    );
+  }
+}
+
+/// Whether the reminders can reach the user: on the web they can't (the
+/// list and the dashboard show what is coming); on the phone, notifications
+/// may be turned off.
+class _ReminderReach extends StatefulWidget {
+  const _ReminderReach();
+
+  @override
+  State<_ReminderReach> createState() => _ReminderReachState();
+}
+
+class _ReminderReachState extends State<_ReminderReach>
+    with WidgetsBindingObserver {
+  bool _allowed = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _check();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// Back from the phone's settings: look again.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState s) {
+    if (s == AppLifecycleState.resumed) _check();
+  }
+
+  Future<void> _check() async {
+    if (!SubscriptionNotifications.supported) return;
+    final bool ok = await ReminderNotifications.instance.allowed();
+    if (mounted && ok != _allowed) setState(() => _allowed = ok);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final TextTheme t = Theme.of(context).textTheme;
+    final DsColors c = context.dsColors;
+    if (!SubscriptionNotifications.supported) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Icon(Icons.info_outline_rounded, size: 18, color: c.textMuted),
+          const SizedBox(width: DsSpacing.sm),
+          Expanded(
+            child: Text(l.subWebNote,
+                style: t.bodySmall?.copyWith(color: c.textMuted)),
+          ),
+        ],
+      );
+    }
+    if (_allowed) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(l.reminderPermissionDenied,
+            style: t.bodySmall?.copyWith(color: c.warning)),
+        TextButton.icon(
+          onPressed: () => ReminderNotifications.instance.openSystemSettings(),
+          icon: const Icon(Icons.notifications_active_outlined, size: 18),
+          label: Text(l.actionOpenSettings),
+        ),
+      ],
     );
   }
 }

@@ -77,7 +77,7 @@ abstract final class SubscriptionSchedule {
     if (!s.remindersOn || s.isOver) return const <DateTime>[];
     final DateTime today = RecurrenceEngine.dateOnly(now);
     final DateTime charge = nextCharge(rule, now);
-    final List<int> before = s.isTrial
+    final List<int> before = s.trialEndsOn(charge)
         ? SubscriptionReminders.trialDays
         : SubscriptionReminders.daysFor(s, rule.frequency);
     final List<DateTime> out = <DateTime>[

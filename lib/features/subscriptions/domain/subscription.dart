@@ -146,6 +146,17 @@ class Subscription {
   bool get isTrial =>
       status == SubscriptionStatus.trial && trialEndsAt != null;
 
+  /// Whether the charge on [day] is the one that ends the free trial (the
+  /// first paid one). Later charges are ordinary renewals.
+  bool trialEndsOn(DateTime day) {
+    final DateTime? t = trialEndsAt;
+    return isTrial &&
+        t != null &&
+        t.year == day.year &&
+        t.month == day.month &&
+        t.day == day.day;
+  }
+
   /// No longer charged: reminders and posting stop.
   bool get isOver =>
       status == SubscriptionStatus.ended ||

@@ -1890,5 +1890,11 @@
   "subDateFromToday": "Izaberite danas ili kasniji datum.",
   "subDeleteTitle": "Obrisati ovu pretplatu?",
   "subDeleteBody": "Podsjetnici prestaju. Već upisani troškovi ostaju.",
-  "subRemindersOff": "Podsjetnici isključeni"
+  "subRemindersOff": "Podsjetnici isključeni",
+  "subNotifRenew": "{count, plural, =0{Naplaćeno danas: {amount}.} =1{Sutra se naplaćuje {amount}. Provjerite ili otkažite prije toga.} few{Obnavlja se za {count} dana za {amount}. Treba li vam još?} other{Obnavlja se za {count} dana za {amount}. Treba li vam još?}}",
+  "subNotifTrial": "{count, plural, =0{Besplatni probni period ističe danas; zatim se automatski naplaćuje {amount}.} =1{Besplatni probni period ističe sutra, zatim se automatski naplaćuje {amount}. Nastaviti?} few{Besplatni probni period ističe za {count} dana, zatim se automatski naplaćuje {amount}. Nastaviti?} other{Besplatni probni period ističe za {count} dana, zatim se automatski naplaćuje {amount}. Nastaviti?}}",
+  "subNotifPlanEnds": "{count, plural, =0{Vaš paket ističe danas.} =1{Vaš paket ističe sutra.} few{Vaš paket ističe za {count} dana.} other{Vaš paket ističe za {count} dana.}}",
+  "subNotifChannelRenew": "Obnove pretplata",
+  "subNotifChannelTrial": "Kraj besplatnih probnih perioda",
+  "subWebNote": "Na webu se naredne naplate vide ovdje i na početnoj ploči. Podsjetnici na telefonu dolaze s Android aplikacijom."
 }

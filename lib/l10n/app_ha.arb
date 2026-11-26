@@ -1890,5 +1890,11 @@
   "subDateFromToday": "Zaɓi yau ko wata rana bayan haka.",
   "subDeleteTitle": "A share wannan biyan kuɗi?",
   "subDeleteBody": "Tunatarwarsa za ta tsaya. Kashe-kashen da aka riga aka rubuta za su zauna.",
-  "subRemindersOff": "Tunatarwa a kashe"
+  "subRemindersOff": "Tunatarwa a kashe",
+  "subNotifRenew": "{count, plural, =0{An cire yau: {amount}.} =1{Za a cire {amount} gobe. Ka duba ko ka soke kafin lokacin.} other{Zai sabunta bayan kwanaki {count} kan {amount}. Har yanzu kana bukata?}}",
+  "subNotifTrial": "{count, plural, =0{Gwajin ka na kyauta yana ƙarewa yau; sannan za a cire {amount} da kansa.} =1{Gwajin ka na kyauta zai ƙare gobe, sannan za a cire {amount} da kansa. Ka ci gaba?} other{Gwajin ka na kyauta zai ƙare bayan kwanaki {count}, sannan za a cire {amount} da kansa. Ka ci gaba?}}",
+  "subNotifPlanEnds": "{count, plural, =0{Kunshinka yana ƙarewa yau.} =1{Kunshinka zai ƙare gobe.} other{Kunshinka zai ƙare bayan kwanaki {count}.}}",
+  "subNotifChannelRenew": "Sabunta biyan kuɗi",
+  "subNotifChannelTrial": "Ƙarshen gwaji kyauta",
+  "subWebNote": "A yanar gizo, cirewa masu zuwa suna nunawa nan da kuma a dashboard. Tunatarwa a waya na zuwa da manhajar Android."
 }

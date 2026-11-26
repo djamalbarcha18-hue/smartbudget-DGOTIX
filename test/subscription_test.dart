@@ -9,6 +9,7 @@ import 'package:smartbudget/features/backup/domain/backup_model.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/subscriptions/domain/card_suggestions.dart';
 import 'package:smartbudget/features/subscriptions/domain/service_catalog.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_alerts.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_schedule.dart';
 import 'package:smartbudget/features/sync/domain/sync_merge.dart';
@@ -276,6 +277,166 @@ void main() {
           isTrue);
       expect(SubscriptionSchedule.validNextCharge(DateTime(2026, 11, 25), now),
           isFalse);
+    });
+  });
+
+  group('Phone reminders', () {
+    RecurringRule monthlyOn(DateTime next, {String id = 'sub-a'}) =>
+        SubscriptionSchedule.ruleFor(
+          id: id,
+          provider: 'Netflix',
+          amount: const Money(1500, 'USD'),
+          frequency: RecurrenceFrequency.monthly,
+          nextCharge: next,
+          createdAt: DateTime(2026, 11, 1),
+        );
+    Subscription active({
+      List<int> days = const <int>[3, 1],
+      int? minutes,
+      bool autoRenew = true,
+    }) =>
+        netflix().copyWith(
+          status: SubscriptionStatus.active,
+          clearTrial: true,
+          clearKept: true,
+          reminderDays: days,
+          reminderMinutes: minutes,
+          autoRenew: autoRenew,
+        );
+    final DateTime now = DateTime(2026, 11, 26, 9);
+
+    test('each reminder day at 10:00, soonest first, over 60 days', () {
+      final List<SubscriptionAlert> a = SubscriptionAlerts.plan(
+          <({Subscription sub, RecurringRule? rule})>[
+            (sub: active(), rule: monthlyOn(DateTime(2026, 12, 15))),
+          ],
+          now);
+      expect(a.map((SubscriptionAlert x) => x.at), <DateTime>[
+        DateTime(2026, 12, 12, 10),
+        DateTime(2026, 12, 14, 10),
+        DateTime(2027, 1, 12, 10),
+        DateTime(2027, 1, 14, 10),
+      ]);
+      expect(a.first.kind, SubscriptionAlertKind.renewal);
+      expect(a.first.daysLeft, 3);
+      expect(a[1].daysLeft, 1);
+      expect(a.first.subscriptionId, 'sub-nf');
+    });
+
+    test('a reminder time in quiet hours moves earlier, never later', () {
+      expect(SubscriptionAlerts.momentOn(DateTime(2026, 12, 14), 23 * 60),
+          DateTime(2026, 12, 14, 21));
+      expect(SubscriptionAlerts.momentOn(DateTime(2026, 12, 14), 6 * 60),
+          DateTime(2026, 12, 13, 21));
+      expect(SubscriptionAlerts.momentOn(DateTime(2026, 12, 14), 9 * 60 + 15),
+          DateTime(2026, 12, 14, 9, 15));
+      // The day-of reminder at 7:00 comes the evening before: "tomorrow".
+      final List<SubscriptionAlert> a = SubscriptionAlerts.plan(
+          <({Subscription sub, RecurringRule? rule})>[
+            (
+              sub: active(days: const <int>[0], minutes: 7 * 60),
+              rule: monthlyOn(DateTime(2026, 12, 15)),
+            ),
+          ],
+          now);
+      expect(a.first.at, DateTime(2026, 12, 14, 21));
+      expect(a.first.daysLeft, 1);
+    });
+
+    test('a reminder already past is not scheduled again', () {
+      final List<SubscriptionAlert> a = SubscriptionAlerts.plan(
+          <({Subscription sub, RecurringRule? rule})>[
+            (sub: active(), rule: monthlyOn(DateTime(2026, 11, 27))),
+          ],
+          DateTime(2026, 11, 26, 11));
+      // 3 days before (the 24th) and 1 day before at 10:00 (the 26th) have
+      // passed; the next charge's come next.
+      expect(a.first.charge, DateTime(2026, 12, 27));
+    });
+
+    test('the free trial: two days and one day before it ends', () {
+      final List<SubscriptionAlert> a = SubscriptionAlerts.plan(
+          <({Subscription sub, RecurringRule? rule})>[
+            (sub: netflix(), rule: monthlyOn(DateTime(2026, 12, 15))),
+          ],
+          now);
+      expect(a.take(2).map((SubscriptionAlert x) => x.at), <DateTime>[
+        DateTime(2026, 12, 13, 9, 30),
+        DateTime(2026, 12, 14, 9, 30),
+      ]);
+      expect(a.first.kind, SubscriptionAlertKind.trialEnd);
+      // The renewal after it is an ordinary one.
+      expect(a[2].kind, SubscriptionAlertKind.renewal);
+    });
+
+    test('"keep it" silences this cycle only', () {
+      final List<SubscriptionAlert> a = SubscriptionAlerts.plan(
+          <({Subscription sub, RecurringRule? rule})>[
+            (
+              sub: active().copyWith(keptUntil: DateTime(2026, 12, 15)),
+              rule: monthlyOn(DateTime(2026, 12, 15)),
+            ),
+          ],
+          now);
+      expect(a.first.charge, DateTime(2027, 1, 15));
+    });
+
+    test('a plan renewed by hand says it ends; nothing past the paid period',
+        () {
+      expect(
+          SubscriptionAlerts.plan(<({Subscription sub, RecurringRule? rule})>[
+            (
+              sub: active(autoRenew: false),
+              rule: monthlyOn(DateTime(2026, 12, 15)),
+            ),
+          ], now).first.kind,
+          SubscriptionAlertKind.planEnds);
+      expect(
+          SubscriptionAlerts.plan(<({Subscription sub, RecurringRule? rule})>[
+            (
+              sub: active().copyWith(
+                  status: SubscriptionStatus.activeUntilEnd,
+                  paidUntil: DateTime(2026, 12, 14)),
+              rule: monthlyOn(DateTime(2026, 12, 15)),
+            ),
+          ], now),
+          isEmpty);
+    });
+
+    test('off, over or without a rule: no reminders', () {
+      final RecurringRule r = monthlyOn(DateTime(2026, 12, 15));
+      expect(
+          SubscriptionAlerts.plan(<({Subscription sub, RecurringRule? rule})>[
+            (sub: active().copyWith(remindersOn: false), rule: r),
+            (
+              sub: active().copyWith(status: SubscriptionStatus.ended),
+              rule: r
+            ),
+            (sub: active(), rule: null),
+          ], now),
+          isEmpty);
+    });
+
+    test('never more than the phone allows', () {
+      final List<({Subscription sub, RecurringRule? rule})> many =
+          <({Subscription sub, RecurringRule? rule})>[
+        for (int i = 0; i < 30; i++)
+          (
+            sub: active(),
+            rule: RecurringRule(
+              id: 'sub-w$i',
+              type: TransactionType.expense,
+              category: subscriptionCategory,
+              amount: const Money(100, 'USD'),
+              frequency: RecurrenceFrequency.weekly,
+              startDate: DateTime(2026, 11, 28),
+              lastPosted: DateTime(2026, 11, 27),
+              createdAt: DateTime(2026, 11, 1),
+            ),
+          ),
+      ];
+      expect(SubscriptionAlerts.plan(many, now).length,
+          SubscriptionAlerts.maxAlerts);
     });
   });
 

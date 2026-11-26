@@ -1890,5 +1890,11 @@
   "subDateFromToday": "Elige hoy o una fecha posterior.",
   "subDeleteTitle": "¿Eliminar esta suscripción?",
   "subDeleteBody": "Sus avisos se detienen. Los gastos ya registrados se conservan.",
-  "subRemindersOff": "Avisos desactivados"
+  "subRemindersOff": "Avisos desactivados",
+  "subNotifRenew": "{count, plural, =0{Cobrado hoy: {amount}.} =1{Mañana se cobrarán {amount}. Revísala o cancélala antes.} other{Se renueva en {count} días por {amount}. ¿Aún la necesitas?}}",
+  "subNotifTrial": "{count, plural, =0{Tu prueba gratuita termina hoy; luego se cobran {amount} automáticamente.} =1{Tu prueba gratuita termina mañana y luego se cobran {amount} automáticamente. ¿Continuar?} other{Tu prueba gratuita termina en {count} días y luego se cobran {amount} automáticamente. ¿Continuar?}}",
+  "subNotifPlanEnds": "{count, plural, =0{Tu plan termina hoy.} =1{Tu plan termina mañana.} other{Tu plan termina en {count} días.}}",
+  "subNotifChannelRenew": "Renovaciones de suscripciones",
+  "subNotifChannelTrial": "Fin de pruebas gratuitas",
+  "subWebNote": "En la web, los próximos cobros se ven aquí y en el panel. Los avisos en el teléfono llegan con la app de Android."
 }

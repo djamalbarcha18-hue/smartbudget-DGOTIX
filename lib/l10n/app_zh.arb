@@ -1890,5 +1890,11 @@
   "subDateFromToday": "请选择今天或之后的日期。",
   "subDeleteTitle": "删除此订阅？",
   "subDeleteBody": "其提醒将停止。已记录的支出会保留。",
-  "subRemindersOff": "提醒已关闭"
+  "subRemindersOff": "提醒已关闭",
+  "subNotifRenew": "{count, plural, =0{今天已扣款：{amount}。} =1{明天将扣款 {amount}。请在此之前查看或取消。} other{{count} 天后将以 {amount} 续订。还需要吗？}}",
+  "subNotifTrial": "{count, plural, =0{你的免费试用今天结束，之后将自动扣款 {amount}。} =1{你的免费试用明天结束，之后将自动扣款 {amount}。要继续吗？} other{你的免费试用将在 {count} 天后结束，之后将自动扣款 {amount}。要继续吗？}}",
+  "subNotifPlanEnds": "{count, plural, =0{你的套餐今天到期。} =1{你的套餐明天到期。} other{你的套餐将在 {count} 天后到期。}}",
+  "subNotifChannelRenew": "订阅续订",
+  "subNotifChannelTrial": "免费试用结束",
+  "subWebNote": "在网页版中，即将到来的扣款显示在这里和仪表板上。手机提醒随 Android 应用提供。"
 }

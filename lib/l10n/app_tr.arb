@@ -1890,5 +1890,11 @@
   "subDateFromToday": "Bugünü veya daha sonraki bir tarihi seç.",
   "subDeleteTitle": "Bu abonelik silinsin mi?",
   "subDeleteBody": "Hatırlatmaları durur. Daha önce kaydedilen harcamalar kalır.",
-  "subRemindersOff": "Hatırlatmalar kapalı"
+  "subRemindersOff": "Hatırlatmalar kapalı",
+  "subNotifRenew": "{count, plural, =0{Bugün ödendi: {amount}.} =1{Yarın {amount} çekilecek. Öncesinde gözden geçir ya da iptal et.} other{{count} gün sonra {amount} karşılığında yenilenecek. Hâlâ gerekli mi?}}",
+  "subNotifTrial": "{count, plural, =0{Ücretsiz denemen bugün bitiyor; ardından {amount} otomatik çekilir.} =1{Ücretsiz denemen yarın bitiyor, ardından {amount} otomatik çekilir. Devam edilsin mi?} other{Ücretsiz denemen {count} gün sonra bitiyor, ardından {amount} otomatik çekilir. Devam edilsin mi?}}",
+  "subNotifPlanEnds": "{count, plural, =0{Paketin bugün bitiyor.} =1{Paketin yarın bitiyor.} other{Paketin {count} gün sonra bitiyor.}}",
+  "subNotifChannelRenew": "Abonelik yenilemeleri",
+  "subNotifChannelTrial": "Ücretsiz deneme bitişleri",
+  "subWebNote": "Web'de yaklaşan ödemeler burada ve panelde görünür. Telefon hatırlatmaları Android uygulamasıyla gelir."
 }

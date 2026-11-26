@@ -1890,5 +1890,11 @@
   "subDateFromToday": "Pilih hari ini atau tanggal sesudahnya.",
   "subDeleteTitle": "Hapus langganan ini?",
   "subDeleteBody": "Pengingatnya berhenti. Pengeluaran yang sudah dicatat tetap ada.",
-  "subRemindersOff": "Pengingat mati"
+  "subRemindersOff": "Pengingat mati",
+  "subNotifRenew": "{count, plural, =0{Ditagih hari ini: {amount}.} =1{{amount} akan ditagih besok. Tinjau atau batalkan sebelumnya.} other{Diperpanjang dalam {count} hari seharga {amount}. Masih perlu?}}",
+  "subNotifTrial": "{count, plural, =0{Uji coba gratis Anda berakhir hari ini; lalu {amount} ditagih otomatis.} =1{Uji coba gratis Anda berakhir besok, lalu {amount} ditagih otomatis. Lanjutkan?} other{Uji coba gratis Anda berakhir dalam {count} hari, lalu {amount} ditagih otomatis. Lanjutkan?}}",
+  "subNotifPlanEnds": "{count, plural, =0{Paket Anda berakhir hari ini.} =1{Paket Anda berakhir besok.} other{Paket Anda berakhir dalam {count} hari.}}",
+  "subNotifChannelRenew": "Perpanjangan langganan",
+  "subNotifChannelTrial": "Akhir uji coba gratis",
+  "subWebNote": "Di web, tagihan berikutnya tampil di sini dan di dasbor. Pengingat di ponsel hadir lewat aplikasi Android."
 }

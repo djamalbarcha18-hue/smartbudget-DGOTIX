@@ -2218,5 +2218,14 @@
   "subDateFromToday": "Pick today or a later date.",
   "subDeleteTitle": "Delete this subscription?",
   "subDeleteBody": "Its reminders stop. Expenses already recorded are kept.",
-  "subRemindersOff": "Reminders off"
+  "subRemindersOff": "Reminders off",
+  "subNotifRenew": "{count, plural, =0{Charged today: {amount}.} =1{{amount} will be charged tomorrow. Review or cancel it before then.} other{Renews in {count} days for {amount}. Still need it?}}",
+  "@subNotifRenew": {"placeholders": {"count": {"type": "int"}, "amount": {"type": "String"}}},
+  "subNotifTrial": "{count, plural, =0{Your free trial ends today; {amount} is then charged automatically.} =1{Your free trial ends tomorrow, then {amount} is charged automatically. Keep it?} other{Your free trial ends in {count} days, then {amount} is charged automatically. Keep it?}}",
+  "@subNotifTrial": {"placeholders": {"count": {"type": "int"}, "amount": {"type": "String"}}},
+  "subNotifPlanEnds": "{count, plural, =0{Your plan ends today.} =1{Your plan ends tomorrow.} other{Your plan ends in {count} days.}}",
+  "@subNotifPlanEnds": {"placeholders": {"count": {"type": "int"}}},
+  "subNotifChannelRenew": "Subscription renewals",
+  "subNotifChannelTrial": "Free trial endings",
+  "subWebNote": "On the web, upcoming charges show here and on the dashboard. Phone reminders come with the Android app."
 }

@@ -1890,5 +1890,11 @@
   "subDateFromToday": "Escolha hoje ou uma data posterior.",
   "subDeleteTitle": "Excluir esta assinatura?",
   "subDeleteBody": "Os lembretes param. As despesas já registradas são mantidas.",
-  "subRemindersOff": "Lembretes desligados"
+  "subRemindersOff": "Lembretes desligados",
+  "subNotifRenew": "{count, plural, =0{Cobrado hoje: {amount}.} =1{{amount} será cobrado amanhã. Revise ou cancele antes.} other{Renova em {count} dias por {amount}. Ainda precisa?}}",
+  "subNotifTrial": "{count, plural, =0{Seu teste grátis termina hoje; depois {amount} é cobrado automaticamente.} =1{Seu teste grátis termina amanhã e depois {amount} é cobrado automaticamente. Continuar?} other{Seu teste grátis termina em {count} dias e depois {amount} é cobrado automaticamente. Continuar?}}",
+  "subNotifPlanEnds": "{count, plural, =0{Seu plano termina hoje.} =1{Seu plano termina amanhã.} other{Seu plano termina em {count} dias.}}",
+  "subNotifChannelRenew": "Renovações de assinaturas",
+  "subNotifChannelTrial": "Fim de testes grátis",
+  "subWebNote": "Na web, as próximas cobranças aparecem aqui e no painel. Os lembretes no celular vêm com o app Android."
 }

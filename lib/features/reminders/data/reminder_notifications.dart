@@ -20,6 +20,25 @@ abstract class ReminderNotifications {
   /// shell opens quick entry and clears it.
   static final ValueNotifier<bool> tapped = ValueNotifier<bool>(false);
 
+  /// Payloads of subscription reminders start with this, then the
+  /// subscription's id.
+  static const String subscriptionPayloadPrefix = 'sub:';
+
+  /// The subscription whose reminder was tapped (also one that opened the
+  /// app); the subscriptions scheduler opens it and clears this.
+  static final ValueNotifier<String?> subscriptionTapped =
+      ValueNotifier<String?>(null);
+
+  static void _onPayload(String? payload) {
+    if (payload == reminderPayload) {
+      tapped.value = true;
+    } else if (payload != null &&
+        payload.startsWith(subscriptionPayloadPrefix)) {
+      subscriptionTapped.value =
+          payload.substring(subscriptionPayloadPrefix.length);
+    }
+  }
+
   /// Prepares the plugin and notes a tap that launched the app.
   Future<void> init();
 
@@ -79,17 +98,13 @@ class _AndroidReminders extends ReminderNotifications {
       settings: const InitializationSettings(
         android: AndroidInitializationSettings('ic_stat_reminder'),
       ),
-      onDidReceiveNotificationResponse: (NotificationResponse r) {
-        if (r.payload == reminderPayload) {
-          ReminderNotifications.tapped.value = true;
-        }
-      },
+      onDidReceiveNotificationResponse: (NotificationResponse r) =>
+          ReminderNotifications._onPayload(r.payload),
     );
     final NotificationAppLaunchDetails? launch =
         await _plugin.getNotificationAppLaunchDetails();
-    if ((launch?.didNotificationLaunchApp ?? false) &&
-        launch?.notificationResponse?.payload == reminderPayload) {
-      ReminderNotifications.tapped.value = true;
+    if (launch?.didNotificationLaunchApp ?? false) {
+      ReminderNotifications._onPayload(launch?.notificationResponse?.payload);
     }
   }
 
