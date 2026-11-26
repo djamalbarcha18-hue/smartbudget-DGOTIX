@@ -62,7 +62,7 @@ Subscription {
   ruleId             String          // القاعدة المتكررة التي تحمل المبلغ والعملة والدورة والمحفظة
   kind               digital | mobile
   provider           String          // "Netflix" أو "Djezzy"، أو اسم يكتبه المستخدم
-  catalogId          String?         // مفتاح في الكتالوج الثابت إن اختير منه (§5.2)
+  catalogId          String?         // مفتاح في الكتالوج الثابت إن اختير منه (§5.3)
   planName           String?         // "باقة 2000 دج شهرية"
   mobileType         internet | calls | sms | mixed | topup ?   // لباقات الهاتف
   country            String?         // "DZ" لترتيب الشركات
