@@ -1923,5 +1923,15 @@
   "subStatusEnded": "Përfunduar",
   "subNotifKeep": "Mbaje",
   "subNotifCancel": "Anulo tani",
-  "subKeptNote": "U mbajt: pa kujtesa deri në rinovimin e radhës."
+  "subKeptNote": "U mbajt: pa kujtesa deri në rinovimin e radhës.",
+  "subDueTitle": "U tërhoq pagesa?",
+  "subDueQuestion": "{name}: u tërhoqën {amount} më {date}?",
+  "subDueYes": "Po, u tërhoq",
+  "subDueMine": "E regjistrova vetë",
+  "subDueNo": "Nuk u tërhoq",
+  "subDueAmountTitle": "Shuma e tërhequr",
+  "subDueForFuture": "Përdore këtë shumë për rinovimet e ardhshme",
+  "subDueNoMatch": "Asnjë shpenzim i ngjashëm rreth asaj date. Regjistroje me \"Po, u tërhoq\".",
+  "subDuePick": "Cili shpenzim është?",
+  "subDueBanner": "{count, plural, =1{Një pagesë abonimi pret përgjigjen tënde} other{{count} pagesa abonimesh presin përgjigjen tënde}}"
 }

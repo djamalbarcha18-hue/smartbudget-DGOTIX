@@ -1923,5 +1923,15 @@
   "subStatusEnded": "ختم",
   "subNotifKeep": "رکھیں",
   "subNotifCancel": "ابھی منسوخ کریں",
-  "subKeptNote": "رکھا گیا: اگلی تجدید تک کوئی یاد دہانی نہیں۔"
+  "subKeptNote": "رکھا گیا: اگلی تجدید تک کوئی یاد دہانی نہیں۔",
+  "subDueTitle": "کیا کٹوتی ہوئی؟",
+  "subDueQuestion": "{name}: کیا {date} کو {amount} کٹے؟",
+  "subDueYes": "ہاں، کٹے",
+  "subDueMine": "میں نے خود درج کیا",
+  "subDueNo": "نہیں کٹے",
+  "subDueAmountTitle": "کٹی ہوئی رقم",
+  "subDueForFuture": "اگلی تجدیدوں کے لیے یہی رقم رکھیں",
+  "subDueNoMatch": "اس تاریخ کے آس پاس ملتا جلتا خرچ نہیں۔ «ہاں، کٹے» سے درج کریں۔",
+  "subDuePick": "کون سا خرچ ہے؟",
+  "subDueBanner": "{count, plural, =1{ایک سبسکرپشن کٹوتی آپ کے جواب کی منتظر ہے} other{{count} سبسکرپشن کٹوتیاں آپ کے جواب کی منتظر ہیں}}"
 }

@@ -2255,5 +2255,17 @@
   "subStatusEnded": "Ended",
   "subNotifKeep": "Keep it",
   "subNotifCancel": "Cancel now",
-  "subKeptNote": "Kept: no more reminders until the next renewal."
+  "subKeptNote": "Kept: no more reminders until the next renewal.",
+  "subDueTitle": "Was it charged?",
+  "subDueQuestion": "{name}: was {amount} charged on {date}?",
+  "@subDueQuestion": {"placeholders": {"name": {"type": "String"}, "amount": {"type": "String"}, "date": {"type": "String"}}},
+  "subDueYes": "Yes, charged",
+  "subDueMine": "I recorded it myself",
+  "subDueNo": "Not charged",
+  "subDueAmountTitle": "Amount charged",
+  "subDueForFuture": "Use this amount for the next renewals",
+  "subDueNoMatch": "No similar expense around that date. Record it with \"Yes, charged\".",
+  "subDuePick": "Which expense is it?",
+  "subDueBanner": "{count, plural, =1{A subscription charge is waiting for your answer} other{{count} subscription charges are waiting for your answer}}",
+  "@subDueBanner": {"placeholders": {"count": {"type": "int"}}}
 }

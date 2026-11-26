@@ -1923,5 +1923,15 @@
   "subStatusEnded": "Terminé",
   "subNotifKeep": "Le garder",
   "subNotifCancel": "Résilier",
-  "subKeptNote": "Gardé : plus de rappels jusqu'au prochain renouvellement."
+  "subKeptNote": "Gardé : plus de rappels jusqu'au prochain renouvellement.",
+  "subDueTitle": "A-t-il été prélevé ?",
+  "subDueQuestion": "{name} : {amount} ont-ils été prélevés le {date} ?",
+  "subDueYes": "Oui, prélevé",
+  "subDueMine": "Je l'ai déjà noté",
+  "subDueNo": "Pas prélevé",
+  "subDueAmountTitle": "Montant prélevé",
+  "subDueForFuture": "Utiliser ce montant pour les prochains renouvellements",
+  "subDueNoMatch": "Aucune dépense semblable autour de cette date. Notez-la avec « Oui, prélevé ».",
+  "subDuePick": "Quelle dépense est-ce ?",
+  "subDueBanner": "{count, plural, =1{Un prélèvement d'abonnement attend votre réponse} other{{count} prélèvements d'abonnements attendent votre réponse}}"
 }

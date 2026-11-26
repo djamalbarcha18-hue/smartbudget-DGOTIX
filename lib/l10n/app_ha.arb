@@ -1923,5 +1923,15 @@
   "subStatusEnded": "Ya ƙare",
   "subNotifKeep": "Ci gaba",
   "subNotifCancel": "Soke yanzu",
-  "subKeptNote": "An ci gaba: babu tunatarwa har sabuntawa na gaba."
+  "subKeptNote": "An ci gaba: babu tunatarwa har sabuntawa na gaba.",
+  "subDueTitle": "An cire?",
+  "subDueQuestion": "{name}: an cire {amount} a {date}?",
+  "subDueYes": "Eh, an cire",
+  "subDueMine": "Na rubuta da kaina",
+  "subDueNo": "Ba a cire ba",
+  "subDueAmountTitle": "Adadin da aka cire",
+  "subDueForFuture": "Yi amfani da wannan adadin don sabuntawa masu zuwa",
+  "subDueNoMatch": "Babu kashe-kashe mai kama da shi kusa da wannan rana. Rubuta shi da \"Eh, an cire\".",
+  "subDuePick": "Wane kashe-kashe ne?",
+  "subDueBanner": "{count, plural, =1{Cirewar biyan kuɗi 1 tana jiran amsarka} other{Cirewar biyan kuɗi {count} suna jiran amsarka}}"
 }

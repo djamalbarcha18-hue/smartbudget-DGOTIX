@@ -1923,5 +1923,15 @@
   "subStatusEnded": "समाप्त",
   "subNotifKeep": "रखें",
   "subNotifCancel": "अभी रद्द करें",
-  "subKeptNote": "रखा गया: अगले नवीनीकरण तक कोई रिमाइंडर नहीं।"
+  "subKeptNote": "रखा गया: अगले नवीनीकरण तक कोई रिमाइंडर नहीं।",
+  "subDueTitle": "क्या कटौती हुई?",
+  "subDueQuestion": "{name}: क्या {date} को {amount} कटे?",
+  "subDueYes": "हाँ, कटे",
+  "subDueMine": "मैंने खुद दर्ज किया",
+  "subDueNo": "नहीं कटे",
+  "subDueAmountTitle": "कटी हुई राशि",
+  "subDueForFuture": "अगले नवीनीकरणों के लिए यही राशि रखें",
+  "subDueNoMatch": "उस तारीख के आसपास कोई मिलता-जुलता खर्च नहीं। \"हाँ, कटे\" से दर्ज करें।",
+  "subDuePick": "कौन-सा खर्च है?",
+  "subDueBanner": "{count, plural, =1{एक सदस्यता कटौती आपके जवाब का इंतज़ार कर रही है} other{{count} सदस्यता कटौतियाँ आपके जवाब का इंतज़ार कर रही हैं}}"
 }

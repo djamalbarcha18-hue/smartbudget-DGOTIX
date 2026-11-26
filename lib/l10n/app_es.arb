@@ -1923,5 +1923,15 @@
   "subStatusEnded": "Terminada",
   "subNotifKeep": "Mantener",
   "subNotifCancel": "Cancelar ahora",
-  "subKeptNote": "Mantenida: sin avisos hasta la próxima renovación."
+  "subKeptNote": "Mantenida: sin avisos hasta la próxima renovación.",
+  "subDueTitle": "¿Se cobró?",
+  "subDueQuestion": "{name}: ¿se cobraron {amount} el {date}?",
+  "subDueYes": "Sí, se cobró",
+  "subDueMine": "Ya lo registré",
+  "subDueNo": "No se cobró",
+  "subDueAmountTitle": "Importe cobrado",
+  "subDueForFuture": "Usar este importe en las próximas renovaciones",
+  "subDueNoMatch": "No hay un gasto parecido cerca de esa fecha. Regístralo con «Sí, se cobró».",
+  "subDuePick": "¿Qué gasto es?",
+  "subDueBanner": "{count, plural, =1{Un cobro de suscripción espera tu respuesta} other{{count} cobros de suscripciones esperan tu respuesta}}"
 }

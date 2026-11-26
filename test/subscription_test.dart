@@ -13,6 +13,7 @@ import 'package:smartbudget/features/subscriptions/domain/subscription_alerts.da
 import 'package:smartbudget/features/subscriptions/data/subscription_notifications.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_cancel.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_payments.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_schedule.dart';
 import 'package:smartbudget/features/sync/domain/sync_merge.dart';
 import 'package:smartbudget/features/sync/domain/sync_scope.dart';
@@ -555,6 +556,84 @@ void main() {
       expect(SubscriptionNotifications.parsePayload(p),
           (id: 'sub-1ab', charge: DateTime(2026, 12, 5)));
       expect(SubscriptionNotifications.parsePayload('sub-1ab'), isNull);
+    });
+  });
+
+  group('Was it charged?', () {
+    RecurringRule monthlyOn(DateTime next) => SubscriptionSchedule.ruleFor(
+          id: 'sub-p',
+          provider: 'Netflix',
+          amount: const Money(1500, 'USD'),
+          frequency: RecurrenceFrequency.monthly,
+          nextCharge: next,
+          createdAt: DateTime(2026, 11, 1),
+        );
+    Transaction tx(String id, DateTime d, int minor,
+            {String cur = 'USD',
+            TransactionType type = TransactionType.expense}) =>
+        Transaction(
+          id: id,
+          date: d,
+          type: type,
+          category: 'x',
+          amount: Money(minor, cur),
+          createdAt: d,
+        );
+
+    test('the first charge counts, and nothing before it is due', () {
+      final RecurringRule r = monthlyOn(DateTime(2026, 12, 15));
+      expect(SubscriptionPayments.due(r, DateTime(2026, 12, 14)), isEmpty);
+      expect(SubscriptionPayments.due(r, DateTime(2026, 12, 15)),
+          <DateTime>[DateTime(2026, 12, 15)]);
+      expect(SubscriptionPayments.due(r, DateTime(2027, 1, 20)),
+          <DateTime>[DateTime(2026, 12, 15), DateTime(2027, 1, 15)]);
+      // Answered up to the 15th: the next one only.
+      expect(
+          SubscriptionPayments.due(
+              r.copyWith(lastPosted: DateTime(2026, 12, 15)),
+              DateTime(2027, 1, 20)),
+          <DateTime>[DateTime(2027, 1, 15)]);
+      // Stopped (cancelled): nothing.
+      expect(
+          SubscriptionPayments.due(
+              r.copyWith(active: false), DateTime(2027, 1, 20)),
+          isEmpty);
+    });
+
+    test('a long absence asks for twelve at most', () {
+      final RecurringRule r = monthlyOn(DateTime(2026, 12, 15));
+      expect(SubscriptionPayments.due(r, DateTime(2029, 1, 1)).length,
+          SubscriptionPayments.maxWaiting);
+    });
+
+    test('an expense the user already recorded is offered, closest first',
+        () {
+      final RecurringRule r = monthlyOn(DateTime(2026, 12, 15));
+      final List<Transaction> found = SubscriptionPayments.candidates(
+        r,
+        DateTime(2026, 12, 15),
+        <Transaction>[
+          tx('far', DateTime(2026, 12, 20), 1500), // 5 days away
+          tx('dzd', DateTime(2026, 12, 15), 1500, cur: 'DZD'),
+          tx('income', DateTime(2026, 12, 15), 1500,
+              type: TransactionType.income),
+          tx('big', DateTime(2026, 12, 15), 2000), // +33%
+          tx('fees', DateTime(2026, 12, 16), 1620), // +8%, a day later
+          tx('exact', DateTime(2026, 12, 14), 1500), // a day earlier
+          tx('same', DateTime(2026, 12, 15), 1550),
+          tx('taken', DateTime(2026, 12, 15), 1500),
+          tx('rec-sub-p-20261215', DateTime(2026, 12, 15), 1500),
+        ],
+        linked: <String>{'taken'},
+      );
+      expect(found.map((Transaction t) => t.id),
+          <String>['same', 'exact', 'fees']);
+    });
+
+    test('ids already filed as charges', () {
+      expect(SubscriptionPayments.linkedIds(<Subscription>[netflix()]),
+          <String>{'rec-sub-nf-20261215'});
+      expect(SubscriptionPayments.key(DateTime(2027, 1, 5)), '2027-01-05');
     });
   });
 

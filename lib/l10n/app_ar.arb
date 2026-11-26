@@ -2122,5 +2122,15 @@
   "subStatusEnded": "منتهٍ",
   "subNotifKeep": "أبقِه",
   "subNotifCancel": "ألغِه الآن",
-  "subKeptNote": "تم: لا تذكيرات حتى التجديد التالي."
+  "subKeptNote": "تم: لا تذكيرات حتى التجديد التالي.",
+  "subDueTitle": "هل خُصم؟",
+  "subDueQuestion": "{name}: هل خُصم {amount} يوم {date}؟",
+  "subDueYes": "نعم، خُصم",
+  "subDueMine": "سجّلته بنفسي",
+  "subDueNo": "لم يُخصم",
+  "subDueAmountTitle": "المبلغ المخصوم",
+  "subDueForFuture": "اعتمد هذا المبلغ للتجديدات القادمة",
+  "subDueNoMatch": "لا مصروف مشابه حول هذا التاريخ. سجّله بـ«نعم، خُصم».",
+  "subDuePick": "أي مصروف هو؟",
+  "subDueBanner": "{count, plural, =1{خصم اشتراك ينتظر إجابتك} =2{خصما اشتراكين ينتظران إجابتك} few{{count} خصومات اشتراكات تنتظر إجابتك} other{{count} خصمًا للاشتراكات ينتظر إجابتك}}"
 }

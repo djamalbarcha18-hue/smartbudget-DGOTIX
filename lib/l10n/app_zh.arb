@@ -1923,5 +1923,15 @@
   "subStatusEnded": "已结束",
   "subNotifKeep": "保留",
   "subNotifCancel": "立即取消",
-  "subKeptNote": "已保留：下次续订前不再提醒。"
+  "subKeptNote": "已保留：下次续订前不再提醒。",
+  "subDueTitle": "扣款了吗？",
+  "subDueQuestion": "{name}：{date} 是否扣了 {amount}？",
+  "subDueYes": "是，已扣款",
+  "subDueMine": "我已自行记录",
+  "subDueNo": "没有扣款",
+  "subDueAmountTitle": "扣款金额",
+  "subDueForFuture": "以后的续订都使用这个金额",
+  "subDueNoMatch": "该日期附近没有类似的支出。请用“是，已扣款”记录。",
+  "subDuePick": "是哪一笔支出？",
+  "subDueBanner": "{count, plural, =1{有 1 笔订阅扣款等待你确认} other{有 {count} 笔订阅扣款等待你确认}}"
 }

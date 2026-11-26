@@ -1923,5 +1923,15 @@
   "subStatusEnded": "Završeno",
   "subNotifKeep": "Zadrži",
   "subNotifCancel": "Otkaži sada",
-  "subKeptNote": "Zadržano: nema podsjetnika do sljedeće obnove."
+  "subKeptNote": "Zadržano: nema podsjetnika do sljedeće obnove.",
+  "subDueTitle": "Je li naplaćeno?",
+  "subDueQuestion": "{name}: je li {date} naplaćeno {amount}?",
+  "subDueYes": "Da, naplaćeno",
+  "subDueMine": "Sam sam to upisao",
+  "subDueNo": "Nije naplaćeno",
+  "subDueAmountTitle": "Naplaćeni iznos",
+  "subDueForFuture": "Koristi ovaj iznos za sljedeće obnove",
+  "subDueNoMatch": "Nema sličnog troška oko tog datuma. Upišite ga sa „Da, naplaćeno“.",
+  "subDuePick": "Koji je to trošak?",
+  "subDueBanner": "{count, plural, =1{Jedna naplata pretplate čeka vaš odgovor} few{{count} naplate pretplata čekaju vaš odgovor} other{{count} naplata pretplata čeka vaš odgovor}}"
 }

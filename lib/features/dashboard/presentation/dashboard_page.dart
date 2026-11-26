@@ -51,6 +51,7 @@ import 'package:smartbudget/core/l10n/app_lang_context.dart';
 import 'package:smartbudget/design_system/components/ds_skeleton.dart';
 import 'package:smartbudget/features/sync/application/data_loading.dart';
 import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
+import 'package:smartbudget/features/subscriptions/presentation/subscription_due.dart';
 
 /// Live dashboard: KPIs and breakdowns computed from the user's transactions
 /// via [FinanceCalculator] (the SmartBudget rules). With no data, tiles show a
@@ -186,6 +187,9 @@ class DashboardPage extends ConsumerWidget {
             TripHomeCard(),
             SizedBox(height: gap),
           ],
+
+          // A subscription charge waiting for "was it charged?" (only then).
+          const SubscriptionDueBanner(),
 
           // ② Month pulse: budget used · health score · what's due soon.
           const _EqualRow(

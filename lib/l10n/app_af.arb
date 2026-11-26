@@ -1923,5 +1923,15 @@
   "subStatusEnded": "Geëindig",
   "subNotifKeep": "Hou dit",
   "subNotifCancel": "Kanselleer nou",
-  "subKeptNote": "Gehou: geen herinneringe tot die volgende hernuwing nie."
+  "subKeptNote": "Gehou: geen herinneringe tot die volgende hernuwing nie.",
+  "subDueTitle": "Is dit gedebiteer?",
+  "subDueQuestion": "{name}: is {amount} op {date} gedebiteer?",
+  "subDueYes": "Ja, gedebiteer",
+  "subDueMine": "Ek het dit self aangeteken",
+  "subDueNo": "Nie gedebiteer nie",
+  "subDueAmountTitle": "Gedebiteerde bedrag",
+  "subDueForFuture": "Gebruik hierdie bedrag vir die volgende hernuwings",
+  "subDueNoMatch": "Geen soortgelyke uitgawe rondom daardie datum nie. Teken dit aan met \"Ja, gedebiteer\".",
+  "subDuePick": "Watter uitgawe is dit?",
+  "subDueBanner": "{count, plural, =1{'n Intekeningdebiet wag op jou antwoord} other{{count} intekeningdebiete wag op jou antwoord}}"
 }

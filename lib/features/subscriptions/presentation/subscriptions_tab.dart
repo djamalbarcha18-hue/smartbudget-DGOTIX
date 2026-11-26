@@ -18,6 +18,7 @@ import 'package:smartbudget/features/subscriptions/application/subscriptions_con
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_cancel.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_schedule.dart';
+import 'package:smartbudget/features/subscriptions/presentation/subscription_due.dart';
 import 'package:smartbudget/features/subscriptions/presentation/subscription_editor_sheet.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -39,6 +40,7 @@ class SubscriptionsTab extends ConsumerWidget {
       );
     }
     final List<SubscriptionItem> items = ref.watch(subscriptionItemsProvider);
+    final List<DueCharge> due = ref.watch(subscriptionDueProvider);
     return ListView(
       padding: const EdgeInsets.all(DsSpacing.pageGutter),
       children: <Widget>[
@@ -57,6 +59,12 @@ class SubscriptionsTab extends ConsumerWidget {
           const _ReminderReach(),
         ],
         const SizedBox(height: DsSpacing.lg),
+        // "Was it charged?" first: an answer is waited for.
+        for (final DueCharge d in due) ...<Widget>[
+          SubscriptionDueCard(
+              key: ValueKey<String>('${d.item.sub.id}-${d.date}'), due: d),
+          const SizedBox(height: DsSpacing.md),
+        ],
         if (items.isEmpty)
           Padding(
             padding: const EdgeInsets.only(top: DsSpacing.xl),

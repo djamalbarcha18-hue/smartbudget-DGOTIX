@@ -1923,5 +1923,15 @@
   "subStatusEnded": "Beëindigd",
   "subNotifKeep": "Houden",
   "subNotifCancel": "Nu opzeggen",
-  "subKeptNote": "Gehouden: geen herinneringen tot de volgende verlenging."
+  "subKeptNote": "Gehouden: geen herinneringen tot de volgende verlenging.",
+  "subDueTitle": "Is het afgeschreven?",
+  "subDueQuestion": "{name}: is {amount} afgeschreven op {date}?",
+  "subDueYes": "Ja, afgeschreven",
+  "subDueMine": "Zelf al geboekt",
+  "subDueNo": "Niet afgeschreven",
+  "subDueAmountTitle": "Afgeschreven bedrag",
+  "subDueForFuture": "Dit bedrag gebruiken voor de volgende verlengingen",
+  "subDueNoMatch": "Geen vergelijkbare uitgave rond die datum. Boek het met 'Ja, afgeschreven'.",
+  "subDuePick": "Welke uitgave is het?",
+  "subDueBanner": "{count, plural, =1{Een abonnementsafschrijving wacht op je antwoord} other{{count} abonnementsafschrijvingen wachten op je antwoord}}"
 }

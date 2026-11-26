@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/storage/local_list_store.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
 import 'package:smartbudget/features/auth/application/auth_controller.dart';
@@ -10,6 +11,11 @@ import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/recurring/domain/recurrence_engine.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_cancel.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_payments.dart';
+import 'package:smartbudget/features/exchange_rates/application/rates_controller.dart';
+import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
+import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/wallets/domain/wallet.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_schedule.dart';
 
 /// The user's subscriptions, on the device (synced and backed up with the
@@ -58,6 +64,23 @@ final subscriptionItemsProvider = Provider<List<SubscriptionItem>>((ref) {
     if (x == null || y == null) return x == null ? (y == null ? 0 : 1) : -1;
     return x.compareTo(y);
   });
+  return out;
+});
+
+/// A charge waiting for "was it charged?": the oldest per subscription.
+typedef DueCharge = ({SubscriptionItem item, DateTime date, int more});
+
+/// Charges to confirm, oldest first.
+final subscriptionDueProvider = Provider<List<DueCharge>>((ref) {
+  final DateTime now = AppClock.now();
+  final List<DueCharge> out = <DueCharge>[
+    for (final SubscriptionItem i in ref.watch(subscriptionItemsProvider))
+      if (i.rule != null)
+        if (SubscriptionPayments.due(i.rule!, now) case final List<DateTime> d
+            when d.isNotEmpty)
+          (item: i, date: d.first, more: d.length - 1),
+  ];
+  out.sort((DueCharge a, DueCharge b) => a.date.compareTo(b.date));
   return out;
 });
 
@@ -134,6 +157,73 @@ class SubscriptionActions {
       }
     }
     return next;
+  }
+
+  // ── "Was it charged?" ────────────────────────────────────────────────
+
+  /// Yes: records [amount] as an expense on [date] (in the existing expense
+  /// engine, under Subscriptions) and files it under the subscription. The
+  /// expense id is fixed per charge, so answering twice, or on two devices,
+  /// records it once. [forFuture]: later renewals use [amount] too.
+  Future<void> confirmCharge(SubscriptionItem item, DateTime date, Money amount,
+      {bool forFuture = false}) async {
+    final RecurringRule? rule = item.rule;
+    if (rule == null) return;
+    final DateTime day = RecurrenceEngine.dateOnly(date);
+    Transaction txn = RecurrenceEngine.materialize(
+        rule.copyWith(amount: amount), day,
+        createdAt: AppClock.now());
+    final String base = _ref.read(baseCurrencyProvider);
+    if (amount.currencyCode != base) {
+      txn = txn.copyWith(
+          baseAmount:
+              WalletMath.baseValue(amount, base, _ref.read(ratesProvider)));
+    }
+    await _ref.read(financeRepositoryProvider).importMany(<Transaction>[txn]);
+    await _answered(item, day,
+        txnId: txn.id, amount: forFuture ? amount : null);
+  }
+
+  /// "I recorded it myself": files [txn] as that charge (nothing new is
+  /// written, so nothing is counted twice).
+  Future<void> linkCharge(
+          SubscriptionItem item, DateTime date, Transaction txn) =>
+      _answered(item, RecurrenceEngine.dateOnly(date), txnId: txn.id);
+
+  /// Not charged (cancelled in time, a free month…): nothing is recorded.
+  Future<void> skipCharge(SubscriptionItem item, DateTime date) =>
+      _answered(item, RecurrenceEngine.dateOnly(date));
+
+  Future<void> _answered(SubscriptionItem item, DateTime day,
+      {String? txnId, Money? amount}) async {
+    final RecurringRule? rule = item.rule;
+    if (rule == null) return;
+    // The latest rule (the item's may be a moment old); never moved back.
+    await _ref.read(recurringRulesProvider.future);
+    final RecurringRule now = _rules.current
+            .where((RecurringRule r) => r.id == rule.id)
+            .firstOrNull ??
+        rule;
+    RecurringRule next =
+        day.isAfter(now.lastPosted) ? now.copyWith(lastPosted: day) : now;
+    if (amount != null) next = next.copyWith(amount: amount);
+    await _rules.update(next);
+    // The stored subscription (the item's may miss a payment filed a moment
+    // ago, which would then be lost).
+    final Subscription s = (await _store.all())
+            .where((Subscription x) => x.id == item.sub.id)
+            .firstOrNull ??
+        item.sub;
+    await _store.upsert(s.copyWith(
+      payments: txnId == null
+          ? null
+          : <String, String>{
+              ...s.payments,
+              SubscriptionPayments.key(day): txnId,
+            },
+      // The trial's end has passed: it is an ordinary subscription now.
+      status: s.trialEndsOn(day) ? SubscriptionStatus.active : null,
+    ));
   }
 
   /// "Keep it": no more reminders for the charge on [charge]; they come back

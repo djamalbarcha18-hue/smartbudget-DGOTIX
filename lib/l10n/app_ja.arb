@@ -1923,5 +1923,15 @@
   "subStatusEnded": "終了",
   "subNotifKeep": "続ける",
   "subNotifCancel": "今すぐ解約",
-  "subKeptNote": "続けます：次回の更新までリマインダーはありません。"
+  "subKeptNote": "続けます：次回の更新までリマインダーはありません。",
+  "subDueTitle": "請求されましたか？",
+  "subDueQuestion": "{name}：{date} に {amount} が請求されましたか？",
+  "subDueYes": "はい、請求された",
+  "subDueMine": "自分で記録済み",
+  "subDueNo": "請求されていない",
+  "subDueAmountTitle": "請求額",
+  "subDueForFuture": "次回以降の更新もこの金額にする",
+  "subDueNoMatch": "その日付の前後に似た支出はありません。「はい、請求された」で記録してください。",
+  "subDuePick": "どの支出ですか？",
+  "subDueBanner": "{count, plural, =1{サブスクの請求が 1 件、回答を待っています} other{サブスクの請求が {count} 件、回答を待っています}}"
 }
