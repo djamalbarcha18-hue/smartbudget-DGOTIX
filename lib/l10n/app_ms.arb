@@ -1949,5 +1949,7 @@
   "subKindDigital": "Digital",
   "subKindMobile": "Telefon & internet",
   "subNoCard": "Tiada kad",
-  "subEndedTitle": "Tamat dan dibatalkan"
+  "subEndedTitle": "Tamat dan dibatalkan",
+  "subTrackPayments": "Rekod caj dalam perbelanjaan saya",
+  "subTrackPaymentsHelp": "Pada setiap hari caj, bertanya sama ada sudah dicaj dan menambahnya ke bajet anda."
 }

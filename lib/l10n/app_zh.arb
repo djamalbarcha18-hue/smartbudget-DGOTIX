@@ -1949,5 +1949,7 @@
   "subKindDigital": "数字服务",
   "subKindMobile": "电话与网络",
   "subNoCard": "无卡片",
-  "subEndedTitle": "已结束和已取消"
+  "subEndedTitle": "已结束和已取消",
+  "subTrackPayments": "在我的支出中记录扣款",
+  "subTrackPaymentsHelp": "每次扣款当天询问是否已扣款，并将其计入你的预算。"
 }

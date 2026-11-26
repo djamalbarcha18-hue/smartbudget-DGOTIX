@@ -1949,5 +1949,7 @@
   "subKindDigital": "Digital",
   "subKindMobile": "Telepon & internet",
   "subNoCard": "Tanpa kartu",
-  "subEndedTitle": "Berakhir dan dibatalkan"
+  "subEndedTitle": "Berakhir dan dibatalkan",
+  "subTrackPayments": "Catat tagihan di pengeluaran saya",
+  "subTrackPaymentsHelp": "Di setiap hari tagihan, menanyakan apakah sudah ditagih lalu menambahkannya ke anggaran Anda."
 }

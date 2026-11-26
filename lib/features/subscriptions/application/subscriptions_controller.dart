@@ -75,7 +75,8 @@ final subscriptionDueProvider = Provider<List<DueCharge>>((ref) {
   final DateTime now = AppClock.now();
   final List<DueCharge> out = <DueCharge>[
     for (final SubscriptionItem i in ref.watch(subscriptionItemsProvider))
-      if (i.rule != null)
+      // Only where the user chose to record charges.
+      if (i.rule != null && i.sub.trackPayments)
         if (SubscriptionPayments.due(i.rule!, now) case final List<DateTime> d
             when d.isNotEmpty)
           (item: i, date: d.first, more: d.length - 1),

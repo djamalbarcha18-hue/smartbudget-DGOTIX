@@ -1949,5 +1949,7 @@
   "subKindDigital": "Digital",
   "subKindMobile": "Telefon & Internet",
   "subNoCard": "Ohne Karte",
-  "subEndedTitle": "Beendet und gekündigt"
+  "subEndedTitle": "Beendet und gekündigt",
+  "subTrackPayments": "Abbuchungen in meinen Ausgaben erfassen",
+  "subTrackPaymentsHelp": "Fragt an jedem Abbuchungstag, ob abgebucht wurde, und trägt es in dein Budget ein."
 }

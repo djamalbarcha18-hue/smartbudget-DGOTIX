@@ -1949,5 +1949,7 @@
   "subKindDigital": "Dijital",
   "subKindMobile": "Telefon ve internet",
   "subNoCard": "Kartsız",
-  "subEndedTitle": "Sona eren ve iptal edilen"
+  "subEndedTitle": "Sona eren ve iptal edilen",
+  "subTrackPayments": "Ödemeleri harcamalarıma kaydet",
+  "subTrackPaymentsHelp": "Her ödeme günü çekilip çekilmediğini sorar ve bütçene ekler."
 }

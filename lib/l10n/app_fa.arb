@@ -1949,5 +1949,7 @@
   "subKindDigital": "دیجیتال",
   "subKindMobile": "تلفن و اینترنت",
   "subNoCard": "بدون کارت",
-  "subEndedTitle": "پایان‌یافته و لغوشده"
+  "subEndedTitle": "پایان‌یافته و لغوشده",
+  "subTrackPayments": "برداشت‌ها را در هزینه‌هایم ثبت کن",
+  "subTrackPaymentsHelp": "در روز هر برداشت می‌پرسد آیا برداشت شد و آن را به بودجه‌تان اضافه می‌کند."
 }

@@ -340,4 +340,34 @@ void main() {
       expect(SubscriptionPayments.due(r, AppClock.now()), isEmpty);
     });
   });
+
+  test('"was it charged?" only where the user chose to record charges',
+      () async {
+    final SubscriptionActions a = c.read(subscriptionActionsProvider);
+    final DateTime now = AppClock.now();
+    Subscription sub(String id, {bool track = false}) => Subscription(
+          id: id,
+          ruleId: id,
+          kind: SubscriptionKind.digital,
+          provider: id,
+          trackPayments: track,
+          createdAt: now,
+          updatedAt: now,
+        );
+    for (final Subscription s in <Subscription>[
+      sub('sub-off'),
+      sub('sub-on', track: true),
+    ]) {
+      await a.save(s,
+          amount: const Money(1000, 'USD'),
+          frequency: RecurrenceFrequency.monthly,
+          nextCharge: _today());
+    }
+    final ProviderSubscription<List<DueCharge>> due =
+        c.listen(subscriptionDueProvider, (_, __) {});
+    await c.read(subscriptionsProvider.future);
+    await c.read(recurringRulesProvider.future);
+    await Future<void>.delayed(Duration.zero);
+    expect(due.read().map((DueCharge d) => d.item.sub.id), <String>['sub-on']);
+  });
 }

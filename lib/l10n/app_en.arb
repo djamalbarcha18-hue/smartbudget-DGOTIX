@@ -2284,5 +2284,7 @@
   "subKindDigital": "Digital",
   "subKindMobile": "Phone & internet",
   "subNoCard": "No card",
-  "subEndedTitle": "Ended and cancelled"
+  "subEndedTitle": "Ended and cancelled",
+  "subTrackPayments": "Record charges in my expenses",
+  "subTrackPaymentsHelp": "On each charge day, asks whether it was charged and adds it to your budget."
 }

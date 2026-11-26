@@ -1949,5 +1949,7 @@
   "subKindDigital": "Kidijitali",
   "subKindMobile": "Simu na intaneti",
   "subNoCard": "Bila kadi",
-  "subEndedTitle": "Vilivyoisha na kusitishwa"
+  "subEndedTitle": "Vilivyoisha na kusitishwa",
+  "subTrackPayments": "Rekodi makato kwenye matumizi yangu",
+  "subTrackPaymentsHelp": "Kila siku ya makato huuliza kama yamekatwa na kuyaongeza kwenye bajeti yako."
 }

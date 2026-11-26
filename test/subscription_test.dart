@@ -120,6 +120,10 @@ void main() {
       expect(s.status, SubscriptionStatus.active);
       expect(s.reminderDays, isEmpty);
       expect(s.payments, isEmpty);
+      // Recording charges is opt-in.
+      expect(s.trackPayments, isFalse);
+      expect(Subscription.fromJson(netflix().copyWith(trackPayments: true).toJson())
+          .trackPayments, isTrue);
       expect(s.updatedAt, s.createdAt);
     });
 

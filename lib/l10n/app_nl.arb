@@ -1949,5 +1949,7 @@
   "subKindDigital": "Digitaal",
   "subKindMobile": "Telefoon & internet",
   "subNoCard": "Geen kaart",
-  "subEndedTitle": "Beëindigd en opgezegd"
+  "subEndedTitle": "Beëindigd en opgezegd",
+  "subTrackPayments": "Afschrijvingen bij mijn uitgaven boeken",
+  "subTrackPaymentsHelp": "Vraagt op elke afschrijfdag of er is afgeschreven en zet het in je budget."
 }

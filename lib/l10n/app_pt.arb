@@ -1949,5 +1949,7 @@
   "subKindDigital": "Digitais",
   "subKindMobile": "Telefone e internet",
   "subNoCard": "Sem cartão",
-  "subEndedTitle": "Encerradas e canceladas"
+  "subEndedTitle": "Encerradas e canceladas",
+  "subTrackPayments": "Registrar as cobranças nas minhas despesas",
+  "subTrackPaymentsHelp": "Em cada dia de cobrança pergunta se foi cobrado e adiciona ao seu orçamento."
 }

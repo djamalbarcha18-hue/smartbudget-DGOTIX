@@ -1949,5 +1949,7 @@
   "subKindDigital": "디지털",
   "subKindMobile": "전화·인터넷",
   "subNoCard": "카드 없음",
-  "subEndedTitle": "종료 및 해지됨"
+  "subEndedTitle": "종료 및 해지됨",
+  "subTrackPayments": "결제를 내 지출에 기록",
+  "subTrackPaymentsHelp": "결제일마다 결제되었는지 묻고 예산에 추가해요."
 }
