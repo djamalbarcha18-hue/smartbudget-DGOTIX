@@ -89,6 +89,11 @@ Future<ProviderContainer> _withSamples() async {
       amount: const Money(20000, 'USD'),
       frequency: RecurrenceFrequency.yearly,
       nextCharge: _inDays(40));
+  // Charged today: shows "was it charged?".
+  await a.save(sub('sub-5', 'YouTube Premium', card: 'Edahabia'),
+      amount: const Money(119, 'USD'),
+      frequency: RecurrenceFrequency.monthly,
+      nextCharge: _inDays(0));
   // Loaded and kept listened to, as on a running app, so the screens show
   // the data (a test's fake clock can't finish the first read itself).
   c.listen(subscriptionsProvider, (_, __) {});
