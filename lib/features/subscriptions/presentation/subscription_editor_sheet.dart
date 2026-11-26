@@ -216,7 +216,11 @@ class _SubscriptionEditorSheetState
     // The phone asks once (Android 13+); refused, the list says how to turn
     // them on.
     if (_remindersOn && SubscriptionNotifications.supported) {
-      await ReminderNotifications.instance.requestPermission();
+      try {
+        await ReminderNotifications.instance.requestPermission();
+      } catch (_) {
+        // Saved all the same; the list shows when notifications are off.
+      }
     }
     if (mounted) Navigator.of(context).pop();
   }
