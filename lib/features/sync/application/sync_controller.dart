@@ -23,6 +23,7 @@ import 'package:smartbudget/features/portfolio/application/portfolio_controller.
 import 'package:smartbudget/features/recurring/application/recurring_controller.dart';
 import 'package:smartbudget/features/seasons/application/seasons_controller.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
+import 'package:smartbudget/features/subscriptions/application/subscriptions_controller.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/sync/data/sync_remote.dart';
 import 'package:smartbudget/features/sync/domain/sync_merge.dart';
@@ -173,6 +174,7 @@ class SyncController extends Notifier<SyncStatus> {
       ref.read(tripStoreProvider).watchAll(),
       ref.read(metalStoreProvider).watchAll(),
       ref.read(metalSaleStoreProvider).watchAll(),
+      ref.read(subscriptionStoreProvider).watchAll(),
     ]) {
       _subs.add(s.listen((_) => changed()));
     }
