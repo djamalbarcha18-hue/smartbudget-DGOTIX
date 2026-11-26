@@ -42,3 +42,13 @@ jobs:
           name: screenshots
           path: test_screens/goldens/*.png
           if-no-files-found: error
+
+      # The same pictures in the log too (base64 between markers), for a
+      # reviewer that can read logs but not download artifacts.
+      - name: Print pictures
+        run: |
+          for f in test_screens/goldens/*.png; do
+            echo "SHOT-BEGIN $(basename "$f")"
+            base64 -w 76 "$f"
+            echo "SHOT-END"
+          done
