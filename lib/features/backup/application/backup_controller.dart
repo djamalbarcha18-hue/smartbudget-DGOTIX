@@ -24,6 +24,7 @@ import 'package:smartbudget/features/transactions/application/custom_categories_
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/metals/application/metals_controller.dart';
+import 'package:smartbudget/features/subscriptions/application/subscriptions_controller.dart';
 import 'package:smartbudget/features/trips/application/trips_controller.dart';
 import 'package:smartbudget/features/wallets/application/wallets_controller.dart';
 import 'package:smartbudget/features/zakat/application/zakat_backup.dart';
@@ -90,6 +91,7 @@ class BackupService {
       trips: await _ref.read(tripStoreProvider).all(),
       metals: await _ref.read(metalStoreProvider).all(),
       metalSales: await _ref.read(metalSaleStoreProvider).all(),
+      subscriptions: await _ref.read(subscriptionStoreProvider).all(),
       exportedAt: AppClock.now(),
       baseCurrency: _ref.read(baseCurrencyProvider),
       transactions: txns,
@@ -174,6 +176,7 @@ class BackupService {
     await _ref.read(tripStoreProvider).replaceAll(data.trips);
     await _ref.read(metalStoreProvider).replaceAll(data.metals);
     await _ref.read(metalSaleStoreProvider).replaceAll(data.metalSales);
+    await _ref.read(subscriptionStoreProvider).replaceAll(data.subscriptions);
     if (setBaseCurrency &&
         data.baseCurrency != _ref.read(baseCurrencyProvider)) {
       await _ref.read(baseCurrencyProvider.notifier).set(data.baseCurrency);
@@ -208,7 +211,10 @@ class BackupService {
             await _ref.read(walletMoveStoreProvider).importMany(data.walletMoves) +
             await _ref.read(tripStoreProvider).importMany(data.trips) +
             await _ref.read(metalStoreProvider).importMany(data.metals) +
-            await _ref.read(metalSaleStoreProvider).importMany(data.metalSales);
+            await _ref.read(metalSaleStoreProvider).importMany(data.metalSales) +
+            await _ref
+                .read(subscriptionStoreProvider)
+                .importMany(data.subscriptions);
     return ImportResult(
       othersAdded: othersAdded,
       transactionsAdded: txAdded,

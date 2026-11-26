@@ -69,6 +69,10 @@ enum Feature {
   /// Recurring income / expense rules, counted.
   recurringRules,
 
+  /// Subscriptions to be reminded of before they are charged. The reminders
+  /// themselves are free on every plan; FREE keeps up to five at once.
+  subscriptions,
+
   /// The financial-health breakdown: strengths and weaknesses, the pillars
   /// and the recommendations. FREE sees the score, the risks and the
   /// emergency fund.
@@ -265,6 +269,11 @@ abstract final class FeatureCatalog {
     ),
     Feature.recurringRules: FeatureRule(
       feature: Feature.recurringRules,
+      minTier: Plan.free,
+      quotas: _freeItems5,
+    ),
+    Feature.subscriptions: FeatureRule(
+      feature: Feature.subscriptions,
       minTier: Plan.free,
       quotas: _freeItems5,
     ),

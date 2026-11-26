@@ -20,6 +20,30 @@ abstract class ReminderNotifications {
   /// shell opens quick entry and clears it.
   static final ValueNotifier<bool> tapped = ValueNotifier<bool>(false);
 
+  /// Payloads of subscription reminders start with this, then the
+  /// subscription's id.
+  static const String subscriptionPayloadPrefix = 'sub:';
+
+  /// A subscription reminder that was tapped (also one that opened the
+  /// app): what follows the prefix in its payload, and the button pressed
+  /// (null for the reminder itself). The subscriptions scheduler handles it
+  /// and clears this.
+  static final ValueNotifier<({String payload, String? action})?>
+      subscriptionTapped =
+      ValueNotifier<({String payload, String? action})?>(null);
+
+  static void _onPayload(String? payload, [String? action]) {
+    if (payload == reminderPayload) {
+      tapped.value = true;
+    } else if (payload != null &&
+        payload.startsWith(subscriptionPayloadPrefix)) {
+      subscriptionTapped.value = (
+        payload: payload.substring(subscriptionPayloadPrefix.length),
+        action: (action == null || action.isEmpty) ? null : action,
+      );
+    }
+  }
+
   /// Prepares the plugin and notes a tap that launched the app.
   Future<void> init();
 
@@ -79,17 +103,14 @@ class _AndroidReminders extends ReminderNotifications {
       settings: const InitializationSettings(
         android: AndroidInitializationSettings('ic_stat_reminder'),
       ),
-      onDidReceiveNotificationResponse: (NotificationResponse r) {
-        if (r.payload == reminderPayload) {
-          ReminderNotifications.tapped.value = true;
-        }
-      },
+      onDidReceiveNotificationResponse: (NotificationResponse r) =>
+          ReminderNotifications._onPayload(r.payload, r.actionId),
     );
     final NotificationAppLaunchDetails? launch =
         await _plugin.getNotificationAppLaunchDetails();
-    if ((launch?.didNotificationLaunchApp ?? false) &&
-        launch?.notificationResponse?.payload == reminderPayload) {
-      ReminderNotifications.tapped.value = true;
+    if (launch?.didNotificationLaunchApp ?? false) {
+      ReminderNotifications._onPayload(launch?.notificationResponse?.payload,
+          launch?.notificationResponse?.actionId);
     }
   }
 

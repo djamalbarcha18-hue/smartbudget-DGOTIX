@@ -178,6 +178,7 @@ The catalog is the source of truth; this is the intended shape:
 | Members in one daret (building it; joining a shared one is free at any size) | 12 | unlimited |
 | Season plans (still ahead or running) | 1 | unlimited |
 | Recurring rules | 5 | unlimited |
+| Subscriptions (renewal reminders free on every plan) | 5 | unlimited |
 | Reports | monthly: this month and the previous one | every period, any year |
 | Exchange rates | official rates + converter | + parallel / P2P / custom |
 | Financial health | score, risks, emergency fund | + strengths, pillars, recommendations |

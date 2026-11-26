@@ -3,6 +3,9 @@
 /// PRO syncs everything. FREE syncs the basics — transactions, budgets and
 /// custom categories — for the last [freeMonths] months, so a person can use
 /// the app on a phone and a computer and see the same recent data on both.
+/// FREE also syncs every subscription and its recurring rule (ids starting
+/// with `sub-`, not the other rules): a reminder before a charge protects the
+/// user's money and is free on every plan.
 ///
 /// The rule that matters: leaving the scope never removes anything. A record
 /// that is older than the window, or in a collection FREE doesn't sync, is
@@ -31,6 +34,10 @@ class SyncScope {
         freeCollections,
       );
 
+  /// Ids of subscription rules (Subscription.idPrefix; kept here so this
+  /// file stays free of feature imports).
+  static const String subscriptionRulePrefix = 'sub-';
+
   /// How many months back the free scope reaches (this month included).
   static const int freeMonths = 3;
 
@@ -41,6 +48,9 @@ class SyncScope {
     'customCategories.income',
     'customCategories.expense',
     'settings',
+    'subscriptions',
+    // Only the rules of subscriptions ([includes]).
+    'recurring',
   };
 
   final DateTime? _cutoff;
@@ -64,6 +74,9 @@ class SyncScope {
         final Object? y = record['year'], m = record['month'];
         if (y is! num || m is! num) return true;
         return !DateTime(y.toInt(), m.toInt()).isBefore(cut);
+      case 'recurring':
+        final Object? id = record['id'];
+        return id is String && id.startsWith(subscriptionRulePrefix);
       default:
         return true;
     }

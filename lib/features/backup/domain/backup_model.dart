@@ -9,6 +9,7 @@ import 'package:smartbudget/features/goals/domain/goal.dart';
 import 'package:smartbudget/features/portfolio/domain/project.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/seasons/domain/season.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/metals/domain/metal_holding.dart';
 import 'package:smartbudget/features/metals/domain/metal_sale.dart';
@@ -40,6 +41,7 @@ class BackupData {
     this.trips = const <Trip>[],
     this.metals = const <MetalHolding>[],
     this.metalSales = const <MetalSale>[],
+    this.subscriptions = const <Subscription>[],
     this.skipped = 0,
   });
 
@@ -73,6 +75,9 @@ class BackupData {
   final List<MetalHolding> metals;
   final List<MetalSale> metalSales;
 
+  /// Subscriptions to be reminded of (their money is in [recurring]).
+  final List<Subscription> subscriptions;
+
   Map<String, dynamic> toJson() => <String, dynamic>{
         'schemaVersion': schemaVersion,
         'app': 'SmartBudget',
@@ -93,6 +98,8 @@ class BackupData {
         'trips': trips.map((Trip t) => t.toJson()).toList(),
         'metals': metals.map((MetalHolding h) => h.toJson()).toList(),
         'metalSales': metalSales.map((MetalSale s) => s.toJson()).toList(),
+        'subscriptions':
+            subscriptions.map((Subscription s) => s.toJson()).toList(),
         'customCategories': <String, dynamic>{
           'income': customIncome,
           'expense': customExpense,
@@ -148,6 +155,8 @@ class BackupData {
       trips: list<Trip>(json['trips'], Trip.fromJson),
       metals: list<MetalHolding>(json['metals'], MetalHolding.fromJson),
       metalSales: list<MetalSale>(json['metalSales'], MetalSale.fromJson),
+      subscriptions:
+          list<Subscription>(json['subscriptions'], Subscription.fromJson),
       skipped: skipped,
     );
   }
@@ -190,6 +199,7 @@ abstract final class BackupCodec {
       'wallets',
       'trips',
       'metals',
+      'subscriptions',
     ];
     if (!sections.any(obj.containsKey)) {
       throw const FormatException('Backup file is missing expected data.');

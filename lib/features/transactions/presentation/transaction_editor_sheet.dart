@@ -723,7 +723,9 @@ bool _canAddRecurring(BuildContext context) => PlanLimits.allowAdd(
     context,
     Feature.recurringRules,
     (ProviderContainer c) =>
-        c.read(recurringRulesProvider).valueOrNull?.length ?? 0);
+        (c.read(recurringRulesProvider).valueOrNull ?? const <RecurringRule>[])
+            .where((RecurringRule r) => !r.isSubscription)
+            .length);
 
 String repeatLabel(AppLocalizations l, RecurrenceFrequency? f) => switch (f) {
       null => l.repeatNone,

@@ -64,6 +64,12 @@ class RecurringRule {
 
   bool get isIncome => type == TransactionType.income;
 
+  /// Rules of subscriptions (features/subscriptions) have ids starting with
+  /// this. They have their own allowance and page, and FREE syncs them.
+  static const String subscriptionPrefix = 'sub-';
+
+  bool get isSubscription => id.startsWith(subscriptionPrefix);
+
   RecurringRule copyWith({
     String? category,
     Money? amount,

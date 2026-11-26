@@ -26,11 +26,54 @@ import 'package:smartbudget/features/billing/presentation/upgrade_prompt.dart';
 import 'package:smartbudget/core/l10n/app_lang_context.dart';
 import 'package:smartbudget/design_system/components/ds_skeleton.dart';
 import 'package:smartbudget/features/sync/presentation/page_skeleton.dart';
+import 'package:smartbudget/features/subscriptions/presentation/subscriptions_tab.dart';
+
+/// "Subscriptions & recurring": subscriptions to be reminded of before they
+/// are charged, and the recurring transactions (salary, rent…). One menu item
+/// for both, so there are not two pages that look alike.
+class RecurringPage extends StatelessWidget {
+  const RecurringPage({super.key, this.initialTab = 0});
+
+  /// 0 = subscriptions, 1 = recurring transactions.
+  final int initialTab;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l = AppLocalizations.of(context);
+    final DsColors c = context.dsColors;
+    return DefaultTabController(
+      length: 2,
+      initialIndex: initialTab,
+      child: Column(
+        children: <Widget>[
+          TabBar(
+            labelColor: c.textPrimary,
+            unselectedLabelColor: c.textMuted,
+            indicatorColor: c.brand,
+            tabs: <Widget>[
+              Tab(text: l.featSubscriptions),
+              Tab(text: l.navRecurring),
+            ],
+          ),
+          const Expanded(
+            child: TabBarView(
+              children: <Widget>[
+                SubscriptionsTab(),
+                _RecurringRulesTab(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 /// Lists the user's recurring transactions with their next date and lets them
-/// pause, resume, edit or stop each one.
-class RecurringPage extends ConsumerWidget {
-  const RecurringPage({super.key});
+/// pause, resume, edit or stop each one. Subscriptions' rules are in the
+/// other tab.
+class _RecurringRulesTab extends ConsumerWidget {
+  const _RecurringRulesTab();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,7 +101,12 @@ class RecurringPage extends ConsumerWidget {
       value: async,
       onRetry: () => ref.invalidate(recurringRulesProvider),
       skeleton: const Padding(padding: EdgeInsets.all(DsSpacing.pageGutter), child: DsSkeletonList(count: 6, gap: DsSpacing.sm, framed: true)),
-      data: (List<RecurringRule> rules) => ListView(
+      data: (List<RecurringRule> all) {
+        final List<RecurringRule> rules = <RecurringRule>[
+          for (final RecurringRule r in all)
+            if (!r.isSubscription) r,
+        ];
+        return ListView(
         padding: const EdgeInsets.all(DsSpacing.pageGutter),
         children: <Widget>[
           if (context.isMobile) ...<Widget>[
@@ -92,8 +140,9 @@ class RecurringPage extends ConsumerWidget {
               ),
             )
           else ...<Widget>[
-            for (final PendingOccurrence p
-                in ref.watch(pendingRecurringProvider)) ...<Widget>[
+            for (final PendingOccurrence p in ref
+                .watch(pendingRecurringProvider)
+                .where((PendingOccurrence q) => !q.rule.isSubscription)) ...<Widget>[
               _PendingCard(pending: p),
               const SizedBox(height: DsSpacing.md),
             ],
@@ -105,7 +154,8 @@ class RecurringPage extends ConsumerWidget {
             ],
           ],
         ],
-      ),
+      );
+      },
     );
   }
 }
@@ -578,7 +628,9 @@ void _addRecurring(BuildContext context, TransactionType type) {
       context,
       Feature.recurringRules,
       (ProviderContainer c) =>
-          c.read(recurringRulesProvider).valueOrNull?.length ?? 0)) {
+          (c.read(recurringRulesProvider).valueOrNull ?? const <RecurringRule>[])
+            .where((RecurringRule r) => !r.isSubscription)
+            .length)) {
     return;
   }
   TransactionEditorSheet.show(context,

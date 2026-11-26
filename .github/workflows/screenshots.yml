@@ -1,0 +1,54 @@
+name: Screenshots
+
+# Pictures of new screens for the owner to review before "publish". Runs on
+# feature branches that touch the subscription screens, or by hand; never
+# deploys anything. The PNGs are uploaded as the "screenshots" artifact.
+on:
+  push:
+    branches: ["feat/subscriptions-**"]
+    paths:
+      - "lib/**"
+      - "test_screens/**"
+      - ".github/workflows/screenshots.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  screenshots:
+    name: Screenshots
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+          flutter-version: 3.47.5
+          cache: true
+
+      - name: Install dependencies (also runs gen-l10n)
+        run: flutter pub get --enforce-lockfile
+
+      - name: Take screenshots
+        run: flutter test test_screens --update-goldens --reporter expanded
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: test_screens/goldens/*.png
+          if-no-files-found: error
+
+      # The same pictures in the log too (base64 between markers), for a
+      # reviewer that can read logs but not download artifacts.
+      - name: Print pictures
+        run: |
+          for f in test_screens/goldens/*.png; do
+            echo "SHOT-BEGIN $(basename "$f")"
+            base64 -w 76 "$f"
+            echo "SHOT-END"
+          done

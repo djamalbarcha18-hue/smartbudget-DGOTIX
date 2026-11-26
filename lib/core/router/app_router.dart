@@ -28,6 +28,7 @@ import 'package:smartbudget/features/onboarding/domain/onboarding.dart';
 import 'package:smartbudget/features/onboarding/presentation/onboarding_visit_marker.dart';
 import 'package:smartbudget/features/recurring/presentation/recurring_auto_poster.dart';
 import 'package:smartbudget/features/recurring/presentation/recurring_page.dart';
+import 'package:smartbudget/features/subscriptions/presentation/subscription_reminder_scheduler.dart';
 import 'package:smartbudget/features/reports/presentation/reports_page.dart';
 import 'package:smartbudget/features/sadaqah/presentation/sadaqah_page.dart';
 import 'package:smartbudget/features/seasons/presentation/seasons_page.dart';
@@ -113,7 +114,9 @@ GoRouter buildRouter(Ref ref) {
       ),
       ShellRoute(
         builder: (BuildContext context, GoRouterState state, Widget child) =>
-            AppShell(child: RecurringAutoPoster(child: child)),
+            AppShell(
+                child: RecurringAutoPoster(
+                    child: SubscriptionReminderScheduler(child: child))),
         routes: <RouteBase>[
           GoRoute(
             path: '/dashboard',
