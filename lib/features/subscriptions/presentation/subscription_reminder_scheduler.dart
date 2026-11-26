@@ -83,6 +83,8 @@ class _SubscriptionReminderSchedulerState
         ],
         renewalChannel: l.subNotifChannelRenew,
         trialChannel: l.subNotifChannelTrial,
+        keepLabel: l.subNotifKeep,
+        cancelLabel: l.subNotifCancel,
       );
     } catch (_) {
       // The next change or return to the app tries again.
@@ -90,18 +92,41 @@ class _SubscriptionReminderSchedulerState
   }
 
   void _onTap() {
-    final String? id = ReminderNotifications.subscriptionTapped.value;
-    if (!mounted || id == null) return;
+    final ({String payload, String? action})? tap =
+        ReminderNotifications.subscriptionTapped.value;
+    if (!mounted || tap == null) return;
     ReminderNotifications.subscriptionTapped.value = null;
+    final ({String id, DateTime charge})? p =
+        SubscriptionNotifications.parsePayload(tap.payload);
+    // Reminders scheduled by an older build carry the id alone.
+    final String id = p?.id ?? tap.payload;
+    unawaited(_handle(id, p?.charge, tap.action));
+  }
+
+  Future<void> _handle(String id, DateTime? charge, String? action) async {
+    // Launched by the tap, the lists may still be loading.
+    await ref.read(subscriptionsProvider.future);
+    await ref.read(recurringRulesProvider.future);
+    if (!mounted) return;
+    SubscriptionItem? item;
+    for (final SubscriptionItem i in ref.read(subscriptionItemsProvider)) {
+      if (i.sub.id == id) item = i;
+    }
+    if (item == null) return;
+    if (action == SubscriptionNotifications.keepAction && charge != null) {
+      await ref.read(subscriptionActionsProvider).keepUntil(item.sub, charge);
+      if (!mounted) return;
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context).subKeptNote)));
+      return;
+    }
     context.go('/recurring');
+    final SubscriptionItem open = item;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      for (final SubscriptionItem i in ref.read(subscriptionItemsProvider)) {
-        if (i.sub.id == id) {
-          SubscriptionEditorSheet.show(context, existing: i);
-          return;
-        }
-      }
+      SubscriptionEditorSheet.show(context,
+          existing: open,
+          startCancel: action == SubscriptionNotifications.cancelAction);
     });
   }
 

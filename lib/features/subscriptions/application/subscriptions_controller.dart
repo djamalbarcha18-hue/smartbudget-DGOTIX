@@ -7,7 +7,9 @@ import 'package:smartbudget/features/auth/application/auth_controller.dart';
 import 'package:smartbudget/features/recurring/application/recurring_controller.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_repository.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
+import 'package:smartbudget/features/recurring/domain/recurrence_engine.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_cancel.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_schedule.dart';
 
 /// The user's subscriptions, on the device (synced and backed up with the
@@ -102,13 +104,42 @@ class SubscriptionActions {
     if (old == null) {
       await _rules.add(rule);
     } else {
-      // Only future dates move: what was recorded before keeps its date.
-      await _rules.update(rule.lastPosted.isBefore(old.lastPosted)
-          ? rule.copyWith(lastPosted: old.lastPosted)
-          : rule);
+      // Only future dates move: what was recorded before keeps its date. A
+      // cancelled one stays stopped.
+      await _rules.update((rule.lastPosted.isBefore(old.lastPosted)
+              ? rule.copyWith(lastPosted: old.lastPosted)
+              : rule)
+          .copyWith(active: old.active));
     }
     await _store.upsert(s.copyWith(updatedAt: AppClock.now()));
   }
+
+  /// Records what the user says happened when cancelling (never on the
+  /// app's own say-so). Once no more charges are expected the rule stops,
+  /// so nothing is asked or recorded after; reactivated, it starts again
+  /// from its next date (missed ones are not filled in).
+  Future<Subscription> cancel(SubscriptionItem item, CancelOutcome outcome,
+      {DateTime? paidUntil}) async {
+    final Subscription next = SubscriptionCancel.apply(
+        item.sub, outcome, AppClock.now(),
+        paidUntil: paidUntil);
+    await _store.upsert(next);
+    final RecurringRule? rule = item.rule;
+    if (rule != null) {
+      final bool stop = SubscriptionCancel.stopsCharges(next.status);
+      if (stop && rule.active) {
+        await _rules.update(rule.copyWith(active: false));
+      } else if (!stop && !rule.active) {
+        await _rules.update(RecurrenceEngine.resume(rule, AppClock.now()));
+      }
+    }
+    return next;
+  }
+
+  /// "Keep it": no more reminders for the charge on [charge]; they come back
+  /// for the next one.
+  Future<void> keepUntil(Subscription s, DateTime charge) => _store.upsert(
+      s.copyWith(keptUntil: DateTime(charge.year, charge.month, charge.day)));
 
   /// Removes [s] and its rule. Expenses already recorded stay.
   Future<void> delete(Subscription s) async {

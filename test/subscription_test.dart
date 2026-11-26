@@ -10,7 +10,9 @@ import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/subscriptions/domain/card_suggestions.dart';
 import 'package:smartbudget/features/subscriptions/domain/service_catalog.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_alerts.dart';
+import 'package:smartbudget/features/subscriptions/data/subscription_notifications.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_cancel.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_schedule.dart';
 import 'package:smartbudget/features/sync/domain/sync_merge.dart';
 import 'package:smartbudget/features/sync/domain/sync_scope.dart';
@@ -441,6 +443,115 @@ void main() {
       ];
       expect(SubscriptionAlerts.plan(many, now).length,
           SubscriptionAlerts.maxAlerts);
+    });
+  });
+
+  group('Cancelling', () {
+    final DateTime now = DateTime(2026, 11, 26, 12);
+    Subscription live() => netflix().copyWith(
+        status: SubscriptionStatus.active, clearTrial: true, clearKept: true);
+
+    test('the stores open their subscriptions page', () {
+      expect(
+          SubscriptionCancel.destination(
+                  live().copyWith(billedVia: BilledVia.googlePlay))
+              .toString(),
+          'https://play.google.com/store/account/subscriptions');
+      expect(
+          SubscriptionCancel.destination(
+                  live().copyWith(billedVia: BilledVia.appleStore))
+              .toString(),
+          'https://apps.apple.com/account/subscriptions');
+    });
+
+    test('otherwise its own link, if it is a safe one', () {
+      final Subscription s = live().copyWith(billedVia: BilledVia.direct);
+      expect(SubscriptionCancel.destination(s).toString(),
+          'https://example.com/manage');
+      final Subscription none = Subscription.fromJson(
+          s.toJson()..remove('manageUrl'));
+      expect(SubscriptionCancel.destination(none), isNull);
+      final Subscription bad = Subscription.fromJson(
+          s.toJson()..['manageUrl'] = 'javascript:alert(1)');
+      expect(SubscriptionCancel.destination(bad), isNull);
+    });
+
+    test('links typed by the user', () {
+      expect(SubscriptionCancel.cleanUrl('netflix.com/cancelplan'),
+          'https://netflix.com/cancelplan');
+      expect(SubscriptionCancel.cleanUrl(' https://a.b/c '), 'https://a.b/c');
+      expect(SubscriptionCancel.cleanUrl('http://a.b'), isNull);
+      expect(SubscriptionCancel.cleanUrl('ftp://a.b'), isNull);
+      expect(SubscriptionCancel.cleanUrl('nothing'), isNull);
+      expect(SubscriptionCancel.cleanUrl(''), isNull);
+    });
+
+    test('nothing is marked cancelled on the app\'s own say-so', () {
+      final Subscription asked =
+          SubscriptionCancel.apply(live(), CancelOutcome.requested, now);
+      expect(asked.status, SubscriptionStatus.cancelRequested);
+      expect(asked.cancelRequestedAt, now);
+      expect(SubscriptionCancel.stopsCharges(asked.status), isFalse);
+      // "I didn't finish" keeps a request already made.
+      expect(
+          SubscriptionCancel.apply(asked, CancelOutcome.notFinished, now)
+              .status,
+          SubscriptionStatus.cancelRequested);
+      expect(
+          SubscriptionCancel.apply(live(), CancelOutcome.notFinished, now)
+              .status,
+          SubscriptionStatus.cancelWanted);
+    });
+
+    test('until the end of the paid period, then confirmed', () {
+      final Subscription until = SubscriptionCancel.apply(
+          live(), CancelOutcome.activeUntilEnd, now,
+          paidUntil: DateTime(2026, 12, 15));
+      expect(until.status, SubscriptionStatus.activeUntilEnd);
+      expect(until.paidUntil, DateTime(2026, 12, 15));
+      expect(SubscriptionCancel.stopsCharges(until.status), isTrue);
+      final Subscription done =
+          SubscriptionCancel.apply(until, CancelOutcome.confirmed, now);
+      expect(done.status, SubscriptionStatus.cancelConfirmed);
+      expect(done.endedAt, DateTime(2026, 12, 15));
+      expect(done.isOver, isTrue);
+    });
+
+    test('active again clears the cancellation', () {
+      final Subscription back = SubscriptionCancel.apply(
+          SubscriptionCancel.apply(live(), CancelOutcome.activeUntilEnd, now,
+              paidUntil: DateTime(2026, 12, 15)),
+          CancelOutcome.reactivated,
+          now);
+      expect(back.status, SubscriptionStatus.active);
+      expect(back.paidUntil, isNull);
+      expect(back.cancelRequestedAt, isNull);
+      expect(back.endedAt, isNull);
+      // A trial not over yet is a trial again.
+      expect(
+          SubscriptionCancel.apply(
+                  netflix().copyWith(status: SubscriptionStatus.ended),
+                  CancelOutcome.reactivated,
+                  now)
+              .status,
+          SubscriptionStatus.trial);
+    });
+
+    test('a reminder knows its subscription and charge', () {
+      final SubscriptionAlert a = SubscriptionAlert(
+        subscriptionId: 'sub-1ab',
+        provider: 'Netflix',
+        amount: const Money(1500, 'USD'),
+        charge: DateTime(2026, 12, 5),
+        daysBefore: 1,
+        at: DateTime(2026, 12, 4, 10),
+        kind: SubscriptionAlertKind.renewal,
+      );
+      final String p = SubscriptionNotifications.payloadOf(a);
+      expect(p, 'sub-1ab:20261205');
+      expect(SubscriptionNotifications.parsePayload(p),
+          (id: 'sub-1ab', charge: DateTime(2026, 12, 5)));
+      expect(SubscriptionNotifications.parsePayload('sub-1ab'), isNull);
     });
   });
 

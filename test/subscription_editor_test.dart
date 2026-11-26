@@ -14,6 +14,7 @@ import 'package:smartbudget/features/recurring/application/recurring_controller.
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/subscriptions/application/subscriptions_controller.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_cancel.dart';
 import 'package:smartbudget/features/subscriptions/presentation/subscription_editor_sheet.dart';
 import 'package:smartbudget/features/subscriptions/presentation/subscriptions_tab.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -160,5 +161,73 @@ void main() {
     expect(find.text('Netflix'), findsOneWidget);
     expect(find.text('Edahabia'), findsOneWidget);
     expect(find.textContaining('Next charge:'), findsOneWidget);
+  });
+
+  test('cancelled: the rule stops; active again: it starts from the next date',
+      () async {
+    final SubscriptionActions a = c.read(subscriptionActionsProvider);
+    final DateTime now = AppClock.now();
+    final Subscription s = Subscription(
+      id: 'sub-x',
+      ruleId: 'sub-x',
+      kind: SubscriptionKind.digital,
+      provider: 'Netflix',
+      createdAt: now,
+      updatedAt: now,
+    );
+    await a.save(s,
+        amount: const Money(1500, 'USD'),
+        frequency: RecurrenceFrequency.monthly,
+        nextCharge: DateTime(_today().year, _today().month, _today().day + 3));
+    Future<RecurringRule> rule() async =>
+        (await c.read(recurringRulesProvider.future))
+            .singleWhere((RecurringRule r) => r.id == 'sub-x');
+
+    final Subscription asked = await a.cancel(
+        (sub: s, rule: await rule()), CancelOutcome.requested);
+    expect(asked.status, SubscriptionStatus.cancelRequested);
+    // Only asked: it may still be charged, so the rule keeps going.
+    expect((await rule()).active, isTrue);
+
+    final Subscription until = await a.cancel(
+        (sub: asked, rule: await rule()), CancelOutcome.activeUntilEnd,
+        paidUntil: DateTime(_today().year, _today().month, _today().day + 3));
+    expect(until.status, SubscriptionStatus.activeUntilEnd);
+    expect((await rule()).active, isFalse);
+
+    // Editing it keeps it stopped.
+    await a.save(until,
+        amount: const Money(1700, 'USD'),
+        frequency: RecurrenceFrequency.monthly,
+        nextCharge: DateTime(_today().year, _today().month, _today().day + 3));
+    expect((await rule()).active, isFalse);
+    expect((await rule()).amount.minorUnits, 1700);
+
+    final Subscription back = await a.cancel(
+        (sub: until, rule: await rule()), CancelOutcome.reactivated);
+    expect(back.status, SubscriptionStatus.active);
+    expect((await rule()).active, isTrue);
+    expect((await c.read(subscriptionsProvider.future)).single.status,
+        SubscriptionStatus.active);
+  });
+
+  test('"keep it" silences reminders for that charge', () async {
+    final SubscriptionActions a = c.read(subscriptionActionsProvider);
+    final DateTime now = AppClock.now();
+    final Subscription s = Subscription(
+      id: 'sub-k',
+      ruleId: 'sub-k',
+      kind: SubscriptionKind.digital,
+      provider: 'Spotify',
+      createdAt: now,
+      updatedAt: now,
+    );
+    await a.save(s,
+        amount: const Money(999, 'USD'),
+        frequency: RecurrenceFrequency.monthly,
+        nextCharge: DateTime(2030, 1, 15));
+    await a.keepUntil(s, DateTime(2030, 1, 15, 10));
+    expect((await c.read(subscriptionsProvider.future)).single.keptUntil,
+        DateTime(2030, 1, 15));
   });
 }

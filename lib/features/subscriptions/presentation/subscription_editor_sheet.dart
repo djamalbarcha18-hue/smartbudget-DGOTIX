@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:smartbudget/core/l10n/date_text.dart';
 import 'package:smartbudget/core/money/amount_input.dart';
@@ -23,6 +24,7 @@ import 'package:smartbudget/features/subscriptions/data/subscription_notificatio
 import 'package:smartbudget/features/subscriptions/domain/card_suggestions.dart';
 import 'package:smartbudget/features/subscriptions/domain/service_catalog.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_cancel.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_schedule.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -30,11 +32,15 @@ import 'package:smartbudget/l10n/gen/app_localizations.dart';
 /// Adds or edits a subscription: the service, what it costs and how often,
 /// the next charge (or the end of a free trial), the card, the reminders.
 class SubscriptionEditorSheet extends ConsumerStatefulWidget {
-  const SubscriptionEditorSheet({super.key, this.existing});
+  const SubscriptionEditorSheet(
+      {super.key, this.existing, this.startCancel = false});
   final SubscriptionItem? existing;
 
+  /// Opened from a reminder's "Cancel now": goes straight to cancelling.
+  final bool startCancel;
+
   static Future<void> show(BuildContext context,
-      {SubscriptionItem? existing}) async {
+      {SubscriptionItem? existing, bool startCancel = false}) async {
     if (existing == null &&
         !PlanLimits.allowAdd(
             context,
@@ -48,7 +54,7 @@ class SubscriptionEditorSheet extends ConsumerStatefulWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext ctx) =>
-          SubscriptionEditorSheet(existing: existing),
+          SubscriptionEditorSheet(existing: existing, startCancel: startCancel),
     );
   }
 
@@ -58,7 +64,7 @@ class SubscriptionEditorSheet extends ConsumerStatefulWidget {
 }
 
 class _SubscriptionEditorSheetState
-    extends ConsumerState<SubscriptionEditorSheet> {
+    extends ConsumerState<SubscriptionEditorSheet> with WidgetsBindingObserver {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late final TextEditingController _name;
   late final TextEditingController _amount;
@@ -72,10 +78,22 @@ class _SubscriptionEditorSheetState
   bool _remindersOn = true;
   List<int> _days = const <int>[];
   bool _saving = false;
+  late final TextEditingController _manage;
+  BilledVia _billedVia = BilledVia.direct;
+
+  /// Sent to the provider's page; ask what happened on the way back.
+  bool _awaitingReturn = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _billedVia = s?.billedVia ?? BilledVia.direct;
+    _manage = TextEditingController(text: s?.manageUrl ?? '');
+    if (widget.startCancel && widget.existing != null) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => mounted ? _startCancel() : null);
+    }
     final Subscription? s = widget.existing?.sub;
     final RecurringRule? r = widget.existing?.rule;
     _name = TextEditingController(text: s?.provider ?? '')
@@ -104,6 +122,8 @@ class _SubscriptionEditorSheetState
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _manage.dispose();
     _name.dispose();
     _amount.dispose();
     _card.dispose();
@@ -191,9 +211,10 @@ class _SubscriptionEditorSheetState
       country: old?.country ?? ServiceCatalog.byId(catalogId)?.country,
       autoRenew: _autoRenew,
       trialEndsAt: _trial ? date : null,
-      billedVia: old?.billedVia ?? BilledVia.direct,
+      billedVia: _billedVia,
       cardName: CardName.clean(_card.text),
-      manageUrl: old?.manageUrl ?? ServiceCatalog.byId(catalogId)?.manageUrl,
+      manageUrl: SubscriptionCancel.cleanUrl(_manage.text) ??
+          ServiceCatalog.byId(catalogId)?.manageUrl,
       notes: old?.notes,
       remindersOn: _remindersOn,
       reminderDays: _days,
@@ -247,6 +268,188 @@ class _SubscriptionEditorSheetState
     if (yes != true || !mounted) return;
     await ref.read(subscriptionActionsProvider).delete(e.sub);
     if (mounted) Navigator.of(context).pop();
+  }
+
+  // ── Cancelling ─────────────────────────────────────────────────────────
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _awaitingReturn && mounted) {
+      _awaitingReturn = false;
+      _askOutcome();
+    }
+  }
+
+  /// Opens the page to cancel on (the store or the provider), else shows the
+  /// general steps; then asks what happened. Nothing is marked cancelled
+  /// until the user says so.
+  Future<void> _startCancel() async {
+    final SubscriptionItem? e = widget.existing;
+    if (e == null) return;
+    final Subscription s = e.sub.copyWith(
+      billedVia: _billedVia,
+      manageUrl: SubscriptionCancel.cleanUrl(_manage.text),
+    );
+    final Uri? to = SubscriptionCancel.destination(s);
+    bool opened = false;
+    if (to != null) {
+      try {
+        opened = await launchUrl(to, mode: LaunchMode.externalApplication);
+      } catch (_) {
+        opened = false;
+      }
+    }
+    if (!mounted) return;
+    if (opened) {
+      _awaitingReturn = true;
+      return;
+    }
+    final AppLocalizations l = AppLocalizations.of(context);
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext ctx) => AlertDialog(
+        title: Text(l.subCancelHowTitle),
+        content: Text(_billedVia == BilledVia.carrier ||
+                e.sub.kind == SubscriptionKind.mobile
+            ? l.subCancelHowCarrier
+            : l.subCancelHowGeneral),
+        actions: <Widget>[
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(MaterialLocalizations.of(ctx).okButtonLabel)),
+        ],
+      ),
+    );
+    if (mounted) await _askOutcome();
+  }
+
+  Future<void> _askOutcome() async {
+    final SubscriptionItem? e = widget.existing;
+    if (e == null) return;
+    final AppLocalizations l = AppLocalizations.of(context);
+    final CancelOutcome? o = await showModalBottomSheet<CancelOutcome>(
+      context: context,
+      showDragHandle: true,
+      builder: (BuildContext ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                  DsSpacing.xl, 0, DsSpacing.xl, DsSpacing.sm),
+              child: Text(l.subCancelDidYou,
+                  style: Theme.of(ctx).textTheme.titleMedium),
+            ),
+            ListTile(
+              leading: const Icon(Icons.outgoing_mail),
+              title: Text(l.subCancelRequested),
+              onTap: () => Navigator.of(ctx).pop(CancelOutcome.requested),
+            ),
+            ListTile(
+              leading: const Icon(Icons.event_available_outlined),
+              title: Text(l.subCancelUntilEnd),
+              onTap: () =>
+                  Navigator.of(ctx).pop(CancelOutcome.activeUntilEnd),
+            ),
+            ListTile(
+              leading: const Icon(Icons.undo_rounded),
+              title: Text(l.subCancelNotFinished),
+              onTap: () => Navigator.of(ctx).pop(CancelOutcome.notFinished),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (o == null || !mounted) return;
+    await _record(o);
+  }
+
+  Future<void> _record(CancelOutcome o) async {
+    final SubscriptionItem? e = widget.existing;
+    if (e == null) return;
+    DateTime? paidUntil;
+    if (o == CancelOutcome.activeUntilEnd || o == CancelOutcome.confirmed) {
+      // The end of the paid period: by default, the next charge date.
+      final DateTime suggested = e.sub.paidUntil ?? _date ?? _today;
+      if (o == CancelOutcome.activeUntilEnd) {
+        paidUntil = await showDsDatePicker(
+          context,
+          initialDate: suggested.isBefore(_today) ? _today : suggested,
+          firstDate: _today,
+          lastDate: DateTime(_today.year + 5, 12, 31),
+        );
+        if (paidUntil == null) return;
+      } else {
+        paidUntil = e.sub.paidUntil;
+      }
+    }
+    // Keep what was edited in the form (where it's billed, the link).
+    final SubscriptionItem item = (
+      sub: e.sub.copyWith(
+        billedVia: _billedVia,
+        manageUrl: SubscriptionCancel.cleanUrl(_manage.text),
+      ),
+      rule: e.rule,
+    );
+    await ref
+        .read(subscriptionActionsProvider)
+        .cancel(item, o, paidUntil: paidUntil);
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  Widget _cancelSection(AppLocalizations l, TextTheme t, DsColors c,
+      Locale locale) {
+    final Subscription s = widget.existing!.sub;
+    final String? state = statusText(l, locale, s);
+    final bool open = s.status == SubscriptionStatus.active ||
+        s.status == SubscriptionStatus.trial ||
+        s.status == SubscriptionStatus.cancelWanted;
+    final bool asked = s.status == SubscriptionStatus.cancelRequested ||
+        s.status == SubscriptionStatus.activeUntilEnd;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Text(l.subCancelSection, style: t.titleSmall),
+        if (state != null) ...<Widget>[
+          const SizedBox(height: 4),
+          Text(state, style: t.bodySmall?.copyWith(color: c.warning)),
+        ],
+        const SizedBox(height: DsSpacing.sm),
+        if (open)
+          DsButton(
+            label: l.subCancelAction,
+            icon: Icons.cancel_outlined,
+            variant: DsButtonVariant.secondary,
+            expand: true,
+            onPressed: _saving ? null : _startCancel,
+          ),
+        if (asked) ...<Widget>[
+          DsButton(
+            label: l.subCancelConfirm,
+            icon: Icons.verified_outlined,
+            variant: DsButtonVariant.secondary,
+            expand: true,
+            onPressed:
+                _saving ? null : () => _record(CancelOutcome.confirmed),
+          ),
+          const SizedBox(height: 4),
+          Text(l.subCancelConfirmHelp,
+              style: t.bodySmall?.copyWith(color: c.textMuted)),
+        ],
+        if (!open) ...<Widget>[
+          const SizedBox(height: DsSpacing.sm),
+          DsButton(
+            label: l.subReactivate,
+            icon: Icons.replay_rounded,
+            variant: DsButtonVariant.ghost,
+            expand: true,
+            onPressed:
+                _saving ? null : () => _record(CancelOutcome.reactivated),
+          ),
+        ],
+      ],
+    );
   }
 
   @override
@@ -554,6 +757,39 @@ class _SubscriptionEditorSheetState
                     onChanged: (bool v) => setState(() => _autoRenew = v),
                   ),
                   const SizedBox(height: DsSpacing.sm),
+                  // Where it's billed: decides where "Cancel" leads.
+                  label(l.subBilledVia),
+                  DropdownButtonFormField<BilledVia>(
+                    initialValue: _billedVia,
+                    isExpanded: true,
+                    decoration: fieldLook,
+                    items: <DropdownMenuItem<BilledVia>>[
+                      for (final BilledVia b in BilledVia.values)
+                        DropdownMenuItem<BilledVia>(
+                          value: b,
+                          child: Text(billedViaLabel(l, b)),
+                        ),
+                    ],
+                    onChanged: (BilledVia? b) {
+                      if (b != null) setState(() => _billedVia = b);
+                    },
+                  ),
+                  if (_billedVia != BilledVia.googlePlay &&
+                      _billedVia != BilledVia.appleStore) ...<Widget>[
+                    const SizedBox(height: DsSpacing.md),
+                    DsTextField(
+                      label: '${l.subManageUrl} (${l.optional})',
+                      hintText: l.subManageUrlHint,
+                      controller: _manage,
+                      prefixIcon: Icons.link_rounded,
+                      keyboardType: TextInputType.url,
+                      validator: (String? v) => (v ?? '').trim().isEmpty ||
+                              SubscriptionCancel.cleanUrl(v) != null
+                          ? null
+                          : l.subManageUrlInvalid,
+                    ),
+                  ],
+                  const SizedBox(height: DsSpacing.lg),
                   // The card: a name only, suggested for the user's country.
                   DsTextField(
                     label: '${l.subCardName} (${l.optional})',
@@ -638,7 +874,9 @@ class _SubscriptionEditorSheetState
                       expand: true,
                       onPressed: _saving ? null : _save),
                   if (widget.existing != null) ...<Widget>[
-                    const SizedBox(height: DsSpacing.sm),
+                    const SizedBox(height: DsSpacing.xl),
+                    _cancelSection(l, t, c, locale),
+                    const SizedBox(height: DsSpacing.lg),
                     DsButton(
                       label: l.delete,
                       icon: Icons.delete_outline_rounded,
@@ -657,3 +895,24 @@ class _SubscriptionEditorSheetState
     );
   }
 }
+
+/// Where a subscription is billed, in the user's language.
+String billedViaLabel(AppLocalizations l, BilledVia b) => switch (b) {
+      BilledVia.direct => l.subBilledDirect,
+      BilledVia.googlePlay => 'Google Play',
+      BilledVia.appleStore => 'App Store (Apple)',
+      BilledVia.carrier => l.subBilledCarrier,
+      BilledVia.other => l.subBilledOther,
+    };
+
+/// The cancellation state of [s], or null while it simply runs.
+String? statusText(AppLocalizations l, Locale locale, Subscription s) =>
+    switch (s.status) {
+      SubscriptionStatus.trial || SubscriptionStatus.active => null,
+      SubscriptionStatus.cancelWanted => l.subStatusCancelWanted,
+      SubscriptionStatus.cancelRequested => l.subStatusCancelRequested,
+      SubscriptionStatus.activeUntilEnd =>
+        l.subStatusUntil(s.paidUntil == null ? '—' : dayText(locale, s.paidUntil!)),
+      SubscriptionStatus.cancelConfirmed => l.subStatusConfirmed,
+      SubscriptionStatus.ended => l.subStatusEnded,
+    };

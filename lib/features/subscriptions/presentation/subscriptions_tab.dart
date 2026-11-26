@@ -16,6 +16,7 @@ import 'package:smartbudget/features/reminders/data/reminder_notifications.dart'
 import 'package:smartbudget/features/subscriptions/data/subscription_notifications.dart';
 import 'package:smartbudget/features/subscriptions/application/subscriptions_controller.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_cancel.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_schedule.dart';
 import 'package:smartbudget/features/subscriptions/presentation/subscription_editor_sheet.dart';
 import 'package:smartbudget/features/transactions/presentation/transaction_editor_sheet.dart';
@@ -121,7 +122,8 @@ class SubscriptionCard extends StatelessWidget {
                     style: t.bodyMedium,
                   ),
                 ],
-                if (next != null) ...<Widget>[
+                if (next != null &&
+                    !SubscriptionCancel.stopsCharges(s.status)) ...<Widget>[
                   const SizedBox(height: 2),
                   Text(
                     s.trialEndsOn(next)
@@ -139,7 +141,9 @@ class SubscriptionCard extends StatelessWidget {
                       _CardChip(name: s.cardName!),
                     if (next != null && s.trialEndsOn(next))
                       DsBadge(label: l.subTrial, tone: DsBadgeTone.warning),
-                    if (!s.remindersOn)
+                    if (statusText(l, locale, s) case final String st)
+                      DsBadge(label: st, tone: DsBadgeTone.warning),
+                    if (!s.remindersOn && !s.isOver)
                       DsBadge(label: l.subRemindersOff),
                   ],
                 ),

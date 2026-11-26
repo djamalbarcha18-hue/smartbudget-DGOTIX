@@ -25,8 +25,38 @@ abstract class SubscriptionNotifications {
       supported ? _AndroidSubscriptions() : _NoSubscriptions();
 
   /// Replaces every subscription reminder with [notices].
+  /// Button ids in a reminder: [keepAction] silences this cycle,
+  /// [cancelAction] opens the app on cancelling.
+  static const String keepAction = 'keep';
+  static const String cancelAction = 'cancel';
+
+  /// The payload of a reminder for [alert]: the subscription and the charge
+  /// it is about ("sub-x:20261215").
+  static String payloadOf(SubscriptionAlert alert) {
+    final DateTime d = alert.charge;
+    final String ymd = '${d.year.toString().padLeft(4, '0')}'
+        '${d.month.toString().padLeft(2, '0')}'
+        '${d.day.toString().padLeft(2, '0')}';
+    return '${alert.subscriptionId}:$ymd';
+  }
+
+  /// [payloadOf] read back, or null.
+  static ({String id, DateTime charge})? parsePayload(String p) {
+    final int at = p.lastIndexOf(':');
+    if (at <= 0 || p.length - at - 1 != 8) return null;
+    final String ymd = p.substring(at + 1);
+    final int? y = int.tryParse(ymd.substring(0, 4)),
+        m = int.tryParse(ymd.substring(4, 6)),
+        d = int.tryParse(ymd.substring(6, 8));
+    if (y == null || m == null || d == null) return null;
+    return (id: p.substring(0, at), charge: DateTime(y, m, d));
+  }
+
   Future<void> schedule(List<SubscriptionNotice> notices,
-      {required String renewalChannel, required String trialChannel});
+      {required String renewalChannel,
+      required String trialChannel,
+      required String keepLabel,
+      required String cancelLabel});
 
   Future<void> cancel();
 }
@@ -35,7 +65,9 @@ class _NoSubscriptions extends SubscriptionNotifications {
   @override
   Future<void> schedule(List<SubscriptionNotice> notices,
       {required String renewalChannel,
-      required String trialChannel}) async {}
+      required String trialChannel,
+      required String keepLabel,
+      required String cancelLabel}) async {}
   @override
   Future<void> cancel() async {}
 }
@@ -51,8 +83,20 @@ class _AndroidSubscriptions extends SubscriptionNotifications {
 
   @override
   Future<void> schedule(List<SubscriptionNotice> notices,
-      {required String renewalChannel, required String trialChannel}) async {
+      {required String renewalChannel,
+      required String trialChannel,
+      required String keepLabel,
+      required String cancelLabel}) async {
     await cancel();
+    // Both buttons open the app, which then does the rest (no background
+    // code to keep in step).
+    final List<AndroidNotificationAction> actions = <AndroidNotificationAction>[
+      AndroidNotificationAction(SubscriptionNotifications.keepAction, keepLabel,
+          showsUserInterface: true),
+      AndroidNotificationAction(
+          SubscriptionNotifications.cancelAction, cancelLabel,
+          showsUserInterface: true),
+    ];
     NotificationDetails details(String id, String name, String body) =>
         NotificationDetails(
           android: AndroidNotificationDetails(
@@ -61,6 +105,7 @@ class _AndroidSubscriptions extends SubscriptionNotifications {
             importance: Importance.high,
             priority: Priority.high,
             styleInformation: BigTextStyleInformation(body),
+            actions: actions,
           ),
         );
     int id = _firstId;
@@ -78,8 +123,8 @@ class _AndroidSubscriptions extends SubscriptionNotifications {
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
         title: n.title,
         body: n.body,
-        payload:
-            '${ReminderNotifications.subscriptionPayloadPrefix}${n.alert.subscriptionId}',
+        payload: '${ReminderNotifications.subscriptionPayloadPrefix}'
+            '${SubscriptionNotifications.payloadOf(n.alert)}',
       );
     }
   }

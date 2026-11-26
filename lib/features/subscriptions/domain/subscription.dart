@@ -186,6 +186,9 @@ class Subscription {
     DateTime? cancelRequestedAt,
     DateTime? paidUntil,
     DateTime? endedAt,
+
+    /// Back to active: clears the cancellation dates.
+    bool clearCancellation = false,
     Map<String, String>? payments,
     DateTime? updatedAt,
   }) {
@@ -211,9 +214,11 @@ class Subscription {
           : (reminderMinutes ?? this.reminderMinutes),
       keptUntil: clearKept ? null : (keptUntil ?? this.keptUntil),
       status: status ?? this.status,
-      cancelRequestedAt: cancelRequestedAt ?? this.cancelRequestedAt,
-      paidUntil: paidUntil ?? this.paidUntil,
-      endedAt: endedAt ?? this.endedAt,
+      cancelRequestedAt: clearCancellation
+          ? null
+          : (cancelRequestedAt ?? this.cancelRequestedAt),
+      paidUntil: clearCancellation ? null : (paidUntil ?? this.paidUntil),
+      endedAt: clearCancellation ? null : (endedAt ?? this.endedAt),
       payments: payments ?? this.payments,
       createdAt: createdAt,
       updatedAt: updatedAt ?? AppClock.now(),

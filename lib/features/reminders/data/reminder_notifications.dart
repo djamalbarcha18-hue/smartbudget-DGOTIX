@@ -24,18 +24,23 @@ abstract class ReminderNotifications {
   /// subscription's id.
   static const String subscriptionPayloadPrefix = 'sub:';
 
-  /// The subscription whose reminder was tapped (also one that opened the
-  /// app); the subscriptions scheduler opens it and clears this.
-  static final ValueNotifier<String?> subscriptionTapped =
-      ValueNotifier<String?>(null);
+  /// A subscription reminder that was tapped (also one that opened the
+  /// app): what follows the prefix in its payload, and the button pressed
+  /// (null for the reminder itself). The subscriptions scheduler handles it
+  /// and clears this.
+  static final ValueNotifier<({String payload, String? action})?>
+      subscriptionTapped =
+      ValueNotifier<({String payload, String? action})?>(null);
 
-  static void _onPayload(String? payload) {
+  static void _onPayload(String? payload, [String? action]) {
     if (payload == reminderPayload) {
       tapped.value = true;
     } else if (payload != null &&
         payload.startsWith(subscriptionPayloadPrefix)) {
-      subscriptionTapped.value =
-          payload.substring(subscriptionPayloadPrefix.length);
+      subscriptionTapped.value = (
+        payload: payload.substring(subscriptionPayloadPrefix.length),
+        action: (action == null || action.isEmpty) ? null : action,
+      );
     }
   }
 
@@ -99,12 +104,13 @@ class _AndroidReminders extends ReminderNotifications {
         android: AndroidInitializationSettings('ic_stat_reminder'),
       ),
       onDidReceiveNotificationResponse: (NotificationResponse r) =>
-          ReminderNotifications._onPayload(r.payload),
+          ReminderNotifications._onPayload(r.payload, r.actionId),
     );
     final NotificationAppLaunchDetails? launch =
         await _plugin.getNotificationAppLaunchDetails();
     if (launch?.didNotificationLaunchApp ?? false) {
-      ReminderNotifications._onPayload(launch?.notificationResponse?.payload);
+      ReminderNotifications._onPayload(launch?.notificationResponse?.payload,
+          launch?.notificationResponse?.actionId);
     }
   }
 
