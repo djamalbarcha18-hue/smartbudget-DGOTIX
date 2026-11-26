@@ -50,6 +50,9 @@ abstract final class NotificationFeed {
         return 'seasonApproaching:${a.focusKey}@${periodKey(now)}';
       case AlertKind.daretPayment:
       case AlertKind.daretPayout:
+      case AlertKind.subscriptionRenewal:
+      case AlertKind.subscriptionTrialEnd:
+      case AlertKind.subscriptionEnds:
         return '${a.kind.name}:${a.focusKey}@${_dayKey(a.date ?? now)}';
       case AlertKind.budgetForecast:
       case AlertKind.categorySpike:

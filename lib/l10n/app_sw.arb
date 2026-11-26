@@ -1951,5 +1951,14 @@
   "subNoCard": "Bila kadi",
   "subEndedTitle": "Vilivyoisha na kusitishwa",
   "subTrackPayments": "Rekodi makato kwenye matumizi yangu",
-  "subTrackPaymentsHelp": "Kila siku ya makato huuliza kama yamekatwa na kuyaongeza kwenye bajeti yako."
+  "subTrackPaymentsHelp": "Kila siku ya makato huuliza kama yamekatwa na kuyaongeza kwenye bajeti yako.",
+  "alertTitleSubRenewal": "Usajili unasasishwa karibuni",
+  "alertSubRenewal": "{subject} utasasishwa tarehe {date} kwa {amount}. Bado unauhitaji?",
+  "alertSubRenewalTomorrow": "{subject} utasasishwa kesho kwa {amount}. Ukague au usitishe leo.",
+  "alertTitleSubTrial": "Jaribio la bure linaisha karibuni",
+  "alertSubTrial": "Jaribio la bure la {subject} linaisha tarehe {date}, kisha {amount} inakatwa kiotomatiki.",
+  "alertSubTrialTomorrow": "Jaribio la bure la {subject} linaisha kesho, kisha {amount} inakatwa kiotomatiki.",
+  "alertTitleSubEnds": "Kifurushi kinaisha karibuni",
+  "alertSubEnds": "{subject} kinaisha tarehe {date}.",
+  "alertSubEndsTomorrow": "{subject} kinaisha kesho."
 }

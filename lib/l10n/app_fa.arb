@@ -1951,5 +1951,14 @@
   "subNoCard": "بدون کارت",
   "subEndedTitle": "پایان‌یافته و لغوشده",
   "subTrackPayments": "برداشت‌ها را در هزینه‌هایم ثبت کن",
-  "subTrackPaymentsHelp": "در روز هر برداشت می‌پرسد آیا برداشت شد و آن را به بودجه‌تان اضافه می‌کند."
+  "subTrackPaymentsHelp": "در روز هر برداشت می‌پرسد آیا برداشت شد و آن را به بودجه‌تان اضافه می‌کند.",
+  "alertTitleSubRenewal": "اشتراکی به‌زودی تمدید می‌شود",
+  "alertSubRenewal": "{subject} در {date} با {amount} تمدید می‌شود. هنوز لازمش دارید؟",
+  "alertSubRenewalTomorrow": "{subject} فردا با {amount} تمدید می‌شود. امروز بررسی یا لغوش کنید.",
+  "alertTitleSubTrial": "دوره آزمایشی به‌زودی تمام می‌شود",
+  "alertSubTrial": "دوره آزمایشی رایگان {subject} در {date} تمام می‌شود و سپس {amount} خودکار برداشت می‌شود.",
+  "alertSubTrialTomorrow": "دوره آزمایشی رایگان {subject} فردا تمام می‌شود و سپس {amount} خودکار برداشت می‌شود.",
+  "alertTitleSubEnds": "بسته‌ای به‌زودی تمام می‌شود",
+  "alertSubEnds": "{subject} در {date} تمام می‌شود.",
+  "alertSubEndsTomorrow": "{subject} فردا تمام می‌شود."
 }

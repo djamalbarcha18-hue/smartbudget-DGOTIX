@@ -1951,5 +1951,14 @@
   "subNoCard": "Pa kartë",
   "subEndedTitle": "Përfunduar dhe anuluar",
   "subTrackPayments": "Regjistro pagesat te shpenzimet e mia",
-  "subTrackPaymentsHelp": "Në çdo ditë pagese pyet nëse u tërhoq dhe e shton në buxhetin tënd."
+  "subTrackPaymentsHelp": "Në çdo ditë pagese pyet nëse u tërhoq dhe e shton në buxhetin tënd.",
+  "alertTitleSubRenewal": "Abonimi rinovohet së shpejti",
+  "alertSubRenewal": "{subject} rinovohet më {date} për {amount}. Të duhet ende?",
+  "alertSubRenewalTomorrow": "{subject} rinovohet nesër për {amount}. Kontrolloje ose anuloje sot.",
+  "alertTitleSubTrial": "Prova falas mbaron së shpejti",
+  "alertSubTrial": "Prova falas e {subject} mbaron më {date}, pastaj tërhiqen automatikisht {amount}.",
+  "alertSubTrialTomorrow": "Prova falas e {subject} mbaron nesër, pastaj tërhiqen automatikisht {amount}.",
+  "alertTitleSubEnds": "Paketa mbaron së shpejti",
+  "alertSubEnds": "{subject} mbaron më {date}.",
+  "alertSubEndsTomorrow": "{subject} mbaron nesër."
 }

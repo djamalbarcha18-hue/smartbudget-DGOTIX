@@ -1951,5 +1951,14 @@
   "subNoCard": "Geen kaart",
   "subEndedTitle": "Geëindig en gekanselleer",
   "subTrackPayments": "Teken debiete by my uitgawes aan",
-  "subTrackPaymentsHelp": "Vra op elke debietdag of dit gedebiteer is en voeg dit by jou begroting."
+  "subTrackPaymentsHelp": "Vra op elke debietdag of dit gedebiteer is en voeg dit by jou begroting.",
+  "alertTitleSubRenewal": "Intekening hernu binnekort",
+  "alertSubRenewal": "{subject} hernu op {date} vir {amount}. Het jy dit nog nodig?",
+  "alertSubRenewalTomorrow": "{subject} hernu môre vir {amount}. Hersien of kanselleer vandag.",
+  "alertTitleSubTrial": "Gratis proeftydperk eindig binnekort",
+  "alertSubTrial": "Jou gratis {subject}-proeftydperk eindig op {date}, dan word {amount} outomaties gedebiteer.",
+  "alertSubTrialTomorrow": "Jou gratis {subject}-proeftydperk eindig môre, dan word {amount} outomaties gedebiteer.",
+  "alertTitleSubEnds": "Pakket eindig binnekort",
+  "alertSubEnds": "{subject} eindig op {date}.",
+  "alertSubEndsTomorrow": "{subject} eindig môre."
 }

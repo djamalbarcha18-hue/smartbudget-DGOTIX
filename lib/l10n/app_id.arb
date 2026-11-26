@@ -1951,5 +1951,14 @@
   "subNoCard": "Tanpa kartu",
   "subEndedTitle": "Berakhir dan dibatalkan",
   "subTrackPayments": "Catat tagihan di pengeluaran saya",
-  "subTrackPaymentsHelp": "Di setiap hari tagihan, menanyakan apakah sudah ditagih lalu menambahkannya ke anggaran Anda."
+  "subTrackPaymentsHelp": "Di setiap hari tagihan, menanyakan apakah sudah ditagih lalu menambahkannya ke anggaran Anda.",
+  "alertTitleSubRenewal": "Langganan segera diperpanjang",
+  "alertSubRenewal": "{subject} diperpanjang pada {date} seharga {amount}. Masih perlu?",
+  "alertSubRenewalTomorrow": "{subject} diperpanjang besok seharga {amount}. Tinjau atau batalkan hari ini.",
+  "alertTitleSubTrial": "Uji coba gratis segera berakhir",
+  "alertSubTrial": "Uji coba gratis {subject} berakhir pada {date}, lalu {amount} ditagih otomatis.",
+  "alertSubTrialTomorrow": "Uji coba gratis {subject} berakhir besok, lalu {amount} ditagih otomatis.",
+  "alertTitleSubEnds": "Paket segera berakhir",
+  "alertSubEnds": "{subject} berakhir pada {date}.",
+  "alertSubEndsTomorrow": "{subject} berakhir besok."
 }

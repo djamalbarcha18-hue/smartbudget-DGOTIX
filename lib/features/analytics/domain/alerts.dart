@@ -55,6 +55,17 @@ enum AlertKind {
 
   /// A metal's price per gram reached the level the user asked to hear of.
   metalPrice,
+
+  // ---- Subscriptions (free on every plan) ----
+
+  /// A subscription renews (and is charged) soon: keep or cancel.
+  subscriptionRenewal,
+
+  /// A free trial ends soon, then the first charge.
+  subscriptionTrialEnd,
+
+  /// A plan renewed by hand (a prepaid phone plan) runs out soon.
+  subscriptionEnds,
 }
 
 /// A derived, data-backed alert. Never fabricated: every instance comes from a

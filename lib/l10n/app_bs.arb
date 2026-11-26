@@ -1951,5 +1951,14 @@
   "subNoCard": "Bez kartice",
   "subEndedTitle": "Završene i otkazane",
   "subTrackPayments": "Upiši naplate u moje troškove",
-  "subTrackPaymentsHelp": "Svakog dana naplate pita je li naplaćeno i dodaje to u vaš budžet."
+  "subTrackPaymentsHelp": "Svakog dana naplate pita je li naplaćeno i dodaje to u vaš budžet.",
+  "alertTitleSubRenewal": "Pretplata se uskoro obnavlja",
+  "alertSubRenewal": "{subject} se obnavlja {date} za {amount}. Treba li vam još?",
+  "alertSubRenewalTomorrow": "{subject} se obnavlja sutra za {amount}. Provjerite ili otkažite danas.",
+  "alertTitleSubTrial": "Besplatni probni period uskoro ističe",
+  "alertSubTrial": "Besplatni probni period za {subject} ističe {date}, zatim se automatski naplaćuje {amount}.",
+  "alertSubTrialTomorrow": "Besplatni probni period za {subject} ističe sutra, zatim se automatski naplaćuje {amount}.",
+  "alertTitleSubEnds": "Paket uskoro ističe",
+  "alertSubEnds": "{subject} ističe {date}.",
+  "alertSubEndsTomorrow": "{subject} ističe sutra."
 }

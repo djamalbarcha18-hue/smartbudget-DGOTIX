@@ -2286,5 +2286,20 @@
   "subNoCard": "No card",
   "subEndedTitle": "Ended and cancelled",
   "subTrackPayments": "Record charges in my expenses",
-  "subTrackPaymentsHelp": "On each charge day, asks whether it was charged and adds it to your budget."
+  "subTrackPaymentsHelp": "On each charge day, asks whether it was charged and adds it to your budget.",
+  "alertTitleSubRenewal": "Subscription renews soon",
+  "alertSubRenewal": "{subject} renews on {date} for {amount}. Still need it?",
+  "@alertSubRenewal": {"placeholders": {"subject": {"type": "String"}, "amount": {"type": "String"}, "date": {"type": "String"}}},
+  "alertSubRenewalTomorrow": "{subject} renews tomorrow for {amount}. Review or cancel it today.",
+  "@alertSubRenewalTomorrow": {"placeholders": {"subject": {"type": "String"}, "amount": {"type": "String"}}},
+  "alertTitleSubTrial": "Free trial ends soon",
+  "alertSubTrial": "Your {subject} free trial ends on {date}, then {amount} is charged automatically.",
+  "@alertSubTrial": {"placeholders": {"subject": {"type": "String"}, "amount": {"type": "String"}, "date": {"type": "String"}}},
+  "alertSubTrialTomorrow": "Your {subject} free trial ends tomorrow, then {amount} is charged automatically.",
+  "@alertSubTrialTomorrow": {"placeholders": {"subject": {"type": "String"}, "amount": {"type": "String"}}},
+  "alertTitleSubEnds": "Plan ends soon",
+  "alertSubEnds": "{subject} ends on {date}.",
+  "@alertSubEnds": {"placeholders": {"subject": {"type": "String"}, "date": {"type": "String"}}},
+  "alertSubEndsTomorrow": "{subject} ends tomorrow.",
+  "@alertSubEndsTomorrow": {"placeholders": {"subject": {"type": "String"}}}
 }

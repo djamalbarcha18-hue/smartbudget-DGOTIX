@@ -25,6 +25,8 @@ import 'package:smartbudget/features/seasons/domain/season_alerts.dart';
 import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
 import 'package:smartbudget/features/transactions/domain/finance_calculator.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
+import 'package:smartbudget/features/subscriptions/application/subscriptions_controller.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_alerts.dart';
 
 /// Ticks every 15 minutes so time-based notifications (a new day, a new
 /// month, an item coming due) refresh while the app stays open.
@@ -48,6 +50,10 @@ final notificationsProvider = Provider<List<FeedItem>>((ref) {
       ref.watch(goalsProvider).valueOrNull ?? const <Goal>[];
   final List<RecurringRule> rules =
       ref.watch(recurringRulesProvider).valueOrNull ?? const <RecurringRule>[];
+  final List<RecurringRule> ordinaryRules = <RecurringRule>[
+    for (final RecurringRule r in rules)
+      if (!r.isSubscription) r,
+  ];
   final bool smartAllowed =
       ref.watch(featureGateProvider(Feature.smartAlerts)).allowed;
 
@@ -89,8 +95,12 @@ final notificationsProvider = Provider<List<FeedItem>>((ref) {
     finance: finance,
     smart: smart,
     upcoming: <AppAlert>[
-      ...NotificationFeed.awaitingAmount(rules, now),
-      ...NotificationFeed.upcomingRecurring(rules, now),
+      // Subscriptions have their own notices (and ask "was it charged?" only
+      // when the user chose to record charges), so their rules are left out
+      // of the generic recurring ones.
+      ...NotificationFeed.awaitingAmount(ordinaryRules, now),
+      ...NotificationFeed.upcomingRecurring(ordinaryRules, now),
+      ...SubscriptionAlerts.bell(ref.watch(subscriptionItemsProvider), now),
     ],
     planning: <AppAlert>[
       ...SeasonAlerts.build(
@@ -98,7 +108,11 @@ final notificationsProvider = Provider<List<FeedItem>>((ref) {
           now),
       ...DaretMath.alerts(
           ref.watch(daretsProvider).valueOrNull ?? const <Daret>[], now),
-      ...ref.watch(metalAlertNoticesProvider),
+      // Price alerts are part of the PRO metals tools: after a downgrade
+      // they stay saved but stop notifying (a feature's alerts follow its
+      // plan).
+      if (ref.watch(featureGateProvider(Feature.metalsAdvanced)).allowed)
+        ...ref.watch(metalAlertNoticesProvider),
     ],
     backupDue: ref.watch(backupReminderDueProvider),
     currency: currency,

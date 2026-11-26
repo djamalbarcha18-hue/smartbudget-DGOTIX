@@ -2150,5 +2150,14 @@
   "subNoCard": "بلا بطاقة",
   "subEndedTitle": "المنتهية والملغاة",
   "subTrackPayments": "سجّل الخصومات في مصروفاتي",
-  "subTrackPaymentsHelp": "في يوم كل خصم يسألك هل خُصم، ويضيفه إلى ميزانيتك."
+  "subTrackPaymentsHelp": "في يوم كل خصم يسألك هل خُصم، ويضيفه إلى ميزانيتك.",
+  "alertTitleSubRenewal": "اشتراك يتجدد قريبًا",
+  "alertSubRenewal": "يتجدد {subject} يوم {date} مقابل {amount}. هل ما زلت بحاجة إليه؟",
+  "alertSubRenewalTomorrow": "يتجدد {subject} غدًا مقابل {amount}. راجعه أو ألغِه اليوم.",
+  "alertTitleSubTrial": "تجربة مجانية تنتهي قريبًا",
+  "alertSubTrial": "تنتهي تجربتك المجانية في {subject} يوم {date}، وبعدها يُخصم {amount} تلقائيًا.",
+  "alertSubTrialTomorrow": "تنتهي تجربتك المجانية في {subject} غدًا، وبعدها يُخصم {amount} تلقائيًا.",
+  "alertTitleSubEnds": "باقة تنتهي قريبًا",
+  "alertSubEnds": "تنتهي {subject} يوم {date}.",
+  "alertSubEndsTomorrow": "تنتهي {subject} غدًا."
 }

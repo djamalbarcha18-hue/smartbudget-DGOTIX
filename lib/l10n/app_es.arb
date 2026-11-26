@@ -1951,5 +1951,14 @@
   "subNoCard": "Sin tarjeta",
   "subEndedTitle": "Terminadas y canceladas",
   "subTrackPayments": "Registrar los cobros en mis gastos",
-  "subTrackPaymentsHelp": "Cada día de cobro pregunta si se cobró y lo añade a tu presupuesto."
+  "subTrackPaymentsHelp": "Cada día de cobro pregunta si se cobró y lo añade a tu presupuesto.",
+  "alertTitleSubRenewal": "Una suscripción se renueva pronto",
+  "alertSubRenewal": "{subject} se renueva el {date} por {amount}. ¿Aún la necesitas?",
+  "alertSubRenewalTomorrow": "{subject} se renueva mañana por {amount}. Revísala o cancélala hoy.",
+  "alertTitleSubTrial": "Una prueba gratuita termina pronto",
+  "alertSubTrial": "Tu prueba gratuita de {subject} termina el {date} y luego se cobran {amount} automáticamente.",
+  "alertSubTrialTomorrow": "Tu prueba gratuita de {subject} termina mañana y luego se cobran {amount} automáticamente.",
+  "alertTitleSubEnds": "Un plan termina pronto",
+  "alertSubEnds": "{subject} termina el {date}.",
+  "alertSubEndsTomorrow": "{subject} termina mañana."
 }

@@ -1951,5 +1951,14 @@
   "subNoCard": "카드 없음",
   "subEndedTitle": "종료 및 해지됨",
   "subTrackPayments": "결제를 내 지출에 기록",
-  "subTrackPaymentsHelp": "결제일마다 결제되었는지 묻고 예산에 추가해요."
+  "subTrackPaymentsHelp": "결제일마다 결제되었는지 묻고 예산에 추가해요.",
+  "alertTitleSubRenewal": "곧 구독이 갱신돼요",
+  "alertSubRenewal": "{subject}이(가) {date}에 {amount}에 갱신돼요. 아직 필요하세요?",
+  "alertSubRenewalTomorrow": "{subject}이(가) 내일 {amount}에 갱신돼요. 오늘 확인하거나 해지하세요.",
+  "alertTitleSubTrial": "곧 무료 체험이 끝나요",
+  "alertSubTrial": "{subject} 무료 체험이 {date}에 끝나고 {amount}이(가) 자동 결제돼요.",
+  "alertSubTrialTomorrow": "{subject} 무료 체험이 내일 끝나고 {amount}이(가) 자동 결제돼요.",
+  "alertTitleSubEnds": "곧 요금제가 끝나요",
+  "alertSubEnds": "{subject}이(가) {date}에 끝나요.",
+  "alertSubEndsTomorrow": "{subject}이(가) 내일 끝나요."
 }

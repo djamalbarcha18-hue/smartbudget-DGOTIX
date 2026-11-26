@@ -1951,5 +1951,14 @@
   "subNoCard": "Tiada kad",
   "subEndedTitle": "Tamat dan dibatalkan",
   "subTrackPayments": "Rekod caj dalam perbelanjaan saya",
-  "subTrackPaymentsHelp": "Pada setiap hari caj, bertanya sama ada sudah dicaj dan menambahnya ke bajet anda."
+  "subTrackPaymentsHelp": "Pada setiap hari caj, bertanya sama ada sudah dicaj dan menambahnya ke bajet anda.",
+  "alertTitleSubRenewal": "Langganan akan diperbaharui",
+  "alertSubRenewal": "{subject} diperbaharui pada {date} untuk {amount}. Masih perlu?",
+  "alertSubRenewalTomorrow": "{subject} diperbaharui esok untuk {amount}. Semak atau batalkan hari ini.",
+  "alertTitleSubTrial": "Percubaan percuma akan tamat",
+  "alertSubTrial": "Percubaan percuma {subject} tamat pada {date}, kemudian {amount} dicaj secara automatik.",
+  "alertSubTrialTomorrow": "Percubaan percuma {subject} tamat esok, kemudian {amount} dicaj secara automatik.",
+  "alertTitleSubEnds": "Pelan akan tamat",
+  "alertSubEnds": "{subject} tamat pada {date}.",
+  "alertSubEndsTomorrow": "{subject} tamat esok."
 }

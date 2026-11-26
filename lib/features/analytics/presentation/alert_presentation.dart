@@ -85,6 +85,9 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
     AlertKind.daretPayment => l.alertTitleDaretPayment,
     AlertKind.daretPayout => l.alertTitleDaretPayout,
     AlertKind.metalPrice => l.alertTitleMetalPrice(subject),
+    AlertKind.subscriptionRenewal => l.alertTitleSubRenewal,
+    AlertKind.subscriptionTrialEnd => l.alertTitleSubTrial,
+    AlertKind.subscriptionEnds => l.alertTitleSubEnds,
   };
   final String description = switch (a.kind) {
     AlertKind.budgetOver => l.alertBudgetOver(subject, amount),
@@ -122,6 +125,15 @@ AlertView describeAlert(BuildContext context, AppAlert a) {
         ? l.alertDaretPayoutTomorrow(amount, subject)
         : l.alertDaretPayout(amount, subject, date),
     AlertKind.metalPrice => l.alertMetalPrice(subject, amount, typical),
+    AlertKind.subscriptionRenewal => tomorrow
+        ? l.alertSubRenewalTomorrow(subject, amount)
+        : l.alertSubRenewal(subject, amount, date),
+    AlertKind.subscriptionTrialEnd => tomorrow
+        ? l.alertSubTrialTomorrow(subject, amount)
+        : l.alertSubTrial(subject, amount, date),
+    AlertKind.subscriptionEnds => tomorrow
+        ? l.alertSubEndsTomorrow(subject)
+        : l.alertSubEnds(subject, date),
   };
   final String action = switch (a.route) {
     '/budget' => l.actionViewBudget,

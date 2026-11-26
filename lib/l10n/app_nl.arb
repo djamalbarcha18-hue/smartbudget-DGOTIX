@@ -1951,5 +1951,14 @@
   "subNoCard": "Geen kaart",
   "subEndedTitle": "Beëindigd en opgezegd",
   "subTrackPayments": "Afschrijvingen bij mijn uitgaven boeken",
-  "subTrackPaymentsHelp": "Vraagt op elke afschrijfdag of er is afgeschreven en zet het in je budget."
+  "subTrackPaymentsHelp": "Vraagt op elke afschrijfdag of er is afgeschreven en zet het in je budget.",
+  "alertTitleSubRenewal": "Abonnement wordt binnenkort verlengd",
+  "alertSubRenewal": "{subject} wordt op {date} verlengd voor {amount}. Nog nodig?",
+  "alertSubRenewalTomorrow": "{subject} wordt morgen verlengd voor {amount}. Bekijk of zeg vandaag op.",
+  "alertTitleSubTrial": "Proefperiode eindigt binnenkort",
+  "alertSubTrial": "Je gratis proefperiode van {subject} eindigt op {date}, daarna wordt {amount} automatisch afgeschreven.",
+  "alertSubTrialTomorrow": "Je gratis proefperiode van {subject} eindigt morgen, daarna wordt {amount} automatisch afgeschreven.",
+  "alertTitleSubEnds": "Bundel loopt binnenkort af",
+  "alertSubEnds": "{subject} loopt af op {date}.",
+  "alertSubEndsTomorrow": "{subject} loopt morgen af."
 }

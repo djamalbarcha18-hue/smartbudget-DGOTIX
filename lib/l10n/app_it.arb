@@ -1951,5 +1951,14 @@
   "subNoCard": "Senza carta",
   "subEndedTitle": "Terminati e disdetti",
   "subTrackPayments": "Registra gli addebiti nelle mie spese",
-  "subTrackPaymentsHelp": "Ogni giorno di addebito chiede se è avvenuto e lo aggiunge al tuo budget."
+  "subTrackPaymentsHelp": "Ogni giorno di addebito chiede se è avvenuto e lo aggiunge al tuo budget.",
+  "alertTitleSubRenewal": "Un abbonamento si rinnova presto",
+  "alertSubRenewal": "{subject} si rinnova il {date} per {amount}. Ti serve ancora?",
+  "alertSubRenewalTomorrow": "{subject} si rinnova domani per {amount}. Controlla o disdici oggi.",
+  "alertTitleSubTrial": "Una prova gratuita finisce presto",
+  "alertSubTrial": "La prova gratuita di {subject} finisce il {date}, poi vengono addebitati {amount} automaticamente.",
+  "alertSubTrialTomorrow": "La prova gratuita di {subject} finisce domani, poi vengono addebitati {amount} automaticamente.",
+  "alertTitleSubEnds": "Un piano scade presto",
+  "alertSubEnds": "{subject} scade il {date}.",
+  "alertSubEndsTomorrow": "{subject} scade domani."
 }
