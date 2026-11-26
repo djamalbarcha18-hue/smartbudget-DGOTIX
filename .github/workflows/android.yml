@@ -100,7 +100,10 @@ jobs:
           TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY || '0x4AAAAAAFQb5tnXUE643C_f' }}
         run: |
           # The device database for the user's lists (docs/LOCAL_DATABASE.md).
-          DEFINES="--dart-define=STORE_BUILD=true --dart-define=INDEXED_DB=true --dart-define=ERROR_REPORTS=true"
+          # Google Play refuses a version code it has seen: each build gets a
+          # higher one (pubspec.yaml stays at +1). 1000+ keeps it above any
+          # bundle uploaded by hand before.
+          DEFINES="--build-number=$((1000 + ${{ github.run_number }})) --dart-define=STORE_BUILD=true --dart-define=INDEXED_DB=true --dart-define=ERROR_REPORTS=true"
           # After the beta: the free plan's limits apply and the account's plan
           # comes from the server, so Pro bought on the website works here. The
           # store app itself never sells or links to a payment
