@@ -1923,5 +1923,15 @@
   "subStatusEnded": "Encerrada",
   "subNotifKeep": "Manter",
   "subNotifCancel": "Cancelar agora",
-  "subKeptNote": "Mantida: sem lembretes até a próxima renovação."
+  "subKeptNote": "Mantida: sem lembretes até a próxima renovação.",
+  "subDueTitle": "Foi cobrado?",
+  "subDueQuestion": "{name}: foi cobrado {amount} em {date}?",
+  "subDueYes": "Sim, cobrado",
+  "subDueMine": "Já registrei",
+  "subDueNo": "Não foi cobrado",
+  "subDueAmountTitle": "Valor cobrado",
+  "subDueForFuture": "Usar este valor nas próximas renovações",
+  "subDueNoMatch": "Nenhuma despesa parecida perto dessa data. Registre com \"Sim, cobrado\".",
+  "subDuePick": "Qual despesa é?",
+  "subDueBanner": "{count, plural, =1{Uma cobrança de assinatura aguarda sua resposta} other{{count} cobranças de assinaturas aguardam sua resposta}}"
 }

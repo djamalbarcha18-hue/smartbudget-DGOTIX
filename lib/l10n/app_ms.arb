@@ -1923,5 +1923,15 @@
   "subStatusEnded": "Tamat",
   "subNotifKeep": "Teruskan",
   "subNotifCancel": "Batal sekarang",
-  "subKeptNote": "Diteruskan: tiada peringatan hingga pembaharuan seterusnya."
+  "subKeptNote": "Diteruskan: tiada peringatan hingga pembaharuan seterusnya.",
+  "subDueTitle": "Sudah dicaj?",
+  "subDueQuestion": "{name}: adakah {amount} dicaj pada {date}?",
+  "subDueYes": "Ya, dicaj",
+  "subDueMine": "Saya sudah rekod",
+  "subDueNo": "Tidak dicaj",
+  "subDueAmountTitle": "Jumlah dicaj",
+  "subDueForFuture": "Guna jumlah ini untuk pembaharuan seterusnya",
+  "subDueNoMatch": "Tiada perbelanjaan serupa sekitar tarikh itu. Rekodkan dengan \"Ya, dicaj\".",
+  "subDuePick": "Perbelanjaan yang mana?",
+  "subDueBanner": "{count, plural, =1{Satu caj langganan menunggu jawapan anda} other{{count} caj langganan menunggu jawapan anda}}"
 }

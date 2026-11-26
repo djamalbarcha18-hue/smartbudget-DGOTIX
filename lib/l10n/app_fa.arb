@@ -1923,5 +1923,15 @@
   "subStatusEnded": "پایان‌یافته",
   "subNotifKeep": "نگه دار",
   "subNotifCancel": "الان لغو کن",
-  "subKeptNote": "نگه داشته شد: تا تمدید بعدی یادآوری نمی‌آید."
+  "subKeptNote": "نگه داشته شد: تا تمدید بعدی یادآوری نمی‌آید.",
+  "subDueTitle": "برداشت شد؟",
+  "subDueQuestion": "{name}: آیا {amount} در {date} برداشت شد؟",
+  "subDueYes": "بله، برداشت شد",
+  "subDueMine": "خودم ثبتش کردم",
+  "subDueNo": "برداشت نشد",
+  "subDueAmountTitle": "مبلغ برداشت‌شده",
+  "subDueForFuture": "این مبلغ را برای تمدیدهای بعدی استفاده کن",
+  "subDueNoMatch": "هزینهٔ مشابهی نزدیک آن تاریخ نیست. با «بله، برداشت شد» ثبتش کنید.",
+  "subDuePick": "کدام هزینه است؟",
+  "subDueBanner": "{count, plural, =1{یک برداشت اشتراک منتظر پاسخ شماست} other{{count} برداشت اشتراک منتظر پاسخ شماست}}"
 }

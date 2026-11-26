@@ -1923,5 +1923,15 @@
   "subStatusEnded": "Beendet",
   "subNotifKeep": "Behalten",
   "subNotifCancel": "Jetzt kündigen",
-  "subKeptNote": "Behalten: keine Erinnerungen bis zur nächsten Verlängerung."
+  "subKeptNote": "Behalten: keine Erinnerungen bis zur nächsten Verlängerung.",
+  "subDueTitle": "Wurde abgebucht?",
+  "subDueQuestion": "{name}: Wurden am {date} {amount} abgebucht?",
+  "subDueYes": "Ja, abgebucht",
+  "subDueMine": "Schon selbst erfasst",
+  "subDueNo": "Nicht abgebucht",
+  "subDueAmountTitle": "Abgebuchter Betrag",
+  "subDueForFuture": "Diesen Betrag für die nächsten Verlängerungen nutzen",
+  "subDueNoMatch": "Keine ähnliche Ausgabe um dieses Datum. Erfasse sie mit „Ja, abgebucht“.",
+  "subDuePick": "Welche Ausgabe ist es?",
+  "subDueBanner": "{count, plural, =1{Eine Abo-Abbuchung wartet auf deine Antwort} other{{count} Abo-Abbuchungen warten auf deine Antwort}}"
 }

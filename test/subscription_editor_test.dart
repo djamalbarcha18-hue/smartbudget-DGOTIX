@@ -15,6 +15,10 @@ import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/subscriptions/application/subscriptions_controller.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription_cancel.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_payments.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_schedule.dart';
+import 'package:smartbudget/features/transactions/application/transactions_controller.dart';
+import 'package:smartbudget/features/transactions/domain/transaction.dart';
 import 'package:smartbudget/features/subscriptions/presentation/subscription_editor_sheet.dart';
 import 'package:smartbudget/features/subscriptions/presentation/subscriptions_tab.dart';
 import 'package:smartbudget/l10n/gen/app_localizations.dart';
@@ -234,5 +238,106 @@ void main() {
     await a.keepUntil(s, DateTime(2030, 1, 15, 10));
     expect((await c.read(subscriptionStoreProvider).all()).single.keptUntil,
         DateTime(2030, 1, 15));
+  });
+
+  group('Was it charged?', () {
+    Future<SubscriptionItem> added(String id, DateTime next) async {
+      final SubscriptionActions a = c.read(subscriptionActionsProvider);
+      final DateTime now = AppClock.now();
+      final Subscription s = Subscription(
+        id: id,
+        ruleId: id,
+        kind: SubscriptionKind.digital,
+        provider: 'Netflix',
+        createdAt: now,
+        updatedAt: now,
+      );
+      await a.save(s,
+          amount: const Money(1500, 'USD'),
+          frequency: RecurrenceFrequency.monthly,
+          nextCharge: next);
+      await c.read(recurringRulesProvider.future);
+      return (
+        sub: s,
+        rule: c
+            .read(recurringRepositoryProvider)
+            .current
+            .singleWhere((RecurringRule r) => r.id == id),
+      );
+    }
+
+    test('yes: one expense, recorded once even if answered twice', () async {
+      final DateTime today = _today();
+      final SubscriptionItem i = await added('sub-y', today);
+      final SubscriptionActions a = c.read(subscriptionActionsProvider);
+      await a.confirmCharge(i, today, const Money(1620, 'USD'));
+      await a.confirmCharge(i, today, const Money(1620, 'USD'));
+      final List<Transaction> all =
+          c.read(financeRepositoryProvider).current;
+      final List<Transaction> mine = all
+          .where((Transaction t) => t.description == 'Netflix')
+          .toList();
+      expect(mine, hasLength(1));
+      expect(mine.single.amount.minorUnits, 1620);
+      expect(mine.single.category, subscriptionCategory);
+      final Subscription s =
+          (await c.read(subscriptionStoreProvider).all()).single;
+      expect(s.payments.values.single, mine.single.id);
+      final RecurringRule r = c
+          .read(recurringRepositoryProvider)
+          .current
+          .singleWhere((RecurringRule r) => r.id == 'sub-y');
+      // Answered; the usual amount stays (not asked to change it).
+      expect(r.lastPosted, today);
+      expect(r.amount.minorUnits, 1500);
+    });
+
+    test('a new amount for the next renewals when asked', () async {
+      final DateTime today = _today();
+      final SubscriptionItem i = await added('sub-z', today);
+      await c
+          .read(subscriptionActionsProvider)
+          .confirmCharge(i, today, const Money(1700, 'USD'), forFuture: true);
+      expect(
+          c
+              .read(recurringRepositoryProvider)
+              .current
+              .singleWhere((RecurringRule r) => r.id == 'sub-z')
+              .amount
+              .minorUnits,
+          1700);
+    });
+
+    test('recorded by hand: linked, nothing new written', () async {
+      final DateTime today = _today();
+      final SubscriptionItem i = await added('sub-m', today);
+      final Transaction own = Transaction(
+        id: 'own-1',
+        date: today,
+        type: TransactionType.expense,
+        category: 'x',
+        amount: const Money(1500, 'USD'),
+        createdAt: today,
+      );
+      await c.read(financeRepositoryProvider).importMany(<Transaction>[own]);
+      final int before = c.read(financeRepositoryProvider).current.length;
+      await c.read(subscriptionActionsProvider).linkCharge(i, today, own);
+      expect(c.read(financeRepositoryProvider).current.length, before);
+      expect((await c.read(subscriptionStoreProvider).all()).single.payments,
+          <String, String>{SubscriptionPayments.key(today): 'own-1'});
+    });
+
+    test('not charged: nothing recorded, the question goes', () async {
+      final DateTime today = _today();
+      final SubscriptionItem i = await added('sub-n', today);
+      final int before = c.read(financeRepositoryProvider).current.length;
+      await c.read(subscriptionActionsProvider).skipCharge(i, today);
+      expect(c.read(financeRepositoryProvider).current.length, before);
+      final RecurringRule r = c
+          .read(recurringRepositoryProvider)
+          .current
+          .singleWhere((RecurringRule r) => r.id == 'sub-n');
+      expect(SubscriptionPayments.due(r, AppClock.now()), isEmpty);
+    });
   });
 }

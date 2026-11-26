@@ -1923,5 +1923,15 @@
   "subStatusEnded": "Sona erdi",
   "subNotifKeep": "Devam et",
   "subNotifCancel": "Şimdi iptal et",
-  "subKeptNote": "Tamam: bir sonraki yenilemeye kadar hatırlatma yok."
+  "subKeptNote": "Tamam: bir sonraki yenilemeye kadar hatırlatma yok.",
+  "subDueTitle": "Ödeme alındı mı?",
+  "subDueQuestion": "{name}: {date} tarihinde {amount} çekildi mi?",
+  "subDueYes": "Evet, çekildi",
+  "subDueMine": "Kendim kaydettim",
+  "subDueNo": "Çekilmedi",
+  "subDueAmountTitle": "Çekilen tutar",
+  "subDueForFuture": "Bu tutarı sonraki yenilemelerde kullan",
+  "subDueNoMatch": "O tarih civarında benzer bir harcama yok. \"Evet, çekildi\" ile kaydet.",
+  "subDuePick": "Hangi harcama?",
+  "subDueBanner": "{count, plural, =1{Bir abonelik ödemesi yanıtını bekliyor} other{{count} abonelik ödemesi yanıtını bekliyor}}"
 }

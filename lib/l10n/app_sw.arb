@@ -1923,5 +1923,15 @@
   "subStatusEnded": "Imeisha",
   "subNotifKeep": "Endelea nao",
   "subNotifCancel": "Sitisha sasa",
-  "subKeptNote": "Umeendelea: hakuna vikumbusho hadi usasishaji ujao."
+  "subKeptNote": "Umeendelea: hakuna vikumbusho hadi usasishaji ujao.",
+  "subDueTitle": "Imekatwa?",
+  "subDueQuestion": "{name}: je, {amount} ilikatwa tarehe {date}?",
+  "subDueYes": "Ndiyo, imekatwa",
+  "subDueMine": "Nimeirekodi mwenyewe",
+  "subDueNo": "Haijakatwa",
+  "subDueAmountTitle": "Kiasi kilichokatwa",
+  "subDueForFuture": "Tumia kiasi hiki kwa usasishaji ujao",
+  "subDueNoMatch": "Hakuna matumizi yanayofanana karibu na tarehe hiyo. Yarekodi kwa \"Ndiyo, imekatwa\".",
+  "subDuePick": "Ni matumizi gani?",
+  "subDueBanner": "{count, plural, =1{Makato 1 ya usajili yanasubiri jibu lako} other{Makato {count} ya usajili yanasubiri jibu lako}}"
 }

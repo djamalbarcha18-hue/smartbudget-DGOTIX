@@ -1923,5 +1923,15 @@
   "subStatusEnded": "Terminato",
   "subNotifKeep": "Tienilo",
   "subNotifCancel": "Disdici ora",
-  "subKeptNote": "Tenuto: niente promemoria fino al prossimo rinnovo."
+  "subKeptNote": "Tenuto: niente promemoria fino al prossimo rinnovo.",
+  "subDueTitle": "È stato addebitato?",
+  "subDueQuestion": "{name}: sono stati addebitati {amount} il {date}?",
+  "subDueYes": "Sì, addebitato",
+  "subDueMine": "L'ho già registrato",
+  "subDueNo": "Non addebitato",
+  "subDueAmountTitle": "Importo addebitato",
+  "subDueForFuture": "Usa questo importo per i prossimi rinnovi",
+  "subDueNoMatch": "Nessuna spesa simile intorno a quella data. Registrala con «Sì, addebitato».",
+  "subDuePick": "Quale spesa è?",
+  "subDueBanner": "{count, plural, =1{Un addebito di abbonamento attende la tua risposta} other{{count} addebiti di abbonamenti attendono la tua risposta}}"
 }
