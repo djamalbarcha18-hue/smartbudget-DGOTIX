@@ -56,6 +56,7 @@ class Subscription {
     this.autoRenew = true,
     this.trialEndsAt,
     this.billedVia = BilledVia.direct,
+    this.cardName,
     this.manageUrl,
     this.notes,
     this.remindersOn = true,
@@ -103,6 +104,12 @@ class Subscription {
   /// End of a free trial: the first paid charge. Nothing is spent before it.
   final DateTime? trialEndsAt;
   final BilledVia billedVia;
+
+  /// Optional name of the card it is charged to ("Edahabia", "Visa BNA"),
+  /// shown beside the subscription so the user knows which card to watch, and
+  /// which subscriptions fail when a card is replaced. A name only: never a
+  /// card number ([CardName.clean] refuses one).
+  final String? cardName;
 
   /// The provider's page to manage or cancel it.
   final String? manageUrl;
@@ -154,6 +161,8 @@ class Subscription {
     DateTime? trialEndsAt,
     bool clearTrial = false,
     BilledVia? billedVia,
+    String? cardName,
+    bool clearCard = false,
     String? manageUrl,
     String? notes,
     bool? remindersOn,
@@ -181,6 +190,7 @@ class Subscription {
       autoRenew: autoRenew ?? this.autoRenew,
       trialEndsAt: clearTrial ? null : (trialEndsAt ?? this.trialEndsAt),
       billedVia: billedVia ?? this.billedVia,
+      cardName: clearCard ? null : (cardName ?? this.cardName),
       manageUrl: manageUrl ?? this.manageUrl,
       notes: notes ?? this.notes,
       remindersOn: remindersOn ?? this.remindersOn,
@@ -211,6 +221,7 @@ class Subscription {
         'autoRenew': autoRenew,
         if (trialEndsAt != null) 'trialEndsAt': _ymd(trialEndsAt!),
         'billedVia': billedVia.name,
+        if (cardName != null) 'cardName': cardName,
         if (manageUrl != null) 'manageUrl': manageUrl,
         if (notes != null) 'notes': notes,
         'remindersOn': remindersOn,
@@ -246,6 +257,8 @@ class Subscription {
       autoRenew: (j['autoRenew'] as bool?) ?? true,
       trialEndsAt: _day(j['trialEndsAt']),
       billedVia: _enum(BilledVia.values, j['billedVia'], BilledVia.other),
+      // Re-checked on load: a stored value is never trusted to be safe.
+      cardName: CardName.clean(j['cardName'] as String?),
       manageUrl: j['manageUrl'] as String?,
       notes: j['notes'] as String?,
       remindersOn: (j['remindersOn'] as bool?) ?? true,
@@ -299,6 +312,28 @@ class Subscription {
         if (e.key is String && e.value is String)
           e.key as String: e.value as String,
     };
+  }
+}
+
+/// The optional card name of a subscription.
+abstract final class CardName {
+  static const int maxLength = 40;
+
+  /// Five or more digits in a row (spaces and dashes ignored) look like part
+  /// of a card number. Four are fine: "Visa ...4417" helps tell cards apart.
+  static final RegExp _numberLike = RegExp(r'\d{5,}');
+
+  /// Whether [raw] can be kept as typed (after trimming).
+  static bool isSafe(String raw) =>
+      !_numberLike.hasMatch(raw.replaceAll(RegExp(r'[\s\-.]'), ''));
+
+  /// [raw] trimmed and shortened, or null when it is empty or looks like a
+  /// card number (the form says why; it is never stored).
+  static String? clean(String? raw) {
+    if (raw == null) return null;
+    final String t = raw.trim().replaceAll(RegExp(r'\s+'), ' ');
+    if (t.isEmpty || !isSafe(t)) return null;
+    return t.length > maxLength ? t.substring(0, maxLength).trim() : t;
   }
 }
 

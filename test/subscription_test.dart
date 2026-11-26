@@ -19,6 +19,7 @@ Subscription netflix({String id = 'sub-nf'}) => Subscription(
       planName: 'Standard',
       trialEndsAt: DateTime(2026, 12, 15),
       billedVia: BilledVia.googlePlay,
+      cardName: 'Edahabia',
       manageUrl: 'https://example.com/manage',
       notes: 'family',
       reminderDays: const <int>[3, 1],
@@ -138,6 +139,39 @@ void main() {
       expect(s.trialEndsAt, isNull);
       expect(s.keptUntil, isNull);
       expect(s.provider, 'Netflix');
+    });
+  });
+
+  group('Card name', () {
+    test('a name, or a name with the last four digits, is kept', () {
+      expect(CardName.clean('  Edahabia '), 'Edahabia');
+      expect(CardName.clean('Visa BNA ...4417'), 'Visa BNA ...4417');
+      expect(CardName.clean('بطاقة الذهبية'), 'بطاقة الذهبية');
+      expect(netflix().cardName, 'Edahabia');
+    });
+
+    test('anything that looks like a card number is refused', () {
+      expect(CardName.isSafe('4111 1111 1111 1111'), isFalse);
+      expect(CardName.clean('4111-1111-1111-1111'), isNull);
+      expect(CardName.clean('Visa 41111'), isNull);
+      expect(CardName.clean('6280.5800.1234'), isNull);
+    });
+
+    test('empty becomes null and long names are shortened', () {
+      expect(CardName.clean('   '), isNull);
+      expect(CardName.clean(null), isNull);
+      expect(CardName.clean('x' * 60)!.length, CardName.maxLength);
+    });
+
+    test('a stored card number is dropped on load', () {
+      final Map<String, dynamic> j = netflix().toJson()
+        ..['cardName'] = '4111111111111111';
+      expect(Subscription.fromJson(j).cardName, isNull);
+    });
+
+    test('copyWith can clear the card name', () {
+      expect(netflix().copyWith(clearCard: true).cardName, isNull);
+      expect(netflix().copyWith(cardName: 'CIB').cardName, 'CIB');
     });
   });
 
