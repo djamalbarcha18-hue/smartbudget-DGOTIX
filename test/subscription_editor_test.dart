@@ -180,10 +180,13 @@ void main() {
         frequency: RecurrenceFrequency.monthly,
         nextCharge: DateTime(_today().year, _today().month, _today().day + 3));
     // The repository's list: the provider's may lag a change just made.
-    Future<RecurringRule> rule() async => c
-        .read(recurringRepositoryProvider)
-        .current
-        .singleWhere((RecurringRule r) => r.id == 'sub-x');
+    Future<RecurringRule> rule() async {
+      await c.read(recurringRulesProvider.future); // loaded
+      return c
+          .read(recurringRepositoryProvider)
+          .current
+          .singleWhere((RecurringRule r) => r.id == 'sub-x');
+    }
 
     final Subscription asked = await a.cancel(
         (sub: s, rule: await rule()), CancelOutcome.requested);
