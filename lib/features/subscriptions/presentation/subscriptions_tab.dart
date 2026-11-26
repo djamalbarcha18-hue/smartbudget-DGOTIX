@@ -233,8 +233,12 @@ class _ReminderReachState extends State<_ReminderReach>
 
   Future<void> _check() async {
     if (!SubscriptionNotifications.supported) return;
-    final bool ok = await ReminderNotifications.instance.allowed();
-    if (mounted && ok != _allowed) setState(() => _allowed = ok);
+    try {
+      final bool ok = await ReminderNotifications.instance.allowed();
+      if (mounted && ok != _allowed) setState(() => _allowed = ok);
+    } catch (_) {
+      // Unknown: say nothing rather than a wrong warning.
+    }
   }
 
   @override
