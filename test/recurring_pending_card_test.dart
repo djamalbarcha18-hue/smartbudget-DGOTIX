@@ -52,7 +52,8 @@ void main() {
             DsColors.light,
             DsGlass.light
           ]),
-          home: const Scaffold(body: RecurringPage()),
+          // The recurring tab (the page opens on subscriptions).
+          home: const Scaffold(body: RecurringPage(initialTab: 1)),
         ),
       );
 
