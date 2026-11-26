@@ -74,7 +74,7 @@ class Subscription {
 
   /// Ids of subscriptions and of their rules start with this, so the free
   /// sync can carry a subscription's rule without every other recurring rule.
-  static const String idPrefix = 'sub-';
+  static const String idPrefix = RecurringRule.subscriptionPrefix;
 
   static bool isSubscriptionRuleId(String id) => id.startsWith(idPrefix);
 

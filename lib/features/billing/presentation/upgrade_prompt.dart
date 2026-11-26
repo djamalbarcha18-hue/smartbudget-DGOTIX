@@ -38,6 +38,7 @@ String featureTitle(AppLocalizations l, Feature f) => switch (f) {
       Feature.daretMembers => l.featDaretMembers,
       Feature.seasons => l.featSeasons,
       Feature.recurringRules => l.featRecurring,
+      Feature.subscriptions => l.featSubscriptions,
       Feature.healthDetails => l.featHealthDetails,
       Feature.prioritySupport => l.planFeatPriority,
       Feature.salarySplit => l.planFeatSalarySplit,

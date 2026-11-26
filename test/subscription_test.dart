@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
+import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/backup/domain/backup_model.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/subscriptions/domain/card_suggestions.dart';
+import 'package:smartbudget/features/subscriptions/domain/service_catalog.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
 import 'package:smartbudget/features/sync/domain/sync_merge.dart';
 import 'package:smartbudget/features/sync/domain/sync_scope.dart';
@@ -173,6 +176,67 @@ void main() {
     test('copyWith can clear the card name', () {
       expect(netflix().copyWith(clearCard: true).cardName, isNull);
       expect(netflix().copyWith(cardName: 'CIB').cardName, 'CIB');
+    });
+  });
+
+  group('Service catalog', () {
+    test('ids are unique and every name is filled in', () {
+      final Set<String> ids = <String>{};
+      for (final CatalogService s in ServiceCatalog.all) {
+        expect(ids.add(s.id), isTrue, reason: s.id);
+        expect(s.name.trim(), isNotEmpty);
+      }
+      expect(ServiceCatalog.all.length, 25);
+    });
+
+    test('Algeria sees its carriers first, others do not see them', () {
+      final List<CatalogService> dz = ServiceCatalog.forCountry('dz');
+      expect(dz.take(4).map((CatalogService s) => s.name), <String>[
+        'Djezzy',
+        'Mobilis',
+        'Ooredoo',
+        'Algérie Télécom (Idoom)',
+      ]);
+      expect(dz.length, ServiceCatalog.all.length);
+      final List<CatalogService> fr = ServiceCatalog.forCountry('FR');
+      expect(fr.any((CatalogService s) => s.country == 'DZ'), isFalse);
+      expect(fr.first.name, 'Netflix');
+    });
+
+    test('phone and home internet plans are of the mobile kind', () {
+      expect(ServiceCatalog.byId('dz_djezzy')!.kind, SubscriptionKind.mobile);
+      expect(ServiceCatalog.byId('dz_idoom')!.kind, SubscriptionKind.mobile);
+      expect(ServiceCatalog.byId('netflix')!.kind, SubscriptionKind.digital);
+      expect(ServiceCatalog.byId('nope'), isNull);
+      expect(ServiceCatalog.byId(null), isNull);
+    });
+
+    test('search narrows by name', () {
+      expect(ServiceCatalog.search('DZ', 'pre').map((CatalogService s) => s.id),
+          <String>['youtube_premium', 'telegram_premium']);
+    });
+
+    test('no prices and no unchecked links are shipped', () {
+      // Cancel links are added only once checked by hand (plan, 5.3).
+      expect(ServiceCatalog.all.where((CatalogService s) => s.manageUrl != null),
+          isEmpty);
+    });
+  });
+
+  group('Plan', () {
+    test('five subscriptions free, unlimited on PRO', () {
+      expect(FeatureCatalog.minTierFor(Feature.subscriptions), Plan.free);
+      expect(FeatureCatalog.quotaFor(Feature.subscriptions, Plan.free)!.limit,
+          5);
+      expect(
+          FeatureCatalog.quotaFor(Feature.subscriptions, Plan.pro)!.isUnlimited,
+          isTrue);
+    });
+
+    test('a subscription rule is told apart from an ordinary one', () {
+      expect(rule('sub-nf').isSubscription, isTrue);
+      expect(rule('rule-rent').isSubscription, isFalse);
+      expect(Subscription.idPrefix, RecurringRule.subscriptionPrefix);
     });
   });
 
