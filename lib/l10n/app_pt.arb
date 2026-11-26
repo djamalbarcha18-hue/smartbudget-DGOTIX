@@ -1951,5 +1951,14 @@
   "subNoCard": "Sem cartão",
   "subEndedTitle": "Encerradas e canceladas",
   "subTrackPayments": "Registrar as cobranças nas minhas despesas",
-  "subTrackPaymentsHelp": "Em cada dia de cobrança pergunta se foi cobrado e adiciona ao seu orçamento."
+  "subTrackPaymentsHelp": "Em cada dia de cobrança pergunta se foi cobrado e adiciona ao seu orçamento.",
+  "alertTitleSubRenewal": "Assinatura renova em breve",
+  "alertSubRenewal": "{subject} renova em {date} por {amount}. Ainda precisa?",
+  "alertSubRenewalTomorrow": "{subject} renova amanhã por {amount}. Revise ou cancele hoje.",
+  "alertTitleSubTrial": "Teste grátis termina em breve",
+  "alertSubTrial": "Seu teste grátis de {subject} termina em {date} e depois {amount} é cobrado automaticamente.",
+  "alertSubTrialTomorrow": "Seu teste grátis de {subject} termina amanhã e depois {amount} é cobrado automaticamente.",
+  "alertTitleSubEnds": "Plano termina em breve",
+  "alertSubEnds": "{subject} termina em {date}.",
+  "alertSubEndsTomorrow": "{subject} termina amanhã."
 }

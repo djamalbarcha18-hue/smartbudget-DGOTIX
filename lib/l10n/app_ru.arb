@@ -1951,5 +1951,14 @@
   "subNoCard": "Без карты",
   "subEndedTitle": "Завершённые и отменённые",
   "subTrackPayments": "Записывать списания в мои расходы",
-  "subTrackPaymentsHelp": "В день каждого списания спрашивает, было ли оно, и добавляет его в бюджет."
+  "subTrackPaymentsHelp": "В день каждого списания спрашивает, было ли оно, и добавляет его в бюджет.",
+  "alertTitleSubRenewal": "Подписка скоро продлится",
+  "alertSubRenewal": "{subject} продлится {date} за {amount}. Она ещё нужна?",
+  "alertSubRenewalTomorrow": "{subject} продлится завтра за {amount}. Проверьте или отмените сегодня.",
+  "alertTitleSubTrial": "Пробный период скоро закончится",
+  "alertSubTrial": "Пробный период {subject} закончится {date}, затем автоматически спишется {amount}.",
+  "alertSubTrialTomorrow": "Пробный период {subject} закончится завтра, затем автоматически спишется {amount}.",
+  "alertTitleSubEnds": "Тариф скоро закончится",
+  "alertSubEnds": "{subject} заканчивается {date}.",
+  "alertSubEndsTomorrow": "{subject} заканчивается завтра."
 }

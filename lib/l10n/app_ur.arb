@@ -1951,5 +1951,14 @@
   "subNoCard": "کارڈ کے بغیر",
   "subEndedTitle": "ختم اور منسوخ",
   "subTrackPayments": "کٹوتیاں میرے اخراجات میں درج کریں",
-  "subTrackPaymentsHelp": "ہر کٹوتی کے دن پوچھتا ہے کہ کیا کٹوتی ہوئی، اور اسے آپ کے بجٹ میں شامل کرتا ہے۔"
+  "subTrackPaymentsHelp": "ہر کٹوتی کے دن پوچھتا ہے کہ کیا کٹوتی ہوئی، اور اسے آپ کے بجٹ میں شامل کرتا ہے۔",
+  "alertTitleSubRenewal": "سبسکرپشن جلد تجدید ہوگی",
+  "alertSubRenewal": "{subject} کی {date} کو {amount} پر تجدید ہوگی۔ کیا اب بھی ضرورت ہے؟",
+  "alertSubRenewalTomorrow": "{subject} کی کل {amount} پر تجدید ہوگی۔ آج دیکھ لیں یا منسوخ کریں۔",
+  "alertTitleSubTrial": "مفت آزمائش جلد ختم ہوگی",
+  "alertSubTrial": "{subject} کی مفت آزمائش {date} کو ختم ہوگی، پھر {amount} خود بخود کٹ جائیں گے۔",
+  "alertSubTrialTomorrow": "{subject} کی مفت آزمائش کل ختم ہوگی، پھر {amount} خود بخود کٹ جائیں گے۔",
+  "alertTitleSubEnds": "پیکج جلد ختم ہوگا",
+  "alertSubEnds": "{subject} {date} کو ختم ہوگا۔",
+  "alertSubEndsTomorrow": "{subject} کل ختم ہوگا۔"
 }

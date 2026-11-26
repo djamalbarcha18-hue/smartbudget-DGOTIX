@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/features/analytics/domain/alerts.dart';
 import 'package:smartbudget/features/billing/domain/feature_catalog.dart';
 import 'package:smartbudget/features/billing/domain/plan.dart';
 import 'package:smartbudget/features/backup/domain/backup_model.dart';
@@ -740,6 +741,61 @@ void main() {
       expect(s.byCard.first, (card: 'CIB', monthly: 200000, count: 1));
       expect(s.byCard[1], (card: 'Edahabia', monthly: 145000, count: 2));
       expect(s.byCard.last, (card: null, monthly: 50000, count: 1));
+    });
+  });
+
+  group('Bell', () {
+    RecurringRule monthlyOn(DateTime next) => SubscriptionSchedule.ruleFor(
+          id: 'sub-b',
+          provider: 'Netflix',
+          amount: const Money(1500, 'USD'),
+          frequency: RecurrenceFrequency.monthly,
+          nextCharge: next,
+          createdAt: DateTime(2026, 11, 1),
+        );
+    Subscription live() => netflix().copyWith(
+        status: SubscriptionStatus.active,
+        clearTrial: true,
+        clearKept: true,
+        clearCancellation: true,
+        reminderDays: const <int>[3, 1]);
+    List<AppAlert> bell(Subscription s, DateTime next, DateTime now) =>
+        SubscriptionAlerts.bell(<({Subscription sub, RecurringRule? rule})>[
+          (sub: s, rule: monthlyOn(next)),
+        ], now);
+
+    test('from the first reminder day until the charge', () {
+      final DateTime charge = DateTime(2026, 12, 15);
+      expect(bell(live(), charge, DateTime(2026, 12, 11)), isEmpty);
+      final List<AppAlert> a = bell(live(), charge, DateTime(2026, 12, 12));
+      expect(a.single.kind, AlertKind.subscriptionRenewal);
+      expect(a.single.subject, 'Netflix');
+      expect(a.single.date, charge);
+      expect(a.single.route, '/recurring');
+      expect(a.single.severity, AlertSeverity.info);
+      expect(bell(live(), charge, DateTime(2026, 12, 14)).single.severity,
+          AlertSeverity.medium);
+      expect(bell(live(), charge, DateTime(2026, 12, 15)), hasLength(1));
+    });
+
+    test('trial end, a plan renewed by hand, and when nothing shows', () {
+      final DateTime charge = DateTime(2026, 12, 15);
+      final DateTime now = DateTime(2026, 12, 13);
+      expect(
+          bell(netflix().copyWith(clearKept: true), charge, now).single.kind,
+          AlertKind.subscriptionTrialEnd);
+      expect(bell(live().copyWith(autoRenew: false), charge, now).single.kind,
+          AlertKind.subscriptionEnds);
+      expect(bell(live().copyWith(remindersOn: false), charge, now), isEmpty);
+      expect(bell(live().copyWith(keptUntil: charge), charge, now), isEmpty);
+      expect(
+          bell(
+              live().copyWith(
+                  status: SubscriptionStatus.activeUntilEnd,
+                  paidUntil: DateTime(2026, 12, 14)),
+              charge,
+              now),
+          isEmpty);
     });
   });
 

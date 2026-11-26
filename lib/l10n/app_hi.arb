@@ -1951,5 +1951,14 @@
   "subNoCard": "कार्ड नहीं",
   "subEndedTitle": "समाप्त और रद्द",
   "subTrackPayments": "कटौतियाँ मेरे खर्चों में दर्ज करें",
-  "subTrackPaymentsHelp": "हर कटौती के दिन पूछता है कि क्या कटौती हुई, और उसे आपके बजट में जोड़ता है।"
+  "subTrackPaymentsHelp": "हर कटौती के दिन पूछता है कि क्या कटौती हुई, और उसे आपके बजट में जोड़ता है।",
+  "alertTitleSubRenewal": "सदस्यता जल्द नवीनीकृत होगी",
+  "alertSubRenewal": "{subject} का {date} को {amount} पर नवीनीकरण होगा। क्या अब भी ज़रूरत है?",
+  "alertSubRenewalTomorrow": "{subject} का कल {amount} पर नवीनीकरण होगा। आज देख लें या रद्द करें।",
+  "alertTitleSubTrial": "मुफ़्त ट्रायल जल्द खत्म होगा",
+  "alertSubTrial": "{subject} का मुफ़्त ट्रायल {date} को खत्म होगा, फिर {amount} अपने आप कटेंगे।",
+  "alertSubTrialTomorrow": "{subject} का मुफ़्त ट्रायल कल खत्म होगा, फिर {amount} अपने आप कटेंगे।",
+  "alertTitleSubEnds": "प्लान जल्द खत्म होगा",
+  "alertSubEnds": "{subject} {date} को खत्म होगा।",
+  "alertSubEndsTomorrow": "{subject} कल खत्म होगा।"
 }

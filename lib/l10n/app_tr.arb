@@ -1951,5 +1951,14 @@
   "subNoCard": "Kartsız",
   "subEndedTitle": "Sona eren ve iptal edilen",
   "subTrackPayments": "Ödemeleri harcamalarıma kaydet",
-  "subTrackPaymentsHelp": "Her ödeme günü çekilip çekilmediğini sorar ve bütçene ekler."
+  "subTrackPaymentsHelp": "Her ödeme günü çekilip çekilmediğini sorar ve bütçene ekler.",
+  "alertTitleSubRenewal": "Abonelik yakında yenileniyor",
+  "alertSubRenewal": "{subject} {date} tarihinde {amount} karşılığında yenileniyor. Hâlâ gerekli mi?",
+  "alertSubRenewalTomorrow": "{subject} yarın {amount} karşılığında yenileniyor. Bugün gözden geçir ya da iptal et.",
+  "alertTitleSubTrial": "Ücretsiz deneme yakında bitiyor",
+  "alertSubTrial": "{subject} ücretsiz denemen {date} tarihinde bitiyor, ardından {amount} otomatik çekilir.",
+  "alertSubTrialTomorrow": "{subject} ücretsiz denemen yarın bitiyor, ardından {amount} otomatik çekilir.",
+  "alertTitleSubEnds": "Paket yakında bitiyor",
+  "alertSubEnds": "{subject} {date} tarihinde bitiyor.",
+  "alertSubEndsTomorrow": "{subject} yarın bitiyor."
 }

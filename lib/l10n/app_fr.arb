@@ -1951,5 +1951,14 @@
   "subNoCard": "Sans carte",
   "subEndedTitle": "Terminés et résiliés",
   "subTrackPayments": "Noter les prélèvements dans mes dépenses",
-  "subTrackPaymentsHelp": "Chaque jour de prélèvement, demande s'il a eu lieu et l'ajoute à votre budget."
+  "subTrackPaymentsHelp": "Chaque jour de prélèvement, demande s'il a eu lieu et l'ajoute à votre budget.",
+  "alertTitleSubRenewal": "Un abonnement se renouvelle bientôt",
+  "alertSubRenewal": "{subject} se renouvelle le {date} pour {amount}. Toujours utile ?",
+  "alertSubRenewalTomorrow": "{subject} se renouvelle demain pour {amount}. Vérifiez ou résiliez aujourd'hui.",
+  "alertTitleSubTrial": "Un essai gratuit se termine bientôt",
+  "alertSubTrial": "Votre essai gratuit {subject} se termine le {date}, puis {amount} est prélevé automatiquement.",
+  "alertSubTrialTomorrow": "Votre essai gratuit {subject} se termine demain, puis {amount} est prélevé automatiquement.",
+  "alertTitleSubEnds": "Un forfait se termine bientôt",
+  "alertSubEnds": "{subject} se termine le {date}.",
+  "alertSubEndsTomorrow": "{subject} se termine demain."
 }

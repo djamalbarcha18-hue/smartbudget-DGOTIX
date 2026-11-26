@@ -1951,5 +1951,14 @@
   "subNoCard": "カードなし",
   "subEndedTitle": "終了・解約済み",
   "subTrackPayments": "請求を支出に記録する",
-  "subTrackPaymentsHelp": "請求日ごとに請求されたか確認し、予算に追加します。"
+  "subTrackPaymentsHelp": "請求日ごとに請求されたか確認し、予算に追加します。",
+  "alertTitleSubRenewal": "まもなくサブスクが更新されます",
+  "alertSubRenewal": "{subject} は {date} に {amount} で更新されます。まだ必要ですか？",
+  "alertSubRenewalTomorrow": "{subject} は明日 {amount} で更新されます。今日中に確認または解約できます。",
+  "alertTitleSubTrial": "まもなく無料トライアルが終了します",
+  "alertSubTrial": "{subject} の無料トライアルは {date} に終了し、その後 {amount} が自動で請求されます。",
+  "alertSubTrialTomorrow": "{subject} の無料トライアルは明日終了し、その後 {amount} が自動で請求されます。",
+  "alertTitleSubEnds": "まもなくプランが終了します",
+  "alertSubEnds": "{subject} は {date} に終了します。",
+  "alertSubEndsTomorrow": "{subject} は明日終了します。"
 }

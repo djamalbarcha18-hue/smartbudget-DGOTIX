@@ -1,4 +1,6 @@
 import 'package:smartbudget/core/money/money.dart';
+import 'package:smartbudget/features/analytics/domain/alerts.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_cancel.dart';
 import 'package:smartbudget/features/recurring/domain/recurrence_engine.dart';
 import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
@@ -142,5 +144,52 @@ abstract final class SubscriptionAlerts {
     }
     out.sort((SubscriptionAlert a, SubscriptionAlert b) => a.at.compareTo(b.at));
     return out.length > maxAlerts ? out.sublist(0, maxAlerts) : out;
+  }
+
+  /// The bell's subscription notices (free on every plan; also on the web,
+  /// where the phone's reminders don't reach): each charge from its first
+  /// reminder day until it is due, for those with reminders on and still
+  /// charged.
+  static List<AppAlert> bell(
+    Iterable<({Subscription sub, RecurringRule? rule})> items,
+    DateTime now,
+  ) {
+    final DateTime today = RecurrenceEngine.dateOnly(now);
+    final List<AppAlert> out = <AppAlert>[];
+    for (final ({Subscription sub, RecurringRule? rule}) i in items) {
+      final Subscription s = i.sub;
+      final RecurringRule? r = i.rule;
+      if (r == null || !s.remindersOn || s.isOver) continue;
+      if (SubscriptionCancel.stopsCharges(s.status)) continue;
+      final DateTime charge = SubscriptionSchedule.nextCharge(r, now);
+      final DateTime? kept = s.keptUntil;
+      if (kept != null && !charge.isAfter(kept)) continue;
+      final bool trial = s.trialEndsOn(charge);
+      final List<int> days = trial
+          ? SubscriptionReminders.trialDays
+          : SubscriptionReminders.daysFor(s, r.frequency);
+      // From the earliest reminder day (at least the day before).
+      final int lead = days.fold<int>(1, (int m, int d) => d > m ? d : m);
+      final DateTime from =
+          DateTime(charge.year, charge.month, charge.day - lead);
+      if (today.isBefore(from)) continue;
+      final bool soon = !charge.isAfter(
+          DateTime(today.year, today.month, today.day + 1));
+      out.add(AppAlert(
+        kind: trial
+            ? AlertKind.subscriptionTrialEnd
+            : (s.autoRenew
+                ? AlertKind.subscriptionRenewal
+                : AlertKind.subscriptionEnds),
+        severity: trial || soon ? AlertSeverity.medium : AlertSeverity.info,
+        subject: s.provider,
+        amount: r.amount,
+        route: '/recurring',
+        focusKey: s.id,
+        date: charge,
+      ));
+    }
+    out.sort((AppAlert a, AppAlert b) => a.date!.compareTo(b.date!));
+    return out;
   }
 }
