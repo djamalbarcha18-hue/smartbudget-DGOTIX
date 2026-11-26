@@ -1949,5 +1949,7 @@
   "subKindDigital": "Digitalne",
   "subKindMobile": "Telefon i internet",
   "subNoCard": "Bez kartice",
-  "subEndedTitle": "Završene i otkazane"
+  "subEndedTitle": "Završene i otkazane",
+  "subTrackPayments": "Upiši naplate u moje troškove",
+  "subTrackPaymentsHelp": "Svakog dana naplate pita je li naplaćeno i dodaje to u vaš budžet."
 }

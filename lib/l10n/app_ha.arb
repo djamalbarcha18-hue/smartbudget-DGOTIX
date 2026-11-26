@@ -1949,5 +1949,7 @@
   "subKindDigital": "Na intanet",
   "subKindMobile": "Waya da intanet",
   "subNoCard": "Babu kati",
-  "subEndedTitle": "Sun ƙare kuma an soke"
+  "subEndedTitle": "Sun ƙare kuma an soke",
+  "subTrackPayments": "Rubuta cirewa a cikin kashe-kashena",
+  "subTrackPaymentsHelp": "A kowace ranar cirewa yana tambaya ko an cire, ya ƙara shi cikin kasafin kuɗinka."
 }

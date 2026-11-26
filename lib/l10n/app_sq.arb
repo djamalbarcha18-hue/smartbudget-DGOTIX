@@ -1949,5 +1949,7 @@
   "subKindDigital": "Dixhitale",
   "subKindMobile": "Telefon dhe internet",
   "subNoCard": "Pa kartë",
-  "subEndedTitle": "Përfunduar dhe anuluar"
+  "subEndedTitle": "Përfunduar dhe anuluar",
+  "subTrackPayments": "Regjistro pagesat te shpenzimet e mia",
+  "subTrackPaymentsHelp": "Në çdo ditë pagese pyet nëse u tërhoq dhe e shton në buxhetin tënd."
 }

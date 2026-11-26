@@ -60,6 +60,7 @@ class Subscription {
     this.manageUrl,
     this.notes,
     this.remindersOn = true,
+    this.trackPayments = false,
     this.reminderDays = const <int>[],
     this.reminderMinutes,
     this.keptUntil,
@@ -116,6 +117,11 @@ class Subscription {
   final String? notes;
 
   final bool remindersOn;
+
+  /// Ask "was it charged?" on each charge day and record the expense in the
+  /// budget. Off by default (owner's choice, 2026-11-26): the feature is a
+  /// reminder to cancel in time; recording charges is opt-in.
+  final bool trackPayments;
 
   /// Days before the charge to remind on (0 = the day itself). Empty means
   /// the defaults for the cycle ([SubscriptionReminders.defaultsFor]).
@@ -177,6 +183,7 @@ class Subscription {
     String? manageUrl,
     String? notes,
     bool? remindersOn,
+    bool? trackPayments,
     List<int>? reminderDays,
     int? reminderMinutes,
     bool clearReminderMinutes = false,
@@ -208,6 +215,7 @@ class Subscription {
       manageUrl: manageUrl ?? this.manageUrl,
       notes: notes ?? this.notes,
       remindersOn: remindersOn ?? this.remindersOn,
+      trackPayments: trackPayments ?? this.trackPayments,
       reminderDays: reminderDays ?? this.reminderDays,
       reminderMinutes: clearReminderMinutes
           ? null
@@ -241,6 +249,7 @@ class Subscription {
         if (manageUrl != null) 'manageUrl': manageUrl,
         if (notes != null) 'notes': notes,
         'remindersOn': remindersOn,
+        if (trackPayments) 'trackPayments': true,
         if (reminderDays.isNotEmpty) 'reminderDays': reminderDays,
         if (reminderMinutes != null) 'reminderMinutes': reminderMinutes,
         if (keptUntil != null) 'keptUntil': _ymd(keptUntil!),
@@ -278,6 +287,7 @@ class Subscription {
       manageUrl: j['manageUrl'] as String?,
       notes: j['notes'] as String?,
       remindersOn: (j['remindersOn'] as bool?) ?? true,
+      trackPayments: (j['trackPayments'] as bool?) ?? false,
       reminderDays: _days(j['reminderDays']),
       reminderMinutes: (j['reminderMinutes'] as num?)?.toInt(),
       keptUntil: _day(j['keptUntil']),

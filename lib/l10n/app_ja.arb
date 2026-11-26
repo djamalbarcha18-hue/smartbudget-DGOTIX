@@ -1949,5 +1949,7 @@
   "subKindDigital": "デジタル",
   "subKindMobile": "電話・ネット",
   "subNoCard": "カードなし",
-  "subEndedTitle": "終了・解約済み"
+  "subEndedTitle": "終了・解約済み",
+  "subTrackPayments": "請求を支出に記録する",
+  "subTrackPaymentsHelp": "請求日ごとに請求されたか確認し、予算に追加します。"
 }

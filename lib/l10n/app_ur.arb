@@ -1949,5 +1949,7 @@
   "subKindDigital": "ڈیجیٹل",
   "subKindMobile": "فون اور انٹرنیٹ",
   "subNoCard": "کارڈ کے بغیر",
-  "subEndedTitle": "ختم اور منسوخ"
+  "subEndedTitle": "ختم اور منسوخ",
+  "subTrackPayments": "کٹوتیاں میرے اخراجات میں درج کریں",
+  "subTrackPaymentsHelp": "ہر کٹوتی کے دن پوچھتا ہے کہ کیا کٹوتی ہوئی، اور اسے آپ کے بجٹ میں شامل کرتا ہے۔"
 }

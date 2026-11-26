@@ -1949,5 +1949,7 @@
   "subKindDigital": "Digitaal",
   "subKindMobile": "Foon en internet",
   "subNoCard": "Geen kaart",
-  "subEndedTitle": "Geëindig en gekanselleer"
+  "subEndedTitle": "Geëindig en gekanselleer",
+  "subTrackPayments": "Teken debiete by my uitgawes aan",
+  "subTrackPaymentsHelp": "Vra op elke debietdag of dit gedebiteer is en voeg dit by jou begroting."
 }

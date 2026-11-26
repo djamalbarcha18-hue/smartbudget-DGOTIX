@@ -1949,5 +1949,7 @@
   "subKindDigital": "Numériques",
   "subKindMobile": "Téléphone et internet",
   "subNoCard": "Sans carte",
-  "subEndedTitle": "Terminés et résiliés"
+  "subEndedTitle": "Terminés et résiliés",
+  "subTrackPayments": "Noter les prélèvements dans mes dépenses",
+  "subTrackPaymentsHelp": "Chaque jour de prélèvement, demande s'il a eu lieu et l'ajoute à votre budget."
 }

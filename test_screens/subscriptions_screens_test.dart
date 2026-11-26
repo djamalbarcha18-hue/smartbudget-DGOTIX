@@ -90,7 +90,9 @@ Future<ProviderContainer> _withSamples() async {
       frequency: RecurrenceFrequency.yearly,
       nextCharge: _inDays(40));
   // Charged today: shows "was it charged?".
-  await a.save(sub('sub-5', 'YouTube Premium', card: 'Edahabia'),
+  await a.save(
+      sub('sub-5', 'YouTube Premium', card: 'Edahabia')
+          .copyWith(trackPayments: true),
       amount: const Money(119, 'USD'),
       frequency: RecurrenceFrequency.monthly,
       nextCharge: _inDays(0));

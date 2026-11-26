@@ -2148,5 +2148,7 @@
   "subKindDigital": "رقمية",
   "subKindMobile": "الهاتف والإنترنت",
   "subNoCard": "بلا بطاقة",
-  "subEndedTitle": "المنتهية والملغاة"
+  "subEndedTitle": "المنتهية والملغاة",
+  "subTrackPayments": "سجّل الخصومات في مصروفاتي",
+  "subTrackPaymentsHelp": "في يوم كل خصم يسألك هل خُصم، ويضيفه إلى ميزانيتك."
 }

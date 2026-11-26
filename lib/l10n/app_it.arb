@@ -1949,5 +1949,7 @@
   "subKindDigital": "Digitali",
   "subKindMobile": "Telefono e internet",
   "subNoCard": "Senza carta",
-  "subEndedTitle": "Terminati e disdetti"
+  "subEndedTitle": "Terminati e disdetti",
+  "subTrackPayments": "Registra gli addebiti nelle mie spese",
+  "subTrackPaymentsHelp": "Ogni giorno di addebito chiede se è avvenuto e lo aggiunge al tuo budget."
 }

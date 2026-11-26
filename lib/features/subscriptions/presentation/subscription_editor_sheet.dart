@@ -76,6 +76,7 @@ class _SubscriptionEditorSheetState
   bool _trial = false;
   bool _autoRenew = true;
   bool _remindersOn = true;
+  bool _trackPayments = false;
   List<int> _days = const <int>[];
   bool _saving = false;
   late final TextEditingController _manage;
@@ -112,6 +113,7 @@ class _SubscriptionEditorSheetState
     _trial = s?.isTrial ?? false;
     _autoRenew = s?.autoRenew ?? true;
     _remindersOn = s?.remindersOn ?? true;
+    _trackPayments = s?.trackPayments ?? false;
     _days = s == null
         ? SubscriptionReminders.defaultsFor(_frequency)
         : SubscriptionReminders.daysFor(s, _frequency);
@@ -218,6 +220,7 @@ class _SubscriptionEditorSheetState
           ServiceCatalog.byId(catalogId)?.manageUrl,
       notes: old?.notes,
       remindersOn: _remindersOn,
+      trackPayments: _trackPayments,
       reminderDays: _days,
       reminderMinutes: old?.reminderMinutes,
       keptUntil: old?.keptUntil,
@@ -845,6 +848,15 @@ class _SubscriptionEditorSheetState
                           ),
                       ],
                     ),
+                  // Optional, off by default: the point is the reminder.
+                  SwitchListTile.adaptive(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l.subTrackPayments),
+                    subtitle: Text(l.subTrackPaymentsHelp,
+                        style: t.bodySmall?.copyWith(color: c.textMuted)),
+                    value: _trackPayments,
+                    onChanged: (bool v) => setState(() => _trackPayments = v),
+                  ),
                   if (upcoming.isNotEmpty) ...<Widget>[
                     const SizedBox(height: DsSpacing.md),
                     Container(
