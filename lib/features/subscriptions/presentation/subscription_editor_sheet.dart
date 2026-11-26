@@ -251,7 +251,11 @@ class _SubscriptionEditorSheetState
     final List<CatalogService> services = _catalogId != null &&
             ServiceCatalog.byId(_catalogId)?.name == _name.text.trim()
         ? const <CatalogService>[]
-        : ServiceCatalog.search(country, _name.text).take(8).toList();
+        : ServiceCatalog.search(country, _name.text)
+            // The name already typed in full needs no chip.
+            .where((CatalogService s) => s.name != _name.text.trim())
+            .take(8)
+            .toList();
     final List<String> cards = CardSuggestions.matching(country, _card.text)
         .where((String n) => n != _card.text.trim())
         .take(6)

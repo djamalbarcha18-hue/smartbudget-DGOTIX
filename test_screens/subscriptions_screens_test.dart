@@ -13,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:smartbudget/core/l10n/app_lang.dart';
+import 'package:smartbudget/core/l10n/latin_digits.dart';
 import 'package:smartbudget/core/money/money.dart';
 import 'package:smartbudget/core/settings/base_currency_controller.dart';
 import 'package:smartbudget/core/time/app_clock.dart';
@@ -88,6 +89,12 @@ Future<ProviderContainer> _withSamples() async {
       amount: const Money(20000, 'USD'),
       frequency: RecurrenceFrequency.yearly,
       nextCharge: _inDays(40));
+  // Loaded and kept listened to, as on a running app, so the screens show
+  // the data (a test's fake clock can't finish the first read itself).
+  c.listen(subscriptionsProvider, (_, __) {});
+  c.listen(recurringRulesProvider, (_, __) {});
+  await c.read(subscriptionsProvider.future);
+  await c.read(recurringRulesProvider.future);
   return c;
 }
 
@@ -123,6 +130,7 @@ ThemeData _theme(Locale locale) {
 void main() {
   setUpAll(() async {
     GoogleFonts.config.allowRuntimeFetching = false;
+    LatinDigits.enforce(); // as the app does at start (main.dart)
     await _loadFonts();
   });
 
