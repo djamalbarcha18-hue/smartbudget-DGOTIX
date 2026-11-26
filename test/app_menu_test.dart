@@ -17,8 +17,12 @@ void main() {
     }
   });
 
-  test('a short menu: seven items first, the rest folded', () {
-    expect(AppMenu.main.length, lessThanOrEqualTo(7));
+  test('a short menu: eight items first, the rest folded', () {
+    // Seven, plus subscriptions & recurring (owner's choice, 2026-11-26).
+    expect(AppMenu.main.length, lessThanOrEqualTo(8));
+    expect(AppMenu.main.indexOf(AppSection.recurring),
+        AppMenu.main.indexOf(AppSection.monthlyBudget) + 1);
+    expect(AppMenu.foldOf(AppSection.recurring), isNull);
     expect(AppMenu.main.first, AppSection.dashboard);
   });
 

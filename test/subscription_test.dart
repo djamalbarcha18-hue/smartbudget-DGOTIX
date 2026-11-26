@@ -10,6 +10,7 @@ import 'package:smartbudget/features/recurring/domain/recurring_rule.dart';
 import 'package:smartbudget/features/subscriptions/domain/card_suggestions.dart';
 import 'package:smartbudget/features/subscriptions/domain/service_catalog.dart';
 import 'package:smartbudget/features/subscriptions/domain/subscription.dart';
+import 'package:smartbudget/features/subscriptions/domain/subscription_schedule.dart';
 import 'package:smartbudget/features/sync/domain/sync_merge.dart';
 import 'package:smartbudget/features/sync/domain/sync_scope.dart';
 import 'package:smartbudget/features/transactions/domain/transaction.dart';
@@ -176,6 +177,105 @@ void main() {
     test('copyWith can clear the card name', () {
       expect(netflix().copyWith(clearCard: true).cardName, isNull);
       expect(netflix().copyWith(cardName: 'CIB').cardName, 'CIB');
+    });
+  });
+
+  group('Schedule', () {
+    RecurringRule monthly(DateTime next) => SubscriptionSchedule.ruleFor(
+          id: 'sub-a',
+          provider: 'Netflix',
+          amount: const Money(1500, 'USD'),
+          frequency: RecurrenceFrequency.monthly,
+          nextCharge: next,
+          createdAt: DateTime(2026, 11, 26),
+        );
+
+    test('the next charge is the anchor; nothing is recorded on its own', () {
+      final RecurringRule r = monthly(DateTime(2026, 12, 15, 18, 30));
+      expect(r.startDate, DateTime(2026, 12, 15));
+      expect(r.lastPosted, DateTime(2026, 12, 14));
+      expect(r.variableAmount, isTrue);
+      expect(r.isSubscription, isTrue);
+      expect(r.category, subscriptionCategory);
+      expect(SubscriptionSchedule.nextCharge(r, DateTime(2026, 11, 26)),
+          DateTime(2026, 12, 15));
+    });
+
+    test('a charge on the 31st stays on the month end, never drifts', () {
+      final RecurringRule r = monthly(DateTime(2027, 1, 31));
+      expect(SubscriptionSchedule.upcoming(r, DateTime(2026, 11, 26), count: 4),
+          <DateTime>[
+            DateTime(2027, 1, 31),
+            DateTime(2027, 2, 28),
+            DateTime(2027, 3, 31),
+            DateTime(2027, 4, 30),
+          ]);
+    });
+
+    test('yearly on 29 February falls on the 28th in other years', () {
+      final RecurringRule r = SubscriptionSchedule.ruleFor(
+        id: 'sub-y',
+        provider: 'x',
+        amount: const Money(100, 'USD'),
+        frequency: RecurrenceFrequency.yearly,
+        nextCharge: DateTime(2028, 2, 29),
+        createdAt: DateTime(2026),
+      );
+      expect(SubscriptionSchedule.upcoming(r, DateTime(2026, 11, 26)),
+          <DateTime>[
+            DateTime(2028, 2, 29),
+            DateTime(2029, 2, 28),
+            DateTime(2030, 2, 28),
+          ]);
+    });
+
+    test('once a charge day has passed, the next one is shown', () {
+      final RecurringRule r = monthly(DateTime(2026, 12, 15));
+      expect(SubscriptionSchedule.nextCharge(r, DateTime(2026, 12, 15)),
+          DateTime(2026, 12, 15));
+      expect(SubscriptionSchedule.nextCharge(r, DateTime(2026, 12, 16)),
+          DateTime(2027, 1, 15));
+    });
+
+    test('reminders: the cycle\'s days, from today on, soonest first', () {
+      final RecurringRule r = monthly(DateTime(2026, 12, 15));
+      final Subscription s = netflix().copyWith(
+          status: SubscriptionStatus.active,
+          clearTrial: true,
+          reminderDays: const <int>[3, 1]);
+      expect(SubscriptionSchedule.reminderDays(s, r, DateTime(2026, 11, 26)),
+          <DateTime>[DateTime(2026, 12, 12), DateTime(2026, 12, 14)]);
+      // A reminder day already gone is not shown.
+      expect(SubscriptionSchedule.reminderDays(s, r, DateTime(2026, 12, 13)),
+          <DateTime>[DateTime(2026, 12, 14)]);
+    });
+
+    test('a free trial reminds two days and one day before it ends', () {
+      final RecurringRule r = monthly(DateTime(2026, 12, 15));
+      expect(
+          SubscriptionSchedule.reminderDays(netflix(), r, DateTime(2026, 11, 26)),
+          <DateTime>[DateTime(2026, 12, 13), DateTime(2026, 12, 14)]);
+    });
+
+    test('no reminders when they are off or it is over', () {
+      final RecurringRule r = monthly(DateTime(2026, 12, 15));
+      final DateTime now = DateTime(2026, 11, 26);
+      expect(
+          SubscriptionSchedule.reminderDays(
+              netflix().copyWith(remindersOn: false), r, now),
+          isEmpty);
+      expect(
+          SubscriptionSchedule.reminderDays(
+              netflix().copyWith(status: SubscriptionStatus.ended), r, now),
+          isEmpty);
+    });
+
+    test('the next charge can be today, never in the past', () {
+      final DateTime now = DateTime(2026, 11, 26, 23, 59);
+      expect(SubscriptionSchedule.validNextCharge(DateTime(2026, 11, 26), now),
+          isTrue);
+      expect(SubscriptionSchedule.validNextCharge(DateTime(2026, 11, 25), now),
+          isFalse);
     });
   });
 

@@ -73,7 +73,7 @@ class NavDestination {
         AppSection.metals => l.navMetals,
         AppSection.income => l.navIncome,
         AppSection.expenses => l.navExpenses,
-        AppSection.recurring => l.navRecurring,
+        AppSection.recurring => l.navSubscriptionsRecurring,
         AppSection.monthlyBudget => l.navMonthlyBudget,
         AppSection.goals => l.navGoals,
         AppSection.trips => l.navTrips,
@@ -312,6 +312,8 @@ abstract final class AppMenu {
     AppSection.dashboard,
     AppSection.transactions,
     AppSection.monthlyBudget,
+    // Subscriptions & recurring: close at hand, so a charge isn't missed.
+    AppSection.recurring,
     AppSection.goals,
     AppSection.reports,
     AppSection.financialHealth,
@@ -322,7 +324,6 @@ abstract final class AppMenu {
     NavFold.tools: <AppSection>[
       AppSection.wallets,
       AppSection.metals,
-      AppSection.recurring,
       AppSection.debts,
       AppSection.challenges,
       AppSection.calculator,
