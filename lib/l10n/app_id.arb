@@ -1771,7 +1771,7 @@
   "zkLegacyMetals": "Jumlah emas dari layar sebelumnya tidak dihitung, karena emas Anda sudah tercatat.",
   "zkLaterEntries": "Catatan bertanggal setelah hari ini tidak dihitung.",
   "aiConsentTitle": "Sebelum memakai DGOTIX AI",
-  "aiConsentBody": "Untuk menjawab, DGOTIX AI mengirim apa yang Anda minta — pertanyaan, foto struk, atau ringkasan angka Anda (total per kategori dan bulan, tidak pernah kata sandi atau data bank) — melalui server kami ke layanan Gemini milik Google, yang memprosesnya sesuai ketentuan Google. Tidak ada yang dikirim sebelum Anda setuju, dan bagian lain aplikasi tetap bisa dipakai tanpanya.",
+  "aiConsentBody": "DGOTIX AI mengirim pertanyaan, foto struk, atau total angka Anda ke Gemini milik Google untuk menjawab — tidak pernah kata sandi atau data bank. Tidak ada yang dikirim sebelum Anda setuju.",
   "aiConsentAgree": "Setuju dan lanjutkan",
   "navCalculator": "Kalkulator",
   "calcClear": "Hapus semua",

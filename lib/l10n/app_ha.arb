@@ -1771,7 +1771,7 @@
   "zkLegacyMetals": "An bar adadin zinariyar da aka rubuta a allon da ya gabata, saboda an rubuta zinariyarka.",
   "zkLaterEntries": "Ba a ƙirga abubuwan da kwananansu ya wuce yau ba.",
   "aiConsentTitle": "Kafin amfani da DGOTIX AI",
-  "aiConsentBody": "Don amsawa, DGOTIX AI na aika abin da ka nema — tambayarka, hoton rasit, ko taƙaitaccen lissafinka (jimla bisa rukuni da wata, ba kalmar sirri ko bayanan banki ba) — ta sabar mu zuwa sabis ɗin Gemini na Google, wanda ke sarrafa shi bisa sharuɗɗan Google. Ba a aika komai kafin ka yarda, kuma sauran manhajar na aiki ba tare da shi ba.",
+  "aiConsentBody": "DGOTIX AI na aika tambayarka, hoton rasit ko jimlar lissafinka zuwa Gemini na Google don amsawa — ba kalmar sirri ko bayanan banki ba. Ba a aika komai kafin ka yarda.",
   "aiConsentAgree": "Na yarda, ci gaba",
   "navCalculator": "Na'urar lissafi",
   "calcClear": "Share duka",

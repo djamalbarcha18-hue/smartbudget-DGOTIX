@@ -1771,7 +1771,7 @@
   "zkLegacyMetals": "Der im früheren Bildschirm eingegebene Goldbetrag entfällt, da dein Gold erfasst ist.",
   "zkLaterEntries": "Einträge mit Datum nach heute werden nicht gezählt.",
   "aiConsentTitle": "Bevor du DGOTIX AI nutzt",
-  "aiConsentBody": "Für die Antwort sendet DGOTIX AI, was du anfragst — deine Frage, ein Belegfoto oder eine Zusammenfassung deiner Zahlen (Summen nach Kategorie und Monat, nie dein Passwort oder deine Bankdaten) — über unseren Server an Googles Gemini-Dienst, der es nach Googles Bedingungen verarbeitet. Nichts wird gesendet, bevor du zustimmst, und der Rest der App funktioniert auch ohne.",
+  "aiConsentBody": "DGOTIX AI sendet deine Frage, ein Belegfoto oder Summen deiner Zahlen an Googles Gemini, um zu antworten — nie dein Passwort oder deine Bankdaten. Nichts wird gesendet, bevor du zustimmst.",
   "aiConsentAgree": "Zustimmen und weiter",
   "navCalculator": "Rechner",
   "calcClear": "Alles löschen",

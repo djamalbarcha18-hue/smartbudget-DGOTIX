@@ -1771,7 +1771,7 @@
   "zkLegacyMetals": "Kiasi cha dhahabu kilichoandikwa kwenye skrini ya awali kimeachwa, kwa sababu dhahabu yako imesajiliwa.",
   "zkLaterEntries": "Rekodi zenye tarehe baada ya leo hazihesabiwi.",
   "aiConsentTitle": "Kabla ya kutumia DGOTIX AI",
-  "aiConsentBody": "Ili kujibu, DGOTIX AI hutuma unachoomba — swali lako, picha ya risiti, au muhtasari wa takwimu zako (jumla kwa aina na mwezi, kamwe si nenosiri wala taarifa za benki) — kupitia seva yetu kwa huduma ya Gemini ya Google, inayoshughulikia kwa masharti ya Google. Hakuna kinachotumwa kabla hujakubali, na sehemu nyingine za programu zinafanya kazi bila hiyo.",
+  "aiConsentBody": "DGOTIX AI hutuma swali lako, picha ya risiti au jumla za takwimu zako kwa Gemini ya Google ili kujibu — kamwe si nenosiri wala taarifa za benki. Hakuna kinachotumwa kabla hujakubali.",
   "aiConsentAgree": "Kubali na uendelee",
   "navCalculator": "Kikokotoo",
   "calcClear": "Futa yote",

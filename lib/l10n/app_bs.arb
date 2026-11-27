@@ -1771,7 +1771,7 @@
   "zkLegacyMetals": "Iznos zlata upisan na ranijem ekranu se izostavlja, jer je vaše zlato upisano.",
   "zkLaterEntries": "Unosi s datumom nakon danas se ne računaju.",
   "aiConsentTitle": "Prije korištenja DGOTIX AI",
-  "aiConsentBody": "Da bi odgovorio, DGOTIX AI šalje ono što tražite — vaše pitanje, fotografiju računa ili sažetak vaših brojki (zbirovi po kategoriji i mjesecu, nikad lozinku ni bankovne podatke) — preko našeg servera Googleovoj usluzi Gemini, koja ih obrađuje prema Googleovim uslovima. Ništa se ne šalje prije vašeg pristanka, a ostatak aplikacije radi i bez toga.",
+  "aiConsentBody": "DGOTIX AI šalje vaše pitanje, fotografiju računa ili zbirove brojki Googleovom Geminiju da odgovori — nikad lozinku ni bankovne podatke. Ništa se ne šalje prije vašeg pristanka.",
   "aiConsentAgree": "Pristajem i nastavljam",
   "navCalculator": "Kalkulator",
   "calcClear": "Obriši sve",
