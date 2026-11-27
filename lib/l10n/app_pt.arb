@@ -1771,7 +1771,7 @@
   "zkLegacyMetals": "O valor de ouro escrito no ecrã anterior fica de fora, porque o seu ouro está registado.",
   "zkLaterEntries": "Movimentos com data depois de hoje não são contados.",
   "aiConsentTitle": "Antes de usar a DGOTIX AI",
-  "aiConsentBody": "Para responder, a DGOTIX AI envia o que pede — a sua pergunta, a foto de um recibo ou um resumo dos seus números (totais por categoria e mês, nunca a sua palavra-passe ou dados bancários) — através do nosso servidor para o serviço Gemini da Google, que o trata segundo os termos da Google. Nada é enviado antes de aceitar, e pode usar o resto da app sem isso.",
+  "aiConsentBody": "A DGOTIX AI envia a sua pergunta, a foto de um recibo ou os totais dos seus números para o Gemini da Google para responder — nunca a sua palavra-passe ou dados bancários. Nada é enviado antes de aceitar.",
   "aiConsentAgree": "Aceitar e continuar",
   "navCalculator": "Calculadora",
   "calcClear": "Limpar tudo",

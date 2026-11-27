@@ -1771,7 +1771,7 @@
   "zkLegacyMetals": "Le montant d'or saisi dans l'ancien écran est écarté, car votre or est enregistré.",
   "zkLaterEntries": "Les opérations datées après aujourd'hui ne sont pas comptées.",
   "aiConsentTitle": "Avant d'utiliser DGOTIX AI",
-  "aiConsentBody": "Pour répondre, DGOTIX AI envoie ce que vous demandez — votre question, une photo de ticket ou un résumé de vos chiffres (totaux par catégorie et par mois, jamais votre mot de passe ni vos coordonnées bancaires) — via notre serveur au service Gemini de Google, qui le traite selon les conditions de Google. Rien n'est envoyé avant votre accord, et le reste de l'application fonctionne sans.",
+  "aiConsentBody": "DGOTIX AI envoie votre question, une photo de ticket ou les totaux de vos chiffres à Gemini de Google pour répondre — jamais votre mot de passe ni vos coordonnées bancaires. Rien n'est envoyé avant votre accord.",
   "aiConsentAgree": "J'accepte et je continue",
   "navCalculator": "Calculatrice",
   "calcClear": "Tout effacer",
