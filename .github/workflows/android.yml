@@ -109,10 +109,12 @@ jobs:
           # store app itself never sells or links to a payment
           # (AppEnv.storeFreeMode, docs/PLAY_STORE.md).
           DEFINES="$DEFINES --dart-define=BETA_ALL_ACCESS=false"
-          # No «Continue with Google» in the app for now: the website signs in
-          # with Google's own button, which needs no Supabase address at
-          # Google; the app's version (Google's native sign-in) comes with the
-          # Play Store build (docs/GOOGLE_SIGN_IN.md). E-mail sign-in stays.
+          # «Continue with Google»: the button opens Google's page in the
+          # browser, Supabase finishes the sign-in and sends the user back to
+          # com.dgotix.smartbudget://login-callback (docs/GOOGLE_SIGN_IN.md).
+          # Needs that address in Supabase > URL Configuration, and the
+          # Supabase callback at Google. E-mail sign-in stays.
+          DEFINES="$DEFINES --dart-define=GOOGLE_SIGN_IN=true"
           if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
             DEFINES="$DEFINES --dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
             # Commodity prices (industrial metals, steel & iron, energy,

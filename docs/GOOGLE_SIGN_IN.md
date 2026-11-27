@@ -34,10 +34,15 @@ Google Cloud, on that web client:
 Supabase › Google: the web client id in **Client IDs** (it is the token's
 audience), with **Skip nonce checks** off.
 
-The Android build has no Google button for now (`GOOGLE_SIGN_IN` is not set in
-android.yml): its version is Google's native sign-in (Credential Manager), for
-the Play Store build. It needs an Android OAuth client (package name + SHA-1 of
-the signing key) and the same `signInWithIdToken`.
+The Android build shows the button (`GOOGLE_SIGN_IN=true` in android.yml) and
+uses the Supabase redirect: Google's page opens in the browser, then
+`com.dgotix.smartbudget://login-callback` brings the user back. So the web
+client keeps the redirect URI
+`https://fconhnyognxcpvmwobus.supabase.co/auth/v1/callback`, Supabase › Google
+keeps the client secret, and Google's page names the Supabase address until
+the app moves to Google's native sign-in (Credential Manager: an Android OAuth
+client with the package name + SHA-1 of the Play signing key, then
+`signInWithIdToken`).
 
 ## Turning it on (the owner, once)
 
