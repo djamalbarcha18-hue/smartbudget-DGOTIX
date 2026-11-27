@@ -479,9 +479,13 @@ Widget _kv(BuildContext context, String k, String v,
           ),
         ),
         const SizedBox(width: DsSpacing.sm),
-        Text(v,
-            style: t.titleSmall?.copyWith(
-                fontWeight: strong ? FontWeight.w800 : FontWeight.w600)),
+        // A long amount wraps instead of running off a narrow screen.
+        Flexible(
+          child: Text(v,
+              textAlign: TextAlign.end,
+              style: t.titleSmall?.copyWith(
+                  fontWeight: strong ? FontWeight.w800 : FontWeight.w600)),
+        ),
       ],
     ),
   );
