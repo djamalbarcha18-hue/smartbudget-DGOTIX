@@ -1,3 +1,4 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member
 // Screenshot of the DGOTIX AI consent dialog, for review before "publish".
 // Not part of the normal test run (see screenshots.yml).
 import 'dart:convert';
